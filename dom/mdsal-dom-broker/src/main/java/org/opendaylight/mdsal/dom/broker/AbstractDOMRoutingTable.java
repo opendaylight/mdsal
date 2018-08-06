@@ -48,7 +48,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
         this.schemaContext = schemaContext;
     }
 
-    AbstractDOMRoutingTable setSchemaContext(final SchemaContext context) {
+    AbstractDOMRoutingTable<I, D, M, L, E> setSchemaContext(final SchemaContext context) {
         final Builder<SchemaPath, E> b = ImmutableMap.builder();
 
         for (Entry<SchemaPath, E> e : operations.entrySet()) {
@@ -62,7 +62,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
         return newInstance(b.build(), context);
     }
 
-    AbstractDOMRoutingTable add(final M implementation, final Set<I> oprsToAdd) {
+    AbstractDOMRoutingTable<I, D, M, L, E> add(final M implementation, final Set<I> oprsToAdd) {
         if (oprsToAdd.isEmpty()) {
             return this;
         }
@@ -100,7 +100,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
         return newInstance(mb.build(), schemaContext);
     }
 
-    AbstractDOMRoutingTable remove(final M implementation, final Set<I> instances) {
+    AbstractDOMRoutingTable<I, D, M, L, E> remove(final M implementation, final Set<I> instances) {
         if (instances.isEmpty()) {
             return this;
         }
@@ -143,15 +143,14 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
         return ret;
     }
 
-    @Nullable AbstractDOMRoutingTableEntry getEntry(final @NonNull SchemaPath type) {
+    @Nullable AbstractDOMRoutingTableEntry<D, M, L> getEntry(final @NonNull SchemaPath type) {
         return operations.get(type);
     }
 
-    protected abstract AbstractDOMRoutingTable newInstance(
-        Map<SchemaPath, E> operations, SchemaContext schemaContext);
+    protected abstract AbstractDOMRoutingTable<I, D, M, L, E> newInstance(Map<SchemaPath, E> operations,
+            SchemaContext schemaContext);
 
     abstract ListMultimap<SchemaPath, D> decomposeIdentifiers(Set<I> instances);
 
-    abstract E createOperationEntry(SchemaContext context, SchemaPath key,
-        Map<D, List<M>> implementations);
+    abstract E createOperationEntry(SchemaContext context, SchemaPath key, Map<D, List<M>> implementations);
 }

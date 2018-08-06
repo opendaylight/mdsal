@@ -39,7 +39,7 @@ final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier,
     }
 
     @Override
-    protected AbstractDOMRoutingTable newInstance(final Map<SchemaPath, AbstractDOMRpcRoutingTableEntry> operations,
+    protected DOMRpcRoutingTable newInstance(final Map<SchemaPath, AbstractDOMRpcRoutingTableEntry> operations,
             final SchemaContext schemaContext) {
         return new DOMRpcRoutingTable(operations, schemaContext);
     }

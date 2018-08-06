@@ -14,7 +14,6 @@ import com.google.common.collect.ListMultimap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
@@ -31,7 +30,6 @@ import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
  * Definition of Action routing table.
  */
 @Beta
-@NonNullByDefault
 final class DOMActionRoutingTable extends AbstractDOMRoutingTable<DOMActionInstance, DOMDataTreeIdentifier,
         DOMActionImplementation, AvailabilityListener, DOMActionRoutingTableEntry> {
     static final DOMActionRoutingTable EMPTY = new DOMActionRoutingTable(ImmutableMap.of(), null);

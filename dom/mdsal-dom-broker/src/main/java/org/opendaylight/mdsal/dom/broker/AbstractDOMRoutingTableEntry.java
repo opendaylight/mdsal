@@ -63,7 +63,7 @@ abstract class AbstractDOMRoutingTableEntry<D, M, L extends EventListener> {
      * @param newOprs  the List of new RPCs/Actions that the DOMOperationImplementation provides, must be mutable
      * @return a new instance of DOMActionRoutingTableEntry with the additions
      */
-    AbstractDOMRoutingTableEntry add(final M implementation, final List<D> newOprs) {
+    AbstractDOMRoutingTableEntry<D, M, L> add(final M implementation, final List<D> newOprs) {
         final Builder<D, List<M>> vb = ImmutableMap.builder();
         for (final Entry<D, List<M>> ve : implementations.entrySet()) {
             if (newOprs.remove(ve.getKey())) {
@@ -88,7 +88,7 @@ abstract class AbstractDOMRoutingTableEntry<D, M, L extends EventListener> {
         return newInstance(vb.build());
     }
 
-    AbstractDOMRoutingTableEntry remove(final M implementation, final List<D> removed) {
+    AbstractDOMRoutingTableEntry<D, M, L> remove(final M implementation, final List<D> removed) {
         final Builder<D, List<M>> vb = ImmutableMap.builder();
         for (final Entry<D, List<M>> ve : implementations.entrySet()) {
             if (removed.remove(ve.getKey())) {
@@ -110,5 +110,5 @@ abstract class AbstractDOMRoutingTableEntry<D, M, L extends EventListener> {
 
     protected abstract Comparator<M> implComparator();
 
-    protected abstract AbstractDOMRoutingTableEntry newInstance(Map<D, List<M>> impls);
+    protected abstract AbstractDOMRoutingTableEntry<D, M, L> newInstance(Map<D, List<M>> impls);
 }

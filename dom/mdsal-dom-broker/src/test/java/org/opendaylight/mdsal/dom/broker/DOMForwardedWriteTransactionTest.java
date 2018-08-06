@@ -27,7 +27,7 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 public class DOMForwardedWriteTransactionTest {
 
     @Mock
-    private AbstractDOMForwardedTransactionFactory abstractDOMForwardedTransactionFactory;
+    private AbstractDOMForwardedTransactionFactory<?> abstractDOMForwardedTransactionFactory;
 
     @Mock
     private DOMStoreWriteTransaction domStoreWriteTransaction;
