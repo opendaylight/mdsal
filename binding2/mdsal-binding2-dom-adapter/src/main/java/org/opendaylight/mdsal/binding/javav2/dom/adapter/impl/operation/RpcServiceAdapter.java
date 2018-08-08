@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.operation;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Futures;
@@ -21,6 +20,7 @@ import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Function;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.extractor.ContextReferenceExtractor;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedNodeCodec;
