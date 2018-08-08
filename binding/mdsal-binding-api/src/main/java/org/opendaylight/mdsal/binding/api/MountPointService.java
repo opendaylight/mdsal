@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import com.google.common.base.Optional;
 import java.util.EventListener;
+import java.util.Optional;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 

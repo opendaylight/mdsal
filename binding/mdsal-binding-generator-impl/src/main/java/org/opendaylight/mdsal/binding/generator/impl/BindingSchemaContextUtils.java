@@ -8,10 +8,10 @@
 
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -48,7 +48,7 @@ public final class BindingSchemaContextUtils {
         Preconditions.checkArgument(currentArg != null);
         QName currentQName = BindingReflections.findQName(currentArg.getType());
 
-        Optional<DataNodeContainer> currentContainer = Optional.absent();
+        Optional<DataNodeContainer> currentContainer = Optional.empty();
         if (BindingReflections.isNotification(currentArg.getType())) {
             currentContainer = findNotification(ctx, currentQName);
         } else if (BindingReflections.isRpcType(currentArg.getType())) {
@@ -79,7 +79,7 @@ public final class BindingSchemaContextUtils {
             if (potential.isPresent()) {
                 currentContainer = potential;
             } else {
-                return Optional.absent();
+                return Optional.empty();
             }
         }
         return currentContainer;
@@ -91,7 +91,7 @@ public final class BindingSchemaContextUtils {
                 return Optional.<DataNodeContainer> of(notification);
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static Optional<DataNodeContainer> findDataNodeContainer(final DataNodeContainer ctx,
@@ -112,7 +112,7 @@ public final class BindingSchemaContextUtils {
             }
 
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static DataNodeContainer findInCases(final ChoiceSchemaNode choiceNode, final QName targetQName) {
@@ -143,7 +143,7 @@ public final class BindingSchemaContextUtils {
                 }
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static Optional<DataNodeContainer> findInputOutput(final RpcDefinition rpc, final String targetType) {
@@ -156,7 +156,7 @@ public final class BindingSchemaContextUtils {
         if (targetType.equals(rpcOutputName)) {
             return Optional.of(rpc.getOutput());
         }
-       return Optional.absent();
+       return Optional.empty();
     }
 
     public static Set<AugmentationSchemaNode> collectAllAugmentationDefinitions(final SchemaContext currentSchema,
@@ -184,7 +184,7 @@ public final class BindingSchemaContextUtils {
             return Optional.of((ChoiceSchemaNode) potential);
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 
     public static Optional<CaseSchemaNode> findInstantiatedCase(final ChoiceSchemaNode instantiatedChoice,
@@ -214,7 +214,7 @@ public final class BindingSchemaContextUtils {
                 return Optional.of(caze);
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
 }

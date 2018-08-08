@@ -7,9 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
@@ -27,7 +27,7 @@ public class BindingMountPointAdapter implements MountPoint {
 
             @Override
             protected DOMService getDelegate(final Class<? extends DOMService> reqDeleg) {
-                return domMountPoint.getService(reqDeleg).orNull();
+                return domMountPoint.getService(reqDeleg).orElse(null);
             }
         });
     }
@@ -39,6 +39,6 @@ public class BindingMountPointAdapter implements MountPoint {
 
     @Override
     public <T extends BindingService> Optional<T> getService(final Class<T> service) {
-        return services.getUnchecked(service).transform(service::cast);
+        return services.getUnchecked(service).map(service::cast);
     }
 }

@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.impl;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -21,6 +20,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
@@ -235,15 +235,15 @@ public final class BindingToNormalizedNodeCodec
      * create representation.
      *
      * <p>
-     * Returns Optional.absent for cases where target is mixin node except augmentation.
+     * Returns Optional.empty for cases where target is mixin node except augmentation.
      *
      */
     public Optional<InstanceIdentifier<? extends TreeNode>> toBinding(final YangInstanceIdentifier normalized)
             throws DeserializationException {
         try {
-            return Optional.fromNullable(codecRegistry.fromYangInstanceIdentifier(normalized));
+            return Optional.ofNullable(codecRegistry.fromYangInstanceIdentifier(normalized));
         } catch (final IllegalArgumentException e) {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 
@@ -263,9 +263,9 @@ public final class BindingToNormalizedNodeCodec
         try {
             final Entry<InstanceIdentifier<? extends TreeNode>, TreeNode> binding =
                     Entry.class.cast(codecRegistry.fromNormalizedNode(normalized.getKey(), normalized.getValue()));
-            return Optional.fromNullable(binding);
+            return Optional.ofNullable(binding);
         } catch (final IllegalArgumentException e) {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 

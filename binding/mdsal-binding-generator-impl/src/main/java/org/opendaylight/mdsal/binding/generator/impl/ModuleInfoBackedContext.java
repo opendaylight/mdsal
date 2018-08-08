@@ -7,10 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.ref.WeakReference;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
@@ -86,7 +86,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     // Implement remove ModuleInfo to update SchemaContext
 
     public Optional<SchemaContext> tryToCreateSchemaContext() {
-        return Optional.fromJavaUtil(ctxResolver.getSchemaContext());
+        return ctxResolver.getSchemaContext();
     }
 
     private boolean resolveModuleInfo(final Class<?> cls) {

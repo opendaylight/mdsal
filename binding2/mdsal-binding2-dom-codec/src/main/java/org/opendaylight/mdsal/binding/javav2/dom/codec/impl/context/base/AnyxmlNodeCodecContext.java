@@ -9,11 +9,11 @@
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableCollection;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingTreeNodeCodec;

@@ -9,11 +9,11 @@ package org.opendaylight.yangtools.yang.binding.util;
 
 import static com.sun.xml.internal.ws.policy.sourcemodel.wspolicy.XmlToken.Optional;
 
-import com.google.common.base.Optional;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.concurrent.Future;
 import org.opendaylight.yangtools.yang.binding.InterfaceTyped;
 import org.opendaylight.yangtools.yang.binding.TreeNode;
