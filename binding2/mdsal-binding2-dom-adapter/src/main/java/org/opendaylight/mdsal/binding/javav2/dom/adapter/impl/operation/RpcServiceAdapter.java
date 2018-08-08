@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.operation;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Futures;
@@ -164,7 +163,7 @@ class RpcServiceAdapter implements InvocationHandler {
 
         private ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
                 final ListenableFuture<DOMRpcResult> domFuture, final BindingNormalizedNodeCodecRegistry resultCodec) {
-            return Futures.transform(domFuture, (Function<DOMRpcResult, RpcResult<?>>) input -> {
+            return Futures.transform(domFuture, input -> {
                 final NormalizedNode<?, ?> domData = input.getResult();
                 final TreeNode bindingResult;
                 if (domData != null) {
