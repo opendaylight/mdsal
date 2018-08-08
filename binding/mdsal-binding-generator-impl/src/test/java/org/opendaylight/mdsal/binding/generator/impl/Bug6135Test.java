@@ -11,23 +11,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
 import java.util.List;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Bug6135Test {
 
-    @Ignore
     @Test
-    public void bug6135Test() throws FileNotFoundException, ReactorException, URISyntaxException {
+    public void bug6135Test() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/bug-6135/foo.yang");
         assertNotNull(context);
 
