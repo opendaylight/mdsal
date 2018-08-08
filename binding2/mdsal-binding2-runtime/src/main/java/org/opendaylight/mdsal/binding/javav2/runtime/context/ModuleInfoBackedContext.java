@@ -9,13 +9,13 @@ package org.opendaylight.mdsal.binding.javav2.runtime.context;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Optional;
 import com.google.common.io.ByteSource;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.opendaylight.mdsal.binding.javav2.generator.api.ClassLoadingStrategy;
@@ -112,7 +112,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
      * @return optional of schema context
      */
     public Optional<SchemaContext> tryToCreateSchemaContext() {
-        return Optional.fromJavaUtil(ctxResolver.getSchemaContext());
+        return ctxResolver.getSchemaContext();
     }
 
     private boolean resolveModuleInfo(final Class<?> cls) {

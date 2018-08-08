@@ -12,10 +12,10 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.collect.MutableClassToInstanceMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -39,7 +39,7 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
 
     @Override
     public Optional<DOMMountPoint> getMountPoint(final YangInstanceIdentifier path) {
-        return Optional.fromNullable(mountPoints.get(path));
+        return Optional.ofNullable(mountPoints.get(path));
     }
 
     @Override
