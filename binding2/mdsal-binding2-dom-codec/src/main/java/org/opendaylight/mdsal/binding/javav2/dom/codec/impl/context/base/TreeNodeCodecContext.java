@@ -9,7 +9,6 @@
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
@@ -26,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -173,7 +173,7 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
         if (childProto != null) {
             return Optional.of((DataContainerCodecContext<C,?>) childProto.get());
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Nonnull

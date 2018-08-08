@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.spi.loader;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.cache.CacheLoader;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.spi.builder.AdapterBuilder;
@@ -41,7 +41,7 @@ public abstract class AdapterLoader<T, D> extends CacheLoader<Class<? extends T>
             if (deleg != null) {
                 builder.addDelegate(reqDeleg, deleg);
             } else {
-                return Optional.absent();
+                return Optional.empty();
             }
         }
         return Optional.of(builder.build());

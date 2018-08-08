@@ -11,7 +11,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -29,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
@@ -233,7 +233,7 @@ public final class BindingRuntimeContext implements Immutable {
      *
      * @param schema Resolved parent choice schema
      * @param childClass Class representing case.
-     * @return Optionally a resolved case schema, absent if the choice is not legal in
+     * @return Optionally a resolved case schema,.empty if the choice is not legal in
      *         the given context.
      * @throws IllegalArgumentException If supplied class does not represent case.
      */

@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.javav2.runtime.context;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -26,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.generator.api.ClassLoadingStrategy;
@@ -281,7 +281,7 @@ public class BindingRuntimeContext implements Immutable {
      *            - resolved parent choice schema
      * @param childClass
      *            - class representing case.
-     * @return Optionally a resolved case schema, absent if the choice is not
+     * @return Optionally a resolved case schema,.empty if the choice is not
      *         legal in the given context.
      * @throws IllegalArgumentException
      *             - if supplied class does not represent case

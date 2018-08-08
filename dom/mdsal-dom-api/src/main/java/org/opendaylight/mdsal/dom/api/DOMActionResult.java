@@ -33,7 +33,7 @@ public interface DOMActionResult {
     /**
      * Returns the value result of the call.
      *
-     * @return Invocation result, absent if the operation has not produced a result. This might be the case if the
+     * @return Invocation result,.empty if the operation has not produced a result. This might be the case if the
      *         operation does not produce a result, or if it failed.
      */
     Optional<ContainerNode> getOutput();
