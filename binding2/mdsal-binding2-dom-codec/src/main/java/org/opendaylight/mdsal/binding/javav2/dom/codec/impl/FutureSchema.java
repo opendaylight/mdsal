@@ -8,8 +8,6 @@
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Predicate;
-import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Predicate;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.yang.common.QNameModule;
@@ -67,9 +66,8 @@ class FutureSchema implements AutoCloseable {
 
     boolean waitForSchema(final QNameModule module) {
         final FutureSchemaPredicate postponedOp = new FutureSchemaPredicate() {
-
             @Override
-            public boolean apply(final BindingRuntimeContext input) {
+            public boolean test(final BindingRuntimeContext input) {
                 return input.getSchemaContext().findModule(module).isPresent();
             }
         };
@@ -78,9 +76,8 @@ class FutureSchema implements AutoCloseable {
 
     boolean waitForSchema(final Collection<Class<?>> bindingClasses) {
         final FutureSchemaPredicate postponedOp = new FutureSchemaPredicate() {
-
             @Override
-            public boolean apply(final BindingRuntimeContext context) {
+            public boolean test(final BindingRuntimeContext context) {
                 for (final Class<?> clz : bindingClasses) {
                     if (!isSchemaAvailable(clz, context)) {
                         return false;
@@ -99,7 +96,7 @@ class FutureSchema implements AutoCloseable {
                 schemaPromise.get(duration, unit);
                 return true;
             } catch (final InterruptedException | ExecutionException e) {
-                throw Throwables.propagate(e);
+                throw new RuntimeException(e);
             } catch (final TimeoutException e) {
                 return false;
             } finally {
@@ -108,7 +105,7 @@ class FutureSchema implements AutoCloseable {
         }
 
         final void unlockIfPossible(final BindingRuntimeContext context) {
-            if (!schemaPromise.isDone() && apply(context)) {
+            if (!schemaPromise.isDone() && test(context)) {
                 schemaPromise.set(null);
             }
         }

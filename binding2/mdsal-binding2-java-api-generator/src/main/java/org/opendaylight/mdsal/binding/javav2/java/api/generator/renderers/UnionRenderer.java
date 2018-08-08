@@ -5,13 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.BOOLEAN;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
@@ -199,9 +197,8 @@ public class UnionRenderer extends ClassRenderer {
                 .append(TextTemplateUtil.getterMethodName(field))
                 .append("() {\n");
 
-        Predicate<GeneratedProperty> predicate = input -> !"value".equals(input.getName());
         final List<GeneratedProperty> filtered = new ArrayList<>(Collections2.filter(this.getFinalProperties(),
-            predicate));
+            input -> !"value".equals(input.getName())));
 
         final List<CharSequence> strings = new ArrayList<>(filtered.size());
 
