@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -38,8 +37,6 @@ public abstract class AbstractDOMStoreTreeChangePublisher
     extends AbstractRegistrationTree<AbstractDOMDataTreeChangeListenerRegistration<?>>
         implements DOMStoreTreeChangePublisher {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDOMStoreTreeChangePublisher.class);
-
-    private static final Supplier<List<DataTreeCandidate>> LIST_SUPPLIER = ArrayList::new;
 
     /**
      * Callback for subclass to notify a specified registration of a list of candidates. This method is guaranteed
@@ -80,7 +77,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher
                 = takeSnapshot()) {
             final List<PathArgument> toLookup = ImmutableList.copyOf(candidate.getRootPath().getPathArguments());
             final Multimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges =
-                    Multimaps.newListMultimap(new IdentityHashMap<>(), LIST_SUPPLIER);
+                    Multimaps.newListMultimap(new IdentityHashMap<>(), ArrayList::new);
             lookupAndNotify(toLookup, 0, snapshot.getRootNode(), candidate, listenerChanges);
 
             for (Map.Entry<AbstractDOMDataTreeChangeListenerRegistration<?>, Collection<DataTreeCandidate>> entry:
