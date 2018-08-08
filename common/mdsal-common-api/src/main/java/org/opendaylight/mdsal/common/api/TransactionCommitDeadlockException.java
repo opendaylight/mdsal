@@ -5,17 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.common.api;
 
-import com.google.common.base.Supplier;
-
+import java.util.function.Supplier;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
-
-
-
 
 /**
  * A type of TransactionCommitFailedException that indicates a situation that would result in a
