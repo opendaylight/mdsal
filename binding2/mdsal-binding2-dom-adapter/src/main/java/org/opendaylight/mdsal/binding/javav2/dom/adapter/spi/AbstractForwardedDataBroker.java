@@ -8,11 +8,11 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.spi;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
@@ -96,7 +96,7 @@ public abstract class AbstractForwardedDataBroker implements Delegator<DOMDataBr
     @SuppressWarnings("unchecked")
     protected Optional<TreeNode> toBindingData(final InstanceIdentifier<?> path, final NormalizedNode<?, ?> data) {
         if (path.isWildcarded()) {
-            return Optional.absent();
+            return Optional.empty();
         }
         return (Optional<TreeNode>) getCodec().deserializeFunction(path)
                 .apply(Optional.of(data));

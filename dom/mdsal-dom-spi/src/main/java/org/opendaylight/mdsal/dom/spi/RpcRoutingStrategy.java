@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import java.util.Optional;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -66,10 +66,10 @@ public abstract class RpcRoutingStrategy implements Identifiable<QName> {
     public static Optional<QName> getRoutingContext(final DataSchemaNode schemaNode) {
         for (UnknownSchemaNode extension : schemaNode.getUnknownSchemaNodes()) {
             if (CONTEXT_REFERENCE.equals(extension.getNodeType())) {
-                return Optional.fromNullable(extension.getQName());
+                return Optional.ofNullable(extension.getQName());
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static final class RoutedRpcStrategy extends RpcRoutingStrategy {
