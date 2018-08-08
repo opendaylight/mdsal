@@ -13,7 +13,6 @@ import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState.L
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
@@ -21,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.concurrent.GuardedBy;
 import org.kohsuke.MetaInfServices;
@@ -105,7 +105,7 @@ public final class SimpleDOMEntityOwnershipService implements DOMEntityOwnership
 
     @Override
     public Optional<EntityOwnershipState> getOwnershipState(final DOMEntity forEntity) {
-        return isCandidateRegistered(forEntity) ? Optional.of(EntityOwnershipState.IS_OWNER) : Optional.absent();
+        return isCandidateRegistered(forEntity) ? Optional.of(EntityOwnershipState.IS_OWNER) : Optional.empty();
     }
 
     @Override

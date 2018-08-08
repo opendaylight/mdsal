@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
@@ -16,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.DataContainerCodecContext;
@@ -140,7 +140,7 @@ public class ChoiceNodeCodecContext<D extends TreeNode> extends DataContainerCod
         if (child != null) {
             return Optional.of((DataContainerCodecContext<C, ?>) child.get());
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     Iterable<Class<?>> getCaseChildrenClasses() {
