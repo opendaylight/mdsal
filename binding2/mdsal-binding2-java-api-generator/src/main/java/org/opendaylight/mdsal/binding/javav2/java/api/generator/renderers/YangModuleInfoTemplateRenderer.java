@@ -12,7 +12,6 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifie
 import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MODEL_BINDING_PROVIDER_CLASS_NAME;
 import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.getRootPackageName;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
@@ -22,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;

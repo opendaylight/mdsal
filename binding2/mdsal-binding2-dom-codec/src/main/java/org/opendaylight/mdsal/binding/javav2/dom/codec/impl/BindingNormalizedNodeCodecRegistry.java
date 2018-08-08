@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.impl;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -19,6 +18,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingTreeCodec;
@@ -327,7 +327,7 @@ public class BindingNormalizedNodeCodecRegistry implements TreeNodeSerializerReg
             if (input.isPresent()) {
                 return Optional.of((T) ctx.deserialize(input.get()));
             }
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 

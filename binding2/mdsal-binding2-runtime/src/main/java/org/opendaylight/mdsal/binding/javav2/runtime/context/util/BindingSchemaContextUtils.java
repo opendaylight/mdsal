@@ -9,9 +9,9 @@
 package org.opendaylight.mdsal.binding.javav2.runtime.context.util;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
@@ -51,7 +51,7 @@ public final class BindingSchemaContextUtils {
      *            - schema context
      * @param path
      *            - binding path
-     * @return node container by binding path if exists, absent otherwise
+     * @return node container by binding path if exists,.empty otherwise
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Optional<DataNodeContainer> findDataNodeContainer(final SchemaContext ctx,
@@ -93,7 +93,7 @@ public final class BindingSchemaContextUtils {
             if (potential.isPresent()) {
                 currentContainer = potential;
             } else {
-                return Optional.absent();
+                return Optional.empty();
             }
         }
         return currentContainer;
@@ -105,7 +105,7 @@ public final class BindingSchemaContextUtils {
                 return Optional.of(notification);
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static Optional<DataNodeContainer> findDataNodeContainer(final DataNodeContainer ctx,
@@ -126,7 +126,7 @@ public final class BindingSchemaContextUtils {
             }
 
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static DataNodeContainer findInCases(final ChoiceSchemaNode choiceNode, final QName targetQName) {
@@ -170,7 +170,7 @@ public final class BindingSchemaContextUtils {
                 }
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static Optional<DataNodeContainer> findInputOutput(final OperationDefinition operation,
@@ -187,7 +187,7 @@ public final class BindingSchemaContextUtils {
         } else if (targetType.equals(actionOutputName)) {
             return Optional.of(operation.getOutput());
         }
-       return Optional.absent();
+       return Optional.empty();
     }
 
     /**
@@ -197,7 +197,7 @@ public final class BindingSchemaContextUtils {
      *            - choice parent
      * @param choiceClass
      *            - choice binding class
-     * @return choice schema node if exists, absent() otherwise
+     * @return choice schema node if exists,.empty() otherwise
      */
     public static Optional<ChoiceSchemaNode> findInstantiatedChoice(final DataNodeContainer parent, final Class<?> choiceClass) {
         return findInstantiatedChoice(parent, BindingReflections.findQName(choiceClass));
@@ -210,7 +210,7 @@ public final class BindingSchemaContextUtils {
      *            - parent node
      * @param choiceName
      *            - qname of choice
-     * @return choice schema node if exists, absent() otherwise
+     * @return choice schema node if exists,.empty() otherwise
      */
     public static Optional<ChoiceSchemaNode> findInstantiatedChoice(final DataNodeContainer ctxNode, final QName choiceName) {
         final DataSchemaNode potential = ctxNode.getDataChildByName(choiceName);
@@ -218,7 +218,7 @@ public final class BindingSchemaContextUtils {
             return Optional.of((ChoiceSchemaNode) potential);
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**
@@ -228,7 +228,7 @@ public final class BindingSchemaContextUtils {
      *            - choice
      * @param originalDefinition
      *            - choice case
-     * @return choice case node if exists, absent() otherwise
+     * @return choice case node if exists,.empty() otherwise
      */
     public static Optional<CaseSchemaNode> findInstantiatedCase(final ChoiceSchemaNode instantiatedChoice, final CaseSchemaNode originalDefinition) {
         final QName qname = originalDefinition.getQName();
@@ -255,6 +255,6 @@ public final class BindingSchemaContextUtils {
                 return Optional.of(found);
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 }
