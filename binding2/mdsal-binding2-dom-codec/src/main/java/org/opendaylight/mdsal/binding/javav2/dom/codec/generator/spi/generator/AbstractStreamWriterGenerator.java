@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Supplier;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -217,8 +216,8 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
          * lock held, hence any code generation will end up being blocked on the
          * javassist lock.
          */
-        final String body = ClassLoaderUtils.withClassLoader(type.getClassLoader(),
-                (Supplier<String>) () -> source.getSerializerBody().toString());
+        final String body = ClassLoaderUtils.getWithClassLoader(type.getClassLoader(),
+                source.getSerializerBody()::toString);
 
         try {
             product = javassist.instantiatePrototype(TreeNodeSerializerPrototype.class.getName(), serializerName,
