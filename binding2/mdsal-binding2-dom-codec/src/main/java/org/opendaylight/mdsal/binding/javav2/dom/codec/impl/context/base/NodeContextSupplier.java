@@ -5,11 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 
 /**
