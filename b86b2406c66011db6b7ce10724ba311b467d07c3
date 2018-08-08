@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62ec20b7_56003d8c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-08T12:01:18Z",
+      "side": 1,
+      "message": "I assume moving 2 yang files to yang-disabled is related to this.  Can you elaborate a little more on this part and how it\u0027s related to leafref lookup? Does \u0027yang-disabled\u0027 have special significance to the parser or did you just pick that to get them out of \u0027yang\u0027 so they\u0027re not compiled? If the latter, why not just remove them?",
+      "revId": "b86b2406c66011db6b7ce10724ba311b467d07c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
