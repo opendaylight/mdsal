@@ -5,12 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ForwardingObject;
+import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -74,7 +73,7 @@ final class DataTreeModificationCursorAdaptor extends ForwardingObject implement
     }
 
     public Optional<NormalizedNode<?, ?>> readNode(final PathArgument child) {
-        return Optional.fromJavaUtil(delegate.readNode(child));
+        return delegate.readNode(child);
     }
 
     @Override

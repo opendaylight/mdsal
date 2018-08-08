@@ -27,7 +27,7 @@ public interface DOMStoreReadTransaction extends DOMStoreTransaction {
      *         <li>If the data at the supplied path exists, the Future returns an Optional object
      *         containing the data.</li>
      *         <li>If the data at the supplied path does not exist, the Future returns
-     *         Optional#absent().</li>
+     *         Optional.empty().</li>
      *         <li>If the read of the data fails, the Future will fail with a
      *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
      *         </ul>

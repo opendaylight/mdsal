@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.eos.dom.api;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;

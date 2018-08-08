@@ -60,6 +60,6 @@ abstract class AbstractForwardedTransaction<T extends AsyncTransaction<YangInsta
         Preconditions.checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 
         return readTx.read(store, codec.toYangInstanceIdentifierBlocking(path))
-                .transform(codec.getCodecRegistry().deserializeFunction(path), MoreExecutors.directExecutor());
+                .transform(codec.getCodecRegistry().deserializeFunction(path)::apply, MoreExecutors.directExecutor());
     }
 }

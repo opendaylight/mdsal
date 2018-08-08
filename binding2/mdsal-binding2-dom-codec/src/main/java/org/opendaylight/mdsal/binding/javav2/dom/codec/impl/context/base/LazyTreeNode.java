@@ -191,7 +191,7 @@ class LazyTreeNode<D extends TreeNode> implements InvocationHandler, Augmentatio
         Preconditions.checkNotNull(cls,"Supplied augmentation must not be null.");
 
         @SuppressWarnings({"unchecked","rawtypes"})
-        final Optional<DataContainerCodecContext<?,?>> augCtx = context.possibleStreamChild((Class) cls).toJavaUtil();
+        final Optional<DataContainerCodecContext<?,?>> augCtx = context.possibleStreamChild((Class) cls);
         if (augCtx.isPresent()) {
             final Optional<NormalizedNode<?, ?>> augData = data.getChild(augCtx.get().getDomPathArgument());
             if (augData.isPresent()) {

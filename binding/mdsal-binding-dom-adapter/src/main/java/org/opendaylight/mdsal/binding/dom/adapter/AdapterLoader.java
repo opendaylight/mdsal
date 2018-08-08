@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Optional;
 import com.google.common.cache.CacheLoader;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -23,7 +23,7 @@ public abstract class AdapterLoader<T, D> extends CacheLoader<Class<? extends T>
             if (deleg != null) {
                 builder.addDelegate(reqDeleg, deleg);
             } else {
-                return Optional.absent();
+                return Optional.empty();
             }
         }
         return Optional.of(builder.build());

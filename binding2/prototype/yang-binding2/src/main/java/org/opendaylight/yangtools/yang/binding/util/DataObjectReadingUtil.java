@@ -9,7 +9,7 @@ package org.opendaylight.yangtools.yang.binding.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
-import com.google.common.base.Optional;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.reflect.InvocationTargetException;
@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.InterfaceTyped;
@@ -88,7 +89,7 @@ public class DataObjectReadingUtil {
 
         @SuppressWarnings("unchecked")
         T potential = (T) resolveReadStrategy(parentClass, child).read(source, child);
-        return Optional.fromNullable(potential);
+        return Optional.ofNullable(potential);
     }
 
     @SuppressWarnings("rawtypes")
