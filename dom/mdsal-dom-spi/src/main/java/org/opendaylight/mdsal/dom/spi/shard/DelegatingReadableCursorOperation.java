@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.spi.shard;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ForwardingObject;
+import java.util.Optional;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshotCursor;
@@ -23,7 +23,7 @@ abstract class DelegatingReadableCursorOperation extends ForwardingObject implem
 
     @Override
     public Optional<NormalizedNode<?, ?>> readNode(final PathArgument arg) {
-        return Optional.fromJavaUtil(delegate().readNode(arg));
+        return delegate().readNode(arg);
     }
 
     @Override

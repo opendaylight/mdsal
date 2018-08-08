@@ -8,10 +8,10 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.mountpoint;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.api.MountPoint;
 import org.opendaylight.mdsal.binding.javav2.api.MountPointListener;
@@ -57,9 +57,9 @@ public class BindingDOMMountPointServiceAdapter implements MountPointService {
         final YangInstanceIdentifier domPath = codec.toYangInstanceIdentifierBlocking(mountPoint);
         final Optional<DOMMountPoint> domMount = mountService.getMountPoint(domPath);
         if (domMount.isPresent()) {
-            return Optional.fromNullable(bindingMountpoints.getUnchecked(domMount.get()));
+            return Optional.ofNullable(bindingMountpoints.getUnchecked(domMount.get()));
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override

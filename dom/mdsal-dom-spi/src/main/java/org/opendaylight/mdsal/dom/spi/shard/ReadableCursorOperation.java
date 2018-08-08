@@ -8,7 +8,7 @@
 
 package org.opendaylight.mdsal.dom.spi.shard;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 

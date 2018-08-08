@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
@@ -33,7 +33,7 @@ public class BindingDOMMountPointServiceAdapter
     public Optional<MountPoint> getMountPoint(final InstanceIdentifier<?> mountPoint) {
         YangInstanceIdentifier domPath = getCodec().toYangInstanceIdentifierBlocking(mountPoint);
         Optional<DOMMountPoint> domMount = getDelegate().getMountPoint(domPath);
-        return domMount.transform(this::getAdapter);
+        return domMount.map(this::getAdapter);
     }
 
     @Override

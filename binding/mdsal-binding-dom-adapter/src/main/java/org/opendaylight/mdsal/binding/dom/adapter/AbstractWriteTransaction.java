@@ -7,10 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Map.Entry;
+import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -107,7 +107,7 @@ public abstract class AbstractWriteTransaction<T extends DOMDataTreeWriteTransac
      */
     @Deprecated
     protected static Optional<YangInstanceIdentifier> getParent(final YangInstanceIdentifier child) {
-        return Optional.fromNullable(child.getParent());
+        return Optional.ofNullable(child.getParent());
     }
 
     /**

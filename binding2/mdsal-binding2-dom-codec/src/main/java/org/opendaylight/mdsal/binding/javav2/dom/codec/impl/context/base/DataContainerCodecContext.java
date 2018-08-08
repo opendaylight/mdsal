@@ -5,15 +5,14 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingNormalizedNodeCachingCodec;
@@ -137,7 +136,7 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
      * case, one must issue getChild(ChoiceClass).getChild(CaseClass).
      *
      * @param childClass input child class
-     * @return Context of child or Optional absent is supplied class is not applicable in context.
+     * @return Context of child or Optional.empty is supplied class is not applicable in context.
      */
     @Override
     public abstract <C extends TreeNode> Optional<DataContainerCodecContext<C, ?>> possibleStreamChild(@Nonnull
