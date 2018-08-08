@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.yang.types;
 
 import static org.junit.Assert.assertEquals;
@@ -17,13 +16,13 @@ import com.google.common.collect.Range;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -50,8 +49,6 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 /**
  * Test suite for testing public methods in TypeProviderImpl class
@@ -60,12 +57,11 @@ import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
  *
  * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
-@RunWith(JUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public class TypeProviderTest {
 
-    private SchemaContext schemaContext;
-    private Set<Module> schemaModules;
-    private Module testTypeProviderModule;
+    private static SchemaContext SCHEMA_CONTEXT;
+    private static Module TEST_TYPE_PROVIDER;
 
     @Mock
     private SchemaPath schemaPath;
@@ -73,26 +69,20 @@ public class TypeProviderTest {
     @Mock
     private SchemaNode schemaNode;
 
-    @Before
-    public void setUp() throws SourceException, ReactorException {
-        MockitoAnnotations.initMocks(this);
-        this.schemaContext = TypeProviderModel.createTestContext();
-        assertNotNull(this.schemaContext);
-        this.schemaModules = this.schemaContext.getModules();
-        assertNotNull(this.schemaModules);
-        this.testTypeProviderModule = resolveModule(TypeProviderModel.TEST_TYPE_PROVIDER_MODULE_NAME);
-        assertNotNull(this.testTypeProviderModule);
+    @BeforeClass
+    public static void beforeClass() {
+        SCHEMA_CONTEXT = TypeProviderModel.createTestContext();
+        TEST_TYPE_PROVIDER = resolveModule(TypeProviderModel.TEST_TYPE_PROVIDER_MODULE_NAME);
     }
 
-    private Module resolveModule(final String moduleName) {
-        assertNotNull(moduleName);
-        for (final Module m : this.schemaModules) {
-            if (moduleName.equals(m.getName())) {
-                return m;
-            }
-        }
-        assertTrue("Unable to resolve module " + moduleName + ". No module present within Schema Context!" , false);
-        return null;
+    @AfterClass
+    public static void afterClass() {
+        TEST_TYPE_PROVIDER = null;
+        SCHEMA_CONTEXT = null;
+    }
+
+    private static Module resolveModule(final String moduleName) {
+        return SCHEMA_CONTEXT.findModules(moduleName).iterator().next();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -102,7 +92,7 @@ public class TypeProviderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void putReferencedTypeWithNullSchemaPathParamTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         provider.putReferencedType(null, null);
         provider.putReferencedType(this.schemaPath, null);
@@ -110,28 +100,28 @@ public class TypeProviderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void putReferencedTypeWithNullRefTypeParamTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         provider.putReferencedType(this.schemaPath, null);
     }
 
     @Test
     public void getAdditionalTypesTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         assertNotNull(provider.getAdditionalTypes());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void javaTypeForSchemaDefinitionTypeNullTypedefTest() {
-        final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final TypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         provider.javaTypeForSchemaDefinitionType(null, null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void javaTypeForSchemaDefinitionTypeTypedefNullQNameTest() {
-        final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final TypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         final TestIntegerTypeDefinition testTypedef = new TestIntegerTypeDefinition();
         provider.javaTypeForSchemaDefinitionType(testTypedef, null, null);
@@ -141,7 +131,7 @@ public class TypeProviderTest {
             final String leafNodeName) {
         final QName containerNode = QName.create(module.getQNameModule(), containerName);
         final DataSchemaNode rootNode = module.getDataChildByName(containerNode);
-        assertNotNull("Container foo is not present in root of module "+ module.getName(), rootNode);
+        assertNotNull("Container foo is not present in root of module " + module.getName(), rootNode);
         assertTrue(rootNode instanceof DataNodeContainer);
 
         final QName leafNode = QName.create(module.getQNameModule(), leafNodeName);
@@ -169,8 +159,8 @@ public class TypeProviderTest {
 
     @Test
     public void javaTypeForSchemaDefinitionExtTypeTest() {
-        final TypeProvider provider = new CodegenTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
+        final TypeProvider provider = new CodegenTypeProvider(SCHEMA_CONTEXT);
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo",
             "yang-int8-type");
 
         final TypeDefinition<?> leafType = leaf.getType();
@@ -188,8 +178,8 @@ public class TypeProviderTest {
 
     @Test
     public void javaTypeForSchemaDefinitionRestrictedExtTypeTest() {
-        final TypeProvider provider = new CodegenTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
+        final TypeProvider provider = new CodegenTypeProvider(SCHEMA_CONTEXT);
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo",
             "restricted-int8-type");
 
         final TypeDefinition<?> leafType = leaf.getType();
@@ -214,7 +204,7 @@ public class TypeProviderTest {
 
     @Test
     public void javaTypeForSchemaDefinitionEmptyStringPatternTypeTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         final Module testTypeProvider = resolveModule("test-type-provider");
         final TypeDefinition<?> emptyPatternString = resolveTypeDefinitionFromModule(testTypeProvider,
@@ -249,8 +239,8 @@ public class TypeProviderTest {
     @Ignore
     @Test
     public void bug1862RestrictedTypedefTransformationTest() {
-        final TypeProvider provider = new CodegenTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
+        final TypeProvider provider = new CodegenTypeProvider(SCHEMA_CONTEXT);
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo",
             "bug-1862-restricted-typedef");
 
         final TypeDefinition<?> leafType = leaf.getType();
@@ -263,9 +253,8 @@ public class TypeProviderTest {
 
     @Test
     public void javaTypeForSchemaDefinitionEnumExtTypeTest() {
-        final TypeProvider provider = new CodegenTypeProvider(this.schemaContext);
-        LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
-            "resolve-enum-leaf");
+        final TypeProvider provider = new CodegenTypeProvider(SCHEMA_CONTEXT);
+        LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo", "resolve-enum-leaf");
         TypeDefinition<?> leafType = leaf.getType();
         Type result = provider.javaTypeForSchemaDefinitionType(leafType, leaf);
         assertNotNull(result);
@@ -279,7 +268,7 @@ public class TypeProviderTest {
         assertEquals("A", enumValues.get(0).getMappedName());
         assertEquals("B", enumValues.get(1).getMappedName());
 
-        leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo", "resolve-direct-use-of-enum");
+        leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo", "resolve-direct-use-of-enum");
         leafType = leaf.getType();
         result = provider.javaTypeForSchemaDefinitionType(leafType, leaf);
         assertNotNull(result);
@@ -291,8 +280,8 @@ public class TypeProviderTest {
 
     @Test
     public void javaTypeForSchemaDefinitionLeafrefExtTypeTest() {
-        final TypeProvider provider = new CodegenTypeProvider(this.schemaContext);
-        LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "bar", "leafref-value");
+        final TypeProvider provider = new CodegenTypeProvider(SCHEMA_CONTEXT);
+        LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "bar", "leafref-value");
         TypeDefinition<?> leafType = leaf.getType();
         final Type leafrefResolvedType1 = provider.javaTypeForSchemaDefinitionType(leafType, leaf);
         assertNotNull(leafrefResolvedType1);
@@ -301,7 +290,7 @@ public class TypeProviderTest {
         final Module module = resolveModule("test-type-provider-b");
         final QName leafNode = QName.create(module.getQNameModule(), "id");
         final DataSchemaNode rootNode = module.getDataChildByName(leafNode);
-        assertNotNull("leaf id is not present in root of module "+ module.getName(), rootNode);
+        assertNotNull("leaf id is not present in root of module " + module.getName(), rootNode);
         assertTrue(rootNode instanceof LeafSchemaNode);
         leaf = (LeafSchemaNode) rootNode;
         leafType = leaf.getType();
@@ -313,7 +302,7 @@ public class TypeProviderTest {
 
     @Test
     public void javaTypeForSchemaDefinitionLeafrefToEnumTypeTest() {
-        final AbstractTypeProvider provider = new CodegenTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new CodegenTypeProvider(SCHEMA_CONTEXT);
 
         setReferencedTypeForTypeProvider(provider);
 
@@ -342,8 +331,8 @@ public class TypeProviderTest {
         assertTrue(leafrefResolvedType2 instanceof ParameterizedType);
     }
 
-    private void setReferencedTypeForTypeProvider(final AbstractTypeProvider provider) {
-        final LeafSchemaNode enumLeafNode = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
+    private static void setReferencedTypeForTypeProvider(final AbstractTypeProvider provider) {
+        final LeafSchemaNode enumLeafNode = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo",
             "resolve-direct-use-of-enum");
         final TypeDefinition<?> enumLeafTypedef = enumLeafNode.getType();
         Type enumType = provider.javaTypeForSchemaDefinitionType(enumLeafTypedef, enumLeafNode);
@@ -351,7 +340,7 @@ public class TypeProviderTest {
         Type refType = new ReferencedTypeImpl(enumType.getIdentifier());
         provider.putReferencedType(enumLeafNode.getPath(), refType);
 
-        final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(this.testTypeProviderModule,
+        final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(TEST_TYPE_PROVIDER,
             "foo", "list-of-enums");
         final TypeDefinition<?> enumLeafListTypedef = enumListNode.getType();
         enumType = provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode);
@@ -362,12 +351,12 @@ public class TypeProviderTest {
 
     @Test
     public void javaTypeForSchemaDefinitionConditionalLeafrefTest() {
-        final TypeProvider provider = new CodegenTypeProvider(this.schemaContext);
+        final TypeProvider provider = new CodegenTypeProvider(SCHEMA_CONTEXT);
         final Module module = resolveModule("test-type-provider-b");
 
         final QName leafrefNode = QName.create(module.getQNameModule(), "conditional-leafref");
         final DataSchemaNode condLeaf = module.getDataChildByName(leafrefNode);
-        assertNotNull("leaf conditional-leafref is not present in root of module "+ module.getName(), condLeaf);
+        assertNotNull("leaf conditional-leafref is not present in root of module " + module.getName(), condLeaf);
         assertTrue(condLeaf instanceof LeafSchemaNode);
         final LeafSchemaNode leaf = (LeafSchemaNode) condLeaf;
         final TypeDefinition<?> leafType = leaf.getType();
@@ -381,12 +370,12 @@ public class TypeProviderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void javaTypeForSchemaDefinitionInvalidLeafrefPathTest() {
-        final TypeProvider provider = new CodegenTypeProvider(this.schemaContext);
+        final TypeProvider provider = new CodegenTypeProvider(SCHEMA_CONTEXT);
         final Module module = resolveModule("test-type-provider-b");
 
         final QName leafrefNode = QName.create(module.getQNameModule(), "unreslovable-leafref");
         final DataSchemaNode condLeaf = module.getDataChildByName(leafrefNode);
-        assertNotNull("leaf unreslovable-leafref is not present in root of module "+ module.getName(), condLeaf);
+        assertNotNull("leaf unreslovable-leafref is not present in root of module " + module.getName(), condLeaf);
         assertTrue(condLeaf instanceof LeafSchemaNode);
         final LeafSchemaNode leaf = (LeafSchemaNode) condLeaf;
         final TypeDefinition<?> leafType = leaf.getType();
@@ -396,14 +385,14 @@ public class TypeProviderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void provideTypeForLeafrefWithNullLeafrefTypeTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         provider.provideTypeForLeafref(null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void provideTypeForLeafrefWithNullLeafrefTypePathStatementTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         final LeafrefTypeWithNullXpath leafrePath = new LeafrefTypeWithNullXpath();
         provider.provideTypeForLeafref(leafrePath, this.schemaNode);
@@ -411,8 +400,8 @@ public class TypeProviderTest {
 
     @Test(expected = IllegalStateException.class)
     public void provideTypeForLeafrefWithNullParentModuleTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "bar",
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "bar",
             "leafref-value");
         final TypeDefinition<?> leafType = leaf.getType();
         assertTrue(leafType instanceof LeafrefTypeDefinition);
@@ -422,8 +411,8 @@ public class TypeProviderTest {
 
     @Test
     public void javaTypeForSchemaDefinitionIdentityrefExtTypeTest() {
-        final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo", "crypto");
+        final TypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo", "crypto");
         final TypeDefinition<?> leafType = leaf.getType();
 
         final Type result = provider.javaTypeForSchemaDefinitionType(leafType, leaf);
@@ -433,8 +422,8 @@ public class TypeProviderTest {
 
     @Test
     public void javaTypeForSchemaDefinitionForExtUnionWithSimpleTypesTest() {
-        final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "use-of-unions",
+        final TypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "use-of-unions",
             "simple-int-types-union");
         final TypeDefinition<?> leafType = leaf.getType();
 
@@ -447,8 +436,8 @@ public class TypeProviderTest {
 
     @Test
     public void javaTypeForSchemaDefinitionForExtComplexUnionWithInnerUnionTypesTest() {
-        final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "use-of-unions",
+        final TypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "use-of-unions",
             "complex-union");
         final TypeDefinition<?> leafType = leaf.getType();
 
@@ -461,8 +450,8 @@ public class TypeProviderTest {
 
     @Test
     public void javaTypeForSchemaDefinitionForExtUnionWithInnerUnionAndSimpleTypeTest() {
-        final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "use-of-unions",
+        final TypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "use-of-unions",
             "complex-string-int-union");
         final TypeDefinition<?> leafType = leaf.getType();
 
@@ -475,10 +464,9 @@ public class TypeProviderTest {
 
     @Test
     public void provideGeneratedTOBuilderForUnionTypeDefWithInnerUnionTypesTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
-        final Module testTypeProvider = resolveModule("test-type-provider");
-        final TypeDefinition<?> unionTypeDef = resolveTypeDefinitionFromModule(testTypeProvider, "complex-union");
+        final TypeDefinition<?> unionTypeDef = resolveTypeDefinitionFromModule(TEST_TYPE_PROVIDER, "complex-union");
 
         assertNotNull(unionTypeDef);
         assertTrue(unionTypeDef.getBaseType() instanceof UnionTypeDefinition);
@@ -494,10 +482,9 @@ public class TypeProviderTest {
 
     @Test
     public void provideGeneratedTOBuilderForUnionTypeDefWithInnerUnionAndSimpleTypeTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
-        final Module testTypeProvider = resolveModule("test-type-provider");
-        final TypeDefinition<?> unionTypeDef = resolveTypeDefinitionFromModule(testTypeProvider,
+        final TypeDefinition<?> unionTypeDef = resolveTypeDefinitionFromModule(TEST_TYPE_PROVIDER,
             "complex-string-int-union");
 
         assertNotNull(unionTypeDef);
@@ -514,7 +501,7 @@ public class TypeProviderTest {
 
     @Test
     public void generatedTypeForExtendedDefinitionTypeTest() {
-        final AbstractTypeProvider provider = new CodegenTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new CodegenTypeProvider(SCHEMA_CONTEXT);
 
         final Module baseYangTypes = resolveModule("base-yang-types");
         final Set<TypeDefinition<?>> typeDefs = baseYangTypes.getTypeDefinitions();
@@ -605,20 +592,20 @@ public class TypeProviderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void generatedTypeForExtendedDefinitionTypeWithTypedefNullTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
         provider.generatedTypeForExtendedDefinitionType(null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void generatedTypeForExtendedDefinitionTypeWithTypedefQNameNullTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
         final TestIntegerTypeDefinition testInt = new TestIntegerTypeDefinition();
         provider.generatedTypeForExtendedDefinitionType(testInt, testInt);
     }
 
     @Test
     public void generatedTypeForExtendedDefinitionTypeWithInnerExtendedTypeTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         final Module baseYangTypes = resolveModule("test-type-provider");
         final TypeDefinition<?> extYangInt8Typedef = resolveTypeDefinitionFromModule(baseYangTypes,
@@ -631,7 +618,7 @@ public class TypeProviderTest {
 
     @Test
     public void generatedTypeForExtendedDefinitionTypeWithLeafrefBaseTypeTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         final Module baseYangTypes = resolveModule("test-type-provider");
         final TypeDefinition<?> barItemLeafrefId = resolveTypeDefinitionFromModule(baseYangTypes, "bar-item-leafref-id");
@@ -642,7 +629,7 @@ public class TypeProviderTest {
 
     @Test
     public void generatedTypeForExtendedDefinitionTypeWithIdentityrefBaseTypeTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         final Module baseYangTypes = resolveModule("test-type-provider");
 
@@ -656,15 +643,15 @@ public class TypeProviderTest {
 
     @Test(expected = NullPointerException.class)
     public void provideGeneratedTOBuilderForBitsTypeDefinitionWithNullTypedefTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
         provider.provideGeneratedTOBuilderForBitsTypeDefinition(JavaTypeName.create("foo", "foo"), null, "foo");
     }
 
     @Test
     public void getConstructorPropertyNameTest() {
-        final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final TypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo",
             "yang-int8-type");
         final TypeDefinition<?> leafType = leaf.getType();
 
@@ -677,9 +664,9 @@ public class TypeProviderTest {
 
     @Test
     public void getParamNameFromTypeTest() {
-        final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final TypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo",
             "yang-int8-type");
         final TypeDefinition<?> leafType = leaf.getType();
 
@@ -710,40 +697,39 @@ public class TypeProviderTest {
 
     @Test(expected = NullPointerException.class)
     public void getTypeDefaultConstructionLeafTypeNullTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
         final TestLeafSchemaNode leafSchemaNode = new TestLeafSchemaNode();
         provider.getTypeDefaultConstruction(leafSchemaNode, null);
     }
 
     @Test(expected = NullPointerException.class)
     public void getTypeDefaultConstructionDefaultValueNullTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
         final LeafSchemaNode leaf = provideLeafForGetDefaultConstructionTestCase("yang-boolean");
         provider.getTypeDefaultConstruction(leaf, null);
     }
 
-    private LeafSchemaNode provideLeafForGetDefaultConstructionTestCase(final String leafName) {
-        return provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "construction-type-test",
-            leafName);
+    private static LeafSchemaNode provideLeafForGetDefaultConstructionTestCase(final String leafName) {
+        return provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "construction-type-test", leafName);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void getTypeDefaultConstructionDefaultValueForInstanceIdentifierTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
         final LeafSchemaNode leaf = provideLeafForGetDefaultConstructionTestCase("foo-container-id");
         provider.getTypeDefaultConstruction(leaf, "NAN");
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void getTypeDefaultConstructionDefaultValueForIdentityrefTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
         final LeafSchemaNode leaf = provideLeafForGetDefaultConstructionTestCase("aes-identityref-type");
         provider.getTypeDefaultConstruction(leaf, "NAN");
     }
 
     @Test
     public void getTypeDefaultConstructionDefaultValueTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
+        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
 
         LeafSchemaNode leaf = provideLeafForGetDefaultConstructionTestCase("yang-boolean");
         String result = provider.getTypeDefaultConstruction(leaf, "true");
@@ -884,7 +870,7 @@ public class TypeProviderTest {
         final Module module = resolveModule("test-type-provider");
         final QName leafUnionNode = QName.create(module.getQNameModule(), "root-union-leaf");
         DataSchemaNode rootNode = module.getDataChildByName(leafUnionNode);
-        assertNotNull("leaf root-union-leaf is not present in root of module "+ module.getName(), rootNode);
+        assertNotNull("leaf root-union-leaf is not present in root of module " + module.getName(), rootNode);
         assertTrue(rootNode instanceof LeafSchemaNode);
         leaf = (LeafSchemaNode) rootNode;
         result = provider.getTypeDefaultConstruction(leaf);
@@ -902,7 +888,7 @@ public class TypeProviderTest {
 
         final QName leafBitsNode = QName.create(module.getQNameModule(), "root-bits-leaf");
         rootNode = module.getDataChildByName(leafBitsNode);
-        assertNotNull("leaf bits-leaf is not present in root of module "+ module.getName(), rootNode);
+        assertNotNull("leaf bits-leaf is not present in root of module " + module.getName(), rootNode);
         assertTrue(rootNode instanceof LeafSchemaNode);
         leaf = (LeafSchemaNode) rootNode;
         result = provider.getTypeDefaultConstruction(leaf);
