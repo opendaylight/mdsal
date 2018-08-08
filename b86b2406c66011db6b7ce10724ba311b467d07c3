@@ -16,6 +16,24 @@
       "revId": "b86b2406c66011db6b7ce10724ba311b467d07c3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "93e47238_7f43a185",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-08-08T16:02:24Z",
+      "side": 1,
+      "message": "It\u0027s actually a move from yang-disabled to yang. Just order of patches due to code freeze.\n\nietf-hardware.yang triggers the issue which is being fixed, hence it could not have landed, without which our features would not be completed. ietf-hardware-state depends on ietf-hardware.\n\nHence I landed the features and empty artifacts beforehand.\n\nNow that the issue is fixed, the two models are moved into their normal place, causing them to be compiled and the pre-existing artifacts getting the content they should have.",
+      "parentUuid": "62ec20b7_56003d8c",
+      "revId": "b86b2406c66011db6b7ce10724ba311b467d07c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
