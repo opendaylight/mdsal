@@ -34,10 +34,10 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.paramet
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
@@ -91,10 +91,10 @@ final class RpcActionGenHelper {
     static Optional<QName> getRoutingContext(final DataSchemaNode schemaNode) {
         for (UnknownSchemaNode extension : schemaNode.getUnknownSchemaNodes()) {
             if (CONTEXT_REFERENCE.equals(extension.getNodeType())) {
-                return Optional.fromNullable(extension.getQName());
+                return Optional.ofNullable(extension.getQName());
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static void resolveActions(final DataNodeContainer parent, final Module module,

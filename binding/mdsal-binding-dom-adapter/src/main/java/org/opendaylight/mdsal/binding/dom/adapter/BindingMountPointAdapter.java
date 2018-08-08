@@ -7,9 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;

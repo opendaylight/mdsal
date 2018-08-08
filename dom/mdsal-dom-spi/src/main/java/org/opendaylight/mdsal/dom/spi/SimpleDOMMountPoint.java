@@ -5,12 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.spi;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
+import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -46,6 +45,6 @@ public final class SimpleDOMMountPoint implements DOMMountPoint {
 
     @Override
     public <T extends DOMService> Optional<T> getService(final Class<T> cls) {
-        return Optional.fromNullable(services.getInstance(cls));
+        return Optional.ofNullable(services.getInstance(cls));
     }
 }

@@ -14,7 +14,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
@@ -38,7 +38,7 @@ public class BindingDOMMountPointServiceAdapterTest {
         final BindingDOMMountPointServiceAdapter adapter =
                 new BindingDOMMountPointServiceAdapter(mountPointService, codec);
 
-        doReturn(Optional.absent()).when(mountPointService).getMountPoint(any());
+        doReturn(Optional.empty()).when(mountPointService).getMountPoint(any());
         assertFalse(adapter.getMountPoint(InstanceIdentifier.create(DataObject.class)).isPresent());
 
         doReturn(Optional.of(mock(DOMMountPoint.class))).when(mountPointService).getMountPoint(any());

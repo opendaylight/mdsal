@@ -8,9 +8,9 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.mountpoint;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.api.BindingService;
@@ -54,6 +54,6 @@ public class BindingMountPointAdapter implements MountPoint {
         if (potential.isPresent()) {
             return Optional.of(service.cast(potential.get()));
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 }

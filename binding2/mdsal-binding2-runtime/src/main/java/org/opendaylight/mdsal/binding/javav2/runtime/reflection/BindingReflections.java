@@ -11,7 +11,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -27,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -143,7 +143,7 @@ public final class BindingReflections {
      *
      * @param targetMethod
      *            method to scan
-     * @return Optional.absent() if result type could not be get, or return type
+     * @return Optional.empty() if result type could not be get, or return type
      *         is Void.
      */
     @SuppressWarnings("rawtypes")
@@ -155,7 +155,7 @@ public final class BindingReflections {
         if (operationResultArgument instanceof Class && !Void.class.equals(operationResultArgument)) {
             return Optional.of((Class) operationResultArgument);
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**
@@ -163,7 +163,7 @@ public final class BindingReflections {
      *
      * @param targetMethod
      *            - method to scan
-     * @return Optional.absent() if RPC or Action has no input, RPC input type
+     * @return Optional.empty() if RPC or Action has no input, RPC input type
      *         otherwise.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -173,7 +173,7 @@ public final class BindingReflections {
                 return Optional.of(clazz);
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**
@@ -456,7 +456,7 @@ public final class BindingReflections {
     private static Optional<Class<? extends Instantiable<?>>> getYangModeledReturnType(final Method method) {
         if ("getClass".equals(method.getName()) || !method.getName().startsWith("get")
                 || method.getParameterTypes().length > 0) {
-            return Optional.absent();
+            return Optional.empty();
         }
 
         final Class returnType = method.getReturnType();
@@ -471,7 +471,7 @@ public final class BindingReflections {
                                     && Instantiable.class.isAssignableFrom((Class) listResult)) {
                                 return Optional.of((Class) listResult);
                             }
-                            return Optional.absent();
+                            return Optional.empty();
                         });
             } catch (final Exception e) {
                 /*
@@ -483,7 +483,7 @@ public final class BindingReflections {
                 LOG.debug("Unable to find YANG modeled return type for {}", method, e);
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static class ClassToQNameLoader extends CacheLoader<Class<?>, Optional<QName>> {
@@ -523,7 +523,7 @@ public final class BindingReflections {
                  */
                 LOG.debug("Unexpected exception during extracting QName for {}", key, e);
             }
-            return Optional.absent();
+            return Optional.empty();
         }
 
         /**

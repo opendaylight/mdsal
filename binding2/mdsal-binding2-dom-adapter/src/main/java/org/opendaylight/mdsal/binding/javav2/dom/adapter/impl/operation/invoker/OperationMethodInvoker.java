@@ -8,12 +8,12 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.operation.invoker;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.concurrent.Future;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;

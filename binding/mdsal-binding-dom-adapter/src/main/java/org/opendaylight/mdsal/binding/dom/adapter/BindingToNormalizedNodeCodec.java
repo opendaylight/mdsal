@@ -12,7 +12,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -24,6 +23,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -256,15 +256,15 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
      * instance-identifier if it is possible to create representation.
      *
      * <p>
-     * Returns Optional.absent for cases where target is mixin node except
+     * Returns Optional.empty for cases where target is mixin node except
      * augmentation.
      */
     public final Optional<InstanceIdentifier<? extends DataObject>> toBinding(final YangInstanceIdentifier normalized)
                     throws DeserializationException {
         try {
-            return Optional.fromNullable(codecRegistry.fromYangInstanceIdentifier(normalized));
+            return Optional.ofNullable(codecRegistry.fromYangInstanceIdentifier(normalized));
         } catch (final IllegalArgumentException e) {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 
@@ -289,9 +289,9 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
             @SuppressWarnings("unchecked")
             final Entry<InstanceIdentifier<? extends DataObject>, DataObject> binding = Entry.class.cast(
                     codecRegistry.fromNormalizedNode(normalized.getKey(), normalized.getValue()));
-            return Optional.fromNullable(binding);
+            return Optional.ofNullable(binding);
         } catch (final IllegalArgumentException e) {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 

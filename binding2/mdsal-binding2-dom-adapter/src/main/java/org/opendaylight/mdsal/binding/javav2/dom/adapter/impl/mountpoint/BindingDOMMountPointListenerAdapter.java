@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.mountpoint;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.api.MountPointListener;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedNodeCodec;

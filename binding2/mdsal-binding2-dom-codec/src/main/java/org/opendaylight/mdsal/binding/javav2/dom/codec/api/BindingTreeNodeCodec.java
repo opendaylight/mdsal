@@ -8,9 +8,9 @@
 package org.opendaylight.mdsal.binding.javav2.dom.codec.api;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableCollection;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeArgument;
@@ -66,7 +66,7 @@ public interface BindingTreeNodeCodec<T extends TreeNode> extends BindingNormali
      * @param childClass
      *            - child class by Binding Stream navigation
      * @param <E> data type
-     * @return context of child or Optional absent if supplied is not applicable
+     * @return context of child or Optional.empty if supplied is not applicable
      *         in context
      */
     <E extends TreeNode> Optional<? extends BindingTreeNodeCodec<E>> possibleStreamChild(@Nonnull Class<E> childClass);

@@ -9,7 +9,7 @@ package org.opendaylight.yangtools.yang.binding.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
-import com.google.common.base.Optional;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -150,7 +151,7 @@ public class BindingReflections {
      *
      * @param targetMethod
      *            method to scan
-     * @return Optional.absent() if result type could not be get, or return type
+     * @return Optional.empty() if result type could not be get, or return type
      *         is Void.
      */
     @SuppressWarnings("rawtypes")
@@ -162,7 +163,7 @@ public class BindingReflections {
         if (rpcResultArgument instanceof Class && !Void.class.equals(rpcResultArgument)) {
             return Optional.<Class<?>> of((Class) rpcResultArgument);
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**
@@ -171,14 +172,14 @@ public class BindingReflections {
      *
      * @param targetMethod
      *            method to scan
-     * @return Optional.absent() if rpc has no input, Rpc input type otherwise.
+     * @return Optional.empty() if rpc has no input, Rpc input type otherwise.
      */
     @SuppressWarnings("unchecked")
     public static Optional<Class<? extends InterfaceTyped>> resolveRpcInputClass(final Method targetMethod) {
         @SuppressWarnings("rawtypes")
         Class[] types = targetMethod.getParameterTypes();
         if (types.length == 0) {
-            return Optional.absent();
+            return Optional.empty();
         }
         if (types.length == 1) {
             return Optional.<Class<? extends InterfaceTyped>> of(types[0]);
@@ -450,7 +451,7 @@ public class BindingReflections {
     private static Optional<Class<? extends InterfaceTyped>> getYangModeledReturnType(final Method method) {
         if (method.getName().equals("getClass") || !method.getName().startsWith("get")
                 || method.getParameterTypes().length > 0) {
-            return Optional.absent();
+            return Optional.empty();
         }
 
         @SuppressWarnings("rawtypes")
@@ -470,7 +471,7 @@ public class BindingReflections {
                                         && InterfaceTyped.class.isAssignableFrom((Class) listResult)) {
                                     return Optional.<Class<? extends InterfaceTyped>> of((Class) listResult);
                                 }
-                                return Optional.absent();
+                                return Optional.empty();
                             }
 
                         });
@@ -484,7 +485,7 @@ public class BindingReflections {
                 LOG.debug("Unable to find YANG modeled return type for {}", method, e);
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private static class ClassToQNameLoader extends CacheLoader<Class<?>, Optional<QName>> {
@@ -529,7 +530,7 @@ public class BindingReflections {
              */
             LOG.debug("Unexpected exception during extracting QName for {}", key, e);
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**
