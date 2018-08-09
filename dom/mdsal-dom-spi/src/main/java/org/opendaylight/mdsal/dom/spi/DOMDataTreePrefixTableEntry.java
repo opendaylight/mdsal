@@ -7,8 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,7 +35,7 @@ public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathAr
     }
 
     DOMDataTreePrefixTableEntry(final PathArgument identifier) {
-        this.identifier = Preconditions.checkNotNull(identifier);
+        this.identifier = requireNonNull(identifier);
     }
 
     @Override
@@ -83,7 +85,7 @@ public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathAr
             entry = child;
         }
 
-        Preconditions.checkState(entry.value == null);
+        checkState(entry.value == null);
         entry.value = reg;
     }
 

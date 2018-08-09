@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Optional;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -16,13 +17,13 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 
 public abstract class RpcRoutingStrategy implements Identifiable<QName> {
-
+    // FIXME: deprecate context-reference
     private static final QName CONTEXT_REFERENCE = QName.create("urn:opendaylight:yang:extension:yang-ext",
             "2013-07-09", "context-reference").intern();
     private final QName identifier;
 
     private RpcRoutingStrategy(final QName identifier) {
-        this.identifier = Preconditions.checkNotNull(identifier);
+        this.identifier = requireNonNull(identifier);
     }
 
     /**
@@ -78,8 +79,8 @@ public abstract class RpcRoutingStrategy implements Identifiable<QName> {
 
         private RoutedRpcStrategy(final QName identifier, final QName ctx, final QName leaf) {
             super(identifier);
-            this.context = Preconditions.checkNotNull(ctx);
-            this.leaf = Preconditions.checkNotNull(leaf);
+            this.context = requireNonNull(ctx);
+            this.leaf = requireNonNull(leaf);
         }
 
         @Override

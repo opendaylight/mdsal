@@ -41,16 +41,6 @@ public class DOMDataTreeIdentifierTest {
         assertNotNull("Instantiation", new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void firstArgumentNullTest() throws Exception {
-        new DOMDataTreeIdentifier(null, REF_YII_IID);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void secondArgumentNullTest() throws Exception {
-        new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, null);
-    }
-
     @Test
     public void hashCodeTest() {
         assertEquals("hashCode", REF_TREE.hashCode(), new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
