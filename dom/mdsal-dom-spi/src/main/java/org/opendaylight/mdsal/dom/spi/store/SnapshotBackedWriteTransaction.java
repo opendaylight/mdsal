@@ -8,10 +8,10 @@
 package org.opendaylight.mdsal.dom.spi.store;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
@@ -55,7 +55,7 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
     SnapshotBackedWriteTransaction(final T identifier, final boolean debug,
             final DataTreeSnapshot snapshot, final TransactionReadyPrototype<T> readyImpl) {
         super(identifier, debug);
-        this.readyImpl = Preconditions.checkNotNull(readyImpl, "readyImpl must not be null.");
+        this.readyImpl = requireNonNull(readyImpl, "readyImpl must not be null.");
         mutableTree = snapshot.newModification();
         LOG.debug("Write Tx: {} allocated with snapshot {}", identifier, snapshot);
     }

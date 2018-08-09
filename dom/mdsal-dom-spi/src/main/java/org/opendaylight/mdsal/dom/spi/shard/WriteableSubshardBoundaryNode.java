@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.spi.shard;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -23,7 +24,7 @@ public class WriteableSubshardBoundaryNode extends WriteableModificationNode {
     private final ForeignShardModificationContext boundary;
 
     WriteableSubshardBoundaryNode(final ForeignShardModificationContext boundary) {
-        this.boundary = Preconditions.checkNotNull(boundary);
+        this.boundary = requireNonNull(boundary);
     }
 
     public static WriteableSubshardBoundaryNode from(final ForeignShardModificationContext value) {

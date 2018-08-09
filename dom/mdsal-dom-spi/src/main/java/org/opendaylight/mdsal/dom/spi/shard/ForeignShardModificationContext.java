@@ -8,8 +8,10 @@
 
 package org.opendaylight.mdsal.dom.spi.shard;
 
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
 import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -33,12 +35,12 @@ public final class ForeignShardModificationContext implements Identifiable<DOMDa
 
     public ForeignShardModificationContext(final DOMDataTreeIdentifier identifier,
                                            final DOMDataTreeShardProducer producer) {
-        this.identifier = Preconditions.checkNotNull(identifier);
-        this.producer = Preconditions.checkNotNull(producer);
+        this.identifier = requireNonNull(identifier);
+        this.producer = requireNonNull(producer);
     }
 
     public DOMDataTreeWriteCursor getCursor() {
-        Preconditions.checkState(!ready, "Context %s has been readied", this);
+        checkState(!ready, "Context %s has been readied", this);
 
         if (cursor == null) {
             if (tx == null) {
@@ -86,7 +88,7 @@ public final class ForeignShardModificationContext implements Identifiable<DOMDa
     }
 
     public ListenableFuture<Void> submit() {
-        Preconditions.checkState(ready, "Modification context %s has to be ready before submit", this);
+        checkState(ready, "Modification context %s has to be ready before submit", this);
         final ListenableFuture<Void> commit = tx.commit();
         ready = false;
         tx = null;

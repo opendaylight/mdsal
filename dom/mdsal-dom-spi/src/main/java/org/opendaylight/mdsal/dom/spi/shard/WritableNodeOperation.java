@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.spi.shard;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -21,8 +22,8 @@ public abstract class WritableNodeOperation implements WriteCursorStrategy {
     private final DOMDataTreeWriteCursor cursor;
 
     protected WritableNodeOperation(final WriteableModificationNode node, final DOMDataTreeWriteCursor cursor) {
-        this.node = Preconditions.checkNotNull(node);
-        this.cursor = Preconditions.checkNotNull(cursor);
+        this.node = requireNonNull(node);
+        this.cursor = requireNonNull(cursor);
     }
 
     protected final DOMDataTreeWriteCursor getCursor() {
