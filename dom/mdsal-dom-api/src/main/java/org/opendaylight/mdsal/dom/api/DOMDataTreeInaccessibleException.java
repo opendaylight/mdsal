@@ -7,25 +7,27 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * Failure reported when a data tree is no longer accessible.
  */
+@NonNullByDefault
 public class DOMDataTreeInaccessibleException extends DOMDataTreeListeningException {
     private static final long serialVersionUID = 1L;
     private final DOMDataTreeIdentifier treeIdentifier;
 
     public DOMDataTreeInaccessibleException(final DOMDataTreeIdentifier treeIdentifier, final String message) {
         super(message);
-        this.treeIdentifier = Preconditions.checkNotNull(treeIdentifier);
+        this.treeIdentifier = requireNonNull(treeIdentifier);
     }
 
     public DOMDataTreeInaccessibleException(final DOMDataTreeIdentifier treeIdentifier,
             final String message, final Throwable cause) {
-        super(message);
-        this.treeIdentifier = Preconditions.checkNotNull(treeIdentifier);
+        super(message, requireNonNull(cause));
+        this.treeIdentifier = requireNonNull(treeIdentifier);
     }
 
     public final DOMDataTreeIdentifier getTreeIdentifier() {

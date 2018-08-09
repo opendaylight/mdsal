@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.spi.shard;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -50,8 +51,8 @@ final class DOMDataTreeChangeListenerAggregator
         final List<DataTreeCandidate> changes;
 
         State(final DOMDataTreeIdentifier identifier, final List<DataTreeCandidate> changes) {
-            this.identifier = Preconditions.checkNotNull(identifier);
-            this.changes = Preconditions.checkNotNull(changes);
+            this.identifier = requireNonNull(identifier);
+            this.changes = requireNonNull(changes);
         }
 
         @Override
@@ -66,7 +67,7 @@ final class DOMDataTreeChangeListenerAggregator
         private final DOMDataTreeIdentifier identifier;
 
         StateBuilder(final DOMDataTreeIdentifier identifier) {
-            this.identifier = Preconditions.checkNotNull(identifier);
+            this.identifier = requireNonNull(identifier);
         }
 
         @Override
@@ -100,7 +101,7 @@ final class DOMDataTreeChangeListenerAggregator
         Operational(final Collection<AbstractStateAggregator.StateBuilder<State>> builders,
                 final DOMDataTreeListener listener) {
             super(builders);
-            this.listener = Preconditions.checkNotNull(listener);
+            this.listener = requireNonNull(listener);
         }
 
         @Override

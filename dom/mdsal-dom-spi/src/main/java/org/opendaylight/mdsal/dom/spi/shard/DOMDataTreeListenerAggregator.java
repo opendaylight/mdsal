@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.spi.shard;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableList;
@@ -58,9 +59,9 @@ public final class DOMDataTreeListenerAggregator
         Aggregated(final Collection<DataTreeCandidate> changes,
             final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees,
             final Collection<DOMDataTreeListeningException> failures) {
-            this.changes = Preconditions.checkNotNull(changes);
-            this.subtrees = Preconditions.checkNotNull(subtrees);
-            this.failures = Preconditions.checkNotNull(failures);
+            this.changes = requireNonNull(changes);
+            this.subtrees = requireNonNull(subtrees);
+            this.failures = requireNonNull(failures);
         }
     }
 
@@ -70,8 +71,8 @@ public final class DOMDataTreeListenerAggregator
 
         Changes(final Collection<DataTreeCandidate> changes,
             final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees) {
-            this.changes = Preconditions.checkNotNull(changes);
-            this.subtrees = Preconditions.checkNotNull(subtrees);
+            this.changes = requireNonNull(changes);
+            this.subtrees = requireNonNull(subtrees);
         }
     }
 
@@ -79,7 +80,7 @@ public final class DOMDataTreeListenerAggregator
         final Collection<DOMDataTreeListeningException> causes;
 
         Failure(final Collection<DOMDataTreeListeningException> causes) {
-            this.causes = Preconditions.checkNotNull(causes);
+            this.causes = requireNonNull(causes);
         }
     }
 
@@ -135,7 +136,7 @@ public final class DOMDataTreeListenerAggregator
         Operational(final Collection<AbstractStateAggregator.StateBuilder<State>> builders,
                 final DOMDataTreeListener listener) {
             super(builders);
-            this.listener = Preconditions.checkNotNull(listener);
+            this.listener = requireNonNull(listener);
         }
 
         @Override

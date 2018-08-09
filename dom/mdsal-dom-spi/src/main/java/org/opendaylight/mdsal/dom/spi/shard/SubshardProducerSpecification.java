@@ -8,11 +8,13 @@
 
 package org.opendaylight.mdsal.dom.spi.shard;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.annotation.concurrent.NotThreadSafe;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 
 /**
@@ -20,13 +22,14 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
  * subshards.
  */
 @Beta
+@NonNullByDefault
 @NotThreadSafe
 public final class SubshardProducerSpecification {
     private final Collection<DOMDataTreeIdentifier> prefixes = new ArrayList<>(1);
     private final ChildShardContext shard;
 
     public SubshardProducerSpecification(final ChildShardContext subshard) {
-        this.shard = Preconditions.checkNotNull(subshard);
+        this.shard = requireNonNull(subshard);
     }
 
     public void addPrefix(final DOMDataTreeIdentifier prefix) {
