@@ -5,10 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.spi.shard;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -17,9 +17,9 @@ class WritableInteriorNode extends WriteableNodeWithSubshard {
 
     private final PathArgument identifier;
 
-    WritableInteriorNode(PathArgument identifier, Map<PathArgument, WriteableModificationNode> children) {
+    WritableInteriorNode(final PathArgument identifier, final Map<PathArgument, WriteableModificationNode> children) {
         super(children);
-        this.identifier = Preconditions.checkNotNull(identifier);
+        this.identifier = requireNonNull(identifier);
     }
 
     @Override
@@ -28,7 +28,7 @@ class WritableInteriorNode extends WriteableNodeWithSubshard {
     }
 
     @Override
-    public WriteCursorStrategy createOperation(DOMDataTreeWriteCursor parentCursor) {
+    public WriteCursorStrategy createOperation(final DOMDataTreeWriteCursor parentCursor) {
         return new WritableNodeOperation(this, parentCursor) {
             @Override
             public void exit() {

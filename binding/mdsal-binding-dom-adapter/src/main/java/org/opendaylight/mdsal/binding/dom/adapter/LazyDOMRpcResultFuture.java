@@ -29,7 +29,7 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
     private static final ExceptionMapper<DOMRpcException> DOM_RPC_EX_MAPPER =
             new ExceptionMapper<DOMRpcException>("rpc", DOMRpcException.class) {
         @Override
-        protected DOMRpcException newWithCause(String message, Throwable cause) {
+        protected DOMRpcException newWithCause(final String message, final Throwable cause) {
             return cause instanceof DOMRpcException ? (DOMRpcException)cause
                     : new DefaultDOMRpcException("RPC failed", cause);
         }
@@ -114,9 +114,9 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
             final Object inputData = input.getResult();
             if (inputData instanceof DataContainer) {
                 return new DefaultDOMRpcResult(codec.toNormalizedNodeRpcData((DataContainer) inputData));
-            } else {
-                return new DefaultDOMRpcResult((NormalizedNode<?, ?>) null);
             }
+
+            return new DefaultDOMRpcResult((NormalizedNode<?, ?>) null);
         }
         return new DefaultDOMRpcResult(input.getErrors());
     }

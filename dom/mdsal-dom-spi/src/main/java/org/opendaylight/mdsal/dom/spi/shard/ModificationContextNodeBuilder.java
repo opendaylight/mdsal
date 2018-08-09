@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.spi.shard;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -47,7 +48,7 @@ public abstract class ModificationContextNodeBuilder {
         private final PathArgument arg;
 
         InteriorNodeBuilder(final PathArgument arg) {
-            this.arg = Preconditions.checkNotNull(arg);
+            this.arg = requireNonNull(arg);
         }
 
         WritableInteriorNode build() {

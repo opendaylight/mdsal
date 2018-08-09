@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
@@ -59,8 +60,8 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
      * @param arg Child identifier
      * @return Child matching exactly, or null.
      */
-    public RegistrationTreeNode<T> getExactChild(@Nonnull final PathArgument arg) {
-        return children.get(Preconditions.checkNotNull(arg));
+    public RegistrationTreeNode<T> getExactChild(final @NonNull PathArgument arg) {
+        return children.get(requireNonNull(arg));
     }
 
     /**
@@ -70,9 +71,8 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
      * @param arg Child identifier
      * @return Collection of children, guaranteed to be non-null.
      */
-    @Nonnull
-    public Collection<RegistrationTreeNode<T>> getInexactChildren(@Nonnull final PathArgument arg) {
-        Preconditions.checkNotNull(arg);
+    public @NonNull Collection<RegistrationTreeNode<T>> getInexactChildren(final @NonNull PathArgument arg) {
+        requireNonNull(arg);
         if (arg instanceof NodeWithValue || arg instanceof NodeIdentifierWithPredicates) {
             /*
              * TODO: This just all-or-nothing wildcards, which we have historically supported. Given
@@ -95,8 +95,8 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
         return publicRegistrations;
     }
 
-    RegistrationTreeNode<T> ensureChild(@Nonnull final PathArgument child) {
-        RegistrationTreeNode<T> potential = children.get(Preconditions.checkNotNull(child));
+    RegistrationTreeNode<T> ensureChild(final @NonNull PathArgument child) {
+        RegistrationTreeNode<T> potential = children.get(requireNonNull(child));
         if (potential == null) {
             potential = new RegistrationTreeNode<>(this, child);
             children.put(child, potential);
@@ -104,13 +104,13 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
         return potential;
     }
 
-    void addRegistration(@Nonnull final T registration) {
-        registrations.add(Preconditions.checkNotNull(registration));
+    void addRegistration(final @NonNull T registration) {
+        registrations.add(requireNonNull(registration));
         LOG.debug("Registration {} added", registration);
     }
 
-    void removeRegistration(@Nonnull final T registration) {
-        registrations.remove(Preconditions.checkNotNull(registration));
+    void removeRegistration(final @NonNull T registration) {
+        registrations.remove(requireNonNull(registration));
         LOG.debug("Registration {} removed", registration);
 
         // We have been called with the write-lock held, so we can perform some cleanup.

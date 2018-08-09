@@ -7,14 +7,17 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -24,10 +27,11 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * Utility class implementing {@link DefaultDOMRpcResult}.
  */
 @Beta
+@NonNullByDefault
 public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Serializable {
     private static final long serialVersionUID = 1L;
+    private final @Nullable NormalizedNode<?, ?> result;
     private final Collection<RpcError> errors;
-    private final NormalizedNode<?, ?> result;
 
     public DefaultDOMRpcResult(final NormalizedNode<?, ?> result, final RpcError... errors) {
         this(result, asCollection(errors));
@@ -37,13 +41,13 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
         this(null, asCollection(errors));
     }
 
-    public DefaultDOMRpcResult(final NormalizedNode<?, ?> result) {
-        this(result, Collections.<RpcError>emptyList());
+    public DefaultDOMRpcResult(final @Nullable NormalizedNode<?, ?> result) {
+        this(result, Collections.emptyList());
     }
 
-    public DefaultDOMRpcResult(final NormalizedNode<?, ?> result, @Nonnull final Collection<RpcError> errors) {
+    public DefaultDOMRpcResult(final @Nullable NormalizedNode<?, ?> result, final Collection<RpcError> errors) {
         this.result = result;
-        this.errors = Preconditions.checkNotNull(errors);
+        this.errors = requireNonNull(errors);
     }
 
     public DefaultDOMRpcResult(@Nonnull final Collection<RpcError> errors) {
@@ -55,13 +59,12 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
     }
 
     @Override
-    @Nonnull
     public Collection<RpcError> getErrors() {
         return errors;
     }
 
     @Override
-    public NormalizedNode<?, ?> getResult() {
+    public @Nullable NormalizedNode<?, ?> getResult() {
         return result;
     }
 
@@ -75,18 +78,14 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         if (this == obj) {
             return true;
         }
         if (!(obj instanceof DefaultDOMRpcResult)) {
             return false;
         }
-
         final DefaultDOMRpcResult other = (DefaultDOMRpcResult) obj;
-        if (!errors.equals(other.errors)) {
-            return false;
-        }
-        return Objects.equals(result, other.result);
+        return errors.equals(other.errors) && Objects.equals(result, other.result);
     }
 }

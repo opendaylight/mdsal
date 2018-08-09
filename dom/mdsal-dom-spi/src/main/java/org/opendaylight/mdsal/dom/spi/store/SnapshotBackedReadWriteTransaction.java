@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
@@ -41,7 +41,7 @@ public final class SnapshotBackedReadWriteTransaction<T> extends
     @Override
     public FluentFuture<Optional<NormalizedNode<?,?>>> read(final YangInstanceIdentifier path) {
         LOG.debug("Tx: {} Read: {}", getIdentifier(), path);
-        checkNotNull(path, "Path must not be null.");
+        requireNonNull(path, "Path must not be null.");
 
         final Optional<NormalizedNode<?, ?>> result;
 

@@ -30,7 +30,7 @@ final class RpcResultUtil {
      * DOMRpcResult does not have a notion of success, hence we have to reverse-engineer it by looking at reported
      * errors and checking whether they are just warnings.
      */
-    static <T> RpcResult<T> rpcResultFromDOM(final Collection<RpcError> errors, final @Nullable T result) {
+    static <T> RpcResult<T> rpcResultFromDOM(final Collection<? extends RpcError> errors, final @Nullable T result) {
         return RpcResultBuilder.<T>status(errors.stream().noneMatch(err -> err.getSeverity() == ErrorSeverity.ERROR))
                 .withResult(result).withRpcErrors(errors).build();
     }
