@@ -7,11 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import java.util.Iterator;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.Path;
@@ -19,9 +21,10 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 /**
- * A unique identifier for a particular subtree. It is composed of the logical
- * data store type and the instance identifier of the root node.
+ * A unique identifier for a particular subtree. It is composed of the logical data store type and the instance
+ * identifier of the root node.
  */
+@NonNullByDefault
 public final class DOMDataTreeIdentifier implements Immutable, Path<DOMDataTreeIdentifier>, Serializable,
         Comparable<DOMDataTreeIdentifier> {
     private static final long serialVersionUID = 1L;
@@ -31,8 +34,8 @@ public final class DOMDataTreeIdentifier implements Immutable, Path<DOMDataTreeI
 
     public DOMDataTreeIdentifier(final LogicalDatastoreType datastoreType,
             final YangInstanceIdentifier rootIdentifier) {
-        this.datastoreType = Preconditions.checkNotNull(datastoreType);
-        this.rootIdentifier = Preconditions.checkNotNull(rootIdentifier);
+        this.datastoreType = requireNonNull(datastoreType);
+        this.rootIdentifier = requireNonNull(rootIdentifier);
     }
 
     /**
@@ -40,7 +43,6 @@ public final class DOMDataTreeIdentifier implements Immutable, Path<DOMDataTreeI
      *
      * @return Logical data store type. Guaranteed to be non-null.
      */
-    @Nonnull
     public LogicalDatastoreType getDatastoreType() {
         return datastoreType;
     }
@@ -50,7 +52,6 @@ public final class DOMDataTreeIdentifier implements Immutable, Path<DOMDataTreeI
      *
      * @return Instance identifier corresponding to the root node.
      */
-    @Nonnull
     public YangInstanceIdentifier getRootIdentifier() {
         return rootIdentifier;
     }
@@ -67,15 +68,11 @@ public final class DOMDataTreeIdentifier implements Immutable, Path<DOMDataTreeI
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + datastoreType.hashCode();
-        result = prime * result + rootIdentifier.hashCode();
-        return result;
+        return datastoreType.hashCode() * 31 + rootIdentifier.hashCode();
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         if (this == obj) {
             return true;
         }
@@ -83,10 +80,7 @@ public final class DOMDataTreeIdentifier implements Immutable, Path<DOMDataTreeI
             return false;
         }
         DOMDataTreeIdentifier other = (DOMDataTreeIdentifier) obj;
-        if (datastoreType != other.datastoreType) {
-            return false;
-        }
-        return rootIdentifier.equals(other.rootIdentifier);
+        return datastoreType == other.datastoreType && rootIdentifier.equals(other.rootIdentifier);
     }
 
     @Override

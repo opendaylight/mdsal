@@ -7,29 +7,25 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import com.google.common.base.Preconditions;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+import static java.util.Objects.requireNonNull;
+
 import java.util.concurrent.locks.Lock;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.yangtools.concepts.AbstractRegistration;
 
 /**
  * A stable read-only snapshot of a {@link AbstractRegistrationTree}.
  *
  * @author Robert Varga
  */
-public final class RegistrationTreeSnapshot<T> implements AutoCloseable {
-    @SuppressWarnings("rawtypes")
-    private static final AtomicIntegerFieldUpdater<RegistrationTreeSnapshot> CLOSED_UPDATER =
-        AtomicIntegerFieldUpdater.newUpdater(RegistrationTreeSnapshot.class, "closed");
+@NonNullByDefault
+public final class RegistrationTreeSnapshot<T> extends AbstractRegistration {
     private final RegistrationTreeNode<T> node;
     private final Lock lock;
 
-    // Used via CLOSED_UPDATER
-    @SuppressWarnings("unused")
-    private volatile int closed = 0;
-
     RegistrationTreeSnapshot(final Lock lock, final RegistrationTreeNode<T> node) {
-        this.lock = Preconditions.checkNotNull(lock);
-        this.node = Preconditions.checkNotNull(node);
+        this.lock = requireNonNull(lock);
+        this.node = requireNonNull(node);
     }
 
     public RegistrationTreeNode<T> getRootNode() {
@@ -37,9 +33,7 @@ public final class RegistrationTreeSnapshot<T> implements AutoCloseable {
     }
 
     @Override
-    public void close() {
-        if (CLOSED_UPDATER.compareAndSet(this, 0, 1)) {
-            lock.unlock();
-        }
+    protected void removeRegistration() {
+        lock.unlock();
     }
 }

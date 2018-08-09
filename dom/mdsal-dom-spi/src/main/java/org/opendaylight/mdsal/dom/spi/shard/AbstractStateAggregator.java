@@ -7,8 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.spi.shard;
 
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
@@ -71,7 +73,7 @@ public abstract class AbstractStateAggregator<S extends AbstractStateAggregator.
         }
 
         void add(final StateBuilder<S> builder) {
-            builders.add(Preconditions.checkNotNull(builder));
+            builders.add(requireNonNull(builder));
         }
 
         @Override
@@ -90,7 +92,7 @@ public abstract class AbstractStateAggregator<S extends AbstractStateAggregator.
         }
 
         synchronized Started<S> start(final Function<Collection<StateBuilder<S>>, Started<S>> function) {
-            Preconditions.checkState(successor == null, "Attempted to start an already-started aggregator");
+            checkState(successor == null, "Attempted to start an already-started aggregator");
             final Started<S> next = Verify.verifyNotNull(function.apply(ImmutableList.copyOf(builders)));
             successor = next;
             return next;
@@ -201,7 +203,7 @@ public abstract class AbstractStateAggregator<S extends AbstractStateAggregator.
     @SuppressWarnings("unchecked")
     private Starting<S> checkStarting() {
         final Behavior<?, S> local = behavior;
-        Preconditions.checkState(local instanceof Starting, "Unexpected behavior %s", local);
+        checkState(local instanceof Starting, "Unexpected behavior %s", local);
         return (Starting<S>) local;
     }
 }

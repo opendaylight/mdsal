@@ -7,20 +7,19 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import org.opendaylight.yangtools.concepts.Path;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
-
 /**
- * Failure of asynchronous transaction commit caused by invalid data.
- * This exception is raised and returned when transaction commit
- * failed, because other data submitted via transactions
- *  Clients usually are not able recover from this error condition by
- *  retrieving same transaction, since data introduced by this transaction
- *  are invalid.
+ * Failure of asynchronous transaction commit caused by invalid data. This exception is raised and returned when
+ * a transaction commit failed, because other data submitted via transactions.
  *
+ * <p>
+ * Clients usually are not able recover from this error condition by retrieving same transaction, since data introduced
+ * by this transaction is invalid.
  */
 public class DataValidationFailedException extends TransactionCommitFailedException {
 
@@ -30,16 +29,16 @@ public class DataValidationFailedException extends TransactionCommitFailedExcept
 
     private final Class<? extends Path<?>> pathType;
 
-    public <P extends Path<P>> DataValidationFailedException(final Class<P> pathType,final P path,
-                                                             final String message, final Throwable cause) {
+    public <P extends Path<P>> DataValidationFailedException(final Class<P> pathType, final P path,
+            final String message, final Throwable cause) {
         super(message, cause, RpcResultBuilder.newError(ErrorType.APPLICATION, "invalid-value", message, null,
-                                                        path != null ? path.toString() : null, cause));
-        this.pathType = Preconditions.checkNotNull(pathType, "path type must not be null");
-        this.path = Preconditions.checkNotNull(path,"path must not be null.");
+            path != null ? path.toString() : null, cause));
+        this.pathType = requireNonNull(pathType, "path type must not be null");
+        this.path = requireNonNull(path, "path must not be null.");
     }
 
-    public  <P extends Path<P>> DataValidationFailedException(final Class<P> pathType,final P path,
-                                                              final String message) {
+    public <P extends Path<P>> DataValidationFailedException(final Class<P> pathType, final P path,
+            final String message) {
         this(pathType, path, message, null);
     }
 
@@ -50,5 +49,4 @@ public class DataValidationFailedException extends TransactionCommitFailedExcept
     public final Class<? extends Path<?>> getPathType() {
         return pathType;
     }
-
 }
