@@ -32,7 +32,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * DOM operation result from Binding.
  */
 @Beta
-final class LazyDOMOperationResultFuture extends AbstractFuture<DOMRpcResult> {
+final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> {
     private static final ExceptionMapper<DOMRpcException> DOM_RPC_EX_MAPPER =
             new ExceptionMapper<DOMRpcException>("rpc", DOMRpcException.class) {
         @Override
@@ -46,15 +46,15 @@ final class LazyDOMOperationResultFuture extends AbstractFuture<DOMRpcResult> {
     private final BindingNormalizedNodeCodecRegistry codec;
     private volatile DOMRpcResult result;
 
-    private LazyDOMOperationResultFuture(final ListenableFuture<RpcResult<?>> delegate,
-            final BindingNormalizedNodeCodecRegistry codec) {
+    private LazyDOMRpcResultFuture(final ListenableFuture<RpcResult<?>> delegate,
+                                   final BindingNormalizedNodeCodecRegistry codec) {
         this.bindingFuture = Preconditions.checkNotNull(delegate, "delegate");
         this.codec = Preconditions.checkNotNull(codec, "codec");
     }
 
     static FluentFuture<DOMRpcResult> create(final BindingNormalizedNodeCodecRegistry codec,
             final ListenableFuture<RpcResult<?>> bindingResult) {
-        return new LazyDOMOperationResultFuture(bindingResult, codec);
+        return new LazyDOMRpcResultFuture(bindingResult, codec);
     }
 
     ListenableFuture<RpcResult<?>> getBindingFuture() {
