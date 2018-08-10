@@ -91,13 +91,13 @@ public class BindingDOMOperationServiceAdapter implements RpcActionConsumerRegis
     }
 
     @Override
-    public <T extends Action<? extends TreeNode, ?, ?>> T getActionService(final Class<T> serviceInterface) {
+    public <T extends Action<? extends TreeNode, ?, ?, ?>> T getActionService(final Class<T> serviceInterface) {
         // TODO implement after improve DOM part of MD-SAL for support of Yang 1.1
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <T extends ListAction<? extends TreeNode, ?, ?>> T getListActionService(final Class<T> serviceInterface) {
+    public <T extends ListAction<? extends TreeNode, ?, ?, ?>> T getListActionService(final Class<T> serviceInterface) {
         // TODO implement after improve DOM part of MD-SAL for support of Yang 1.1
         throw new UnsupportedOperationException();
     }

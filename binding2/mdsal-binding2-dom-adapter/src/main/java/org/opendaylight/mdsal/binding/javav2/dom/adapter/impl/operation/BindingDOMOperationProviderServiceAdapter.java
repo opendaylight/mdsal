@@ -27,6 +27,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
+import org.opendaylight.yangtools.concepts.Identifier;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -91,7 +92,7 @@ public class BindingDOMOperationProviderServiceAdapter implements RpcActionProvi
     }
 
     @Override
-    public <S extends Action<? extends TreeNode, ?, ?>, T extends S, P extends TreeNode> ObjectRegistration<T>
+    public <S extends Action<? extends TreeNode, ?, ?, ?>, T extends S, P extends TreeNode> ObjectRegistration<T>
             registerActionImplementation(final Class<S> type, final InstanceIdentifier<P> parent,
                     final T implementation) {
      // TODO implement after improve DOM part of MD-SAL for support of Yang 1.1
@@ -99,9 +100,9 @@ public class BindingDOMOperationProviderServiceAdapter implements RpcActionProvi
     }
 
     @Override
-    public <S extends ListAction<? extends TreeNode, ?, ?>, T extends S, P extends TreeNode, K> ObjectRegistration<T>
-            registerListActionImplementation(final Class<S> type, final KeyedInstanceIdentifier<P, K> parent,
-                    final T implementation) {
+    public <S extends ListAction<? extends TreeNode, ?, ?, ?>, T extends S, P extends TreeNode, K extends Identifier>
+            ObjectRegistration<T> registerListActionImplementation(final Class<S> type,
+        final KeyedInstanceIdentifier<P, K> parent, final T implementation) {
      // TODO implement after improve DOM part of MD-SAL for support of Yang 1.1
         throw new UnsupportedOperationException();
     }

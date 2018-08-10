@@ -36,7 +36,8 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
  *   }
  * }
  */
-public interface MyActionModuleMyActionCallAction extends Action<MyCont, MyActionCallInput, MyActionCallOutput> {
+public interface MyActionModuleMyActionCallAction extends Action<MyCont, InstanceIdentifier<MyCont>, MyActionCallInput,
+        MyActionCallOutput> {
 
     @Override
     void invoke(MyActionCallInput input, InstanceIdentifier<MyCont> ii, RpcCallback<MyActionCallOutput> callback);
