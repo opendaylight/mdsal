@@ -26,18 +26,6 @@
     <name>${project.artifactId}</name>
     <description>RFC8345 ietf-network-topology for non-NMDA</description>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>mdsal-model-artifacts</artifactId>
-                <version>0.15.0-SNAPSHOT</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
