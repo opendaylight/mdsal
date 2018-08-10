@@ -10,9 +10,10 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl.list.action.example
 
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
+import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
  * list my-list
  */
-public interface MyList extends TreeNode, Augmentable<MyList> {
+public interface MyList extends TreeNode, Augmentable<MyList>, Identifiable<MyListKey> {
 }

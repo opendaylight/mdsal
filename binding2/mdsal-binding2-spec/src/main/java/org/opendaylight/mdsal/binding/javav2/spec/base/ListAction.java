@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.spec.base;
 
+import org.opendaylight.yangtools.concepts.Identifier;
+
 /**
  *
  * ListAction provides support for YANG actions defined under List statement.
@@ -26,14 +28,13 @@ package org.opendaylight.mdsal.binding.javav2.spec.base;
  *
  */
 @FunctionalInterface
-public interface ListAction<P extends TreeNode, I extends Input<I> & Instantiable<I>,
-        O extends Output<O> & Instantiable<O>> extends Operation {
+public interface ListAction<P extends TreeNode, K extends Identifier, I extends Input<I> & Instantiable<I>,
+        O extends Output<O> & Instantiable<O>> extends Action<P, KeyedInstanceIdentifier<P, K>, I, O> {
 
     /**
      * @param input Action input schema node
      * @param kii implicit KeyedInstanceIdentifier connected to action, according to https://tools.ietf.org/html/rfc7950
      * @param callback on success/failure callback
-     * @param <K> target key type
      */
-    <K> void invoke(I input, KeyedInstanceIdentifier<P, K> kii, RpcCallback<O> callback);
+    void invoke(I input, KeyedInstanceIdentifier<P, K> kii, RpcCallback<O> callback);
 }

@@ -48,7 +48,7 @@ public interface RpcActionConsumerRegistry extends BindingService {
      * @param <T> interface type
      * @return returns proxy for the requested Action
      */
-    <T extends Action<? extends TreeNode, ?, ?>> T getActionService(Class<T> serviceInterface);
+    <T extends Action<? extends TreeNode, ?, ?, ?>> T getActionService(Class<T> serviceInterface);
 
     /**
      * Returns an implementation of a requested ListAction service.
@@ -61,6 +61,6 @@ public interface RpcActionConsumerRegistry extends BindingService {
      * @param <T> interface type
      * @return returns proxy for the requested ListAction
      */
-    <T extends ListAction<? extends TreeNode, ?, ?>> T getListActionService(Class<T> serviceInterface);
+    <T extends ListAction<? extends TreeNode, ?, ?, ?>> T getListActionService(Class<T> serviceInterface);
 
 }

@@ -36,8 +36,8 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
  *   }
  * }
  */
-public interface ListActionModuleListActionCall extends ListAction<MyList, ListActionCallInput, ListActionCallOutput> {
+public interface ListActionModuleListActionCall extends ListAction<MyList, MyListKey, ListActionCallInput, ListActionCallOutput> {
 
     @Override
-    <K> void invoke(ListActionCallInput input, KeyedInstanceIdentifier<MyList, K> kii, RpcCallback<ListActionCallOutput> callback);
+    void invoke(ListActionCallInput input, KeyedInstanceIdentifier<MyList, MyListKey> kii, RpcCallback<ListActionCallOutput> callback);
 }
