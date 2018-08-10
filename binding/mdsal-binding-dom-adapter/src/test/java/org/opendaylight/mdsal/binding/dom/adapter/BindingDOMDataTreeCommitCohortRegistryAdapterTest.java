@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -46,11 +46,12 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapterTest {
         final BindingDOMDataTreeCommitCohortRegistryAdapter registryAdapter =
                 new BindingDOMDataTreeCommitCohortRegistryAdapter(bindingTestContext.getCodec(), cohortRegistry);
 
-        assertNotNull(registryAdapter.from(bindingTestContext.getCodec(), cohortRegistry));
+        assertNotNull(BindingDOMDataTreeCommitCohortRegistryAdapter.from(bindingTestContext.getCodec(),
+            cohortRegistry));
 
-        final DataTreeIdentifier dataTreeIdentifier = DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION,
+        final DataTreeIdentifier<Top> dataTreeIdentifier = DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.create(Top.class));
-        final DataTreeCommitCohort<?> dataTreeCommitCohort = mock(DataTreeCommitCohort.class);
+        final DataTreeCommitCohort<Top> dataTreeCommitCohort = mock(DataTreeCommitCohort.class);
         final ObjectRegistration<?> objectRegistration =
                 registryAdapter.registerCommitCohort(dataTreeIdentifier, dataTreeCommitCohort);
         assertEquals(dataTreeCommitCohort, objectRegistration.getInstance());

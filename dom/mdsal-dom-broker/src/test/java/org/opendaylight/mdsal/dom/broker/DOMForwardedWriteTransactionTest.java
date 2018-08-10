@@ -7,14 +7,14 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -49,7 +49,7 @@ public class DOMForwardedWriteTransactionTest {
         FluentFuture<? extends CommitInfo> submitFuture = domForwardedWriteTransaction.commit();
         try {
             submitFuture.get();
-            Assert.fail("TransactionCommitFailedException expected");
+            fail("TransactionCommitFailedException expected");
         } catch (ExecutionException e) {
             assertTrue(e.getCause() instanceof TransactionCommitFailedException);
             assertTrue(e.getCause().getCause() == thrown);
@@ -70,7 +70,7 @@ public class DOMForwardedWriteTransactionTest {
         FluentFuture<? extends CommitInfo> submitFuture = domForwardedWriteTransaction.commit();
         try {
             submitFuture.get();
-            Assert.fail("TransactionCommitFailedException expected");
+            fail("TransactionCommitFailedException expected");
         } catch (ExecutionException e) {
             assertTrue(e.getCause() instanceof TransactionCommitFailedException);
             assertTrue(e.getCause().getCause() == thrown);

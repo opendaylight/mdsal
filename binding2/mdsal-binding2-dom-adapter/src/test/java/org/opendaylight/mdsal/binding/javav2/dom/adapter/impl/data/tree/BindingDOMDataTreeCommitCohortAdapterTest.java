@@ -8,14 +8,14 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.data.tree;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingTreeCodec;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingTreeNodeCodec;
@@ -67,7 +67,7 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
         doReturn(dataTreeCandidateNode).when(domDataTreeCandidate).getRootNode();
         assertNotNull(LazyDataTreeModification.create(codec, domDataTreeCandidate));
 
-        Mockito.doNothing().when(cohort).canCommit(any(), any(), any());
+        doNothing().when(cohort).canCommit(any(), any(), any());
         adapter.canCommit(new Object(), null, Arrays.asList(domDataTreeCandidate));
         verify(cohort).canCommit(any(), any(), any());
     }

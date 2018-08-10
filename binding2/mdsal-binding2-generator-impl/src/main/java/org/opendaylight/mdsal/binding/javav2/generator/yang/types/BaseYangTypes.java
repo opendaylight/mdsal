@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding.javav2.generator.yang.types;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Map;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;

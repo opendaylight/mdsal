@@ -5,11 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.transaction;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -57,7 +56,7 @@ public class BindingDOMTransactionChainAdapterTest {
                         GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), mockCodecRegistry)) {
             @Nullable
             @Override
-            protected DOMService getDelegate(Class<? extends DOMService> reqDeleg) {
+            protected DOMService getDelegate(final Class<? extends DOMService> reqDeleg) {
                 return domService;
             }
         };

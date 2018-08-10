@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -33,8 +33,8 @@ public class LazyDOMRpcResultFutureTest {
 
     private LazyDOMRpcResultFuture lazyDOMRpcResultFuture;
     private final BindingNormalizedNodeCodecRegistry codec = mock(BindingNormalizedNodeCodecRegistry.class);
-    private final ListenableFuture future = mock(ListenableFuture.class);
-    private final RpcResult domRpcResult = mock(RpcResult.class);
+    private final ListenableFuture<RpcResult<?>> future = mock(ListenableFuture.class);
+    private final RpcResult<?> domRpcResult = mock(RpcResult.class);
 
     @Before
     public void setUp() throws Exception {

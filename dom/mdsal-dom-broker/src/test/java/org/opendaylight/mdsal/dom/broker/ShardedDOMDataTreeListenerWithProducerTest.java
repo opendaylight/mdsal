@@ -10,11 +10,12 @@ package org.opendaylight.mdsal.dom.broker;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.opendaylight.mdsal.dom.broker.MockingUtilities.captorFor;
@@ -26,7 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
@@ -116,7 +116,7 @@ public class ShardedDOMDataTreeListenerWithProducerTest {
 
     @Test
     public void registerListenerWithOneProducer() throws DOMDataTreeLoopException {
-        final DOMDataTreeListener listener = Mockito.mock(DOMDataTreeListener.class);
+        final DOMDataTreeListener listener = mock(DOMDataTreeListener.class);
         final DOMDataTreeProducer producer = treeService.createProducer(SUBTREES_TEST2);
         treeService.registerListener(listener, SUBTREES_TEST, true, Collections.singleton(producer));
     }
@@ -133,28 +133,28 @@ public class ShardedDOMDataTreeListenerWithProducerTest {
 
     @Test(expected = DOMDataTreeLoopException.class)
     public void loopSameSubtree() throws DOMDataTreeLoopException {
-        final DOMDataTreeListener listener = Mockito.mock(DOMDataTreeListener.class);
+        final DOMDataTreeListener listener = mock(DOMDataTreeListener.class);
         final DOMDataTreeProducer producer = treeService.createProducer(SUBTREES_TEST);
         treeService.registerListener(listener, SUBTREES_TEST, true, Collections.singleton(producer));
     }
 
     @Test(expected = DOMDataTreeLoopException.class)
     public void loopListenParentWritesChild() throws DOMDataTreeLoopException {
-        final DOMDataTreeListener listener = Mockito.mock(DOMDataTreeListener.class);
+        final DOMDataTreeListener listener = mock(DOMDataTreeListener.class);
         final DOMDataTreeProducer producer = treeService.createProducer(SUBTREES_TEST);
         treeService.registerListener(listener, SUBTREES_ROOT, true, Collections.singleton(producer));
     }
 
     @Test(expected = DOMDataTreeLoopException.class)
     public void loopListenChildWritesParent() throws DOMDataTreeLoopException {
-        final DOMDataTreeListener listener = Mockito.mock(DOMDataTreeListener.class);
+        final DOMDataTreeListener listener = mock(DOMDataTreeListener.class);
         final DOMDataTreeProducer producer = treeService.createProducer(SUBTREES_ROOT);
         treeService.registerListener(listener, SUBTREES_ROOT, true, Collections.singleton(producer));
     }
 
     @Test
     public void receiveChangeEvent() throws DOMDataTreeLoopException {
-        final DOMDataTreeListener listener = Mockito.mock(DOMDataTreeListener.class);
+        final DOMDataTreeListener listener = mock(DOMDataTreeListener.class);
         final ArgumentCaptor<DOMDataTreeChangeListener> storeListener =
                 ArgumentCaptor.forClass(DOMDataTreeChangeListener.class);
         treeService.registerListener(listener, SUBTREES_TEST, true, Collections.<DOMDataTreeProducer>emptyList());
@@ -165,7 +165,7 @@ public class ShardedDOMDataTreeListenerWithProducerTest {
                 DataTreeCandidates.fromNormalizedNode(TEST_ID.getRootIdentifier(), TEST_CONTAINER);
         final Collection<DataTreeCandidate> changes = Collections.singleton(sentStoreCandidate);
 
-        doNothing().when(listener).onDataTreeChanged(Mockito.<Collection<DataTreeCandidate>>any(), Mockito.anyMap());
+        doNothing().when(listener).onDataTreeChanged(any(), anyMap());
         storeListener.getValue().onDataTreeChanged(changes);
 
         final ArgumentCaptor<Collection<DataTreeCandidate>> candidateCapture = captorFor(Collection.class);

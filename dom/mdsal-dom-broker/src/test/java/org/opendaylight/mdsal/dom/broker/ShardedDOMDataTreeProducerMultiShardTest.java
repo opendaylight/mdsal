@@ -9,12 +9,13 @@ package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollection;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -31,7 +32,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -135,7 +135,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
 
     @Test
     public void testMultipleCursorsFromOneTx() throws Exception {
-        final DOMDataTreeListener mockedDataTreeListener = Mockito.mock(DOMDataTreeListener.class);
+        final DOMDataTreeListener mockedDataTreeListener = mock(DOMDataTreeListener.class);
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
         dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID),
@@ -180,7 +180,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
 
     @Test
     public void testSingleShardListener() throws Exception {
-        final DOMDataTreeListener mockedDataTreeListener = Mockito.mock(DOMDataTreeListener.class);
+        final DOMDataTreeListener mockedDataTreeListener = mock(DOMDataTreeListener.class);
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
         dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID), true,
@@ -211,7 +211,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
 
     @Test
     public void testMultipleShards() throws Exception {
-        final DOMDataTreeListener mockedDataTreeListener = Mockito.mock(DOMDataTreeListener.class);
+        final DOMDataTreeListener mockedDataTreeListener = mock(DOMDataTreeListener.class);
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
         final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
@@ -254,7 +254,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
 
     @Test
     public void testMultipleWritesIntoSingleShard() throws Exception {
-        final DOMDataTreeListener mockedDataTreeListener = Mockito.mock(DOMDataTreeListener.class);
+        final DOMDataTreeListener mockedDataTreeListener = mock(DOMDataTreeListener.class);
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
         dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID),
@@ -272,10 +272,10 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
 
     @Test
     public void testMockedSubshards() throws Exception {
-        final WriteableDOMDataTreeShard mockedInnerShard = Mockito.mock(WriteableDOMDataTreeShard.class);
-        final DOMDataTreeShardProducer mockedProducer = Mockito.mock(DOMDataTreeShardProducer.class);
+        final WriteableDOMDataTreeShard mockedInnerShard = mock(WriteableDOMDataTreeShard.class);
+        final DOMDataTreeShardProducer mockedProducer = mock(DOMDataTreeShardProducer.class);
         doReturn(mockedProducer).when(mockedInnerShard).createProducer(anyCollection());
-        final ShardedDOMDataTreeProducer shardRegProducer = Mockito.mock(ShardedDOMDataTreeProducer.class);
+        final ShardedDOMDataTreeProducer shardRegProducer = mock(ShardedDOMDataTreeProducer.class);
         doReturn(Collections.singleton(INNER_CONTAINER_ID)).when(shardRegProducer).getSubtrees();
         doNothing().when(shardRegProducer).subshardAdded(anyMap());
 
@@ -303,7 +303,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
                         .withChild(shardedValue2)
                         .build();
 
-        final DOMDataTreeShardWriteTransaction mockedTx = Mockito.mock(DOMDataTreeShardWriteTransaction.class);
+        final DOMDataTreeShardWriteTransaction mockedTx = mock(DOMDataTreeShardWriteTransaction.class);
         doReturn(mockedTx).when(mockedProducer).createTransaction();
 
         doNothing().when(mockedTx).ready();
@@ -311,7 +311,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         doReturn(Futures.immediateFuture(null)).when(mockedTx).prepare();
         doReturn(Futures.immediateFuture(null)).when(mockedTx).commit();
 
-        final DOMDataTreeWriteCursor mockedCursor = Mockito.mock(DOMDataTreeWriteCursor.class);
+        final DOMDataTreeWriteCursor mockedCursor = mock(DOMDataTreeWriteCursor.class);
         doNothing().when(mockedCursor).write(any(PathArgument.class), any(NormalizedNode.class));
         doNothing().when(mockedCursor).close();
         doReturn(mockedCursor).when(mockedTx).createCursor(any(DOMDataTreeIdentifier.class));

@@ -8,7 +8,8 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -22,7 +23,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -85,7 +85,7 @@ public class InMemoryDOMDataTreeShardThreePhaseCommitCohortTest {
         doThrow(new RuntimeException("testException")).when(DATA_TREE).prepare(any());
         try {
             IN_MEMORY_DOM_DATA_TREE_SHARD_THREE_PHASE_COMMIT_COHORT.preCommit().get();
-            Assert.fail("Expected Exception");
+            fail("Expected Exception");
         } catch (ExecutionException e) {
             assertTrue(e.getCause().getMessage().contains("testException"));
         }
@@ -107,7 +107,7 @@ public class InMemoryDOMDataTreeShardThreePhaseCommitCohortTest {
         doThrow(new RuntimeException("testException")).when(DATA_TREE).validate(any());
         try {
             IN_MEMORY_DOM_DATA_TREE_SHARD_THREE_PHASE_COMMIT_COHORT.canCommit().get();
-            Assert.fail("Expected Exception");
+            fail("Expected Exception");
         } catch (ExecutionException e) {
             assertTrue(e.getCause().getMessage().contains("testException"));
         }
