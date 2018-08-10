@@ -154,8 +154,8 @@ class RpcServiceAdapter implements InvocationHandler {
         private ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final NormalizedNode<?, ?> input) {
             final ListenableFuture<DOMRpcResult> listenInPoolThread =
                     JdkFutureAdapters.listenInPoolThread(delegate.invokeRpc(schemaPath, input));
-            if (listenInPoolThread instanceof LazyDOMOperationResultFuture) {
-                return ((LazyDOMOperationResultFuture) listenInPoolThread).getBindingFuture();
+            if (listenInPoolThread instanceof LazyDOMRpcResultFuture) {
+                return ((LazyDOMRpcResultFuture) listenInPoolThread).getBindingFuture();
             }
 
             return transformFuture(schemaPath, listenInPoolThread, codec.getCodecFactory());

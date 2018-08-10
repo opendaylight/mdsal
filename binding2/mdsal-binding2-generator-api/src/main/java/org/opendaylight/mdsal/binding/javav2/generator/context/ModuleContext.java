@@ -33,6 +33,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -55,7 +56,7 @@ public final class ModuleContext {
     private final List<GeneratedTypeBuilder> augmentations = new ArrayList<>();
     private final Multimap<Type,AugmentationSchemaNode> typeToAugmentations = HashMultimap.create();
     private final BiMap<SchemaPath,Type> targetToAugmentation = HashBiMap.create();
-    private final Map<Type,Object> typeToSchema = new HashMap<>();
+    private final Map<Type,WithStatus> typeToSchema = new HashMap<>();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final BiMap<Type, CaseSchemaNode> caseTypeToSchema = HashBiMap.create();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
@@ -207,7 +208,7 @@ public final class ModuleContext {
      *
      * @return Mapping from type to corresponding schema
      */
-    public Map<Type, Object> getTypeToSchema() {
+    public Map<Type, WithStatus> getTypeToSchema() {
         return Collections.unmodifiableMap(this.typeToSchema);
     }
 

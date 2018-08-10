@@ -41,10 +41,13 @@ import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.util.BindingSchemaContextUtils;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Action;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
+import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationTarget;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
@@ -52,8 +55,10 @@ import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
+import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -92,7 +97,7 @@ public class BindingRuntimeContext implements Immutable {
     private final Multimap<Type, AugmentationSchemaNode> augmentationToSchemas = HashMultimap.create();
     private final BiMap<SchemaPath,Type> targetToAugmentation = HashBiMap.create();
 
-    private final BiMap<Type, Object> typeToDefiningSchema = HashBiMap.create();
+    private final BiMap<Type, WithStatus> typeToDefiningSchema = HashBiMap.create();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final Map<QName, Type> identities = new HashMap<>();
 
@@ -220,6 +225,14 @@ public class BindingRuntimeContext implements Immutable {
     public DataSchemaNode getSchemaDefinition(final Class<?> cls) {
         Preconditions.checkArgument(!Augmentation.class.isAssignableFrom(cls),"Supplied class must not be augmentation (%s is)", cls);
         return (DataSchemaNode) this.typeToDefiningSchema.get(referencedType(cls));
+    }
+
+    public RpcDefinition getRpcDefinition(final Class<? extends Rpc<?, ?>> cls) {
+        return (RpcDefinition) typeToDefiningSchema.get(referencedType(cls));
+    }
+
+    public ActionDefinition getActionDefinition(final Class<? extends Action<?, ?, ?, ?>> cls) {
+        return (ActionDefinition) typeToDefiningSchema.get(referencedType(cls));
     }
 
     /**
