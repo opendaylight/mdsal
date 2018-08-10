@@ -396,12 +396,13 @@ public class BindingGeneratorImplTest {
         }
     }
 
-    private void assertBaseGeneratedType(final GeneratedType genType, final String name, final String packageName) {
+    private static void assertBaseGeneratedType(final GeneratedType genType, final String name,
+            final String packageName) {
         assertEquals(name, genType.getName());
 
     }
 
-    private void assertMethod(final GeneratedType definingTypeExpected, final String nameExpected,
+    private static void assertMethod(final GeneratedType definingTypeExpected, final String nameExpected,
             final String typeNameExpected, final String typePackageNameExpected,
             final MethodSignature methodSignature) {
         assertEquals(definingTypeExpected, methodSignature.getDefiningType());
