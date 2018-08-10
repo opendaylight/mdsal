@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
@@ -33,8 +35,10 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.api.serializer.BindingNor
 import org.opendaylight.mdsal.binding.javav2.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Action;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Notification;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeArgument;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -320,6 +324,7 @@ public final class BindingToNormalizedNodeCodec
      *            - RPC as binding object
      * @return map of method with path of specific RPC
      */
+    @Deprecated
     public ImmutableBiMap<Method, SchemaPath> getRPCMethodToSchemaPath(final Class<?> key) {
         final Module module = getModuleBlocking(key);
         final ImmutableBiMap.Builder<Method, SchemaPath> ret = ImmutableBiMap.builder();
@@ -335,31 +340,30 @@ public final class BindingToNormalizedNodeCodec
     }
 
     /**
-     * Resolve method with path of specific Action as binding object.
+     * Get Action schema path.
      *
-     * @param key
-     *            - action as binding object
-     * @return map of method with path of specific action
+     * @param type
+     *            - Action implementation class type
+     * @return schema path of Action
      */
-    public ImmutableBiMap<Method, SchemaPath> getActionMethodToSchemaPath(final Class<?> key) {
-        final Module module = getModuleBlocking(key);
-
-        final ImmutableBiMap.Builder<Method, SchemaPath> ret = ImmutableBiMap.builder();
-        try {
-            for (final ActionDefinition actionDefinition : runtimeContext.getSchemaContext().getActions()) {
-                final QName qName = actionDefinition.getQName();
-                if (qName.getModule().equals(module.getQNameModule())) {
-                    final Method method = runtimeContext.findOperationMethod(key, actionDefinition);
-                    ret.put(method, actionDefinition.getPath());
-                }
-            }
-        } catch (final NoSuchMethodException e) {
-            throw new IllegalStateException("Action defined in model does not have representation in generated class.",
-                    e);
-        }
-        return ret.build();
+    public SchemaPath getActionPath(final Class<? extends Action<?, ?, ?, ?>> type) {
+        final ActionDefinition schema = runtimeContext.getActionDefinition(type);
+        checkArgument(schema != null, "Failed to find schema for %s", type);
+        return schema.getPath();
     }
 
+    /**
+     * Get RPC schema path.
+     *
+     * @param type
+     *            - RPC implementation class type
+     * @return schema path of RPC
+     */
+    public SchemaPath getRpcPath(final Class<? extends Rpc<?, ?>> type) {
+        final RpcDefinition schema = runtimeContext.getRpcDefinition(type);
+        checkArgument(schema != null, "Failed to find schema for %s", type);
+        return schema.getPath();
+    }
 
     /**
      * Resolve method with definition of specific RPC as binding object.
@@ -455,7 +459,7 @@ public final class BindingToNormalizedNodeCodec
 
         final BindingTreeCodec currentCodecTree = codecRegistry.getCodecContext();
         final InstanceIdentifier<?> bindingPath = codecRegistry.fromYangInstanceIdentifier(domIdentifier);
-        Preconditions.checkArgument(bindingPath != null);
+        checkArgument(bindingPath != null);
         /**
          * If we are able to deserialize YANG instance identifier, getSubtreeCodec must return non-null value.
          */
@@ -536,6 +540,17 @@ public final class BindingToNormalizedNodeCodec
      */
     public Collection<DOMDataTreeIdentifier>
             toDOMDataTreeIdentifiers(final Collection<DataTreeIdentifier<?>> subtrees) {
+        final Set<DOMDataTreeIdentifier> ret = new HashSet<>(subtrees.size());
+
+        for (final DataTreeIdentifier<?> subtree : subtrees) {
+            ret.add(toDOMDataTreeIdentifier(subtree));
+        }
+        return ret;
+    }
+
+    //FIXME: avoid the duplication of the function above.
+    public <P extends TreeNode> Set<DOMDataTreeIdentifier>
+            toDOMDataTreeIdentifiers(final Set<DataTreeIdentifier<P>> subtrees) {
         final Set<DOMDataTreeIdentifier> ret = new HashSet<>(subtrees.size());
 
         for (final DataTreeIdentifier<?> subtree : subtrees) {

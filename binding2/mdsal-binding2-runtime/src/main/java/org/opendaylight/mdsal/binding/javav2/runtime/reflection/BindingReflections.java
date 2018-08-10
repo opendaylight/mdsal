@@ -284,7 +284,7 @@ public final class BindingReflections {
         checkArgument(cls != null);
         final String packageName = getModelRootPackageName(cls.getPackage());
         final String potentialClassName = getModuleInfoClassName(packageName);
-        return ClassLoaderUtils.withClassLoader(cls.getClassLoader(), (Callable<YangModuleInfo>) () -> {
+        return ClassLoaderUtils.callWithClassLoader(cls.getClassLoader(), () -> {
             final Class<?> moduleInfoClass = Thread.currentThread().getContextClassLoader().loadClass(potentialClassName);
             return (YangModuleInfo) moduleInfoClass.getMethod("getInstance").invoke(null);
          });
