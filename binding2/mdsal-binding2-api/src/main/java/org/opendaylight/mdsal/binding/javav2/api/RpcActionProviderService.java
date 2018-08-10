@@ -9,14 +9,13 @@
 package org.opendaylight.mdsal.binding.javav2.api;
 
 import com.google.common.annotations.Beta;
+import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Action;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
-import org.opendaylight.mdsal.binding.javav2.spec.base.KeyedInstanceIdentifier;
-import org.opendaylight.mdsal.binding.javav2.spec.base.ListAction;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.yangtools.concepts.Identifier;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 
 /**
@@ -50,10 +49,12 @@ public interface RpcActionProviderService {
         T implementation, Set<InstanceIdentifier<?>> paths);
 
     /**
-     * Returns class representing registration of Action.
-     * @param type Action binding generated interface
-     * @param parent parent node for Action connected to
-     * @param implementation Action binding implementation
+     * Returns class representing registration of Action/ListAction.
+     * @param type Action/ListAction binding generated interface
+     * @param implementation Action/ListAction binding implementation
+     * @param datastore {@link LogicalDatastoreType} on which the implementation operates
+     * @param validNodes Set of nodes this implementation is constrained to, empty if this implementation can handle
+     *                   any target node.
      * @param <S> service class type
      * @param <P> parent type
      * @param <T> service implementation type
@@ -61,20 +62,15 @@ public interface RpcActionProviderService {
      */
     <S extends Action<? extends TreeNode, ?, ?, ?>, T extends S, P extends TreeNode> ObjectRegistration<T>
             registerActionImplementation(
-        Class<S> type, InstanceIdentifier<P> parent, T implementation);
+        Class<S> type, T implementation, LogicalDatastoreType datastore, Set<DataTreeIdentifier<P>> validNodes);
 
-    /**
-     * Returns class representing registration of ListAction.
-     * @param type ListAction binding generated interface
-     * @param parent parent node for ListAction connected to
-     * @param implementation ListAction binding implementation
-     * @param <S> service class type
-     * @param <P> parent type
-     * @param <K> key type
-     * @param <T> service implementation type
-     * @return returns class representing a ListAction registration
-     */
-    <S extends ListAction<? extends TreeNode, ?, ?, ?>, T extends S, P extends TreeNode, K extends Identifier>
-            ObjectRegistration<T> registerListActionImplementation(Class<S> type, KeyedInstanceIdentifier<P, K> parent,
-        T implementation);
+    default <S extends Action<? extends TreeNode, ?, ?, ?>, T extends S> ObjectRegistration<T>
+            registerActionImplementation(Class<S> type, T implementation, LogicalDatastoreType datastore) {
+        return registerActionImplementation(type, implementation, datastore, ImmutableSet.of());
+    }
+
+    default <S extends Action<? extends TreeNode, ?, ?, ?>, T extends S> ObjectRegistration<T>
+            registerActionImplementation(Class<S> type, T implementation) {
+        return registerActionImplementation(type, implementation, LogicalDatastoreType.OPERATIONAL, ImmutableSet.of());
+    }
 }
