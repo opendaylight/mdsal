@@ -24,13 +24,13 @@ package org.opendaylight.mdsal.binding.javav2.spec.base;
  *
  */
 @FunctionalInterface
-public interface Action<P extends TreeNode, I extends Input<I> & Instantiable<I>, O extends Output<O> & Instantiable<O>>
-        extends Operation {
+public interface Action<P extends TreeNode, D extends InstanceIdentifier<P>, I extends Input<I> & Instantiable<I>,
+    O extends Output<O> & Instantiable<O>> extends Operation {
 
     /**
      * @param input Action input schema node
      * @param ii implicit InstanceIdentifier connected to action, according to https://tools.ietf.org/html/rfc7950
      * @param callback on success/failure callback
      */
-    void invoke(I input, InstanceIdentifier<P> ii, RpcCallback<O> callback);
+    void invoke(I input, D ii, RpcCallback<O> callback);
 }

@@ -16,6 +16,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.KeyedInstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.ListAction;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
+import org.opendaylight.yangtools.concepts.Identifier;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 
 /**
@@ -58,7 +59,7 @@ public interface RpcActionProviderService {
      * @param <T> service implementation type
      * @return returns class representing a Action registration
      */
-    <S extends Action<? extends TreeNode, ?, ?>, T extends S, P extends TreeNode> ObjectRegistration<T>
+    <S extends Action<? extends TreeNode, ?, ?, ?>, T extends S, P extends TreeNode> ObjectRegistration<T>
             registerActionImplementation(
         Class<S> type, InstanceIdentifier<P> parent, T implementation);
 
@@ -73,7 +74,7 @@ public interface RpcActionProviderService {
      * @param <T> service implementation type
      * @return returns class representing a ListAction registration
      */
-    <S extends ListAction<? extends TreeNode, ?, ?>, T extends S, P extends TreeNode, K> ObjectRegistration<T>
-            registerListActionImplementation(
-            Class<S> type, KeyedInstanceIdentifier<P, K> parent, T implementation);
+    <S extends ListAction<? extends TreeNode, ?, ?, ?>, T extends S, P extends TreeNode, K extends Identifier>
+            ObjectRegistration<T> registerListActionImplementation(Class<S> type, KeyedInstanceIdentifier<P, K> parent,
+        T implementation);
 }

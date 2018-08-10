@@ -11,9 +11,25 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl.list.action.example
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.concepts.Identifier;
 
 /**
- * list my-list
+ * key of list my-list
  */
-public interface MyList extends TreeNode, Augmentable<MyList>, Identifiable<MyListKey> {
+public class MyListKey implements Identifier {
+
+    @Override
+    public boolean equals(Object obj) {
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public String toString() {
+        return null;
+    }
 }
