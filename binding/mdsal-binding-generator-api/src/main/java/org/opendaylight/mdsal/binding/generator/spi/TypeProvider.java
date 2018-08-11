@@ -14,10 +14,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
 public interface TypeProvider {
-
-    @Deprecated
-    Type javaTypeForYangType(String type);
-
     /**
      * Resolve of yang Type Definition to it's java counter part.
      * If the Type Definition contains one of yang primitive types the method

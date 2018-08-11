@@ -13,9 +13,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -134,20 +134,19 @@ public final class BaseYangTypes {
         TYPE_MAP = b.build();
     }
 
-    public static final TypeProvider BASE_YANG_TYPES_PROVIDER = new TypeProvider() {
-        /**
-         * Searches <code>Type</code> value to which is YANG <code>type</code>
-         * mapped.
-         *
-         * @param type
-         *            string with YANG type name
-         * @return java <code>Type</code> representation of <code>type</code>
-         */
-        @Override
-        public Type javaTypeForYangType(final String type) {
-            return TYPE_MAP.get(type);
-        }
+    /**
+     * Searches <code>Type</code> value to which is YANG <code>type</code>
+     * mapped.
+     *
+     * @param type
+     *            string with YANG type name
+     * @return java <code>Type</code> representation of <code>type</code>
+     */
+    public static Type javaTypeForYangType(final String type) {
+        return TYPE_MAP.get(type);
+    }
 
+    public static final TypeProvider BASE_YANG_TYPES_PROVIDER = new TypeProvider() {
         /**
          * Searches <code>Type</code> value to which is YANG <code>type</code>
          * mapped.

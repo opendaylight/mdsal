@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -22,15 +21,13 @@ public class BaseTypeProvider {
 
     @Test
     public void test() {
-        TypeProvider provider = BaseYangTypes.BASE_YANG_TYPES_PROVIDER;
-
-        Type stringType = provider.javaTypeForYangType("string");
+        Type stringType = BaseYangTypes.javaTypeForYangType("string");
         assertEquals("java.lang", stringType.getPackageName());
         assertEquals("String", stringType.getName());
         assertTrue(stringType instanceof ConcreteType);
         ParameterizedType stringBooleanMap = Types.mapTypeFor(
-                provider.javaTypeForYangType("string"),
-                provider.javaTypeForYangType("boolean"));
+            BaseYangTypes.javaTypeForYangType("string"),
+            BaseYangTypes.javaTypeForYangType("boolean"));
         assertTrue(!(stringBooleanMap instanceof ConcreteType));
         assertEquals("java.util", stringBooleanMap.getPackageName());
         assertEquals("Map", stringBooleanMap.getName());
