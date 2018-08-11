@@ -26,7 +26,6 @@
 
     <modules>
         <module>features</module>
-        <module>artifacts</module>
         <module>yang-ext</module>
         <module>iana</module>
         <module>ietf</module>
