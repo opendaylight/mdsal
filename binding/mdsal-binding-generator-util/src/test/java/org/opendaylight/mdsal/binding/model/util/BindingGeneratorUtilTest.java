@@ -13,8 +13,6 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableList;
@@ -28,8 +26,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
-import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
@@ -102,26 +100,6 @@ public class BindingGeneratorUtilTest {
                 "org.opendaylight.yang.gen.v1.urn.m.o.d.u.l.e.n.a.m.e.t.e.s.t._case._1digit.rev130910.cont.outter",
                 subPackageNameForDataNode);
 
-        // test of the method packageNameForTypeDefinition
-        Set<TypeDefinition<?>> typeDefinitions = module.getTypeDefinitions();
-        String subPackageNameForTypeDefinition = "";
-        TypeDefinition<?> firstTypeDef = null;
-
-        for (TypeDefinition<?> tpDef : typeDefinitions) {
-            if (tpDef.getQName().getLocalName().equals("tpdf")) {
-                subPackageNameForTypeDefinition = BindingGeneratorUtil.packageNameForTypeDefinition(packageName, tpDef);
-                firstTypeDef = tpDef;
-                break;
-            }
-        }
-        assertEquals("The name of the subpackage is incorrect.",
-                "org.opendaylight.yang.gen.v1.urn.m.o.d.u.l.e.n.a.m.e.t.e.s.t._case._1digit.rev130910",
-                subPackageNameForTypeDefinition);
-
-        // test method getRestrictions
-        Restrictions restriction = BindingGeneratorUtil.getRestrictions(firstTypeDef);
-        assertNotNull(restriction);
-
         // test method computeDefaultSUID
         GeneratedTypeBuilder genTypeBuilder = new CodegenGeneratedTypeBuilder(
             JavaTypeName.create("org.opendaylight.yangtools.test", "TestType"));
@@ -138,45 +116,6 @@ public class BindingGeneratorUtilTest {
             JavaTypeName.create("org.opendaylight.yangtools.test2", "TestType2"));
         long computedSUID2 = BindingGeneratorUtil.computeDefaultSUID(genTypeBuilder2);
         assertNotEquals(computedSUID, computedSUID2);
-
-        // test of exception part of the method moduleNamespaceToPackageName()
-        Module moduleWithoutRevision = mock(Module.class);
-        doReturn(null).when(moduleWithoutRevision).getQNameModule();
-        try {
-            BindingGeneratorUtil.moduleNamespaceToPackageName(moduleWithoutRevision);
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-        }
-    }
-
-    /**
-     * Test for the method
-     * &lt;ul&gt;
-     * &lt;li&gt;{@link BindingGeneratorUtil#packageNameForTypeDefinition(String, TypeDefinition)
-     * packageNameForTypeDefinition(String, TypeDefinition)}&lt;/li&gt;
-     * &lt;/ul&gt;
-     */
-    @Test
-    @Deprecated
-    public void testPackageNameForTypeDefinitionNullBasePackageName() {
-        expectedEx.expect(IllegalArgumentException.class);
-        expectedEx.expectMessage("Base Package Name cannot be NULL!");
-        BindingGeneratorUtil.packageNameForTypeDefinition(null, null);
-    }
-
-    /**
-     * Test for the method
-     * &lt;ul&gt;
-     * &lt;li&gt;{@link BindingGeneratorUtil#packageNameForTypeDefinition(String, TypeDefinition)
-     * packageNameForTypeDefinition(String, TypeDefinition)}&lt;/li&gt;
-     * &lt;/ul&gt;
-     */
-    @Test
-    @Deprecated
-    public void testPackageNameForTypeDefinitionNullTypeDefinition() {
-        expectedEx.expect(IllegalArgumentException.class);
-        expectedEx.expectMessage("Type Definition reference cannot be NULL!");
-        BindingGeneratorUtil.packageNameForTypeDefinition("test.package", null);
     }
 
     /**
@@ -203,40 +142,6 @@ public class BindingGeneratorUtilTest {
     public void testPackageNameForGeneratedTypeNullSchemaPath() {
         expectedEx.expect(NullPointerException.class);
         BindingGeneratorUtil.packageNameForGeneratedType("test.package", null);
-    }
-
-    /**
-     * Test for the method
-     * &lt;ul&gt;
-     * &lt;li&gt;{@link BindingGeneratorUtil#parseToClassName(String)
-     * parseToClassName(String)}&lt;/li&gt;
-     * &lt;/ul&gt;
-     */
-    @Test
-    public void testParseToClassNameNullValue() {
-        String className = BindingGeneratorUtil.parseToClassName("test-class-name");
-        assertEquals("TestClassName", className);
-
-        expectedEx.expect(IllegalArgumentException.class);
-        expectedEx.expectMessage("Name can not be null");
-        className = BindingGeneratorUtil.parseToClassName(null);
-    }
-
-    /**
-     * Test for the method
-     * &lt;ul&gt;
-     * &lt;li&gt;{@link BindingGeneratorUtil#parseToClassName(String)
-     * parseToClassName(String)}&lt;/li&gt;
-     * &lt;/ul&gt;
-     */
-    @Test
-    public void testParseToClassNameEmptyValue() {
-        String className = BindingGeneratorUtil.parseToClassName("test-class-name");
-        assertEquals("TestClassName", className);
-
-        expectedEx.expect(IllegalArgumentException.class);
-        expectedEx.expectMessage("Name can not be empty");
-        className = BindingGeneratorUtil.parseToClassName("");
     }
 
     /**
@@ -275,17 +180,17 @@ public class BindingGeneratorUtilTest {
      */
     @Test
     public void testParsingMethods() {
-        // parseToClassName method testing
+        // getClassName method testing
         assertEquals("Class name has incorrect format", "SomeTestingClassName",
-                BindingMapping.getClassName("  some-testing_class name   "));
+            BindingMapping.getClassName("  some-testing_class name   "));
         assertEquals("Class name has incorrect format", "_0SomeTestingClassName",
-                BindingMapping.getClassName("  0 some-testing_class name   "));
+            BindingMapping.getClassName("  0 some-testing_class name   "));
 
-        // parseToValidParamName
+        // getPropertyName
         assertEquals("Parameter name has incorrect format", "someTestingParameterName",
-                BindingGeneratorUtil.parseToValidParamName("  some-testing_parameter   name   "));
+            BindingMapping.getPropertyName("  some-testing_parameter   name   "));
         assertEquals("Parameter name has incorrect format", "_0someTestingParameterName",
-                BindingGeneratorUtil.parseToValidParamName("  0some-testing_parameter   name   "));
+            BindingMapping.getPropertyName("  0some-testing_parameter   name   "));
     }
 
     @Test
