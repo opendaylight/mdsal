@@ -158,21 +158,6 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         return additionalTypes;
     }
 
-    /**
-     *
-     * Converts basic YANG type <code>type</code> to JAVA <code>Type</code>.
-     *
-     * @param type
-     *            string with YANG name of type
-     * @return JAVA <code>Type</code> for YANG type <code>type</code>
-     * @see TypeProvider#javaTypeForYangType(String)
-     */
-    @Override
-    @Deprecated
-    public Type javaTypeForYangType(final String type) {
-        return BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForYangType(type);
-    }
-
     @Override
     public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode) {
         return javaTypeForSchemaDefinitionType(typeDefinition, parentNode, null);
