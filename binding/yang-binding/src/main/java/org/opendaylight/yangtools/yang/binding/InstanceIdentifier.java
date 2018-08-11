@@ -234,23 +234,6 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      * an identifier.
      *
      * @param listItem component type
-     * @param listKey component key type
-     * @return key associated with the component, or null if the component type
-     *         is not present.
-     *
-     * @deprecated Use {@link #firstKeyOf(Class)} instead.
-     */
-    @Deprecated
-    public final <N extends Identifiable<K> & DataObject, K extends Identifier<N>> K firstKeyOf(final Class<N> listItem,
-            final Class<K> listKey) {
-        return firstKeyOf(listItem);
-    }
-
-    /**
-     * Return the key associated with the first component of specified type in
-     * an identifier.
-     *
-     * @param listItem component type
      * @return key associated with the component, or null if the component type
      *         is not present.
      */
@@ -423,23 +406,6 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
     public final <N extends DataObject & Augmentation<? super T>> InstanceIdentifier<N> augmentation(
             final Class<N> container) {
         return childIdentifier(Item.of(container));
-    }
-
-    @Deprecated
-    private List<PathArgument> legacyCache;
-
-    /**
-     * Return the path as a list.
-     *
-     * @deprecated Use {@link #getPathArguments()} instead.
-     */
-    @Deprecated
-    public final List<PathArgument> getPath() {
-        if (legacyCache == null) {
-            legacyCache = ImmutableList.<PathArgument>copyOf(pathArguments);
-        }
-
-        return legacyCache;
     }
 
     /**
@@ -709,17 +675,10 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      *
      * @param <T> Item type
      */
-    public static class Item<T extends DataObject> extends AbstractPathArgument<T> {
+    public static final class Item<T extends DataObject> extends AbstractPathArgument<T> {
         private static final long serialVersionUID = 1L;
 
-        /**
-         * Construct an Item.
-         *
-         * @param type Backing class
-         * @deprecated Use {@link #of(Class)} instead.
-         */
-        @Deprecated
-        public Item(final Class<T> type) {
+        private Item(final Class<T> type) {
             super(type);
         }
 
@@ -764,20 +723,12 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      * @param <I> An object that is identifiable by an identifier
      * @param <T> The identifier of the object
      */
-    public static class IdentifiableItem<I extends Identifiable<T> & DataObject, T extends Identifier<I>>
+    public static final class IdentifiableItem<I extends Identifiable<T> & DataObject, T extends Identifier<I>>
             extends AbstractPathArgument<I> {
         private static final long serialVersionUID = 1L;
         private final T key;
 
-        /**
-         * Construct an Item.
-         *
-         * @param type Backing class
-         * @param key key
-         * @deprecated Use {@link #of(Class, Identifier)} instead.
-         */
-        @Deprecated
-        public IdentifiableItem(final Class<I> type, final T key) {
+        private IdentifiableItem(final Class<I> type, final T key) {
             super(type);
             this.key = requireNonNull(key, "Key may not be null.");
         }
@@ -821,7 +772,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
          * @return Data object type.
          */
         @Override
-        public final T getKey() {
+        public T getKey() {
             return key;
         }
 

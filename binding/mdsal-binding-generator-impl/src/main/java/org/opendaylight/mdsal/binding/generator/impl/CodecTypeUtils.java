@@ -7,20 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
 
 public final class CodecTypeUtils {
-
     private CodecTypeUtils() {
         throw new UnsupportedOperationException("Utility class should not be instantiated");
     }
 
     @SuppressWarnings({"unchecked","rawtypes"})
-    public static IdentifiableItem<?, ?> newIdentifiableItem(Class<?> type, Object key) {
-        Class<? extends Identifiable<?>> identifiableType = (Class<? extends Identifiable<?>>) type;
-        Identifier<? extends Identifiable<?>> identifier = (Identifier<? extends Identifiable<?>>) key;
-        return new IdentifiableItem(identifiableType,identifier);
+    public static IdentifiableItem<?, ?> newIdentifiableItem(final Class<?> type, final Object key) {
+        return IdentifiableItem.of((Class)type, (Identifier)key);
     }
 }
