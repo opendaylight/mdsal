@@ -35,7 +35,6 @@ import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile;
 import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile.FileKind;
 import org.opendaylight.mdsal.binding.java.api.generator.YangModuleInfoTemplate;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -205,7 +204,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         String providerSource = template.generateModelProvider();
 
         final File packageDir = GeneratorJavaFile.packageToDirectory(outputBaseDir,
-                BindingGeneratorUtil.moduleNamespaceToPackageName(module));
+            BindingMapping.getRootPackageName(module.getQNameModule()));
 
         generatedFiles.add(writeJavaSource(packageDir, BindingMapping.MODULE_INFO_CLASS_NAME, moduleInfoSource));
         generatedFiles
