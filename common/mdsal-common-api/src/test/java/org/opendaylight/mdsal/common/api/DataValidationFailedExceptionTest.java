@@ -27,9 +27,9 @@ public class DataValidationFailedExceptionTest {
         throw dataValidationFailedException;
     }
 
-    private final class TestClass implements Path {
+    private final class TestClass implements Path<TestClass> {
         @Override
-        public boolean contains(@Nonnull final Path other) {
+        public boolean contains(@Nonnull final TestClass other) {
             return false;
         }
     }
