@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.common.api;
 
 import org.opendaylight.yangtools.concepts.Path;
 
-
 /**
  * A factory which allocates new transactions to operate on the data tree.
  *
@@ -53,7 +52,10 @@ import org.opendaylight.yangtools.concepts.Path;
  *
  * @param <P> Type of path (subtree identifier), which represents location in tree
  * @param <D> Type of data (payload), which represents data payload
+ * @deprecated This interface is being removed. Use either {@code org.opendaylight.mdsal.binding.api.TransactionFactory}
+ *             or {@code org.opendaylight.mdsal.dom.api.DOMTransactionFactory} instead.
  */
+@Deprecated
 public interface AsyncDataTransactionFactory<P extends Path<P>, D> {
 
     /**

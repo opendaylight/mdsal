@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.common.api;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.concepts.Path;
 
-
 /**
  * A common parent for all transactions which operate on a conceptual data tree.
  * See derived transaction types for more concrete behavior:
@@ -24,11 +23,11 @@ import org.opendaylight.yangtools.concepts.Path;
  *
  * @param <P> Type of path (subtree identifier), which represents location in tree
  * @param <D> Type of data (payload), which represents data payload
+ * @deprecated This interface is being removed.  Use either {@code org.opendaylight.mdsal.binding.api.Transaction}
+ *             or {@code org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction} instead.
  */
+@Deprecated
 public interface AsyncTransaction<P extends Path<P>,D> extends Identifiable<Object> {
-
     @Override
     Object getIdentifier();
-
-
 }
