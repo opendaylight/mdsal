@@ -24,11 +24,10 @@ import org.opendaylight.yangtools.concepts.Path;
  *
  * @param <P> Type of path (subtree identifier), which represents location in tree
  * @param <D> Type of data (payload), which represents data payload
+ * @deprecated This interface is being removed.
  */
+@Deprecated
 public interface AsyncTransaction<P extends Path<P>,D> extends Identifiable<Object> {
-
     @Override
     Object getIdentifier();
-
-
 }
