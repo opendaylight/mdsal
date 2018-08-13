@@ -129,12 +129,13 @@ import org.opendaylight.yangtools.concepts.Path;
  * @see AsyncReadTransaction
  * @see AsyncWriteTransaction
  *
- * @param <P>
- *            Type of path (subtree identifier), which represents location in
- *            tree
- * @param <D>
- *            Type of data (payload), which represents data payload
+ * @param <P> Type of path (subtree identifier), which represents location in tree
+ * @param <D> Type of data (payload), which represents data payload
+ * @deprecated This interface is being removed. Use either
+ *             {@code org.opendaylight.mdsal.binding.api.ReadWriteTransaction}
+ *             or {@code org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction} instead.
  */
+@Deprecated
 public interface AsyncReadWriteTransaction<P extends Path<P>, D> extends AsyncReadTransaction<P, D>,
         AsyncWriteTransaction<P, D> {
 

@@ -85,12 +85,12 @@ import org.opendaylight.yangtools.concepts.Path;
  * <b>Implementation Note:</b> This interface is not intended to be implemented
  * by users of MD-SAL, but only to be consumed by them.
  *
- * @param <P>
- *            Type of path (subtree identifier), which represents location in
- *            tree
- * @param <D>
- *            Type of data (payload), which represents data payload
+ * @param <P> Type of path (subtree identifier), which represents location in tree
+ * @param <D> Type of data (payload), which represents data payload
+ * @deprecated This interface is being removed. Use either {@code org.opendaylight.mdsal.binding.api.WriteTransaction}
+ *             or {@code org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction} instead.
  */
+@Deprecated
 public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransaction<P, D> {
     /**
      * Cancels the transaction.

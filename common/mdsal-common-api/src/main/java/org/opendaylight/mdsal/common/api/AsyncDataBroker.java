@@ -44,7 +44,10 @@ import org.opendaylight.yangtools.concepts.Path;
  *
  * @param <P> Type of path (subtree identifier), which represents location in tree
  * @param <D> Type of data (payload), which represents data payload
+ * @deprecated This interface is being removed. Use either {@code org.opendaylight.mdsal.binding.api.DataBroker}
+ *             or {@code org.opendaylight.mdsal.dom.api.DOMDataBroker} instead.
  */
+@Deprecated
 public interface AsyncDataBroker<P extends Path<P>, D> extends
         AsyncDataTransactionFactory<P, D> {
 

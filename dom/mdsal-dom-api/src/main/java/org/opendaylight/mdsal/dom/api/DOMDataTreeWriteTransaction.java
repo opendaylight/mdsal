@@ -18,9 +18,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * <p>
  * For more information on usage and examples, please see the documentation in {@link AsyncWriteTransaction}.
  */
-public interface DOMDataTreeWriteTransaction extends
-    AsyncWriteTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>> {
-
+public interface DOMDataTreeWriteTransaction extends DOMDataTreeTransaction,
+        AsyncWriteTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>> {
     /**
      * Stores a piece of data at the specified path. This acts as an add / replace
      * operation, which is to say that whole subtree will be replaced by the specified data.
@@ -64,7 +63,6 @@ public interface DOMDataTreeWriteTransaction extends
      *             if the transaction has already been submitted
      */
     void merge(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode<?, ?> data);
-
 
     @Override
     void delete(LogicalDatastoreType store, YangInstanceIdentifier path);
