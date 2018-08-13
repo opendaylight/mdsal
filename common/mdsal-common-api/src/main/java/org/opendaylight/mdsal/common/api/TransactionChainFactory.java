@@ -11,7 +11,10 @@ import org.opendaylight.yangtools.concepts.Path;
 
 /**
  * Interface for creating transaction chains.
+ *
+ * @deprecated This interface is deprecated and is integrated into AsyncDataBroker replacements.
  */
+@Deprecated
 public interface TransactionChainFactory<P extends Path<P>, D> {
 
     /**

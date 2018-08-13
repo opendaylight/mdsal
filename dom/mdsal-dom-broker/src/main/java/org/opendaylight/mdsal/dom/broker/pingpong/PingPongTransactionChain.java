@@ -19,16 +19,16 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
-import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionChain;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.mdsal.dom.spi.ForwardingDOMDataReadWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class PingPongTransactionChain implements DOMTransactionChain {
     private static final Logger LOG = LoggerFactory.getLogger(PingPongTransactionChain.class);
-    private final TransactionChainListener listener;
+    private final DOMTransactionChainListener listener;
     private final DOMTransactionChain delegate;
 
     @GuardedBy("this")
@@ -94,18 +94,18 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
             .newUpdater(PingPongTransactionChain.class, PingPongTransaction.class, "inflightTx");
     private volatile PingPongTransaction inflightTx;
 
-    PingPongTransactionChain(final DOMDataBroker broker, final TransactionChainListener listener) {
+    PingPongTransactionChain(final DOMDataBroker broker, final DOMTransactionChainListener listener) {
         this.listener = Preconditions.checkNotNull(listener);
-        this.delegate = broker.createTransactionChain(new TransactionChainListener() {
+        this.delegate = broker.createTransactionChain(new DOMTransactionChainListener() {
             @Override
-            public void onTransactionChainFailed(final TransactionChain<?, ?> chain,
-                                                 final AsyncTransaction<?, ?> transaction, final Throwable cause) {
+            public void onTransactionChainFailed(final DOMTransactionChain chain,
+                    final DOMDataTreeTransaction transaction, final Throwable cause) {
                 LOG.debug("Transaction chain {} reported failure in {}", chain, transaction, cause);
                 delegateFailed(chain, cause);
             }
 
             @Override
-            public void onTransactionChainSuccessful(final TransactionChain<?, ?> chain) {
+            public void onTransactionChainSuccessful(final DOMTransactionChain chain) {
                 delegateSuccessful(chain);
             }
         });

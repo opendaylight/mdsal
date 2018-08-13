@@ -8,12 +8,12 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.util.concurrent.SettableFuture;
-import org.opendaylight.mdsal.common.api.AsyncTransaction;
-import org.opendaylight.mdsal.common.api.TransactionChain;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 
 /**
- * Simple implementation of {@link TransactionChainListener} for testing.
+ * Simple implementation of {@link DOMTransactionChainListener} for testing.
  *
  *<p>
  * This transaction chain listener does not contain any logic, only update
@@ -21,19 +21,19 @@ import org.opendaylight.mdsal.common.api.TransactionChainListener;
  * transaction chain event is retrieved.
  *
  */
-class BlockingTransactionChainListener implements TransactionChainListener {
+class BlockingTransactionChainListener implements DOMTransactionChainListener {
 
     private final SettableFuture<Throwable> failFuture = SettableFuture.create();
     private final SettableFuture<Void> successFuture = SettableFuture.create();
 
     @Override
-    public void onTransactionChainFailed(final TransactionChain<?, ?> chain, final AsyncTransaction<?, ?> transaction,
+    public void onTransactionChainFailed(final DOMTransactionChain chain, final DOMDataTreeTransaction transaction,
             final Throwable cause) {
         failFuture.set(cause);
     }
 
     @Override
-    public void onTransactionChainSuccessful(final TransactionChain<?, ?> chain) {
+    public void onTransactionChainSuccessful(final DOMTransactionChain chain) {
         successFuture.set(null);
     }
 
@@ -44,5 +44,4 @@ class BlockingTransactionChainListener implements TransactionChainListener {
     public SettableFuture<Void> getSuccessFuture() {
         return successFuture;
     }
-
 }
