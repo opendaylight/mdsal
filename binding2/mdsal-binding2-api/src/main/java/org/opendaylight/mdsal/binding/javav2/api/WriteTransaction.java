@@ -9,9 +9,13 @@
 package org.opendaylight.mdsal.binding.javav2.api;
 
 import com.google.common.annotations.Beta;
+import com.google.common.util.concurrent.FluentFuture;
+import javax.annotation.CheckReturnValue;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.common.api.AsyncWriteTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
 /**
@@ -22,6 +26,12 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
  */
 @Beta
 public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifier<?>, TreeNode> {
+    @Override
+    boolean cancel();
+
+    @Override
+    @CheckReturnValue
+    @NonNull FluentFuture<? extends @NonNull CommitInfo> commit();
 
     /**
      * Stores a piece of data at the specified path. This acts as an add / replace

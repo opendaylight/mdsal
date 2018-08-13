@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.javav2.api;
 
 import com.google.common.annotations.Beta;
@@ -28,12 +27,6 @@ import org.opendaylight.mdsal.common.api.TransactionChainListener;
 @Beta
 public interface DataBroker extends AsyncDataBroker<InstanceIdentifier<?>, TreeNode>, BindingService,
         TransactionFactory, DataTreeService, TransactionChainFactory<InstanceIdentifier<?>, TreeNode> {
-
-    @Override
-    ReadTransaction newReadOnlyTransaction();
-
-    @Override
-    WriteTransaction newWriteOnlyTransaction();
 
     @Override
     BindingTransactionChain createTransactionChain(TransactionChainListener listener);
