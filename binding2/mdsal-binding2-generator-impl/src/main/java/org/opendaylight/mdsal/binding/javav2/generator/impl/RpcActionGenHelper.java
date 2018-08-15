@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.annotateDeprecatedIfNecessary;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.checkModuleAndModuleName;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.addImplementedInterfaceFromUses;
@@ -115,9 +116,11 @@ final class RpcActionGenHelper {
                 if (potential instanceof ActionNodeContainer) {
                     final Set<ActionDefinition> actions = ((ActionNodeContainer) potential).getActions();
                     for (ActionDefinition action : actions) {
-                        genCtx.get(module).addTopLevelNodeType(resolveOperation(potential, action, module,
+                        final GeneratedTypeBuilder typeBuilder = resolveOperation(potential, action, module,
                             schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
-                            namespaceType1));
+                            namespaceType1);
+                        genCtx.get(module).addTopLevelNodeType(typeBuilder);
+                        genCtx.get(module).addTypeToSchema(typeBuilder, action);
                     }
                 }
 
@@ -181,33 +184,13 @@ final class RpcActionGenHelper {
         }
 
         for (final RpcDefinition rpc : rpcDefinitions) {
-            //FIXME: get correct parent for routed RPCs only
-            DataSchemaNode parent = null;
-
-            ContainerSchemaNode input = rpc.getInput();
-            boolean isAction = false;
-            if (input != null) {
-                for (DataSchemaNode schemaNode : input.getChildNodes()) {
-                    if (getRoutingContext(schemaNode).isPresent()) {
-                        isAction = true;
-                        break;
-                    }
-                }
-            }
-
-            //routedRPC?
-            if (isAction) {
-                genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
-                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
-                        BindingNamespaceType.Data));
-            } else {
-                //global RPC only
-                genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
-                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, false,
-                        BindingNamespaceType.Data));
-
-            }
+            final GeneratedTypeBuilder typeBuilder = resolveOperation(null, rpc, module, schemaContext,
+                verboseClassComments, genTypeBuilders, genCtx, typeProvider, false,
+                BindingNamespaceType.Data);
+            genCtx.get(module).addTopLevelNodeType(typeBuilder);
+            genCtx.get(module).addTypeToSchema(typeBuilder, rpc);
         }
+
         return genCtx;
     }
 
@@ -266,33 +249,28 @@ final class RpcActionGenHelper {
         operationMethod.addParameter(inTypeInstance, "input");
 
         if (isAction) {
-            if (parent != null) {
-                //action
-                GeneratedTypeBuilder parentType = genCtx.get(module).getChildNode(parent.getPath());
-                checkState(parentType != null, "Parent generated type for " + parent
-                        + " data schema node must have been generated already");
-                annotateDeprecatedIfNecessary(parent.getStatus(), parentType);
+            requireNonNull(parent, "Parent must be specified for action.");
+            GeneratedTypeBuilder parentType = genCtx.get(module).getChildNode(parent.getPath());
+            checkState(parentType != null, "Parent generated type for " + parent
+                    + " data schema node must have been generated already");
+            annotateDeprecatedIfNecessary(parent.getStatus(), parentType);
 
-                if (parent instanceof ListSchemaNode) {
-                    //ListAction
-                    GeneratedTransferObject keyType = null;
-                    for (MethodSignatureBuilder method : parentType.getMethodDefinitions()) {
-                        if (method.getName().equals("getKey")) {
-                            keyType = (GeneratedTransferObject) method.toInstance(parentType).getReturnType();
-                        }
+            if (parent instanceof ListSchemaNode) {
+                //ListAction
+                GeneratedTransferObject keyType = null;
+                for (MethodSignatureBuilder method : parentType.getMethodDefinitions()) {
+                    if (method.getName().equals("getKey")) {
+                        keyType = (GeneratedTransferObject) method.toInstance(parentType).getReturnType();
                     }
-
-                    operationMethod.addParameter(
-                            parameterizedTypeFor(KEYED_INSTANCE_IDENTIFIER, parentType, keyType), "kii");
-                    interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
-                } else {
-                    //Action
-                    operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
-                    interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
                 }
+
+                operationMethod.addParameter(
+                        parameterizedTypeFor(KEYED_INSTANCE_IDENTIFIER, parentType, keyType), "kii");
+                interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
             } else {
-                //TODO:routed RPC
-                throw new UnsupportedOperationException("Not implemented yet.");
+                //Action
+                operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
+                interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
             }
         } else {
             //RPC
