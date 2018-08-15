@@ -181,33 +181,12 @@ final class RpcActionGenHelper {
         }
 
         for (final RpcDefinition rpc : rpcDefinitions) {
-            //FIXME: get correct parent for routed RPCs only
-            DataSchemaNode parent = null;
+            genCtx.get(module).addTopLevelNodeType(resolveOperation(null, rpc, module, schemaContext,
+                verboseClassComments, genTypeBuilders, genCtx, typeProvider, false,
+                BindingNamespaceType.Data));
 
-            ContainerSchemaNode input = rpc.getInput();
-            boolean isAction = false;
-            if (input != null) {
-                for (DataSchemaNode schemaNode : input.getChildNodes()) {
-                    if (getRoutingContext(schemaNode).isPresent()) {
-                        isAction = true;
-                        break;
-                    }
-                }
-            }
-
-            //routedRPC?
-            if (isAction) {
-                genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
-                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
-                        BindingNamespaceType.Data));
-            } else {
-                //global RPC only
-                genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
-                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, false,
-                        BindingNamespaceType.Data));
-
-            }
         }
+
         return genCtx;
     }
 
@@ -291,8 +270,7 @@ final class RpcActionGenHelper {
                     interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
                 }
             } else {
-                //TODO:routed RPC
-                throw new UnsupportedOperationException("Not implemented yet.");
+                throw new UnsupportedOperationException("Parent must be specified for action.");
             }
         } else {
             //RPC
