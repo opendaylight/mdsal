@@ -37,6 +37,7 @@ import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflectio
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModuleInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
@@ -119,7 +120,7 @@ public class BindingTestContext implements AutoCloseable {
     public void startBindingBroker() {
         checkState(executor != null, "Executor needs to be set");
 
-        baConsumerRpc = new BindingDOMOperationServiceAdapter(getDomRpcInvoker(), codec);
+        baConsumerRpc = new BindingDOMOperationServiceAdapter(getDomRpcInvoker(), getDomActionService(), codec);
         baProviderRpc = new BindingDOMOperationProviderServiceAdapter(getDomRpcRegistry(), getDomActionRegistry(),
             codec);
         final MountPointService mountService = new BindingDOMMountPointServiceAdapter(biMountImpl, codec);
@@ -206,6 +207,10 @@ public class BindingTestContext implements AutoCloseable {
 
     public DOMRpcService getDomRpcInvoker() {
         return domRouter.getRpcService();
+    }
+
+    public DOMActionService getDomActionService() {
+        return domRouter.getActionService();
     }
 
     @Override

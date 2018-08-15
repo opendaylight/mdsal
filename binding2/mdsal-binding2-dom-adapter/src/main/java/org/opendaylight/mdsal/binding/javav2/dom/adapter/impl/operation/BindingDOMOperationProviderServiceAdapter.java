@@ -57,7 +57,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-//FIXME missing support of Action operation (dependence on support of Yang 1.1 in DOM part of MD-SAL)
 /**
  * Operation service provider adapter.
  */
