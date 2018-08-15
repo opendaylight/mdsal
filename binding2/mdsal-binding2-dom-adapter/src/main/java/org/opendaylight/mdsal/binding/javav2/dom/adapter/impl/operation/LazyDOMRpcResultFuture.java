@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.operation;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AbstractFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -48,8 +49,8 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> {
 
     private LazyDOMRpcResultFuture(final ListenableFuture<RpcResult<?>> delegate,
                                    final BindingNormalizedNodeCodecRegistry codec) {
-        this.bindingFuture = Preconditions.checkNotNull(delegate, "delegate");
-        this.codec = Preconditions.checkNotNull(codec, "codec");
+        this.bindingFuture = requireNonNull(delegate, "delegate");
+        this.codec = requireNonNull(codec, "codec");
     }
 
     static FluentFuture<DOMRpcResult> create(final BindingNormalizedNodeCodecRegistry codec,

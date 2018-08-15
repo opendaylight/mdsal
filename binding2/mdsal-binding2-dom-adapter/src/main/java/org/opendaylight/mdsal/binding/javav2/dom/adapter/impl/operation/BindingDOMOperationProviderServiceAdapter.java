@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.operation;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.SettableFuture;
@@ -57,7 +58,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-//FIXME missing support of Action operation (dependence on support of Yang 1.1 in DOM part of MD-SAL)
 /**
  * Operation service provider adapter.
  */
@@ -132,8 +132,8 @@ public class BindingDOMOperationProviderServiceAdapter implements RpcActionProvi
 
         AbstractImplAdapter(final BindingNormalizedNodeCodecRegistry codec, final Class<? extends Operation> clazz,
                    final D delegate) {
-            this.codec = Preconditions.checkNotNull(codec);
-            this.delegate = Preconditions.checkNotNull(delegate);
+            this.codec = requireNonNull(codec);
+            this.delegate = requireNonNull(delegate);
             inputQname = QName.create(BindingReflections.getQNameModule(clazz), "input").intern();
         }
 
