@@ -115,9 +115,11 @@ final class RpcActionGenHelper {
                 if (potential instanceof ActionNodeContainer) {
                     final Set<ActionDefinition> actions = ((ActionNodeContainer) potential).getActions();
                     for (ActionDefinition action : actions) {
-                        genCtx.get(module).addTopLevelNodeType(resolveOperation(potential, action, module,
+                        final GeneratedTypeBuilder typeBuilder = resolveOperation(potential, action, module,
                             schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
-                            namespaceType1));
+                            namespaceType1);
+                        genCtx.get(module).addTopLevelNodeType(typeBuilder);
+                        genCtx.get(module).addTypeToSchema(typeBuilder, action);
                     }
                 }
 
@@ -181,33 +183,13 @@ final class RpcActionGenHelper {
         }
 
         for (final RpcDefinition rpc : rpcDefinitions) {
-            //FIXME: get correct parent for routed RPCs only
-            DataSchemaNode parent = null;
-
-            ContainerSchemaNode input = rpc.getInput();
-            boolean isAction = false;
-            if (input != null) {
-                for (DataSchemaNode schemaNode : input.getChildNodes()) {
-                    if (getRoutingContext(schemaNode).isPresent()) {
-                        isAction = true;
-                        break;
-                    }
-                }
-            }
-
-            //routedRPC?
-            if (isAction) {
-                genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
-                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
-                        BindingNamespaceType.Data));
-            } else {
-                //global RPC only
-                genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
-                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, false,
-                        BindingNamespaceType.Data));
-
-            }
+            final GeneratedTypeBuilder typeBuilder = resolveOperation(null, rpc, module, schemaContext,
+                verboseClassComments, genTypeBuilders, genCtx, typeProvider, false,
+                BindingNamespaceType.Data);
+            genCtx.get(module).addTopLevelNodeType(typeBuilder);
+            genCtx.get(module).addTypeToSchema(typeBuilder, rpc);
         }
+
         return genCtx;
     }
 
@@ -291,8 +273,7 @@ final class RpcActionGenHelper {
                     interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
                 }
             } else {
-                //TODO:routed RPC
-                throw new UnsupportedOperationException("Not implemented yet.");
+                throw new UnsupportedOperationException("Parent must be specified for action.");
             }
         } else {
             //RPC
