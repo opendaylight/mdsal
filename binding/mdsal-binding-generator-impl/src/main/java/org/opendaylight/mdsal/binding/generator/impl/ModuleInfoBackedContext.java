@@ -35,10 +35,17 @@ import org.slf4j.LoggerFactory;
 public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         implements ModuleInfoRegistry, SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
 
-    private final YangTextSchemaContextResolver ctxResolver = YangTextSchemaContextResolver.create("binding-context");
+    private final YangTextSchemaContextResolver ctxResolver;
 
     private ModuleInfoBackedContext(final ClassLoadingStrategy loadingStrategy) {
         this.backingLoadingStrategy = loadingStrategy;
+        this.ctxResolver = YangTextSchemaContextResolver.create("binding-context");
+    }
+
+    private ModuleInfoBackedContext(final ClassLoadingStrategy loadingStrategy,
+                                    final YangTextSchemaContextResolver ctxResolver) {
+        this.backingLoadingStrategy = loadingStrategy;
+        this.ctxResolver = ctxResolver;
     }
 
     public static ModuleInfoBackedContext create() {
@@ -47,6 +54,11 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
     public static ModuleInfoBackedContext create(final ClassLoadingStrategy loadingStrategy) {
         return new ModuleInfoBackedContext(loadingStrategy);
+    }
+
+    public static ModuleInfoBackedContext create(final ClassLoadingStrategy loadingStrategy,
+                                                 final YangTextSchemaContextResolver ctxResolver) {
+        return new ModuleInfoBackedContext(loadingStrategy, ctxResolver);
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(ModuleInfoBackedContext.class);
