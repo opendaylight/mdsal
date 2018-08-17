@@ -384,7 +384,7 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockClusterSingletonService).instantiateServiceInstance();
 
         // Base entity in jeopardy should not matter...
-        singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
+        singletonServiceGroup.ownershipChanged(getEntityToMasterJeopardy());
         verify(mockClusterSingletonService, never()).closeServiceInstance();
 
         // ... application state is actually guarded by cleanup
@@ -531,6 +531,11 @@ public class ClusterSingletonServiceGroupImplTest {
     private static GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getEntityToSlaveNoMaster() {
         return new GenericEntityOwnershipChange<>(MAIN_ENTITY,
                 EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NO_OWNER);
+    }
+
+    private static GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getEntityToMasterJeopardy() {
+        return new GenericEntityOwnershipChange<>(MAIN_ENTITY,
+                EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, true);
     }
 
     private static GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getEntityToJeopardy() {
