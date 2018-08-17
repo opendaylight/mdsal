@@ -30,8 +30,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 @NonNullByDefault
 public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Serializable {
     private static final long serialVersionUID = 1L;
+
     private final @Nullable NormalizedNode<?, ?> result;
-    private final Collection<RpcError> errors;
+    private final Collection<? extends RpcError> errors;
 
     public DefaultDOMRpcResult(final NormalizedNode<?, ?> result, final RpcError... errors) {
         this(result, asCollection(errors));
@@ -45,7 +46,8 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
         this(result, Collections.emptyList());
     }
 
-    public DefaultDOMRpcResult(final @Nullable NormalizedNode<?, ?> result, final Collection<RpcError> errors) {
+    public DefaultDOMRpcResult(final @Nullable NormalizedNode<?, ?> result,
+            final Collection<? extends RpcError> errors) {
         this.result = result;
         this.errors = requireNonNull(errors);
     }
@@ -59,7 +61,7 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
     }
 
     @Override
-    public Collection<RpcError> getErrors() {
+    public Collection<? extends RpcError> getErrors() {
         return errors;
     }
 
