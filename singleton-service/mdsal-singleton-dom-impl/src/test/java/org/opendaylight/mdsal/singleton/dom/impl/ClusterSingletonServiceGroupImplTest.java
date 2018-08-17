@@ -488,16 +488,14 @@ public class ClusterSingletonServiceGroupImplTest {
 
         assertNotNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
-        verify(mockEntityCandReg, never()).close();
+        verify(mockEntityCandReg).close();
 
         final ListenableFuture<?> future = singletonServiceGroup.closeClusterSingletonGroup();
         assertNotNull(future);
         assertFalse(future.isDone());
-        verify(mockClusterSingletonService, never()).closeServiceInstance();
-        verify(mockEntityCandReg).close();
+        verify(mockClusterSingletonService).closeServiceInstance();
 
         singletonServiceGroup.ownershipChanged(getEntityToSlave());
-        verify(mockClusterSingletonService).closeServiceInstance();
         verify(mockCloseEntityCandReg).close();
 
         singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());
