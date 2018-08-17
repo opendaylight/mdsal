@@ -168,6 +168,10 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
         final DOMRpcRoutingTable oldTable = routingTable;
         final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.setSchemaContext(context);
         routingTable = newTable;
+
+        final DOMActionRoutingTable oldActionTable = actionRoutingTable;
+        final DOMActionRoutingTable newActionTable = (DOMActionRoutingTable) oldActionTable.setSchemaContext(context);
+        actionRoutingTable = newActionTable;
     }
 
     @Override
