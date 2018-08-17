@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "68d8a5a8_22bad28a",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-17T22:37:00Z",
+      "side": 1,
+      "message": "serviceEntityState is non-volatile and accessed here unprotected  - this should technically  be inside the synchronized block on line 249.",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3e92a41c_840a5043",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-17T22:37:00Z",
+      "side": 1,
+      "message": "If this call throws an unchecked ex, we\u0027d leave the lock set. It seems we should surround with try/finally?",
+      "range": {
+        "startLine": 458,
+        "startChar": 16,
+        "endLine": 458,
+        "endChar": 33
+      },
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "13839bf0_911787ea",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-17T22:37:00Z",
+      "side": 1,
+      "message": "This *shouldn\u0027t* happen but if it did... we\u0027d mark dirty, return and reconcileState would unlock, see that it\u0027s dirty again and loop back and call this method again. We\u0027d end up here again and repeat and repeat etc - unless I\u0027m missing something. Perhaps we should move the markDirty() call from line 531 to after line 527?",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "51656781_a63c1732",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-17T22:37:00Z",
+      "side": 1,
+      "message": "This isn\u0027t actually needed.",
+      "range": {
+        "startLine": 605,
+        "startChar": 16,
+        "endLine": 605,
+        "endChar": 24
+      },
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "910dec70_8ee983fd",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 679,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-17T22:37:00Z",
+      "side": 1,
+      "message": "Unhandled",
+      "range": {
+        "startLine": 679,
+        "startChar": 49,
+        "endLine": 679,
+        "endChar": 58
+      },
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
