@@ -116,8 +116,11 @@ of API-centric integration.
     transactions with isolation from other running transactions.
   * **Transaction chaining**
 
+Table of Contents
+=================
 
-  .. toctree::
-     :maxdepth: 1
+.. toctree::
+   :maxdepth: 1
 
-     architecture
+   architecture
+   conceptual-data-tree

@@ -12,4 +12,9 @@
 
 from docs_conf.conf import *
 
+extensions.append('sphinx.ext.extlinks')
 extensions.append('sphinxcontrib.plantuml')
+
+extlinks = {
+    'mdsal-apidoc': ('https://github.com/sphinx-doc/sphinx/issues/%s', 'api '),
+}
