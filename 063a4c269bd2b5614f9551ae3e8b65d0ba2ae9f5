@@ -19,6 +19,41 @@
     },
     {
       "key": {
+        "uuid": "5bf9767f_e3f9ed05",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T19:50:15Z",
+      "side": 1,
+      "message": "Or use the initialized flag here.",
+      "parentUuid": "68d8a5a8_22bad28a",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b6c18e90_724cccfd",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T19:50:15Z",
+      "side": 1,
+      "message": "It seems we should set serviceEntityState to UNREGISTERED for completeness at least.",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3e92a41c_840a5043",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 16
@@ -53,6 +88,23 @@
       "writtenOn": "2018-08-17T22:37:00Z",
       "side": 1,
       "message": "This *shouldn\u0027t* happen but if it did... we\u0027d mark dirty, return and reconcileState would unlock, see that it\u0027s dirty again and loop back and call this method again. We\u0027d end up here again and repeat and repeat etc - unless I\u0027m missing something. Perhaps we should move the markDirty() call from line 531 to after line 527?",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "873979a4_a00ed06f",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 569,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T19:50:15Z",
+      "side": 1,
+      "message": "It seems we should set cleanupEntityState to UNREGISTERED for completeness at least.",
       "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
