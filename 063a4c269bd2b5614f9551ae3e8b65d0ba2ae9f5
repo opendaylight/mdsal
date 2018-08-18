@@ -54,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "b3ab32a1_ded2df73",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T20:57:45Z",
+      "side": 1,
+      "message": "scratch that - unnecessary and could lead to UNREGISTERED -\u003e UNOWNED transition complication.",
+      "parentUuid": "b6c18e90_724cccfd",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3e92a41c_840a5043",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 16
@@ -105,6 +123,41 @@
       "writtenOn": "2018-08-18T19:50:15Z",
       "side": 1,
       "message": "It seems we should set cleanupEntityState to UNREGISTERED for completeness at least.",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6d7a9d67_4a72fe4d",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 569,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T20:57:45Z",
+      "side": 1,
+      "message": "scratch that - unnecessary and could lead to UNREGISTERED -\u003e UNOWNED transition complication.",
+      "parentUuid": "873979a4_a00ed06f",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "adee77d4_391e666e",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 573,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T20:57:45Z",
+      "side": 1,
+      "message": "I think it\u0027s possible for cleanupEntityState to be REGISTERED or UNREGISTERED at this point in which case the closeFuture may not get completed below. If we\u0027re being closed and it\u0027s UNREGISTERED then it won\u0027t ever transition to UNOWNED since the serviceEntityReg would be closed and set to null - so I think we def need to check for UNREGISTERED state here as well.  If it\u0027s REGISTERED then we *should* eventually get a state change to UNOWNED but we shouldn\u0027t need to wait for that since we never had ownership.",
       "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
