@@ -1,0 +1,7 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Tom Pantelis <tompantelis@gmail.com>
+Submitted-by: Thanh Ha (zxiiro) <thanh.ha@linuxfoundation.org>
+Submitted-at: Mon, 20 Aug 2018 18:22:28 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/75169
+Project: mdsal
+Branch: refs/heads/stable/fluorine
