@@ -190,6 +190,24 @@
     },
     {
       "key": {
+        "uuid": "72e19c7a_cd0ca0b5",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-20T15:54:57Z",
+      "side": 1,
+      "message": "\u003e We cannot move markDirty(), as it needs to happen after the state\n \u003e has been modified.\n\nright - that\u0027s why I suggested to move it *after* the call to registerCandidate above where we know we did actually change state - so the exception path doesn\u0027t mark it dirty.  Not a big deal either way - we really shouldn\u0027t hit this case, unless we didn\u0027t properly unregister in a previous incarnation.\n\n \u003e \n \u003e The only way to recover here would be to give up service entity.\n\nyeah - we\u0027re dead in the water....",
+      "parentUuid": "41e20aed_c57db952",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "873979a4_a00ed06f",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 16
