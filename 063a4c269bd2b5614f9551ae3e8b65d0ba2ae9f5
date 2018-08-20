@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "173b13c5_9881edcb",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-08-20T08:45:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5bf9767f_e3f9ed05",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b6c18e90_724cccfd",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 16
@@ -72,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "bb1171c5_e2548220",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-08-20T08:45:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b3ab32a1_ded2df73",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3e92a41c_840a5043",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 16
@@ -95,6 +131,30 @@
     },
     {
       "key": {
+        "uuid": "731a0e77_b0170038",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-08-20T08:45:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3e92a41c_840a5043",
+      "range": {
+        "startLine": 458,
+        "startChar": 16,
+        "endLine": 458,
+        "endChar": 33
+      },
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "13839bf0_911787ea",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 16
@@ -106,6 +166,24 @@
       "writtenOn": "2018-08-17T22:37:00Z",
       "side": 1,
       "message": "This *shouldn\u0027t* happen but if it did... we\u0027d mark dirty, return and reconcileState would unlock, see that it\u0027s dirty again and loop back and call this method again. We\u0027d end up here again and repeat and repeat etc - unless I\u0027m missing something. Perhaps we should move the markDirty() call from line 531 to after line 527?",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "41e20aed_c57db952",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-08-20T08:45:27Z",
+      "side": 1,
+      "message": "We cannot move markDirty(), as it needs to happen after the state has been modified.\n\nThe only way to recover here would be to give up service entity.",
+      "parentUuid": "13839bf0_911787ea",
       "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -147,6 +225,24 @@
     },
     {
       "key": {
+        "uuid": "dc20b848_c0d7a131",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 569,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-08-20T08:45:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6d7a9d67_4a72fe4d",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "adee77d4_391e666e",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 16
@@ -158,6 +254,24 @@
       "writtenOn": "2018-08-18T20:57:45Z",
       "side": 1,
       "message": "I think it\u0027s possible for cleanupEntityState to be REGISTERED or UNREGISTERED at this point in which case the closeFuture may not get completed below. If we\u0027re being closed and it\u0027s UNREGISTERED then it won\u0027t ever transition to UNOWNED since the serviceEntityReg would be closed and set to null - so I think we def need to check for UNREGISTERED state here as well.  If it\u0027s REGISTERED then we *should* eventually get a state change to UNOWNED but we shouldn\u0027t need to wait for that since we never had ownership.",
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2e493277_407de451",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 573,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-08-20T08:45:27Z",
+      "side": 1,
+      "message": "Agreed. Regarding waiting in REGISTERED, it is needed because in case of a quick succession of register/unregister, we could end up delivering the notification to the next object -- which may actually not be registered....",
+      "parentUuid": "adee77d4_391e666e",
       "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -187,6 +301,30 @@
     },
     {
       "key": {
+        "uuid": "451cc6df_25c5c0d2",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-08-20T08:45:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "51656781_a63c1732",
+      "range": {
+        "startLine": 605,
+        "startChar": 16,
+        "endLine": 605,
+        "endChar": 24
+      },
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "910dec70_8ee983fd",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 16
@@ -198,6 +336,30 @@
       "writtenOn": "2018-08-17T22:37:00Z",
       "side": 1,
       "message": "Unhandled",
+      "range": {
+        "startLine": 679,
+        "startChar": 49,
+        "endLine": 679,
+        "endChar": 58
+      },
+      "revId": "063a4c269bd2b5614f9551ae3e8b65d0ba2ae9f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d1d3e609_391ad2b5",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 679,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-08-20T08:45:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "910dec70_8ee983fd",
       "range": {
         "startLine": 679,
         "startChar": 49,
