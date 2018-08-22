@@ -45,6 +45,30 @@
       "revId": "243d3a6292f39a4acaf8a078f92cf34ccf624326",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8d688281_4d6f66cd",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/renderers/InterfaceRenderer.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-08-22T01:45:43Z",
+      "side": 1,
+      "message": "Done. It\u0027s nothing else but to make clear that they\u0027re the same thing logically and also be short and easy to use in context.",
+      "parentUuid": "87cab961_71b78564",
+      "range": {
+        "startLine": 185,
+        "startChar": 0,
+        "endLine": 186,
+        "endChar": 113
+      },
+      "revId": "243d3a6292f39a4acaf8a078f92cf34ccf624326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
