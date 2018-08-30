@@ -43,8 +43,8 @@
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ietf-interfaces</artifactId>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc7223</artifactId>
         </dependency>
     </dependencies>
 </project>
