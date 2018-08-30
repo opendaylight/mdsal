@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.groupingsToGenTypes;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
-import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.processUsesImplements;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.resolveNotification;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION_LISTENER;
 
@@ -65,7 +64,6 @@ final class ModuleToGenType {
             GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, moduleType, moduleType, module
                     .getChildNodes(), genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
                     BindingNamespaceType.Data);
-            processUsesImplements(module, module, schemaContext, genCtx, BindingNamespaceType.Data);
         }
 
         genCtx = notificationsToGenType(module, genCtx, schemaContext, genTypeBuilders, verboseClassComments, typeProvider);
@@ -189,7 +187,6 @@ final class ModuleToGenType {
             if (notification != null) {
                 resolveNotification(listenerInterface, null, basePackageName, notification, module, schemaContext,
                         verboseClassComments, genTypeBuilders, typeProvider, genCtx);
-                processUsesImplements(notification, module, schemaContext, genCtx, BindingNamespaceType.Notification);
             }
         }
 
@@ -206,7 +203,6 @@ final class ModuleToGenType {
                         resolveNotification(listenerInterface, potential.getQName().getLocalName(), basePackageName,
                                 tiedNotification, module, schemaContext, verboseClassComments, genTypeBuilders,
                                 typeProvider, genCtx);
-                        processUsesImplements(tiedNotification, module, schemaContext, genCtx, BindingNamespaceType.Notification);
                     }
                 }
             }

@@ -126,7 +126,6 @@ final class GenHelperUtil {
 
         final GeneratedTypeBuilder moduleDataTypeBuilder = moduleTypeBuilder(module, "Data", verboseClassComments,
                 genCtx.get(module));
-        addImplementedInterfaceFromUses(module, moduleDataTypeBuilder, genCtx);
         moduleDataTypeBuilder.addImplementsType(BindingTypes.TREE_ROOT);
 
         if (verboseClassComments) {
@@ -172,6 +171,7 @@ final class GenHelperUtil {
         return moduleBuilder;
     }
 
+    @Deprecated
     /**
      * Adds the implemented types to type builder.
      *
@@ -368,6 +368,7 @@ final class GenHelperUtil {
         return (GroupingDefinition) groupingNode;
     }
 
+    @Deprecated
     static Map<Module, ModuleContext> processUsesImplements(final Object node, final Module module,
             final SchemaContext schemaContext, final Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
         if (node instanceof DataNodeContainer) {
@@ -442,7 +443,6 @@ final class GenHelperUtil {
         //produces getters for augTypeBuilder eventually
         for (AugmentationSchemaNode aug : schemaPathAugmentListEntry) {
             //apply all uses
-            addImplementedInterfaceFromUses(aug, augTypeBuilder, genCtx);
             augSchemaNodeToMethods(module, BindingMapping.getRootPackageName(module), augTypeBuilder, augTypeBuilder,
                 aug.getChildNodes(), genCtx, schemaContext, verboseClassComments, typeProvider, genTypeBuilders,
                 targetTypeBuilder.getBindingNamespaceType());
@@ -548,7 +548,6 @@ final class GenHelperUtil {
         if (schemaNode instanceof DataNodeContainer) {
             groupingsToGenTypes(module, ((DataNodeContainer) schemaNode).getGroupings(), genCtx, schemaContext,
                     verboseClassComments, genTypeBuilders, typeProvider);
-            it = addImplementedInterfaceFromUses((DataNodeContainer) schemaNode, it, genCtx);
         }
 
         return it;
@@ -745,7 +744,6 @@ final class GenHelperUtil {
             constructGetter(parent, getterName.toString(), node.getDescription().orElse(null), genType, node.getStatus());
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
                     schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
-            processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
         }
     }
 
@@ -783,7 +781,6 @@ final class GenHelperUtil {
                     typeBuildersToGenTypes(module, genType, genTypeBuilder.toInstance(), genCtx, namespaceType);
                     genCtx.get(module).addKeyType(node.getPath(), genTypeBuilder);
                 }
-                processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
             } else {
                 final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node, genCtx.get(module));
                 if (genTOBuilder != null) {
@@ -802,7 +799,6 @@ final class GenHelperUtil {
                                 module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
                     }
                 }
-                processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
 
                 // serialVersionUID
                 if (genTOBuilder != null) {
@@ -1083,7 +1079,6 @@ final class GenHelperUtil {
                 resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder,
                         (GeneratedTypeBuilder) refChoiceType.getParentTypeForBuilder(), caseNode.getChildNodes(),
                     genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
-                processUsesImplements(caseNode, module, schemaContext, genCtx, namespaceType);
             }
         }
     }
@@ -1343,7 +1338,6 @@ final class GenHelperUtil {
         genCtx.get(module).addGroupingType(grouping, genType);
         resolveDataSchemaNodes(module, basePackageName, genType, genType, grouping.getChildNodes(), genCtx,
                 schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Grouping);
-        genCtx = processUsesImplements(grouping, module, schemaContext, genCtx, BindingNamespaceType.Grouping);
         return genCtx;
     }
 
