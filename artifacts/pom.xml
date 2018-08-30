@@ -436,17 +436,20 @@
             </dependency>
 
             <!-- RFC6991 -->
-            <!-- FIXME: harmonize packaging of these two, as per the discussion at
-                 https://lists.opendaylight.org/pipermail/mdsal-dev/2018-April/001656.html -->
             <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-inet-types-2013-07-15</artifactId>
-                <version>1.7.0-SNAPSHOT</version>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc6991</artifactId>
+                <version>1.2.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-yang-types-20130715</artifactId>
-                <version>2013.07.15.15.0-SNAPSHOT</version>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc6991-ietf-inet-types</artifactId>
+                <version>1.2.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc6991-ietf-yang-types</artifactId>
+                <version>1.2.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
