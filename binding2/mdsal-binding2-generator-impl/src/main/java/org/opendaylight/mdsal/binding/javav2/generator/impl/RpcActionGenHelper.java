@@ -12,10 +12,8 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.annotateDeprecatedIfNecessary;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.checkModuleAndModuleName;
-import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.addImplementedInterfaceFromUses;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.addRawInterfaceDefinition;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
-import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.processUsesImplements;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.resolveDataSchemaNodesCheck;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.ACTION;
@@ -291,7 +289,6 @@ final class RpcActionGenHelper {
             final BindingNamespaceType namespaceType) {
         final GeneratedTypeBuilder nodeType = addRawInterfaceDefinition(operationNode, schemaContext,
                 operationName, "", verboseClassComments, genTypeBuilders, namespaceType, moduleContext);
-        addImplementedInterfaceFromUses(operationNode, nodeType, genCtx);
 
         nodeType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
             (BindingTypes.ITEM, nodeType)));
@@ -310,8 +307,6 @@ final class RpcActionGenHelper {
         final MethodSignatureBuilder nodeMethod = nodeType.addMethod("implementedInterface");
         nodeMethod.setReturnType(parameterizedTypeFor(CLASS, nodeType));
         nodeMethod.addAnnotation("", "Override");
-
-        processUsesImplements(operationNode, moduleContext, schemaContext, genCtx, namespaceType);
 
         return nodeType;
     }

@@ -126,7 +126,6 @@ final class GenHelperUtil {
 
         final GeneratedTypeBuilder moduleDataTypeBuilder = moduleTypeBuilder("Data", verboseClassComments,
             moduleContext);
-        addImplementedInterfaceFromUses(moduleContext.module(), moduleDataTypeBuilder, genCtx);
         moduleDataTypeBuilder.addImplementsType(BindingTypes.TREE_ROOT);
 
         if (verboseClassComments) {
@@ -169,6 +168,7 @@ final class GenHelperUtil {
         return moduleBuilder;
     }
 
+    @Deprecated
     /**
      * Adds the implemented types to type builder.
      *
@@ -364,6 +364,7 @@ final class GenHelperUtil {
         return (GroupingDefinition) groupingNode;
     }
 
+    @Deprecated
     static Map<Module, ModuleContext> processUsesImplements(final Object node, final ModuleContext moduleContext,
             final SchemaContext schemaContext, final Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
         if (node instanceof DataNodeContainer) {
@@ -447,7 +448,6 @@ final class GenHelperUtil {
         //produces getters for augTypeBuilder eventually
         for (AugmentationSchemaNode aug : schemaPathAugmentListEntry) {
             //apply all uses
-            addImplementedInterfaceFromUses(aug, augTypeBuilder, genCtx);
             augSchemaNodeToMethods(moduleContext, augTypeBuilder, childOf,
                 aug.getChildNodes(), genCtx, schemaContext, verboseClassComments, typeProvider, genTypeBuilders,
                 targetTypeBuilder.getBindingNamespaceType());
@@ -551,7 +551,6 @@ final class GenHelperUtil {
         if (schemaNode instanceof DataNodeContainer) {
             groupingsToGenTypes(moduleContext, ((DataNodeContainer) schemaNode).getGroupings(), genCtx, schemaContext,
                     verboseClassComments, genTypeBuilders, typeProvider);
-            it = addImplementedInterfaceFromUses((DataNodeContainer) schemaNode, it, genCtx);
         }
 
         return it;
@@ -743,7 +742,6 @@ final class GenHelperUtil {
             constructGetter(parent, getterName.toString(), node.getDescription().orElse(null), genType, node.getStatus());
             resolveDataSchemaNodes(moduleContext, genType, genType, node.getChildNodes(), genCtx,
                     schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
-            processUsesImplements(node, moduleContext, schemaContext, genCtx, namespaceType);
         }
     }
 
@@ -782,7 +780,6 @@ final class GenHelperUtil {
                     typeBuildersToGenTypes(genType, genTypeBuilder.toInstance(), namespaceType);
                     moduleContext.addKeyType(node.getPath(), genTypeBuilder);
                 }
-                processUsesImplements(node, moduleContext, schemaContext, genCtx, namespaceType);
             } else {
                 final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node, moduleContext);
                 if (genTOBuilder != null) {
@@ -801,7 +798,6 @@ final class GenHelperUtil {
                             moduleContext, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
                     }
                 }
-                processUsesImplements(node, moduleContext, schemaContext, genCtx, namespaceType);
 
                 // serialVersionUID
                 if (genTOBuilder != null) {
@@ -1079,7 +1075,6 @@ final class GenHelperUtil {
                 resolveDataSchemaNodes(moduleContext, caseTypeBuilder,
                         (GeneratedTypeBuilder) refChoiceType.getParentTypeForBuilder(), caseNode.getChildNodes(),
                     genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
-                processUsesImplements(caseNode, moduleContext, schemaContext, genCtx, namespaceType);
             }
         }
     }
@@ -1330,7 +1325,6 @@ final class GenHelperUtil {
         moduleContext.addGroupingType(grouping, genType);
         resolveDataSchemaNodes(moduleContext, genType, genType, grouping.getChildNodes(), genCtx,
                 schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Grouping);
-        processUsesImplements(grouping, moduleContext, schemaContext, genCtx, BindingNamespaceType.Grouping);
     }
 
     /**
