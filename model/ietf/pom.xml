@@ -35,9 +35,9 @@
         <!-- FIXME: superseded by RFC8343 -->
         <module>rfc7223</module>
 
-        <!-- RFC7277 -->
+        <!-- RFC7277 IP Management -->
         <!-- FIXME: superseded by RFC8344 -->
-        <module>ietf-ip-2014-06-16</module>
+        <module>rfc7277</module>
 
         <!-- RFC7895 YANG Module Library -->
         <module>rfc7895</module>

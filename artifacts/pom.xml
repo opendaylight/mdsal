@@ -475,9 +475,9 @@
             <!-- RFC7277 -->
             <!-- FIXME: upgrade this to RFC8344 (2018-02-22, NMDA) -->
             <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-ip-2014-06-16</artifactId>
-                <version>2014.06.16.15.0-SNAPSHOT</version>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc7277</artifactId>
+                <version>1.2.0-SNAPSHOT</version>
             </dependency>
 
             <!-- RFC7895 -->
