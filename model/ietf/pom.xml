@@ -31,9 +31,9 @@
         <module>rfc6991-ietf-yang-types</module>
         <module>ietf-type-util</module>
 
-        <!-- RFC7223 -->
+        <!-- RFC7223 Interface Management -->
         <!-- FIXME: superseded by RFC8343 -->
-        <module>ietf-interfaces</module>
+        <module>rfc7223</module>
 
         <!-- RFC7277 -->
         <!-- FIXME: superseded by RFC8344 -->
