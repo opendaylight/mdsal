@@ -77,11 +77,10 @@ public class BindingGeneratorImplTest {
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
         for (final Type type : generateTypes) {
-            if (type.getName().equals("MyCont") && type.getPackageName()
-                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype.base.rev170809.data")) {
-                final GeneratedType gt = (GeneratedType) type;
-                final MethodSignature methodSignature = gt.getMethodDefinitions().get(0);
-                assertEquals("ErrorType", methodSignature.getReturnType().getName());
+            if (type.getName().equals("ErrorType")) {
+                assertTrue(type.getPackageName()
+                .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype.base.rev170809.grp.errors"));
+
             }
 
             if (type.getName().equals("MyCont") && type.getPackageName()
@@ -393,6 +392,43 @@ public class BindingGeneratorImplTest {
                 break;
             default:
                 fail();
+        }
+    }
+
+    @Test
+    public void generateTypesNamespaceTest() throws Exception {
+        final BindingGenerator bg = new BindingGeneratorImpl(true);
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/namespace/namespace-test-foo2.yang");
+        assertNotNull(context);
+
+        final List<Type> generateTypes = bg.generateTypes(context, context.getModules());
+        assertNotNull(generateTypes);
+        assertTrue((long) generateTypes.size() == 4);
+
+        for (final Type type : generateTypes) {
+            if (type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.org.test.namespace.foo2.rev180831")) {
+                assertTrue(type.getName().equals("NamespaceTestFoo2Data"));
+            }
+
+            if (type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.org.test.namespace.foo2.rev180831.data")) {
+
+                assertTrue(type.getName().equals("Foo2"));
+            }
+
+
+            if (type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.org.test.namespace.foo2.rev180831.data.foo2")) {
+
+                assertTrue(type.getName().equals("Test"));
+            }
+
+            if (type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.org.test.namespace.foo2.rev180831.data.foo2.test")) {
+
+                assertTrue(type.getName().equals("Test"));
+            }
         }
     }
 

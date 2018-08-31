@@ -24,7 +24,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.data.TreeLeafOnlyUsesAugment;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.dto.TreeLeafOnlyUsesAugmentBuilder;
-import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.grp.LeafFromGrouping;
+import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.ident.ThirdParty;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.data.ChoiceContainer;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.data.Top;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.data.choice_container.identifier.simple.SimpleId;
@@ -47,8 +47,8 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
     private static final QName TOP_LEVEL_LIST_NAME_QNAME = QName.create(TopLevelList.QNAME, "name");
     private static final QName AUGMENTED_STRING_QNAME = QName.create(TopLevelList.QNAME, "augmented-string");
     private static final QName AUGMENTED_INT_QNAME = QName.create(TopLevelList.QNAME, "augmented-int");
-    private static final QName SIMPLE_VALUE_QNAME = QName.create(LeafFromGrouping.QNAME, "simple-value");
-    private static final QName SIMPLE_TYPE_QNAME = QName.create(LeafFromGrouping.QNAME, "simple-type");
+    private static final QName SIMPLE_VALUE_QNAME = QName.create(ThirdParty.QNAME, "simple-value");
+    private static final QName SIMPLE_TYPE_QNAME = QName.create(ThirdParty.QNAME, "simple-type");
     private static final QName CHOICE_CONTAINER_QNAME = ChoiceContainer.QNAME;
     private static final QName SIMPLE_ID_QNAME = SimpleId.QNAME;
     private static final QName SIMPLE_LEAF_ID_QNAME = QName.create(SimpleId.QNAME, "id");
@@ -83,17 +83,17 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
 
     private static AugmentationIdentifier getTopLevelListAugId() {
         Set<QName> qnames = new HashSet<>();
-        qnames.add(QName.create(LeafFromGrouping.QNAME, "simple-value"));
-        qnames.add(QName.create(LeafFromGrouping.QNAME, "simple-type"));
-        qnames.add(QName.create(LeafFromGrouping.QNAME, "second-simple-value"));
-        qnames.add(QName.create(LeafFromGrouping.QNAME, "list-via-uses"));
-        qnames.add(QName.create(LeafFromGrouping.QNAME, "container-with-uses"));
-        qnames.add(QName.create(LeafFromGrouping.QNAME, "leaf-from-grouping"));
-        qnames.add(QName.create(LeafFromGrouping.QNAME, "identity"));
-        qnames.add(QName.create(LeafFromGrouping.QNAME, "schema-unaware-union"));
-        qnames.add(QName.create(LeafFromGrouping.QNAME, "simple-type-ref"));
-        qnames.add(QName.create(LeafFromGrouping.QNAME, "identity-ref"));
-        qnames.add(QName.create(LeafFromGrouping.QNAME, "schema-unaware-union-ref"));
+        qnames.add(QName.create(ThirdParty.QNAME, "simple-value"));
+        qnames.add(QName.create(ThirdParty.QNAME, "simple-type"));
+        qnames.add(QName.create(ThirdParty.QNAME, "second-simple-value"));
+        qnames.add(QName.create(ThirdParty.QNAME, "list-via-uses"));
+        qnames.add(QName.create(ThirdParty.QNAME, "container-with-uses"));
+        qnames.add(QName.create(ThirdParty.QNAME, "leaf-from-grouping"));
+        qnames.add(QName.create(ThirdParty.QNAME, "identity"));
+        qnames.add(QName.create(ThirdParty.QNAME, "schema-unaware-union"));
+        qnames.add(QName.create(ThirdParty.QNAME, "simple-type-ref"));
+        qnames.add(QName.create(ThirdParty.QNAME, "identity-ref"));
+        qnames.add(QName.create(ThirdParty.QNAME, "schema-unaware-union-ref"));
 
         return new AugmentationIdentifier(qnames);
     }

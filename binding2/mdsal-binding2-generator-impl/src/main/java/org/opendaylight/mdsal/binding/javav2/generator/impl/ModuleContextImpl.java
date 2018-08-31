@@ -74,6 +74,7 @@ public final class ModuleContextImpl implements ModuleContext {
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final BiMap<Type, CaseSchemaNode> caseTypeToSchema = HashBiMap.create();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
+    private final Map<SchemaPath, Type> groupingInnerTypes = new HashMap<>();
     private final Map<SchemaPath, GeneratedTypeBuilder> keyTypes = new HashMap<>();
     //map is getting manipulated based on unique YANG module namespace rule
     private final ListMultimap<String, String> packagesMap = Multimaps.synchronizedListMultimap
@@ -141,7 +142,8 @@ public final class ModuleContextImpl implements ModuleContext {
             this.identities.values().stream().map(GeneratedTypeBuilder::toInstance),
             this.topLevelNodes.stream().map(GeneratedTypeBuilder::toInstance),
             this.augmentations.stream().map(GeneratedTypeBuilder::toInstance),
-            this.keyTypes.values().stream().map(GeneratedTypeBuilder::toInstance))
+            this.keyTypes.values().stream().map(GeneratedTypeBuilder::toInstance),
+            this.groupingInnerTypes.values().stream())
         .forEach(result::add);
         return ImmutableList.copyOf(result);
     }
@@ -309,16 +311,26 @@ public final class ModuleContextImpl implements ModuleContext {
      * Adds mapping between schema path and inner enum, inner union, inner bits.
      *
      * @param path
-     * @param builder
+     * @param type
      */
     @Override
-    public void addInnerTypedefType(final SchemaPath path, final Type builder) {
-        this.innerTypes.put(path, builder);
+    public void addInnerTypedefType(final SchemaPath path, final Type type) {
+        this.innerTypes.put(path, type);
     }
 
     @Override
     public Type getInnerType(final SchemaPath path) {
         return this.innerTypes.get(path);
+    }
+
+    @Override
+    public void addGroupingInnerType(SchemaPath path, Type type) {
+        this.groupingInnerTypes.put(path, type);
+    }
+
+    @Override
+    public Type getGroupingInnerType(SchemaPath path) {
+        return this.groupingInnerTypes.get(path);
     }
 
     @Override

@@ -1,0 +1,24 @@
+module namespace-test-foo2 {
+    namespace "org.test.namespace.foo2";
+    prefix "foo2";
+    revision 2018-08-31;
+
+    grouping foo2 {
+        container test {
+            grouping test {
+                leaf test {
+                    type string;
+                }
+            }
+
+            container test {
+                uses test;
+            }
+        }
+    }
+
+    container foo2 {
+        uses foo2;
+    }
+}
+

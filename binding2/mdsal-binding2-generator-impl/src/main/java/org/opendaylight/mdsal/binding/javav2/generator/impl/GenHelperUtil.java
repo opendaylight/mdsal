@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.addTOToTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.annotateDeprecatedIfNecessary;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.constructGetter;
@@ -48,17 +49,13 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormal
 import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.TypeComments;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
+import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.EnumerationBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.BaseYangTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
-import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
-import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
-import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
-import org.opendaylight.mdsal.binding.javav2.model.api.Type;
-import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
+import org.opendaylight.mdsal.binding.javav2.model.api.*;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
@@ -69,28 +66,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.AnyDataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.DerivableSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
-import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
-import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
-import org.opendaylight.yangtools.yang.model.api.Status;
-import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.UsesNode;
+import org.opendaylight.yangtools.yang.model.api.*;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
@@ -549,8 +525,7 @@ final class GenHelperUtil {
         }
 
         if (schemaNode instanceof DataNodeContainer) {
-            groupingsToGenTypes(moduleContext, ((DataNodeContainer) schemaNode).getGroupings(), genCtx, schemaContext,
-                    verboseClassComments, genTypeBuilders, typeProvider);
+            groupingsInnerTypesToGenTypes(moduleContext, ((DataNodeContainer) schemaNode).getGroupings(), typeProvider);
         }
 
         return it;
@@ -950,6 +925,32 @@ final class GenHelperUtil {
         return returnType;
     }
 
+    private static void innerTypeToGenType(final TypedDataSchemaNode typedNode,
+            final ModuleContext moduleContext, final TypeProvider typeProvider) {
+        final TypeDefinition<?> typeDef = requireNonNull(typedNode).getType();
+        if (isInnerType(typedNode, typeDef)) {
+            final String packageName = packageNameForGeneratedType(
+                    moduleContext.normalizedNSPackageName(BindingNamespaceType.Grouping), typedNode.getPath());
+            if (typeDef instanceof EnumTypeDefinition) {
+                final EnumBuilder enumBuilder = new EnumerationBuilderImpl(packageName,
+                        typedNode.getQName().getLocalName(), moduleContext);
+                moduleContext.addInnerTypedefType(typeDef.getPath(), enumBuilder.toInstance(null));
+            } else if (typeDef instanceof UnionTypeDefinition) {
+                final GeneratedTOBuilder resultTOBuilder =
+                        ((TypeProviderImpl) typeProvider).provideGeneratedTOBuilderForUnionTypeDef(
+                        packageName, ((UnionTypeDefinition) typeDef), typedNode.getQName().getLocalName(), typedNode,
+                        moduleContext);
+                moduleContext.addGroupingInnerType(typeDef.getPath(), resultTOBuilder.toInstance());
+            } else if (typeDef instanceof BitsTypeDefinition) {
+                final GeneratedTOBuilder resultTOBuilder =
+                        (((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
+                        packageName, typeDef, typedNode.getQName().getLocalName(), moduleContext.module().getName(),
+                        moduleContext);
+                moduleContext.addGroupingInnerType(typeDef.getPath(), resultTOBuilder.toInstance());
+            }
+        }
+    }
+
     /**
      * Converts <code>node</code> leaf list schema node to getter method of
      * <code>typeBuilder</code>.
@@ -1282,6 +1283,7 @@ final class GenHelperUtil {
      *            generate verbose comments
      *
      */
+    @Deprecated
     static void groupingsToGenTypes(final ModuleContext moduleContext, final Collection<GroupingDefinition>
             groupings, final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean
             verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
@@ -1291,6 +1293,13 @@ final class GenHelperUtil {
         for (final GroupingDefinition grouping : groupingsSortedByDependencies) {
             groupingToGenType(grouping, moduleContext, genCtx, schemaContext,
                     verboseClassComments, genTypeBuilders, typeProvider);
+        }
+    }
+
+    static void groupingsInnerTypesToGenTypes(final ModuleContext moduleContext, final Collection<GroupingDefinition>
+            groupings, final TypeProvider typeProvider) {
+        for (final GroupingDefinition grouping : groupings) {
+            groupingInnerTypeToGenType(grouping, moduleContext, typeProvider);
         }
     }
 
@@ -1325,6 +1334,24 @@ final class GenHelperUtil {
         moduleContext.addGroupingType(grouping, genType);
         resolveDataSchemaNodes(moduleContext, genType, genType, grouping.getChildNodes(), genCtx,
                 schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Grouping);
+    }
+
+    private static void groupingInnerTypeToGenType(final DataNodeContainer parent, final ModuleContext
+            moduleContext, final TypeProvider typeProvider) {
+        for (final DataSchemaNode node : parent.getChildNodes()) {
+            if (node != null && !node.isAddedByUses()) {
+                if (node instanceof ContainerSchemaNode || node instanceof ListSchemaNode
+                        || node instanceof CaseSchemaNode) {
+                    groupingInnerTypeToGenType((DataNodeContainer) node, moduleContext, typeProvider);
+                } else if (node instanceof LeafSchemaNode || node instanceof LeafListSchemaNode) {
+                    innerTypeToGenType((TypedDataSchemaNode) node, moduleContext, typeProvider);
+                } else if (node instanceof ChoiceSchemaNode) {
+                    for (final CaseSchemaNode caseNode : ((ChoiceSchemaNode) node).getCases().values()) {
+                        groupingInnerTypeToGenType(caseNode, moduleContext, typeProvider);
+                    }
+                }
+            }
+        }
     }
 
     /**

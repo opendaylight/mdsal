@@ -9,9 +9,7 @@
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.groupingsToGenTypes;
-import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
-import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.resolveNotification;
+import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.*;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION_LISTENER;
 
 import com.google.common.annotations.Beta;
@@ -52,8 +50,7 @@ final class ModuleToGenType {
         final ModuleContext moduleContext = genCtx.computeIfAbsent(module, ModuleContextImpl::new);
 
         allTypeDefinitionsToGenTypes(moduleContext, typeProvider);
-        groupingsToGenTypes(moduleContext, module.getGroupings(), genCtx, schemaContext, verboseClassComments,
-            genTypeBuilders, typeProvider);
+        groupingsInnerTypesToGenTypes(moduleContext, module.getGroupings(), typeProvider);
         allIdentitiesToGenTypes(moduleContext, schemaContext, genCtx, verboseClassComments, genTypeBuilders,
             typeProvider);
 

@@ -40,19 +40,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTyp
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.opendaylight.yangtools.yang.model.api.Status;
-import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.*;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -226,7 +214,7 @@ final class AuxiliaryGenUtils {
             final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription().orElse(null));
             enumBuilder.setDescription(enumTypedefDescription);
             enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
-            moduleContext.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder);
+            moduleContext.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder.toInstance(typeBuilder));
             return enumBuilder;
         }
         return null;
@@ -269,7 +257,7 @@ final class AuxiliaryGenUtils {
         }
         if (genTOBuilder != null) {
             typeBuilder.addEnclosingTransferObject(genTOBuilder);
-            genCtx.get(parentModule).addInnerTypedefType(typeDef.getPath(), genTOBuilder);
+            genCtx.get(parentModule).addInnerTypedefType(typeDef.getPath(), genTOBuilder.toInstance());
             return genTOBuilder;
         }
         return null;
@@ -298,8 +286,8 @@ final class AuxiliaryGenUtils {
         return returnType.toInstance();
     }
 
-    static boolean isInnerType(final LeafSchemaNode leaf, final TypeDefinition<?> type) {
-        return leaf.getPath().equals(type.getPath()) || leaf.getPath().equals(type.getPath().getParent());
+    static boolean isInnerType(final TypedDataSchemaNode typedNode, final TypeDefinition<?> type) {
+        return typedNode.getPath().equals(type.getPath()) || typedNode.getPath().equals(type.getPath().getParent());
 
     }
 

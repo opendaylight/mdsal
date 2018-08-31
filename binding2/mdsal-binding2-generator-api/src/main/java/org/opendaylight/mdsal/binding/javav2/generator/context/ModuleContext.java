@@ -132,6 +132,10 @@ public interface ModuleContext {
 
     Type getInnerType(final SchemaPath path);
 
+    void addGroupingInnerType(final SchemaPath path, final Type type);
+
+    Type getGroupingInnerType(final SchemaPath path);
+
     void addKeyType(final SchemaPath path, final GeneratedTypeBuilder genType);
 
     GeneratedTypeBuilder getKeyType(final SchemaPath path);
