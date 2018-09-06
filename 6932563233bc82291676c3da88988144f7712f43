@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38c104d5_2c923ee1",
+        "filename": "binding/mdsal-binding-dom-adapter-tests/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/tests/util/BindingTestContext.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-09-06T16:12:29Z",
+      "side": 1,
+      "message": "I prefer \"test\" (that\u0027s what it was before).",
+      "range": {
+        "startLine": 8,
+        "startChar": 51,
+        "endLine": 8,
+        "endChar": 56
+      },
+      "revId": "6932563233bc82291676c3da88988144f7712f43",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
