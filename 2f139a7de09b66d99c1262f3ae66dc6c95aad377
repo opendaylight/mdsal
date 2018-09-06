@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a405c3a0_15412c83",
+        "filename": "binding2/mdsal-binding2-dom-adapter/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-09-06T17:18:37Z",
+      "side": 0,
+      "message": "this looks like an unrelated change",
+      "range": {
+        "startLine": 133,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 59
+      },
+      "revId": "2f139a7de09b66d99c1262f3ae66dc6c95aad377",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
