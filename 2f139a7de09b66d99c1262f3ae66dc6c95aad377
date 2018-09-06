@@ -22,6 +22,30 @@
       "revId": "2f139a7de09b66d99c1262f3ae66dc6c95aad377",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e24175ce_6b06c5f9",
+        "filename": "binding2/mdsal-binding2-dom-adapter/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-09-06T18:08:50Z",
+      "side": 0,
+      "message": "No it\u0027s intentional - we should not publish the test-jar from binding2 either.  Nobody is currently using it, so this will have no impact, and I have not done the equivalent move as for binding[1] and new artifact; we could do that in a follow-up, once we sort out binding[1].",
+      "parentUuid": "a405c3a0_15412c83",
+      "range": {
+        "startLine": 133,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 59
+      },
+      "revId": "2f139a7de09b66d99c1262f3ae66dc6c95aad377",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
