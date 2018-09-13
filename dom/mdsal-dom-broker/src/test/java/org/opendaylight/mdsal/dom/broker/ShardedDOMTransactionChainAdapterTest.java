@@ -19,13 +19,13 @@ import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL
 
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.CommitInfo;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
@@ -45,7 +45,7 @@ public class ShardedDOMTransactionChainAdapterTest {
         doNothing().when(producer).close();
 
 
-        TransactionChainListener chainListener = new BlockingTransactionChainListener();
+        DOMTransactionChainListener chainListener = new BlockingTransactionChainListener();
         ShardedDOMTransactionChainAdapter transactionChainAdapter =
                 new ShardedDOMTransactionChainAdapter(identifier, dataTreeService, chainListener);
 

@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2017 Pantheon Technologies s.r.o. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.api;
+package org.opendaylight.mdsal.binding.javav2.api;
 
+import com.google.common.annotations.Beta;
 import org.opendaylight.yangtools.concepts.Registration;
 
 /**
@@ -19,27 +20,27 @@ import org.opendaylight.yangtools.concepts.Registration;
  * the following sequence sufficiently quickly:
  *
  * <code>
- * DOMWriteTransaction t1 = broker.newWriteOnlyTransaction();
+ * AsyncWriteTransaction t1 = broker.newWriteOnlyTransaction();
  * t1.put(id, data);
  * t1.commit();
  *
- * DOMReadTransaction t2 = broker.newReadOnlyTransaction();
+ * AsyncReadTransaction t2 = broker.newReadOnlyTransaction();
  * Optional&lt;?&gt; maybeData = t2.read(id).get();
  * </code>
  * it may happen, that it sees maybeData.isPresent() == false, simply because t1 has not completed the processes
  * of being applied and t2 is actually allocated from the previous state. This is obviously bad for users who create
- * incremental state in the datastore and actually read what they write in subsequent transactions.
- * Using a TransactionChain instead of a broker solves this particular problem, and leads to expected behavior: t2 will
- * always see the data written in t1
- * present.
+ * incremental state in the datastore and actually read what they write in subsequent transactions. Using
+ * a TransactionChain instead of a broker solves this particular problem, and leads to expected behavior: t2 will always
+ * see the data written in t1 present.
  */
-public interface DOMTransactionChain extends Registration, DOMTransactionFactory {
+@Beta
+public interface TransactionChain extends Registration, TransactionFactory {
     /**
      * Create a new read only transaction which will continue the chain.
      *
      * <p>
-     * The previous write transaction has to be either SUBMITTED ({@link DOMDataTreeWriteTransaction#commit commit} was
-     * invoked) or CANCELLED ({@link #close close} was invoked).
+     * The previous write transaction has to be either SUBMITTED ({@link WriteTransaction#commit commit} was invoked)
+     * or CANCELLED ({@link #close close} was invoked).
      *
      * <p>
      * The returned read-only transaction presents an isolated view of the data if the previous write transaction was
@@ -52,14 +53,14 @@ public interface DOMTransactionChain extends Registration, DOMTransactionFactory
      * @throws TransactionChainClosedException if the chain has been closed.
      */
     @Override
-    DOMDataTreeReadTransaction newReadOnlyTransaction();
+    ReadTransaction newReadOnlyTransaction();
 
     /**
      * Create a new write-only transaction which will continue the chain.
      *
      * <p>
-     * The previous write transaction has to be either SUBMITTED ({@link DOMDataTreeWriteTransaction#commit commit} was
-     * invoked) or CANCELLED ({@link #close close} was invoked)
+     * The previous write transaction has to be either SUBMITTED ({@link WriteTransaction#commit commit} was invoked)
+     * or CANCELLED ({@link #close close} was invoked)
      *
      * <p>
      * The returned write-only transaction presents an isolated view of the data if the previous write transaction was
@@ -68,39 +69,14 @@ public interface DOMTransactionChain extends Registration, DOMTransactionFactory
      * chain after creation of the previous transaction is not visible
      *
      * <p>
-     * Committing this write-only transaction using {@link DOMDataTreeWriteTransaction#commit commit} will commit
-     * the state changes in this transaction to be visible to any subsequent transaction in this chain and also to any
-     * transaction outside this chain.
+     * Committing this write-only transaction using {@link WriteTransaction#commit commit} will commit the state
+     * changes in this transaction to be visible to any subsequent transaction in this chain and also to any transaction
+     * outside this chain.
      *
      * @return New transaction in the chain.
      * @throws IllegalStateException if the previous transaction was not SUBMITTED or CANCELLED.
      * @throws TransactionChainClosedException if the chain has been closed.
      */
     @Override
-    DOMDataTreeWriteTransaction newWriteOnlyTransaction();
-
-    /**
-     * Create a new read-write transaction which will continue the chain.
-     *
-     * <p>
-     * The previous write transaction has to be either SUBMITTED ({@link DOMDataTreeWriteTransaction#commit commit} was
-     * invoked) or CANCELLED ({@link #close close} was invoked).
-     *
-     * <p>
-     * The returned read-write transaction presents an isolated view of the data if the previous write transaction was
-     * successful - in other words, this read-write transaction will see the state changes made by the previous write
-     * transaction in the chain. However, state which was introduced by other transactions outside this transaction
-     * chain after creation of the previous transaction is not visible.
-     *
-     * <p>
-     * Committing this read-write transaction using {@link DOMDataTreeReadWriteTransaction#commit commit} will commit
-     * the state changes in this transaction to be visible to any subsequent transaction in this chain and also to any
-     * transaction outside this chain.
-     *
-     * @return New transaction in the chain.
-     * @throws IllegalStateException if the previous transaction was not SUBMITTED or CANCELLED.
-     * @throws TransactionChainClosedException if the chain has been closed.
-     */
-    @Override
-    DOMDataTreeReadWriteTransaction newReadWriteTransaction();
+    WriteTransaction newWriteOnlyTransaction();
 }
