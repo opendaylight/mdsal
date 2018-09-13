@@ -24,7 +24,7 @@ import org.opendaylight.mdsal.common.api.ReadFailedException;
  *  {@link org.opendaylight.mdsal.common.api.AsyncReadTransaction}.
  */
 @Beta
-public interface ReadTransaction extends AsyncReadTransaction<InstanceIdentifier<?>, TreeNode> {
+public interface ReadTransaction extends Transaction, AsyncReadTransaction<InstanceIdentifier<?>, TreeNode> {
 
     /**
      * Reads data from the provided logical data store located at the provided path.

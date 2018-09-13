@@ -17,7 +17,6 @@ import org.opendaylight.yangtools.concepts.Path;
  * which introduces additional semantics to allocated transactions.
  * <ul>
  * <li> {@link AsyncDataBroker}
- * <li> {@link TransactionChain}
  * </ul>
  *
  * <p>
@@ -48,7 +47,6 @@ import org.opendaylight.yangtools.concepts.Path;
  * but only to be consumed by them.
  *
  * @see AsyncDataBroker
- * @see TransactionChain
  *
  * @param <P> Type of path (subtree identifier), which represents location in tree
  * @param <D> Type of data (payload), which represents data payload

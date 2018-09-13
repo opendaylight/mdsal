@@ -8,8 +8,6 @@
 package org.opendaylight.mdsal.dom.api;
 
 import org.opendaylight.mdsal.common.api.AsyncDataBroker;
-import org.opendaylight.mdsal.common.api.TransactionChainFactory;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -46,9 +44,13 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  */
 public interface DOMDataBroker extends
         AsyncDataBroker<YangInstanceIdentifier, NormalizedNode<?, ?>>, DOMTransactionFactory,
-        TransactionChainFactory<YangInstanceIdentifier, NormalizedNode<?, ?>>,
         DOMExtensibleService<DOMDataBroker, DOMDataBrokerExtension> {
-
-    @Override
-    DOMTransactionChain createTransactionChain(TransactionChainListener listener);
+    /**
+     * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
+     * no outstanding transaction. Listener will be registered to handle chain-level events.
+     *
+     * @param listener Transaction chain event listener
+     * @return A new transaction chain.
+     */
+    DOMTransactionChain createTransactionChain(DOMTransactionChainListener listener);
 }

@@ -10,16 +10,16 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
-import org.opendaylight.mdsal.binding.api.BindingTransactionChain;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.TransactionChain;
+import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMService;
@@ -71,7 +71,7 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
     }
 
     @Override
-    public BindingTransactionChain createTransactionChain(final TransactionChainListener listener) {
+    public TransactionChain createTransactionChain(final TransactionChainListener listener) {
         return new BindingDOMTransactionChainAdapter(getDelegate(), getCodec(), listener);
     }
 
