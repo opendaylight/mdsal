@@ -9,14 +9,14 @@ package org.opendaylight.mdsal.binding.spi;
 
 import com.google.common.collect.ForwardingObject;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.binding.api.BindingTransactionChain;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.TransactionChain;
+import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -46,12 +46,12 @@ public abstract class ForwardingDataBroker extends ForwardingObject implements D
 
     @Override
     public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
-            registerDataTreeChangeListener(DataTreeIdentifier<T> treeId, L listener) {
+            registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId, final L listener) {
         return delegate().registerDataTreeChangeListener(treeId, listener);
     }
 
     @Override
-    public BindingTransactionChain createTransactionChain(TransactionChainListener listener) {
+    public TransactionChain createTransactionChain(final TransactionChainListener listener) {
         return delegate().createTransactionChain(listener);
     }
 
