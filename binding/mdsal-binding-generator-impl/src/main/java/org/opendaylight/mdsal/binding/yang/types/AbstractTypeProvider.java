@@ -15,6 +15,8 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.common.io.BaseEncoding;
@@ -960,23 +962,25 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         // Pattern string is the key, XSD regex is the value. The reason for this choice is that the pattern carries
         // also negation information and hence guarantees uniqueness.
         final Map<String, String> expressions = new HashMap<>();
+        final Map<TypeDefinition, String> propertyNames = resolveUnionMemberTypePropertyNames(unionTypes);
         for (TypeDefinition<?> unionType : unionTypes) {
-            final String unionTypeName = unionType.getQName().getLocalName();
+            final String propertyName = propertyNames.get(unionType);
 
             // If we have a base type we should follow the type definition backwards, except for identityrefs, as those
             // do not follow type encapsulation -- we use the general case for that.
             if (unionType.getBaseType() != null  && !(unionType instanceof IdentityrefTypeDefinition)) {
-                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, expressions, parentNode);
+                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, expressions, parentNode,
+                        propertyName);
             } else if (unionType instanceof UnionTypeDefinition) {
                 generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder,
                     (UnionTypeDefinition) unionType, parentNode));
             } else if (unionType instanceof EnumTypeDefinition) {
                 final Enumeration enumeration = addInnerEnumerationToTypeBuilder((EnumTypeDefinition) unionType,
-                        unionTypeName, unionGenTOBuilder);
-                updateUnionTypeAsProperty(unionGenTOBuilder, enumeration, unionTypeName);
+                        propertyName, unionGenTOBuilder);
+                updateUnionTypeAsProperty(unionGenTOBuilder, enumeration, propertyName);
             } else {
                 final Type javaType = javaTypeForSchemaDefinitionType(unionType, parentNode);
-                updateUnionTypeAsProperty(unionGenTOBuilder, javaType, unionTypeName);
+                updateUnionTypeAsProperty(unionGenTOBuilder, javaType, propertyName);
             }
         }
         addStringRegExAsConstant(unionGenTOBuilder, expressions);
@@ -984,6 +988,22 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         storeGenTO(typedef, unionGenTOBuilder, parentNode);
 
         return generatedTOBuilders;
+    }
+
+    private Map<TypeDefinition, String> resolveUnionMemberTypePropertyNames(final List<TypeDefinition<?>> unionTypes) {
+        final BiMap<String, TypeDefinition> propertyNames = HashBiMap.create();
+        String propertyName;
+        Integer suffix = 0;
+        for (TypeDefinition<?> type : unionTypes) {
+            propertyName = type.getQName().getLocalName();
+            if (propertyNames.containsKey(propertyName)) {
+                propertyName = propertyName + (++suffix);
+            }
+
+            propertyNames.put(propertyName, type);
+        }
+
+        return propertyNames.inverse();
     }
 
     /**
@@ -1042,7 +1062,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *
      */
     private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
-            final TypeDefinition<?> unionSubtype, final Map<String, String> expressions, final SchemaNode parentNode) {
+            final TypeDefinition<?> unionSubtype, final Map<String, String> expressions, final SchemaNode parentNode,
+            final String propertyName) {
         final String unionTypeName = unionSubtype.getQName().getLocalName();
         final Type genTO = findGenTO(unionTypeName, unionSubtype);
         if (genTO != null) {
@@ -1055,7 +1076,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             final Type javaType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(baseType,
                 parentNode, BindingGeneratorUtil.getRestrictions(unionSubtype));
             if (javaType != null) {
-                updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, unionTypeName);
+                updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, propertyName);
             }
         } else if (baseType instanceof LeafrefTypeDefinition) {
             final Type javaType = javaTypeForSchemaDefinitionType(baseType, parentNode);
