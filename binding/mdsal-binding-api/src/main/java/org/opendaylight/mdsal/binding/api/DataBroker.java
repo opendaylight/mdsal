@@ -8,8 +8,6 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.opendaylight.mdsal.common.api.AsyncDataBroker;
-import org.opendaylight.mdsal.common.api.TransactionChainFactory;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -44,10 +42,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * <b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL,
  * but only to be consumed by them.
  */
-public interface DataBroker extends AsyncDataBroker<InstanceIdentifier<?>, DataObject>,
-    TransactionChainFactory<InstanceIdentifier<?>, DataObject>, TransactionFactory, BindingService,
-        DataTreeChangeService {
-
-    @Override
-    BindingTransactionChain createTransactionChain(TransactionChainListener listener);
+public interface DataBroker extends AsyncDataBroker<InstanceIdentifier<?>, DataObject>, TransactionFactory,
+        BindingService, DataTreeChangeService {
+    /**
+     * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
+     * no outstanding transaction. Listener will be registered to handle chain-level events.
+     *
+     * @param listener Transaction chain event listener
+     * @return A new transaction chain.
+     */
+    TransactionChain createTransactionChain(TransactionChainListener listener);
 }

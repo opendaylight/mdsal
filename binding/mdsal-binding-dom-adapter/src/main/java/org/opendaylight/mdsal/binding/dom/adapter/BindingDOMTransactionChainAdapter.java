@@ -7,31 +7,35 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.api.BindingTransactionChain;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.TransactionChain;
+import org.opendaylight.mdsal.binding.api.TransactionChainClosedException;
+import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
-import org.opendaylight.mdsal.common.api.TransactionChain;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChainClosedException;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class BindingDOMTransactionChainAdapter implements BindingTransactionChain, Delegator<DOMTransactionChain> {
+final class BindingDOMTransactionChainAdapter implements TransactionChain, Delegator<DOMTransactionChain> {
 
     private static final Logger LOG = LoggerFactory.getLogger(BindingDOMTransactionChainAdapter.class);
 
@@ -42,7 +46,7 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
 
     BindingDOMTransactionChainAdapter(final DOMDataBroker chainFactory,
             final BindingToNormalizedNodeCodec codec, final TransactionChainListener listener) {
-        Preconditions.checkNotNull(chainFactory, "DOM Transaction chain factory must not be null");
+        requireNonNull(chainFactory, "DOM Transaction chain factory must not be null");
         this.domListener = new DelegateChainListener();
         this.bindingListener = listener;
         this.delegate = chainFactory.createTransactionChain(domListener);
@@ -56,28 +60,24 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
 
     @Override
     public ReadTransaction newReadOnlyTransaction() {
-        final DOMDataTreeReadTransaction delegateTx = delegate.newReadOnlyTransaction();
-        return new BindingDOMReadTransactionAdapter(delegateTx, codec);
+        return new BindingDOMReadTransactionAdapter(createTransaction(delegate::newReadOnlyTransaction), codec);
     }
 
     @Override
     public WriteTransaction newWriteOnlyTransaction() {
-        final DOMDataTreeWriteTransaction delegateTx = delegate.newWriteOnlyTransaction();
+        final DOMDataTreeWriteTransaction delegateTx = createTransaction(delegate::newWriteOnlyTransaction);
         return new BindingDOMWriteTransactionAdapter<DOMDataTreeWriteTransaction>(delegateTx, codec) {
-
             @Override
             public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
                 return listenForFailure(this, super.commit());
             }
-
         };
     }
 
     @Override
     public ReadWriteTransaction newReadWriteTransaction() {
-        final DOMDataTreeReadWriteTransaction delegateTx = delegate.newReadWriteTransaction();
+        final DOMDataTreeReadWriteTransaction delegateTx = createTransaction(delegate::newReadWriteTransaction);
         return new BindingDOMReadWriteTransactionAdapter(delegateTx, codec) {
-
             @Override
             public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
                 return listenForFailure(this, super.commit());
@@ -117,13 +117,19 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
         delegate.close();
     }
 
-    private final class DelegateChainListener implements TransactionChainListener {
+    private static <T> T createTransaction(final Supplier<T> supplier) {
+        try {
+            return supplier.get();
+        } catch (DOMTransactionChainClosedException e) {
+            throw new TransactionChainClosedException("Transaction chain already closed", e);
+        }
+    }
 
+    private final class DelegateChainListener implements DOMTransactionChainListener {
         @Override
-        public void onTransactionChainFailed(final TransactionChain<?, ?> chain,
-                final AsyncTransaction<?, ?> transaction, final Throwable cause) {
-            Preconditions.checkState(delegate.equals(chain),
-                    "Illegal state - listener for %s was invoked for incorrect chain %s.", delegate, chain);
+        public void onTransactionChainFailed(final DOMTransactionChain chain, final DOMDataTreeTransaction transaction,
+                final Throwable cause) {
+            checkState(delegate.equals(chain), "Listener for %s was invoked for incorrect chain %s.", delegate, chain);
             /*
              * Intentionally NOOP, callback for failure, since we
              * are also listening on each transaction future for failure,
@@ -137,9 +143,8 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
         }
 
         @Override
-        public void onTransactionChainSuccessful(final TransactionChain<?, ?> chain) {
-            Preconditions.checkState(delegate.equals(chain),
-                    "Illegal state - listener for %s was invoked for incorrect chain %s.", delegate, chain);
+        public void onTransactionChainSuccessful(final DOMTransactionChain chain) {
+            checkState(delegate.equals(chain), "Listener for %s was invoked for incorrect chain %s.", delegate, chain);
             bindingListener.onTransactionChainSuccessful(BindingDOMTransactionChainAdapter.this);
         }
     }

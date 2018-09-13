@@ -9,11 +9,11 @@ package org.opendaylight.mdsal.dom.broker.pingpong;
 
 import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.mdsal.dom.spi.ForwardingDOMDataBroker;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
@@ -45,7 +45,7 @@ public final class PingPongDataBroker extends ForwardingDOMDataBroker implements
     }
 
     @Override
-    public PingPongTransactionChain createTransactionChain(final TransactionChainListener listener) {
+    public PingPongTransactionChain createTransactionChain(final DOMTransactionChainListener listener) {
         return new PingPongTransactionChain(delegate, listener);
     }
 
