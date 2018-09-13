@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.binding.javav2.api.BindingTransactionChain;
 import org.opendaylight.mdsal.binding.javav2.api.DataBroker;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeListener;
@@ -21,6 +20,8 @@ import org.opendaylight.mdsal.binding.javav2.api.DataTreeLoopException;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeProducer;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeService;
 import org.opendaylight.mdsal.binding.javav2.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.javav2.api.TransactionChain;
+import org.opendaylight.mdsal.binding.javav2.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.javav2.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.data.tree.BindingDOMDataTreeServiceAdapter;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.transaction.BindingDOMReadTransactionAdapter;
@@ -33,7 +34,6 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedN
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.common.api.AsyncReadWriteTransaction;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMService;
@@ -85,7 +85,7 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
     }
 
     @Override
-    public BindingTransactionChain createTransactionChain(final TransactionChainListener listener) {
+    public TransactionChain createTransactionChain(final TransactionChainListener listener) {
         return new BindingDOMTransactionChainAdapter(getDelegate(), getCodec(), listener);
     }
 

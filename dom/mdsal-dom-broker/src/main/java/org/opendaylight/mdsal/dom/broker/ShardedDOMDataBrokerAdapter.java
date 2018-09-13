@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.broker;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.util.concurrent.atomic.AtomicLong;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
@@ -18,6 +17,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 
 public class ShardedDOMDataBrokerAdapter implements DOMDataBroker {
 
@@ -50,7 +50,7 @@ public class ShardedDOMDataBrokerAdapter implements DOMDataBroker {
     }
 
     @Override
-    public DOMTransactionChain createTransactionChain(final TransactionChainListener listener) {
+    public DOMTransactionChain createTransactionChain(final DOMTransactionChainListener listener) {
         return new ShardedDOMTransactionChainAdapter(newChainIdentifier(), service, listener);
     }
 

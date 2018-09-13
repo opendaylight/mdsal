@@ -14,24 +14,24 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.api.BindingTransactionChain;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.TransactionChain;
+import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
-import org.opendaylight.mdsal.common.api.TransactionChain;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class BindingDOMTransactionChainAdapter implements BindingTransactionChain, Delegator<DOMTransactionChain> {
+final class BindingDOMTransactionChainAdapter implements TransactionChain, Delegator<DOMTransactionChain> {
 
     private static final Logger LOG = LoggerFactory.getLogger(BindingDOMTransactionChainAdapter.class);
 
@@ -117,11 +117,11 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
         delegate.close();
     }
 
-    private final class DelegateChainListener implements TransactionChainListener {
+    private final class DelegateChainListener implements DOMTransactionChainListener {
 
         @Override
-        public void onTransactionChainFailed(final TransactionChain<?, ?> chain,
-                final AsyncTransaction<?, ?> transaction, final Throwable cause) {
+        public void onTransactionChainFailed(final DOMTransactionChain chain, final DOMDataTreeTransaction transaction,
+                final Throwable cause) {
             Preconditions.checkState(delegate.equals(chain),
                     "Illegal state - listener for %s was invoked for incorrect chain %s.", delegate, chain);
             /*
@@ -137,7 +137,7 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
         }
 
         @Override
-        public void onTransactionChainSuccessful(final TransactionChain<?, ?> chain) {
+        public void onTransactionChainSuccessful(final DOMTransactionChain chain) {
             Preconditions.checkState(delegate.equals(chain),
                     "Illegal state - listener for %s was invoked for incorrect chain %s.", delegate, chain);
             bindingListener.onTransactionChainSuccessful(BindingDOMTransactionChainAdapter.this);

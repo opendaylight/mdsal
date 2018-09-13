@@ -11,8 +11,6 @@ import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.common.api.AsyncDataBroker;
-import org.opendaylight.mdsal.common.api.TransactionChainFactory;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 
 /**
  * Provides access to a conceptual data tree store and also provides the ability to
@@ -26,8 +24,13 @@ import org.opendaylight.mdsal.common.api.TransactionChainListener;
  */
 @Beta
 public interface DataBroker extends AsyncDataBroker<InstanceIdentifier<?>, TreeNode>, BindingService,
-        TransactionFactory, DataTreeService, TransactionChainFactory<InstanceIdentifier<?>, TreeNode> {
-
-    @Override
-    BindingTransactionChain createTransactionChain(TransactionChainListener listener);
+        TransactionFactory, DataTreeService {
+    /**
+     * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
+     * no outstanding transaction. Listener will be registered to handle chain-level events.
+     *
+     * @param listener Transaction chain event listener
+     * @return A new transaction chain.
+     */
+    TransactionChain createTransactionChain(TransactionChainListener listener);
 }
