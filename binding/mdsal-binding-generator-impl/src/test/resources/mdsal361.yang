@@ -1,0 +1,32 @@
+module mdsal361 {
+
+    namespace "yang:test:mdsal361";
+    prefix m;
+
+    revision 2018-09-13 {
+    }
+
+    typedef pce-id {
+        type union {
+            type binary {
+                length 4;
+            }
+            type binary {
+                length 16;
+            }
+        }
+    }
+
+    typedef pce-id-2 {
+        type union {
+            type enumeration {
+                enum a;
+            }
+
+            type enumeration {
+                enum b;
+            }
+        }
+    }
+
+}
