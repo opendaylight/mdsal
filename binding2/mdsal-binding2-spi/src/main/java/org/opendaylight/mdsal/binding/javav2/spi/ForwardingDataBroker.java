@@ -10,18 +10,18 @@ package org.opendaylight.mdsal.binding.javav2.spi;
 import com.google.common.collect.ForwardingObject;
 import java.util.Collection;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.binding.javav2.api.BindingTransactionChain;
 import org.opendaylight.mdsal.binding.javav2.api.DataBroker;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeListener;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeLoopException;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeProducer;
 import org.opendaylight.mdsal.binding.javav2.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.javav2.api.TransactionChain;
+import org.opendaylight.mdsal.binding.javav2.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.javav2.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.common.api.AsyncReadWriteTransaction;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 /**
@@ -50,19 +50,19 @@ public abstract class ForwardingDataBroker extends ForwardingObject implements D
 
     @Nonnull
     @Override
-    public <T extends DataTreeListener> ListenerRegistration<T> registerListener(@Nonnull T listener,
-            @Nonnull Collection<DataTreeIdentifier<?>> subtrees, boolean allowRxMerges,
-            @Nonnull Collection<DataTreeProducer> producers) throws DataTreeLoopException {
+    public <T extends DataTreeListener> ListenerRegistration<T> registerListener(@Nonnull final T listener,
+            @Nonnull final Collection<DataTreeIdentifier<?>> subtrees, final boolean allowRxMerges,
+            @Nonnull final Collection<DataTreeProducer> producers) throws DataTreeLoopException {
         return delegate().registerListener(listener, subtrees, allowRxMerges, producers);
     }
 
     @Override
-    public DataTreeProducer createProducer(Collection<DataTreeIdentifier<?>> subtrees) {
+    public DataTreeProducer createProducer(final Collection<DataTreeIdentifier<?>> subtrees) {
         return delegate().createProducer(subtrees);
     }
 
     @Override
-    public BindingTransactionChain createTransactionChain(TransactionChainListener listener) {
+    public TransactionChain createTransactionChain(final TransactionChainListener listener) {
         return delegate().createTransactionChain(listener);
     }
 

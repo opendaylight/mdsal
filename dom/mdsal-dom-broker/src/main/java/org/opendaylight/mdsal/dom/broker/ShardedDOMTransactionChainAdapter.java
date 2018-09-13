@@ -20,10 +20,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
@@ -34,8 +32,10 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeServiceExtension;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
@@ -43,7 +43,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
     private final DOMDataTreeService dataTreeService;
     private final Object txChainIdentifier;
     private final AtomicLong txNum = new AtomicLong();
-    private final TransactionChainListener txChainListener;
+    private final DOMTransactionChainListener txChainListener;
     private final CachedDataTreeService cachedDataTreeService;
     private TransactionChainWriteTransaction writeTx;
     private TransactionChainReadTransaction readTx;
@@ -51,8 +51,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
     private boolean finished = false;
 
     public ShardedDOMTransactionChainAdapter(final Object txChainIdentifier,
-                                             final DOMDataTreeService dataTreeService,
-                                             final TransactionChainListener txChainListener) {
+            final DOMDataTreeService dataTreeService, final DOMTransactionChainListener txChainListener) {
         Preconditions.checkNotNull(dataTreeService);
         Preconditions.checkNotNull(txChainIdentifier);
         this.dataTreeService = dataTreeService;
@@ -150,7 +149,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         Preconditions.checkState(!finished);
     }
 
-    public void transactionFailed(final AsyncTransaction<?, ?> tx, final Throwable cause) {
+    public void transactionFailed(final DOMDataTreeTransaction tx, final Throwable cause) {
         txChainListener.onTransactionChainFailed(this, tx, cause);
         if (writeTx != null) {
             writeTx.cancel();
