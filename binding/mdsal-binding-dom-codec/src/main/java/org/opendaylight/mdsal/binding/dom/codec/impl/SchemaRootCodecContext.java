@@ -17,6 +17,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
@@ -27,6 +28,7 @@ import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.KeyedListAction;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
@@ -206,13 +208,26 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     }
 
     ActionCodecContext createActionContext(final Class<? extends Action<?, ?, ?>> action) {
-        final Type[] args = ClassLoaderUtils.findParameterizedType(action, Action.class).getActualTypeArguments();
-        checkArgument(args.length == 3, "Unexpected (%s) Action generatic arguments", args.length);
+        int inputNum = 1;
+        int outputNum = 2;
+        int argsL = 3;
+        ParameterizedType actionParamType = ClassLoaderUtils.findParameterizedType(action, Action.class);
+        Type[] args;
+        if (actionParamType == null) {
+            actionParamType = ClassLoaderUtils.findParameterizedType(action, KeyedListAction.class);
+            inputNum++;
+            outputNum++;
+            argsL++;
+        }
+        args = actionParamType.getActualTypeArguments();
+        checkArgument(args.length == argsL, "Unexpected (%s) Action generatic arguments", args.length);
 
         final ActionDefinition schema = factory().getRuntimeContext().getActionDefinition(action);
         return new ActionCodecContext(
-            DataContainerCodecPrototype.from(asClass(args[1], RpcInput.class), schema.getInput(), factory()).get(),
-            DataContainerCodecPrototype.from(asClass(args[2], RpcOutput.class), schema.getOutput(), factory()).get());
+            DataContainerCodecPrototype.from(asClass(args[inputNum], RpcInput.class), schema.getInput(), factory())
+            .get(),
+            DataContainerCodecPrototype.from(asClass(args[outputNum], RpcOutput.class), schema.getOutput(), factory())
+            .get());
     }
 
     private static <T extends DataObject> Class<? extends T> asClass(final Type type, final Class<T> target) {
