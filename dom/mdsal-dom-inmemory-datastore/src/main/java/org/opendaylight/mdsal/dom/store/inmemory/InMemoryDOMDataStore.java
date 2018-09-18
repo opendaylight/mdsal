@@ -7,10 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
@@ -53,8 +55,8 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
         Identifiable<String>, SchemaContextListener, AutoCloseable, DOMStoreTreeChangePublisher {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataStore.class);
 
-    private final DataTree dataTree = new InMemoryDataTreeFactory().create(DataTreeConfiguration.DEFAULT_OPERATIONAL);
     private final AtomicLong txCounter = new AtomicLong(0);
+    private final DataTree dataTree;
 
     private final InMemoryDOMStoreTreeChangePublisher changePublisher;
     private final ExecutorService dataChangeListenerExecutor;
@@ -65,14 +67,28 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
 
     public InMemoryDOMDataStore(final String name, final ExecutorService dataChangeListenerExecutor) {
         this(name, dataChangeListenerExecutor,
-                InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
+            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
     }
 
     public InMemoryDOMDataStore(final String name, final ExecutorService dataChangeListenerExecutor,
             final int maxDataChangeListenerQueueSize, final boolean debugTransactions) {
-        this.name = Preconditions.checkNotNull(name);
-        this.dataChangeListenerExecutor = Preconditions.checkNotNull(dataChangeListenerExecutor);
+        this(name, LogicalDatastoreType.OPERATIONAL, dataChangeListenerExecutor, maxDataChangeListenerQueueSize,
+            debugTransactions);
+    }
+
+    public InMemoryDOMDataStore(final String name, final LogicalDatastoreType type,
+            final ExecutorService dataChangeListenerExecutor, final int maxDataChangeListenerQueueSize,
+            final boolean debugTransactions) {
+        this(name, defaultConfig(type), dataChangeListenerExecutor, maxDataChangeListenerQueueSize, debugTransactions);
+    }
+
+    public InMemoryDOMDataStore(final String name, final DataTreeConfiguration config,
+            final ExecutorService dataChangeListenerExecutor, final int maxDataChangeListenerQueueSize,
+            final boolean debugTransactions) {
+        this.name = requireNonNull(name);
+        this.dataChangeListenerExecutor = requireNonNull(dataChangeListenerExecutor);
         this.debugTransactions = debugTransactions;
+        dataTree = new InMemoryDataTreeFactory().create(config);
         changePublisher = new InMemoryDOMStoreTreeChangePublisher(this.dataChangeListenerExecutor,
                 maxDataChangeListenerQueueSize);
     }
@@ -92,20 +108,20 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
 
     @Override
     public DOMStoreReadTransaction newReadOnlyTransaction() {
-        return SnapshotBackedTransactions.newReadTransaction(
-                nextIdentifier(),debugTransactions, dataTree.takeSnapshot());
+        return SnapshotBackedTransactions.newReadTransaction(nextIdentifier(), debugTransactions,
+            dataTree.takeSnapshot());
     }
 
     @Override
     public DOMStoreReadWriteTransaction newReadWriteTransaction() {
-        return SnapshotBackedTransactions.newReadWriteTransaction(nextIdentifier(),
-                debugTransactions, dataTree.takeSnapshot(), this);
+        return SnapshotBackedTransactions.newReadWriteTransaction(nextIdentifier(), debugTransactions,
+            dataTree.takeSnapshot(), this);
     }
 
     @Override
     public DOMStoreWriteTransaction newWriteOnlyTransaction() {
-        return SnapshotBackedTransactions.newWriteTransaction(nextIdentifier(),
-                debugTransactions, dataTree.takeSnapshot(), this);
+        return SnapshotBackedTransactions.newWriteTransaction(nextIdentifier(), debugTransactions,
+            dataTree.takeSnapshot(), this);
     }
 
     @Override
@@ -157,8 +173,7 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
 
     @Override
     protected DOMStoreThreePhaseCommitCohort transactionReady(final SnapshotBackedWriteTransaction<String> tx,
-                                                              final DataTreeModification modification,
-                                                              final Exception readyError) {
+            final DataTreeModification modification, final Exception readyError) {
         LOG.debug("Tx: {} is submitted. Modifications: {}", tx.getIdentifier(), modification);
         return new InMemoryDOMStoreThreePhaseCommitCohort(this, tx, modification, readyError);
     }
@@ -178,5 +193,16 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     synchronized void commit(final DataTreeCandidate candidate) {
         dataTree.commit(candidate);
         changePublisher.publishChange(candidate);
+    }
+
+    private static DataTreeConfiguration defaultConfig(final LogicalDatastoreType type) {
+        switch (type) {
+            case CONFIGURATION:
+                return DataTreeConfiguration.DEFAULT_CONFIGURATION;
+            case OPERATIONAL:
+                return DataTreeConfiguration.DEFAULT_OPERATIONAL;
+            default:
+                throw new IllegalArgumentException("Unhandled datastore type " + type);
+        }
     }
 }
