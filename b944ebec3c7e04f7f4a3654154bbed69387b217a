@@ -68,6 +68,29 @@
       "revId": "b944ebec3c7e04f7f4a3654154bbed69387b217a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fcf1df89_317472a5",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/mdsal/binding/dom/codec/test/ActionSerializeDeserializeTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-09-19T11:10:54Z",
+      "side": 1,
+      "message": "can you please not do this? \"registry\" is completely unambiguous and IDEs assign it a different color, so this is superfluous.",
+      "range": {
+        "startLine": 68,
+        "startChar": 36,
+        "endLine": 68,
+        "endChar": 42
+      },
+      "revId": "b944ebec3c7e04f7f4a3654154bbed69387b217a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
