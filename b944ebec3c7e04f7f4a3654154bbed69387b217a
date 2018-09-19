@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2692fbea_64aab1d8",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/SchemaRootCodecContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-09-19T11:09:54Z",
+      "side": 1,
+      "message": "This not \"a number\", but rather \"an offset\", hence capture in the name.",
+      "range": {
+        "startLine": 211,
+        "startChar": 17,
+        "endLine": 211,
+        "endChar": 20
+      },
+      "revId": "b944ebec3c7e04f7f4a3654154bbed69387b217a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "42995cdf_e5cdaa31",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/SchemaRootCodecContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-09-19T11:09:54Z",
+      "side": 1,
+      "message": "this is way too cryptic, as it implies \"length of args\", whereas it is \"expected length of args\"",
+      "range": {
+        "startLine": 213,
+        "startChar": 12,
+        "endLine": 213,
+        "endChar": 17
+      },
+      "revId": "b944ebec3c7e04f7f4a3654154bbed69387b217a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5cfb8947_4f73cb4a",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/SchemaRootCodecContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-09-19T11:09:54Z",
+      "side": 1,
+      "message": "These are two mutually-exclusive cases -- the action either a direct subclass of Action or a direct subclass of KeyedListAction.\n\nHence first check which of the cases are we dealing with via Class.isAssignableFrom(). Based on that run findParameterizedType once and initialize all variables exactly once.",
+      "range": {
+        "startLine": 214,
+        "startChar": 0,
+        "endLine": 221,
+        "endChar": 9
+      },
+      "revId": "b944ebec3c7e04f7f4a3654154bbed69387b217a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
