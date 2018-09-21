@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3ae03fbc_26726115",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/SchemaRootCodecContext.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-09-21T12:54:59Z",
+      "side": 1,
+      "message": "why not just use (KeyedList)Action.class.isAssignableFrom(action)? Do we really need delve this deeply into reflection?",
+      "range": {
+        "startLine": 236,
+        "startChar": 8,
+        "endLine": 239,
+        "endChar": 95
+      },
+      "revId": "66ee62259a645c9b727828685daf60e0ef50348b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
