@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.spi.shard.ReadableWriteableDOMDataTreeShard;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -48,9 +47,11 @@ public class InMemoryDOMDataTreeShardTest {
                 new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
                         YangInstanceIdentifier.of(QName.create("", "Test")));
 
-        final ReadableWriteableDOMDataTreeShard domDataTreeShard = mock(ReadableWriteableDOMDataTreeShard.class);
+        final InMemoryDOMDataTreeShard domDataTreeShard = mock(InMemoryDOMDataTreeShard.class);
         doReturn("testReadableWriteableDOMDataTreeShard").when(domDataTreeShard).toString();
         doReturn(DOM_DATA_TREE_SHARD_PRODUCER).when(domDataTreeShard).createProducer(any());
+        doNothing().when(domDataTreeShard).closeProducer(any());
+        doReturn(domDataTreeShard).when(DOM_DATA_TREE_SHARD_PRODUCER).getParentShard();
 
         assertFalse(inMemoryDOMDataTreeShard.getChildShards().containsValue(domDataTreeShard));
         inMemoryDOMDataTreeShard.onChildAttached(DOM_DATA_TREE_IDENTIFIER, domDataTreeShard);
