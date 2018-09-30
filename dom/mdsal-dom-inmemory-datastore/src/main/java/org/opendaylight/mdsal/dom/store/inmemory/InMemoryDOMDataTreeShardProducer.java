@@ -12,8 +12,10 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardProducer;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
@@ -105,6 +107,10 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
             AtomicReferenceFieldUpdater.newUpdater(InMemoryDOMDataTreeShardProducer.class, State.class, "state");
     private volatile State state;
 
+    private static final AtomicIntegerFieldUpdater<InMemoryDOMDataTreeShardProducer> CLOSED_UPDATER =
+            AtomicIntegerFieldUpdater.newUpdater(InMemoryDOMDataTreeShardProducer.class, "closed");
+    private volatile int closed;
+
     private InMemoryShardDataModificationFactory modificationFactory;
 
     InMemoryDOMDataTreeShardProducer(final InMemoryDOMDataTreeShard parentShard,
@@ -128,6 +134,18 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         } while (!STATE_UPDATER.compareAndSet(this, localState, new Allocated(ret)));
 
         return ret;
+    }
+
+    @Override
+    public void close() {
+        if (CLOSED_UPDATER.compareAndSet(this, 0, 1)) {
+            synchronized (this) {
+                // FIXME: This call is ugly, it's better to clean up all by exposing only one entrance,
+                // 'closeProducer' of shard or this 'close'.
+                this.getParentShard().closeProducer(this);
+                this.getModificationFactory().close();
+            }
+        }
     }
 
     void transactionReady(final InmemoryDOMDataTreeShardWriteTransaction tx, final DataTreeModification modification) {
@@ -204,11 +222,16 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         return prefixes;
     }
 
+    @NonNull InMemoryDOMDataTreeShard getParentShard() {
+        return parentShard;
+    }
+
     InMemoryShardDataModificationFactory getModificationFactory() {
         return modificationFactory;
     }
 
     void setModificationFactory(final InMemoryShardDataModificationFactory modificationFactory) {
+        this.getModificationFactory().close();
         this.modificationFactory = requireNonNull(modificationFactory);
     }
 }

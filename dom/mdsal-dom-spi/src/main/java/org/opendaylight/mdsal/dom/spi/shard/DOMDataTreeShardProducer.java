@@ -11,9 +11,10 @@ import com.google.common.annotations.Beta;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.yangtools.concepts.Registration;
 
 @Beta
-public interface DOMDataTreeShardProducer {
+public interface DOMDataTreeShardProducer extends Registration {
     /**
      * Return the collection of tree identifiers to which this producer is bound. This collection
      * is constant during the lifetime of a producer.
