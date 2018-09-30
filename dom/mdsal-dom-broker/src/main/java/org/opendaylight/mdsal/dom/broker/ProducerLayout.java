@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.BiMap;
@@ -134,4 +136,11 @@ final class ProducerLayout {
                 "Cannot create transaction since the producer is not mapped to any shard");
         return Maps.transformValues(idToProducer, DOMDataTreeShardProducer::createTransaction);
     }
+
+    public void close() {
+        for (final Map.Entry<DOMDataTreeIdentifier, DOMDataTreeShardProducer> entry : idToProducer.entrySet()) {
+            ((WriteableDOMDataTreeShard) requireNonNull(shardMap.get(entry.getKey()))).closeProducer(entry.getValue());
+        }
+    }
+
 }
