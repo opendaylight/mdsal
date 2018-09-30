@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardProducer;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
@@ -202,6 +203,10 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
     @Override
     public Collection<DOMDataTreeIdentifier> getPrefixes() {
         return prefixes;
+    }
+
+    public @NonNull InMemoryDOMDataTreeShard getParentShard() {
+        return parentShard;
     }
 
     InMemoryShardDataModificationFactory getModificationFactory() {
