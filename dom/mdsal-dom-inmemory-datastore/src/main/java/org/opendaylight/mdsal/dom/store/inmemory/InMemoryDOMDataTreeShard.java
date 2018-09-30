@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -27,6 +29,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.spi.DOMDataTreePrefixTable;
 import org.opendaylight.mdsal.dom.spi.shard.ChildShardContext;
+import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardProducer;
 import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
 import org.opendaylight.mdsal.dom.spi.shard.ReadableWriteableDOMDataTreeShard;
 import org.opendaylight.mdsal.dom.spi.shard.SubshardProducerSpecification;
@@ -44,6 +47,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 @Beta
 public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeShard, SchemaContextListener {
@@ -102,7 +106,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
 
     @Override
     public void onChildAttached(final DOMDataTreeIdentifier childPrefix, final DOMDataTreeShard child) {
-        Preconditions.checkArgument(child != this, "Attempted to attach child %s onto self", this);
+        checkArgument(child != this, "Attempted to attach child %s onto self", this);
         reparentChildShards(childPrefix, child);
 
         final ChildShardContext context = createContextFor(childPrefix, child);
@@ -115,11 +119,13 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     public void onChildDetached(final DOMDataTreeIdentifier childPrefix, final DOMDataTreeShard child) {
         childShards.remove(childPrefix);
         childShardsTable.remove(childPrefix);
+        //FIXME: Producers not being affected could be skipped over.
         updateProducers();
     }
 
     private void updateProducers() {
         for (InMemoryDOMDataTreeShardProducer p : producers) {
+            p.getModificationFactory().close();
             p.setModificationFactory(createModificationFactory(p.getPrefixes()));
         }
     }
@@ -163,7 +169,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     @Override
     public InMemoryDOMDataTreeShardProducer createProducer(final Collection<DOMDataTreeIdentifier> prefixes) {
         for (final DOMDataTreeIdentifier prodPrefix : prefixes) {
-            Preconditions.checkArgument(prefix.contains(prodPrefix), "Prefix %s is not contained under shart root",
+            checkArgument(prefix.contains(prodPrefix), "Prefix %s is not contained under shart root",
                     prodPrefix, prefix);
         }
 
@@ -173,10 +179,15 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         return ret;
     }
 
-    void closeProducer(final InMemoryDOMDataTreeShardProducer producer) {
+    @Override
+    public void closeProducer(final DOMDataTreeShardProducer producer) {
+        checkArgument(producer instanceof InMemoryDOMDataTreeShardProducer,
+                "It should be object of InMemoryDOMDataTreeShardProducer.");
         if (!producers.remove(producer)) {
             LOG.warn("Producer {} not found in shard {}", producer, this);
         }
+
+        ((InMemoryDOMDataTreeShardProducer) producer).getModificationFactory().close();
     }
 
     @Override
@@ -192,7 +203,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         while (actualChildren.hasNext()) {
             final Entry<DOMDataTreeIdentifier, ChildShardContext> actualChild = actualChildren.next();
             final DOMDataTreeIdentifier actualPrefix = actualChild.getKey();
-            Preconditions.checkArgument(!newChildPrefix.equals(actualPrefix),
+            checkArgument(!newChildPrefix.equals(actualPrefix),
                     "Child shard with prefix %s already attached", newChildPrefix);
             if (newChildPrefix.contains(actualPrefix)) {
                 final ChildShardContext actualContext = actualChild.getValue();
@@ -216,7 +227,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
 
     private static ChildShardContext createContextFor(final DOMDataTreeIdentifier prefix,
                                                       final DOMDataTreeShard child) {
-        Preconditions.checkArgument(child instanceof WriteableDOMDataTreeShard,
+        checkArgument(child instanceof WriteableDOMDataTreeShard,
                 "Child %s is not a writable shared", child);
         return new ChildShardContext(prefix, (WriteableDOMDataTreeShard) child);
     }
@@ -243,10 +254,15 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
 
     InmemoryDOMDataTreeShardWriteTransaction createTransaction(final String transactionId,
             final InMemoryDOMDataTreeShardProducer producer, final DataTreeSnapshot snapshot) {
-        Preconditions.checkArgument(snapshot instanceof CursorAwareDataTreeSnapshot);
+        checkArgument(snapshot instanceof CursorAwareDataTreeSnapshot);
 
         return new InmemoryDOMDataTreeShardWriteTransaction(producer,
                 producer.getModificationFactory().createModification((CursorAwareDataTreeSnapshot) snapshot), dataTree,
                 shardChangePublisher, executor);
+    }
+
+    @VisibleForTesting
+    public Collection<InMemoryDOMDataTreeShardProducer> getProducers() {
+        return producers;
     }
 }
