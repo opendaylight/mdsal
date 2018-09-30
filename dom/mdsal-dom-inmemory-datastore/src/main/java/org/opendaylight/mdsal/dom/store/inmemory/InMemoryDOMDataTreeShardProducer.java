@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardProducer;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
@@ -130,6 +131,19 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         return ret;
     }
 
+    @Override
+    public void close() {
+        final Shutdown shutdown = new Shutdown("Producer closed");
+        if (!STATE_UPDATER.compareAndSet(this, idleState, shutdown)) {
+            throw new IllegalStateException("Producer " + this + " in unexpected state " + state);
+        }
+
+        // FIXME: This call is ugly, it's better to clean up all by exposing only one entrance,
+        // 'closeProducer' of shard or this 'close'.
+        getParentShard().closeProducer(this);
+        getModificationFactory().close();
+    }
+
     void transactionReady(final InmemoryDOMDataTreeShardWriteTransaction tx, final DataTreeModification modification) {
         final State localState = state;
         LOG.debug("Transaction was readied {}, current state {}", tx.getIdentifier(), localState);
@@ -204,11 +218,16 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         return prefixes;
     }
 
+    @NonNull InMemoryDOMDataTreeShard getParentShard() {
+        return parentShard;
+    }
+
     InMemoryShardDataModificationFactory getModificationFactory() {
         return modificationFactory;
     }
 
     void setModificationFactory(final InMemoryShardDataModificationFactory modificationFactory) {
+        this.getModificationFactory().close();
         this.modificationFactory = requireNonNull(modificationFactory);
     }
 }
