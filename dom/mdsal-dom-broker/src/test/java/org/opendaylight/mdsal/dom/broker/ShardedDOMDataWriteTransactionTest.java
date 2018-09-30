@@ -13,6 +13,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -59,6 +60,7 @@ public class ShardedDOMDataWriteTransactionTest {
 
         doReturn(new TestDOMShardWriteTransaction()).when(mockedProducer).createTransaction();
         doReturn(mockedProducer).when(rootShard).createProducer(any(Collection.class));
+        doNothing().when(rootShard).closeProducer(any(DOMDataTreeShardProducer.class));
 
         final ShardedDOMDataTree shardedDOMDataTree =
                 new ShardedDOMDataTree();

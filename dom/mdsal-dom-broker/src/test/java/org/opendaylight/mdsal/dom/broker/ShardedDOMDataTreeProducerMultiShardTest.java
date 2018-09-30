@@ -20,6 +20,7 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.Futures;
 import java.util.Collection;
 import java.util.Collections;
@@ -250,6 +251,33 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         assertEquals(crossShardContainer, capturedSubtrees.get(3).get(TEST_ID));
 
         verifyNoMoreInteractions(mockedDataTreeListener);
+    }
+
+    @Test
+    public void testMultipleShardsProducerClose() throws Exception {
+        final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
+        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+
+        assertTrue(rootShard.getProducers().isEmpty());
+
+        final DOMDataTreeProducer shardRegProducer =
+                dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
+
+        final DOMDataTreeShardProducer rootShardProducer = Iterables.getOnlyElement(rootShard.getProducers());
+        assertEquals(rootShardProducer.getPrefixes().toString(),
+                Collections.singletonList(INNER_CONTAINER_ID).toString());
+
+        innerShardReg = dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, shardRegProducer);
+
+        assertTrue(rootShard.getProducers().isEmpty());
+
+        final DOMDataTreeShardProducer innerShardProducer = Iterables.getOnlyElement(innerShard.getProducers());
+        assertEquals(innerShardProducer.getPrefixes().toString(),
+                Collections.singletonList(INNER_CONTAINER_ID).toString());
+
+        shardRegProducer.close();
+        assertTrue(rootShard.getProducers().isEmpty());
+        assertTrue(innerShard.getProducers().isEmpty());
     }
 
     @Test

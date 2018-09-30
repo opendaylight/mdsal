@@ -26,4 +26,11 @@ public interface WriteableDOMDataTreeShard extends DOMDataTreeShard {
      * @return Producer.
      */
     DOMDataTreeShardProducer createProducer(Collection<DOMDataTreeIdentifier> paths);
+
+    /**
+     * Close a producer from this shard.
+     *
+     * @param producer producer to close.
+     */
+    void closeProducer(DOMDataTreeShardProducer producer);
 }
