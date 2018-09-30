@@ -17,8 +17,6 @@ import java.util.Map;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
-import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardProducer;
-import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
 import org.opendaylight.mdsal.dom.spi.shard.WriteCursorStrategy;
 import org.opendaylight.mdsal.dom.spi.shard.WriteableModificationNode;
@@ -54,10 +52,11 @@ final class TestUtils {
 
     static final WriteCursorStrategy WRITE_CURSOR_STRATEGY = mock(WriteCursorStrategy.class);
 
-    static final DOMDataTreeShardProducer DOM_DATA_TREE_SHARD_PRODUCER = mock(DOMDataTreeShardProducer.class);
+    static final InMemoryDOMDataTreeShardProducer DOM_DATA_TREE_SHARD_PRODUCER =
+            mock(InMemoryDOMDataTreeShardProducer.class);
 
-    static final DOMDataTreeShardWriteTransaction DOM_DATA_TREE_SHARD_WRITE_TRANSACTION =
-            mock(DOMDataTreeShardWriteTransaction.class);
+    static final InmemoryDOMDataTreeShardWriteTransaction DOM_DATA_TREE_SHARD_WRITE_TRANSACTION =
+            mock(InmemoryDOMDataTreeShardWriteTransaction.class);
 
     static final DataTree DATA_TREE = mock(DataTree.class);
 

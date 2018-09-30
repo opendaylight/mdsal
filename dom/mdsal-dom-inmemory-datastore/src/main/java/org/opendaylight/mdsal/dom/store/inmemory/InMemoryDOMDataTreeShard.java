@@ -29,6 +29,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.spi.DOMDataTreePrefixTable;
 import org.opendaylight.mdsal.dom.spi.shard.ChildShardContext;
+import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardProducer;
 import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
 import org.opendaylight.mdsal.dom.spi.shard.ReadableWriteableDOMDataTreeShard;
 import org.opendaylight.mdsal.dom.spi.shard.SubshardProducerSpecification;
@@ -117,6 +118,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     public void onChildDetached(final DOMDataTreeIdentifier childPrefix, final DOMDataTreeShard child) {
         childShards.remove(childPrefix);
         childShardsTable.remove(childPrefix);
+        //FIXME: Producers not being affected could be skipped over.
         updateProducers();
     }
 
@@ -165,7 +167,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     @Override
     public InMemoryDOMDataTreeShardProducer createProducer(final Collection<DOMDataTreeIdentifier> prefixes) {
         for (final DOMDataTreeIdentifier prodPrefix : prefixes) {
-            checkArgument(prefix.contains(prodPrefix), "Prefix %s is not contained under shart root", prodPrefix,
+            checkArgument(prefix.contains(prodPrefix), "Prefix %s is not contained under shard root", prodPrefix,
                 prefix);
         }
 
@@ -175,10 +177,15 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         return ret;
     }
 
-    void closeProducer(final InMemoryDOMDataTreeShardProducer producer) {
+    @Override
+    public void closeProducer(final DOMDataTreeShardProducer producer) {
+        checkArgument(producer instanceof InMemoryDOMDataTreeShardProducer,
+                "It should be object of InMemoryDOMDataTreeShardProducer.");
         if (!producers.remove(producer)) {
             LOG.warn("Producer {} not found in shard {}", producer, this);
         }
+
+        ((InMemoryDOMDataTreeShardProducer) producer).getModificationFactory().close();
     }
 
     @Override
@@ -248,5 +255,10 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         return new InmemoryDOMDataTreeShardWriteTransaction(producer,
                 producer.getModificationFactory().createModification((CursorAwareDataTreeSnapshot) snapshot), dataTree,
                 shardChangePublisher, executor);
+    }
+
+    @VisibleForTesting
+    public Collection<InMemoryDOMDataTreeShardProducer> getProducers() {
+        return producers;
     }
 }
