@@ -117,6 +117,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     public void onChildDetached(final DOMDataTreeIdentifier childPrefix, final DOMDataTreeShard child) {
         childShards.remove(childPrefix);
         childShardsTable.remove(childPrefix);
+        //FIXME: Producers not being affected could be skipped over.
         updateProducers();
     }
 
@@ -165,7 +166,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     @Override
     public InMemoryDOMDataTreeShardProducer createProducer(final Collection<DOMDataTreeIdentifier> prefixes) {
         for (final DOMDataTreeIdentifier prodPrefix : prefixes) {
-            checkArgument(prefix.contains(prodPrefix), "Prefix %s is not contained under shart root", prodPrefix,
+            checkArgument(prefix.contains(prodPrefix), "Prefix %s is not contained under shard root", prodPrefix,
                 prefix);
         }
 
@@ -176,8 +177,10 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     }
 
     void closeProducer(final InMemoryDOMDataTreeShardProducer producer) {
-        if (!producers.remove(producer)) {
-            LOG.warn("Producer {} not found in shard {}", producer, this);
+        synchronized (this) {
+            if (!producers.remove(producer)) {
+                LOG.warn("Producer {} not found in shard {}", producer, this);
+            }
         }
     }
 
@@ -248,5 +251,10 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         return new InmemoryDOMDataTreeShardWriteTransaction(producer,
                 producer.getModificationFactory().createModification((CursorAwareDataTreeSnapshot) snapshot), dataTree,
                 shardChangePublisher, executor);
+    }
+
+    @VisibleForTesting
+    public Collection<InMemoryDOMDataTreeShardProducer> getProducers() {
+        return producers;
     }
 }
