@@ -10,12 +10,14 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
+import org.opendaylight.mdsal.dom.spi.shard.WriteableDOMDataTreeShard;
 import org.opendaylight.mdsal.dom.spi.shard.WriteableModificationNode;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
+
+import java.util.Map;
 
 final class InMemoryShardDataModificationFactory {
     private final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards;
@@ -43,5 +45,12 @@ final class InMemoryShardDataModificationFactory {
 
     ShardDataModification createModification(final CursorAwareDataTreeSnapshot snapshot) {
         return new ShardDataModification(new ShardRootModificationContext(root, snapshot), children, childShards);
+    }
+
+    void close() {
+        childShards.values().forEach(context -> {
+            final InMemoryDOMDataTreeShardProducer producer = (InMemoryDOMDataTreeShardProducer) context.getProducer();
+            ((WriteableDOMDataTreeShard) producer.getParentShard()).closeProducer(producer);
+        });
     }
 }

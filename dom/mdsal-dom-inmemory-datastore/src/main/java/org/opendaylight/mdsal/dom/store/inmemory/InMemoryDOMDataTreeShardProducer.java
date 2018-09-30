@@ -10,15 +10,18 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardProducer;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
 
@@ -201,6 +204,10 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
     @Override
     public Collection<DOMDataTreeIdentifier> getPrefixes() {
         return prefixes;
+    }
+
+    public @NonNull DOMDataTreeShard getParentShard() {
+        return parentShard;
     }
 
     InMemoryShardDataModificationFactory getModificationFactory() {
