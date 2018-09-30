@@ -79,6 +79,10 @@ public final class ForeignShardModificationContext implements Identifiable<DOMDa
         return identifier;
     }
 
+    public DOMDataTreeShardProducer getProducer() {
+        return producer;
+    }
+
     public ListenableFuture<Boolean> validate() {
         return tx.validate();
     }
