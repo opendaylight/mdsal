@@ -20,6 +20,7 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.Futures;
 import java.util.Collection;
 import java.util.Collections;
@@ -250,6 +251,134 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         assertEquals(crossShardContainer, capturedSubtrees.get(3).get(TEST_ID));
 
         verifyNoMoreInteractions(mockedDataTreeListener);
+    }
+
+    @Test
+    public void testMultipleShardsProducerClose() throws Exception {
+        final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
+        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+
+        assertTrue(rootShard.getProducers().isEmpty());
+
+        final DOMDataTreeProducer innerShardRegProducer =
+                dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
+        assertTrue(rootShard.getProducers().size() == 1);
+        final DOMDataTreeShardProducer rootShardProducer = Iterables.getOnlyElement(rootShard.getProducers());
+        assertEquals(rootShardProducer.getPrefixes().toString(),
+                Collections.singletonList(INNER_CONTAINER_ID).toString());
+
+        dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, innerShardRegProducer);
+
+        assertTrue(rootShard.getProducers().isEmpty());
+        assertTrue(innerShard.getProducers().size() == 1);
+        final DOMDataTreeShardProducer innerShardProducer = Iterables.getOnlyElement(innerShard.getProducers());
+        assertEquals(innerShardProducer.getPrefixes().toString(),
+                Collections.singletonList(INNER_CONTAINER_ID).toString());
+
+        innerShardRegProducer.close();
+        assertTrue(rootShard.getProducers().isEmpty());
+        assertTrue(innerShard.getProducers().isEmpty());
+
+        final DOMDataTreeProducer testProducer =
+                dataTreeService.createProducer(Collections.singletonList(TEST_ID));
+        assertTrue(rootShard.getProducers().size() == 1);
+        final DOMDataTreeShardProducer rootShardProducer2 = Iterables.getOnlyElement(rootShard.getProducers());
+        assertEquals(rootShardProducer2.getPrefixes().toString(),
+                Collections.singletonList(TEST_ID).toString());
+
+        assertTrue(innerShard.getProducers().size() == 1);
+        final DOMDataTreeShardProducer innerShardProducer2 = Iterables.getOnlyElement(innerShard.getProducers());
+        assertEquals(innerShardProducer2.getPrefixes().toString(),
+                Collections.singletonList(INNER_CONTAINER_ID).toString());
+
+        testProducer.close();
+        assertTrue(rootShard.getProducers().isEmpty());
+        assertTrue(innerShard.getProducers().isEmpty());
+    }
+
+    @Test
+    public void testMultipleShardsChildProducerClose() throws Exception {
+        final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
+        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+
+        final DOMDataTreeProducer innerShardRegProducer =
+                dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
+        dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, innerShardRegProducer);
+        innerShardRegProducer.close();
+        assertTrue(rootShard.getProducers().isEmpty());
+        assertTrue(innerShard.getProducers().isEmpty());
+
+        final DOMDataTreeProducer testProducer =
+                dataTreeService.createProducer(Collections.singletonList(TEST_ID));
+        final DOMDataTreeProducer testChildProducer = testProducer.createProducer(
+                Collections.singletonList(INNER_CONTAINER_ID));
+        assertTrue(rootShard.getProducers().size() == 1);
+        assertTrue(innerShard.getProducers().size() == 2);
+
+        final DOMDataTreeShardProducer rootShardProducer = Iterables.getOnlyElement(rootShard.getProducers());
+        assertEquals(rootShardProducer.getPrefixes().toString(),
+                Collections.singletonList(TEST_ID).toString());
+
+        for (DOMDataTreeShardProducer producer : innerShard.getProducers()) {
+            assertEquals(producer.getPrefixes().toString(),
+                    Collections.singletonList(INNER_CONTAINER_ID).toString());
+        }
+
+        testProducer.close();
+        assertTrue(rootShard.getProducers().isEmpty());
+        assertTrue(innerShard.getProducers().size() == 1);
+        final DOMDataTreeShardProducer innerShardProducer = Iterables.getOnlyElement(innerShard.getProducers());
+        assertEquals(innerShardProducer.getPrefixes().toString(),
+                Collections.singletonList(INNER_CONTAINER_ID).toString());
+
+        testChildProducer.close();
+        assertTrue(rootShard.getProducers().isEmpty());
+        assertTrue(innerShard.getProducers().isEmpty());
+    }
+
+    @Test
+    public void testMultipleShardsProducerCloseForSubshardAttached() throws Exception {
+        final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
+        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+
+        final DOMDataTreeProducer innerShardRegProducer =
+                dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
+        dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, innerShardRegProducer);
+        innerShardRegProducer.close();
+        assertTrue(rootShard.getProducers().isEmpty());
+        assertTrue(innerShard.getProducers().isEmpty());
+
+        final DOMDataTreeProducer testProducer =
+                dataTreeService.createProducer(Collections.singletonList(TEST_ID));
+        assertTrue(rootShard.getProducers().size() == 1);
+        assertTrue(innerShard.getProducers().size() == 1);
+
+        final DOMDataTreeShardProducer rootShardProducer = Iterables.getOnlyElement(rootShard.getProducers());
+        assertEquals(rootShardProducer.getPrefixes().toString(),
+                Collections.singletonList(TEST_ID).toString());
+
+        final DOMDataTreeShardProducer innerShardProducer = Iterables.getOnlyElement(innerShard.getProducers());
+        assertEquals(innerShardProducer.getPrefixes().toString(),
+                Collections.singletonList(INNER_CONTAINER_ID).toString());
+
+        final InMemoryDOMDataTreeShard test2Shard = InMemoryDOMDataTreeShard.create(TEST2_ID, executor, 1);
+        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+
+        final DOMDataTreeProducer test2ShardRegProducer =
+                dataTreeService.createProducer(Collections.singletonList(TEST2_ID));
+        dataTreeService.registerDataTreeShard(TEST2_ID, test2Shard, test2ShardRegProducer);
+        test2ShardRegProducer.close();
+
+        assertTrue(rootShard.getProducers().size() == 1);
+        assertTrue(innerShard.getProducers().size() == 1);
+
+        final DOMDataTreeShardProducer rootShardProducer2 = Iterables.getOnlyElement(rootShard.getProducers());
+        assertEquals(rootShardProducer2.getPrefixes().toString(),
+                Collections.singletonList(TEST_ID).toString());
+
+        final DOMDataTreeShardProducer innerShardProducer2 = Iterables.getOnlyElement(innerShard.getProducers());
+        assertEquals(innerShardProducer2.getPrefixes().toString(),
+                Collections.singletonList(INNER_CONTAINER_ID).toString());
     }
 
     @Test
