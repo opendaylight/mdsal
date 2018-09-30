@@ -169,6 +169,15 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
                     prodPrefix, prefix);
         }
 
+        for (InMemoryDOMDataTreeShardProducer p : producers) {
+            if (p.getPrefixes().size() == prefixes.size()) {
+                if (p.getPrefixes().containsAll(prefixes)
+                     && prefixes.containsAll(p.getPrefixes())) {
+                    return p;
+                }
+            }
+        }
+
         final InMemoryDOMDataTreeShardProducer ret = new InMemoryDOMDataTreeShardProducer(this, prefixes,
                 createModificationFactory(prefixes));
         producers.add(ret);
