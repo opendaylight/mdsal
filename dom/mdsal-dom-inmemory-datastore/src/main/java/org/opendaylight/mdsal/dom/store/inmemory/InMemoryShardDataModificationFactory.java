@@ -44,4 +44,11 @@ final class InMemoryShardDataModificationFactory {
     ShardDataModification createModification(final CursorAwareDataTreeSnapshot snapshot) {
         return new ShardDataModification(new ShardRootModificationContext(root, snapshot), children, childShards);
     }
+
+    void close() {
+        childShards.values().forEach(context -> {
+            final InMemoryDOMDataTreeShardProducer producer = (InMemoryDOMDataTreeShardProducer) context.getProducer();
+            producer.getParentShard().closeProducer(producer);
+        });
+    }
 }

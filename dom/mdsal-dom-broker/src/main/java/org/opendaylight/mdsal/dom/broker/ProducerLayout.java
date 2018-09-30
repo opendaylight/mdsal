@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.BiMap;
@@ -42,8 +44,8 @@ final class ProducerLayout {
             final BiMap<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducer,
             final Map<DOMDataTreeIdentifier, DOMDataTreeProducer> children) {
         this.shardMap = ImmutableMap.copyOf(shardMap);
-        this.idToProducer = Preconditions.checkNotNull(idToProducer);
-        this.children = Preconditions.checkNotNull(children);
+        this.idToProducer = requireNonNull(idToProducer);
+        this.children = requireNonNull(children);
     }
 
     static ProducerLayout create(final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
@@ -87,6 +89,7 @@ final class ProducerLayout {
     }
 
     ProducerLayout reshard(final Map<DOMDataTreeIdentifier, DOMDataTreeShard> newShardMap) {
+        close();
         return new ProducerLayout(newShardMap, mapIdsToProducer(newShardMap), children);
     }
 
@@ -134,4 +137,11 @@ final class ProducerLayout {
                 "Cannot create transaction since the producer is not mapped to any shard");
         return Maps.transformValues(idToProducer, DOMDataTreeShardProducer::createTransaction);
     }
+
+    void close() {
+        for (final Entry<DOMDataTreeIdentifier, DOMDataTreeShardProducer> entry : idToProducer.entrySet()) {
+            ((WriteableDOMDataTreeShard) requireNonNull(shardMap.get(entry.getKey()))).closeProducer(entry.getValue());
+        }
+    }
+
 }

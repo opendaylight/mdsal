@@ -79,7 +79,6 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
 
     void subshardAdded(final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
         checkIdle();
-
         layout = layout.reshard(shardMap);
     }
 
@@ -195,6 +194,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         if (CLOSED_UPDATER.compareAndSet(this, 0, 1)) {
             synchronized (this) {
                 dataTree.destroyProducer(this);
+                layout.close();
             }
         }
     }

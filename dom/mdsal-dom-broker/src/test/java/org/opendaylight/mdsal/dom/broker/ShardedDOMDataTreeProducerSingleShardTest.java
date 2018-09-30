@@ -86,6 +86,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
 
         doReturn("rootShard").when(rootShard).toString();
         doReturn(producerMock).when(rootShard).createProducer(any(Collection.class));
+        doNothing().when(rootShard).closeProducer(any(DOMDataTreeShardProducer.class));
         doReturn(shardTxMock).when(producerMock).createTransaction();
         doNothing().when(shardTxMock).ready();
         doReturn(Futures.immediateFuture(null)).when(shardTxMock).submit();
