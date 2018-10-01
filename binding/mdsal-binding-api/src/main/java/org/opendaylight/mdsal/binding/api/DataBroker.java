@@ -7,10 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import org.opendaylight.mdsal.common.api.AsyncDataBroker;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-
 /**
  * Provides access to a conceptual data tree store and also provides the ability to
  * subscribe for changes to data under a given branch of the tree.
@@ -42,8 +38,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * <b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL,
  * but only to be consumed by them.
  */
-public interface DataBroker extends AsyncDataBroker<InstanceIdentifier<?>, DataObject>, TransactionFactory,
-        BindingService, DataTreeChangeService {
+public interface DataBroker extends BindingService, TransactionFactory, DataTreeChangeService {
     /**
      * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
      * no outstanding transaction. Listener will be registered to handle chain-level events.

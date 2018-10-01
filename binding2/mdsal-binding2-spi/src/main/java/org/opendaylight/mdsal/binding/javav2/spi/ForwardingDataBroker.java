@@ -19,9 +19,6 @@ import org.opendaylight.mdsal.binding.javav2.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.javav2.api.TransactionChain;
 import org.opendaylight.mdsal.binding.javav2.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.javav2.api.WriteTransaction;
-import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
-import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.mdsal.common.api.AsyncReadWriteTransaction;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 /**
@@ -36,11 +33,6 @@ public abstract class ForwardingDataBroker extends ForwardingObject implements D
     @Override
     public ReadTransaction newReadOnlyTransaction() {
         return delegate().newReadOnlyTransaction();
-    }
-
-    @Override
-    public AsyncReadWriteTransaction<InstanceIdentifier<?>, TreeNode> newReadWriteTransaction() {
-        return delegate().newReadWriteTransaction();
     }
 
     @Override
@@ -65,5 +57,4 @@ public abstract class ForwardingDataBroker extends ForwardingObject implements D
     public TransactionChain createTransactionChain(final TransactionChainListener listener) {
         return delegate().createTransactionChain(listener);
     }
-
 }

@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.mdsal.common.api.AsyncDataBroker;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
@@ -42,8 +40,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * <b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL,
  * but only to be consumed by them.
  */
-public interface DOMDataBroker extends
-        AsyncDataBroker<YangInstanceIdentifier, NormalizedNode<?, ?>>, DOMTransactionFactory,
+public interface DOMDataBroker extends DOMTransactionFactory,
         DOMExtensibleService<DOMDataBroker, DOMDataBrokerExtension> {
     /**
      * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
