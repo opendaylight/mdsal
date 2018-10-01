@@ -17,11 +17,11 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 public class BindingDOMRpcAdapterRegistrationTest {
 
     @Test
-    public void removeRegistration() throws Exception {
-        final DOMRpcImplementationRegistration registration = mock(DOMRpcImplementationRegistration.class);
-        final BindingDOMRpcAdapterRegistration bindingDOMRpcAdapterRegistration =
+    public void removeRegistration() {
+        final DOMRpcImplementationRegistration<?> registration = mock(DOMRpcImplementationRegistration.class);
+        final BindingDOMRpcAdapterRegistration<?> adapterReg =
                 new BindingDOMRpcAdapterRegistration<>(mock(RpcService.class), registration);
-        bindingDOMRpcAdapterRegistration.removeRegistration();
+        adapterReg.close();
         verify(registration).close();
     }
 }

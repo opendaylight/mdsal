@@ -16,16 +16,15 @@ import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
 public class BindingRpcAdapterRegistrationTest {
-
     @Test
     public void removeRegistrationTest() throws Exception {
         final RpcService rpcService = mock(RpcService.class);
-        final DOMRpcImplementationRegistration domRpcImplementationRegistration =
+        final DOMRpcImplementationRegistration<?> domRpcImplementationRegistration =
                 mock(DOMRpcImplementationRegistration.class);
-        final BindingRpcAdapterRegistration bindingRpcAdapterRegistration =
+        final BindingRpcAdapterRegistration<?> bindingRpcAdapterRegistration =
                 new BindingRpcAdapterRegistration<>(rpcService, domRpcImplementationRegistration);
         doNothing().when(domRpcImplementationRegistration).close();
-        bindingRpcAdapterRegistration.removeRegistration();
+        bindingRpcAdapterRegistration.close();
         verify(domRpcImplementationRegistration).close();
     }
 }
