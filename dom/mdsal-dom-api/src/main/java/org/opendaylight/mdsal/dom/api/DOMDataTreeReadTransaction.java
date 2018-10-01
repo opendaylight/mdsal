@@ -9,9 +9,9 @@ package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
-import org.opendaylight.mdsal.common.api.AsyncReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -50,8 +50,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * java.util.concurrent.Executor)} or other functions from {@link com.google.common.util.concurrent.Futures} to register
  * more specific listeners.
  */
-public interface DOMDataTreeReadTransaction extends DOMDataTreeTransaction,
-        AsyncReadTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>> {
+public interface DOMDataTreeReadTransaction extends DOMDataTreeTransaction, Registration {
     /**
      * Reads data from provided logical data store located at the provided path.
      *

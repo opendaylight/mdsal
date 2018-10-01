@@ -8,17 +8,15 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.common.api.AsyncReadWriteTransaction;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * A transaction that enables combined read/write capabilities.
  *
  * <p>
- * For more information on usage and examples, please see the documentation in {@link AsyncReadWriteTransaction}.
+ * For more information on usage and examples, please see the documentation in {@link ReadTransaction} and
+ * {@link WriteTransaction}
  */
 @Beta
-public interface ReadWriteTransaction extends ReadTransaction, WriteTransaction,
-        AsyncReadWriteTransaction<InstanceIdentifier<?>, DataObject> {
+public interface ReadWriteTransaction extends ReadTransaction, WriteTransaction {
+
 }
