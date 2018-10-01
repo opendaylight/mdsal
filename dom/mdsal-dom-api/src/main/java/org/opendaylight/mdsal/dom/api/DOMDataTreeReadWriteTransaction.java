@@ -7,16 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.mdsal.common.api.AsyncReadWriteTransaction;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-
 /**
  * A transaction that provides read/write access to a logical data store.
  *
  * <p>
- * For more information on usage and examples, please see the documentation in {@link AsyncReadWriteTransaction}.
+ * For more information on usage and examples, please see the documentation in {@link DOMDataTreeReadTransaction}
+ * and {@link DOMDataTreeWriteTransaction}.
  */
-public interface DOMDataTreeReadWriteTransaction extends DOMDataTreeReadTransaction, DOMDataTreeWriteTransaction,
-        AsyncReadWriteTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>> {
+public interface DOMDataTreeReadWriteTransaction extends DOMDataTreeReadTransaction, DOMDataTreeWriteTransaction {
 }

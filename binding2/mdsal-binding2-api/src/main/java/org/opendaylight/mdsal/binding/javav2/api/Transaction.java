@@ -7,9 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.javav2.api;
 
-import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
-import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.mdsal.common.api.AsyncTransaction;
+import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
  * A common parent for all transactions which operate on a conceptual data tree.
@@ -21,7 +19,6 @@ import org.opendaylight.mdsal.common.api.AsyncTransaction;
  *
  * <b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL.
  */
-public interface Transaction extends AsyncTransaction<InstanceIdentifier<?>, TreeNode> {
-    @Override
-    Object getIdentifier();
+public interface Transaction extends Identifiable<Object> {
+
 }

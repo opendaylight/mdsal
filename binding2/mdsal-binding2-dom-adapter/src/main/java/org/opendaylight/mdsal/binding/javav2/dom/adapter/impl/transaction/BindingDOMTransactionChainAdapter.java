@@ -22,9 +22,6 @@ import org.opendaylight.mdsal.binding.javav2.api.TransactionChainClosedException
 import org.opendaylight.mdsal.binding.javav2.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.javav2.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedNodeCodec;
-import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
-import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.mdsal.common.api.AsyncReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
@@ -77,12 +74,6 @@ public final class BindingDOMTransactionChainAdapter implements TransactionChain
             }
 
         };
-    }
-
-    @Override
-    public AsyncReadWriteTransaction<InstanceIdentifier<?>, TreeNode> newReadWriteTransaction() {
-        // TODO - placeholder for now
-        throw new UnsupportedOperationException();
     }
 
     private <T, F extends FluentFuture<T>> F listenForFailure(final WriteTransaction tx, final F future) {

@@ -8,9 +8,6 @@
 package org.opendaylight.mdsal.binding.javav2.api;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
-import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.mdsal.common.api.AsyncDataBroker;
 
 /**
  * Provides access to a conceptual data tree store and also provides the ability to
@@ -44,8 +41,7 @@ import org.opendaylight.mdsal.common.api.AsyncDataBroker;
  * but only to be consumed by them.
  */
 @Beta
-public interface DataBroker extends AsyncDataBroker<InstanceIdentifier<?>, TreeNode>, BindingService,
-        TransactionFactory, DataTreeService {
+public interface DataBroker extends BindingService, TransactionFactory, DataTreeService {
     /**
      * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
      * no outstanding transaction. Listener will be registered to handle chain-level events.

@@ -7,8 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.spi;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
@@ -16,31 +19,27 @@ import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Identifiable;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
  * Abstract class for forwards transaction and codec for serialize/deserialize DOM and Binding data.
  *
- * @param <T>
- *            - type of asynchronous transaction
+ * @param <T> type of asynchronous transaction
  */
 @Beta
-public abstract class AbstractForwardedTransaction<
-        T extends AsyncTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>>>
+public abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction>
         implements Delegator<T>, Identifiable<Object> {
 
     private final T delegate;
     private final BindingToNormalizedNodeCodec codec;
 
     public AbstractForwardedTransaction(final T delegateTx, final BindingToNormalizedNodeCodec codec) {
-        this.delegate = Preconditions.checkNotNull(delegateTx, "Delegate must not be null");
-        this.codec = Preconditions.checkNotNull(codec, "Codec must not be null");
+        this.delegate = requireNonNull(delegateTx, "Delegate must not be null");
+        this.codec = requireNonNull(codec, "Codec must not be null");
     }
 
     @Nonnull
@@ -55,9 +54,8 @@ public abstract class AbstractForwardedTransaction<
     }
 
     @SuppressWarnings("unchecked")
-    protected final <S extends AsyncTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>>> S
-            getDelegateChecked(final Class<S> txType) {
-        Preconditions.checkState(txType.isInstance(delegate));
+    protected final <S extends DOMDataTreeTransaction> S getDelegateChecked(final Class<S> txType) {
+        checkState(txType.isInstance(delegate));
         return (S) delegate;
     }
 
@@ -68,7 +66,7 @@ public abstract class AbstractForwardedTransaction<
     protected final <D extends TreeNode> FluentFuture<Optional<D>> doRead(
             final DOMDataTreeReadTransaction readTx, final LogicalDatastoreType store,
             final InstanceIdentifier<D> path) {
-        Preconditions.checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
+        checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 
         return readTx.read(store, codec.toYangInstanceIdentifierBlocking(path))
             .transform(codec.deserializeFunction(path)::apply, MoreExecutors.directExecutor());
