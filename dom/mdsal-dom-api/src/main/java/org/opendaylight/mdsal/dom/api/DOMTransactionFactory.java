@@ -7,10 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.mdsal.common.api.AsyncDataTransactionFactory;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-
 /**
  * A factory which allocates new transactions to operate on the data tree.
  *
@@ -52,15 +48,46 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * @see DOMDataBroker
  * @see DOMTransactionChain
  */
-public interface DOMTransactionFactory
-        extends AsyncDataTransactionFactory<YangInstanceIdentifier, NormalizedNode<?, ?>> {
-
-    @Override
+public interface DOMTransactionFactory {
+    /**
+     * Allocates a new read-only transaction which provides an immutable snapshot of the data tree. The view of data
+     * tree is an immutable snapshot of current data tree state when transaction was allocated.
+     *
+     * @return A new read-only transaction
+     */
     DOMDataTreeReadTransaction newReadOnlyTransaction();
 
-    @Override
+    /**
+     * Allocates new write-only transaction based on latest state of data tree.
+     *
+     * <p>
+     * Preconditions for mutation of data tree are captured from the snapshot of data tree state, when the transaction
+     * is allocated. If data was changed during transaction in an incompatible way then the commit of this transaction
+     * will fail. See {@link DOMDataTreeWriteTransaction#commit()} for more details about conflicting and
+     * non-conflicting changes and failure scenarios.
+     *
+     * <p>
+     * Since this transaction does not provide a view of the data it SHOULD BE used only by callers which are exclusive
+     * writers (exporters of data) to the subtree they modify. This prevents optimistic lock failures as described in
+     * {@link DOMDataTreeWriteTransaction#commit()}.
+     *
+     * <p>
+     * Exclusivity of writers to particular subtree SHOULD BE enforced by external locking mechanism.
+     *
+     * @return new write-only transaction
+     */
     DOMDataTreeWriteTransaction newWriteOnlyTransaction();
 
-    @Override
+    /**
+     * Allocates new read-write transaction which provides a mutable view of the data tree.
+     *
+     * <p>
+     * Preconditions for mutation of data tree are captured from the snapshot of data tree state, when the transaction
+     * is allocated. If data was changed during transaction in an incompatible way then the commit of this transaction
+     * will fail. See {@link DOMDataTreeReadWriteTransaction#commit()} for more details about conflicting and
+     * non-conflicting changes and failure scenarios.
+     *
+     * @return new read-write transaction
+     */
     DOMDataTreeReadWriteTransaction newReadWriteTransaction();
 }
