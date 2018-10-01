@@ -44,9 +44,9 @@ public class BindingDOMOperationServiceAdapter implements RpcActionConsumerRegis
     private final BindingToNormalizedNodeCodec codec;
     private final LoadingCache<Class<? extends Rpc<?, ?>>, RpcServiceAdapter> rpcProxies = CacheBuilder.newBuilder()
             .weakKeys().build(new CacheLoader<Class<? extends Rpc<?, ?>>, RpcServiceAdapter>() {
-
-                @SuppressWarnings("unchecked")
-                private RpcServiceAdapter createProxy(final Class<? extends Rpc<?, ?>> key) {
+                @Nonnull
+                @Override
+                public RpcServiceAdapter load(@Nonnull final Class<? extends Rpc<?, ?>> key) {
                     Preconditions.checkArgument(BindingReflections.isBindingClass(key));
                     Preconditions.checkArgument(key.isInterface(),
                             "Supplied Operation service type must be interface.");
@@ -56,21 +56,14 @@ public class BindingDOMOperationServiceAdapter implements RpcActionConsumerRegis
 
                     throw new UnsupportedOperationException();
                 }
-
-                @Nonnull
-                @Override
-                public RpcServiceAdapter load(@Nonnull final Class<? extends Rpc<?, ?>> key) {
-                    return createProxy(key);
-                }
-
             });
 
     private final LoadingCache<Class<? extends Action<? extends TreeNode, ?, ?, ?>>, ActionServiceAdapter>
             actionProxies = CacheBuilder.newBuilder().weakKeys().build(
                 new CacheLoader<Class<? extends Action<? extends TreeNode, ?, ?, ?>>, ActionServiceAdapter>() {
-
-                        @SuppressWarnings("unchecked")
-                        private ActionServiceAdapter createProxy(
+                        @Nonnull
+                        @Override
+                        public ActionServiceAdapter load(@Nonnull
                                 final Class<? extends Action<? extends TreeNode, ?, ?, ?>> key) {
                             Preconditions.checkArgument(BindingReflections.isBindingClass(key));
                             Preconditions.checkArgument(key.isInterface(),
@@ -80,13 +73,6 @@ public class BindingDOMOperationServiceAdapter implements RpcActionConsumerRegis
                             }
 
                             throw new UnsupportedOperationException();
-                        }
-
-                        @Nonnull
-                        @Override
-                        public ActionServiceAdapter load(@Nonnull
-                                final Class<? extends Action<? extends TreeNode, ?, ?, ?>> key) {
-                            return createProxy(key);
                         }
                     });
 
