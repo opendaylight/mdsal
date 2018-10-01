@@ -28,12 +28,12 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class BindingDOMMountPointListenerAdapterTest {
 
-    private BindingDOMMountPointListenerAdapter bindingDOMMountPointListenerAdapter;
+    private BindingDOMMountPointListenerAdapter<?> bindingDOMMountPointListenerAdapter;
     private BindingToNormalizedNodeCodec codec;
 
     @Mock private MountPointListener listener;
     @Mock private DOMMountPointService mountPointService;
-    @Mock private ListenerRegistration listenerRegistration;
+    @Mock private ListenerRegistration<?> listenerRegistration;
 
     @Before
     public void setUp() throws Exception {
