@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "6841c302_aa8332bb",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-02T16:47:17Z",
+      "side": 1,
+      "message": "See package-info.java ;-).",
+      "parentUuid": "7d314f28_d189794a",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 5
+      },
+      "revId": "8c7e53dd318d298c08d702a3ae032ae2d1a4494a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9b79aab1_10ca5cb9",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
         "patchSetId": 2
@@ -59,6 +83,30 @@
       "writtenOn": "2018-10-02T16:29:12Z",
       "side": 1,
       "message": "can we be defensive by using requireNonNull() in constructors? It stops null propagation cold.",
+      "range": {
+        "startLine": 32,
+        "startChar": 31,
+        "endLine": 32,
+        "endChar": 34
+      },
+      "revId": "8c7e53dd318d298c08d702a3ae032ae2d1a4494a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "618b036d_481a07be",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-02T16:47:17Z",
+      "side": 1,
+      "message": "Indeed, I\u0027ll do that.",
+      "parentUuid": "9b79aab1_10ca5cb9",
       "range": {
         "startLine": 32,
         "startChar": 31,
