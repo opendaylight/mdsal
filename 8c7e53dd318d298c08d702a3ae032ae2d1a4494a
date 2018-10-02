@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "e1286002_e5ea39e4",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-02T16:53:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6841c302_aa8332bb",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 5
+      },
+      "revId": "8c7e53dd318d298c08d702a3ae032ae2d1a4494a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9b79aab1_10ca5cb9",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
         "patchSetId": 2
