@@ -46,6 +46,30 @@
       "revId": "0e27f8e7dc7a99b305eb06b516e6b787e3b4d7c0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5cf5bed3_c160eb29",
+        "filename": "dom/mdsal-dom-broker/src/main/resources/OSGI-INF/blueprint/dom-broker.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-02T20:00:21Z",
+      "side": 1,
+      "message": "Can you split this patch into two, as half of the blueprints should work at the new location?",
+      "parentUuid": "3e1a34fd_3f9f9406",
+      "range": {
+        "startLine": 3,
+        "startChar": 11,
+        "endLine": 3,
+        "endChar": 69
+      },
+      "revId": "0e27f8e7dc7a99b305eb06b516e6b787e3b4d7c0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
