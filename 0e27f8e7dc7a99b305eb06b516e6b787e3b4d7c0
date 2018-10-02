@@ -70,6 +70,30 @@
       "revId": "0e27f8e7dc7a99b305eb06b516e6b787e3b4d7c0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "86156f70_a17eb5c4",
+        "filename": "dom/mdsal-dom-broker/src/main/resources/OSGI-INF/blueprint/dom-broker.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-10-02T21:35:26Z",
+      "side": 1,
+      "message": "sure I\u0027ll revisit this a bit later once MRI is done.",
+      "parentUuid": "5cf5bed3_c160eb29",
+      "range": {
+        "startLine": 3,
+        "startChar": 11,
+        "endLine": 3,
+        "endChar": 69
+      },
+      "revId": "0e27f8e7dc7a99b305eb06b516e6b787e3b4d7c0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
