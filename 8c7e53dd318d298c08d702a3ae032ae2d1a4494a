@@ -25,6 +25,52 @@
     },
     {
       "key": {
+        "uuid": "4cc2e510_d3483b3d",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/Datastore.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-02T17:00:42Z",
+      "side": 1,
+      "message": "This should actually be based on ietf-datastores.yang -- it does not have to be done now, but we know this will be moving in the direction on binding-api, hence a @Beta annotation with a fixme would be nice.",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 32
+      },
+      "revId": "8c7e53dd318d298c08d702a3ae032ae2d1a4494a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5ff1d8_f47837f1",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/Datastore.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-02T17:00:42Z",
+      "side": 1,
+      "message": "This is a bit of a misnomer, which confuses people. In MD-SAL, this datastore maps to Running, i.e. Running Configuration.",
+      "range": {
+        "startLine": 18,
+        "startChar": 45,
+        "endLine": 18,
+        "endChar": 58
+      },
+      "revId": "8c7e53dd318d298c08d702a3ae032ae2d1a4494a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7d314f28_d189794a",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
         "patchSetId": 2
