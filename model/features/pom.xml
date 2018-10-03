@@ -22,8 +22,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>features-mdsal-model</module>
-
         <!-- Standards -->
         <module>odl-mdsal-model-rfc6991</module>
         <module>odl-mdsal-model-rfc7223</module>
