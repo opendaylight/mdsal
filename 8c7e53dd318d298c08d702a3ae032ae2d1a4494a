@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a748a652_bd5d8c89",
+        "filename": "binding/mdsal-binding-util-tests/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-03T08:05:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c78c8bd_ad7069cc",
+      "range": {
+        "startLine": 22,
+        "startChar": 13,
+        "endLine": 22,
+        "endChar": 17
+      },
+      "revId": "8c7e53dd318d298c08d702a3ae032ae2d1a4494a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4cc2e510_d3483b3d",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/Datastore.java",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "8abaebdb_3d15bc84",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/Datastore.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-03T08:05:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4cc2e510_d3483b3d",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 32
+      },
+      "revId": "8c7e53dd318d298c08d702a3ae032ae2d1a4494a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a5ff1d8_f47837f1",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/Datastore.java",
         "patchSetId": 2
@@ -59,6 +107,30 @@
       "writtenOn": "2018-10-02T17:00:42Z",
       "side": 1,
       "message": "This is a bit of a misnomer, which confuses people. In MD-SAL, this datastore maps to Running, i.e. Running Configuration.",
+      "range": {
+        "startLine": 18,
+        "startChar": 45,
+        "endLine": 18,
+        "endChar": 58
+      },
+      "revId": "8c7e53dd318d298c08d702a3ae032ae2d1a4494a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3187fc7_e37c4ef4",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/Datastore.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-03T08:05:38Z",
+      "side": 1,
+      "message": "Do you have a better name to suggest? RUNNING_CONFIGURATION? That would match RFC-8342 at least ;-). Are there plans to support any other datastore than operational and running configuration?",
+      "parentUuid": "9a5ff1d8_f47837f1",
       "range": {
         "startLine": 18,
         "startChar": 45,
@@ -177,6 +249,30 @@
       "side": 1,
       "message": "Indeed, I\u0027ll do that.",
       "parentUuid": "9b79aab1_10ca5cb9",
+      "range": {
+        "startLine": 32,
+        "startChar": 31,
+        "endLine": 32,
+        "endChar": 34
+      },
+      "revId": "8c7e53dd318d298c08d702a3ae032ae2d1a4494a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "05a56995_57041f42",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-03T08:05:38Z",
+      "side": 1,
+      "message": "Done in all public constructors for public classes.",
+      "parentUuid": "618b036d_481a07be",
       "range": {
         "startLine": 32,
         "startChar": 31,
