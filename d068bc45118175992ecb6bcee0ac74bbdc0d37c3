@@ -77,6 +77,30 @@
     },
     {
       "key": {
+        "uuid": "b85596e3_aaaf4aba",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedNewTransactionRunner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-03T14:49:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0204cb49_28f9c8b7",
+      "range": {
+        "startLine": 41,
+        "startChar": 7,
+        "endLine": 41,
+        "endChar": 13
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cfecf0af_cd0884c0",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedNewTransactionRunnerImpl.java",
         "patchSetId": 5
@@ -88,6 +112,30 @@
       "writtenOn": "2018-10-03T13:30:36Z",
       "side": 1,
       "message": "This is a duplicate of a field we already have. Can we rather make ManagedTransactionFactoryImpl take a \u003cT extends TransactionFactory\u003e and expose that field, please?",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 29
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "89c296f4_f1dae0e5",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-03T14:49:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cfecf0af_cd0884c0",
       "range": {
         "startLine": 44,
         "startChar": 8,
