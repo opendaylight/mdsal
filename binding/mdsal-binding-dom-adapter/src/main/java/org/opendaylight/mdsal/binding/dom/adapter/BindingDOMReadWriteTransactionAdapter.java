@@ -18,18 +18,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 class BindingDOMReadWriteTransactionAdapter extends BindingDOMWriteTransactionAdapter<DOMDataTreeReadWriteTransaction>
         implements ReadWriteTransaction {
 
-    BindingDOMReadWriteTransactionAdapter(DOMDataTreeReadWriteTransaction delegateTx,
-            BindingToNormalizedNodeCodec codec) {
+    BindingDOMReadWriteTransactionAdapter(final DOMDataTreeReadWriteTransaction delegateTx,
+            final BindingToNormalizedNodeCodec codec) {
         super(delegateTx, codec);
     }
 
     @Override
-    public <T extends DataObject> FluentFuture<Optional<T>> read(LogicalDatastoreType store,
-            InstanceIdentifier<T> path) {
+    public final <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
+            final InstanceIdentifier<T> path) {
         return doRead(getDelegate(),store, path);
-    }
-
-    @Override
-    public void close() {
     }
 }

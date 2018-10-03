@@ -14,9 +14,9 @@ import com.google.common.annotations.Beta;
  *
  * <p>
  * For more information on usage and examples, please see the documentation in {@link ReadTransaction} and
- * {@link WriteTransaction}
+ * {@link WriteTransaction}.
  */
 @Beta
-public interface ReadWriteTransaction extends ReadTransaction, WriteTransaction {
+public interface ReadWriteTransaction extends WriteTransaction, ReadWriteOperations {
 
 }
