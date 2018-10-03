@@ -445,6 +445,29 @@
     },
     {
       "key": {
+        "uuid": "5c099a01_386cb12d",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/WriteTrackingWriteTransaction.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:38:10Z",
+      "side": 1,
+      "message": "This is inaccurate, the cost is a volatile store at each operation, which is all but negligible.",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 98
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "db80ec35_1429e220",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/package-info.java",
         "patchSetId": 5
