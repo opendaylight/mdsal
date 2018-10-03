@@ -33,6 +33,7 @@
     <modules>
         <module>artifacts</module>
         <module>common</module>
+        <module>features</module>
         <module>dom</module>
         <module>binding</module>
         <module>binding2</module>
