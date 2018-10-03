@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "8c5623fd_81e8892b",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/InterruptibleCheckedConsumer.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-03T12:14:27Z",
+      "side": 1,
+      "message": "Yeah I didn’t want to tie this to the whole infrautils dependency issue ;-).",
+      "parentUuid": "9a667c46_70abbc2d",
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2ddaa592_91621e0a",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/InterruptibleCheckedFunction.java",
         "patchSetId": 5
