@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.spi;
 
-import com.google.common.collect.ForwardingObject;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.FluentFuture;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
@@ -19,12 +20,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * Utility {@link WriteTransaction} implementation which forwards all interface method
  * invocation to a delegate instance.
  */
-public class ForwardingWriteTransaction extends ForwardingObject implements WriteTransaction {
-
+public class ForwardingWriteTransaction extends ForwardingTransaction implements WriteTransaction {
     private final WriteTransaction delegate;
 
-    protected ForwardingWriteTransaction(WriteTransaction delegate) {
-        this.delegate = delegate;
+    public ForwardingWriteTransaction(final WriteTransaction delegate) {
+        this.delegate = requireNonNull(delegate);
     }
 
     @Override
@@ -33,29 +33,31 @@ public class ForwardingWriteTransaction extends ForwardingObject implements Writ
     }
 
     @Override
-    public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
+    public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+            final T data) {
         delegate.put(store, path, data);
     }
 
     @Override
-    public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-            boolean createMissingParents) {
+    public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+            final T data, final boolean createMissingParents) {
         delegate.put(store, path, data, createMissingParents);
     }
 
     @Override
-    public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
+    public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+            final T data) {
         delegate.merge(store, path, data);
     }
 
     @Override
-    public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-            boolean createMissingParents) {
+    public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+            final T data, final boolean createMissingParents) {
         delegate.merge(store, path, data, createMissingParents);
     }
 
     @Override
-    public void delete(LogicalDatastoreType store, InstanceIdentifier<?> path) {
+    public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         delegate.delete(store, path);
     }
 
@@ -67,10 +69,5 @@ public class ForwardingWriteTransaction extends ForwardingObject implements Writ
     @Override
     public FluentFuture<? extends CommitInfo> commit() {
         return delegate.commit();
-    }
-
-    @Override
-    public Object getIdentifier() {
-        return delegate.getIdentifier();
     }
 }
