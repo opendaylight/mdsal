@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "605f7287_00b11b0e",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/RetryingManagedNewTransactionRunner.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T08:22:42Z",
+      "side": 1,
+      "message": "I would suggest documenting @throws NullPointerException",
+      "range": {
+        "startLine": 52,
+        "startChar": 14,
+        "endLine": 52,
+        "endChar": 24
+      },
+      "revId": "e39ddd32e25e41890952bd578d8558ed22133661",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bbdeaedf_d4a42a0a",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/RetryingManagedNewTransactionRunner.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T08:22:42Z",
+      "side": 1,
+      "message": "I think this is better handled in ManagedNewTransactionRunnerImpl -- it will reduce the number of times we repeat the same string and ensure we do not miss a codepath.",
+      "range": {
+        "startLine": 67,
+        "startChar": 50,
+        "endLine": 67,
+        "endChar": 107
+      },
+      "revId": "e39ddd32e25e41890952bd578d8558ed22133661",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
