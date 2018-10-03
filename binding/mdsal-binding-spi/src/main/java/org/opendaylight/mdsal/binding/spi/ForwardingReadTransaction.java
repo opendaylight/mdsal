@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.spi;
 
-import com.google.common.collect.ForwardingObject;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
@@ -16,15 +17,13 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
- * Utility {@link ReadTransaction} implementation which forwards all interface method
- * invocation to a delegate instance.
+ * Utility {@link ReadTransaction} implementation which forwards all interface method invocation to a delegate instance.
  */
-public class ForwardingReadTransaction extends ForwardingObject implements ReadTransaction {
-
+public class ForwardingReadTransaction extends ForwardingTransaction implements ReadTransaction {
     private final ReadTransaction delegate;
 
-    protected ForwardingReadTransaction(ReadTransaction delegate) {
-        this.delegate = delegate;
+    public ForwardingReadTransaction(final ReadTransaction delegate) {
+        this.delegate = requireNonNull(delegate);
     }
 
     @Override
@@ -33,14 +32,9 @@ public class ForwardingReadTransaction extends ForwardingObject implements ReadT
     }
 
     @Override
-    public <T extends DataObject> FluentFuture<Optional<T>> read(LogicalDatastoreType store,
-            InstanceIdentifier<T> path) {
+    public <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
+            final InstanceIdentifier<T> path) {
         return delegate.read(store, path);
-    }
-
-    @Override
-    public Object getIdentifier() {
-        return delegate.getIdentifier();
     }
 
     @Override
