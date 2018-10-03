@@ -51,6 +51,374 @@
       "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0204cb49_28f9c8b7",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedNewTransactionRunner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "keep this on the previous line?",
+      "range": {
+        "startLine": 41,
+        "startChar": 7,
+        "endLine": 41,
+        "endChar": 13
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cfecf0af_cd0884c0",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "This is a duplicate of a field we already have. Can we rather make ManagedTransactionFactoryImpl take a \u003cT extends TransactionFactory\u003e and expose that field, please?",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 29
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5d4bb642_16b8db3d",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "I think the javadoc should explain that this is a common interface capture for DataBroker/TransactionChain and users should not be using this directly.",
+      "range": {
+        "startLine": 25,
+        "startChar": 17,
+        "endLine": 25,
+        "endChar": 42
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3178bf09_078f1a65",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "I am a bit confused about InterruptedException handling here. txFunction can itself block and throw InterruptedException, as can waiting for the transaction throw.\n\nThe two cases are clearly distinct, yet are not distinguished in the API.\n\nCan we document the design decision behind InterruptibleCheckedFunction?",
+      "range": {
+        "startLine": 43,
+        "startChar": 15,
+        "endLine": 43,
+        "endChar": 70
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4b35e787_5b17d296",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "This feels like we are mixing sync and async methods. Can we make the sync methods default implementations at least?",
+      "range": {
+        "startLine": 46,
+        "startChar": 80,
+        "endLine": 46,
+        "endChar": 111
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e3b531ee_96101986",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "FluentFuture here and elsewhere",
+      "range": {
+        "startLine": 72,
+        "startChar": 26,
+        "endLine": 72,
+        "endChar": 42
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "16bd316e_832c4ff9",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "This is not extensible and promotes the use of nulls. Please use \u003c? extends Object\u003e instead -- that says \u0027the return will be something related to Object\u0027, which can be refined by sub-interfaces.",
+      "range": {
+        "startLine": 128,
+        "startChar": 21,
+        "endLine": 128,
+        "endChar": 25
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ea5c17c_e6a6d8f0",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "I think this should be two separate catch blocks, as the causes are different -- one is from txFunction an one from txSubmitter",
+      "range": {
+        "startLine": 108,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 31
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a695b873_f32b83ca",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "FluentFutures.immediateFailedFluentFuture()",
+      "range": {
+        "startLine": 113,
+        "startChar": 19,
+        "endLine": 113,
+        "endChar": 63
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "256863ae_0545f052",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "please add @deprecated javadoc explaining why this is deprecated and what the migration looks like.",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 11
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "65d65408_f368a280",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "this will throw NPE on null, which should be documented",
+      "range": {
+        "startLine": 51,
+        "startChar": 70,
+        "endLine": 51,
+        "endChar": 81
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "db1a025b_463c4327",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "private?",
+      "range": {
+        "startLine": 75,
+        "startChar": 8,
+        "endLine": 75,
+        "endChar": 13
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3b7d404a_6a359f05",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "This looks like it should extend ForwardingObject and the subclass can use overridden delegate()",
+      "range": {
+        "startLine": 76,
+        "startChar": 14,
+        "endLine": 76,
+        "endChar": 48
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a6525197_782d0a9f",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "must not",
+      "range": {
+        "startLine": 111,
+        "startChar": 74,
+        "endLine": 111,
+        "endChar": 81
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c3f58e58_6e132752",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "import static",
+      "range": {
+        "startLine": 126,
+        "startChar": 12,
+        "endLine": 126,
+        "endChar": 39
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "340b5b0c_aae4a9ec",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T13:30:36Z",
+      "side": 1,
+      "message": "Can we make WriteTransactionAdapter capture the transaction type so we do not have to use two fields?",
+      "range": {
+        "startLine": 138,
+        "startChar": 8,
+        "endLine": 138,
+        "endChar": 60
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
