@@ -143,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "1ec952da_9cf6b54d",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/Datastore.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-03T08:15:55Z",
+      "side": 1,
+      "message": "Not from the base datastores, but they are extensible and there is already a push towards having some transient config, etc. Hence the long-term plan is to use identities to identify datastores instead of LogicalDatastoreType.\n\nAs for the name ... my imagination fails to come up with something reasonable. We can stick with CONFIGURATION for now and revisit once we get to killing LDT.",
+      "parentUuid": "d3187fc7_e37c4ef4",
+      "range": {
+        "startLine": 18,
+        "startChar": 45,
+        "endLine": 18,
+        "endChar": 58
+      },
+      "revId": "8c7e53dd318d298c08d702a3ae032ae2d1a4494a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7d314f28_d189794a",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
         "patchSetId": 2
