@@ -25,14 +25,17 @@
     <description>${project.artifactId}</description>
 
     <modules>
-        <module>iana-afn-safi</module>
-        <module>iana-if-type-2014-05-08</module>
+        <!-- RFC7224 and updates -->
+        <module>iana-if-type</module>
 
         <!-- RFC8294 and updates -->
         <module>iana-routing-types</module>
 
         <!-- RFC8348 and updates -->
         <module>iana-hardware</module>
+
+        <!-- drafts -->
+        <module>iana-afn-safi</module>
     </modules>
 
     <build>
