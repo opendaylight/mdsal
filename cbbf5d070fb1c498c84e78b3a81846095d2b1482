@@ -116,6 +116,30 @@
       "revId": "cbbf5d070fb1c498c84e78b3a81846095d2b1482",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "896d4083_d2c5fecf",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/NonSubmitCancelableWriteTransaction.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T13:17:20Z",
+      "side": 1,
+      "message": "Turns out these \"non submit cancelable\" transactions aren\u0027t needed any more, so this is fixed by deleting them ;-).",
+      "parentUuid": "2cfe482a_0fa268c7",
+      "range": {
+        "startLine": 23,
+        "startChar": 6,
+        "endLine": 23,
+        "endChar": 41
+      },
+      "revId": "cbbf5d070fb1c498c84e78b3a81846095d2b1482",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
