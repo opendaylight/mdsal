@@ -25,7 +25,6 @@
     <description>${project.artifactId}</description>
 
     <modules>
-        <module>parent</module>
         <module>mdsal-common-api</module>
         <module>mdsal-common-util</module>
     </modules>
