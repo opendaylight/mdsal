@@ -43,7 +43,7 @@
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
             <artifactId>rfc7895</artifactId>
         </dependency>
     </dependencies>
