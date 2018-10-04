@@ -171,6 +171,30 @@
     },
     {
       "key": {
+        "uuid": "3bbd2324_7206d049",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5d4bb642_16b8db3d",
+      "range": {
+        "startLine": 25,
+        "startChar": 17,
+        "endLine": 25,
+        "endChar": 42
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3178bf09_078f1a65",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
         "patchSetId": 5
@@ -182,6 +206,30 @@
       "writtenOn": "2018-10-03T13:30:36Z",
       "side": 1,
       "message": "I am a bit confused about InterruptedException handling here. txFunction can itself block and throw InterruptedException, as can waiting for the transaction throw.\n\nThe two cases are clearly distinct, yet are not distinguished in the API.\n\nCan we document the design decision behind InterruptibleCheckedFunction?",
+      "range": {
+        "startLine": 43,
+        "startChar": 15,
+        "endLine": 43,
+        "endChar": 70
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0e84c3c2_a0095615",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "The Javadoc was wrong, fixed; this is only for cases where the consuming function is interruptible. A variant without InterruptedException is now provided too.",
+      "parentUuid": "3178bf09_078f1a65",
       "range": {
         "startLine": 43,
         "startChar": 15,
@@ -217,6 +265,30 @@
     },
     {
       "key": {
+        "uuid": "43c8c93e_6d56b35a",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4b35e787_5b17d296",
+      "range": {
+        "startLine": 46,
+        "startChar": 80,
+        "endLine": 46,
+        "endChar": 111
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e3b531ee_96101986",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
         "patchSetId": 5
@@ -228,6 +300,30 @@
       "writtenOn": "2018-10-03T13:30:36Z",
       "side": 1,
       "message": "FluentFuture here and elsewhere",
+      "range": {
+        "startLine": 72,
+        "startChar": 26,
+        "endLine": 72,
+        "endChar": 42
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a40ae626_bf81cad8",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e3b531ee_96101986",
       "range": {
         "startLine": 72,
         "startChar": 26,
@@ -263,6 +359,30 @@
     },
     {
       "key": {
+        "uuid": "bc50f5a7_02199137",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "16bd316e_832c4ff9",
+      "range": {
+        "startLine": 128,
+        "startChar": 21,
+        "endLine": 128,
+        "endChar": 25
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3ea5c17c_e6a6d8f0",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
         "patchSetId": 5
@@ -286,6 +406,30 @@
     },
     {
       "key": {
+        "uuid": "eaabf57a_08793178",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3ea5c17c_e6a6d8f0",
+      "range": {
+        "startLine": 108,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 31
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a695b873_f32b83ca",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
         "patchSetId": 5
@@ -297,6 +441,30 @@
       "writtenOn": "2018-10-03T13:30:36Z",
       "side": 1,
       "message": "FluentFutures.immediateFailedFluentFuture()",
+      "range": {
+        "startLine": 113,
+        "startChar": 19,
+        "endLine": 113,
+        "endChar": 63
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fb574a1e_2ef43837",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/ManagedTransactionFactoryImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a695b873_f32b83ca",
       "range": {
         "startLine": 113,
         "startChar": 19,
@@ -378,6 +546,30 @@
     },
     {
       "key": {
+        "uuid": "28e8b2f1_5ca95c9c",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "db1a025b_463c4327",
+      "range": {
+        "startLine": 75,
+        "startChar": 8,
+        "endLine": 75,
+        "endChar": 13
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3b7d404a_6a359f05",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
         "patchSetId": 5
@@ -389,6 +581,30 @@
       "writtenOn": "2018-10-03T13:30:36Z",
       "side": 1,
       "message": "This looks like it should extend ForwardingObject and the subclass can use overridden delegate()",
+      "range": {
+        "startLine": 76,
+        "startChar": 14,
+        "endLine": 76,
+        "endChar": 48
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "af906790_1f30c156",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3b7d404a_6a359f05",
       "range": {
         "startLine": 76,
         "startChar": 14,
@@ -424,6 +640,30 @@
     },
     {
       "key": {
+        "uuid": "d2c6f27d_28605803",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a6525197_782d0a9f",
+      "range": {
+        "startLine": 111,
+        "startChar": 74,
+        "endLine": 111,
+        "endChar": 81
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c3f58e58_6e132752",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
         "patchSetId": 5
@@ -447,6 +687,30 @@
     },
     {
       "key": {
+        "uuid": "46a5f028_82ad4e5f",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3f58e58_6e132752",
+      "range": {
+        "startLine": 126,
+        "startChar": 12,
+        "endLine": 126,
+        "endChar": 39
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "340b5b0c_aae4a9ec",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
         "patchSetId": 5
@@ -458,6 +722,30 @@
       "writtenOn": "2018-10-03T13:30:36Z",
       "side": 1,
       "message": "Can we make WriteTransactionAdapter capture the transaction type so we do not have to use two fields?",
+      "range": {
+        "startLine": 138,
+        "startChar": 8,
+        "endLine": 138,
+        "endChar": 60
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "56034d54_d28c5d68",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/TransactionAdapter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "340b5b0c_aae4a9ec",
       "range": {
         "startLine": 138,
         "startChar": 8,
@@ -504,6 +792,30 @@
       "writtenOn": "2018-10-03T13:38:10Z",
       "side": 1,
       "message": "This is inaccurate, the cost is a volatile store at each operation, which is all but negligible.",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 98
+      },
+      "revId": "d068bc45118175992ecb6bcee0ac74bbdc0d37c3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c72bb7f0_60e4d4ad",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/WriteTrackingWriteTransaction.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T12:31:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c099a01_386cb12d",
       "range": {
         "startLine": 20,
         "startChar": 0,
