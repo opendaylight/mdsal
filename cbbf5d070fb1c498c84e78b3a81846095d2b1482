@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8678459e_83028e4c",
+        "filename": "binding/mdsal-binding-util-tests/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T13:07:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b96814dc_43a8b0e4",
+      "range": {
+        "startLine": 22,
+        "startChar": 13,
+        "endLine": 22,
+        "endChar": 18
+      },
+      "revId": "cbbf5d070fb1c498c84e78b3a81846095d2b1482",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a1fa1f14_0bccec04",
         "filename": "binding/mdsal-binding-util-tests/pom.xml",
         "patchSetId": 7
@@ -36,6 +60,30 @@
       "writtenOn": "2018-10-04T12:23:35Z",
       "side": 1,
       "message": "3.0.0",
+      "range": {
+        "startLine": 29,
+        "startChar": 25,
+        "endLine": 29,
+        "endChar": 30
+      },
+      "revId": "cbbf5d070fb1c498c84e78b3a81846095d2b1482",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c845cfd0_f91d3dff",
+        "filename": "binding/mdsal-binding-util-tests/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T13:07:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1fa1f14_0bccec04",
       "range": {
         "startLine": 29,
         "startChar": 25,
