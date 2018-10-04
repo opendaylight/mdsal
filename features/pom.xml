@@ -23,6 +23,7 @@
 
     <modules>
         <module>features-mdsal</module>
+        <module>features-mdsal-experimental</module>
 
         <!-- Binding -->
         <module>odl-mdsal-binding</module>

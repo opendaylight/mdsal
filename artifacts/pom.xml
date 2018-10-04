@@ -31,6 +31,13 @@
                 <version>${project.version}</version>
                 <type>xml</type>
             </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>features-mdsal-experimental</artifactId>
+                <classifier>features</classifier>
+                <version>${project.version}</version>
+                <type>xml</type>
+            </dependency>
 
             <!-- Common APIs for Binding and DOM -->
             <dependency>
