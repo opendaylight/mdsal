@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.model.ietf.util;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * IPv4 address parsing for ietf-inet-types ipv4-address. This is an internal implementation class, not meant to be
  * exposed in any shape or form to the outside world, as the code relies on the fact that the strings presented to it
@@ -17,7 +19,7 @@ final class Ipv4Utils {
         throw new UnsupportedOperationException();
     }
 
-    static void fillIpv4Bytes(final byte[] bytes, final int byteStart, final String str, final int strStart,
+    static void fillIpv4Bytes(final byte @NonNull[] bytes, final int byteStart, final String str, final int strStart,
             final int strLimit) {
         int out = byteStart;
         int val = 0;
@@ -27,7 +29,7 @@ final class Ipv4Utils {
                 bytes[out++] = (byte) val;
                 val = 0;
             } else {
-                val = 10 * val + (c - '0');
+                val = 10 * val + c - '0';
             }
         }
 
