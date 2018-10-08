@@ -14,7 +14,7 @@ import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.Optional;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
@@ -38,19 +38,19 @@ public final class YangSchemaUtils {
     public static QName getAugmentationQName(final AugmentationSchemaNode augmentation) {
         checkNotNull(augmentation, "Augmentation must not be null.");
         final QName identifier = getAugmentationIdentifier(augmentation);
-        if(identifier != null) {
+        if (identifier != null) {
             return identifier;
         }
         URI namespace = null;
         Optional<Revision> revision = null;
-        if(augmentation instanceof NamespaceRevisionAware) {
+        if (augmentation instanceof NamespaceRevisionAware) {
             namespace = ((NamespaceRevisionAware) augmentation).getNamespace();
             revision = ((NamespaceRevisionAware) augmentation).getRevision();
         }
-        if(namespace == null || revision == null) {
-            for(final DataSchemaNode child : augmentation.getChildNodes()) {
+        if (namespace == null || revision == null) {
+            for (DataSchemaNode child : augmentation.getChildNodes()) {
                 // Derive QName from child nodes
-                if(!child.isAugmenting()) {
+                if (!child.isAugmenting()) {
                     namespace = child.getQName().getNamespace();
                     revision = child.getQName().getRevision();
                     break;
@@ -72,8 +72,7 @@ public final class YangSchemaUtils {
         return null;
     }
 
-    @Nullable
-    public static TypeDefinition<?> findTypeDefinition(final SchemaContext context, final SchemaPath path) {
+    public static @Nullable TypeDefinition<?> findTypeDefinition(final SchemaContext context, final SchemaPath path) {
         final Iterator<QName> arguments = path.getPathFromRoot().iterator();
         Preconditions.checkArgument(arguments.hasNext(), "Type Definition path must contain at least one element.");
 
@@ -83,10 +82,10 @@ public final class YangSchemaUtils {
             return null;
         }
         // Last argument is type definition, so we need to cycle until we hit last argument.
-        while(arguments.hasNext()) {
+        while (arguments.hasNext()) {
             // Nested private type - we need to find container/grouping to which type belongs.
             final DataSchemaNode child = currentNode.getDataChildByName(currentArg);
-            if(child instanceof DataNodeContainer) {
+            if (child instanceof DataNodeContainer) {
                 currentNode = (DataNodeContainer) child;
             } else if (child instanceof ChoiceSchemaNode) {
                 final QName caseQName = arguments.next();
@@ -94,7 +93,7 @@ public final class YangSchemaUtils {
                 currentNode = ((ChoiceSchemaNode) child).getCaseNodeByName(caseQName);
             } else {
                 // Search in grouping
-                for (final GroupingDefinition grouping : currentNode.getGroupings()) {
+                for (GroupingDefinition grouping : currentNode.getGroupings()) {
                     if (currentArg.equals(grouping.getQName())) {
                         currentNode = grouping;
                         break;
@@ -104,8 +103,8 @@ public final class YangSchemaUtils {
             currentArg = arguments.next();
         }
 
-        for(final TypeDefinition<?> typedef : currentNode.getTypeDefinitions()) {
-            if(typedef.getQName().equals(currentArg)) {
+        for (TypeDefinition<?> typedef : currentNode.getTypeDefinitions()) {
+            if (typedef.getQName().equals(currentArg)) {
                 return typedef;
             }
         }

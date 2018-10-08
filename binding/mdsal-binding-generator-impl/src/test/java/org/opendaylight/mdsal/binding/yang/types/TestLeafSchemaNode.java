@@ -5,9 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.yang.types;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.List;
@@ -59,7 +59,7 @@ public class TestLeafSchemaNode implements LeafSchemaNode {
 
     @Override
     public List<UnknownSchemaNode> getUnknownSchemaNodes() {
-        return null;
+        return ImmutableList.of();
     }
 
     @Override
@@ -72,8 +72,9 @@ public class TestLeafSchemaNode implements LeafSchemaNode {
         return Optional.empty();
     }
 
-    @Override public Status getStatus() {
-        return null;
+    @Override
+    public Status getStatus() {
+        return Status.CURRENT;
     }
 
     @Override

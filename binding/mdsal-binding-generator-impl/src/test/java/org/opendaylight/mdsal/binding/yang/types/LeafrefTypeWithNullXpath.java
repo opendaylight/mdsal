@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.binding.yang.types;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -55,7 +56,7 @@ public class LeafrefTypeWithNullXpath implements LeafrefTypeDefinition {
 
     @Override
     public List<UnknownSchemaNode> getUnknownSchemaNodes() {
-        return null;
+        return ImmutableList.of();
     }
 
     @Override
@@ -70,7 +71,7 @@ public class LeafrefTypeWithNullXpath implements LeafrefTypeDefinition {
 
     @Override
     public Status getStatus() {
-        return null;
+        return Status.CURRENT;
     }
 
     @Override
