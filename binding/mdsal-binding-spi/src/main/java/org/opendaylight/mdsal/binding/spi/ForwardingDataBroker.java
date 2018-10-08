@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.spi;
 
 import com.google.common.collect.ForwardingObject;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
@@ -21,13 +21,12 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
- * Utility {@link DataBroker} implementation which forwards all interface method
- * invocation to a delegate instance.
+ * Utility {@link DataBroker} implementation which forwards all interface method invocation to a delegate instance.
  */
 public abstract class ForwardingDataBroker extends ForwardingObject implements DataBroker {
 
     @Override
-    protected abstract @Nonnull DataBroker delegate();
+    protected abstract @NonNull DataBroker delegate();
 
     @Override
     public ReadTransaction newReadOnlyTransaction() {
@@ -54,5 +53,4 @@ public abstract class ForwardingDataBroker extends ForwardingObject implements D
     public TransactionChain createTransactionChain(final TransactionChainListener listener) {
         return delegate().createTransactionChain(listener);
     }
-
 }
