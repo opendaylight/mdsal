@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.api;
 
 import java.util.Collection;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * A data producer context. It allows transactions to be submitted to the subtrees specified at
@@ -34,14 +34,12 @@ import javax.annotation.Nonnull;
  *
  * <p>
  * When a producer is referenced in a call to
- * {@link DataTreeService#registerListener(DataTreeListener, java.util.Collection, boolean, java.util.Collection)}
- * , an attempt will be made to bind the producer to the specified {@link DataTreeListener}. Such an
- * attempt will fail the producer is already bound, or it has an open transaction. Once bound, the
- * producer can only be accessed from within the {@link DataTreeListener} callback on that
- * particular instance. Any transaction which is not submitted by the time the callback returns will
- * be implicitly cancelled. A producer becomes unbound when the listener it is bound to becomes
- * unregistered.
- *
+ * {@link DataTreeService#registerListener(DataTreeListener, java.util.Collection, boolean, java.util.Collection)},
+ * an attempt will be made to bind the producer to the specified {@link DataTreeListener}. Such an attempt will fail
+ * the producer is already bound, or it has an open transaction. Once bound, the producer can only be accessed
+ * from within the {@link DataTreeListener} callback on that particular instance. Any transaction which is not submitted
+ * by the time the callback returns will be implicitly cancelled. A producer becomes unbound when the listener it is
+ * bound to becomes unregistered.
  */
 public interface DataTreeProducer extends DataTreeProducerFactory, AutoCloseable {
     /**
@@ -59,8 +57,7 @@ public interface DataTreeProducer extends DataTreeProducerFactory, AutoCloseable
      *         exception is thrown on a best effort basis and programs should not rely on it for
      *         correct operation.
      */
-    @Nonnull
-    CursorAwareWriteTransaction createTransaction(boolean isolated);
+    @NonNull CursorAwareWriteTransaction createTransaction(boolean isolated);
 
     /**
      * {@inheritDoc}.
@@ -89,8 +86,7 @@ public interface DataTreeProducer extends DataTreeProducerFactory, AutoCloseable
      *         correct operation.
      */
     @Override
-    @Nonnull
-    DataTreeProducer createProducer(@Nonnull Collection<DataTreeIdentifier<?>> subtrees);
+    DataTreeProducer createProducer(Collection<DataTreeIdentifier<?>> subtrees);
 
     /**
      * {@inheritDoc}.

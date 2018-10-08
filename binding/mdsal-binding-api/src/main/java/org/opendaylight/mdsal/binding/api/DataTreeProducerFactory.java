@@ -8,9 +8,9 @@
 package org.opendaylight.mdsal.binding.api;
 
 import java.util.Collection;
+import org.eclipse.jdt.annotation.NonNull;
 
 public interface DataTreeProducerFactory {
-
     /**
      * Create a producer, which is able to access to a set of trees.
      *
@@ -18,6 +18,5 @@ public interface DataTreeProducerFactory {
      * @return A {@link DataTreeProducer} instance.
      * @throws IllegalArgumentException if subtrees is empty.
      */
-    DataTreeProducer createProducer(Collection<DataTreeIdentifier<?>> subtrees);
-
+    @NonNull DataTreeProducer createProducer(@NonNull Collection<DataTreeIdentifier<?>> subtrees);
 }

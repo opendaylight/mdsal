@@ -5,12 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.api;
 
 import java.util.Collection;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
@@ -54,14 +53,14 @@ public interface DataObjectModification<T extends DataObject> extends
      *
      * @return type of modified object.
      */
-    @Nonnull Class<T> getDataType();
+    @NonNull Class<T> getDataType();
 
     /**
      * Returns type of modification.
      *
      * @return type Type of performed modification.
      */
-    @Nonnull ModificationType getModificationType();
+    @NonNull ModificationType getModificationType();
 
     /**
      * Returns before-state of top level container. Implementations are encouraged, but not required
@@ -84,7 +83,7 @@ public interface DataObjectModification<T extends DataObject> extends
      *
      * @return unmodifiable collection of modified direct children.
      */
-    @Nonnull Collection<? extends DataObjectModification<? extends DataObject>> getModifiedChildren();
+    @NonNull Collection<? extends DataObjectModification<? extends DataObject>> getModifiedChildren();
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification.
@@ -95,7 +94,7 @@ public interface DataObjectModification<T extends DataObject> extends
      *         to generated model.
      */
     <C extends ChildOf<? super T>> Collection<DataObjectModification<C>> getModifiedChildren(
-            @Nonnull Class<C> childType);
+            @NonNull Class<C> childType);
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification. This method should be
@@ -108,7 +107,7 @@ public interface DataObjectModification<T extends DataObject> extends
      *         to generated model.
      */
     <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> Collection<DataObjectModification<C>>
-            getModifiedChildren(@Nonnull Class<H> caseType, @Nonnull Class<C> childType);
+            getModifiedChildren(@NonNull Class<H> caseType, @NonNull Class<C> childType);
 
     /**
      * Returns container child modification if {@code child} was modified by this modification. This method should be
@@ -123,8 +122,8 @@ public interface DataObjectModification<T extends DataObject> extends
      * @throws IllegalArgumentException If supplied {@code child} class is not valid child according
      *         to generated model.
      */
-    @Nullable <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> DataObjectModification<C>
-            getModifiedChildContainer(@Nonnull Class<H> caseType, @Nonnull Class<C> child);
+    <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> @Nullable DataObjectModification<C>
+            getModifiedChildContainer(@NonNull Class<H> caseType, @NonNull Class<C> child);
 
     /**
      * Returns container child modification if {@code child} was modified by this
@@ -138,8 +137,8 @@ public interface DataObjectModification<T extends DataObject> extends
      * @throws IllegalArgumentException If supplied {@code child} class is not valid child according
      *         to generated model.
      */
-    @Nullable <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(
-            @Nonnull Class<C> child);
+    <C extends ChildOf<? super T>> @Nullable DataObjectModification<C> getModifiedChildContainer(
+            @NonNull Class<C> child);
 
     /**
      * Returns augmentation child modification if {@code augmentation} was modified by this modification.
@@ -152,8 +151,8 @@ public interface DataObjectModification<T extends DataObject> extends
      * @throws IllegalArgumentException If supplied {@code augmentation} class is not valid augmentation
      *         according to generated model.
      */
-    @Nullable <C extends Augmentation<T> & DataObject> DataObjectModification<C> getModifiedAugmentation(
-            @Nonnull Class<C> augmentation);
+    <C extends Augmentation<T> & DataObject> @Nullable DataObjectModification<C> getModifiedAugmentation(
+            @NonNull Class<C> augmentation);
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification.
@@ -165,7 +164,7 @@ public interface DataObjectModification<T extends DataObject> extends
      *         to generated model.
      */
     <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>> DataObjectModification<N>
-            getModifiedChildListItem(@Nonnull Class<N> listItem, @Nonnull  K listKey);
+            getModifiedChildListItem(@NonNull Class<N> listItem, @NonNull K listKey);
 
     /**
      * Returns child list item modification if {@code child} was modified by this modification.
@@ -177,8 +176,8 @@ public interface DataObjectModification<T extends DataObject> extends
      *         to generated model.
      */
     <H extends ChoiceIn<? super T> & DataObject, C extends Identifiable<K> & ChildOf<? super H>,
-            K extends Identifier<C>> DataObjectModification<C> getModifiedChildListItem(@Nonnull Class<H> caseType,
-                    @Nonnull Class<C> listItem, @Nonnull  K listKey);
+            K extends Identifier<C>> @Nullable DataObjectModification<C> getModifiedChildListItem(
+                    @NonNull Class<H> caseType, @NonNull Class<C> listItem, @NonNull K listKey);
 
     /**
      * Returns a child modification if a node identified by {@code childArgument} was modified by this modification.
@@ -190,5 +189,4 @@ public interface DataObjectModification<T extends DataObject> extends
      *         generated model.
      */
     @Nullable DataObjectModification<? extends DataObject> getModifiedChild(PathArgument childArgument);
-
 }
