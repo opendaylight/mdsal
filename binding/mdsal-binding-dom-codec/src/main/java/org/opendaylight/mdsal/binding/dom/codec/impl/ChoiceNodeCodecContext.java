@@ -18,11 +18,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder.SetMultimapBuilder;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,6 +40,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextNode;
 import org.opendaylight.yangtools.yang.data.util.NormalizedNodeSchemaUtils;
@@ -259,16 +260,11 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
 
     @Override
     @SuppressWarnings("unchecked")
-    @SuppressFBWarnings(value = "NP_NONNULL_RETURN_VIOLATION", justification = "See FIXME below")
     public D deserialize(final NormalizedNode data) {
         checkArgument(data instanceof ChoiceNode);
-        final ChoiceNode casted = (ChoiceNode) data;
-        final NormalizedNode first = Iterables.getFirst(casted.body(), null);
-
-        if (first == null) {
-            // FIXME: this needs to be sorted out
-            return null;
-        }
+        final Iterator<DataContainerChild<?, ?>> it = ((ChoiceNode) data).getValue().iterator();
+        checkArgument(it.hasNext(), "Choice node %s is empty", data);
+        final DataContainerChild<?, ?> first = it.next();
         final DataContainerCodecPrototype<?> caze = byYangCaseChild.get(first.getIdentifier());
         return (D) caze.get().deserialize(data);
     }
