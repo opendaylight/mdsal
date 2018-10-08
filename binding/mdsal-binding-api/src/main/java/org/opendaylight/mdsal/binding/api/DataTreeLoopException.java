@@ -7,21 +7,20 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
- * Exception thrown when a loop is detected in the way {@link DataTreeListener} and
- * {@link DataTreeProducer} instances would be connected.
+ * Exception thrown when a loop is detected in the way {@link DataTreeListener} and {@link DataTreeProducer} instances
+ * would be connected.
  */
 public class DataTreeLoopException extends DataTreeProducerException {
-
     private static final long serialVersionUID = 1L;
 
-    public DataTreeLoopException(@Nonnull final String message, @Nonnull final Throwable cause) {
+    public DataTreeLoopException(final @NonNull String message, final @NonNull Throwable cause) {
         super(message, cause);
     }
 
-    public DataTreeLoopException(@Nonnull final String message) {
+    public DataTreeLoopException(final @NonNull String message) {
         super(message);
     }
 
