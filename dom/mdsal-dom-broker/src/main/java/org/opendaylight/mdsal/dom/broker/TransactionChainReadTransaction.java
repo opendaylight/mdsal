@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.util.concurrent.FluentFuture;
@@ -13,7 +12,6 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
@@ -43,10 +41,10 @@ public class TransactionChainReadTransaction implements DOMDataTreeReadTransacti
 
         previousWriteTxFuture.addCallback(new FutureCallback<CommitInfo>() {
             @Override
-            public void onSuccess(@Nullable final CommitInfo result) {
+            public void onSuccess(final CommitInfo result) {
                 delegateReadTx.read(store, path).addCallback(new FutureCallback<Optional<NormalizedNode<?, ?>>>() {
                     @Override
-                    public void onSuccess(@Nullable final Optional<NormalizedNode<?, ?>> result) {
+                    public void onSuccess(final Optional<NormalizedNode<?, ?>> result) {
                         readResult.set(result);
                     }
 

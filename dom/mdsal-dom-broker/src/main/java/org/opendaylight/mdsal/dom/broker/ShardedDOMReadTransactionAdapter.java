@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
@@ -19,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
@@ -87,7 +85,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
         // After data tree change future is finished, we can close the listener registration
         initialDataTreeChangeFuture.addCallback(new FutureCallback<Optional<NormalizedNode<?, ?>>>() {
             @Override
-            public void onSuccess(@Nullable final Optional<NormalizedNode<?, ?>> result) {
+            public void onSuccess(final Optional<NormalizedNode<?, ?>> result) {
                 reg.close();
             }
 
