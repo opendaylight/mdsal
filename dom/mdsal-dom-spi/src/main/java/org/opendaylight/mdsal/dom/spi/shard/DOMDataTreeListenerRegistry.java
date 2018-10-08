@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.annotations.Beta;
 import java.util.Collection;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -21,7 +21,6 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
  */
 @Beta
 public interface DOMDataTreeListenerRegistry {
-
-    @Nonnull <T extends DOMDataTreeListener> ListenerRegistration<T> registerListener(@Nonnull T listener,
-            @Nonnull Collection<DOMDataTreeIdentifier> subtrees, boolean allowRxMerges);
+    <T extends DOMDataTreeListener> @NonNull ListenerRegistration<T> registerListener(@NonNull T listener,
+            @NonNull Collection<DOMDataTreeIdentifier> subtrees, boolean allowRxMerges);
 }

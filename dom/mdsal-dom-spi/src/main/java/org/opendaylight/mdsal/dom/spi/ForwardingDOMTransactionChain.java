@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.collect.ForwardingObject;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -20,8 +20,7 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
  */
 public abstract class ForwardingDOMTransactionChain extends ForwardingObject implements DOMTransactionChain {
     @Override
-    @Nonnull
-    protected abstract DOMTransactionChain delegate();
+    protected abstract @NonNull DOMTransactionChain delegate();
 
     @Override
     public void close() {
