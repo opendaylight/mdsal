@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.NotThreadSafe;
 import org.eclipse.jdt.annotation.NonNull;
@@ -186,21 +185,21 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         }
 
         @Override
-        public void enter(@Nonnull final PathArgument child) {
+        public void enter(final PathArgument child) {
             checkAvailable(child);
             delegate.enter(child);
             currentArgs.push(child);
         }
 
         @Override
-        public void enter(@Nonnull final PathArgument... path) {
+        public void enter(final PathArgument... path) {
             for (final PathArgument pathArgument : path) {
                 enter(pathArgument);
             }
         }
 
         @Override
-        public void enter(@Nonnull final Iterable<PathArgument> path) {
+        public void enter(final Iterable<PathArgument> path) {
             for (final PathArgument pathArgument : path) {
                 enter(pathArgument);
             }
