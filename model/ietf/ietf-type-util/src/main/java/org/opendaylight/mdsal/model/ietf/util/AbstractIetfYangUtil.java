@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.annotations.Beta;
 import java.util.Arrays;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
 
 /**
@@ -59,7 +59,7 @@ public abstract class AbstractIetfYangUtil<M, P> {
      * @return A MacAddress containing the canonical representation.
      * @throws NullPointerException if macAddress is null
      */
-    @Nonnull public final M canonizeMacAddress(@Nonnull final M macAddress) {
+    public final @NonNull M canonizeMacAddress(final @NonNull M macAddress) {
         final char[] input = getValue(macAddress).toCharArray();
         return ensureLowerCase(input) ? macFactory.newInstance(String.valueOf(input)) : macAddress;
     }
@@ -72,7 +72,7 @@ public abstract class AbstractIetfYangUtil<M, P> {
      * @throws NullPointerException if bytes is null
      * @throws IllegalArgumentException if length of input is not 6 bytes
      */
-    @Nonnull public final M macAddressFor(@Nonnull final byte[] bytes) {
+    public final @NonNull M macAddressFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length == MAC_BYTE_LENGTH, "MAC address should have 6 bytes, not %s",
                 bytes.length);
         return macFactory.newInstance(bytesToString(bytes, 17));
@@ -85,7 +85,7 @@ public abstract class AbstractIetfYangUtil<M, P> {
      * @return A PhysAddress containing the canonical representation.
      * @throws NullPointerException if physAddress is null
      */
-    @Nonnull public final P canonizePhysAddress(@Nonnull final P physAddress) {
+    public final @NonNull P canonizePhysAddress(final @NonNull P physAddress) {
         final char[] input = getPhysValue(physAddress).toCharArray();
         return ensureLowerCase(input) ? physFactory.newInstance(String.valueOf(input)) : physAddress;
     }
@@ -98,12 +98,12 @@ public abstract class AbstractIetfYangUtil<M, P> {
      * @throws NullPointerException if bytes is null
      * @throws IllegalArgumentException if length of input is not at least 1 byte
      */
-    @Nonnull public final P physAddressFor(@Nonnull final byte[] bytes) {
+    public final @NonNull P physAddressFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length > 0, "Physical address should have at least one byte");
         return physFactory.newInstance(bytesToString(bytes, (bytes.length + 1) / 3));
     }
 
-    @Nonnull public final byte[] bytesFor(@Nonnull final M macAddress) {
+    public final byte @NonNull[] bytesFor(final @NonNull M macAddress) {
         final String mac = getValue(macAddress);
         final byte[] ret = new byte[MAC_BYTE_LENGTH];
 
@@ -144,7 +144,7 @@ public abstract class AbstractIetfYangUtil<M, P> {
      * @return True if the array has been modified
      * @throws NullPointerException if input is null
      */
-    private static boolean ensureLowerCase(@Nonnull final char[] chars) {
+    private static boolean ensureLowerCase(final char @NonNull[] chars) {
         boolean ret = false;
 
         for (int i = 0; i < chars.length; ++i) {
@@ -168,7 +168,7 @@ public abstract class AbstractIetfYangUtil<M, P> {
      * @throws NullPointerException if input is null
      * @throws IllegalArgumentException if length of input is not 6 bytes
      */
-    @Nonnull private static String bytesToString(@Nonnull final byte[] bytes, final int charHint) {
+    private static @NonNull String bytesToString(final byte @NonNull[] bytes, final int charHint) {
         final StringBuilder sb = new StringBuilder(charHint);
         appendHexByte(sb, bytes[0]);
         for (int i = 1; i < bytes.length; ++i) {
