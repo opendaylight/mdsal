@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.eos.dom.api;
 
 import com.google.common.annotations.Beta;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -20,14 +20,11 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
  */
 @Beta
 public class DOMEntityOwnershipChange extends GenericEntityOwnershipChange<YangInstanceIdentifier, DOMEntity> {
-
-
-    public DOMEntityOwnershipChange(@Nonnull final DOMEntity entity, @Nonnull final EntityOwnershipChangeState state) {
+    public DOMEntityOwnershipChange(final @NonNull DOMEntity entity, final @NonNull EntityOwnershipChangeState state) {
         super(entity, state, false);
     }
 
-
-    public DOMEntityOwnershipChange(@Nonnull final DOMEntity entity, @Nonnull final EntityOwnershipChangeState state,
+    public DOMEntityOwnershipChange(final @NonNull DOMEntity entity, final @NonNull EntityOwnershipChangeState state,
             final boolean inJeopardy) {
         super(entity, state, inJeopardy);
     }
