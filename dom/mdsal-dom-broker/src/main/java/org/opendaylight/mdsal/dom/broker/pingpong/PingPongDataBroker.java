@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.broker.pingpong;
 
-import com.google.common.base.Preconditions;
-import javax.annotation.Nonnull;
+import static java.util.Objects.requireNonNull;
+
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
@@ -35,8 +36,8 @@ public final class PingPongDataBroker extends ForwardingDOMDataBroker implements
      *
      * @param delegate Backend broker, may not be null.
      */
-    public PingPongDataBroker(@Nonnull final DOMDataBroker delegate) {
-        this.delegate = Preconditions.checkNotNull(delegate);
+    public PingPongDataBroker(final @NonNull DOMDataBroker delegate) {
+        this.delegate = requireNonNull(delegate);
     }
 
     @Override
