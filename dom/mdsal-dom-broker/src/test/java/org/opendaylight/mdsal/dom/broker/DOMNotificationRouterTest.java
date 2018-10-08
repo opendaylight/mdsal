@@ -19,7 +19,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.lmax.disruptor.PhasedBackoffWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,8 +26,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nonnull;
-
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
@@ -148,7 +145,7 @@ public class DOMNotificationRouterTest extends TestUtils {
         }
 
         @Override
-        public void onNotification(@Nonnull final DOMNotification notification) {
+        public void onNotification(final DOMNotification notification) {
             receivedNotifications.add(notification);
             latch.countDown();
         }
@@ -160,10 +157,11 @@ public class DOMNotificationRouterTest extends TestUtils {
 
     private static class TestRouter extends DOMNotificationRouter {
 
-        TestRouter(ExecutorService executor, int queueDepth, WaitStrategy strategy) {
+        TestRouter(final ExecutorService executor, final int queueDepth, final WaitStrategy strategy) {
             super(executor, queueDepth, strategy);
         }
 
+        @Override
         protected ListenableFuture<? extends Object> tryPublish(final DOMNotification notification,
                 final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers) {
             return DOMNotificationPublishService.REJECTED;
@@ -176,7 +174,7 @@ public class DOMNotificationRouterTest extends TestUtils {
             return super.putNotification(notification);
         }
 
-        public static TestRouter create(int queueDepth) {
+        public static TestRouter create(final int queueDepth) {
             final ExecutorService executor = Executors.newCachedThreadPool();
 
             return new TestRouter(executor, queueDepth, DEFAULT_STRATEGY);
