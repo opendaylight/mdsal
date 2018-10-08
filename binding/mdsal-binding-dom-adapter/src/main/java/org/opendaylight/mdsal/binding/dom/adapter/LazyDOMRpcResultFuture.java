@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.AbstractFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -15,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -41,11 +43,11 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
 
     private LazyDOMRpcResultFuture(final ListenableFuture<RpcResult<?>> delegate,
             final BindingNormalizedNodeCodecRegistry codec) {
-        this.bindingFuture = Preconditions.checkNotNull(delegate, "delegate");
-        this.codec = Preconditions.checkNotNull(codec, "codec");
+        this.bindingFuture = requireNonNull(delegate, "delegate");
+        this.codec = requireNonNull(codec, "codec");
     }
 
-    static FluentFuture<DOMRpcResult> create(final BindingNormalizedNodeCodecRegistry codec,
+    static @NonNull FluentFuture<DOMRpcResult> create(final BindingNormalizedNodeCodecRegistry codec,
             final ListenableFuture<RpcResult<?>> bindingResult) {
         return new LazyDOMRpcResultFuture(bindingResult, codec);
     }
