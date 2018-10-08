@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
@@ -92,5 +93,5 @@ public interface NotificationService extends BindingService {
      * @return a {@link ListenerRegistration} instance that should be used to unregister the listener
      *         by invoking the {@link ListenerRegistration#close()} method when no longer needed.
      */
-    <T extends NotificationListener> ListenerRegistration<T> registerNotificationListener(T listener);
+    <T extends NotificationListener> @NonNull ListenerRegistration<T> registerNotificationListener(@NonNull T listener);
 }

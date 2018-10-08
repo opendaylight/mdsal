@@ -7,9 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.Notification;
 
 /**
@@ -23,7 +24,7 @@ import org.opendaylight.yangtools.yang.binding.Notification;
  * - {@link #offerNotification(Notification, int, TimeUnit)}, which may block
  *   for specified time if resources are thin.
  *
- *<p>
+ * <p>
  * The actual delivery to listeners is asynchronous and implementation-specific.
  * Users of this interface should not make any assumptions as to whether the
  * notification has or has not been seen.
@@ -34,7 +35,7 @@ public interface NotificationPublishService extends BindingService {
      * Well-known value indicating that the binding-aware implementation is currently not
      * able to accept a notification.
      */
-    ListenableFuture<Object> REJECTED = Futures.immediateFailedFuture(
+    ListenableFuture<Object> REJECTED = FluentFutures.immediateFailedFluentFuture(
             new NotificationRejectedException("Rejected due to resource constraints."));
 
     /**
@@ -50,7 +51,7 @@ public interface NotificationPublishService extends BindingService {
      * @throws InterruptedException if interrupted while waiting
      * @throws NullPointerException if the notification is null
      */
-    void putNotification(Notification notification) throws InterruptedException;
+    void putNotification(@NonNull Notification notification) throws InterruptedException;
 
     /**
      * Publishes a notification to subscribed listeners. This initiates the process of sending the
@@ -66,7 +67,7 @@ public interface NotificationPublishService extends BindingService {
      *         resource constraints prevent
      * @throws NullPointerException if the notification is null
      */
-    ListenableFuture<? extends Object> offerNotification(Notification notification);
+    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull Notification notification);
 
     /**
      * Publishes a notification to subscribed listeners. This initiates the process of sending the
@@ -84,7 +85,6 @@ public interface NotificationPublishService extends BindingService {
      * @throws NullPointerException if the notification or unit is null
      * @throws IllegalArgumentException if timeout is negative.
      */
-    ListenableFuture<? extends Object> offerNotification(Notification notification, int timeout, TimeUnit unit)
-            throws InterruptedException;
-
+    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull Notification notification,
+            int timeout, @NonNull TimeUnit unit) throws InterruptedException;
 }
