@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.api;
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Collection;
+import javax.annotation.CheckReturnValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
@@ -100,6 +101,7 @@ public interface DataTreeCommitCohort<T extends DataObject> {
      *         more specific subclasses of this exception to provide additional information about
      *         validation failure reason.
      */
-    FluentFuture<PostCanCommitStep> canCommit(@NonNull Object txId,
+    @CheckReturnValue
+    @NonNull FluentFuture<PostCanCommitStep> canCommit(@NonNull Object txId,
             @NonNull Collection<DataTreeModification<T>> modifications);
 }

@@ -163,7 +163,7 @@ public interface DataObjectModification<T extends DataObject> extends
      * @throws IllegalArgumentException If supplied {@code listItem} class is not valid child according
      *         to generated model.
      */
-    <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>> DataObjectModification<N>
+    <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>> @Nullable DataObjectModification<N>
             getModifiedChildListItem(@NonNull Class<N> listItem, @NonNull K listKey);
 
     /**

@@ -5,9 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.api;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.BackendFailedException;
@@ -19,7 +19,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.BackendFailedExcepti
  * In addition this cursor also provides write operations(delete, merge, write).
  */
 public interface DataTreeWriteCursor extends DataTreeCursor {
-
     /**
      * Delete the specified child.
      *
@@ -27,7 +26,7 @@ public interface DataTreeWriteCursor extends DataTreeCursor {
      * @throws BackendFailedException when implementation-specific errors occurs while servicing the
      *         request.
      */
-    void delete(PathArgument child);
+    void delete(@NonNull PathArgument child);
 
     /**
      * Merge the specified data with the currently-present data at specified path.
@@ -37,7 +36,7 @@ public interface DataTreeWriteCursor extends DataTreeCursor {
      * @throws BackendFailedException when implementation-specific errors occurs while servicing the
      *         request.
      */
-    <T extends DataObject> void merge(PathArgument child, T data);
+    <T extends DataObject> void merge(@NonNull PathArgument child, @NonNull T data);
 
     /**
      * Replace the data at specified path with supplied data.
@@ -47,5 +46,5 @@ public interface DataTreeWriteCursor extends DataTreeCursor {
      * @throws BackendFailedException when implementation-specific errors occurs while servicing the
      *         request.
      */
-    <T extends DataObject> void write(PathArgument child, T data);
+    <T extends DataObject> void write(@NonNull PathArgument child, @NonNull T data);
 }

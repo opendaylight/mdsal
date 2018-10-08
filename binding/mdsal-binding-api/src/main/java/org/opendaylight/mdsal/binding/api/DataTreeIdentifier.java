@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -24,16 +25,18 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public final class DataTreeIdentifier<T extends DataObject> implements Immutable,
         Path<DataTreeIdentifier<?>>, Serializable {
     private static final long serialVersionUID = 1L;
-    private final InstanceIdentifier<T> rootIdentifier;
-    private final LogicalDatastoreType datastoreType;
 
-    private DataTreeIdentifier(final LogicalDatastoreType datastoreType, final InstanceIdentifier<T> rootIdentifier) {
-        this.datastoreType = Preconditions.checkNotNull(datastoreType);
-        this.rootIdentifier = Preconditions.checkNotNull(rootIdentifier);
+    private final @NonNull InstanceIdentifier<T> rootIdentifier;
+    private final @NonNull LogicalDatastoreType datastoreType;
+
+    private DataTreeIdentifier(final @NonNull LogicalDatastoreType datastoreType,
+            final @NonNull InstanceIdentifier<T> rootIdentifier) {
+        this.datastoreType = requireNonNull(datastoreType);
+        this.rootIdentifier = requireNonNull(rootIdentifier);
     }
 
-    public static <T extends DataObject> DataTreeIdentifier<T> create(final LogicalDatastoreType datastoreType,
-            final InstanceIdentifier<T> rootIdentifier) {
+    public static <T extends DataObject> @NonNull DataTreeIdentifier<T> create(
+            final @NonNull LogicalDatastoreType datastoreType, final @NonNull InstanceIdentifier<T> rootIdentifier) {
         return new DataTreeIdentifier<>(datastoreType, rootIdentifier);
     }
 
