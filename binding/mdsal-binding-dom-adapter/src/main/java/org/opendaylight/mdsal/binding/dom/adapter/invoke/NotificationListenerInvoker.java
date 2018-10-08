@@ -7,7 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Throwables;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -20,8 +22,8 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
@@ -83,8 +85,8 @@ public final class NotificationListenerInvoker {
      *         supplied RPC type.
      */
     public static NotificationListenerInvoker from(final Class<? extends NotificationListener> type) {
-        Preconditions.checkArgument(type.isInterface());
-        Preconditions.checkArgument(BindingReflections.isBindingClass(type));
+        checkArgument(type.isInterface());
+        checkArgument(BindingReflections.isBindingClass(type));
         return INVOKERS.getUnchecked(type);
     }
 
@@ -96,11 +98,11 @@ public final class NotificationListenerInvoker {
      * @param input Input data for RPC.
      */
     @SuppressWarnings("checkstyle:illegalCatch")
-    public void invokeNotification(@Nonnull final NotificationListener impl, @Nonnull final QName rpcName,
-            @Nullable final DataContainer input) {
-        Preconditions.checkNotNull(impl, "implemetation must be supplied");
+    public void invokeNotification(final @NonNull NotificationListener impl, final @NonNull QName rpcName,
+            final @Nullable DataContainer input) {
+        requireNonNull(impl, "implemetation must be supplied");
         final MethodHandle invoker = methodInvokers.get(rpcName);
-        Preconditions.checkArgument(invoker != null, "Supplied notification is not valid for implementation %s", impl);
+        checkArgument(invoker != null, "Supplied notification is not valid for implementation %s", impl);
         try {
             invoker.invokeExact(impl, input);
         } catch (final Throwable e) {
