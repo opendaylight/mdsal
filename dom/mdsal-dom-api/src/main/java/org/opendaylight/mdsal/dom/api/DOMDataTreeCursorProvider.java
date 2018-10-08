@@ -7,12 +7,11 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModificationCursor;
 
 public interface DOMDataTreeCursorProvider {
-
     /**
      * Create a new {@link DataTreeModificationCursor} at specified path. May fail if specified path
      * does not exist.
@@ -22,7 +21,5 @@ public interface DOMDataTreeCursorProvider {
      * @throws IllegalStateException if there is another cursor currently open, or the transaction
      *         is already closed (closed or submitted).
      */
-    @Nullable
-    DOMDataTreeCursor createCursor(@Nonnull DOMDataTreeIdentifier path);
-
+    @Nullable DOMDataTreeCursor createCursor(@NonNull DOMDataTreeIdentifier path);
 }

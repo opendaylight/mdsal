@@ -8,8 +8,6 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.util.concurrent.FluentFuture;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -29,7 +27,7 @@ public interface DOMDataTreeCursorAwareTransaction extends DOMDataTreeCursorProv
      * @throws IllegalStateException when there's an open cursor, or this transaction is closed already.
      */
     @Override
-    @Nullable DOMDataTreeWriteCursor createCursor(@Nonnull DOMDataTreeIdentifier path);
+    DOMDataTreeWriteCursor createCursor(DOMDataTreeIdentifier path);
 
     /**
      * Cancels the transaction.

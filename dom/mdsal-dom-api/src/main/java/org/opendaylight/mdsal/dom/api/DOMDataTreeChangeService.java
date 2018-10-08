@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 /**
@@ -46,7 +46,8 @@ public interface DOMDataTreeChangeService extends DOMDataBrokerExtension {
      * @param <L> Listener type
      * @return Listener registration object, which may be used to unregister your listener using
      *         {@link ListenerRegistration#close()} to stop delivery of change events.
+     * @throws NullPointerException if any of the arguments is null
      */
-    @Nonnull <L extends DOMDataTreeChangeListener> ListenerRegistration<L>
-                          registerDataTreeChangeListener(@Nonnull DOMDataTreeIdentifier treeId, @Nonnull L listener);
+    <L extends DOMDataTreeChangeListener> @NonNull ListenerRegistration<L> registerDataTreeChangeListener(
+            @NonNull DOMDataTreeIdentifier treeId, @NonNull L listener);
 }
