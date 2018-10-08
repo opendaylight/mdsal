@@ -5,12 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorProvider;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -26,7 +25,8 @@ public interface DOMDataTreeShardWriteTransaction extends DOMDataTreeCursorProvi
      * @throws NullPointerException if prefix is null.
      */
     @Override
-    @Nonnull DOMDataTreeWriteCursor createCursor(@Nonnull DOMDataTreeIdentifier prefix);
+    // FIXME: 4.0.0: reconcile @NonNull vs. super @Nullable
+    @NonNull DOMDataTreeWriteCursor createCursor(@NonNull DOMDataTreeIdentifier prefix);
 
     /**
      * Finish this transaction and submit it for processing.

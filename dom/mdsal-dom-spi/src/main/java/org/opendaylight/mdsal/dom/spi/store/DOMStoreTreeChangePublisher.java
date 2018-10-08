@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -48,16 +48,11 @@ public interface DOMStoreTreeChangePublisher {
      * notifications. This is especially true in OSGi environments, where failure to
      * do so during bundle shutdown can lead to stale listeners being still registered.
      *
-     * @param treeId
-     *            Data tree identifier of the subtree which should be watched for
-     *            changes.
-     * @param listener
-     *            Listener instance which is being registered
-     * @return Listener registration object, which may be used to unregister
-     *      your listener using {@link ListenerRegistration#close()} to stop
-     *      delivery of change events.
+     * @param treeId Data tree identifier of the subtree which should be watched for changes.
+     * @param listener Listener instance which is being registered
+     * @return Listener registration object, which may be used to unregister your listener using
+     *         {@link ListenerRegistration#close()} to stop delivery of change events.
      */
-    @Nonnull
-    <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(
-            @Nonnull YangInstanceIdentifier treeId, @Nonnull L listener);
+    <L extends DOMDataTreeChangeListener> @NonNull ListenerRegistration<L> registerTreeChangeListener(
+            @NonNull YangInstanceIdentifier treeId, @NonNull L listener);
 }
