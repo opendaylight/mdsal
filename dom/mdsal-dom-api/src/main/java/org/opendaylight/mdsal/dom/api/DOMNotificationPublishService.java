@@ -7,11 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 /**
  * A {@link DOMService} which allows its user to send {@link DOMNotification}s. It
@@ -28,7 +27,7 @@ public interface DOMNotificationPublishService extends DOMService {
      * Well-known value indicating that the implementation is currently not
      * able to accept a notification.
      */
-    ListenableFuture<Object> REJECTED = Futures.immediateFailedFuture(
+    ListenableFuture<Object> REJECTED = FluentFutures.immediateFailedFluentFuture(
         new DOMNotificationRejectedException("Unacceptable blocking conditions encountered"));
 
     /**
@@ -61,7 +60,7 @@ public interface DOMNotificationPublishService extends DOMService {
      * @throws InterruptedException if interrupted while waiting
      * @throws NullPointerException if notification is null.
      */
-    @Nonnull ListenableFuture<? extends Object> putNotification(@Nonnull DOMNotification notification)
+    @NonNull ListenableFuture<? extends Object> putNotification(@NonNull DOMNotification notification)
             throws InterruptedException;
 
     /**
@@ -79,7 +78,7 @@ public interface DOMNotificationPublishService extends DOMService {
      *         delivery.
      * @throws NullPointerException if notification is null.
      */
-    @Nonnull ListenableFuture<? extends Object> offerNotification(@Nonnull DOMNotification notification);
+    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull DOMNotification notification);
 
     /**
      * Attempt to publish a notification. The result of this method is a {@link ListenableFuture}
@@ -100,6 +99,6 @@ public interface DOMNotificationPublishService extends DOMService {
      * @throws NullPointerException if notification or unit is null.
      * @throws IllegalArgumentException if timeout is negative.
      */
-    @Nonnull ListenableFuture<? extends Object> offerNotification(@Nonnull DOMNotification notification,
-        @Nonnegative long timeout, @Nonnull TimeUnit unit) throws InterruptedException;
+    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull DOMNotification notification,
+        long timeout, @NonNull TimeUnit unit) throws InterruptedException;
 }
