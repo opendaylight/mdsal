@@ -5,11 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.singleton.dom.impl;
 
 import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
@@ -77,8 +76,8 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
      *
      * @param entityOwnershipService relevant EOS
      */
-    protected AbstractClusterSingletonServiceProviderImpl(@Nonnull final S entityOwnershipService) {
-        this.entityOwnershipService = Preconditions.checkNotNull(entityOwnershipService);
+    protected AbstractClusterSingletonServiceProviderImpl(final @NonNull S entityOwnershipService) {
+        this.entityOwnershipService = requireNonNull(entityOwnershipService);
     }
 
     /**
@@ -92,7 +91,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
 
     @Override
     public final synchronized ClusterSingletonServiceRegistration registerClusterSingletonService(
-            @CheckForNull final ClusterSingletonService service) {
+            final ClusterSingletonService service) {
         LOG.debug("Call registrationService {} method for ClusterSingletonService Provider {}", service, this);
 
         final String serviceIdentifier = service.getIdentifier().getValue();
