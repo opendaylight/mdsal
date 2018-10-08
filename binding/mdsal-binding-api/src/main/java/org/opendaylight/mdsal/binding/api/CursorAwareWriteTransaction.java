@@ -9,8 +9,6 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.util.concurrent.FluentFuture;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -30,9 +28,8 @@ public interface CursorAwareWriteTransaction extends DataTreeCursorProvider {
      * @return write cursor at the desired location.
      * @throws IllegalStateException when there's an open cursor, or this transaction is closed already.
      */
-    @Nullable
     @Override
-    <T extends DataObject> DataTreeWriteCursor createCursor(@Nonnull DataTreeIdentifier<T> path);
+    <T extends DataObject> DataTreeWriteCursor createCursor(DataTreeIdentifier<T> path);
 
     /**
      * Cancels the transaction.

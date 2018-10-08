@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -53,6 +53,6 @@ public interface DataTreeChangeService extends BindingService {
      *         your listener using {@link ListenerRegistration#close()} to stop
      *         delivery of change events.
      */
-    @Nonnull <T extends DataObject,L extends DataTreeChangeListener<T>> ListenerRegistration<L>
-            registerDataTreeChangeListener(@Nonnull DataTreeIdentifier<T> treeId, @Nonnull L listener);
+    <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
+            registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener);
 }

@@ -7,17 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 public class DataTreeProducerException extends Exception {
-
     private static final long serialVersionUID = 1L;
 
-    public DataTreeProducerException(@Nonnull final String message, @Nonnull final Throwable cause) {
+    public DataTreeProducerException(final @NonNull String message, final @NonNull Throwable cause) {
         super(message, cause);
     }
 
-    public DataTreeProducerException(@Nonnull final String message) {
+    public DataTreeProducerException(final @NonNull String message) {
         super(message);
     }
 
