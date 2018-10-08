@@ -8,8 +8,8 @@
 
 package org.opendaylight.mdsal.binding.api;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -26,6 +26,5 @@ public interface DataTreeCursorProvider {
      * @throws IllegalStateException if there is another cursor currently open, or the transaction
      *         is already closed (closed or submitted).
      */
-    @Nullable
-    <T extends DataObject> DataTreeCursor createCursor(@Nonnull DataTreeIdentifier<T> path);
+    <T extends DataObject> @Nullable DataTreeCursor createCursor(@NonNull DataTreeIdentifier<T> path);
 }
