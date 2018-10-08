@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.RpcServiceInvoker;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -65,14 +64,12 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
         inputQname = YangConstants.operationInputQName(BindingReflections.getQNameModule(type)).intern();
     }
 
-    @Nonnull
     @Override
-    public FluentFuture<DOMRpcResult> invokeRpc(@Nonnull final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
-
+    public FluentFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
         final SchemaPath schemaPath = rpc.getType();
         final DataObject bindingInput = input != null ? deserialize(rpc.getType(), input) : null;
         final ListenableFuture<RpcResult<?>> bindingResult = invoke(schemaPath, bindingInput);
-        return transformResult(bindingResult);
+        return LazyDOMRpcResultFuture.create(codec, bindingResult);
     }
 
     @Override
@@ -90,9 +87,5 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
 
     private ListenableFuture<RpcResult<?>> invoke(final SchemaPath schemaPath, final DataObject input) {
         return invoker.invokeRpc(delegate, schemaPath.getLastComponent(), input);
-    }
-
-    private FluentFuture<DOMRpcResult> transformResult(final ListenableFuture<RpcResult<?>> bindingResult) {
-        return LazyDOMRpcResultFuture.create(codec, bindingResult);
     }
 }
