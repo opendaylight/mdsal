@@ -8,16 +8,15 @@
 package org.opendaylight.mdsal.common.api;
 
 import com.google.common.annotations.Beta;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 /**
  * User implementation of steps following pre-commit from Three-Phase Protocol.
- *
  */
 @Beta
 public interface PostPreCommitStep extends ThreePhaseCommitStep {
-
     /**
      * No-op implementation of {@link #abort()} and {@link #commit()} method, which always success
      * calls.
@@ -38,9 +37,9 @@ public interface PostPreCommitStep extends ThreePhaseCommitStep {
         }
     };
 
-    ListenableFuture<?> NOOP_COMMIT_FUTURE = Futures.immediateFuture(null);
+    @NonNull ListenableFuture<?> NOOP_COMMIT_FUTURE = FluentFutures.immediateNullFluentFuture();
 
-    ListenableFuture<? extends PostPreCommitStep> NOOP_FUTURE = Futures.immediateFuture(NOOP);
+    @NonNull ListenableFuture<? extends PostPreCommitStep> NOOP_FUTURE = FluentFutures.immediateFluentFuture(NOOP);
 
     /**
      * Commits cohort transaction.
@@ -51,6 +50,5 @@ public interface PostPreCommitStep extends ThreePhaseCommitStep {
      *
      * @return Listenable Future which will complete once commit is finished.
      */
-    ListenableFuture<?> commit();
-
+    @NonNull ListenableFuture<?> commit();
 }
