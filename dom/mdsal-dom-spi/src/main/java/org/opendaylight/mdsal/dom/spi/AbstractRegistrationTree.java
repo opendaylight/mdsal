@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.spi;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 /**
@@ -50,7 +50,7 @@ public abstract class AbstractRegistrationTree<T> {
      * @param path Path to find a node for
      * @return A registration node for the specified path
      */
-    @Nonnull protected final RegistrationTreeNode<T> findNodeFor(@Nonnull final Iterable<PathArgument> path) {
+    protected final @NonNull RegistrationTreeNode<T> findNodeFor(final @NonNull Iterable<PathArgument> path) {
         RegistrationTreeNode<T> walkNode = rootNode;
         for (final PathArgument arg : path) {
             walkNode = walkNode.ensureChild(arg);
@@ -66,7 +66,7 @@ public abstract class AbstractRegistrationTree<T> {
      * @param node Tree node
      * @param registration Registration instance
      */
-    protected final void addRegistration(@Nonnull final RegistrationTreeNode<T> node, @Nonnull final T registration) {
+    protected final void addRegistration(final @NonNull RegistrationTreeNode<T> node, final @NonNull T registration) {
         node.addRegistration(registration);
     }
 
@@ -76,8 +76,8 @@ public abstract class AbstractRegistrationTree<T> {
      * @param node Tree node
      * @param registration Registration instance
      */
-    protected final void removeRegistration(@Nonnull final RegistrationTreeNode<T> node,
-            @Nonnull final T registration) {
+    protected final void removeRegistration(final @NonNull RegistrationTreeNode<T> node,
+            final @NonNull T registration) {
         // Take the write lock
         writeLock.lock();
         try {
@@ -95,7 +95,7 @@ public abstract class AbstractRegistrationTree<T> {
      *
      * @return A snapshot instance.
      */
-    @Nonnull public final RegistrationTreeSnapshot<T> takeSnapshot() {
+    public final @NonNull RegistrationTreeSnapshot<T> takeSnapshot() {
         readLock.lock();
         return new RegistrationTreeSnapshot<>(readLock, rootNode);
     }

@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Collections;
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
@@ -40,7 +39,6 @@ public class ForwardingDOMRpcProviderServiceTest extends ForwardingDOMRpcProvide
         verify(domRpcProviderService).registerRpcImplementation(domRpcImplementation, Collections.EMPTY_SET);
     }
 
-    @Nonnull
     @Override
     protected DOMRpcProviderService delegate() {
         return domRpcProviderService;

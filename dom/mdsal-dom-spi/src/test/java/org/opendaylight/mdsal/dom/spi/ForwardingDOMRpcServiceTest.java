@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
@@ -39,7 +38,6 @@ public class ForwardingDOMRpcServiceTest extends ForwardingDOMRpcService {
         verify(domRpcService).registerRpcListener(domRpcAvailabilityListener);
     }
 
-    @Nonnull
     @Override
     protected DOMRpcService delegate() {
         return domRpcService;
