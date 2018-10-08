@@ -9,8 +9,8 @@ package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
 import java.util.Arrays;
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 
@@ -28,7 +28,7 @@ public interface DOMDataTreeCursor extends AutoCloseable {
      * @throws IllegalArgumentException when specified identifier does not identify a valid child,
      *         or if that child is not an instance of {@link NormalizedNodeContainer}.
      */
-    void enter(@Nonnull PathArgument child);
+    void enter(@NonNull PathArgument child);
 
     /**
      * Move the cursor to the specified child of the current position. This is the equivalent of
@@ -39,7 +39,7 @@ public interface DOMDataTreeCursor extends AutoCloseable {
      * @throws IllegalArgumentException when specified path does not identify a valid child, or if
      *         that child is not an instance of {@link NormalizedNodeContainer}.
      */
-    default void enter(@Nonnull final PathArgument... path) {
+    default void enter(final @NonNull PathArgument... path) {
         enter(Arrays.asList(path));
     }
 
@@ -51,7 +51,7 @@ public interface DOMDataTreeCursor extends AutoCloseable {
      * @throws IllegalArgumentException when specified path does not identify a valid child, or if
      *         that child is not an instance of {@link NormalizedNodeContainer}.
      */
-    void enter(@Nonnull Iterable<PathArgument> path);
+    void enter(@NonNull Iterable<PathArgument> path);
 
     /**
      * Move the cursor up to the parent of current position. This is equivalent of invoking

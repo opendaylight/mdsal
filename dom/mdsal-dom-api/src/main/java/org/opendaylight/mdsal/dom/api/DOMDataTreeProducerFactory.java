@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.api;
 
 import java.util.Collection;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Base source of {@link DOMDataTreeProducer}s. This interface is usually not used directly,
@@ -22,5 +22,5 @@ public interface DOMDataTreeProducerFactory {
      * @return A {@link DOMDataTreeProducer} instance.
      * @throws IllegalArgumentException if subtrees is empty.
      */
-    @Nonnull DOMDataTreeProducer createProducer(@Nonnull Collection<DOMDataTreeIdentifier> subtrees);
+    @NonNull DOMDataTreeProducer createProducer(@NonNull Collection<DOMDataTreeIdentifier> subtrees);
 }
