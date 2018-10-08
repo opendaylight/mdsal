@@ -12,7 +12,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
@@ -39,7 +38,6 @@ public class ForwardingDOMTransactionChainTest extends ForwardingDOMTransactionC
         verify(domTransactionChain).close();
     }
 
-    @Nonnull
     @Override
     protected DOMTransactionChain delegate() {
         return domTransactionChain;
