@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -52,7 +51,7 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
         this.errors = requireNonNull(errors);
     }
 
-    public DefaultDOMRpcResult(@Nonnull final Collection<RpcError> errors) {
+    public DefaultDOMRpcResult(final Collection<RpcError> errors) {
         this(null, errors);
     }
 

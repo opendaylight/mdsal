@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.annotations.Beta;
 import java.util.Collection;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 
 @Beta
@@ -20,7 +20,7 @@ public interface DOMDataTreeShardProducer {
      *
      * @return Collection of data tree identifiers.
      */
-    @Nonnull Collection<DOMDataTreeIdentifier> getPrefixes();
+    @NonNull Collection<DOMDataTreeIdentifier> getPrefixes();
 
     /**
      * Create a new write transaction for this producer. Any previous transactions need to be closed either via
@@ -29,5 +29,5 @@ public interface DOMDataTreeShardProducer {
      * @return A new write transaction
      * @throws IllegalStateException if a previous transaction has not been closed
      */
-    DOMDataTreeShardWriteTransaction createTransaction();
+    @NonNull DOMDataTreeShardWriteTransaction createTransaction();
 }
