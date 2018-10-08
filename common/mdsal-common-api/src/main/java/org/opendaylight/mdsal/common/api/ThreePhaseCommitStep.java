@@ -5,13 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.common.api;
 
 import com.google.common.annotations.Beta;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 /**
  * Common interface for implementing three-phase commit steps.
@@ -21,8 +20,7 @@ import javax.annotation.Nonnull;
  */
 @Beta
 public interface ThreePhaseCommitStep {
-
-    ListenableFuture<?> NOOP_ABORT_FUTURE = Futures.immediateFuture(null);
+    @NonNull ListenableFuture<?> NOOP_ABORT_FUTURE = FluentFutures.immediateNullFluentFuture();
 
     /**
      * Invoked on transaction aborted.
@@ -33,6 +31,5 @@ public interface ThreePhaseCommitStep {
      *
      * @return ListenableFuture which will complete once abort is completed.
      */
-    @Nonnull
-    ListenableFuture<?> abort();
+    @NonNull ListenableFuture<?> abort();
 }
