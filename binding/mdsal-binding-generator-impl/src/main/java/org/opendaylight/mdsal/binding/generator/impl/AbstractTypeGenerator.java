@@ -503,6 +503,7 @@ abstract class AbstractTypeGenerator {
                 final MethodSignatureBuilder method = interfaceBuilder.addMethod(rpcMethodName);
 
                 // Do not refer to annotation class, as it may not be available at runtime
+                // FIXME: migrate this to some other annotation type
                 method.addAnnotation("javax.annotation", "CheckReturnValue");
                 addComment(method, rpc);
                 method.addParameter(
@@ -1681,10 +1682,6 @@ abstract class AbstractTypeGenerator {
         getMethod.setReturnType(returnType);
 
         annotateDeprecatedIfNecessary(node.getStatus(), getMethod);
-        if (!returnType.getPackageName().isEmpty()) {
-            // The return type has a package, so it's not a primitive type
-            getMethod.addAnnotation("javax.annotation", "Nullable");
-        }
         addComment(getMethod, node);
 
         return getMethod;
