@@ -22,6 +22,30 @@
       "revId": "4ad9e5ed629ab83736784f69ccc83cce174fc667",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f85fcbcc_31a01bae",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-08T16:51:08Z",
+      "side": 0,
+      "message": "Yes; I\u0027ll look into using the errorprone annotation and submit another patch to switch to that if appropriate.",
+      "parentUuid": "e001faf1_655f49eb",
+      "range": {
+        "startLine": 507,
+        "startChar": 16,
+        "endLine": 507,
+        "endChar": 77
+      },
+      "revId": "4ad9e5ed629ab83736784f69ccc83cce174fc667",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
