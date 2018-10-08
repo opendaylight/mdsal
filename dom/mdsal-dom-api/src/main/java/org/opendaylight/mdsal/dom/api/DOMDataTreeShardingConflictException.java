@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Exception thrown when an attempt to attach a conflicting shard to the global
@@ -16,11 +16,11 @@ import javax.annotation.Nonnull;
 public class DOMDataTreeShardingConflictException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public DOMDataTreeShardingConflictException(@Nonnull final String message) {
+    public DOMDataTreeShardingConflictException(final @NonNull String message) {
         super(message);
     }
 
-    public DOMDataTreeShardingConflictException(@Nonnull final String message, @Nonnull final Throwable cause) {
+    public DOMDataTreeShardingConflictException(final @NonNull String message, final @NonNull Throwable cause) {
         super(message, cause);
     }
 }
