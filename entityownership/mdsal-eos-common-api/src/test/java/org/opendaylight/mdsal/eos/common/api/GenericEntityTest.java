@@ -12,7 +12,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.opendaylight.yangtools.concepts.Path;
 
@@ -37,14 +36,14 @@ public class GenericEntityTest {
 
     private final class TestClass implements Path {
         @Override
-        public boolean contains(@Nonnull Path other) {
+        public boolean contains(final Path other) {
             return false;
         }
     }
 
     private final class TestClassDiff implements Path {
         @Override
-        public boolean contains(@Nonnull Path other) {
+        public boolean contains(final Path other) {
             return false;
         }
     }

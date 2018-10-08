@@ -5,11 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.eos.common.api;
 
-import com.google.common.base.Preconditions;
-import javax.annotation.Nonnull;
+import static java.util.Objects.requireNonNull;
+
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Path;
 
 /**
@@ -19,12 +19,11 @@ import org.opendaylight.yangtools.concepts.Path;
 public class CandidateAlreadyRegisteredException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    private final GenericEntity<?> entity;
+    private final @NonNull GenericEntity<?> entity;
 
-    public <T extends Path<T>> CandidateAlreadyRegisteredException(@Nonnull GenericEntity<T> entity) {
-        super(String.format("Candidate has already been registered for %s",
-                Preconditions.checkNotNull(entity, "entity should not be null")));
-        this.entity = entity;
+    public <T extends Path<T>> CandidateAlreadyRegisteredException(@NonNull final GenericEntity<T> entity) {
+        super("Candidate has already been registered for " + entity);
+        this.entity = requireNonNull(entity, "entity should not be null");
     }
 
     /**
@@ -35,8 +34,7 @@ public class CandidateAlreadyRegisteredException extends Exception {
      * @return the entity.
      */
     @SuppressWarnings("unchecked")
-    @Nonnull
-    public <T extends Path<T>> GenericEntity<T> getEntity() {
+    public <T extends Path<T>> @NonNull GenericEntity<T> getEntity() {
         return (GenericEntity<T>) entity;
     }
 }
