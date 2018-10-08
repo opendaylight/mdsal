@@ -120,7 +120,7 @@ public class ShardedDOMDataTreeTest {
         final DOMDataTreeProducer shardRegProducer = dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
 
         final ListenerRegistration<InMemoryDOMDataTreeShard> newRootShardReg =
-                dataTreeService.registerDataTreeShard(ROOT_ID, rootShard, shardRegProducer);
+                dataTreeService.registerDataTreeShard(ROOT_ID, newRootShard, shardRegProducer);
         shardRegProducer.close();
 
         final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
