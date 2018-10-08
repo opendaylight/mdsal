@@ -13,7 +13,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.net.URI;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
@@ -49,7 +49,7 @@ public abstract class AbstractDOMDataTreeServiceTestSuite {
      *
      * @return {@link DOMDataTreeService} instance.
      */
-    protected abstract @Nonnull DOMDataTreeService service();
+    protected abstract @NonNull DOMDataTreeService service();
 
     /**
      * A simple unbound producer. It write some basic things into the data store based on the
