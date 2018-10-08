@@ -5,18 +5,16 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.api;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * Provides access to {#link DataTreeCursor}'s anchored at the specified path.
  */
 public interface DataTreeCursorProvider {
-
     /**
      * Create a new {@link DataTreeCursor} at specified path. May fail if specified path
      * does not exist.
@@ -26,6 +24,5 @@ public interface DataTreeCursorProvider {
      * @throws IllegalStateException if there is another cursor currently open, or the transaction
      *         is already closed (closed or submitted).
      */
-    @Nullable
-    <T extends DataObject> DataTreeCursor createCursor(@Nonnull DataTreeIdentifier<T> path);
+    <T extends DataObject> @Nullable DataTreeCursor createCursor(@NonNull DataTreeIdentifier<T> path);
 }

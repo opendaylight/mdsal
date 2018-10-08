@@ -7,24 +7,23 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import com.google.common.base.Preconditions;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import static java.util.Objects.requireNonNull;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
- * Base exception for various causes why and {@link DataTreeListener} may be terminated by the
- * {@link DataTreeService} implementation.
+ * Base exception for various causes why and {@link DataTreeListener} may be terminated by the {@link DataTreeService}
+ * implementation.
  */
 public class DataTreeListeningException extends Exception {
-
-
     private static final long serialVersionUID = 1L;
 
-    public DataTreeListeningException(@Nonnull String message, @Nullable Throwable cause) {
-        super(Preconditions.checkNotNull(message, "message"), cause);
+    public DataTreeListeningException(final @NonNull String message, final @Nullable Throwable cause) {
+        super(requireNonNull(message, "message"), cause);
     }
 
-    public DataTreeListeningException(@Nonnull String message) {
-        super(Preconditions.checkNotNull(message, "message"));
+    public DataTreeListeningException(@NonNull final String message) {
+        super(requireNonNull(message, "message"));
     }
 }

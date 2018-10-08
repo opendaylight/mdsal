@@ -5,13 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Collection;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -67,11 +66,9 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * TODO: Provide example and describe more usage patterns
  *
  * @author Tony Tkacik &lt;ttkacik@cisco.com&gt;
- *
  */
 @Beta
 public interface DataTreeCommitCohort<T extends DataObject> {
-
     /**
      * Validates the supplied data tree modifications and associates the cohort-specific steps with data broker
      * transaction.
@@ -103,7 +100,6 @@ public interface DataTreeCommitCohort<T extends DataObject> {
      *         more specific subclasses of this exception to provide additional information about
      *         validation failure reason.
      */
-    FluentFuture<PostCanCommitStep> canCommit(@Nonnull Object txId,
-            @Nonnull Collection<DataTreeModification<T>> modifications);
-
+    FluentFuture<PostCanCommitStep> canCommit(@NonNull Object txId,
+            @NonNull Collection<DataTreeModification<T>> modifications);
 }
