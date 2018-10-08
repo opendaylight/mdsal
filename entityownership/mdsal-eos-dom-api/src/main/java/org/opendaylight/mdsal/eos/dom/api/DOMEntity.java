@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.eos.dom.api;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -27,13 +27,12 @@ public class DOMEntity extends GenericEntity<YangInstanceIdentifier> {
             "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity", "2015-09-30", "entity").intern();
     static final QName ENTITY_NAME = QName.create(ENTITY, "name").intern();
 
-
     /** Constructs an instance.
      *
      * @param type the entity type
      * @param id the entity id.
      */
-    public DOMEntity(@Nonnull final String type, @Nonnull final YangInstanceIdentifier id) {
+    public DOMEntity(final @NonNull String type, final @NonNull YangInstanceIdentifier id) {
         super(type, id);
     }
 
@@ -44,7 +43,7 @@ public class DOMEntity extends GenericEntity<YangInstanceIdentifier> {
      * @param type the type of the entity
      * @param entityName the name of the entity used to construct a general-entity YangInstanceIdentifier
      */
-    public DOMEntity(@Nonnull String type, @Nonnull String entityName) {
+    public DOMEntity(final @NonNull String type, final @NonNull String entityName) {
         super(type, YangInstanceIdentifier.builder().node(ENTITY).nodeWithKey(ENTITY, ENTITY_NAME,
                 Preconditions.checkNotNull(entityName, "entityName should not be null")).build());
     }

@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.eos.common.api;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Path;
 
@@ -30,7 +30,7 @@ public interface GenericEntityOwnershipListenerRegistration<P extends Path<P>,
      *
      * @return the entity type that the listener was registered for
      */
-    @Nonnull String getEntityType();
+    @NonNull String getEntityType();
 
     /**
      * Unregister the listener.

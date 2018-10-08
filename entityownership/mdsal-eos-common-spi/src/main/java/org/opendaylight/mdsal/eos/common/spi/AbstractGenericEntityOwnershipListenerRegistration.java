@@ -5,11 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.eos.common.spi;
 
-import com.google.common.base.Preconditions;
-import javax.annotation.Nonnull;
+import static java.util.Objects.requireNonNull;
+
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
@@ -28,12 +28,12 @@ public abstract class AbstractGenericEntityOwnershipListenerRegistration<P exten
         extends AbstractObjectRegistration<L>
         implements GenericEntityOwnershipListenerRegistration<P, L> {
 
-    private final String entityType;
+    private final @NonNull String entityType;
 
-    protected AbstractGenericEntityOwnershipListenerRegistration(@Nonnull final L instance,
-            @Nonnull final String entityType) {
+    protected AbstractGenericEntityOwnershipListenerRegistration(@NonNull final L instance,
+            @NonNull final String entityType) {
         super(instance);
-        this.entityType = Preconditions.checkNotNull(entityType, "entityType cannot be null");
+        this.entityType = requireNonNull(entityType, "entityType cannot be null");
     }
 
     @Override
