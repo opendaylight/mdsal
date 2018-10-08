@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.annotation.CheckReturnValue;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 import org.eclipse.jdt.annotation.NonNull;
@@ -49,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link ClusterSingletonServiceGroup} on top of the Entitiy Ownership Service. Since EOS is atomic
+ * Implementation of {@link ClusterSingletonServiceGroup} on top of the Entity Ownership Service. Since EOS is atomic
  * in its operation and singleton services incur startup and most notably cleanup, we need to do something smart here.
  *
  * <p>
@@ -280,7 +279,6 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         reconcileState();
     }
 
-    @CheckReturnValue
     @Override
     ListenableFuture<?> unregisterService(final ClusterSingletonServiceRegistration reg) {
         final ClusterSingletonService service = reg.getInstance();
