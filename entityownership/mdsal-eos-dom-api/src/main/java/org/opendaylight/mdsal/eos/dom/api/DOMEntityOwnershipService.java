@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.eos.dom.api;
 
 import com.google.common.annotations.Beta;
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
@@ -23,22 +22,17 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 @Beta
 public interface DOMEntityOwnershipService extends
         GenericEntityOwnershipService<YangInstanceIdentifier, DOMEntity, DOMEntityOwnershipListener> {
-
-
     @Override
-    DOMEntityOwnershipCandidateRegistration registerCandidate(@Nonnull DOMEntity entity)
+    DOMEntityOwnershipCandidateRegistration registerCandidate(DOMEntity entity)
             throws CandidateAlreadyRegisteredException;
 
+    @Override
+    DOMEntityOwnershipListenerRegistration registerListener(String entityType,
+            DOMEntityOwnershipListener listener);
 
     @Override
-    DOMEntityOwnershipListenerRegistration registerListener(@Nonnull String entityType,
-            @Nonnull DOMEntityOwnershipListener listener);
-
+    Optional<EntityOwnershipState> getOwnershipState(DOMEntity forEntity);
 
     @Override
-    Optional<EntityOwnershipState> getOwnershipState(@Nonnull DOMEntity forEntity);
-
-
-    @Override
-    boolean isCandidateRegistered(@Nonnull DOMEntity forEntity);
+    boolean isCandidateRegistered(DOMEntity forEntity);
 }

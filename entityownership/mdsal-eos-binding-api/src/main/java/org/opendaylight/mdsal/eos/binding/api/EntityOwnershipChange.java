@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.eos.binding.api;
 
 import com.google.common.annotations.Beta;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -21,11 +21,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 @Beta
 public class EntityOwnershipChange extends GenericEntityOwnershipChange<InstanceIdentifier<?>, Entity> {
 
-    public EntityOwnershipChange(@Nonnull final Entity entity, @Nonnull final EntityOwnershipChangeState state) {
+    public EntityOwnershipChange(final @NonNull Entity entity, final @NonNull EntityOwnershipChangeState state) {
         super(entity, state, false);
     }
 
-    public EntityOwnershipChange(@Nonnull final Entity entity, @Nonnull final EntityOwnershipChangeState state,
+    public EntityOwnershipChange(final @NonNull Entity entity, final @NonNull EntityOwnershipChangeState state,
             final boolean inJeopardy) {
         super(entity, state, inJeopardy);
     }
