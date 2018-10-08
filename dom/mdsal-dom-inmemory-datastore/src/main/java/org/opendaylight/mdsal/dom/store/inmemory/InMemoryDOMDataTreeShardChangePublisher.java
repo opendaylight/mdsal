@@ -5,14 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
@@ -46,24 +44,24 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
                                             final YangInstanceIdentifier rootPath,
                                             final Map<DOMDataTreeIdentifier, ChildShardContext> childShards) {
         super(dataTree, rootPath, childShards);
-        notificationManager = QueuedNotificationManager.create(
-                executor, MANAGER_INVOKER, maxQueueSize, "DataTreeChangeListenerQueueMgr");
+        notificationManager = QueuedNotificationManager.create(executor, MANAGER_INVOKER, maxQueueSize,
+            "DataTreeChangeListenerQueueMgr");
     }
 
     @Override
-    protected void notifyListener(AbstractDOMDataTreeChangeListenerRegistration<?> registration,
-            Collection<DataTreeCandidate> changes) {
+    protected void notifyListener(final AbstractDOMDataTreeChangeListenerRegistration<?> registration,
+            final Collection<DataTreeCandidate> changes) {
         LOG.debug("Enqueueing candidates {} for registration {}", changes, registration);
         notificationManager.submitNotifications(registration, changes);
     }
 
     @Override
-    protected void registrationRemoved(@Nonnull final AbstractDOMDataTreeChangeListenerRegistration<?> registration) {
+    protected void registrationRemoved(final AbstractDOMDataTreeChangeListenerRegistration<?> registration) {
         LOG.debug("Closing registration {}", registration);
 
     }
 
-    synchronized void publishChange(@Nonnull final DataTreeCandidate candidate) {
+    synchronized void publishChange(final DataTreeCandidate candidate) {
         processCandidateTree(candidate);
     }
 }
