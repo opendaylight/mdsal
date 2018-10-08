@@ -5,10 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Verify.verifyNotNull;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
@@ -18,8 +20,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
@@ -52,10 +52,8 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
 
     public ShardedDOMTransactionChainAdapter(final Object txChainIdentifier,
             final DOMDataTreeService dataTreeService, final DOMTransactionChainListener txChainListener) {
-        Preconditions.checkNotNull(dataTreeService);
-        Preconditions.checkNotNull(txChainIdentifier);
-        this.dataTreeService = dataTreeService;
-        this.txChainIdentifier = txChainIdentifier;
+        this.dataTreeService = requireNonNull(dataTreeService);
+        this.txChainIdentifier = requireNonNull(txChainIdentifier);
         this.txChainListener = txChainListener;
         this.cachedDataTreeService = new CachedDataTreeService(dataTreeService);
     }
@@ -109,7 +107,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         checkWriteTxClosed();
         writeTxCommitFuture.addCallback(new FutureCallback<CommitInfo>() {
             @Override
-            public void onSuccess(@Nullable final CommitInfo result) {
+            public void onSuccess(final CommitInfo result) {
                 txChainListener.onTransactionChainSuccessful(ShardedDOMTransactionChainAdapter.this);
             }
 
@@ -138,15 +136,15 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
     }
 
     private void checkWriteTxClosed() {
-        Preconditions.checkState(writeTx == null);
+        checkState(writeTx == null);
     }
 
     private void checkReadTxClosed() {
-        Preconditions.checkState(readTx == null);
+        checkState(readTx == null);
     }
 
     private void checkRunning() {
-        Preconditions.checkState(!finished);
+        checkState(!finished);
     }
 
     public void transactionFailed(final DOMDataTreeTransaction tx, final Throwable cause) {
@@ -175,12 +173,10 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
             producersMap.values().forEach(NoopCloseDataProducer::closeDelegate);
         }
 
-        @Nonnull
         @Override
-        public <T extends DOMDataTreeListener> ListenerRegistration<T> registerListener(
-                @Nonnull final T listener, @Nonnull final Collection<DOMDataTreeIdentifier> subtrees,
-                         final boolean allowRxMerges, @Nonnull final Collection<DOMDataTreeProducer> producers)
-                throws DOMDataTreeLoopException {
+        public <T extends DOMDataTreeListener> ListenerRegistration<T> registerListener(final T listener,
+                final Collection<DOMDataTreeIdentifier> subtrees, final boolean allowRxMerges,
+                final Collection<DOMDataTreeProducer> producers) throws DOMDataTreeLoopException {
             return delegateTreeService.registerListener(listener, subtrees, allowRxMerges, producers);
         }
 
@@ -190,16 +186,15 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         }
 
         @Override
-        public DOMDataTreeProducer createProducer(@Nonnull final Collection<DOMDataTreeIdentifier> subtrees) {
-            Preconditions.checkState(subtrees.size() == 1);
+        public DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees) {
+            checkState(subtrees.size() == 1);
             NoopCloseDataProducer producer = null;
             for (final DOMDataTreeIdentifier treeId : subtrees) {
-                producer =
-                        new NoopCloseDataProducer(delegateTreeService.createProducer(Collections.singleton(treeId)));
+                producer = new NoopCloseDataProducer(delegateTreeService.createProducer(Collections.singleton(treeId)));
                 producersMap.putIfAbsent(treeId.getDatastoreType(),
                         producer);
             }
-            return producer;
+            return verifyNotNull(producer);
         }
 
         static class NoopCloseDataProducer implements DOMDataTreeProducer {
@@ -210,15 +205,13 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
                 this.delegateTreeProducer = delegateTreeProducer;
             }
 
-            @Nonnull
             @Override
             public DOMDataTreeCursorAwareTransaction createTransaction(final boolean isolated) {
                 return delegateTreeProducer.createTransaction(isolated);
             }
 
-            @Nonnull
             @Override
-            public DOMDataTreeProducer createProducer(@Nonnull final Collection<DOMDataTreeIdentifier> subtrees) {
+            public DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees) {
                 return delegateTreeProducer.createProducer(subtrees);
             }
 
