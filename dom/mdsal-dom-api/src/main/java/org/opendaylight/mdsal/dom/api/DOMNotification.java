@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -20,12 +20,12 @@ public interface DOMNotification {
      *
      * @return Notification type.
      */
-    @Nonnull SchemaPath getType();
+    @NonNull SchemaPath getType();
 
     /**
      * Return the body of this notification.
      *
      * @return Notification body.
      */
-    @Nonnull ContainerNode getBody();
+    @NonNull ContainerNode getBody();
 }
