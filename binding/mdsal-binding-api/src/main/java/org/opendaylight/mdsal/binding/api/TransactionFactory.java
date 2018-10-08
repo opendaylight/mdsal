@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * A factory which allocates new transactions to operate on the data tree.
  *
@@ -54,7 +56,7 @@ public interface TransactionFactory {
      *
      * @return A new read-only transaction
      */
-    ReadTransaction newReadOnlyTransaction();
+    @NonNull ReadTransaction newReadOnlyTransaction();
 
     /**
      * Allocates new read-write transaction which provides a mutable view of the data tree.
@@ -67,7 +69,7 @@ public interface TransactionFactory {
      *
      * @return new read-write transaction
      */
-    ReadWriteTransaction newReadWriteTransaction();
+    @NonNull ReadWriteTransaction newReadWriteTransaction();
 
     /**
      * Allocates new write-only transaction based on latest state of data tree.
@@ -88,5 +90,5 @@ public interface TransactionFactory {
      *
      * @return new write-only transaction
      */
-    WriteTransaction newWriteOnlyTransaction();
+    @NonNull WriteTransaction newWriteOnlyTransaction();
 }

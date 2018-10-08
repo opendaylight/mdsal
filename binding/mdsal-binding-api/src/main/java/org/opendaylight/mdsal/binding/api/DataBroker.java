@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Provides access to a conceptual data tree store and also provides the ability to
  * subscribe for changes to data under a given branch of the tree.
@@ -46,5 +48,5 @@ public interface DataBroker extends BindingService, TransactionFactory, DataTree
      * @param listener Transaction chain event listener
      * @return A new transaction chain.
      */
-    TransactionChain createTransactionChain(TransactionChainListener listener);
+    @NonNull TransactionChain createTransactionChain(@NonNull TransactionChainListener listener);
 }

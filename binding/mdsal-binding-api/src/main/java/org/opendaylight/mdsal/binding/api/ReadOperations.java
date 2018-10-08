@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -37,6 +38,8 @@ public interface ReadOperations {
      *         <li>If the read of the data fails, the Future will fail with a {@link ReadFailedException} or
      *         an exception derived from ReadFailedException.</li>
      *         </ul>
+     * @throws NullPointerException if any of the arguments is null
      */
-    <T extends DataObject> FluentFuture<Optional<T>> read(LogicalDatastoreType store, InstanceIdentifier<T> path);
+    <T extends DataObject> @NonNull FluentFuture<Optional<T>> read(@NonNull LogicalDatastoreType store,
+            @NonNull InstanceIdentifier<T> path);
 }
