@@ -10,18 +10,16 @@ package org.opendaylight.mdsal.common.api;
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 /**
  * User implementation of steps following can-commit in three phase protocol.
  * If no additional visibility into transaction and data being aborted or committed is needed, use
  * {@link #NOOP} implementation.
- *
  */
 @Beta
 public interface PostCanCommitStep extends ThreePhaseCommitStep {
-
     /**
      * No-op implementation of abort, pre-commit and commit steps.
      * This implementation should be used if user logic does only validation of data and does not
@@ -40,7 +38,7 @@ public interface PostCanCommitStep extends ThreePhaseCommitStep {
         }
     };
 
-    FluentFuture<PostCanCommitStep> NOOP_SUCCESSFUL_FUTURE = FluentFutures.immediateFluentFuture(NOOP);
+    @NonNull FluentFuture<PostCanCommitStep> NOOP_SUCCESSFUL_FUTURE = FluentFutures.immediateFluentFuture(NOOP);
 
     /**
      * Initiates a pre-commit of associated request
@@ -49,9 +47,6 @@ public interface PostCanCommitStep extends ThreePhaseCommitStep {
      * object.
      *
      * @return Future which is completed once pre-commit phase for this request is finished.
-     *
      */
-    @Nonnull
-    ListenableFuture<? extends PostPreCommitStep> preCommit();
-
+    @NonNull ListenableFuture<? extends PostPreCommitStep> preCommit();
 }
