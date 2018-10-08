@@ -7,9 +7,10 @@
  */
 package org.opendaylight.mdsal.eos.common.api;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import java.io.Serializable;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.concepts.Path;
 
@@ -43,21 +44,20 @@ import org.opendaylight.yangtools.concepts.Path;
 public class GenericEntity<T extends Path<T>> implements Serializable, Identifiable<T> {
     private static final long serialVersionUID = 1L;
 
-    private final String type;
-    private final T id;
+    private final @NonNull String type;
+    private final @NonNull T id;
 
-    protected GenericEntity(@Nonnull String type, @Nonnull T id) {
-        this.type = Preconditions.checkNotNull(type, "type should not be null");
-        this.id = Preconditions.checkNotNull(id, "id should not be null");
+    protected GenericEntity(@NonNull final String type, @NonNull final T id) {
+        this.type = requireNonNull(type, "type should not be null");
+        this.id = requireNonNull(id, "id should not be null");
     }
 
     /**
      * Gets the id of the entity.
      * @return the id.
      */
-    @Nonnull
     @Override
-    public final T getIdentifier() {
+    public final @NonNull T getIdentifier() {
         return id;
     }
 
@@ -65,14 +65,13 @@ public class GenericEntity<T extends Path<T>> implements Serializable, Identifia
      * Gets the type of the entity.
      * @return the type.
      */
-    @Nonnull
-    public final String getType() {
+    public final @NonNull String getType() {
         return type;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
