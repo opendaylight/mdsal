@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.api;
 
 import java.util.Collection;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 /**
@@ -59,8 +59,7 @@ public interface DataTreeService extends DataTreeProducerFactory, BindingService
      * @throws DataTreeLoopException if the registration of the listener to the specified subtrees
      *         with specified producers would form a feedback loop
      */
-    @Nonnull
-    <T extends DataTreeListener> ListenerRegistration<T> registerListener(@Nonnull T listener,
-            @Nonnull Collection<DataTreeIdentifier<?>> subtrees, boolean allowRxMerges,
-            @Nonnull Collection<DataTreeProducer> producers) throws DataTreeLoopException;
+    <T extends DataTreeListener> @NonNull ListenerRegistration<T> registerListener(@NonNull T listener,
+            @NonNull Collection<DataTreeIdentifier<?>> subtrees, boolean allowRxMerges,
+            @NonNull Collection<DataTreeProducer> producers) throws DataTreeLoopException;
 }

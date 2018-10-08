@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.util.concurrent.FluentFuture;
-import javax.annotation.CheckReturnValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
@@ -442,6 +441,5 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      *         {@link TransactionCommitFailedException} or an exception derived from TransactionCommitFailedException.
      * @throws IllegalStateException if the transaction is already committed or was canceled.
      */
-    @CheckReturnValue
     @NonNull FluentFuture<? extends @NonNull CommitInfo> commit();
 }

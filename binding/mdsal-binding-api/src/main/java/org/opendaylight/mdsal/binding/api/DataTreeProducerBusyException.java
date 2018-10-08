@@ -7,24 +7,22 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import com.google.common.base.Preconditions;
-import javax.annotation.Nonnull;
+import static java.util.Objects.requireNonNull;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Exception indicating that the {@link DataTreeProducer} has an open user transaction and cannot be
  * closed.
  */
 public class DataTreeProducerBusyException extends DataTreeProducerException {
-
     private static final long serialVersionUID = 1L;
 
-
-    public DataTreeProducerBusyException(@Nonnull final String message, @Nonnull final Throwable cause) {
-        super(Preconditions.checkNotNull(message, "message"), cause);
+    public DataTreeProducerBusyException(final @NonNull String message, final Throwable cause) {
+        super(requireNonNull(message, "message"), cause);
     }
 
-    public DataTreeProducerBusyException(@Nonnull final String message) {
-        super(Preconditions.checkNotNull(message, "message"));
+    public DataTreeProducerBusyException(final @NonNull String message) {
+        super(requireNonNull(message, "message"));
     }
-
 }
