@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.api;
 
 import java.util.EventListener;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Listener for transaction chain events.
@@ -24,7 +25,8 @@ public interface TransactionChainListener extends EventListener {
      * @param transaction Transaction which caused the chain to fail
      * @param cause The cause of transaction failure
      */
-    void onTransactionChainFailed(TransactionChain chain, Transaction transaction, Throwable cause);
+    void onTransactionChainFailed(@NonNull TransactionChain chain, @NonNull Transaction transaction,
+            @NonNull Throwable cause);
 
     /**
      * Invoked when a transaction chain is completed. A transaction chain is considered completed when it has been
@@ -32,6 +34,6 @@ public interface TransactionChainListener extends EventListener {
      *
      * @param chain Transaction chain which completed
      */
-    void onTransactionChainSuccessful(TransactionChain chain);
+    void onTransactionChainSuccessful(@NonNull TransactionChain chain);
 }
 

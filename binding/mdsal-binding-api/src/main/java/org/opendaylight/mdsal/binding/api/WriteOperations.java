@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -35,7 +36,8 @@ public interface WriteOperations {
      * @throws IllegalStateException if the transaction has already been submitted
      * @throws NullPointerException if any of the arguments is null
      */
-    <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data);
+    <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
+            @NonNull T data);
 
     /**
      * Stores a piece of data at the specified path. This acts as an add / replace operation, which is to say that whole
@@ -57,8 +59,8 @@ public interface WriteOperations {
      * @throws IllegalStateException if the transaction has already been submitted
      * @throws NullPointerException if any of the arguments is null
      */
-    <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-            boolean createMissingParents);
+    <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
+            @NonNull T data, boolean createMissingParents);
 
     /**
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
@@ -77,7 +79,8 @@ public interface WriteOperations {
      * @throws IllegalStateException if the transaction has already been submitted
      * @throws NullPointerException if any of the arguments is null
      */
-    <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data);
+    <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
+            @NonNull T data);
 
     /**
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
@@ -94,8 +97,8 @@ public interface WriteOperations {
      * @throws IllegalStateException if the transaction has already been submitted
      * @throws NullPointerException if any of the arguments is null
      */
-    <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-            boolean createMissingParents);
+    <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
+            @NonNull T data, boolean createMissingParents);
 
     /**
      * Removes a piece of data from specified path. This operation does not fail if the specified path does not exist.
@@ -104,7 +107,7 @@ public interface WriteOperations {
      * @param path Data object path
      * @throws IllegalStateException if the transaction was committed or canceled.
      */
-    void delete(LogicalDatastoreType store, InstanceIdentifier<?> path);
+    void delete(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path);
 
     /**
      * Flag value indicating that missing parents should be created.
