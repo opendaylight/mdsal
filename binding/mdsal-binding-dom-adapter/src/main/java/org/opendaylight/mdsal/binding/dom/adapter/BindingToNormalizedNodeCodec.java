@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javassist.ClassPool;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
@@ -91,7 +91,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     private final LoadingCache<InstanceIdentifier<?>, YangInstanceIdentifier> iiCache = CacheBuilder.newBuilder()
             .softValues().build(new CacheLoader<InstanceIdentifier<?>, YangInstanceIdentifier>() {
                 @Override
-                public YangInstanceIdentifier load(@Nonnull final InstanceIdentifier<?> key) {
+                public YangInstanceIdentifier load(final InstanceIdentifier<?> key) {
                     return toYangInstanceIdentifierBlocking(key);
                 }
             });
@@ -147,7 +147,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     }
 
     @Override
-    public final YangInstanceIdentifier toYangInstanceIdentifier(@Nonnull final InstanceIdentifier<?> binding) {
+    public final YangInstanceIdentifier toYangInstanceIdentifier(final InstanceIdentifier<?> binding) {
         return codecRegistry.toYangInstanceIdentifier(binding);
     }
 
@@ -183,20 +183,18 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     }
 
     @Override
-    public final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(@Nonnull final YangInstanceIdentifier path,
+    public final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final YangInstanceIdentifier path,
             final NormalizedNode<?, ?> data) {
         return codecRegistry.fromNormalizedNode(path, data);
     }
 
     @Override
-    public final Notification fromNormalizedNodeNotification(@Nonnull final SchemaPath path,
-            @Nonnull final ContainerNode data) {
+    public final Notification fromNormalizedNodeNotification(final SchemaPath path, final ContainerNode data) {
         return codecRegistry.fromNormalizedNodeNotification(path, data);
     }
 
     @Override
-    public final DataObject fromNormalizedNodeRpcData(@Nonnull final SchemaPath path,
-            @Nonnull final ContainerNode data) {
+    public final DataObject fromNormalizedNodeRpcData(final SchemaPath path, final ContainerNode data) {
         return codecRegistry.fromNormalizedNodeRpcData(path, data);
     }
 
@@ -213,17 +211,17 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     }
 
     @Override
-    public final InstanceIdentifier<?> fromYangInstanceIdentifier(@Nonnull final YangInstanceIdentifier dom) {
+    public final InstanceIdentifier<?> fromYangInstanceIdentifier(final YangInstanceIdentifier dom) {
         return codecRegistry.fromYangInstanceIdentifier(dom);
     }
 
     @Override
-    public final ContainerNode toNormalizedNodeNotification(@Nonnull final Notification data) {
+    public final ContainerNode toNormalizedNodeNotification(final Notification data) {
         return codecRegistry.toNormalizedNodeNotification(data);
     }
 
     @Override
-    public final ContainerNode toNormalizedNodeRpcData(@Nonnull final DataContainer data) {
+    public final ContainerNode toNormalizedNodeRpcData(final DataContainer data) {
         return codecRegistry.toNormalizedNodeRpcData(data);
     }
 
@@ -269,7 +267,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     }
 
     public final Optional<Entry<InstanceIdentifier<? extends DataObject>, DataObject>> toBinding(
-            @Nonnull final Entry<YangInstanceIdentifier, ? extends NormalizedNode<?, ?>> normalized)
+            final @NonNull Entry<YangInstanceIdentifier, ? extends NormalizedNode<?, ?>> normalized)
                     throws DeserializationException {
         try {
             /*
@@ -402,8 +400,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
         return codecRegistry.create(context, bindingClasses);
     }
 
-    @Nonnull
-    protected Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> getSubtreeCodec(
+    protected @NonNull Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> getSubtreeCodec(
             final YangInstanceIdentifier domIdentifier) {
 
         final BindingCodecTree currentCodecTree = codecRegistry.getCodecContext();
