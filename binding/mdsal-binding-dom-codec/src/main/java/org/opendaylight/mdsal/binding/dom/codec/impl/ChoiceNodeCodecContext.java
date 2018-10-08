@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,6 +36,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.SchemaUtils;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
@@ -236,13 +238,9 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
     @Override
     public D deserialize(final NormalizedNode<?, ?> data) {
         checkArgument(data instanceof ChoiceNode);
-        final ChoiceNode casted = (ChoiceNode) data;
-        final NormalizedNode<?, ?> first = Iterables.getFirst(casted.getValue(), null);
-
-        if (first == null) {
-            // FIXME: this needs to be sorted out
-            return null;
-        }
+        final Iterator<DataContainerChild<?, ?>> it = ((ChoiceNode) data).getValue().iterator();
+        checkArgument(it.hasNext(), "Choice node %s is empty", data);
+        final DataContainerChild<?, ?> first = it.next();
         final DataContainerCodecPrototype<?> caze = byYangCaseChild.get(first.getIdentifier());
         return (D) caze.get().deserialize(data);
     }
