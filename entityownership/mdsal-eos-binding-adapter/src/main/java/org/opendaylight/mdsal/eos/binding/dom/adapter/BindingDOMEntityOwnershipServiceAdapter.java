@@ -7,9 +7,10 @@
  */
 package org.opendaylight.mdsal.eos.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Optional;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
@@ -31,39 +32,40 @@ import org.slf4j.LoggerFactory;
 public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipService, AutoCloseable {
     static final Logger LOG = LoggerFactory.getLogger(BindingDOMEntityOwnershipServiceAdapter.class);
 
-    private final DOMEntityOwnershipService domService;
-    private final BindingNormalizedNodeSerializer conversionCodec;
+    private final @NonNull DOMEntityOwnershipService domService;
+    private final @NonNull BindingNormalizedNodeSerializer conversionCodec;
 
-    public BindingDOMEntityOwnershipServiceAdapter(@Nonnull DOMEntityOwnershipService domService,
-            @Nonnull BindingNormalizedNodeSerializer conversionCodec) {
-        this.domService = Preconditions.checkNotNull(domService);
-        this.conversionCodec = Preconditions.checkNotNull(conversionCodec);
+    public BindingDOMEntityOwnershipServiceAdapter(final @NonNull DOMEntityOwnershipService domService,
+            @NonNull final BindingNormalizedNodeSerializer conversionCodec) {
+        this.domService = requireNonNull(domService);
+        this.conversionCodec = requireNonNull(conversionCodec);
     }
 
     @Override
-    public EntityOwnershipCandidateRegistration registerCandidate(Entity entity)
+    public EntityOwnershipCandidateRegistration registerCandidate(final Entity entity)
             throws CandidateAlreadyRegisteredException {
         return new BindingEntityOwnershipCandidateRegistration(
                 domService.registerCandidate(toDOMEntity(entity)), entity);
     }
 
     @Override
-    public EntityOwnershipListenerRegistration registerListener(String entityType, EntityOwnershipListener listener) {
-        return new BindingEntityOwnershipListenerRegistration(entityType, listener, domService
-                .registerListener(entityType, new DOMEntityOwnershipListenerAdapter(listener, conversionCodec)));
+    public EntityOwnershipListenerRegistration registerListener(final String entityType,
+            final EntityOwnershipListener listener) {
+        return new BindingEntityOwnershipListenerRegistration(entityType, listener,
+            domService.registerListener(entityType, new DOMEntityOwnershipListenerAdapter(listener, conversionCodec)));
     }
 
     @Override
-    public Optional<EntityOwnershipState> getOwnershipState(Entity forEntity) {
+    public Optional<EntityOwnershipState> getOwnershipState(final Entity forEntity) {
         return domService.getOwnershipState(toDOMEntity(forEntity));
     }
 
     @Override
-    public boolean isCandidateRegistered(Entity forEntity) {
+    public boolean isCandidateRegistered(final Entity forEntity) {
         return domService.isCandidateRegistered(toDOMEntity(forEntity));
     }
 
-    private DOMEntity toDOMEntity(Entity entity) {
+    private @NonNull DOMEntity toDOMEntity(final Entity entity) {
         return new DOMEntity(entity.getType(), conversionCodec.toYangInstanceIdentifier(entity.getIdentifier()));
     }
 
