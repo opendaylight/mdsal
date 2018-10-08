@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.eos.common.api;
 
-import com.google.common.base.Preconditions;
-import javax.annotation.Nonnull;
+import static java.util.Objects.requireNonNull;
+
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Path;
 
 /**
@@ -20,18 +21,18 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <E> the GenericEntity type
  */
 public class GenericEntityOwnershipChange<P extends Path<P>, E extends GenericEntity<P>> {
-    private final E entity;
-    private final EntityOwnershipChangeState state;
+    private final @NonNull E entity;
+    private final @NonNull EntityOwnershipChangeState state;
     private final boolean inJeopardy;
 
-    public GenericEntityOwnershipChange(@Nonnull final E entity, @Nonnull final EntityOwnershipChangeState state) {
+    public GenericEntityOwnershipChange(final @NonNull E entity, final @NonNull EntityOwnershipChangeState state) {
         this(entity, state, false);
     }
 
-    public GenericEntityOwnershipChange(@Nonnull final E entity, @Nonnull final EntityOwnershipChangeState state,
+    public GenericEntityOwnershipChange(final @NonNull E entity, final @NonNull EntityOwnershipChangeState state,
             final boolean inJeopardy) {
-        this.entity = Preconditions.checkNotNull(entity, "entity can't be null");
-        this.state = Preconditions.checkNotNull(state, "state can't be null");
+        this.entity = requireNonNull(entity, "entity can't be null");
+        this.state = requireNonNull(state, "state can't be null");
         this.inJeopardy = inJeopardy;
     }
 
@@ -39,7 +40,7 @@ public class GenericEntityOwnershipChange<P extends Path<P>, E extends GenericEn
      * Returns the entity whose ownership status changed.
      * @return the entity
      */
-    @Nonnull public E getEntity() {
+    public @NonNull E getEntity() {
         return entity;
     }
 
@@ -47,7 +48,7 @@ public class GenericEntityOwnershipChange<P extends Path<P>, E extends GenericEn
      * Returns the ownership change state.
      * @return an EntityOwnershipChangeState enum
      */
-    @Nonnull public EntityOwnershipChangeState getState() {
+    public @NonNull EntityOwnershipChangeState getState() {
         return state;
     }
 

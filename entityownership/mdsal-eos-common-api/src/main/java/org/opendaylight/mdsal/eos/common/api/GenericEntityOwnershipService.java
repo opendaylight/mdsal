@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.eos.common.api;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Path;
 
 /**
@@ -43,7 +43,7 @@ public interface GenericEntityOwnershipService<P extends Path<P>, E extends Gene
      * @return a registration object that can be used to unregister the Candidate
      * @throws CandidateAlreadyRegisteredException if the candidate was already registered
      */
-    GenericEntityOwnershipCandidateRegistration<P, E> registerCandidate(@Nonnull E entity)
+    GenericEntityOwnershipCandidateRegistration<P, E> registerCandidate(@NonNull E entity)
             throws CandidateAlreadyRegisteredException;
 
     /**
@@ -56,7 +56,7 @@ public interface GenericEntityOwnershipService<P extends Path<P>, E extends Gene
      * @param listener the listener that is interested in the entities
      * @return a registration object that can be used to unregister the Listener
      */
-    GenericEntityOwnershipListenerRegistration<P, L> registerListener(@Nonnull String entityType, @Nonnull L listener);
+    GenericEntityOwnershipListenerRegistration<P, L> registerListener(@NonNull String entityType, @NonNull L listener);
 
     /**
      * Gets the current ownership state information for an entity.
@@ -64,7 +64,7 @@ public interface GenericEntityOwnershipService<P extends Path<P>, E extends Gene
      * @param forEntity the entity to query.
      * @return an Optional EntityOwnershipState whose instance is present if the entity is found
      */
-    Optional<EntityOwnershipState> getOwnershipState(@Nonnull E forEntity);
+    Optional<EntityOwnershipState> getOwnershipState(@NonNull E forEntity);
 
     /**
      * Checks if a local candidate is registered for the given entity.
@@ -72,5 +72,5 @@ public interface GenericEntityOwnershipService<P extends Path<P>, E extends Gene
      * @param forEntity the entity to query.
      * @return true if a candidate is registered locally, false otherwise
      */
-    boolean isCandidateRegistered(@Nonnull E forEntity);
+    boolean isCandidateRegistered(@NonNull E forEntity);
 }
