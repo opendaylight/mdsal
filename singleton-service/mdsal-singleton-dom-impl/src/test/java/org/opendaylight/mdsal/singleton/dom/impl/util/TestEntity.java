@@ -5,10 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.singleton.dom.impl.util;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.yangtools.yang.common.QName;
 
@@ -27,7 +26,7 @@ public class TestEntity extends GenericEntity<TestInstanceIdentifier> {
      * @param type the entity type
      * @param id the entity id.
      */
-    public TestEntity(@Nonnull final String type, @Nonnull final TestInstanceIdentifier id) {
+    public TestEntity(final @NonNull String type, final @NonNull TestInstanceIdentifier id) {
         super(type, id);
     }
 
@@ -38,7 +37,7 @@ public class TestEntity extends GenericEntity<TestInstanceIdentifier> {
      * @param type the type of the entity
      * @param entityName the name of the entity used to construct a general-entity YangInstanceIdentifier
      */
-    public TestEntity(@Nonnull final String type, @Nonnull final String entityName) {
+    public TestEntity(final @NonNull String type, final @NonNull String entityName) {
         super(type, new TestInstanceIdentifier(entityName));
     }
 }
