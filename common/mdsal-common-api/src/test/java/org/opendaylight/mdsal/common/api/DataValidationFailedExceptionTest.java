@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.common.api;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.opendaylight.yangtools.concepts.Path;
 
@@ -29,7 +28,7 @@ public class DataValidationFailedExceptionTest {
 
     private final class TestClass implements Path<TestClass> {
         @Override
-        public boolean contains(@Nonnull final TestClass other) {
+        public boolean contains(final TestClass other) {
             return false;
         }
     }
