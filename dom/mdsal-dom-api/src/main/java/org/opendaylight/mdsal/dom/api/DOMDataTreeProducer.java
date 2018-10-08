@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.api;
 
 import java.util.Collection;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * A data producer context. It allows transactions to be submitted to the subtrees
@@ -59,7 +59,7 @@ public interface DOMDataTreeProducer extends DOMDataTreeProducerFactory, AutoClo
      *         exception is thrown on a best effort basis and programs should not rely on it for
      *         correct operation.
      */
-    @Nonnull DOMDataTreeCursorAwareTransaction createTransaction(boolean isolated);
+    @NonNull DOMDataTreeCursorAwareTransaction createTransaction(boolean isolated);
 
     /**
      * {@inheritDoc}.
@@ -86,7 +86,7 @@ public interface DOMDataTreeProducer extends DOMDataTreeProducerFactory, AutoClo
      *         correct operation.
      */
     @Override
-    @Nonnull DOMDataTreeProducer createProducer(@Nonnull Collection<DOMDataTreeIdentifier> subtrees);
+    DOMDataTreeProducer createProducer(Collection<DOMDataTreeIdentifier> subtrees);
 
     /**
      * {@inheritDoc}.

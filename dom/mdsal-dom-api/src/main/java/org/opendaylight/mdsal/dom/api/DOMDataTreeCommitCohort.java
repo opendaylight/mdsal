@@ -7,10 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Collection;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
@@ -92,19 +94,18 @@ public interface DOMDataTreeCommitCohort {
      *         more specific subclasses of this exception to provide additional information about
      *         validation failure reason.
      */
-    @Nonnull
-    FluentFuture<PostCanCommitStep> canCommit(@Nonnull Object txId,
-            @Nonnull SchemaContext ctx, @Nonnull Collection<DOMDataTreeCandidate> candidates);
+    @NonNull FluentFuture<PostCanCommitStep> canCommit(@NonNull Object txId,
+            @NonNull SchemaContext ctx, @NonNull Collection<DOMDataTreeCandidate> candidates);
 
     /**
      * An ExceptionMapper that translates an Exception to a DataValidationFailedException.
      */
     class DataValidationFailedExceptionMapper extends ExceptionMapper<DataValidationFailedException> {
-        private final DOMDataTreeIdentifier failedTreeId;
+        private final @NonNull DOMDataTreeIdentifier failedTreeId;
 
         public DataValidationFailedExceptionMapper(final String opName, final DOMDataTreeIdentifier failedTreeId) {
             super(opName, DataValidationFailedException.class);
-            this.failedTreeId = failedTreeId;
+            this.failedTreeId = requireNonNull(failedTreeId);
         }
 
         @Override
