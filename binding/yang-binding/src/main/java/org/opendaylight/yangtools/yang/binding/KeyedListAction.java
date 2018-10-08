@@ -9,7 +9,6 @@ package org.opendaylight.yangtools.yang.binding;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
-import javax.annotation.CheckReturnValue;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 /**
@@ -22,6 +21,5 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 public interface KeyedListAction<K extends Identifier<T>, T extends DataObject & Identifiable<K>,
         I extends RpcInput, O extends RpcOutput> extends Action<KeyedInstanceIdentifier<T, K>, I, O> {
     @Override
-    @CheckReturnValue
     FluentFuture<RpcResult<O>> invoke(KeyedInstanceIdentifier<T, K> path, I input);
 }
