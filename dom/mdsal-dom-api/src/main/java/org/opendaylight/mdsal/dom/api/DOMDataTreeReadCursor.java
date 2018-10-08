@@ -9,13 +9,12 @@ package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public interface DOMDataTreeReadCursor extends DOMDataTreeCursor {
-
     /**
      * Read a particular node from the snapshot.
      *
@@ -31,7 +30,7 @@ public interface DOMDataTreeReadCursor extends DOMDataTreeCursor {
      *         </ul>
      * @throws IllegalArgumentException when specified path does not identify a valid child.
      */
-    FluentFuture<Optional<NormalizedNode<?, ?>>> readNode(@Nonnull PathArgument child);
+    @NonNull FluentFuture<Optional<NormalizedNode<?, ?>>> readNode(@NonNull PathArgument child);
 
     /**
      * Checks if data is available in the logical data store located at provided path.
@@ -53,5 +52,5 @@ public interface DOMDataTreeReadCursor extends DOMDataTreeCursor {
      *         ReadFailedException.</li>
      *         </ul>
      */
-    FluentFuture<Boolean> exists(@Nonnull PathArgument child);
+    @NonNull FluentFuture<Boolean> exists(@NonNull PathArgument child);
 }

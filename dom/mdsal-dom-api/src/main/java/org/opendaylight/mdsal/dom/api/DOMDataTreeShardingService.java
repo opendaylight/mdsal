@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 /**
@@ -36,7 +36,7 @@ public interface DOMDataTreeShardingService extends DOMService {
      * @return A registration. To remove the shard's binding, close the registration.
      * @throws DOMDataTreeShardingConflictException if the prefix is already bound
      */
-    @Nonnull <T extends DOMDataTreeShard> ListenerRegistration<T> registerDataTreeShard(
-            @Nonnull DOMDataTreeIdentifier prefix, @Nonnull T shard,
-            @Nonnull DOMDataTreeProducer producer) throws DOMDataTreeShardingConflictException;
+    <T extends DOMDataTreeShard> @NonNull ListenerRegistration<T> registerDataTreeShard(
+            @NonNull DOMDataTreeIdentifier prefix, @NonNull T shard,
+            @NonNull DOMDataTreeProducer producer) throws DOMDataTreeShardingConflictException;
 }

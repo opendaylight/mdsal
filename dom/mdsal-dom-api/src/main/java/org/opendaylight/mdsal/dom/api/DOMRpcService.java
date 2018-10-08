@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.util.concurrent.FluentFuture;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -27,11 +27,11 @@ public interface DOMRpcService extends DOMService {
      *
      * @param type SchemaPath of the RPC to be invoked
      * @param input Input arguments, null if the RPC does not take any.
-     * @return A {@link FluentFuture} which will return either a result structure,
-     *         or report a subclass of {@link DOMRpcException} reporting a transport
-     *         error.
+     * @return A {@link FluentFuture} which will return either a result structure, or report a subclass
+     *         of {@link DOMRpcException} reporting a transport error.
      */
-    @Nonnull FluentFuture<DOMRpcResult> invokeRpc(@Nonnull SchemaPath type, @Nullable NormalizedNode<?, ?> input);
+    // FIXME: 4.0.0: do not allow null input
+    @NonNull FluentFuture<DOMRpcResult> invokeRpc(@NonNull SchemaPath type, @Nullable NormalizedNode<?, ?> input);
 
     /**
      * Register a {@link DOMRpcAvailabilityListener} with this service to receive notifications
@@ -45,8 +45,7 @@ public interface DOMRpcService extends DOMService {
      *
      * @param listener {@link DOMRpcAvailabilityListener} instance to register
      * @return A {@link ListenerRegistration} representing this registration. Performing a
-     *         {@link ListenerRegistration#close()} will cancel it. Returned object is guaranteed to
-     *         be non-null.
+     *         {@link ListenerRegistration#close()} will cancel it. Returned object is guaranteed to be non-null.
      */
-    @Nonnull <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(@Nonnull T listener);
+    @NonNull <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(@NonNull T listener);
 }
