@@ -11,7 +11,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -34,7 +33,6 @@ public class ForwardingDOMRpcResultTest extends ForwardingDOMRpcResult {
         verify(domRpcResult).getResult();
     }
 
-    @Nonnull
     @Override
     protected DOMRpcResult delegate() {
         return domRpcResult;
