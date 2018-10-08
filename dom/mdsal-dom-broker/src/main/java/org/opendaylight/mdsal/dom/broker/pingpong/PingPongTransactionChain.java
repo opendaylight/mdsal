@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.broker.pingpong;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Verify;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Verify.verify;
+
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -17,8 +18,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -68,9 +69,9 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
      * This updater is used to manipulate the "ready" transaction. We perform only atomic
      * get-and-set on it.
      */
-    private static final AtomicReferenceFieldUpdater<PingPongTransactionChain, PingPongTransaction> READY_UPDATER
-            = AtomicReferenceFieldUpdater
-            .newUpdater(PingPongTransactionChain.class, PingPongTransaction.class, "readyTx");
+    private static final AtomicReferenceFieldUpdater<PingPongTransactionChain, PingPongTransaction> READY_UPDATER =
+            AtomicReferenceFieldUpdater.newUpdater(PingPongTransactionChain.class, PingPongTransaction.class,
+                "readyTx");
     private volatile PingPongTransaction readyTx;
 
     /**
@@ -94,7 +95,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
     private volatile PingPongTransaction inflightTx;
 
     PingPongTransactionChain(final DOMDataBroker broker, final DOMTransactionChainListener listener) {
-        this.listener = Preconditions.checkNotNull(listener);
+        this.listener = requireNonNull(listener);
         this.delegate = broker.createTransactionChain(new DOMTransactionChainListener() {
             @Override
             public void onTransactionChainFailed(final DOMTransactionChain chain,
@@ -160,7 +161,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
     }
 
     private synchronized PingPongTransaction slowAllocateTransaction() {
-        Preconditions.checkState(shutdownTx == null, "Transaction chain %s has been shut down", this);
+        checkState(shutdownTx == null, "Transaction chain %s has been shut down", this);
 
         if (deadTx != null) {
             throw new IllegalStateException(
@@ -222,7 +223,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
      * @param tx Transaction which needs processing.
      */
     @GuardedBy("this")
-    private void processTransaction(@Nonnull final PingPongTransaction tx) {
+    private void processTransaction(final @NonNull PingPongTransaction tx) {
         if (failed) {
             LOG.debug("Cancelling transaction {}", tx);
             tx.getTransaction().cancel();
@@ -270,7 +271,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
      */
     private synchronized void processNextTransaction(final PingPongTransaction tx) {
         final boolean success = INFLIGHT_UPDATER.compareAndSet(this, tx, null);
-        Preconditions.checkState(success, "Completed transaction %s while %s was submitted", tx, inflightTx);
+        checkState(success, "Completed transaction %s while %s was submitted", tx, inflightTx);
 
         final PingPongTransaction nextTx = READY_UPDATER.getAndSet(this, null);
         if (nextTx != null) {
@@ -296,10 +297,10 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
         processNextTransaction(tx);
     }
 
-    void readyTransaction(@Nonnull final PingPongTransaction tx) {
+    void readyTransaction(final @NonNull PingPongTransaction tx) {
         // First mark the transaction as not locked.
         final boolean lockedMatch = LOCKED_UPDATER.compareAndSet(this, tx, null);
-        Preconditions.checkState(lockedMatch, "Attempted to submit transaction %s while we have %s", tx, lockedTx);
+        checkState(lockedMatch, "Attempted to submit transaction %s while we have %s", tx, lockedTx);
         LOG.debug("Transaction {} unlocked", tx);
 
         /*
@@ -307,7 +308,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
          * or a background transaction completion callback.
          */
         final boolean success = READY_UPDATER.compareAndSet(this, null, tx);
-        Preconditions.checkState(success, "Transaction %s collided on ready state", tx, readyTx);
+        checkState(success, "Transaction %s collided on ready state", tx, readyTx);
         LOG.debug("Transaction {} readied", tx);
 
         /*
@@ -336,7 +337,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
             final DOMDataTreeReadWriteTransaction frontendTx) {
         // Attempt to unlock the operation.
         final boolean lockedMatch = LOCKED_UPDATER.compareAndSet(this, tx, null);
-        Verify.verify(lockedMatch, "Cancelling transaction %s collided with locked transaction %s", tx, lockedTx);
+        verify(lockedMatch, "Cancelling transaction %s collided with locked transaction %s", tx, lockedTx);
 
         // Cancel the backend transaction, so we do not end up leaking it.
         final boolean backendCancelled = tx.getTransaction().cancel();
@@ -372,12 +373,11 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
     @Override
     public synchronized void close() {
         final PingPongTransaction notLocked = lockedTx;
-        Preconditions
-                .checkState(notLocked == null, "Attempted to close chain with outstanding transaction %s", notLocked);
+        checkState(notLocked == null, "Attempted to close chain with outstanding transaction %s", notLocked);
 
         // This is not reliable, but if we observe it to be null and the process has already completed,
         // the backend transaction chain will throw the appropriate error.
-        Preconditions.checkState(shutdownTx == null, "Attempted to close an already-closed chain");
+        checkState(shutdownTx == null, "Attempted to close an already-closed chain");
 
         // This may be a reaction to our failure callback, in that case the backend is already shutdown
         if (deadTx != null) {
