@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.eos.binding.api;
 
 import com.google.common.annotations.Beta;
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
@@ -25,16 +24,16 @@ public interface EntityOwnershipService extends
         GenericEntityOwnershipService<InstanceIdentifier<?>, Entity, EntityOwnershipListener> {
 
     @Override
-    EntityOwnershipCandidateRegistration registerCandidate(@Nonnull Entity entity)
+    EntityOwnershipCandidateRegistration registerCandidate(Entity entity)
             throws CandidateAlreadyRegisteredException;
 
     @Override
-    EntityOwnershipListenerRegistration registerListener(@Nonnull String entityType,
-            @Nonnull EntityOwnershipListener listener);
+    EntityOwnershipListenerRegistration registerListener(String entityType,
+            EntityOwnershipListener listener);
 
     @Override
-    Optional<EntityOwnershipState> getOwnershipState(@Nonnull Entity forEntity);
+    Optional<EntityOwnershipState> getOwnershipState(Entity forEntity);
 
     @Override
-    boolean isCandidateRegistered(@Nonnull Entity forEntity);
+    boolean isCandidateRegistered(Entity forEntity);
 }
