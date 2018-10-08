@@ -47,7 +47,7 @@ final class TestIntegerTypeDefinition implements Int8TypeDefinition {
 
     @Override
     public SchemaPath getPath() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
