@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -19,6 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 public class WriteableSubshardBoundaryNodeTest {
 
@@ -62,7 +64,7 @@ public class WriteableSubshardBoundaryNodeTest {
         assertSame(ImmutableMap.of(), writeableSubshardBoundaryNode.getChildrenWithSubshards());
         Assert.assertEquals(TestUtils.DOM_DATA_TREE_IDENTIFIER.getRootIdentifier().getLastPathArgument(),
                 writeableSubshardBoundaryNode.getIdentifier());
-        assertNull(writeableSubshardBoundaryNode.getChild(null));
+        assertNull(writeableSubshardBoundaryNode.getChild(mock(PathArgument.class)));
     }
 
     @After
