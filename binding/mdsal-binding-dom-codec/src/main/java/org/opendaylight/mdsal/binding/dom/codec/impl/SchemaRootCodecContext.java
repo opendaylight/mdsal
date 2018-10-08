@@ -21,6 +21,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
@@ -314,7 +315,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     @Override
     public DataContainerCodecContext<?, ?> bindingPathArgumentChild(final InstanceIdentifier.PathArgument arg,
             final List<PathArgument> builder) {
-        final java.util.Optional<? extends Class<? extends DataObject>> caseType = arg.getCaseType();
+        final Optional<? extends @NonNull Class<? extends DataObject>> caseType = arg.getCaseType();
         if (caseType.isPresent()) {
             final Class<? extends DataObject> type = caseType.get();
             final ChoiceNodeCodecContext<?> choice = choicesByClass.getUnchecked(type);
