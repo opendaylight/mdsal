@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.model.ietf.util;
 
 import java.util.regex.Pattern;
-import javax.annotation.Nonnull;
 import javax.annotation.RegEx;
 
 final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpClass, IpClass, IpClass, IpClass, IpClass,
@@ -23,7 +22,6 @@ final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpCla
     }
 
     @Override
-    @Nonnull
     protected IpClass ipv4Address(final IpClass addr) {
         return addr;
     }
@@ -35,7 +33,6 @@ final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpCla
     }
 
     @Override
-    @Nonnull
     protected IpClass ipv6Address(final IpClass addr) {
         return addr;
     }
@@ -46,37 +43,31 @@ final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpCla
     }
 
     @Override
-    @Nonnull
     protected IpClass ipv4Prefix(final IpClass addr) {
         return addr;
     }
 
     @Override
-    @Nonnull
     protected IpClass ipv6Prefix(final IpClass addr) {
         return addr;
     }
 
     @Override
-    @Nonnull
     protected String ipv4AddressString(final IpClass addr) {
         return addr.getValue();
     }
 
     @Override
-    @Nonnull
     protected String ipv6AddressString(final IpClass addr) {
         return addr.getValue();
     }
 
     @Override
-    @Nonnull
     protected String ipv4PrefixString(final IpClass prefix) {
         return prefix.getValue();
     }
 
     @Override
-    @Nonnull
     protected String ipv6PrefixString(final IpClass prefix) {
         return prefix.getValue();
     }

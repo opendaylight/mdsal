@@ -7,10 +7,11 @@
  */
 package org.opendaylight.mdsal.model.ietf.util;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Verify;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Verify.verify;
+
 import java.util.Arrays;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * IPv6 address parsing for ietf-inet-types ipv6-address and ipv6-prefix. This is an internal implementation
@@ -59,12 +60,12 @@ final class Ipv6Utils {
      * @param strLimit String offset which should not be processed
      * @throws NullPointerException if ipv6address is null
      */
-    static void fillIpv6Bytes(final @Nonnull byte[] bytes, final String str, final int strLimit) {
+    static void fillIpv6Bytes(final byte @NonNull[] bytes, final String str, final int strLimit) {
        // Leading :: requires some special handling.
        int i = 0;
        if (str.charAt(i) == ':') {
            // Note ++i side-effect in check
-           Preconditions.checkArgument(str.charAt(++i) == ':', "Invalid v6 address '%s'", str);
+           checkArgument(str.charAt(++i) == ':', "Invalid v6 address '%s'", str);
        }
 
        boolean haveVal = false;
@@ -80,7 +81,7 @@ final class Ipv6Utils {
                curtok = i;
                if (haveVal) {
                    // removed overrun check - the regexp checks for valid data
-                   bytes[j++] = (byte) ((val >>> 8) & 0xff);
+                   bytes[j++] = (byte) (val >>> 8 & 0xff);
                    bytes[j++] = (byte) (val & 0xff);
                    haveVal = false;
                    val = 0;
@@ -93,7 +94,7 @@ final class Ipv6Utils {
            }
 
            // frankenstein - v4 attached to v6, mixed notation
-           if (ch == '.' && ((j + INADDR4SZ) <= INADDR6SZ)) {
+           if (ch == '.' && j + INADDR4SZ <= INADDR6SZ) {
                /*
                 * This has passed the regexp so it is fairly safe to parse it
                 * straight away. Use the Ipv4Utils for that.
@@ -111,21 +112,21 @@ final class Ipv6Utils {
             * anything bigger than 0xffff between the separators.
             */
            final int chval = AbstractIetfYangUtil.hexValue(ch);
-           val = (val << 4) | chval;
+           val = val << 4 | chval;
            haveVal = true;
        }
 
        if (haveVal) {
-           Verify.verify(j + INT16SZ <= INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
-           bytes[j++] = (byte) ((val >> 8) & 0xff);
+           verify(j + INT16SZ <= INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
+           bytes[j++] = (byte) (val >> 8 & 0xff);
            bytes[j++] = (byte) (val & 0xff);
        }
 
        if (colonp != -1) {
-           Verify.verify(j != INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
+           verify(j != INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
            expandZeros(bytes, colonp, j);
        } else {
-           Verify.verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
+           verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
        }
    }
 
