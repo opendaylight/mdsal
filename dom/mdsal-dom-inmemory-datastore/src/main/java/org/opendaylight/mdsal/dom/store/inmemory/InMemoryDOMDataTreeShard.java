@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.annotations.Beta;
@@ -22,7 +21,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Executor;
-import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -181,10 +179,9 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         }
     }
 
-    @Nonnull
     @Override
     public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(
-            @Nonnull final YangInstanceIdentifier treeId, @Nonnull final L listener) {
+            final YangInstanceIdentifier treeId, final L listener) {
         return shardChangePublisher.registerTreeChangeListener(treeId, listener);
     }
 
