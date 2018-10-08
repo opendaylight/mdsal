@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -135,7 +134,7 @@ public class AbstractDOMShardTreeChangePublisherTest extends AbstractDOMShardTre
     }
 
     @Override
-    protected void registrationRemoved(@Nonnull final AbstractDOMDataTreeChangeListenerRegistration<?> registration) {
+    protected void registrationRemoved(final AbstractDOMDataTreeChangeListenerRegistration<?> registration) {
         // NOOP
     }
 

@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.mdsal.dom.spi.store.AbstractDOMStoreTreeChangePublisher;
@@ -86,7 +86,7 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
         return reg;
     }
 
-    synchronized void publishChange(@Nonnull final DataTreeCandidate candidate) {
+    synchronized void publishChange(final @NonNull DataTreeCandidate candidate) {
         // Runs synchronized with registrationRemoved()
         processCandidateTree(candidate);
     }
