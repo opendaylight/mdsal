@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +49,7 @@ public class ShardedDOMReadTransactionAdapterTest {
     }
 
     @Test
-    public void testRead() throws Exception {
+    public void testRead() throws InterruptedException, ExecutionException {
         final ListenableFuture<Optional<NormalizedNode<?, ?>>> readResult =
                 readTx.read(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
         assertTrue(readTx.exists(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH).get());
@@ -56,7 +57,7 @@ public class ShardedDOMReadTransactionAdapterTest {
     }
 
     @After
-    public void close() throws Exception {
+    public void close() {
         readTx.close();
     }
 
@@ -93,7 +94,7 @@ public class ShardedDOMReadTransactionAdapterTest {
 
         @Override
         public DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees) {
-            return null;
+            throw new UnsupportedOperationException();
         }
     }
 }

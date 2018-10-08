@@ -11,18 +11,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMService;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMAdapterLoaderTest {
 
     @Mock
@@ -35,9 +39,7 @@ public class BindingDOMAdapterLoaderTest {
     private BindingDOMDataBrokerAdapter bindingDOMDataBrokerAdapter;
 
     @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-
+    public void setUp() {
         doReturn(ImmutableClassToInstanceMap.of()).when(domService).getExtensions();
         bindingDOMAdapterLoader = new BindingDOMAdapterLoader(
                 new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
@@ -50,21 +52,21 @@ public class BindingDOMAdapterLoaderTest {
     }
 
     @Test
-    public void createBuilderTest() throws Exception {
+    public void createBuilderTest() {
         assertTrue(bindingDOMAdapterLoader.load(DataBroker.class).get() instanceof BindingDOMDataBrokerAdapter);
         domService = null;
         assertFalse(bindingDOMAdapterLoader.load(DataBroker.class).isPresent());
     }
 
     @Test
-    public void createChainTest() throws Exception {
+    public void createChainTest() {
         bindingDOMDataBrokerAdapter
                 = (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).get();
-        assertNotNull(bindingDOMDataBrokerAdapter.createTransactionChain(null));
+        assertNotNull(bindingDOMDataBrokerAdapter.createTransactionChain(mock(TransactionChainListener.class)));
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void registerWithException() throws Exception {
+    public void registerWithException() {
         bindingDOMDataBrokerAdapter
                 = (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).get();
         bindingDOMDataBrokerAdapter.registerDataTreeChangeListener(null, null);
