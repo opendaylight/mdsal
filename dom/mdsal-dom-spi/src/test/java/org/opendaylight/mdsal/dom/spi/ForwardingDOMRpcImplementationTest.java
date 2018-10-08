@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -34,7 +33,6 @@ public class ForwardingDOMRpcImplementationTest extends ForwardingDOMRpcImplemen
         verify(domRpcImplementation).invokeRpc(domRpcIdentifier, null);
     }
 
-    @Nonnull
     @Override
     protected DOMRpcImplementation delegate() {
         return domRpcImplementation;

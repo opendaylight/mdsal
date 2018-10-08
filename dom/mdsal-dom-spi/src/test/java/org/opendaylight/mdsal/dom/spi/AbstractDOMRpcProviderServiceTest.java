@@ -8,10 +8,10 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Set;
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -26,13 +26,13 @@ public class AbstractDOMRpcProviderServiceTest extends AbstractDOMRpcProviderSer
     @Test
     public void registerRpcImplementation() throws Exception {
         initMocks(this);
-        assertEquals(domRpcImplementationRegistration, this.registerRpcImplementation(null));
+        assertEquals(domRpcImplementationRegistration, this.registerRpcImplementation(
+            mock(DOMRpcImplementation.class)));
     }
 
-    @Nonnull
     @Override
     public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
-            @Nonnull T implementation, @Nonnull Set<DOMRpcIdentifier> rpcs) {
+            final T implementation, final Set<DOMRpcIdentifier> rpcs) {
         return domRpcImplementationRegistration;
     }
 }
