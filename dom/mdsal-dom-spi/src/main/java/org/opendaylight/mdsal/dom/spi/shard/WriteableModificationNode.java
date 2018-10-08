@@ -5,12 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.spi.shard;
 
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -25,7 +24,7 @@ public abstract class WriteableModificationNode implements Identifiable<PathArgu
      *
      * @return null if requested child is not subshard or enclosing node of any subshard.
      */
-    @Nullable public abstract WriteableModificationNode getChild(@Nonnull PathArgument node);
+    public abstract @Nullable WriteableModificationNode getChild(@NonNull PathArgument node);
 
     public abstract Map<PathArgument, WriteableModificationNode> getChildrenWithSubshards();
 

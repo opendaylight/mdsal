@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.mdsal.dom.spi.AbstractRegistrationTree;
@@ -44,8 +44,8 @@ public abstract class AbstractDOMStoreTreeChangePublisher
      * @param registration the registration to notify
      * @param changes the list of DataTreeCandidate changes
      */
-    protected abstract void notifyListener(@Nonnull AbstractDOMDataTreeChangeListenerRegistration<?> registration,
-            @Nonnull Collection<DataTreeCandidate> changes);
+    protected abstract void notifyListener(@NonNull AbstractDOMDataTreeChangeListenerRegistration<?> registration,
+            @NonNull Collection<DataTreeCandidate> changes);
 
     /**
      * Callback notifying the subclass that the specified registration is being
@@ -59,14 +59,14 @@ public abstract class AbstractDOMStoreTreeChangePublisher
      * @param registration Registration which is being closed
      */
     protected abstract void registrationRemoved(
-            @Nonnull AbstractDOMDataTreeChangeListenerRegistration<?> registration);
+            @NonNull AbstractDOMDataTreeChangeListenerRegistration<?> registration);
 
     /**
      * Process a candidate tree with respect to registered listeners.
      *
      * @param candidate candidate three which needs to be processed
      */
-    protected final void processCandidateTree(@Nonnull final DataTreeCandidate candidate) {
+    protected final void processCandidateTree(final @NonNull DataTreeCandidate candidate) {
         final DataTreeCandidateNode node = candidate.getRootNode();
         if (node.getModificationType() == ModificationType.UNMODIFIED) {
             LOG.debug("Skipping unmodified candidate {}", candidate);
