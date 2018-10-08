@@ -49,12 +49,12 @@ public class TestLeafSchemaNode implements LeafSchemaNode {
 
     @Override
     public QName getQName() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public SchemaPath getPath() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
