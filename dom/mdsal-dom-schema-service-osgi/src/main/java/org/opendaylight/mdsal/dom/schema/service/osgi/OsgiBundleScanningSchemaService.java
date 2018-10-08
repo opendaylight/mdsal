@@ -8,8 +8,9 @@
 package org.opendaylight.mdsal.dom.schema.service.osgi;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.net.URL;
@@ -18,8 +19,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.broker.schema.ScanningSchemaServiceProvider;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
@@ -54,12 +55,12 @@ public class OsgiBundleScanningSchemaService extends ScanningSchemaServiceProvid
     private volatile boolean stopping;
 
     private OsgiBundleScanningSchemaService(final BundleContext context) {
-        this.context = Preconditions.checkNotNull(context);
+        this.context = requireNonNull(context);
     }
 
-    public static @Nonnull OsgiBundleScanningSchemaService createInstance(final BundleContext ctx) {
+    public static @NonNull OsgiBundleScanningSchemaService createInstance(final BundleContext ctx) {
         final OsgiBundleScanningSchemaService instance = new OsgiBundleScanningSchemaService(ctx);
-        Preconditions.checkState(GLOBAL_INSTANCE.compareAndSet(null, instance));
+        checkState(GLOBAL_INSTANCE.compareAndSet(null, instance));
         instance.start();
         return instance;
     }
@@ -90,7 +91,7 @@ public class OsgiBundleScanningSchemaService extends ScanningSchemaServiceProvid
 
     public static OsgiBundleScanningSchemaService getInstance() {
         final OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.get();
-        Preconditions.checkState(instance != null, "Global Instance was not instantiated");
+        checkState(instance != null, "Global Instance was not instantiated");
         return instance;
     }
 
@@ -98,7 +99,6 @@ public class OsgiBundleScanningSchemaService extends ScanningSchemaServiceProvid
     public static void destroyInstance() throws Exception {
         final OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.getAndSet(null);
         if (instance != null) {
-
             instance.closeInstance();
         }
     }
