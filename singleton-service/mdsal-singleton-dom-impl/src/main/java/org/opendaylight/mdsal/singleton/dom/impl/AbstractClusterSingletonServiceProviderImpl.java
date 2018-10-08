@@ -5,16 +5,15 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.singleton.dom.impl;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.base.Verify;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -23,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
@@ -77,8 +75,8 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
      *
      * @param entityOwnershipService relevant EOS
      */
-    protected AbstractClusterSingletonServiceProviderImpl(@Nonnull final S entityOwnershipService) {
-        this.entityOwnershipService = Preconditions.checkNotNull(entityOwnershipService);
+    protected AbstractClusterSingletonServiceProviderImpl(final @NonNull S entityOwnershipService) {
+        this.entityOwnershipService = requireNonNull(entityOwnershipService);
     }
 
     /**
@@ -92,12 +90,12 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
 
     @Override
     public final synchronized ClusterSingletonServiceRegistration registerClusterSingletonService(
-            @CheckForNull final ClusterSingletonService service) {
+            final ClusterSingletonService service) {
         LOG.debug("Call registrationService {} method for ClusterSingletonService Provider {}", service, this);
 
         final String serviceIdentifier = service.getIdentifier().getValue();
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(serviceIdentifier),
-                "ClusterSingletonService identifier may not be null nor empty");
+        checkArgument(!Strings.isNullOrEmpty(serviceIdentifier),
+            "ClusterSingletonService identifier may not be null nor empty");
 
         final ClusterSingletonServiceGroup<P, E, C> serviceGroup;
         ClusterSingletonServiceGroup<P, E, C> existing = serviceGroupMap.get(serviceIdentifier);
@@ -186,7 +184,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
 
         // Placeholder is being retired, we are reusing its services as the seed for the group.
         final ClusterSingletonServiceGroup<P, E, C> group = createGroup(identifier, services);
-        Verify.verify(serviceGroupMap.replace(identifier, placeHolder, group));
+        verify(serviceGroupMap.replace(identifier, placeHolder, group));
         placeHolder.setSuccessor(group);
         LOG.debug("Service group upgraded from {} to {}", placeHolder, group);
 
