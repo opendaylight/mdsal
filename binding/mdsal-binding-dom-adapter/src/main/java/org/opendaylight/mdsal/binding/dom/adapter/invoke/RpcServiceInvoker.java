@@ -7,12 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Method;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -48,7 +49,7 @@ public abstract class RpcServiceInvoker {
      * @return An {@link RpcServiceInvoker} instance.
      */
     public static RpcServiceInvoker from(final Map<QName, Method> qnameToMethod) {
-        Preconditions.checkArgument(!qnameToMethod.isEmpty());
+        checkArgument(!qnameToMethod.isEmpty());
         QNameModule module = null;
 
         for (QName qname : qnameToMethod.keySet()) {
@@ -75,6 +76,6 @@ public abstract class RpcServiceInvoker {
      * @param input Input data for RPC.
      * @return Future which will complete once rpc procesing is finished.
      */
-    public abstract ListenableFuture<RpcResult<?>> invokeRpc(@Nonnull RpcService impl, @Nonnull QName rpcName,
+    public abstract ListenableFuture<RpcResult<?>> invokeRpc(@NonNull RpcService impl, @NonNull QName rpcName,
             @Nullable DataObject input);
 }

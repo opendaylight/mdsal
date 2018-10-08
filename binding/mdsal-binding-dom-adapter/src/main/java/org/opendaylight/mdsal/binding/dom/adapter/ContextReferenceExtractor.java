@@ -5,21 +5,19 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import java.lang.reflect.Method;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 abstract class ContextReferenceExtractor {
 
@@ -40,8 +38,7 @@ abstract class ContextReferenceExtractor {
                     return create(key);
                 }
 
-                @Nonnull
-                private ContextReferenceExtractor create(final Class<?> key) {
+                private @NonNull ContextReferenceExtractor create(final Class<?> key) {
                     final Method contextGetter = getContextGetter(key);
                     if (contextGetter == null) {
                         return NULL_EXTRACTOR;
@@ -84,20 +81,16 @@ abstract class ContextReferenceExtractor {
     }
 
     /**
-     * Extract context-reference (Instance Identifier) from
-     * Binding DataObject.
+     * Extract context-reference (Instance Identifier) from a Binding DataObject.
      *
-     * @param obj DataObject from which context reference
-     *     should be extracted.
+     * @param obj DataObject from which context reference should be extracted.
      *
-     * @return Instance Identifier representing context reference
-     *     or null, if data object does not contain context reference.
+     * @return Instance Identifier representing context reference or null, if data object does not contain a context
+     *         reference.
      */
-    @Nullable
-    abstract InstanceIdentifier<?> extract(DataObject obj);
+    abstract @Nullable InstanceIdentifier<?> extract(DataObject obj);
 
-    @Nullable
-    private static Method findGetValueMethod(final Class<?> type, final Class<?> returnType) {
+    private static @Nullable Method findGetValueMethod(final Class<?> type, final Class<?> returnType) {
         try {
             final Method method = type.getMethod(GET_VALUE_NAME);
             if (returnType.equals(method.getReturnType())) {

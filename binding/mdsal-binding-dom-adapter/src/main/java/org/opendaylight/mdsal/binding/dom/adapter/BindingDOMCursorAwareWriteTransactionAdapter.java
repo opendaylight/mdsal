@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.util.concurrent.FluentFuture;
-import javax.annotation.Nullable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.CursorAwareWriteTransaction;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
@@ -27,7 +26,6 @@ public class BindingDOMCursorAwareWriteTransactionAdapter<T extends DOMDataTreeC
         super(codec, delegate);
     }
 
-    @Nullable
     @Override
     public <P extends DataObject> DataTreeWriteCursor createCursor(final DataTreeIdentifier<P> path) {
         final YangInstanceIdentifier yPath = getCodec().toNormalized(path.getRootIdentifier());
