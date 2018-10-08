@@ -13,13 +13,15 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -28,6 +30,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMTransactionChainAdapterTest {
 
     @Mock
@@ -37,13 +40,15 @@ public class BindingDOMTransactionChainAdapterTest {
     private DOMTransactionChain transactionChain;
 
     @Mock
+    private TransactionChainListener transactionChainListener;
+
+    @Mock
     private BindingNormalizedNodeCodecRegistry mockCodecRegistry;
 
     private BindingDOMTransactionChainAdapter bindingDOMTransactionChainAdapter;
 
     @Before
-    public void setUp() throws Exception {
-        initMocks(this);
+    public void setUp() {
         doReturn(transactionChain).when(domService).createTransactionChain(any());
         doReturn(ImmutableClassToInstanceMap.of()).when(domService).getExtensions();
 
@@ -58,8 +63,8 @@ public class BindingDOMTransactionChainAdapterTest {
 
         BindingDOMDataBrokerAdapter bindingDOMDataBrokerAdapter =
                 (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).get();
-        bindingDOMTransactionChainAdapter =
-                (BindingDOMTransactionChainAdapter) bindingDOMDataBrokerAdapter.createTransactionChain(null);
+        bindingDOMTransactionChainAdapter = (BindingDOMTransactionChainAdapter) bindingDOMDataBrokerAdapter
+                .createTransactionChain(transactionChainListener);
         assertNotNull(bindingDOMTransactionChainAdapter.getDelegate());
         doNothing().when(transactionChain).close();
         bindingDOMTransactionChainAdapter.close();
