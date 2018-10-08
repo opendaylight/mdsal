@@ -7,16 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
@@ -48,12 +48,12 @@ abstract class AbstractMappedRpcInvoker<T> extends RpcServiceInvoker {
     protected abstract T qnameToKey(QName qname);
 
     @Override
-    public final ListenableFuture<RpcResult<?>> invokeRpc(@Nonnull final RpcService impl, @Nonnull final QName rpcName,
-            @Nullable final DataObject input) {
-        Preconditions.checkNotNull(impl, "Implementation must be supplied");
+    public final ListenableFuture<RpcResult<?>> invokeRpc(final RpcService impl, final QName rpcName,
+            final DataObject input) {
+        requireNonNull(impl, "Implementation must be supplied");
 
         RpcMethodInvoker invoker = map.get(qnameToKey(rpcName));
-        Preconditions.checkArgument(invoker != null, "Supplied RPC is not valid for implementation %s", impl);
+        checkArgument(invoker != null, "Supplied RPC is not valid for implementation %s", impl);
         return invoker.invokeOn(impl, input);
     }
 }
