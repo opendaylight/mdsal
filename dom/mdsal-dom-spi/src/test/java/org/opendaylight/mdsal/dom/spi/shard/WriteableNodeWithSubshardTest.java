@@ -62,7 +62,7 @@ public class WriteableNodeWithSubshardTest {
 
         @Override
         public PathArgument getIdentifier() {
-            return null;
+            throw new UnsupportedOperationException();
         }
     }
 }
