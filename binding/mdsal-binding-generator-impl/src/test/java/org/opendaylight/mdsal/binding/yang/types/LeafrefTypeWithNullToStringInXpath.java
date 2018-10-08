@@ -5,9 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.yang.types;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -68,7 +68,7 @@ public class LeafrefTypeWithNullToStringInXpath implements LeafrefTypeDefinition
 
     @Override
     public List<UnknownSchemaNode> getUnknownSchemaNodes() {
-        return null;
+        return ImmutableList.of();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class LeafrefTypeWithNullToStringInXpath implements LeafrefTypeDefinition
 
     @Override
     public Status getStatus() {
-        return null;
+        return Status.CURRENT;
     }
 
     @Override

@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.binding.yang.types;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -51,7 +52,7 @@ final class TestIntegerTypeDefinition implements Int8TypeDefinition {
 
     @Override
     public List<UnknownSchemaNode> getUnknownSchemaNodes() {
-        return null;
+        return ImmutableList.of();
     }
 
     @Override
@@ -66,7 +67,7 @@ final class TestIntegerTypeDefinition implements Int8TypeDefinition {
 
     @Override
     public Status getStatus() {
-        return null;
+        return Status.CURRENT;
     }
 
     @Override
