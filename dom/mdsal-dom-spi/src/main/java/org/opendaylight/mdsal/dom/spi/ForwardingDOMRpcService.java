@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.FluentFuture;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -22,8 +22,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
  */
 public abstract class ForwardingDOMRpcService extends ForwardingObject implements DOMRpcService {
     @Override
-    @Nonnull
-    protected abstract DOMRpcService delegate();
+    protected abstract @NonNull DOMRpcService delegate();
 
     @Override
     public FluentFuture<DOMRpcResult> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {

@@ -12,7 +12,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
@@ -43,7 +42,6 @@ public class ForwardingDOMDataReadOnlyTransactionTest extends ForwardingDOMDataR
         verify(domDataTreeReadTransaction).close();
     }
 
-    @Nonnull
     @Override
     protected DOMDataTreeReadTransaction delegate() {
         return domDataTreeReadTransaction;

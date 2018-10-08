@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.google.common.collect.ImmutableClassToInstanceMap;
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -45,7 +44,6 @@ public class ForwardingDOMDataBrokerTest extends ForwardingDOMDataBroker {
         verify(domDataBroker).newWriteOnlyTransaction();
     }
 
-    @Nonnull
     @Override
     protected DOMDataBroker delegate() {
         return domDataBroker;

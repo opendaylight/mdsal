@@ -15,7 +15,6 @@ import static org.mockito.Mockito.mock;
 import com.google.common.collect.ImmutableList;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import javax.annotation.Nonnull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
@@ -76,7 +75,7 @@ public class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTre
     }
 
     @Override
-    protected void registrationRemoved(@Nonnull final AbstractDOMDataTreeChangeListenerRegistration<?> registration) {
+    protected void registrationRemoved(final AbstractDOMDataTreeChangeListenerRegistration<?> registration) {
         removeInvoked = true;
     }
 }

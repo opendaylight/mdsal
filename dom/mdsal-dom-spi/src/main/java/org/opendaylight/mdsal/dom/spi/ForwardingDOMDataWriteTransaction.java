@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.FluentFuture;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -23,8 +23,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 public abstract class ForwardingDOMDataWriteTransaction extends ForwardingObject
         implements DOMDataTreeWriteTransaction {
     @Override
-    @Nonnull
-    protected abstract DOMDataTreeWriteTransaction delegate();
+    protected abstract @NonNull DOMDataTreeWriteTransaction delegate();
 
     @Override
     public Object getIdentifier() {

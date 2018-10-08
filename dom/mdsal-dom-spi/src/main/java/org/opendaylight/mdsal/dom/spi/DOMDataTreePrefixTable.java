@@ -10,9 +10,9 @@ package org.opendaylight.mdsal.dom.spi;
 import com.google.common.annotations.Beta;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.slf4j.Logger;
@@ -47,14 +47,9 @@ public final class DOMDataTreePrefixTable<V> {
      * @param prefix Prefix for lookup
      * @return closest non-null entry towards root or null if no entry towards root exists.
      */
-    @Nullable
-    public DOMDataTreePrefixTableEntry<V> lookup(@Nonnull final DOMDataTreeIdentifier prefix) {
+    public @Nullable DOMDataTreePrefixTableEntry<V> lookup(final @NonNull DOMDataTreeIdentifier prefix) {
         final DOMDataTreePrefixTableEntry<V> t = roots.get(prefix.getDatastoreType());
-        if (t == null) {
-            return null;
-        }
-
-        return t.lookup(prefix.getRootIdentifier());
+        return t == null ? null : t.lookup(prefix.getRootIdentifier());
     }
 
     /**
@@ -64,7 +59,7 @@ public final class DOMDataTreePrefixTable<V> {
      * @param value Value to be stored
      * @throws IllegalStateException If value is already stored for provided prefix
      */
-    public void store(@Nonnull final DOMDataTreeIdentifier prefix, @Nonnull final V value) {
+    public void store(final @NonNull DOMDataTreeIdentifier prefix, final @NonNull V value) {
         DOMDataTreePrefixTableEntry<V> domDataTreePrefixTableEntry = roots.get(prefix.getDatastoreType());
         if (domDataTreePrefixTableEntry == null) {
             domDataTreePrefixTableEntry = new DOMDataTreePrefixTableEntry<>();
@@ -81,7 +76,7 @@ public final class DOMDataTreePrefixTable<V> {
      *
      * @param prefix to be removed
      */
-    public void remove(@Nonnull final DOMDataTreeIdentifier prefix) {
+    public void remove(final @NonNull DOMDataTreeIdentifier prefix) {
         final DOMDataTreePrefixTableEntry<V> t = roots.get(prefix.getDatastoreType());
         if (t == null) {
             LOG.warn("Shard registration {} points to non-existent table", t);
@@ -90,5 +85,4 @@ public final class DOMDataTreePrefixTable<V> {
 
         t.remove(prefix.getRootIdentifier());
     }
-
 }
