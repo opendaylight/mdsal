@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Exception thrown when a loop is detected in the way {@link DOMDataTreeListener}
@@ -16,11 +16,11 @@ import javax.annotation.Nonnull;
 public class DOMDataTreeLoopException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public DOMDataTreeLoopException(@Nonnull final String message) {
+    public DOMDataTreeLoopException(@NonNull final String message) {
         super(message);
     }
 
-    public DOMDataTreeLoopException(@Nonnull final String message, @Nonnull final Throwable cause) {
+    public DOMDataTreeLoopException(@NonNull final String message, @NonNull final Throwable cause) {
         super(message, cause);
     }
 }
