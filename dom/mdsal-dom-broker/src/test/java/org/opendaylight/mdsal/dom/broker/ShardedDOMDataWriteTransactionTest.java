@@ -25,7 +25,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -111,10 +110,8 @@ public class ShardedDOMDataWriteTransactionTest {
     }
 
     private final class TestDOMShardWriteTransaction implements DOMDataTreeShardWriteTransaction {
-
-        @Nonnull
         @Override
-        public DOMDataTreeWriteCursor createCursor(@Nonnull final DOMDataTreeIdentifier prefix) {
+        public DOMDataTreeWriteCursor createCursor(final DOMDataTreeIdentifier prefix) {
             return new TestCursor();
         }
 
@@ -180,19 +177,19 @@ public class ShardedDOMDataWriteTransactionTest {
         }
 
         @Override
-        public void enter(@Nonnull final PathArgument child) {
+        public void enter(final PathArgument child) {
             stack.push(child);
         }
 
         @Override
-        public void enter(@Nonnull final PathArgument... path) {
+        public void enter(final PathArgument... path) {
             for (final PathArgument pathArgument : path) {
                 stack.push(pathArgument);
             }
         }
 
         @Override
-        public void enter(@Nonnull final Iterable<PathArgument> path) {
+        public void enter(final Iterable<PathArgument> path) {
             path.forEach(stack::push);
         }
 

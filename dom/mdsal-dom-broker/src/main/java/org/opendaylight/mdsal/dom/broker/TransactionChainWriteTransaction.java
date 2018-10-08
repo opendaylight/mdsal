@@ -11,7 +11,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
-import javax.annotation.Nullable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -61,7 +60,7 @@ public class TransactionChainWriteTransaction implements DOMDataTreeWriteTransac
         final FluentFuture<? extends CommitInfo> writeResultFuture = delegateTx.commit();
         writeResultFuture.addCallback(new FutureCallback<CommitInfo>() {
             @Override
-            public void onSuccess(@Nullable final CommitInfo result) {
+            public void onSuccess(final CommitInfo result) {
                 // NOOP
             }
 
