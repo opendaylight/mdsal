@@ -12,7 +12,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -51,7 +50,6 @@ public class ForwardingDOMDataWriteTransactionTest extends ForwardingDOMDataWrit
         verify(domDataTreeWriteTransaction).cancel();
     }
 
-    @Nonnull
     @Override
     protected DOMDataTreeWriteTransaction delegate() {
         return domDataTreeWriteTransaction;
