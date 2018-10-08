@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.api;
 
 import java.util.EventListener;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * A single shard of the conceptual data tree. This interface defines the basic notifications
@@ -23,7 +23,7 @@ public interface DOMDataTreeShard extends EventListener {
      * @param prefix Child's prefix
      * @param child Child shard
      */
-    void onChildAttached(@Nonnull DOMDataTreeIdentifier prefix, @Nonnull DOMDataTreeShard child);
+    void onChildAttached(@NonNull DOMDataTreeIdentifier prefix, @NonNull DOMDataTreeShard child);
 
     /**
      * Invoked whenever a child is getting detached as a more specific prefix under this shard.
@@ -31,5 +31,5 @@ public interface DOMDataTreeShard extends EventListener {
      * @param prefix Child's prefix
      * @param child Child shard
      */
-    void onChildDetached(@Nonnull DOMDataTreeIdentifier prefix, @Nonnull DOMDataTreeShard child);
+    void onChildDetached(@NonNull DOMDataTreeIdentifier prefix, @NonNull DOMDataTreeShard child);
 }

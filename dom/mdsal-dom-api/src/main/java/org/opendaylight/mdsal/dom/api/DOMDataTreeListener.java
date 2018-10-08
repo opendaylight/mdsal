@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.api;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 
@@ -29,8 +29,8 @@ public interface DOMDataTreeListener extends EventListener {
      *                 This includes all the subtrees this listener is subscribed to, even those
      *                 which have not changed.
      */
-    void onDataTreeChanged(@Nonnull Collection<DataTreeCandidate> changes,
-            @Nonnull Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees);
+    void onDataTreeChanged(@NonNull Collection<DataTreeCandidate> changes,
+            @NonNull Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees);
 
     /**
      * Invoked when a subtree listening failure occurs. This can be triggered, for example, when a
@@ -39,5 +39,5 @@ public interface DOMDataTreeListener extends EventListener {
      *
      * @param causes Collection of failure causes, may not be null or empty.
      */
-    void onDataTreeFailed(@Nonnull Collection<DOMDataTreeListeningException> causes);
+    void onDataTreeFailed(@NonNull Collection<DOMDataTreeListeningException> causes);
 }
