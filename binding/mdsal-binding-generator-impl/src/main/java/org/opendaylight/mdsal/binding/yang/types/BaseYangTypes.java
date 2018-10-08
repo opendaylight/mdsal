@@ -222,7 +222,8 @@ public final class BaseYangTypes {
         return Types.getDefaultRestrictions(min, max);
     }
 
-    // FIXME: why do we even have this class?
+    // FIXME: 4.0.0: remove this class
+    @Deprecated
     public static final class UnionType implements Type {
         @Override
         public String getPackageName() {
