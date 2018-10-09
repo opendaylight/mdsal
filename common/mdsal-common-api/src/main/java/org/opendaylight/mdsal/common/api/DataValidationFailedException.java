@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.common.api;
 
 import static java.util.Objects.requireNonNull;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.opendaylight.yangtools.concepts.Path;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -25,6 +26,7 @@ public class DataValidationFailedException extends TransactionCommitFailedExcept
 
     private static final long serialVersionUID = 1L;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Interfaces do not specify Serializable")
     private final Path<?> path;
 
     private final Class<? extends Path<?>> pathType;
