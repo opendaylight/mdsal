@@ -15,6 +15,7 @@
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>bundle-parent</artifactId>
         <version>4.0.2</version>
+        <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.mdsal</groupId>
