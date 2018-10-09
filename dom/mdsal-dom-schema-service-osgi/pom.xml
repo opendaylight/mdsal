@@ -56,16 +56,10 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>mockito-configuration</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
