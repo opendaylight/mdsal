@@ -13,6 +13,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.Optional;
 import javax.annotation.concurrent.ThreadSafe;
@@ -35,6 +36,7 @@ public final class SimpleDOMActionResult implements DOMActionResult, Immutable {
         this.output = output;
     }
 
+    @SuppressFBWarnings("NP_NULL_PARAM_DEREF_NONVIRTUAL")
     public SimpleDOMActionResult(final Collection<RpcError> errors) {
         this(errors, null);
     }

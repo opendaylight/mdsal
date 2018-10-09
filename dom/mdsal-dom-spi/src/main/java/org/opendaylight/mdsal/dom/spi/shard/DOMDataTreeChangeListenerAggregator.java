@@ -130,7 +130,7 @@ final class DOMDataTreeChangeListenerAggregator
             if (size != 0) {
                 // Note: it is okay to leak changes, we must never leak mutable subtrees.
                 listener.onDataTreeChanged(changes, ImmutableMap.copyOf(subtrees));
-                LOG.trace("Listener {} processed {} changes in {}", listener, clock);
+                LOG.trace("Listener {} processed {} changes in {}", listener, size, clock);
             }
         }
     }

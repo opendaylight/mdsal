@@ -93,7 +93,7 @@ public final class DOMDataTreeListenerAggregator
         private Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees = ImmutableMap.of();
 
         @Override
-        protected void append(final State state) {
+        protected synchronized void append(final State state) {
             if (state instanceof Changes) {
                 final Changes changesState = (Changes) state;
                 this.changes.addAll(changesState.changes);
@@ -142,7 +142,7 @@ public final class DOMDataTreeListenerAggregator
         @Override
         protected void notifyListener(final Iterator<State> iterator) {
             if (failed) {
-                iterator.forEachRemaining(state -> LOG.debug("Listener {} failed, ignoring state {}", state));
+                iterator.forEachRemaining(state -> LOG.debug("Listener {} failed, ignoring state {}", listener, state));
                 return;
             }
 

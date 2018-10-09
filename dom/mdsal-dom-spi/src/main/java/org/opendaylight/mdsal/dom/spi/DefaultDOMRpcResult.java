@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.spi;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Serializable {
     private static final long serialVersionUID = 1L;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Interfaces do not specify Serializable")
     private final @Nullable NormalizedNode<?, ?> result;
     private final Collection<? extends RpcError> errors;
 

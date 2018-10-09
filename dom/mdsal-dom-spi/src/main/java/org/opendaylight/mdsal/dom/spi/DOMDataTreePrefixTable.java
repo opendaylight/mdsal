@@ -79,7 +79,7 @@ public final class DOMDataTreePrefixTable<V> {
     public void remove(final @NonNull DOMDataTreeIdentifier prefix) {
         final DOMDataTreePrefixTableEntry<V> t = roots.get(prefix.getDatastoreType());
         if (t == null) {
-            LOG.warn("Shard registration {} points to non-existent table", t);
+            LOG.warn("Shard registration {} points to non-existent table", prefix);
             return;
         }
 
