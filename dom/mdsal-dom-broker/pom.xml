@@ -37,11 +37,6 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-dom-spi</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
@@ -61,13 +56,12 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>mockito-configuration</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-dom-inmemory-datastore</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

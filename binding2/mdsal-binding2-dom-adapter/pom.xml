@@ -72,17 +72,6 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
@@ -92,16 +81,10 @@
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding2-test-model</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
