@@ -11,35 +11,14 @@
 
    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.opendaylight.odlparent</groupId>
-        <artifactId>bundle-parent</artifactId>
-        <version>4.0.2</version>
-        <relativePath/>
+        <groupId>org.opendaylight.mdsal</groupId>
+        <artifactId>dom-parent</artifactId>
+        <version>3.0.1-SNAPSHOT</version>
+        <relativePath>../dom-parent</relativePath>
     </parent>
 
-    <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-artifacts</artifactId>
-                <version>3.0.1-SNAPSHOT</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.yangtools</groupId>
-                <artifactId>yangtools-artifacts</artifactId>
-                <version>2.1.1</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
