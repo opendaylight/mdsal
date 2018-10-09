@@ -137,6 +137,20 @@
                         </goals>
                     </execution>
                 </executions>
+
+                <!-- Required to get things working with JDK9+ -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.scala-lang</groupId>
+                        <artifactId>scala-compiler</artifactId>
+                        <version>2.11.12</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.scala-lang</groupId>
+                        <artifactId>scala-library</artifactId>
+                        <version>2.11.12</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <!-- Scala -> compile Scala files generated from Twirl -->
