@@ -50,7 +50,7 @@ public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathAr
     DOMDataTreePrefixTableEntry<V> lookup(final YangInstanceIdentifier id) {
         final Iterator<PathArgument> it = id.getPathArguments().iterator();
         DOMDataTreePrefixTableEntry<V> entry = this;
-        DOMDataTreePrefixTableEntry<V> lastPresentEntry = entry;
+        DOMDataTreePrefixTableEntry<V> lastPresentEntry = entry.getValue() != null ? entry : null;
 
         while (it.hasNext()) {
             final PathArgument a = it.next();
