@@ -50,11 +50,11 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
     void removeShard(final DOMDataTreeShardRegistration<?> reg) {
         final DOMDataTreeIdentifier prefix = reg.getPrefix();
-        final DOMDataTreeShardRegistration<?> parentReg;
+        final DOMDataTreePrefixTableEntry<DOMDataTreeShardRegistration<?>> parentRegEntry;
 
         synchronized (this) {
             shards.remove(prefix);
-            parentReg = shards.lookup(prefix).getValue();
+            parentRegEntry = shards.lookup(prefix);
 
             /*
              * FIXME: adjust all producers and listeners. This is tricky, as we need different
@@ -63,8 +63,8 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
              */
         }
 
-        if (parentReg != null) {
-            parentReg.getInstance().onChildDetached(prefix, reg.getInstance());
+        if (parentRegEntry != null) {
+            parentRegEntry.getValue().getInstance().onChildDetached(prefix, reg.getInstance());
         }
     }
 
