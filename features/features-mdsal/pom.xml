@@ -36,31 +36,31 @@
     <dependencies>
         <!-- Binding -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-binding</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-binding-api</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-binding-base</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-binding-dom-adapter</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-binding-runtime</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
@@ -68,7 +68,7 @@
 
         <!-- Common -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-common</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
@@ -76,19 +76,19 @@
 
         <!-- DOM -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-dom</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-dom-api</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-dom-broker</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
@@ -96,19 +96,19 @@
 
         <!-- EOS -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-eos-common</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-eos-dom</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-eos-binding</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
@@ -116,13 +116,13 @@
 
         <!-- Singleton -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-singleton-common</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-singleton-dom</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
