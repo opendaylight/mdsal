@@ -30,7 +30,7 @@ public class DOMDataTreePrefixTableTest {
         assertEquals(QName.create("", "test"),
                 domDataTreePrefixTable.lookup(domDataTreeIdentifier).getIdentifier().getNodeType());
         domDataTreePrefixTable.remove(domDataTreeIdentifier);
-        assertNull(domDataTreePrefixTable.lookup(domDataTreeIdentifier).getIdentifier());
+        assertNull(domDataTreePrefixTable.lookup(domDataTreeIdentifier));
 
         final DOMDataTreeIdentifier invalidDOMDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, yangInstanceIdentifier);
