@@ -31,6 +31,6 @@ public class DOMDataTreePrefixTableEntryTest {
                 domDataTreePrefixTableEntry.lookup(yangInstanceIdentifier).getIdentifier().getNodeType());
         domDataTreePrefixTableEntry.remove(yangInstanceIdentifier);
         domDataTreePrefixTableEntry.remove(yangInstanceIdentifier);
-        assertNull(domDataTreePrefixTableEntry.lookup(yangInstanceIdentifier).getIdentifier());
+        assertNull(domDataTreePrefixTableEntry.lookup(yangInstanceIdentifier));
     }
 }

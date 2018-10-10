@@ -52,12 +52,13 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
     void removeShard(final DOMDataTreeShardRegistration<?> reg) {
         final DOMDataTreeIdentifier prefix = reg.getPrefix();
-        final DOMDataTreeShardRegistration<?> parentReg;
-
+        DOMDataTreeShard lookupShard = null;
         synchronized (this) {
             shards.remove(prefix);
-            parentReg = shards.lookup(prefix).getValue();
-
+            final DOMDataTreePrefixTableEntry<DOMDataTreeShardRegistration<?>> parentRegEntry = shards.lookup(prefix);
+            if (parentRegEntry != null) {
+                lookupShard = parentRegEntry.getValue().getInstance();
+            }
             /*
              * FIXME: adjust all producers and listeners. This is tricky, as we need different
              * locking strategy, simply because we risk AB/BA deadlock with a producer being split
@@ -65,8 +66,8 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
              */
         }
 
-        if (parentReg != null) {
-            parentReg.getInstance().onChildDetached(prefix, reg.getInstance());
+        if (lookupShard != null) {
+            lookupShard.onChildDetached(prefix, reg.getInstance());
         }
     }
 
