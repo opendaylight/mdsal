@@ -8,12 +8,11 @@
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
-        <groupId>org.opendaylight.odlparent</groupId>
-        <artifactId>single-feature-parent</artifactId>
-        <version>4.0.2</version>
-        <relativePath/>
+        <groupId>org.opendaylight.mdsal</groupId>
+        <artifactId>feature-parent</artifactId>
+        <version>3.0.1-SNAPSHOT</version>
+        <relativePath>../feature-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
@@ -22,18 +21,6 @@
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Model :: RFC7224</name>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-artifacts</artifactId>
-                <version>3.0.1-SNAPSHOT</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
