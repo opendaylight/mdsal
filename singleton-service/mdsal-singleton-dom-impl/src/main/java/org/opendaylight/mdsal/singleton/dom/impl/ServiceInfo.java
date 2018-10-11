@@ -12,11 +12,13 @@ import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceGroupImpl.ServiceState;
 
 @NonNullByDefault
+@SuppressFBWarnings(value = "NP_NULL_PARAM_DEREF_NONVIRTUAL", justification = "SpotBugs does not grok @Nullable field")
 final class ServiceInfo {
     private static final ServiceInfo STARTED = new ServiceInfo(ServiceState.STARTED, null);
 
