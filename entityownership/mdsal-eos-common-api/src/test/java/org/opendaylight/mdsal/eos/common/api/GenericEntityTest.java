@@ -30,7 +30,7 @@ public class GenericEntityTest {
         assertTrue(genericEntity.equals(genericEntity));
         assertTrue(genericEntity.equals(new GenericEntity<>("testType", testClass)));
         assertFalse(genericEntity.equals(genericEntityDiff));
-        assertFalse(genericEntity.equals(new String()));
+        assertFalse(genericEntity.equals(""));
         assertFalse(genericEntity.equals(new GenericEntity<>("differentTestType", testClass)));
     }
 

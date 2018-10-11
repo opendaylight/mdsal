@@ -98,10 +98,10 @@ public class SupportTestUtil {
     public static String resolveFullNameOfReturnType(final Type type) {
         final StringBuilder nameBuilder = new StringBuilder();
         if (type instanceof ParameterizedType) {
-            nameBuilder.append(type.getName() + "<");
+            nameBuilder.append(type.getName()).append("<");
             ParameterizedType parametrizedTypes = (ParameterizedType) type;
             for (Type parametrizedType : parametrizedTypes.getActualTypeArguments()) {
-                nameBuilder.append(parametrizedType.getName() + ",");
+                nameBuilder.append(parametrizedType.getName()).append(",");
             }
             if (nameBuilder.charAt(nameBuilder.length() - 1) == ',') {
                 nameBuilder.deleteCharAt(nameBuilder.length() - 1);
