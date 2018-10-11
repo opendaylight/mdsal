@@ -382,7 +382,7 @@ public class InstanceIdentifier<T extends TreeNode> implements Path<InstanceIden
     @Deprecated
     public final List<TreeArgument> getPath() {
         if (legacyCache == null) {
-            legacyCache = ImmutableList.<TreeArgument>copyOf(pathArguments);
+            legacyCache = ImmutableList.copyOf(pathArguments);
         }
 
         return legacyCache;

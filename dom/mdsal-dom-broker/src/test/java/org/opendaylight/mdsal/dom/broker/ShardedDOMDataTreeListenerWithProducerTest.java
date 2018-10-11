@@ -157,7 +157,7 @@ public class ShardedDOMDataTreeListenerWithProducerTest {
         final DOMDataTreeListener listener = mock(DOMDataTreeListener.class);
         final ArgumentCaptor<DOMDataTreeChangeListener> storeListener =
                 ArgumentCaptor.forClass(DOMDataTreeChangeListener.class);
-        treeService.registerListener(listener, SUBTREES_TEST, true, Collections.<DOMDataTreeProducer>emptyList());
+        treeService.registerListener(listener, SUBTREES_TEST, true, Collections.emptyList());
         verify(rootShard, times(1)).registerTreeChangeListener(eq(TEST_ID.getRootIdentifier()),
                 storeListener.capture());
 
