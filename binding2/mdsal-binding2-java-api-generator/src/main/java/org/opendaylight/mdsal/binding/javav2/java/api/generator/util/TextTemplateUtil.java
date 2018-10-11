@@ -99,7 +99,7 @@ public final class TextTemplateUtil {
         if (text.isEmpty()) {
             return "";
         }
-        final StringBuilder sb = new StringBuilder(NEW_LINE);
+        final StringBuilder sb = new StringBuilder();
         sb.append("/**");
         sb.append(NEW_LINE);
         for (final String t : NL_SPLITTER.split(text)) {
