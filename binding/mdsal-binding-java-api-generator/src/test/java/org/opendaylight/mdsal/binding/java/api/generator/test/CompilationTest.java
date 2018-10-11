@@ -410,20 +410,22 @@ public class CompilationTest extends BaseCompilationTest {
 
         final Object builderObj = builderClass.getDeclaredConstructor().newInstance();
 
-        Method m = CompilationTestUtils.assertContainsMethod(builderClass, builderClass, "setIdBinary", b.getClass());
+        Method method = CompilationTestUtils.assertContainsMethod(builderClass, builderClass, "setIdBinary",
+            b.getClass());
         final List<Range<Integer>> lengthConstraints = new ArrayList<>();
         lengthConstraints.add(Range.closed(1, 10));
         byte[] arg = new byte[] {};
         String expectedMsg = String.format("Invalid length: %s, expected: %s.", Arrays.toString(arg),
             lengthConstraints);
-        CompilationTestUtils.assertContainsRestrictionCheck(builderObj, m, expectedMsg, arg);
+        CompilationTestUtils.assertContainsRestrictionCheck(builderObj, method, expectedMsg, arg);
 
-        m = CompilationTestUtils.assertContainsMethod(builderClass, builderClass, "setIdDecimal64", BigDecimal.class);
+        method = CompilationTestUtils.assertContainsMethod(builderClass, builderClass, "setIdDecimal64",
+            BigDecimal.class);
         final List<Range<BigDecimal>> rangeConstraints = new ArrayList<>();
         rangeConstraints.add(Range.closed(new BigDecimal("1.5"), new BigDecimal("5.5")));
         Object arg1 = new BigDecimal("1.4");
         expectedMsg = String.format("Invalid range: %s, expected: %s.", arg1, rangeConstraints);
-        CompilationTestUtils.assertContainsRestrictionCheck(builderObj, m, expectedMsg, arg1);
+        CompilationTestUtils.assertContainsRestrictionCheck(builderObj, method, expectedMsg, arg1);
 
         CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
     }
@@ -511,8 +513,6 @@ public class CompilationTest extends BaseCompilationTest {
 
     /**
      * Test handling nested uses-augmentations.
-     *
-     * @throws Exception
      */
     @Test
     public void testBug1172() throws Exception {
@@ -552,17 +552,28 @@ public class CompilationTest extends BaseCompilationTest {
         assertTrue(new File(parent, "TypedefCurrent.java").exists());
         assertTrue(new File(parent, "TypedefDeprecated.java").exists());
 
-        final String pkg = CompilationTestUtils.BASE_PKG + ".urn.yang.foo.rev160102";
-        final ClassLoader loader = new URLClassLoader(new URL[] { compiledOutputDir.toURI().toURL() });
-        final Class<?> cls = loader.loadClass(pkg + ".FooData");
-        final Class<?> clsContainer = loader.loadClass(pkg + ".ContainerMain");
-        final Class<?> clsTypedefDepr = loader.loadClass(pkg + ".TypedefDeprecated");
-        final Class<?> clsTypedefCur = loader.loadClass(pkg + ".TypedefCurrent");
-        final Class<?> clsGroupingDepr = loader.loadClass(pkg + ".GroupingDeprecated");
-        final Class<?> clsGroupingCur = loader.loadClass(pkg + ".GroupingCurrent");
-        final Class<?> clsTypeDef1 = loader.loadClass(pkg + ".Typedef1");
-        final Class<?> clsTypeDef2 = loader.loadClass(pkg + ".Typedef2");
-        final Class<?> clsTypeDef3 = loader.loadClass(pkg + ".Typedef3");
+        final Class<?> cls;
+        final Class<?> clsContainer;
+        final Class<?> clsTypedefDepr;
+        final Class<?> clsTypedefCur;
+        final Class<?> clsGroupingDepr;
+        final Class<?> clsGroupingCur;
+        final Class<?> clsTypeDef1;
+        final Class<?> clsTypeDef2;
+        final Class<?> clsTypeDef3;
+
+        try (URLClassLoader loader = new URLClassLoader(new URL[] { compiledOutputDir.toURI().toURL() })) {
+            final String pkg = CompilationTestUtils.BASE_PKG + ".urn.yang.foo.rev160102";
+            cls = loader.loadClass(pkg + ".FooData");
+            clsContainer = loader.loadClass(pkg + ".ContainerMain");
+            clsTypedefDepr = loader.loadClass(pkg + ".TypedefDeprecated");
+            clsTypedefCur = loader.loadClass(pkg + ".TypedefCurrent");
+            clsGroupingDepr = loader.loadClass(pkg + ".GroupingDeprecated");
+            clsGroupingCur = loader.loadClass(pkg + ".GroupingCurrent");
+            clsTypeDef1 = loader.loadClass(pkg + ".Typedef1");
+            clsTypeDef2 = loader.loadClass(pkg + ".Typedef2");
+            clsTypeDef3 = loader.loadClass(pkg + ".Typedef3");
+        }
         assertTrue(clsTypedefDepr.getAnnotations()[0].toString().contains("Deprecated"));
         assertTrue(clsTypedefCur.getAnnotations().length == 0);
         assertTrue(clsGroupingDepr.getAnnotations()[0].toString().contains("Deprecated"));
@@ -593,8 +604,6 @@ public class CompilationTest extends BaseCompilationTest {
 
     /**
      * Test if class generated for node from grouping implements ChildOf.
-     *
-     * @throws Exception
      */
     @Test
     public void testBug1377() throws Exception {
@@ -682,13 +691,11 @@ public class CompilationTest extends BaseCompilationTest {
 
     private static void testReturnTypeInstanceIdentitifer(final ClassLoader loader, final Class<?> clazz,
             final String methodName) throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Method method;
-        Class<?> rawReturnType;
-        java.lang.reflect.Type returnType;
-        method = clazz.getMethod(methodName);
-        rawReturnType = Class.forName("org.opendaylight.yangtools.yang.binding.InstanceIdentifier", true, loader);
+        final Method method = clazz.getMethod(methodName);
+        final Class<?> rawReturnType = Class.forName("org.opendaylight.yangtools.yang.binding.InstanceIdentifier", true,
+            loader);
         assertEquals(rawReturnType, method.getReturnType());
-        returnType = method.getGenericReturnType();
+        final java.lang.reflect.Type returnType = method.getGenericReturnType();
         assertTrue(returnType instanceof ParameterizedType);
         final ParameterizedType pt = (ParameterizedType) returnType;
         final java.lang.reflect.Type[] parameters = pt.getActualTypeArguments();
