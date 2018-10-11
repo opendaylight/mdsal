@@ -35,7 +35,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OsgiBundleScanningSchemaService extends ScanningSchemaServiceProvider
+public final class OsgiBundleScanningSchemaService extends ScanningSchemaServiceProvider
         implements ServiceTrackerCustomizer<SchemaContextListener, SchemaContextListener> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OsgiBundleScanningSchemaService.class);
