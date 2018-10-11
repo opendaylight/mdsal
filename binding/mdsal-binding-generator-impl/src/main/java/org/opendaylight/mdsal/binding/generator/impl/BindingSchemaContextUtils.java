@@ -88,7 +88,7 @@ public final class BindingSchemaContextUtils {
     private static Optional<DataNodeContainer> findNotification(final SchemaContext ctx, final QName notificationQName) {
         for (NotificationDefinition notification : ctx.getNotifications()) {
             if (notification.getQName().equals(notificationQName)) {
-                return Optional.<DataNodeContainer> of(notification);
+                return Optional.of(notification);
             }
         }
         return Optional.empty();
