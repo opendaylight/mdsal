@@ -36,7 +36,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     private static final Logger LOG = LoggerFactory.getLogger(ManagedNewTransactionRunnerImpl.class);
 
     @Inject
-    public ManagedNewTransactionRunnerImpl(DataBroker broker) {
+    public ManagedNewTransactionRunnerImpl(final DataBroker broker) {
         // Early check to ensure the error message is understandable for the caller
         super(requireNonNull(broker, "broker must not be null"));
     }
@@ -45,13 +45,14 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     @Override
     @CheckReturnValue
     public <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
-            Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
+            final Class<D> datastoreType,
+            final InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
         return super.applyWithNewTransactionAndSubmit(datastoreType, getTransactionFactory()::newReadWriteTransaction,
             WriteTrackingTypedReadWriteTransactionImpl::new, txFunction::apply, this::commit);
     }
 
     @Override
-    public <R> R applyWithNewTransactionChainAndClose(Function<ManagedTransactionChain, R> chainConsumer) {
+    public <R> R applyWithNewTransactionChainAndClose(final Function<ManagedTransactionChain, R> chainConsumer) {
         try (TransactionChain realTxChain = getTransactionFactory().createTransactionChain(
             new TransactionChainListener() {
                 @Override
@@ -72,8 +73,8 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     @Override
     @CheckReturnValue
     public <D extends Datastore, E extends Exception> FluentFuture<? extends Object>
-        callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
-            InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
+        callWithNewReadWriteTransactionAndSubmit(final Class<D> datastoreType,
+            final InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
         return callWithNewTransactionAndSubmit(datastoreType, getTransactionFactory()::newReadWriteTransaction,
             WriteTrackingTypedReadWriteTransactionImpl::new, txConsumer::accept, this::commit);
     }
@@ -81,14 +82,16 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     // This is overridden to use this class’s commit method
     @Override
     @CheckReturnValue
-    public <D extends Datastore, E extends Exception> FluentFuture<? extends Object> callWithNewWriteOnlyTransactionAndSubmit(
-            Class<D> datastoreType, InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer) {
+    public <D extends Datastore, E extends Exception> FluentFuture<? extends Object>
+            callWithNewWriteOnlyTransactionAndSubmit(final Class<D> datastoreType,
+                    final InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer) {
         return super.callWithNewTransactionAndSubmit(datastoreType, getTransactionFactory()::newWriteOnlyTransaction,
             WriteTrackingTypedWriteTransactionImpl::new, txConsumer::accept, this::commit);
     }
 
     @CheckReturnValue
-    private FluentFuture<? extends CommitInfo> commit(WriteTransaction realTx, WriteTrackingTransaction wrappedTx) {
+    private FluentFuture<? extends CommitInfo> commit(final WriteTransaction realTx,
+            final WriteTrackingTransaction wrappedTx) {
         if (wrappedTx.isWritten()) {
             // The transaction contains changes, commit it
             return realTx.commit();
