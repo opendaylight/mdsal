@@ -37,7 +37,8 @@ public class BindingTypesTest {
         assertEquals("IDENTIFIER", typeForClass(Identifier.class), BindingTypes.IDENTIFIER);
         assertEquals("INSTANCE_IDENTIFIER", typeForClass(InstanceIdentifier.class), BindingTypes.INSTANCE_IDENTIFIER);
         assertEquals("NOTIFICATION", typeForClass(Notification.class), BindingTypes.NOTIFICATION);
-        assertEquals("NOTIFICATION_LISTENER", typeForClass(NotificationListener.class), BindingTypes.NOTIFICATION_LISTENER);
+        assertEquals("NOTIFICATION_LISTENER", typeForClass(NotificationListener.class),
+            BindingTypes.NOTIFICATION_LISTENER);
         assertEquals("RPC_SERVICE", typeForClass(RpcService.class), BindingTypes.RPC_SERVICE);
     }
 

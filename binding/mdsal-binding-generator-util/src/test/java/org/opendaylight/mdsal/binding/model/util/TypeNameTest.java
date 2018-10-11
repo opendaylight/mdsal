@@ -38,14 +38,13 @@ public class TypeNameTest {
 
     @Test
     public void testEquals() {
-        JavaTypeName baseType1 = JavaTypeName.create("org.opendaylight.yangtools.test", "Test");
-        JavaTypeName baseType2 = JavaTypeName.create("org.opendaylight.yangtools.test", "Test2");
-        JavaTypeName baseType3 = null;
-        JavaTypeName baseType4 = JavaTypeName.create("org.opendaylight.yangtools.test", "Test");
-        JavaTypeName baseType5 = JavaTypeName.create("org.opendaylight.yangtools.test1", "Test");
+        final JavaTypeName baseType1 = JavaTypeName.create("org.opendaylight.yangtools.test", "Test");
+        final JavaTypeName baseType2 = JavaTypeName.create("org.opendaylight.yangtools.test", "Test2");
+        final JavaTypeName baseType4 = JavaTypeName.create("org.opendaylight.yangtools.test", "Test");
+        final JavaTypeName baseType5 = JavaTypeName.create("org.opendaylight.yangtools.test1", "Test");
 
         assertFalse(baseType1.equals(baseType2));
-        assertFalse(baseType1.equals(baseType3));
+        assertFalse(baseType1.equals(null));
         assertTrue(baseType1.equals(baseType4));
         assertFalse(baseType1.equals(baseType5));
         assertFalse(baseType1.equals(null));

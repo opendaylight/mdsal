@@ -11,10 +11,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.model.util.Types;
 
 public class GeneratedPropertyBuilderImplTest {
 
@@ -29,8 +30,8 @@ public class GeneratedPropertyBuilderImplTest {
         generatedPropertyBuilderImpl.setAccessModifier(AccessModifier.PUBLIC);
         generatedPropertyBuilderImpl.setReturnType(Types.BOOLEAN);
 
-        assertEquals(
-                "GeneratedPropertyImpl [name=myPropertyName, annotations=[], comment=null, returnType=Type (java.lang.Boolean), isFinal=true, isReadOnly=false, modifier=PUBLIC]",
+        assertEquals("GeneratedPropertyImpl [name=myPropertyName, annotations=[], comment=null, returnType=Type "
+                + "(java.lang.Boolean), isFinal=true, isReadOnly=false, modifier=PUBLIC]",
                 generatedPropertyBuilderImpl.toString());
 
         GeneratedProperty instance = generatedPropertyBuilderImpl.toInstance(null);
@@ -49,10 +50,14 @@ public class GeneratedPropertyBuilderImplTest {
 
     @Test
     public void generatedPropertyBuilderImplEqualsAndHashCodeTest() {
-        GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl = new GeneratedPropertyBuilderImpl("myPropertyName");
-        GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl2 = new GeneratedPropertyBuilderImpl("myPropertyName");
-        GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl3 = new GeneratedPropertyBuilderImpl("myPropertyName3");
-        GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl4 = new GeneratedPropertyBuilderImpl("myPropertyName");
+        final GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl =
+                new GeneratedPropertyBuilderImpl("myPropertyName");
+        final GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl2 =
+                new GeneratedPropertyBuilderImpl("myPropertyName");
+        final GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl3 =
+                new GeneratedPropertyBuilderImpl("myPropertyName3");
+        final GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl4 =
+                new GeneratedPropertyBuilderImpl("myPropertyName");
 
         assertNotNull(generatedPropertyBuilderImpl);
         assertNotNull(generatedPropertyBuilderImpl2);
@@ -76,5 +81,4 @@ public class GeneratedPropertyBuilderImplTest {
         assertFalse(generatedPropertyBuilderImpl.hashCode() == generatedPropertyBuilderImpl3.hashCode());
         assertFalse(generatedPropertyBuilderImpl.hashCode() == generatedPropertyBuilderImpl4.hashCode());
     }
-
 }

@@ -53,18 +53,20 @@ public class GeneratedPropertyImplTest {
     public void generatedPropertyImplEqualsAndHashCodeTest() {
         GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl = new GeneratedPropertyBuilderImpl("myPropertyName");
         GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl2 = new GeneratedPropertyBuilderImpl("myPropertyName");
-        GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl3 = new GeneratedPropertyBuilderImpl("myPropertyName3");
-        GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl4 = new GeneratedPropertyBuilderImpl("myPropertyName");
+        final GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl3 =
+                new GeneratedPropertyBuilderImpl("myPropertyName3");
+        final GeneratedPropertyBuilderImpl generatedPropertyBuilderImpl4 =
+                new GeneratedPropertyBuilderImpl("myPropertyName");
 
         generatedPropertyBuilderImpl.setReturnType(Types.BOOLEAN);
         generatedPropertyBuilderImpl2.setReturnType(Types.BOOLEAN);
         generatedPropertyBuilderImpl3.setReturnType(Types.BOOLEAN);
         generatedPropertyBuilderImpl4.setReturnType(Types.STRING);
 
-        GeneratedProperty property = generatedPropertyBuilderImpl.toInstance(null);
-        GeneratedProperty property2 = generatedPropertyBuilderImpl2.toInstance(null);
-        GeneratedProperty property3 = generatedPropertyBuilderImpl3.toInstance(null);
-        GeneratedProperty property4 = generatedPropertyBuilderImpl4.toInstance(null);
+        final GeneratedProperty property = generatedPropertyBuilderImpl.toInstance(null);
+        final GeneratedProperty property2 = generatedPropertyBuilderImpl2.toInstance(null);
+        final GeneratedProperty property3 = generatedPropertyBuilderImpl3.toInstance(null);
+        final GeneratedProperty property4 = generatedPropertyBuilderImpl4.toInstance(null);
 
         assertNotNull(property);
         assertNotNull(property2);

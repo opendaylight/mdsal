@@ -18,7 +18,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
 
     private Restrictions restrictions;
-    private GeneratedPropertyBuilder SUID;
+    private GeneratedPropertyBuilder suid;
     private String reference;
     private String description;
     private String moduleName;
@@ -34,8 +34,8 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
     }
 
     @Override
-    public void setSUID(final GeneratedPropertyBuilder suid) {
-        this.SUID = suid;
+    public void setSUID(final GeneratedPropertyBuilder newSuid) {
+        this.suid = newSuid;
     }
 
     @Override
@@ -70,7 +70,7 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
 
     private static final class GTO extends AbstractGeneratedTransferObject {
         private final Restrictions restrictions;
-        private final GeneratedProperty SUID;
+        private final GeneratedProperty suid;
         private final String reference;
         private final String description;
         private final String moduleName;
@@ -84,10 +84,10 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
             this.moduleName = builder.moduleName;
             this.schemaPath = builder.schemaPath;
 
-            if (builder.SUID == null) {
-                this.SUID = null;
+            if (builder.suid == null) {
+                this.suid = null;
             } else {
-                this.SUID = builder.SUID.toInstance(GTO.this);
+                this.suid = builder.suid.toInstance(GTO.this);
             }
         }
 
@@ -98,7 +98,7 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
 
         @Override
         public GeneratedProperty getSUID() {
-            return this.SUID;
+            return this.suid;
         }
 
         @Override

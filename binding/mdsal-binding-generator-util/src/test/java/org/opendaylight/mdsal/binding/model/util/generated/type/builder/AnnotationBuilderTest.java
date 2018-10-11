@@ -261,13 +261,13 @@ public class AnnotationBuilderTest {
 
     @Test
     public void annotationTypeBuilderEqualsTest() {
-        AnnotationTypeBuilder annotationTypeBuilder = new AnnotationTypeBuilderImpl(
+        final AnnotationTypeBuilder annotationTypeBuilder = new AnnotationTypeBuilderImpl(
             JavaTypeName.create("my.package", "MyName"));
-        AnnotationTypeBuilder annotationTypeBuilder2 = new AnnotationTypeBuilderImpl(
+        final AnnotationTypeBuilder annotationTypeBuilder2 = new AnnotationTypeBuilderImpl(
             JavaTypeName.create("my.package2", "MyName"));
-        AnnotationTypeBuilder annotationTypeBuilder3 = new AnnotationTypeBuilderImpl(
+        final AnnotationTypeBuilder annotationTypeBuilder3 = new AnnotationTypeBuilderImpl(
             JavaTypeName.create("my.package", "MyName2"));
-        AnnotationTypeBuilder annotationTypeBuilder4 = new AnnotationTypeBuilderImpl(
+        final AnnotationTypeBuilder annotationTypeBuilder4 = new AnnotationTypeBuilderImpl(
             JavaTypeName.create("my.package", "MyName"));
 
         assertFalse(annotationTypeBuilder.equals(null));
@@ -280,16 +280,16 @@ public class AnnotationBuilderTest {
         assertFalse(annotationTypeBuilder.equals(annotationTypeBuilder3));
 
         AnnotationType instance = annotationTypeBuilder.build();
-        AnnotationType instance2 = annotationTypeBuilder2.build();
-        AnnotationType instance3 = annotationTypeBuilder3.build();
-        AnnotationType instance4 = annotationTypeBuilder4.build();
-
         assertFalse(instance.equals(null));
         assertFalse(instance.equals(new Object()));
         assertTrue(instance.equals(instance));
 
+        AnnotationType instance2 = annotationTypeBuilder2.build();
         assertFalse(instance.equals(instance2));
+
+        final AnnotationType instance3 = annotationTypeBuilder3.build();
         assertFalse(instance.equals(instance3));
+        final AnnotationType instance4 = annotationTypeBuilder4.build();
         assertTrue(instance.equals(instance4));
 
         annotationTypeBuilder.addParameter("myName", "myValue1");
@@ -299,9 +299,9 @@ public class AnnotationBuilderTest {
         instance = annotationTypeBuilder.build();
         instance2 = annotationTypeBuilder2.build();
 
-        Parameter parameter = instance.getParameter("myName");
-        Parameter parameter2 = instance.getParameter("myName2");
-        Parameter parameter3 = instance2.getParameter("myName");
+        final Parameter parameter = instance.getParameter("myName");
+        final Parameter parameter2 = instance.getParameter("myName2");
+        final Parameter parameter3 = instance2.getParameter("myName");
 
         assertFalse(parameter.equals(null));
         assertFalse(parameter.equals(new Object()));
@@ -405,15 +405,17 @@ public class AnnotationBuilderTest {
         annotationTypeBuilder.addAnnotation("my.package", "MySubAnnotationName");
         annotationTypeBuilder.addParameter("MyParameter", "myValue");
 
-        assertEquals(
-                "AnnotationTypeBuilder [packageName=my.package, name=MyAnnotationName, annotationBuilders=[AnnotationTypeBuilder [packageName=my.package, name=MySubAnnotationName, annotationBuilders=[], parameters=[]]], parameters=[ParameterImpl [name=MyParameter, value=myValue, values=[]]]]",
-                annotationTypeBuilder.toString());
+        assertEquals("AnnotationTypeBuilder [packageName=my.package, name=MyAnnotationName, "
+                + "annotationBuilders=[AnnotationTypeBuilder [packageName=my.package, name=MySubAnnotationName, "
+                + "annotationBuilders=[], parameters=[]]], parameters=[ParameterImpl [name=MyParameter, value=myValue, "
+                + "values=[]]]]", annotationTypeBuilder.toString());
 
         AnnotationType annotationTypeInstance = annotationTypeBuilder.build();
 
         assertEquals("my.package.MyAnnotationName", annotationTypeInstance.getFullyQualifiedName());
-        assertEquals(
-                "AnnotationType [packageName=my.package, name=MyAnnotationName, annotations=[AnnotationType [packageName=my.package, name=MySubAnnotationName, annotations=[], parameters=[]]], parameters=[ParameterImpl [name=MyParameter, value=myValue, values=[]]]]",
+        assertEquals("AnnotationType [packageName=my.package, name=MyAnnotationName, annotations=[AnnotationType "
+                + "[packageName=my.package, name=MySubAnnotationName, annotations=[], parameters=[]]], "
+                + "parameters=[ParameterImpl [name=MyParameter, value=myValue, values=[]]]]",
                 annotationTypeInstance.toString());
 
     }

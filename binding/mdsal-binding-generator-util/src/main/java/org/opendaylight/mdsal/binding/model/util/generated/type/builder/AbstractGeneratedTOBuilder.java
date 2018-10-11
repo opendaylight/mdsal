@@ -118,8 +118,8 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
     }
 
     @Override
-    public final void setTypedef(final boolean isTypedef) {
-        this.isTypedef = isTypedef;
+    public final void setTypedef(final boolean newIsTypedef) {
+        this.isTypedef = newIsTypedef;
     }
 
     @Override
@@ -128,8 +128,8 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
     }
 
     @Override
-    public final void setIsUnion(final boolean isUnion) {
-        this.isUnionType = isUnion;
+    public final void setIsUnion(final boolean newIsUnion) {
+        this.isUnionType = newIsUnion;
     }
 
     @Override
@@ -138,12 +138,12 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
     }
 
     @Override
-    public final void setIsUnionBuilder(final boolean isUnionTypeBuilder) {
-        this.isUnionTypeBuilder = isUnionTypeBuilder;
+    public final void setIsUnionBuilder(final boolean newIsUnionTypeBuilder) {
+        this.isUnionTypeBuilder = newIsUnionTypeBuilder;
     }
 
-    static abstract class AbstractGeneratedTransferObject extends AbstractGeneratedType implements
-    GeneratedTransferObject {
+    abstract static class AbstractGeneratedTransferObject extends AbstractGeneratedType implements
+            GeneratedTransferObject {
 
         private final List<GeneratedProperty> equalsProperties;
         private final List<GeneratedProperty> hashCodeProperties;

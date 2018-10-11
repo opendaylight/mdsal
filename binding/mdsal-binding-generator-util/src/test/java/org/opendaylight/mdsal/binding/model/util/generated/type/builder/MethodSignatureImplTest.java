@@ -15,16 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.Parameter;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.util.Types;
 
 public class MethodSignatureImplTest {
 
-    private MethodSignatureImpl signature1, signature2, signature3, signature4;
-    private int hash1, hash4;
+    private MethodSignatureImpl signature1;
+    private MethodSignatureImpl signature2;
+    private MethodSignatureImpl signature3;
+    private MethodSignatureImpl signature4;
+    private int hash1;
+    private int hash4;
 
     @Before
     public void setup() {

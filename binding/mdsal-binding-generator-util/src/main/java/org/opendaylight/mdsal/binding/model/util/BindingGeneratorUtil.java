@@ -33,8 +33,6 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuil
 import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
@@ -54,10 +52,10 @@ import org.opendaylight.yangtools.yang.model.util.type.DecimalTypeBuilder;
 public final class BindingGeneratorUtil {
 
     /**
-     * Impossible to instantiate this class. All of the methods or attributes
-     * are static.
+     * Impossible to instantiate this class. All of the methods or attributes are static.
      */
     private BindingGeneratorUtil() {
+
     }
 
     /**
@@ -97,13 +95,10 @@ public final class BindingGeneratorUtil {
     private static final Comparator<Type> SUID_NAME_COMPARATOR = Comparator.comparing(Type::getFullyQualifiedName);
 
     /**
-     * Converts <code>parameterName</code> to valid JAVA parameter name.
+     * Converts <code>parameterName</code> to valid JAVA parameter name. If the <code>parameterName</code> is one
+     * of the JAVA reserved words then it is prefixed with underscore character.
      *
-     * If the <code>parameterName</code> is one of the JAVA reserved words then
-     * it is prefixed with underscore character.
-     *
-     * @param parameterName
-     *            string with the parameter name
+     * @param parameterName string with the parameter name
      * @return string with the admissible parameter name
      */
     public static String resolveJavaReservedWordEquivalency(final String parameterName) {
@@ -114,19 +109,13 @@ public final class BindingGeneratorUtil {
     }
 
     /**
-     * Creates package name from specified <code>basePackageName</code> (package
-     * name for module) and <code>schemaPath</code>.
+     * Creates package name from specified <code>basePackageName</code> (package name for module)
+     * and <code>schemaPath</code>. Resulting package name is concatenation of <code>basePackageName</code>
+     * and all local names of YANG nodes which are parents of some node for which <code>schemaPath</code> is specified.
      *
-     * Resulting package name is concatenation of <code>basePackageName</code>
-     * and all local names of YANG nodes which are parents of some node for
-     * which <code>schemaPath</code> is specified.
-     *
-     * @param basePackageName
-     *            string with package name of the module, MUST be normalized,
-     *            otherwise this method may return an invalid string.
-     * @param schemaPath
-     *            list of names of YANG nodes which are parents of some node +
-     *            name of this node
+     * @param basePackageName string with package name of the module, MUST be normalized, otherwise this method may
+     *                        return an invalid string.
+     * @param schemaPath list of names of YANG nodes which are parents of some node + name of this node
      * @return string with valid JAVA package name
      * @throws NullPointerException if any of the arguments are null
      */
@@ -140,23 +129,19 @@ public final class BindingGeneratorUtil {
     }
 
     /**
-     * Creates package name from specified <code>basePackageName</code> (package
-     * name for module) and <code>schemaPath</code> which crosses an augmentation.
+     * Creates package name from specified <code>basePackageName</code> (package name for module)
+     * and <code>schemaPath</code> which crosses an augmentation. Resulting package name is concatenation
+     * of <code>basePackageName</code> and all local names of YANG nodes which are parents of some node for which
+     * <code>schemaPath</code> is specified.
      *
-     * Resulting package name is concatenation of <code>basePackageName</code>
-     * and all local names of YANG nodes which are parents of some node for
-     * which <code>schemaPath</code> is specified.
-     *
-     * @param basePackageName
-     *            string with package name of the module, MUST be normalized,
-     *            otherwise this method may return an invalid string.
-     * @param schemaPath
-     *            list of names of YANG nodes which are parents of some node +
-     *            name of this node
+     * @param basePackageName string with package name of the module, MUST be normalized, otherwise this method may
+     *                        return an invalid string.
+     * @param schemaPath list of names of YANG nodes which are parents of some node + name of this node
      * @return string with valid JAVA package name
      * @throws NullPointerException if any of the arguments are null
      */
-    public static String packageNameForAugmentedGeneratedType(final String basePackageName, final SchemaPath schemaPath) {
+    public static String packageNameForAugmentedGeneratedType(final String basePackageName,
+            final SchemaPath schemaPath) {
         final int size = Iterables.size(schemaPath.getPathTowardsRoot());
         if (size == 0) {
             return basePackageName;
@@ -178,15 +163,12 @@ public final class BindingGeneratorUtil {
     }
 
     /**
-     *
      * Converts string <code>token</code> to the cammel case format.
      *
-     * @param token
-     *            string which should be converted to the cammel case format
-     * @param uppercase
-     *            boolean value which says whether the first character of the
-     *            <code>token</code> should|shuldn't be uppercased
-     * @return string in the cammel case format
+     * @param token string which should be converted to the cammel case format
+     * @param uppercase boolean value which says whether the first character of the <code>token</code> should be
+     *                  upper-cased or not
+     * @return string in the camel case format
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>token</code> without white spaces is empty</li>
@@ -274,7 +256,7 @@ public final class BindingGeneratorUtil {
 
     public static long computeDefaultSUID(final GeneratedTypeBuilderBase<?> to) {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        try (final DataOutputStream dout = new DataOutputStream(bout)) {
+        try (DataOutputStream dout = new DataOutputStream(bout)) {
             dout.writeUTF(to.getName());
             dout.writeInt(to.isAbstract() ? 3 : 7);
 
@@ -456,14 +438,17 @@ public final class BindingGeneratorUtil {
             public Optional<? extends RangeConstraint<?>> getRangeConstraint() {
                 return range;
             }
+
             @Override
             public List<PatternConstraint> getPatternConstraints() {
                 return pattern;
             }
+
             @Override
             public Optional<LengthConstraint> getLengthConstraint() {
                 return length;
             }
+
             @Override
             public boolean isEmpty() {
                 return false;
@@ -482,7 +467,8 @@ public final class BindingGeneratorUtil {
     }
 
     /**
-     * Encodes angle brackets in yang statement description
+     * Encodes angle brackets in yang statement description.
+     *
      * @param description description of a yang statement which is used to generate javadoc comments
      * @return string with encoded angle brackets
      */
@@ -494,7 +480,7 @@ public final class BindingGeneratorUtil {
         return description;
     }
 
-    public static String replaceAllIllegalChars(final CharSequence stringBuilder){
+    public static String replaceAllIllegalChars(final CharSequence stringBuilder) {
         final String ret = UNICODE_CHAR_PATTERN.matcher(stringBuilder).replaceAll("\\\\\\\\u");
         return ret.isEmpty() ? "" : ret;
     }

@@ -22,9 +22,9 @@ import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.util.AbstractBaseType;
@@ -68,7 +68,7 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
     public abstract void setSchemaPath(SchemaPath schemaPath);
 
     abstract AbstractPair createEnumPair(String name, String mappedName, int value, Status status, String description,
-            final String reference);
+            String reference);
 
     /*
      * (non-Javadoc)
@@ -203,20 +203,19 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
             builder.append(" {");
             builder.append("\n");
 
-            int i = 0;
+            int offset = 0;
             for (final Enumeration.Pair valPair : this.values) {
-                builder.append("\t");
-                builder.append(" ");
+                builder.append("\t ");
                 builder.append(valPair.getMappedName());
                 builder.append(" (");
                 builder.append(valPair.getValue());
 
-                if (i == this.values.size() - 1) {
+                if (offset == this.values.size() - 1) {
                     builder.append(" );");
                 } else {
                     builder.append(" ),");
                 }
-                ++i;
+                ++offset;
             }
             builder.append("\n}");
             return builder.toString();

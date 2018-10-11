@@ -19,11 +19,9 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
     private final List<Parameter> params;
     private final boolean isAbstract;
 
-    public MethodSignatureImpl(final Type definingType, final String name,
-            final List<AnnotationType> annotations,
-            final String comment, final AccessModifier accessModifier,
-            final Type returnType, final List<Parameter> params, final boolean isFinal,
-            final boolean isAbstract, final boolean isStatic) {
+    MethodSignatureImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
+            final String comment, final AccessModifier accessModifier, final Type returnType,
+            final List<Parameter> params, final boolean isFinal, final boolean isAbstract, final boolean isStatic) {
         super(definingType, name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
         this.params = params;
         this.isAbstract = isAbstract;
@@ -43,9 +41,9 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + Objects.hashCode(getName());
-        result = (prime * result) + Objects.hashCode(this.params);
-        result = (prime * result) + Objects.hashCode(getReturnType());
+        result = prime * result + Objects.hashCode(getName());
+        result = prime * result + Objects.hashCode(this.params);
+        result = prime * result + Objects.hashCode(getReturnType());
         return result;
     }
 

@@ -11,9 +11,9 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -57,8 +57,8 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
 
     @Override
     EnumPair createEnumPair(final String name, final String mappedName, final int value, final Status status,
-            final String description, final String reference) {
-        return new EnumPair(name, mappedName, value, status, description, reference);
+            final String enumDescription, final String enumReference) {
+        return new EnumPair(name, mappedName, value, status, enumDescription, enumReference);
     }
 
     private static final class EnumPair extends AbstractPair {
@@ -66,8 +66,8 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
         private final String reference;
         private final Status status;
 
-        EnumPair(final String name, final String mappedName, final int value, final Status status, final String description,
-            final String reference) {
+        EnumPair(final String name, final String mappedName, final int value, final Status status,
+                final String description, final String reference) {
             super(name, mappedName, value);
             this.status = requireNonNull(status);
             this.description = description;
@@ -91,7 +91,6 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
     }
 
     private static final class EnumerationImpl extends AbstractEnumeration {
-
         private final String description;
         private final String reference;
         private final String moduleName;
