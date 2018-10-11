@@ -21,7 +21,7 @@ public interface AnnotableTypeBuilder {
      * @param identifier JavaTypeName of the annotation
      * @return a new instance of Annotation Type Builder.
      */
-    AnnotationTypeBuilder addAnnotation(final JavaTypeName identifier);
+    AnnotationTypeBuilder addAnnotation(JavaTypeName identifier);
 
     /**
      * The method creates new {@link AnnotationTypeBuilder} containing specified package name an annotation name.

@@ -265,7 +265,7 @@ public abstract class JavaTypeName implements Identifier, Immutable {
      * @throws IllegalArgumentException if the simpleName is empty
      * @throws UnsupportedOperationException if this type name does not support nested type
      */
-    public abstract boolean canCreateEnclosed(final String simpleName);
+    public abstract boolean canCreateEnclosed(String simpleName);
 
     /**
      * Create a TypeName for a class immediately enclosed by this class.

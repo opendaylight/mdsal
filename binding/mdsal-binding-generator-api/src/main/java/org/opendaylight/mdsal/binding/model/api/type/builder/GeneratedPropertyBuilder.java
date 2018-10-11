@@ -11,8 +11,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
 /**
- * Generated Property Builder is interface that contains methods to build and
- * instantiate Generated Property definition.
+ * Generated Property Builder is interface that contains methods to build and instantiate Generated Property definition.
  *
  * @see GeneratedProperty
  */
@@ -21,13 +20,12 @@ public interface GeneratedPropertyBuilder extends TypeMemberBuilder<GeneratedPro
     GeneratedPropertyBuilder setValue(String value);
 
     /**
-     * Sets isReadOnly flag for property. If property is marked as read only it
-     * is the same as set property in java as final.
+     * Sets isReadOnly flag for property. If property is marked as read only it is the same as set property in Java
+     * as final.
      *
-     * @param isReadOnly
-     *            Read Only property flag.
+     * @param isReadOnly Read Only property flag.
      */
-    GeneratedPropertyBuilder setReadOnly(final boolean isReadOnly);
+    GeneratedPropertyBuilder setReadOnly(boolean isReadOnly);
 
     /**
      * Returns <code>new</code> <i>immutable</i> instance of Generated Property. <br>
@@ -37,9 +35,8 @@ public interface GeneratedPropertyBuilder extends TypeMemberBuilder<GeneratedPro
      * as <code>null</code> reference the method SHOULD thrown
      * {@link IllegalArgumentException}.
      *
-     * @param definingType
-     *            Defining Type of Generated Property
+     * @param definingType Defining Type of Generated Property
      * @return <code>new</code> <i>immutable</i> instance of Generated Property.
      */
-    GeneratedProperty toInstance(final Type definingType);
+    GeneratedProperty toInstance(Type definingType);
 }

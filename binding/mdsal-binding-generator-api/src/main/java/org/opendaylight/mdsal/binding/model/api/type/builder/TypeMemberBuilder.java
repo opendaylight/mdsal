@@ -22,20 +22,18 @@ public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> extends Annot
      * Adds return Type into Builder definition for Generated Property. The return Type MUST NOT be <code>null</code>,
      * otherwise the method SHOULD throw {@link IllegalArgumentException}
      *
-     * @param returnType
-     *            Return Type of property.
+     * @param returnType Return Type of property.
      */
-    T setReturnType(final Type returnType);
+    T setReturnType(Type returnType);
 
     AccessModifier getAccessModifier();
 
     /**
      * Sets the access modifier of property.
      *
-     * @param modifier
-     *            Access Modifier value.
+     * @param modifier Access Modifier value.
      */
-    T setAccessModifier(final AccessModifier modifier);
+    T setAccessModifier(AccessModifier modifier);
 
     /**
      * Adds String definition of comment into Method Signature definition. The comment String MUST NOT contain any
@@ -43,7 +41,7 @@ public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> extends Annot
      *
      * @param comment Comment String.
      */
-    T setComment(final String comment);
+    T setComment(String comment);
 
     /**
      * Sets the flag final for method signature. If this is set the method will be prohibited from overriding. This
@@ -52,7 +50,7 @@ public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> extends Annot
      *
      * @param isFinal Is Final
      */
-    T setFinal(final boolean isFinal);
+    T setFinal(boolean isFinal);
 
-    T setStatic(final boolean isStatic);
+    T setStatic(boolean isStatic);
 }

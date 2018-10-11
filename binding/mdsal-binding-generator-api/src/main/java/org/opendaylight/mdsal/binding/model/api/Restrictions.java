@@ -16,8 +16,10 @@ import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 public interface Restrictions {
 
     Optional<LengthConstraint> getLengthConstraint();
-    List<PatternConstraint> getPatternConstraints();
-    Optional<? extends RangeConstraint<?>> getRangeConstraint();
-    boolean isEmpty();
 
+    List<PatternConstraint> getPatternConstraints();
+
+    Optional<? extends RangeConstraint<?>> getRangeConstraint();
+
+    boolean isEmpty();
 }

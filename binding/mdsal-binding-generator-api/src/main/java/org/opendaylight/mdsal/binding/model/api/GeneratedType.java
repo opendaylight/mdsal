@@ -14,34 +14,26 @@ import java.util.Optional;
  * Every Java interface has to be specified with:
  * <ul>
  * <li><code>package</code> that belongs into</li>
- * <li><code>interface</code> name (with commentary that <b>SHOULD</b> be
- * present to proper define interface and base <i>contracts</i> specified for
- * interface)</li>
- * <li>Each Generated Type can define list of types that Generated Type can
- * implement to extend it's definition (i.e. interface extends list of
- * interfaces or java class implements list of interfaces)</li>
- * <li>Each Generated Type can contain multiple enclosed definitions of
- * Generated Types (i.e. interface can contain N enclosed interface definitions
- * or enclosed classes)</li>
- * <li><code>enum</code> and <code>constant</code> definitions (i.e. each
- * constant definition is by default defined as <code>public static final</code>
- * + type (either primitive or object) and constant name</li>
- * <li><code>method definitions</code> with specified input parameters (with
- * types) and return values</li>
+ * <li><code>interface</code> name (with commentary that <b>SHOULD</b> be present to proper define interface and base
+ * <i>contracts</i> specified for interface)</li>
+ * <li>Each Generated Type can define list of types that Generated Type can implement to extend it's definition
+ * (i.e. interface extends list of interfaces or java class implements list of interfaces)</li>
+ * <li>Each Generated Type can contain multiple enclosed definitions of Generated Types (i.e. interface can contain N
+ * enclosed interface definitions or enclosed classes)</li>
+ * <li><code>enum</code> and <code>constant</code> definitions (i.e. each constant definition is by default defined
+ * as <code>public static final</code> + type (either primitive or object) and constant name</li>
+ * <li><code>method definitions</code> with specified input parameters (with types) and return values</li>
  * </ul>
  *
- * By the definition of the interface constant, enum, enclosed types and method
- * definitions MUST be public, so there is no need to specify the scope of
- * visibility.
+ * <p>
+ * By the definition of the interface constant, enum, enclosed types and method definitions MUST be public, so there is
+ * no need to specify the scope of visibility.
  */
 public interface GeneratedType extends Type, DocumentedType {
-
     /**
-     * Returns the parent type if Generated Type is defined as enclosing type,
-     * otherwise returns <code>null</code>
+     * Returns the parent type if Generated Type is defined as enclosing type, otherwise returns <code>null</code>.
      *
-     * @return the parent type if Generated Type is defined as enclosing type,
-     *         otherwise returns <code>null</code>
+     * @return the parent type if Generated Type is defined as enclosing type, otherwise returns <code>null</code>
      */
     Type getParentType();
 
@@ -81,11 +73,9 @@ public interface GeneratedType extends Type, DocumentedType {
     List<GeneratedType> getEnclosedTypes();
 
     /**
-     * Returns List of all Enumerator definitions associated with Generated
-     * Type.
+     * Returns List of all Enumerator definitions associated with Generated Type.
      *
-     * @return List of all Enumerator definitions associated with Generated
-     *         Type.
+     * @return List of all Enumerator definitions associated with Generated Type.
      */
     List<Enumeration> getEnumerations();
 
@@ -97,20 +87,17 @@ public interface GeneratedType extends Type, DocumentedType {
     List<Constant> getConstantDefinitions();
 
     /**
-     * Returns List of Method Definitions associated with Generated Type.
-     *
-     * List does not contains getters and setters for properties.
+     * Returns List of Method Definitions associated with Generated Type. The list does not contains getters and setters
+     * for properties.
      *
      * @return List of Method Definitions associated with Generated Type.
      */
     List<MethodSignature> getMethodDefinitions();
 
     /**
-     * Returns List of Properties that are declared for Generated Transfer
-     * Object.
+     * Returns List of Properties that are declared for Generated Transfer Object.
      *
-     * @return List of Properties that are declared for Generated Transfer
-     *         Object.
+     * @return List of Properties that are declared for Generated Transfer Object.
      */
     List<GeneratedProperty> getProperties();
 

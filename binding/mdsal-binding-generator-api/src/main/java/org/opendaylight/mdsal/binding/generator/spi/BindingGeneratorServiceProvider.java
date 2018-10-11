@@ -9,5 +9,5 @@ package org.opendaylight.mdsal.binding.generator.spi;
 
 public interface BindingGeneratorServiceProvider {
 
-    void registerTypeProvider(final TypeProvider provider);
+    void registerTypeProvider(TypeProvider provider);
 }
