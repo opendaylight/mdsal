@@ -238,35 +238,33 @@ class YangModuleInfoTemplate {
         return builder
     }
 
-    final def String getParameters(Type[] pTypes) {
+    final def CharSequence getParameters(Type[] pTypes) {
         if (pTypes === null || pTypes.length == 0) {
             return "?"
         }
-        val StringBuilder builder = new StringBuilder()
-
+        val StringBuilder sb = new StringBuilder()
         var int i = 0
-        for (pType : pTypes) {
-            val Type t = pTypes.get(i)
-
+        val it = pTypes.iterator
+        while (it.hasNext) {
             var String separator = ","
             if (i == (pTypes.length - 1)) {
                 separator = ""
             }
 
+            val Type t = pTypes.get(i)
             var String wildcardParam = ""
             if (t.equals(Types.voidType())) {
-                builder.append("java.lang.Void").append(separator)
+                sb.append("java.lang.Void").append(separator)
             } else {
-
                 if (t instanceof WildcardType) {
                     wildcardParam = "? extends "
                 }
 
-                builder.append(wildcardParam).append(t.explicitType).append(separator)
+                sb.append(wildcardParam).append(t.explicitType).append(separator)
                 i = i + 1
             }
         }
-        return builder.toString()
+        return sb
     }
 
     private def generateSubInfo(Module module) '''

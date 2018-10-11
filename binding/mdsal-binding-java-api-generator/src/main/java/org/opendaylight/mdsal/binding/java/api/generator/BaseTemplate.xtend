@@ -15,6 +15,7 @@ import com.google.common.base.Splitter
 import com.google.common.collect.Iterables
 import java.util.Collection
 import java.util.List
+import java.util.Locale
 import java.util.Map.Entry
 import java.util.StringTokenizer
 import java.util.regex.Pattern
@@ -47,6 +48,7 @@ import org.opendaylight.yangtools.yang.model.export.DeclaredStatementFormatter
 
 abstract class BaseTemplate extends JavaFileTemplate {
     static final char NEW_LINE = '\n'
+    static final char SPACE = ' '
     static val AMP_MATCHER = CharMatcher.is('&')
     static val NL_MATCHER = CharMatcher.is(NEW_LINE)
     static val TAB_MATCHER = CharMatcher.is('\t')
@@ -163,14 +165,11 @@ abstract class BaseTemplate extends JavaFileTemplate {
      * @return string with comment in JAVA format
      */
     def protected CharSequence asJavadoc(String comment) {
-        if(comment === null) return ''
-        var txt = comment
-
-        txt = comment.trim
-        txt = formatToParagraph(txt)
-
+        if (comment === null) {
+            return ''
+        }
         return '''
-            «wrapToDocumentation(txt)»
+            «wrapToDocumentation(formatToParagraph(comment.trim))»
         '''
     }
 
@@ -370,23 +369,21 @@ abstract class BaseTemplate extends JavaFileTemplate {
         val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
 
         while (tokenizer.hasMoreElements) {
-            val nextElement = tokenizer.nextElement.toString
+            val nextElement = tokenizer.nextToken
 
             if (lineBuilder.length != 0 && lineBuilder.length + nextElement.length > 80) {
-                if (lineBuilder.charAt(lineBuilder.length - 1) == ' ') {
-                    lineBuilder.setLength(0)
-                    lineBuilder.append(lineBuilder.substring(0, lineBuilder.length - 1))
+                if (lineBuilder.charAt(lineBuilder.length - 1) == SPACE) {
+                    lineBuilder.setLength(lineBuilder.length - 1)
                 }
-                if (lineBuilder.charAt(0) == ' ') {
-                    lineBuilder.setLength(0)
-                    lineBuilder.append(lineBuilder.substring(1))
+                if (lineBuilder.charAt(0) == SPACE) {
+                    lineBuilder.deleteCharAt(0)
                 }
 
                 sb.append(lineBuilder);
                 lineBuilder.setLength(0)
                 sb.append(NEW_LINE)
 
-                if(nextElement.toString == ' ') {
+                if (nextElement == ' ') {
                     isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar;
                 }
             }
@@ -468,7 +465,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
            «ENDIF»
        «ENDIF»
 
-       «val fieldUpperCase = property.fieldName.toString.toUpperCase()»
+       «val fieldUpperCase = property.fieldName.toString.toUpperCase(Locale.ENGLISH)»
        «FOR currentConstant : type.getConstantDefinitions»
            «IF currentConstant.getName.startsWith(TypeConstants.PATTERN_CONSTANT_NAME)
                && fieldUpperCase.equals(currentConstant.getName.substring(TypeConstants.PATTERN_CONSTANT_NAME.length))»

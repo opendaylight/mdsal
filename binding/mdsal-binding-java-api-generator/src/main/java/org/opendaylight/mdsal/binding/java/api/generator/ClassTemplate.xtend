@@ -30,6 +30,7 @@ import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
 import org.opendaylight.yangtools.yang.binding.CodeHelpers
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 
 /**
  * Template for generating JAVA class.
@@ -354,6 +355,7 @@ class ClassTemplate extends BaseTemplate {
         «ENDIF»
     '''
 
+    @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "FOR with SEPARATOR, not needing for value")
     def protected bitsArgs() '''
         «List.importedName»<«String.importedName»> properties = «Lists.importedName».newArrayList(«allProperties.propsAsArgs»);
         if (!properties.contains(defaultValue)) {
