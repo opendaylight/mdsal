@@ -39,23 +39,18 @@ final class LengthGenerator {
             final int min = l.lowerEndpoint().intValue();
             final int max = l.upperEndpoint().intValue();
 
-            if (min > 0 || max < Integer.MAX_VALUE) {
-                final StringBuilder sb = new StringBuilder().append("length ");
-                if (min != max) {
-                    sb.append('>');
-                    if (min <= Integer.MAX_VALUE) {
-                        sb.append('=');
-                    }
-                    sb.append(' ').append(min);
-
-                    if (max < Integer.MAX_VALUE) {
-                        sb.append(" && length <= ").append(max);
-                    }
-                } else {
-                    // Single-value, use a direct comparison
-                    sb.append("== ").append(min);
+            if (min == max) {
+                if (min < Integer.MAX_VALUE) {
+                    ret.add("length == " + min);
+                }
+            } else if (min > 0) {
+                final StringBuilder sb = new StringBuilder().append("length >= ").append(min);
+                if (max < Integer.MAX_VALUE) {
+                    sb.append(" && length <= ").append(max);
                 }
                 ret.add(sb.toString());
+            } else if (max < Integer.MAX_VALUE) {
+                ret.add("length <= " + max);
             } else {
                 // This range is implicitly capped by String/byte[] length returns
                 LOG.debug("Constraint {} implied by int type value domain, skipping", l);
