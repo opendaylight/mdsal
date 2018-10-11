@@ -5,13 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -24,8 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of blocking three-phase commit-coordination tasks without
- * support of cancellation.
+ * Implementation of blocking three-phase commit-coordination tasks without support of cancellation.
  */
 final class CommitCoordinationTask implements Callable<CommitInfo> {
     private enum Phase {
@@ -79,17 +78,15 @@ final class CommitCoordinationTask implements Callable<CommitInfo> {
     }
 
     /**
-     * Invokes canCommit on underlying cohorts and blocks till
-     * all results are returned.
+     * Invokes canCommit on underlying cohorts and blocks till all results are returned.
      *
-     *<p>
-     * Valid state transition is from SUBMITTED to CAN_COMMIT,
-     * if currentPhase is not SUBMITTED throws IllegalStateException.
+     * <p>
+     * Valid state transition is from SUBMITTED to CAN_COMMIT, if currentPhase is not SUBMITTED throws
+     * IllegalStateException.
      *
-     * @throws TransactionCommitFailedException
-     *             If one of cohorts failed can Commit
-     *
+     * @throws TransactionCommitFailedException If one of cohorts failed can Commit
      */
+    @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     private void canCommitBlocking() throws TransactionCommitFailedException {
         for (final ListenableFuture<?> canCommit : canCommitAll()) {
             try {
@@ -104,16 +101,14 @@ final class CommitCoordinationTask implements Callable<CommitInfo> {
     }
 
     /**
-     * Invokes canCommit on underlying cohorts and returns composite future
-     * which will contains {@link Boolean#TRUE} only and only if
-     * all cohorts returned true.
+     * Invokes canCommit on underlying cohorts and returns composite future which will contain {@link Boolean#TRUE} only
+     * and only if all cohorts returned true.
      *
-     *<p>
-     * Valid state transition is from SUBMITTED to CAN_COMMIT,
-     * if currentPhase is not SUBMITTED throws IllegalStateException.
+     * <p>
+     * Valid state transition is from SUBMITTED to CAN_COMMIT, if currentPhase is not SUBMITTED throws
+     * IllegalStateException.
      *
      * @return List of all cohorts futures from can commit phase.
-     *
      */
     private ListenableFuture<?>[] canCommitAll() {
         final ListenableFuture<?>[] ops = new ListenableFuture<?>[cohorts.size()];
@@ -125,18 +120,15 @@ final class CommitCoordinationTask implements Callable<CommitInfo> {
     }
 
     /**
-     * Invokes preCommit on underlying cohorts and blocks till
-     * all results are returned.
+     * Invokes preCommit on underlying cohorts and blocks until all results are returned.
      *
-     *<p>
-     * Valid state transition is from CAN_COMMIT to PRE_COMMIT, if current
-     * state is not CAN_COMMIT
-     * throws IllegalStateException.
+     * <p>
+     * Valid state transition is from CAN_COMMIT to PRE_COMMIT, if current state is not CAN_COMMIT throws
+     * IllegalStateException.
      *
-     * @throws TransactionCommitFailedException
-     *             If one of cohorts failed preCommit
-     *
+     * @throws TransactionCommitFailedException If one of cohorts failed preCommit
      */
+    @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     private void preCommitBlocking() throws TransactionCommitFailedException {
         final ListenableFuture<?>[] preCommitFutures = preCommitAll();
         try {
@@ -149,17 +141,14 @@ final class CommitCoordinationTask implements Callable<CommitInfo> {
     }
 
     /**
-     * Invokes preCommit on underlying cohorts and returns future
-     * which will complete once all preCommit on cohorts completed or
-     * failed.
+     * Invokes preCommit on underlying cohorts and returns future which will complete once all preCommit on cohorts
+     * completed or failed.
      *
-     *<p>
-     * Valid state transition is from CAN_COMMIT to PRE_COMMIT, if current
-     * state is not CAN_COMMIT
-     * throws IllegalStateException.
+     * <p>
+     * Valid state transition is from CAN_COMMIT to PRE_COMMIT, if current state is not CAN_COMMIT throws
+     * IllegalStateException.
      *
      * @return List of all cohorts futures from can commit phase.
-     *
      */
     private ListenableFuture<?>[] preCommitAll() {
         final ListenableFuture<?>[] ops = new ListenableFuture<?>[cohorts.size()];
@@ -171,17 +160,14 @@ final class CommitCoordinationTask implements Callable<CommitInfo> {
     }
 
     /**
-     * Invokes commit on underlying cohorts and blocks till
-     * all results are returned.
+     * Invokes commit on underlying cohorts and blocks until all results are returned.
      *
-     *<p>
-     * Valid state transition is from PRE_COMMIT to COMMIT, if not throws
-     * IllegalStateException.
+     * <p>
+     * Valid state transition is from PRE_COMMIT to COMMIT, if not throws IllegalStateException.
      *
-     * @throws TransactionCommitFailedException
-     *             If one of cohorts failed preCommit
-     *
+     * @throws TransactionCommitFailedException If one of cohorts failed preCommit
      */
+    @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     private void commitBlocking() throws TransactionCommitFailedException {
         final ListenableFuture<?>[] commitFutures = commitAll();
         try {
@@ -216,26 +202,18 @@ final class CommitCoordinationTask implements Callable<CommitInfo> {
     /**
      * Aborts transaction.
      *
-     *<p>
-     * Invokes {@link DOMStoreThreePhaseCommitCohort#abort()} on all
-     * cohorts, blocks
-     * for all results. If any of the abort failed throws
-     * IllegalStateException,
-     * which will contains originalCause as suppressed Exception.
+     * <p>
+     * Invokes {@link DOMStoreThreePhaseCommitCohort#abort()} on all cohorts, blocks for all results. If any
+     * of the abort failed throws IllegalStateException, which will contains originalCause as suppressed Exception.
      *
-     *<p>
+     * <p>
      * If aborts we're successful throws supplied exception
      *
-     * @param originalCause
-     *            Exception which should be used to fail transaction for
-     *            consumers of transaction
-     *            future and listeners of transaction failure.
+     * @param originalCause Exception which should be used to fail transaction for consumers of transaction future
+     *                      and listeners of transaction failure.
      * @param phase phase in which the problem ensued
-     * @throws TransactionCommitFailedException
-     *             on invocation of this method.
-     *             originalCa
-     * @throws IllegalStateException
-     *             if abort failed.
+     * @throws TransactionCommitFailedException on invocation of this method.
+     * @throws IllegalStateException if abort failed.
      */
     private void abortBlocking(final TransactionCommitFailedException originalCause)
             throws TransactionCommitFailedException {
@@ -251,11 +229,9 @@ final class CommitCoordinationTask implements Callable<CommitInfo> {
     }
 
     /**
-     * Invokes abort on underlying cohorts and returns future which
-     * completes once all abort on cohorts are completed.
+     * Invokes abort on underlying cohorts and returns future which completes once all abort on cohorts are completed.
      *
-     * @return Future which will complete once all cohorts completed
-     *         abort.
+     * @return Future which will complete once all cohorts completed abort.
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     private ListenableFuture<Void> abortAsyncAll() {

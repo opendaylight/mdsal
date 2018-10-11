@@ -184,7 +184,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
     }
 
     @VisibleForTesting
-    Collection<?> listeners() {
+    synchronized Collection<?> listeners() {
         return listeners;
     }
 
