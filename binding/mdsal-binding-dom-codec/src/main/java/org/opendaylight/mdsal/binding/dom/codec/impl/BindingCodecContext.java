@@ -189,7 +189,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
                 }
                 currentNode = nextNode;
             } else if (nextNode instanceof LeafNodeCodecContext) {
-                LOG.debug("Instance identifier referencing a leaf is not representable (%s)", dom);
+                LOG.debug("Instance identifier referencing a leaf is not representable ({})", dom);
                 return null;
             }
         }
@@ -197,11 +197,11 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         // Algorithm ended in list as whole representation
         // we sill need to emit identifier for list
         if (currentNode instanceof ChoiceNodeCodecContext) {
-            LOG.debug("Instance identifier targeting a choice is not representable (%s)", dom);
+            LOG.debug("Instance identifier targeting a choice is not representable ({})", dom);
             return null;
         }
         if (currentNode instanceof CaseNodeCodecContext) {
-            LOG.debug("Instance identifier targeting a case is not representable (%s)", dom);
+            LOG.debug("Instance identifier targeting a case is not representable ({})", dom);
             return null;
         }
 

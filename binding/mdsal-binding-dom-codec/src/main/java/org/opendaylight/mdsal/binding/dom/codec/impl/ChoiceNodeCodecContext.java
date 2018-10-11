@@ -215,7 +215,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             return DataContainerCodecPrototype.from(childClass, childSchema.get(), factory());
         }
 
-        LOG.debug("Supplied class %s is not valid case in schema %s", childClass, getSchema());
+        LOG.debug("Supplied class {} is not valid case in schema {}", childClass, getSchema());
         return null;
     }
 
@@ -228,7 +228,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             cazeProto = byYangCaseChild.get(arg);
         }
 
-        return childNonNull(cazeProto, arg,"Argument %s is not valid child of %s", arg, getSchema()).get()
+        return childNonNull(cazeProto, arg, "Argument %s is not valid child of %s", arg, getSchema()).get()
                 .yangPathArgumentChild(arg);
     }
 
