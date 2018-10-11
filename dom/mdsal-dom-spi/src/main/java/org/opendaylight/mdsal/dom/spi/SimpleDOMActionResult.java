@@ -52,7 +52,7 @@ public final class SimpleDOMActionResult implements DOMActionResult, Immutable {
 
     @Override
     public Optional<ContainerNode> getOutput() {
-        return (Optional) Optional.<@Nullable ContainerNode>ofNullable(output);
+        return Optional.ofNullable(output);
     }
 
     @Override
