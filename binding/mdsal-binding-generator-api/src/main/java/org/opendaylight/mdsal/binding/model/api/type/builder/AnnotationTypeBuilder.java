@@ -22,7 +22,6 @@ import org.opendaylight.yangtools.concepts.Builder;
  * @see AnnotationType
  */
 public interface AnnotationTypeBuilder extends Type, Builder<AnnotationType> {
-
     /**
      * The method creates new AnnotationTypeBuilder containing specified package
      * name an annotation name. <br>
@@ -30,13 +29,11 @@ public interface AnnotationTypeBuilder extends Type, Builder<AnnotationType> {
      * references. In case that any of parameters contains <code>null</code> the
      * method SHOULD thrown {@link IllegalArgumentException}
      *
-     * @param packageName
-     *            Package Name of Annotation Type
-     * @param name
-     *            Name of Annotation Type
+     * @param packageName Package Name of Annotation Type
+     * @param name Name of Annotation Type
      * @return <code>new</code> instance of Annotation Type Builder.
      */
-    AnnotationTypeBuilder addAnnotation(final String packageName, final String name);
+    AnnotationTypeBuilder addAnnotation(String packageName, String name);
 
     /**
      * Adds the parameter into List of parameters for Annotation Type. <br>
@@ -47,14 +44,11 @@ public interface AnnotationTypeBuilder extends Type, Builder<AnnotationType> {
      * In case that any of parameters contains <code>null</code> the method
      * SHOULD thrown {@link IllegalArgumentException}
      *
-     * @param paramName
-     *            Parameter Name
-     * @param value
-     *            Parameter Value
-     * @return <code>true</code> if the parameter has been successfully assigned
-     *         for Annotation Type
+     * @param paramName Parameter Name
+     * @param value Parameter Value
+     * @return <code>true</code> if the parameter has been successfully assigned for Annotation Type
      */
-    boolean addParameter(final String paramName, String value);
+    boolean addParameter(String paramName, String value);
 
     /**
      * Adds the parameter with specified List of parameter values into List of
@@ -66,14 +60,11 @@ public interface AnnotationTypeBuilder extends Type, Builder<AnnotationType> {
      * In case that any of parameters contains <code>null</code> the method
      * SHOULD thrown {@link IllegalArgumentException}
      *
-     * @param paramName
-     *            Parameter Name
-     * @param values
-     *            List of Values bounded to Parameter Name
-     * @return <code>true</code> if the parameter has been successfully assigned
-     *         for Annotation Type
+     * @param paramName Parameter Name
+     * @param values List of Values bounded to Parameter Name
+     * @return <code>true</code> if the parameter has been successfully assigned for Annotation Type
      */
-    boolean addParameters(final String paramName, List<String> values);
+    boolean addParameters(String paramName, List<String> values);
 
     /**
      * Returns <code>new</code> <i>immutable</i> instance of Annotation Type

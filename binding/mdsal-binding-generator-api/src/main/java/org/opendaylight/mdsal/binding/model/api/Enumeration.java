@@ -14,13 +14,10 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
  * Interface provide methods for reading data of enumeration class.
  */
 public interface Enumeration extends GeneratedType {
-
     /**
-     *
      * Returns list of annotation definitions associated with enumeration type.
      *
      * @return list of annotation definitions associated with enumeration type.
-     *
      */
     @Override
     List<AnnotationType> getAnnotations();
@@ -43,15 +40,13 @@ public interface Enumeration extends GeneratedType {
     String toFormattedString();
 
     /**
-     * Interface is used for reading enumeration item. It means item's name and
-     * its value.
+     * Interface is used for reading enumeration item. It means item's name and its value.
      */
     interface Pair extends DocumentedNode.WithStatus {
-
         /**
-         * Returns the name of the enumeration item as it is specified in the input yang.
+         * Returns the name of the enumeration item as it is specified in the input YANG.
          *
-         * @return the name of the enumeration item as it is specified in the input yang.
+         * @return the name of the enumeration item as it is specified in the input YANG.
          */
         String getName();
 

@@ -18,9 +18,9 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
  */
 public interface EnumBuilder extends Type, AnnotableTypeBuilder {
 
-    void setDescription(final String description);
+    void setDescription(String description);
 
-    Enumeration toInstance(final Type definingType);
+    Enumeration toInstance(Type definingType);
 
     /**
      * Updates this builder with data from <code>enumTypeDef</code>. Specifically this data represents list
@@ -28,5 +28,5 @@ public interface EnumBuilder extends Type, AnnotableTypeBuilder {
      *
      * @param enumTypeDef enum type definition as source of enum data for <code>enumBuilder</code>
      */
-    void updateEnumPairsFromEnumTypeDef(final EnumTypeDefinition enumTypeDef);
+    void updateEnumPairsFromEnumTypeDef(EnumTypeDefinition enumTypeDef);
 }

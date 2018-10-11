@@ -22,19 +22,16 @@ import org.opendaylight.mdsal.binding.model.api.Type;
  * {@link #setComment(String)} can be used as optional because not all methods
  * MUST contain annotation or comment definitions.
  *
- *
  * @see MethodSignature
  */
 public interface MethodSignatureBuilder extends TypeMemberBuilder<MethodSignatureBuilder> {
-
     /**
      * Sets the flag for declaration of method as abstract or non abstract. If
      * the flag <code>isAbstract == true</code> The instantiated Method
      * Signature MUST have return value for {@link MethodSignature#isAbstract()}
      * also equals to <code>true</code>.
      *
-     * @param isAbstract
-     *            is abstract flag
+     * @param isAbstract is abstract flag
      */
     MethodSignatureBuilder setAbstract(boolean isAbstract);
 
@@ -46,12 +43,10 @@ public interface MethodSignatureBuilder extends TypeMemberBuilder<MethodSignatur
      * In case that any of parameters are defined as <code>null</code> the
      * method SHOULD throw an {@link IllegalArgumentException}
      *
-     * @param type
-     *            Parameter Type
-     * @param name
-     *            Parameter Name
+     * @param type Parameter Type
+     * @param name Parameter Name
      */
-    MethodSignatureBuilder addParameter(final Type type, final String name);
+    MethodSignatureBuilder addParameter(Type type, String name);
 
     /**
      * Returns <code>new</code> <i>immutable</i> instance of Method Signature. <br>
@@ -61,9 +56,8 @@ public interface MethodSignatureBuilder extends TypeMemberBuilder<MethodSignatur
      * defining Type will be passed as <code>null</code> reference the method
      * SHOULD thrown {@link IllegalArgumentException}.
      *
-     * @param definingType
-     *            Defining Type of Method Signature
+     * @param definingType Defining Type of Method Signature
      * @return <code>new</code> <i>immutable</i> instance of Method Signature.
      */
-    MethodSignature toInstance(final Type definingType);
+    MethodSignature toInstance(Type definingType);
 }
