@@ -162,88 +162,14 @@ public final class BindingGeneratorUtil {
         return BindingMapping.normalizePackageName(builder.toString());
     }
 
-    /**
-     * Converts string <code>token</code> to the cammel case format.
-     *
-     * @param token string which should be converted to the cammel case format
-     * @param uppercase boolean value which says whether the first character of the <code>token</code> should be
-     *                  upper-cased or not
-     * @return string in the camel case format
-     * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>token</code> without white spaces is empty</li>
-     *             <li>if <code>token</code> equals null</li>
-     *             </ul>
-     */
-    private static String parseToCamelCase(final String token, final boolean uppercase) {
-        if (token == null) {
-            throw new IllegalArgumentException("Name can not be null");
-        }
-
-        String correctStr = DOT_MATCHER.removeFrom(token.trim());
-        if (correctStr.isEmpty()) {
-            throw new IllegalArgumentException("Name can not be empty");
-        }
-
-        correctStr = replaceWithCamelCase(correctStr, ' ');
-        correctStr = replaceWithCamelCase(correctStr, '-');
-        correctStr = replaceWithCamelCase(correctStr, '_');
-
-        char firstChar = correctStr.charAt(0);
-        firstChar = uppercase ? Character.toUpperCase(firstChar) : Character.toLowerCase(firstChar);
-
-        if (firstChar >= '0' && firstChar <= '9') {
-            return '_' + correctStr;
-        } else {
-            return firstChar + correctStr.substring(1);
-        }
-    }
-
-    /**
-     * Replaces all the occurrences of the <code>removalChar</code> in the
-     * <code>text</code> with empty string and converts following character to
-     * upper case.
-     *
-     * @param text
-     *            string with source text which should be converted
-     * @param removalChar
-     *            character which is sought in the <code>text</code>
-     * @return string which doesn't contain <code>removalChar</code> and has
-     *         following characters converted to upper case
-     * @throws IllegalArgumentException
-     *             if the length of the returning string has length 0
-     */
-    private static String replaceWithCamelCase(final String text, final char removalChar) {
-        int toBeRemovedPos = text.indexOf(removalChar);
-        if (toBeRemovedPos == -1) {
-            return text;
-        }
-
-        final StringBuilder sb = new StringBuilder(text);
-        final String toBeRemoved = String.valueOf(removalChar);
-        do {
-            sb.replace(toBeRemovedPos, toBeRemovedPos + 1, "");
-            // check if 'toBeRemoved' character is not the only character in
-            // 'text'
-            if (sb.length() == 0) {
-                throw new IllegalArgumentException("The resulting string can not be empty");
-            }
-            final char replacement = Character.toUpperCase(sb.charAt(toBeRemovedPos));
-            sb.setCharAt(toBeRemovedPos, replacement);
-            toBeRemovedPos = sb.indexOf(toBeRemoved);
-        } while (toBeRemovedPos != -1);
-
-        return sb.toString();
-    }
-
     private static <T> Iterable<T> sortedCollection(final Comparator<? super T> comparator, final Collection<T> input) {
-        if (input.size() > 1) {
-            final List<T> ret = new ArrayList<>(input);
-            ret.sort(comparator);
-            return ret;
-        } else {
+        if (input.size() <= 1) {
             return input;
         }
+
+        final List<T> ret = new ArrayList<>(input);
+        ret.sort(comparator);
+        return ret;
     }
 
     private static final ThreadLocal<MessageDigest> SHA1_MD = ThreadLocal.withInitial(() -> {

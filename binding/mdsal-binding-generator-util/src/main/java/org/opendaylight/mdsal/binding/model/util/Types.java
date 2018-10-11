@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.model.util;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -297,7 +296,7 @@ public final class Types {
          */
         BaseTypeWithRestrictionsImpl(final JavaTypeName identifier, final Restrictions restrictions) {
             super(identifier);
-            this.restrictions = Preconditions.checkNotNull(restrictions);
+            this.restrictions = requireNonNull(restrictions);
         }
 
         @Override
@@ -368,41 +367,10 @@ public final class Types {
     }
 
     private static final class DefaultRestrictions<T extends Number & Comparable<T>> implements Restrictions {
-        private final T min;
-        private final T max;
         private final RangeConstraint<?> rangeConstraint;
 
-        private DefaultRestrictions(final T min, final T max) {
-            this.min = Preconditions.checkNotNull(min);
-            this.max = Preconditions.checkNotNull(max);
-
-            this.rangeConstraint = new RangeConstraint<T>() {
-
-                @Override
-                public Optional<String> getErrorAppTag() {
-                    return Optional.empty();
-                }
-
-                @Override
-                public Optional<String> getErrorMessage() {
-                    return Optional.empty();
-                }
-
-                @Override
-                public Optional<String> getDescription() {
-                    return Optional.empty();
-                }
-
-                @Override
-                public Optional<String> getReference() {
-                    return Optional.empty();
-                }
-
-                @Override
-                public RangeSet<T> getAllowedRanges() {
-                    return ImmutableRangeSet.of(Range.closed(min, max));
-                }
-            };
+        DefaultRestrictions(final T min, final T max) {
+            this.rangeConstraint = new DefaultRangeConstraint<>(min, max);
         }
 
         @Override
@@ -423,6 +391,41 @@ public final class Types {
         @Override
         public Optional<LengthConstraint> getLengthConstraint() {
             return Optional.empty();
+        }
+    }
+
+    private static final class DefaultRangeConstraint<T extends Number & Comparable<T>> implements RangeConstraint<T> {
+        private final T min;
+        private final T max;
+
+        DefaultRangeConstraint(final T min, final T max) {
+            this.min = requireNonNull(min);
+            this.max = requireNonNull(max);
+        }
+
+        @Override
+        public Optional<String> getErrorAppTag() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<String> getErrorMessage() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<String> getDescription() {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<String> getReference() {
+            return Optional.empty();
+        }
+
+        @Override
+        public RangeSet<T> getAllowedRanges() {
+            return ImmutableRangeSet.of(Range.closed(min, max));
         }
     }
 }
