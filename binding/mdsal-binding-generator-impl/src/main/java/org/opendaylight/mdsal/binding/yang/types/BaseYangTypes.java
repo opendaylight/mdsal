@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.yang.types;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
@@ -241,6 +242,7 @@ public final class BaseYangTypes {
         }
 
         @Override
+        @SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
         public JavaTypeName getIdentifier() {
             return null;
         }

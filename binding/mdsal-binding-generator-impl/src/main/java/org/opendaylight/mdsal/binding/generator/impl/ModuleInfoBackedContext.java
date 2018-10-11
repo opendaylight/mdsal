@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.impl;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.ref.WeakReference;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -99,6 +100,7 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
+    @SuppressFBWarnings("REC_CATCH_EXCEPTION")
     private boolean resolveModuleInfo(final YangModuleInfo moduleInfo) {
 
         SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);

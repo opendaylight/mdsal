@@ -119,7 +119,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 abstract class AbstractTypeGenerator {
-    private static final Logger LOG = LoggerFactory.getLogger(BindingGeneratorImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractTypeGenerator.class);
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
     private static final JavaTypeName DEPRECATED_ANNOTATION = JavaTypeName.create(Deprecated.class);
     private static final JavaTypeName OVERRIDE_ANNOTATION = JavaTypeName.create(Override.class);
@@ -1181,7 +1181,7 @@ abstract class AbstractTypeGenerator {
                     node = (CaseSchemaNode) caseNode;
                 } else if (findNamedCase(targetNode, caseLocalName) == null) {
                     final String targetNodeLocalName = targetNode.getQName().getLocalName();
-                    for (DataSchemaNode dataSchemaNode : usesNodeParent.getChildNodes()) {
+                    for (DataSchemaNode dataSchemaNode : verifyNotNull(usesNodeParent).getChildNodes()) {
                         if (dataSchemaNode instanceof ChoiceSchemaNode
                                 && targetNodeLocalName.equals(dataSchemaNode.getQName().getLocalName())) {
                             node = findNamedCase((ChoiceSchemaNode) dataSchemaNode, caseLocalName);
@@ -1590,20 +1590,6 @@ abstract class AbstractTypeGenerator {
         }
 
         return it;
-    }
-
-    /**
-     * Wraps the calling of the same overloaded method.
-     *
-     * @param packageName string with the package name to which returning generated type builder belongs
-     * @param schemaNode schema node which provide data about the schema node name
-     * @return generated type builder for <code>schemaNode</code>
-     */
-    private GeneratedTypeBuilder addRawInterfaceDefinition(final ModuleContext context, final SchemaNode schemaNode,
-            final String prefix) {
-        return addRawInterfaceDefinition(
-            JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), schemaNode.getPath()),
-                prefix + BindingMapping.getClassName(schemaNode.getQName())), schemaNode);
     }
 
     /**
