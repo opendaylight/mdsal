@@ -77,8 +77,8 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
     public void testAdaptedWriteTransactionFailsOnInvalidDatastore() throws Exception {
         try {
             managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
-                writeTx -> TransactionAdapter.toWriteTransaction(writeTx).put(LogicalDatastoreType.CONFIGURATION, TEST_PATH,
-                    newTestDataObject())).get();
+                writeTx -> TransactionAdapter.toWriteTransaction(writeTx).put(LogicalDatastoreType.CONFIGURATION,
+                    TEST_PATH, newTestDataObject())).get();
             fail("This should have led to an ExecutionException!");
         } catch (ExecutionException e) {
             assertTrue(e.getCause() instanceof IllegalArgumentException);
