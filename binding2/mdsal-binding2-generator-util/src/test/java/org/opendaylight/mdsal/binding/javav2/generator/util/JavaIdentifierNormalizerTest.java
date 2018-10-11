@@ -386,7 +386,7 @@ public class JavaIdentifierNormalizerTest {
             final String str_i = String.valueOf(i);
             final String packageNameNormalizer = JavaIdentifierNormalizer.normalizePartialPackageName(str_i);
             final String expected = Character.getName(str_i.charAt(0)).replaceAll(" ", "").toLowerCase();
-            assertEquals(expected.toString(), packageNameNormalizer);
+            assertEquals(expected, packageNameNormalizer);
         }
     }
 
