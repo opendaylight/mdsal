@@ -53,7 +53,7 @@ public enum TestCommitCohort implements DOMStoreThreePhaseCommitCohort {
     }
 
     private static ListenableFuture<Void> immediate(final boolean isSuccess, final Exception except) {
-        return isSuccess ? Futures.<Void>immediateFuture(null) : Futures.<Void>immediateFailedFuture(except);
+        return isSuccess ? Futures.immediateFuture(null) : Futures.immediateFailedFuture(except);
     }
 
 

@@ -278,7 +278,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         } else {
             leafRefValueNode = SchemaContextUtil.findDataSchemaNode(schemaContext, parentModule, leafRefStrippedXPath);
         }
-        return leafRefValueNode != null ? leafRefValueNode.equals(parentNode) : false;
+        return leafRefValueNode != null && leafRefValueNode.equals(parentNode);
     }
 
     /**
@@ -547,9 +547,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     private static boolean leafContainsEnumDefinition(final SchemaNode dataNode) {
         if (dataNode instanceof LeafSchemaNode) {
             final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
-            if (CompatUtils.compatLeafType(leaf) instanceof EnumTypeDefinition) {
-                return true;
-            }
+            return CompatUtils.compatLeafType(leaf) instanceof EnumTypeDefinition;
         }
         return false;
     }
@@ -569,9 +567,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     private static boolean leafListContainsEnumDefinition(final SchemaNode dataNode) {
         if (dataNode instanceof LeafListSchemaNode) {
             final LeafListSchemaNode leafList = (LeafListSchemaNode) dataNode;
-            if (leafList.getType() instanceof EnumTypeDefinition) {
-                return true;
-            }
+            return leafList.getType() instanceof EnumTypeDefinition;
         }
         return false;
     }
@@ -720,7 +716,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         for (Module module : modulesSortedByDependency) {
             Map<Optional<Revision>, Map<String, Type>> dateTypeMap = genTypeDefsContextMap.computeIfAbsent(
                 module.getName(), key -> new HashMap<>());
-            dateTypeMap.put(module.getRevision(), Collections.<String, Type>emptyMap());
+            dateTypeMap.put(module.getRevision(), Collections.emptyMap());
             genTypeDefsContextMap.put(module.getName(), dateTypeMap);
         }
 

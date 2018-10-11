@@ -125,8 +125,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
             }
             this.paramNames = ImmutableList.copyOf(p);
 
-            this.parameters = parameters.isEmpty() ? Collections.<AnnotationType.Parameter>emptyList()
-                    : Collections.unmodifiableList(parameters);
+            this.parameters = parameters.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(parameters);
         }
 
         @Override
