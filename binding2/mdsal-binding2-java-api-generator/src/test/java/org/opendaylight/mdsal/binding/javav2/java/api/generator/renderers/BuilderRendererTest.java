@@ -98,7 +98,7 @@ public class BuilderRendererTest {
     public void builderTemplateGenerateToStringWithMorePropertiesWithAugmentTest() throws Exception {
         final GeneratedType genType = mockGenTypeMoreMeth("get" + TEST);
         mockAugment(genType);
-        final String generateToString = genToString(genType).toString();
+        final String generateToString = genToString(genType);
         assertTrue(generateToString.contains("if (_test1 != null) {"));
         assertTrue(generateToString.contains("builder.append(\"_test1=\");"));
         assertTrue(generateToString.contains("builder.append(_test1);"));

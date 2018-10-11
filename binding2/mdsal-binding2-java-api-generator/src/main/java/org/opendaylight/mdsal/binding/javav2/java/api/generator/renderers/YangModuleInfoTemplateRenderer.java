@@ -201,12 +201,12 @@ public class YangModuleInfoTemplateRenderer {
             }
             String wildcardParam = "";
             if (type.equals(Types.voidType())) {
-                sb.append("java.lang.Void" + separator);
+                sb.append("java.lang.Void").append(separator);
             } else {
                 if (type instanceof WildcardType) {
                     wildcardParam = "? extends ";
                 }
-                sb.append(wildcardParam + getExplicitType(type) + separator);
+                sb.append(wildcardParam).append(getExplicitType(type)).append(separator);
                 count = count + 1;
             }
         }
