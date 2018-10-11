@@ -18,7 +18,10 @@ import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
-public class SupportTestUtil {
+public final class SupportTestUtil {
+    private SupportTestUtil() {
+
+    }
 
     public static void containsMethods(final GeneratedType genType, final NameTypePattern... searchedSignsWhat) {
         final List<MethodSignature> searchedSignsIn = genType.getMethodDefinitions();
@@ -53,8 +56,8 @@ public class SupportTestUtil {
         }
     }
 
-    public static void containsAttributes(final GeneratedTransferObject genTO, boolean equal, boolean hash,
-            boolean toString, final NameTypePattern... searchedSignsWhat) {
+    public static void containsAttributes(final GeneratedTransferObject genTO, final boolean equal, final boolean hash,
+            final boolean toString, final NameTypePattern... searchedSignsWhat) {
         List<GeneratedProperty> searchedPropertiesIn = genTO.getProperties();
         containsAttributes(searchedPropertiesIn, "", searchedSignsWhat);
         if (equal) {
@@ -113,7 +116,7 @@ public class SupportTestUtil {
         return nameBuilder.toString();
     }
 
-    public static void containsInterface(String interfaceNameSearched, GeneratedType genType) {
+    public static void containsInterface(final String interfaceNameSearched, final GeneratedType genType) {
         List<Type> caseCImplements = genType.getImplements();
         boolean interfaceFound = false;
         for (Type caseCImplement : caseCImplements) {

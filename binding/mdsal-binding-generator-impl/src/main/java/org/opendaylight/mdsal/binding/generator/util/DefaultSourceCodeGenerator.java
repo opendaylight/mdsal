@@ -11,13 +11,13 @@ package org.opendaylight.mdsal.binding.generator.util;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The default implementation of the SourceCodeGenerator interface that generates readable source code
@@ -42,17 +42,16 @@ public class DefaultSourceCodeGenerator implements SourceCodeGenerator {
      *     is obtained from a system property (<i>org.opendaylight.yangtools.sal.generatedCodecSourceDir</i>) or
      *     defaults to "generated-codecs".
      */
-    public DefaultSourceCodeGenerator(String generatedSourceDir) {
-        if(generatedSourceDir != null) {
+    public DefaultSourceCodeGenerator(final String generatedSourceDir) {
+        if (generatedSourceDir != null) {
             this.generatedSourceDir = generatedSourceDir;
-        }
-        else {
+        } else {
             this.generatedSourceDir = System.getProperty(GENERATED_SOURCE_DIR_PROP, "generated-codecs");
         }
     }
 
     @Override
-    public void appendField(CtField field, String value) {
+    public void appendField(final CtField field, final String value) {
         try {
             builder.append('\n')
                     .append(Modifier.toString(field.getModifiers()))
@@ -69,7 +68,7 @@ public class DefaultSourceCodeGenerator implements SourceCodeGenerator {
     }
 
     @Override
-    public void appendMethod(CtMethod method, String code) {
+    public void appendMethod(final CtMethod method, final String code) {
         try {
             builder.append('\n')
                     .append(Modifier.toString(method.getModifiers()))
@@ -94,7 +93,7 @@ public class DefaultSourceCodeGenerator implements SourceCodeGenerator {
     }
 
     @Override
-    public void outputGeneratedSource(CtClass ctClass) {
+    public void outputGeneratedSource(final CtClass ctClass) {
         String name = ctClass.getName();
 
         StringBuilder classBuilder = new StringBuilder();

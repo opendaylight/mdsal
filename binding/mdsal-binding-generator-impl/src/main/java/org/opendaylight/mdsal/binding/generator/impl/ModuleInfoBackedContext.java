@@ -32,7 +32,7 @@ import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
+public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         implements ModuleInfoRegistry, SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
 
     private final YangTextSchemaContextResolver ctxResolver = YangTextSchemaContextResolver.create("binding-context");
@@ -89,6 +89,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         return ctxResolver.getSchemaContext();
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     private boolean resolveModuleInfo(final Class<?> cls) {
         try {
             return resolveModuleInfo(BindingReflections.getModuleInfo(cls));
@@ -97,6 +98,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         }
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     private boolean resolveModuleInfo(final YangModuleInfo moduleInfo) {
 
         SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
@@ -163,7 +165,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
         private final ModuleInfoBackedContext context;
 
-        public YangModuleInfoRegistration(final YangModuleInfo instance, final ModuleInfoBackedContext context) {
+        YangModuleInfoRegistration(final YangModuleInfo instance, final ModuleInfoBackedContext context) {
             super(instance);
             this.context = context;
         }

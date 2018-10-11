@@ -8,6 +8,8 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Constructor;
@@ -19,18 +21,19 @@ import org.opendaylight.yangtools.yang.binding.Identifier;
 public class CodecTypeUtilsTest {
 
     @Test
-    public void newIdentifiableItem() throws Exception {
+    public void newIdentifiableItem() {
         assertNotNull(CodecTypeUtils.newIdentifiableItem(Identifiable.class, mock(Identifier.class)));
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void privateConstructTest() throws Throwable {
+    public void privateConstructTest() throws NoSuchMethodException, ReflectiveOperationException {
         final Constructor<?> constructor = CodecTypeUtils.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();
+            fail();
         } catch (InvocationTargetException e) {
-            throw e.getCause();
+            assertTrue(e.getCause() instanceof UnsupportedOperationException);
         }
     }
 }

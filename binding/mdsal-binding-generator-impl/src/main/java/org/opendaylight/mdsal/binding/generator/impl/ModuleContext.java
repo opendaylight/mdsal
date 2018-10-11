@@ -129,39 +129,39 @@ public final class ModuleContext {
         return moduleNode;
     }
 
-    public GeneratedTypeBuilder getChildNode(final SchemaPath p) {
-        return childNodes.get(p);
+    public GeneratedTypeBuilder getChildNode(final SchemaPath path) {
+        return childNodes.get(path);
     }
 
-    public GeneratedTypeBuilder getGrouping(final SchemaPath p) {
-        return groupings.get(p);
+    public GeneratedTypeBuilder getGrouping(final SchemaPath path) {
+        return groupings.get(path);
     }
 
-    public GeneratedTypeBuilder getCase(final SchemaPath p) {
-        return cases.get(p);
+    public GeneratedTypeBuilder getCase(final SchemaPath path) {
+        return cases.get(path);
     }
 
-    public void addModuleNode(final GeneratedTypeBuilder moduleNode) {
-        this.moduleNode = moduleNode;
+    public void addModuleNode(final GeneratedTypeBuilder newModuleNode) {
+        this.moduleNode = newModuleNode;
     }
 
-    public void addGeneratedTOBuilder(final GeneratedTOBuilder b) {
-        genTOs.add(b);
+    public void addGeneratedTOBuilder(final GeneratedTOBuilder builder) {
+        genTOs.add(builder);
     }
 
-    public void addChildNodeType(final SchemaNode def, final GeneratedTypeBuilder b) {
-        checkNamingConflict(def, b.getIdentifier());
-        childNodes.put(def.getPath(), b);
-        typeToSchema.put(b, def);
+    public void addChildNodeType(final SchemaNode def, final GeneratedTypeBuilder builder) {
+        checkNamingConflict(def, builder.getIdentifier());
+        childNodes.put(def.getPath(), builder);
+        typeToSchema.put(builder, def);
     }
 
-    public void addGroupingType(final GroupingDefinition def, final GeneratedTypeBuilder b) {
-        checkNamingConflict(def, b.getIdentifier());
-        groupings.put(def.getPath(), b);
+    public void addGroupingType(final GroupingDefinition def, final GeneratedTypeBuilder builder) {
+        checkNamingConflict(def, builder.getIdentifier());
+        groupings.put(def.getPath(), builder);
     }
 
-    public void addTypedefType(final TypeDefinition<?> def, final Type t) {
-        final JavaTypeName name = t.getIdentifier();
+    public void addTypedefType(final TypeDefinition<?> def, final Type type) {
+        final JavaTypeName name = type.getIdentifier();
         final SchemaNode existingDef = nameMapping.putIfAbsent(name, def);
         if (existingDef != null) {
             if (!(existingDef instanceof TypeDefinition)) {
@@ -172,24 +172,24 @@ public final class ModuleContext {
             LOG.debug("GeneratedType conflict between {} and {} on {}", def, existingDef, name);
         }
 
-        typedefs.put(def.getPath(), t);
+        typedefs.put(def.getPath(), type);
     }
 
-    public void addCaseType(final SchemaPath p, final GeneratedTypeBuilder b) {
-        cases.put(p, b);
+    public void addCaseType(final SchemaPath path, final GeneratedTypeBuilder builder) {
+        cases.put(path, builder);
     }
 
-    public void addIdentityType(final IdentitySchemaNode def, final GeneratedTypeBuilder b) {
-        checkNamingConflict(def, b.getIdentifier());
-        identities.put(def.getQName(), b);
+    public void addIdentityType(final IdentitySchemaNode def, final GeneratedTypeBuilder builder) {
+        checkNamingConflict(def, builder.getIdentifier());
+        identities.put(def.getQName(), builder);
     }
 
-    public void addTopLevelNodeType(final GeneratedTypeBuilder b) {
-        topLevelNodes.add(b);
+    public void addTopLevelNodeType(final GeneratedTypeBuilder builder) {
+        topLevelNodes.add(builder);
     }
 
-    public void addAugmentType(final GeneratedTypeBuilder b) {
-        augmentations.add(b);
+    public void addAugmentType(final GeneratedTypeBuilder builder) {
+        augmentations.add(builder);
     }
 
     public Map<SchemaPath, Type> getTypedefs() {
@@ -240,9 +240,8 @@ public final class ModuleContext {
     }
 
     /**
-     * Returns mapping of type to its schema.
-     *
-     * Valid values are only instances of {@link DataSchemaNode} or {@link AugmentationSchemaNode}
+     * Returns mapping of type to its schema. Valid values are only instances of {@link DataSchemaNode}
+     * or {@link AugmentationSchemaNode}.
      *
      * @return Mapping from type to corresponding schema
      */
@@ -256,9 +255,6 @@ public final class ModuleContext {
 
     /**
      * Adds mapping between schema path and an inner type.
-     *
-     * @param path
-     * @param type
      */
     void addInnerTypedefType(final SchemaPath path, final Type type) {
         innerTypes.put(path, type);

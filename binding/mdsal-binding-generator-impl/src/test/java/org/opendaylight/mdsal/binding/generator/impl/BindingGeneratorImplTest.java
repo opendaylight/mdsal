@@ -48,24 +48,26 @@ public class BindingGeneratorImplTest {
 
         for (Type type : generateTypes) {
             switch (type.getName()) {
-            case "ChoiceTestData":
-                choiceTestData = (GeneratedType) type;
-                break;
-            case "Myrootcontainer":
-                myRootContainer = (GeneratedType) type;
-                break;
-            case "Mylist":
-                myList = (GeneratedType) type;
-                break;
-            case "Mylist2":
-                myList2 = (GeneratedType) type;
-                break;
-            case "Mycontainer":
-                myContainer = (GeneratedType) type;
-                break;
-            case "Mycontainer2":
-                myContainer2 = (GeneratedType) type;
-                break;
+                case "ChoiceTestData":
+                    choiceTestData = (GeneratedType) type;
+                    break;
+                case "Myrootcontainer":
+                    myRootContainer = (GeneratedType) type;
+                    break;
+                case "Mylist":
+                    myList = (GeneratedType) type;
+                    break;
+                case "Mylist2":
+                    myList2 = (GeneratedType) type;
+                    break;
+                case "Mycontainer":
+                    myContainer = (GeneratedType) type;
+                    break;
+                case "Mycontainer2":
+                    myContainer2 = (GeneratedType) type;
+                    break;
+                default:
+                    // ignore
             }
         }
 
@@ -146,12 +148,14 @@ public class BindingGeneratorImplTest {
         List<Type> impl = foo.getImplements();
         for (Type type : impl) {
             switch (type.getName()) {
-            case "ChildOf":
-                childOf = type;
-                break;
-            case "DataObject":
-                dataObject = type;
-                break;
+                case "ChildOf":
+                    childOf = type;
+                    break;
+                case "DataObject":
+                    dataObject = type;
+                    break;
+                default:
+                    // ignore
             }
         }
 

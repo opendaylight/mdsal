@@ -55,6 +55,8 @@ public class UnionTypeDefTest {
                         case "stringRefValue":
                             assertEquals(Types.STRING, generatedProperty.getReturnType());
                             break;
+                        default:
+                            // ignore
                     }
                 }
             }

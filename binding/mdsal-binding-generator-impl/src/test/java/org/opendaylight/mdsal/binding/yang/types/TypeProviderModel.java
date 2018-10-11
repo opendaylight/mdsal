@@ -11,12 +11,14 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 /**
- * Test Model Provider designated to load test resources and provide Schema Context
- * for testing of TypeProviderImpl
+ * Test Model Provider designated to load test resources and provide Schema Context for testing of TypeProviderImpl.
  */
 public final class TypeProviderModel {
-
     public static final String TEST_TYPE_PROVIDER_MODULE_NAME = "test-type-provider";
+
+    private TypeProviderModel() {
+
+    }
 
     public static SchemaContext createTestContext() {
         return YangParserTestUtils.parseYangResources(TypeProviderModel.class, "/base-yang-types.yang",

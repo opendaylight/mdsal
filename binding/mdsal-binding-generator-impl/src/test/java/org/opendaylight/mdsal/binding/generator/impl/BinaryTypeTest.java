@@ -23,23 +23,22 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BinaryTypeTest {
-    private final static List<File> yangModels = new ArrayList<>();
-    private final static URL yangModelsFolder = AugmentedTypeTest.class
-            .getResource("/binary-type-test-models");
+    private static final List<File> YANG_MODELS = new ArrayList<>();
+    private static final URL YANG_MODELS_FOLDER = AugmentedTypeTest.class.getResource("/binary-type-test-models");
 
     @BeforeClass
     public static void loadTestResources() throws URISyntaxException {
-        final File augFolder = new File(yangModelsFolder.toURI());
+        final File augFolder = new File(YANG_MODELS_FOLDER.toURI());
         for (final File fileEntry : augFolder.listFiles()) {
             if (fileEntry.isFile()) {
-                yangModels.add(fileEntry);
+                YANG_MODELS.add(fileEntry);
             }
         }
     }
 
     @Test
     public void binaryTypeTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(yangModels);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(YANG_MODELS);
 
         assertNotNull("context is null", context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl();

@@ -12,16 +12,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.yang.types.NodeWrappedType;
 
 public class NodeWrappedTypeTest {
 
     @Test
     public void test() {
-        NodeWrappedType nwt1 = new NodeWrappedType("obj1");
-        NodeWrappedType nwt2 = new NodeWrappedType("obj2");
-        NodeWrappedType nwt3 = new NodeWrappedType("obj1");
-        String str = "obj3";
+        final NodeWrappedType nwt1 = new NodeWrappedType("obj1");
+        final NodeWrappedType nwt2 = new NodeWrappedType("obj2");
+        final NodeWrappedType nwt3 = new NodeWrappedType("obj1");
+        final String str = "obj3";
 
         assertTrue("Node nwt1 should equal to itself.", nwt1.equals(nwt1));
         assertFalse("It can't be possible to compare nwt with string.", nwt1.equals(str));

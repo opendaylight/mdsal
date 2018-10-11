@@ -401,22 +401,22 @@ public class UsesTest {
             }
         }
 
-        assertNotNull("Generated type for RPC test input wasn't generated", rpcTestInput);
+        assertNotNull("Generated type for RPC test input was not generated", rpcTestInput);
         assertEquals("RpcTestInput interface - incorrect number of occurences", 1, rpcTestInputCounter);
-        assertEquals("RpcTestInput isn't in correct package", "org.opendaylight.yang.gen.v1.urn.grouping.uses.rpc.rev130718",
-                rpcTestInput.getPackageName());
+        assertEquals("RpcTestInput is not in correct package",
+            "org.opendaylight.yang.gen.v1.urn.grouping.uses.rpc.rev130718", rpcTestInput.getPackageName());
 
-        assertNotNull("Generated type for RPC test output wasn't generated", rpcTestOutput);
+        assertNotNull("Generated type for RPC test output was not generated", rpcTestOutput);
         assertEquals("RpcTestOutput interface - incorrect number of occurences", 1, rpcTestOutputCounter);
-        assertEquals("RpcTestOutput isn't in correct package",
+        assertEquals("RpcTestOutput is not in correct package",
                 "org.opendaylight.yang.gen.v1.urn.grouping.uses.rpc.rev130718", rpcTestOutput.getPackageName());
 
-        assertNotNull("Generated type for grouping-rpc-input-test wasn't generated", groupingRpcInputTest);
+        assertNotNull("Generated type for grouping-rpc-input-test was not generated", groupingRpcInputTest);
         assertEquals("RpcTestOutput interface - incorrect number of occurences", 1, groupingRpcInputTestCounter);
         assertEquals("GroupingRpcInputTest isn't in correct package",
                 "org.opendaylight.yang.gen.v1.urn.grouping.uses.rpc.rev130718", groupingRpcInputTest.getPackageName());
 
-        assertNotNull("Generated type for grouping-rpc-output-test wasn't generated", groupingRpcOutputTest);
+        assertNotNull("Generated type for grouping-rpc-output-test was not generated", groupingRpcOutputTest);
         assertEquals("RpcTestOutput interface - incorrect number of occurences", 1, groupingRpcOutputTestCounter);
         assertEquals("GroupingRpcOutputTest isn't in correct package",
                 "org.opendaylight.yang.gen.v1.urn.grouping.uses.rpc.rev130718", groupingRpcOutputTest.getPackageName());
@@ -425,7 +425,7 @@ public class UsesTest {
                 containerGroupingRpcInputTest);
         assertEquals("ContainerGroupingRpcInputTest interface - incorrect number of occurences", 1,
                 containerGroupingRpcInputTestCounter);
-        assertEquals("ContainerGroupingRpcInputTest isn't in correct package",
+        assertEquals("ContainerGroupingRpcInputTest is not in correct package",
                 "org.opendaylight.yang.gen.v1.urn.grouping.uses.rpc.rev130718.grouping.rpc.input.test",
                 containerGroupingRpcInputTest.getPackageName());
 

@@ -48,18 +48,19 @@ public class AugmentedTypeTest {
         GeneratedType gtNetworkLink2 = null;
 
         for (final Type type : genTypes) {
-            if (type.getName().equals("InterfaceKey") && type.getPackageName().contains("augment._abstract.topology")) {
+            if (!type.getPackageName().contains("augment._abstract.topology")) {
+                continue;
+            }
+
+            if (type.getName().equals("InterfaceKey")) {
                 gtInterfaceKey = (GeneratedTransferObject) type;
-            } else if (type.getName().equals("Interface")
-                    && type.getPackageName().contains("augment._abstract.topology")) {
+            } else if (type.getName().equals("Interface")) {
                 gtInterface = (GeneratedType) type;
-            } else if (type.getName().equals("Tunnel") && type.getPackageName().contains("augment._abstract.topology")) {
+            } else if (type.getName().equals("Tunnel")) {
                 gtTunnel = (GeneratedType) type;
-            } else if (type.getName().equals("TunnelKey")
-                    && type.getPackageName().contains("augment._abstract.topology")) {
+            } else if (type.getName().equals("TunnelKey")) {
                 gtTunnelKey = (GeneratedTransferObject) type;
-            } else if (type.getName().equals("NetworkLink2")
-                    && type.getPackageName().contains("augment._abstract.topology")) {
+            } else if (type.getName().equals("NetworkLink2")) {
                 gtNetworkLink2 = (GeneratedType) type;
             }
         }

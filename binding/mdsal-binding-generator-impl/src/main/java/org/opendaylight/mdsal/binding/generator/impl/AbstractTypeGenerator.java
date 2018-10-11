@@ -159,10 +159,9 @@ abstract class AbstractTypeGenerator {
     private final Map<QNameModule, ModuleContext> genCtx = new HashMap<>();
 
     /**
-     * Outer key represents the package name. Outer value represents map of all
-     * builders in the same package. Inner key represents the schema node name
-     * (in JAVA class/interface name format). Inner value represents instance of
-     * builder for schema node specified in key part.
+     * Outer key represents the package name. Outer value represents map of all builders in the same package. Inner key
+     * represents the schema node name (in JAVA class/interface name format). Inner value represents instance of builder
+     * for schema node specified in key part.
      */
     private final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
 
@@ -172,8 +171,7 @@ abstract class AbstractTypeGenerator {
     private final AbstractTypeProvider typeProvider;
 
     /**
-     * Holds reference to schema context to resolve data of augmented element
-     * when creating augmentation builder
+     * Holds reference to schema context to resolve data of augmented element when creating augmentation builder.
      */
     private final SchemaContext schemaContext;
 
@@ -693,23 +691,14 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Adds enumeration builder created from <code>enumTypeDef</code> to
-     * <code>typeBuilder</code>.
+     * Adds enumeration builder created from <code>enumTypeDef</code> to <code>typeBuilder</code>. Each
+     * <code>enumTypeDef</code> item is added to builder with its name and value.
      *
-     * Each <code>enumTypeDef</code> item is added to builder with its name and
-     * value.
-     *
-     * @param enumTypeDef
-     *            EnumTypeDefinition contains enum data
-     * @param enumName
-     *            string contains name which will be assigned to enumeration
-     *            builder
-     * @param typeBuilder
-     *            GeneratedTypeBuilder to which will be enum builder assigned
-     * @param module
-     *            Module in which type should be generated
-     * @return enumeration builder which contains data from
-     *         <code>enumTypeDef</code>
+     * @param enumTypeDef EnumTypeDefinition contains enum data
+     * @param enumName string contains name which will be assigned to enumeration builder
+     * @param typeBuilder GeneratedTypeBuilder to which will be enum builder assigned
+     * @param module Module in which type should be generated
+     * @return enumeration builder which contains data from <code>enumTypeDef</code>
      */
     private EnumBuilder resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
             final GeneratedTypeBuilder typeBuilder, final ModuleContext context) {
@@ -726,16 +715,10 @@ abstract class AbstractTypeGenerator {
     /**
      * Generates type builder for <code>module</code>.
      *
-     * @param module
-     *            Module which is source of package name for generated type
-     *            builder
-     * @param postfix
-     *            string which is added to the module class name representation
-     *            as suffix
-     * @return instance of GeneratedTypeBuilder which represents
-     *         <code>module</code>.
-     * @throws IllegalArgumentException
-     *             if <code>module</code> is null
+     * @param module Module which is source of package name for generated type builder
+     * @param postfix string which is added to the module class name representation as suffix
+     * @return instance of GeneratedTypeBuilder which represents <code>module</code>.
+     * @throws IllegalArgumentException if <code>module</code> is null
      */
     private GeneratedTypeBuilder moduleTypeBuilder(final ModuleContext context, final String postfix) {
         final Module module = context.module();
@@ -749,20 +732,13 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Converts <code>augSchema</code> to list of <code>Type</code> which
-     * contains generated type for augmentation. In addition there are also
-     * generated types for all containers, list and choices which are child of
-     * <code>augSchema</code> node or a generated types for cases are added if
-     * augmented node is choice.
+     * Converts <code>augSchema</code> to list of <code>Type</code> which contains generated type for augmentation.
+     * In addition there are also generated types for all containers, list and choices which are child of
+     * <code>augSchema</code> node or a generated types for cases are added if augmented node is choice.
      *
-     * @param augmentPackageName
-     *            string with the name of the package to which the augmentation
-     *            belongs
-     * @param augSchema
-     *            AugmentationSchema which is contains data about augmentation
-     *            (target path, childs...)
-     * @param module
-     *            current module
+     * @param augmentPackageName string with the name of the package to which the augmentation belongs
+     * @param augSchema AugmentationSchema which is contains data about augmentation (target path, childs...)
+     * @param module current module
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>augmentPackageName</code> equals null</li>
@@ -861,10 +837,8 @@ abstract class AbstractTypeGenerator {
     /**
      * Convenient method to find node added by uses statement.
      *
-     * @param targetPath
-     *            node path
-     * @param parentUsesNode
-     *            parent of uses node
+     * @param targetPath node path
+     * @param parentUsesNode parent of uses node
      * @return node from its original location in grouping
      */
     private DataSchemaNode findOriginalTargetFromGrouping(final SchemaPath targetPath, final UsesNode parentUsesNode) {
@@ -907,24 +881,14 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Returns a generated type builder for an augmentation.
+     * Returns a generated type builder for an augmentation. The name of the type builder is equal to the name
+     * of augmented node with serial number as suffix.
      *
-     * The name of the type builder is equal to the name of augmented node with
-     * serial number as suffix.
-     *
-     * @param context
-     *            current module
-     * @param augmentPackageName
-     *            string with contains the package name to which the augment
-     *            belongs
-     * @param basePackageName
-     *            string with the package name to which the augmented node
-     *            belongs
-     * @param targetTypeRef
-     *            target type
-     * @param augSchema
-     *            augmentation schema which contains data about the child nodes
-     *            and uses of augment
+     * @param context current module
+     * @param augmentPackageName string with contains the package name to which the augment belongs
+     * @param basePackageName string with the package name to which the augmented node belongs
+     * @param targetTypeRef target type
+     * @param augSchema augmentation schema which contains data about the child nodes and uses of augment
      * @return generated type builder for augment
      */
     private GeneratedTypeBuilder addRawAugmentGenTypeDefinition(final ModuleContext context,
@@ -965,11 +929,6 @@ abstract class AbstractTypeGenerator {
         return addRawAugmentGenTypeDefinition(context, context.modulePackageName(), targetTypeRef, augSchema);
     }
 
-    /**
-     *
-     * @param unknownSchemaNodes
-     * @return nodeParameter of UnknownSchemaNode
-     */
     private static String getAugmentIdentifier(final List<UnknownSchemaNode> unknownSchemaNodes) {
         for (final UnknownSchemaNode unknownSchemaNode : unknownSchemaNodes) {
             final QName nodeType = unknownSchemaNode.getNodeType();
@@ -982,15 +941,11 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Returns first unique name for the augment generated type builder. The
-     * generated type builder name for augment consists from name of augmented
-     * node and serial number of its augmentation.
+     * Returns first unique name for the augment generated type builder. The generated type builder name for augment
+     * consists from name of augmented node and serial number of its augmentation.
      *
-     * @param builders
-     *            map of builders which were created in the package to which the
-     *            augmentation belongs
-     * @param genTypeName
-     *            string with name of augmented node
+     * @param builders map of builders which were created in the package to which the augmentation belongs
+     * @param genTypeName string with name of augmented node
      * @return string with unique name for augmentation builder
      */
     private static String augGenTypeName(final Map<String, GeneratedTypeBuilder> builders, final String genTypeName) {
@@ -1004,27 +959,19 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Adds the methods to <code>typeBuilder</code> which represent subnodes of
-     * node for which <code>typeBuilder</code> was created.
+     * Adds the methods to <code>typeBuilder</code> which represent subnodes of node for which <code>typeBuilder</code>
+     * was created. The subnodes aren't mapped to the methods if they are part of grouping or augment (in this case are
+     * already part of them).
      *
-     * The subnodes aren't mapped to the methods if they are part of grouping or
-     * augment (in this case are already part of them).
-     *
-     * @param module
-     *            current module
-     * @param parent
-     *            generated type builder which represents any node. The subnodes
-     *            of this node are added to the <code>typeBuilder</code> as
-     *            methods. The subnode can be of type leaf, leaf-list, list,
-     *            container, choice.
-     * @param childOf
-     *            parent type
-     * @param schemaNodes
-     *            set of data schema nodes which are the children of the node
-     *            for which <code>typeBuilder</code> was created
-     * @return generated type builder which is the same builder as input
-     *         parameter. The getter methods (representing child nodes) could be
-     *         added to it.
+     * @param module current module
+     * @param parent generated type builder which represents any node. The subnodes of this node are added
+     *               to the <code>typeBuilder</code> as methods. The subnode can be of type leaf, leaf-list, list,
+     *               container, choice.
+     * @param childOf parent type
+     * @param schemaNodes set of data schema nodes which are the children of the node for which
+     *                    <code>typeBuilder</code> was created
+     * @return generated type builder which is the same builder as input parameter. The getter methods (representing
+     *         child nodes) could be added to it.
      */
     private GeneratedTypeBuilder resolveDataSchemaNodes(final ModuleContext context, final GeneratedTypeBuilder parent,
             final @Nullable Type childOf, final Iterable<DataSchemaNode> schemaNodes) {
@@ -1040,24 +987,18 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Adds the methods to <code>typeBuilder</code> what represents subnodes of
-     * node for which <code>typeBuilder</code> was created.
+     * Adds the methods to <code>typeBuilder</code> what represents subnodes of node for which <code>typeBuilder</code>
+     * was created.
      *
-     * @param module
-     *            current module
-     * @param typeBuilder
-     *            generated type builder which represents any node. The subnodes
-     *            of this node are added to the <code>typeBuilder</code> as
-     *            methods. The subnode can be of type leaf, leaf-list, list,
-     *            container, choice.
-     * @param childOf
-     *            parent type
-     * @param schemaNodes
-     *            set of data schema nodes which are the children of the node
-     *            for which <code>typeBuilder</code> was created
-     * @return generated type builder which is the same object as the input
-     *         parameter <code>typeBuilder</code>. The getter method could be
-     *         added to it.
+     * @param module current module
+     * @param typeBuilder generated type builder which represents any node. The subnodes of this node are added
+     *                    to the <code>typeBuilder</code> as methods. The subnode can be of type leaf, leaf-list, list,
+     *                    container, choice.
+     * @param childOf parent type
+     * @param schemaNodes set of data schema nodes which are the children of the node for which <code>typeBuilder</code>
+     *                    was created
+     * @return generated type builder which is the same object as the input parameter <code>typeBuilder</code>.
+     *         The getter method could be added to it.
      */
     private GeneratedTypeBuilder augSchemaNodeToMethods(final ModuleContext context,
             final GeneratedTypeBuilder typeBuilder, final Iterable<DataSchemaNode> schemaNodes) {
@@ -1073,19 +1014,12 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Adds to <code>typeBuilder</code> a method which is derived from
-     * <code>schemaNode</code>.
+     * Adds to <code>typeBuilder</code> a method which is derived from <code>schemaNode</code>.
      *
-     * @param node
-     *            data schema node which is added to <code>typeBuilder</code> as
-     *            a method
-     * @param typeBuilder
-     *            generated type builder to which is <code>schemaNode</code>
-     *            added as a method.
-     * @param childOf
-     *            parent type
-     * @param module
-     *            current module
+     * @param node data schema node which is added to <code>typeBuilder</code> as a method
+     * @param typeBuilder generated type builder to which is <code>schemaNode</code> added as a method.
+     * @param childOf parent type
+     * @param module current module
      */
     private void addSchemaNodeToBuilderAsMethod(final ModuleContext context, final DataSchemaNode node,
             final GeneratedTypeBuilder typeBuilder, final Type baseInterface) {
@@ -1109,22 +1043,15 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Converts <code>choiceNode</code> to the list of generated types for
-     * choice and its cases.
+     * Converts <code>choiceNode</code> to the list of generated types for choice and its cases. The package names
+     * for choice and for its cases are created as concatenation of the module package (<code>basePackageName</code>)
+     * and names of all parents node.
      *
-     * The package names for choice and for its cases are created as
-     * concatenation of the module package (<code>basePackageName</code>) and
-     * names of all parents node.
-     *
-     * @param context
-     *            current module
-     * @param basePackageName
-     *            string with the module package name
-     * @param parent
-     *            parent type
-     * @param choiceNode
-     *            choice node which is mapped to generated type. Also child
-     *            nodes - cases are mapped to generated types.
+     * @param context current module
+     * @param basePackageName string with the module package name
+     * @param parent parent type
+     * @param choiceNode choice node which is mapped to generated type. Also child nodes - cases are mapped to generated
+     *                   types.
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>basePackageName</code> is null</li>
@@ -1151,19 +1078,14 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Converts <code>caseNodes</code> set to list of corresponding generated types.
+     * Converts <code>caseNodes</code> set to list of corresponding generated types. For every <i>case</i> which is not
+     * added through augment or <i>uses</i> is created generated type builder. The package names for the builder is
+     * created as concatenation of the module package and names of all parents nodes of the concrete <i>case</i>. There
+     * is also relation "<i>implements type</i>" between every case builder and <i>choice</i> type
      *
-     * For every <i>case</i> which isn't added through augment or <i>uses</i> is created generated type builder.
-     * The package names for the builder is created as concatenation of the module package and names of all parents
-     * nodes of the concrete <i>case</i>. There is also relation "<i>implements type</i>" between every case builder
-     * and <i>choice</i> type
-     *
-     * @param context
-     *            current module context
-     * @param refChoiceType
-     *            type which represents superior <i>case</i>
-     * @param choiceNode
-     *            choice case node which is mapped to generated type
+     * @param context current module context
+     * @param refChoiceType type which represents superior <i>case</i>
+     * @param choiceNode choice case node which is mapped to generated type
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>refChoiceType</code> equals null</li>
@@ -1217,30 +1139,24 @@ abstract class AbstractTypeGenerator {
                     } else {
                         resolveDataSchemaNodes(context, caseTypeBuilder, moduleToDataType(context), caseChildNodes);
                     }
-               }
+                }
             }
             processUsesAugments(caseNode, context);
         }
     }
 
     /**
-     * Generates list of generated types for all the cases of a choice which are
-     * added to the choice through the augment.
+     * Generates list of generated types for all the cases of a choice which are added to the choice through
+     * the augment.
      *
-     * @param module
-     *            current module
-     * @param basePackageName
-     *            string contains name of package to which augment belongs. If
-     *            an augmented choice is from an other package (pcg1) than an
-     *            augmenting choice (pcg2) then case's of the augmenting choice
-     *            will belong to pcg2.
-     * @param targetType
-     *            Type which represents target choice
-     * @param targetNode
-     *            node which represents target choice
-     * @param augmentedNodes
-     *            set of choice case nodes for which is checked if are/aren't
-     *            added to choice through augmentation
+     * @param module current module
+     * @param basePackageName string contains name of package to which augment belongs. If an augmented choice is
+     *                        from an other package (pcg1) than an augmenting choice (pcg2) then case's
+     *                        of the augmenting choice will belong to pcg2.
+     * @param targetType Type which represents target choice
+     * @param targetNode node which represents target choice
+     * @param augmentedNodes set of choice case nodes for which is checked if are/are not added to choice through
+     *                       augmentation
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>basePackageName</code> is null</li>
@@ -1339,17 +1255,11 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Converts <code>leaf</code> to the getter method which is added to
-     * <code>typeBuilder</code>.
+     * Converts <code>leaf</code> to the getter method which is added to <code>typeBuilder</code>.
      *
-     * @param typeBuilder
-     *            generated type builder to which is added getter method as
-     *            <code>leaf</code> mapping
-     * @param leaf
-     *            leaf schema node which is mapped as getter method which is
-     *            added to <code>typeBuilder</code>
-     * @param module
-     *            Module in which type was defined
+     * @param typeBuilder generated type builder to which is added getter method as <code>leaf</code> mapping
+     * @param leaf leaf schema node which is mapped as getter method which is added to <code>typeBuilder</code>
+     * @param module Module in which type was defined
      * @return boolean value
      *         <ul>
      *         <li>false - if <code>leaf</code> or <code>typeBuilder</code> are
@@ -1508,19 +1418,12 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Converts <code>leaf</code> schema node to property of generated TO
-     * builder.
+     * Converts <code>leaf</code> schema node to property of generated TO builder.
      *
-     * @param toBuilder
-     *            generated TO builder to which is <code>leaf</code> added as
-     *            property
-     * @param leaf
-     *            leaf schema node which is added to <code>toBuilder</code> as
-     *            property
-     * @param returnType
-     *            property type
-     * @param isReadOnly
-     *            boolean value which says if leaf property is|isn't read only
+     * @param toBuilder generated TO builder to which is <code>leaf</code> added as property
+     * @param leaf leaf schema node which is added to <code>toBuilder</code> as property
+     * @param returnType property type
+     * @param isReadOnly boolean value which says if leaf property is|isn't read only
      * @return boolean value
      *         <ul>
      *         <li>false - if <code>leaf</code>, <code>toBuilder</code> or leaf
@@ -1546,15 +1449,10 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Converts <code>node</code> leaf list schema node to getter method of
-     * <code>typeBuilder</code>.
+     * Converts <code>node</code> leaf list schema node to getter method of <code>typeBuilder</code>.
      *
-     * @param typeBuilder
-     *            generated type builder to which is <code>node</code> added as
-     *            getter method
-     * @param node
-     *            leaf list schema node which is added to
-     *            <code>typeBuilder</code> as getter method
+     * @param typeBuilder generated type builder to which is <code>node</code> added as getter method
+     * @param node leaf list schema node which is added to <code>typeBuilder</code> as getter method
      * @param module module
      * @return boolean value
      *         <ul>
@@ -1659,26 +1557,17 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Instantiates generated type builder with <code>packageName</code> and
-     * <code>schemaNode</code>.
-     *
-     * The new builder always implements
-     * {@link org.opendaylight.yangtools.yang.binding.DataObject DataObject}.<br>
-     * If <code>schemaNode</code> is instance of GroupingDefinition it also
-     * implements {@link org.opendaylight.yangtools.yang.binding.Augmentable
-     * Augmentable}.<br>
+     * Instantiates generated type builder with <code>packageName</code> and <code>schemaNode</code>. The new builder
+     * always implements {@link org.opendaylight.yangtools.yang.binding.DataObject DataObject}.<br>
+     * If <code>schemaNode</code> is instance of GroupingDefinition it also implements
+     * {@link org.opendaylight.yangtools.yang.binding.Augmentable Augmentable}.<br>
      * If <code>schemaNode</code> is instance of
-     * {@link org.opendaylight.yangtools.yang.model.api.DataNodeContainer
-     * DataNodeContainer} it can also implement nodes which are specified in
-     * <i>uses</i>.
+     * {@link org.opendaylight.yangtools.yang.model.api.DataNodeContainer DataNodeContainer} it can also implement nodes
+     * which are specified in <i>uses</i>.
      *
-     * @param packageName
-     *            string with the name of the package to which
-     *            <code>schemaNode</code> belongs.
-     * @param schemaNode
-     *            schema node for which is created generated type builder
-     * @param parent
-     *            parent type (can be null)
+     * @param packageName string with the name of the package to which <code>schemaNode</code> belongs.
+     * @param schemaNode schema node for which is created generated type builder
+     * @param parent parent type (can be null)
      * @return generated type builder <code>schemaNode</code>
      */
     private GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
@@ -1706,11 +1595,8 @@ abstract class AbstractTypeGenerator {
     /**
      * Wraps the calling of the same overloaded method.
      *
-     * @param packageName
-     *            string with the package name to which returning generated type
-     *            builder belongs
-     * @param schemaNode
-     *            schema node which provide data about the schema node name
+     * @param packageName string with the package name to which returning generated type builder belongs
+     * @param schemaNode schema node which provide data about the schema node name
      * @return generated type builder for <code>schemaNode</code>
      */
     private GeneratedTypeBuilder addRawInterfaceDefinition(final ModuleContext context, final SchemaNode schemaNode,
@@ -1721,20 +1607,13 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Returns reference to generated type builder for specified
-     * <code>schemaNode</code> with <code>packageName</code>.
+     * Returns reference to generated type builder for specified <code>schemaNode</code> with <code>packageName</code>.
+     * Firstly the generated type builder is searched in {@link BindingGeneratorImpl#genTypeBuilders genTypeBuilders}.
+     * If it is not found it is created and added to <code>genTypeBuilders</code>.
      *
-     * Firstly the generated type builder is searched in
-     * {@link BindingGeneratorImpl#genTypeBuilders genTypeBuilders}. If it isn't
-     * found it is created and added to <code>genTypeBuilders</code>.
-     *
-     * @param packageName
-     *            string with the package name to which returning generated type
-     *            builder belongs
-     * @param schemaNode
-     *            schema node which provide data about the schema node name
-     * @param prefix
-     *            return type name prefix
+     * @param packageName string with the package name to which returning generated type builder belongs
+     * @param schemaNode schema node which provide data about the schema node name
+     * @param prefix return type name prefix
      * @return generated type builder for <code>schemaNode</code>
      * @throws IllegalArgumentException
      *             <ul>
@@ -1743,7 +1622,6 @@ abstract class AbstractTypeGenerator {
      *             <li>if QName of schema node is null</li>
      *             <li>if schemaNode name is null</li>
      *             </ul>
-     *
      */
     private GeneratedTypeBuilder addRawInterfaceDefinition(final JavaTypeName identifier, final SchemaNode schemaNode) {
         checkArgument(schemaNode != null, "Data Schema Node cannot be NULL.");
@@ -1779,12 +1657,9 @@ abstract class AbstractTypeGenerator {
     /**
      * Creates the name of the getter method name from <code>localName</code>.
      *
-     * @param localName
-     *            string with the name of the getter method
-     * @param returnType
-     *            return type
-     * @return string with the name of the getter method for
-     *         <code>methodName</code> in JAVA method format
+     * @param localName string with the name of the getter method
+     * @param returnType return type
+     * @return string with the name of the getter method for <code>methodName</code> in JAVA method format
      */
     public static String getterMethodName(final String localName, final Type returnType) {
         final StringBuilder method = new StringBuilder();
@@ -1799,10 +1674,9 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Created a method signature builder as part of <code>interfaceBuilder</code>.
-     *
-     * The method signature builder is created for the getter method of <code>schemaNodeName</code>.
-     * Also <code>comment</code> and <code>returnType</code> information are added to the builder.
+     * Created a method signature builder as part of <code>interfaceBuilder</code>. The method signature builder is
+     * created for the getter method of <code>schemaNodeName</code>. Also <code>comment</code>
+     * and <code>returnType</code> information are added to the builder.
      *
      * @param interfaceBuilder generated type builder for which the getter method should be created
      * @param returnType type which represents the return type of the getter method
@@ -1828,23 +1702,16 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Adds <code>schemaNode</code> to <code>typeBuilder</code> as getter method
-     * or to <code>genTOBuilder</code> as property.
+     * Adds <code>schemaNode</code> to <code>typeBuilder</code> as getter method or to <code>genTOBuilder</code>
+     * as a property.
      *
-     * @param basePackageName
-     *            string contains the module package name
-     * @param schemaNode
-     *            data schema node which should be added as getter method to
-     *            <code>typeBuilder</code> or as a property to
-     *            <code>genTOBuilder</code> if is part of the list key
-     * @param typeBuilder
-     *            generated type builder for the list schema node
-     * @param genTOBuilder
-     *            generated TO builder for the list keys
-     * @param listKeys
-     *            list of string which contains names of the list keys
-     * @param module
-     *            current module
+     * @param basePackageName string contains the module package name
+     * @param schemaNode data schema node which should be added as getter method to <code>typeBuilder</code>
+     *                   or as a property to <code>genTOBuilder</code> if is part of the list key
+     * @param typeBuilder generated type builder for the list schema node
+     * @param genTOBuilder generated TO builder for the list keys
+     * @param listKeys list of string which contains names of the list keys
+     * @param module current module
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>schemaNode</code> equals null</li>
@@ -1896,14 +1763,11 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Selects the names of the list keys from <code>list</code> and returns
-     * them as the list of the strings
+     * Selects the names of the list keys from <code>list</code> and returns them as the list of the strings.
      *
-     * @param list
-     *            of string with names of the list keys
-     * @return list of string which represents names of the list keys. If the
-     *         <code>list</code> contains no keys then the empty list is
-     *         returned.
+     * @param list of string with names of the list keys
+     * @return list of string which represents names of the list keys. If the <code>list</code> contains no keys then
+     *         an empty list is returned.
      */
     private static List<String> listKeys(final ListSchemaNode list) {
         final List<String> listKeys = new ArrayList<>();
@@ -1918,16 +1782,12 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Generates for the <code>list</code> which contains any list keys special
-     * generated TO builder.
+     * Generates for the <code>list</code> which contains any list keys special generated TO builder.
      *
-     * @param packageName
-     *            string with package name to which the list belongs
-     * @param list
-     *            list schema node which is source of data about the list name
-     * @return generated TO builder which represents the keys of the
-     *         <code>list</code> or null if <code>list</code> is null or list of
-     *         key definitions is null or empty.
+     * @param packageName string with package name to which the list belongs
+     * @param list list schema node which is source of data about the list name
+     * @return generated TO builder which represents the keys of the <code>list</code> or null if <code>list</code> is
+     *         null or list of key definitions is null or empty.
      */
     private GeneratedTOBuilder resolveListKeyTOBuilder(final ModuleContext context, final ListSchemaNode list) {
         if (list.getKeyDefinition() != null && !list.getKeyDefinition().isEmpty()) {
@@ -1939,22 +1799,14 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Builds a GeneratedTOBuilder for a UnionType {@link UnionTypeDefinition}.
-     *
-     * If more then one generated TO builder is created for enclosing then all
-     * of the generated TO builders are added to <code>typeBuilder</code> as
+     * Builds a GeneratedTOBuilder for a UnionType {@link UnionTypeDefinition}. If more then one generated TO builder
+     * is created for enclosing then all of the generated TO builders are added to <code>typeBuilder</code> as
      * enclosing transfer objects.
      *
-     * @param typeDef
-     *            type definition which can be of type <code>UnionType</code> or
-     *            <code>BitsTypeDefinition</code>
-     * @param typeBuilder
-     *            generated type builder to which is added generated TO created
-     *            from <code>typeDef</code>
-     * @param leaf
-     *            string with name for generated TO builder
-     * @param parentModule
-     *            parent module
+     * @param typeDef type definition which can be of type <code>UnionType</code> or <code>BitsTypeDefinition</code>
+     * @param typeBuilder generated type builder to which is added generated TO created from <code>typeDef</code>
+     * @param leaf string with name for generated TO builder
+     * @param parentModule parent module
      * @return generated TO builder for <code>typeDef</code>
      */
     private Type addTOToTypeBuilder(final UnionTypeDefinition typeDef,
@@ -1980,23 +1832,15 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Builds generated TO builders for <code>typeDef</code> of type {@link BitsTypeDefinition} which are
-     * also added to <code>typeBuilder</code> as enclosing transfer object.
+     * Builds generated TO builders for <code>typeDef</code> of type {@link BitsTypeDefinition} which are also added
+     * to <code>typeBuilder</code> as enclosing transfer object. If more then one generated TO builder is created
+     * for enclosing then all of the generated TO builders are added to <code>typeBuilder</code> as enclosing transfer
+     * objects.
      *
-     * If more then one generated TO builder is created for enclosing then all
-     * of the generated TO builders are added to <code>typeBuilder</code> as
-     * enclosing transfer objects.
-     *
-     * @param typeDef
-     *            type definition which can be of type <code>UnionType</code> or
-     *            <code>BitsTypeDefinition</code>
-     * @param typeBuilder
-     *            generated type builder to which is added generated TO created
-     *            from <code>typeDef</code>
-     * @param leaf
-     *            string with name for generated TO builder
-     * @param parentModule
-     *            parent module
+     * @param typeDef type definition which can be of type <code>UnionType</code> or <code>BitsTypeDefinition</code>
+     * @param typeBuilder generated type builder to which is added generated TO created from <code>typeDef</code>
+     * @param leaf string with name for generated TO builder
+     * @param parentModule parent module
      * @return generated TO builder for <code>typeDef</code>
      */
     private GeneratedTOBuilder addTOToTypeBuilder(final BitsTypeDefinition typeDef,
@@ -2010,19 +1854,13 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Adds the implemented types to type builder.
+     * Adds the implemented types to type builder. The method passes through the list of <i>uses</i> in
+     * {@code dataNodeContainer}. For every <i>use</i> is obtained corresponding generated type
+     * from {@link ModuleContext#groupings allGroupings} which is added as <i>implements type</i>
+     * to <code>builder</code>
      *
-     * The method passes through the list of <i>uses</i> in
-     * {@code dataNodeContainer}. For every <i>use</i> is obtained corresponding
-     * generated type from {@link ModuleContext#groupings
-     * allGroupings} which is added as <i>implements type</i> to
-     * <code>builder</code>
-     *
-     * @param dataNodeContainer
-     *            element which contains the list of used YANG groupings
-     * @param builder
-     *            builder to which are added implemented types according to
-     *            <code>dataNodeContainer</code>
+     * @param dataNodeContainer element which contains the list of used YANG groupings
+     * @param builder builder to which are added implemented types according to <code>dataNodeContainer</code>
      * @return generated type builder with all implemented types
      */
     private GeneratedTypeBuilder addImplementedInterfaceFromUses(final DataNodeContainer dataNodeContainer,
