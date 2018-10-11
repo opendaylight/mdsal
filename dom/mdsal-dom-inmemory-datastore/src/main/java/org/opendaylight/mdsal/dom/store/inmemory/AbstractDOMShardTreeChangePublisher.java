@@ -7,7 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,8 +46,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeChangePublisher
-        implements DOMStoreTreeChangePublisher {
+abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeChangePublisher {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDOMShardTreeChangePublisher.class);
 
@@ -54,11 +55,10 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
     private final DataTree dataTree;
 
     protected AbstractDOMShardTreeChangePublisher(final DataTree dataTree,
-                                                  final YangInstanceIdentifier shardPath,
-                                                  final Map<DOMDataTreeIdentifier, ChildShardContext> childShards) {
-        this.dataTree = Preconditions.checkNotNull(dataTree);
-        this.shardPath = Preconditions.checkNotNull(shardPath);
-        this.childShards = Preconditions.checkNotNull(childShards);
+            final YangInstanceIdentifier shardPath, final Map<DOMDataTreeIdentifier, ChildShardContext> childShards) {
+        this.dataTree = requireNonNull(dataTree);
+        this.shardPath = requireNonNull(shardPath);
+        this.childShards = requireNonNull(childShards);
     }
 
     @Override
@@ -115,8 +115,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
 
         if (preExistingData.isPresent()) {
             final NormalizedNode<?, ?> data = preExistingData.get();
-            Preconditions.checkState(data instanceof DataContainerNode,
-                    "Expected DataContainer node, but was {}", data.getClass());
+            checkState(data instanceof DataContainerNode, "Expected DataContainer node, but was {}", data.getClass());
             // if we are listening on root of some shard we still get
             // empty normalized node, root is always present
             if (((DataContainerNode<?>) data).getValue().isEmpty()) {
@@ -201,12 +200,11 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         private final Map<YangInstanceIdentifier, ListenerRegistration<DOMDataTreeChangeListener>> registrations =
                 new HashMap<>();
 
-        DOMDataTreeListenerWithSubshards(final DataTree dataTree,
-                                         final YangInstanceIdentifier listenerPath,
-                                         final DOMDataTreeChangeListener delegate) {
-            this.dataTree = Preconditions.checkNotNull(dataTree);
-            this.listenerPath = Preconditions.checkNotNull(listenerPath);
-            this.delegate = Preconditions.checkNotNull(delegate);
+        DOMDataTreeListenerWithSubshards(final DataTree dataTree, final YangInstanceIdentifier listenerPath,
+                final DOMDataTreeChangeListener delegate) {
+            this.dataTree = requireNonNull(dataTree);
+            this.listenerPath = requireNonNull(listenerPath);
+            this.delegate = requireNonNull(delegate);
         }
 
         @Override
@@ -223,7 +221,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         }
 
         void addSubshard(final ChildShardContext context) {
-            Preconditions.checkState(context.getShard() instanceof DOMStoreTreeChangePublisher,
+            checkState(context.getShard() instanceof DOMStoreTreeChangePublisher,
                     "All subshards that are initialDataChangeEvent part of ListenerContext need to be listenable");
 
             final DOMStoreTreeChangePublisher listenableShard = (DOMStoreTreeChangePublisher) context.getShard();
@@ -255,7 +253,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
                 throw new RuntimeException("Notification validation failed", e);
             }
 
-            // strip nodes we dont need since this listener doesn't have to be registered at the root of the DataTree
+            // strip nodes we do not need since this listener doesn't have to be registered at the root of the DataTree
             DataTreeCandidateNode modifiedChild = dataTree.prepare(modification).getRootNode();
             for (final PathArgument pathArgument : listenerPath.getPathArguments()) {
                 modifiedChild = modifiedChild.getModifiedChild(pathArgument);

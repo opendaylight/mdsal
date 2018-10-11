@@ -5,10 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicLong;
@@ -35,7 +36,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         private final InMemoryDOMDataTreeShardProducer producer;
 
         Idle(final InMemoryDOMDataTreeShardProducer producer) {
-            this.producer = Preconditions.checkNotNull(producer);
+            this.producer = requireNonNull(producer);
         }
 
         @Override
@@ -54,7 +55,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         private volatile DataTreeSnapshot snapshot;
 
         Allocated(final InmemoryDOMDataTreeShardWriteTransaction transaction) {
-            this.transaction = Preconditions.checkNotNull(transaction);
+            this.transaction = requireNonNull(transaction);
         }
 
         InmemoryDOMDataTreeShardWriteTransaction getTransaction() {
@@ -64,7 +65,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         @Override
         protected DataTreeSnapshot getSnapshot(final Object transactionId) {
             final DataTreeSnapshot ret = snapshot;
-            Preconditions.checkState(ret != null,
+            checkState(ret != null,
                     "Could not get snapshot for transaction %s - previous transaction %s is not ready yet",
                     transactionId, transaction.getIdentifier());
             return ret;
@@ -72,7 +73,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
 
         void setSnapshot(final DataTreeSnapshot snapshot) {
             final boolean success = SNAPSHOT_UPDATER.compareAndSet(this, null, snapshot);
-            Preconditions.checkState(success, "Transaction %s has already been marked as ready",
+            checkState(success, "Transaction %s has already been marked as ready",
                     transaction.getIdentifier());
         }
     }
@@ -84,7 +85,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         private final String message;
 
         Shutdown(final String message) {
-            this.message = Preconditions.checkNotNull(message);
+            this.message = requireNonNull(message);
         }
 
         @Override
@@ -93,7 +94,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         }
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataTreeShard.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataTreeShardProducer.class);
     private static final AtomicLong COUNTER = new AtomicLong();
 
     private final InMemoryDOMDataTreeShard parentShard;
@@ -107,11 +108,11 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
     private InMemoryShardDataModificationFactory modificationFactory;
 
     InMemoryDOMDataTreeShardProducer(final InMemoryDOMDataTreeShard parentShard,
-                                     final Collection<DOMDataTreeIdentifier> prefixes,
-                                     final InMemoryShardDataModificationFactory modificationFactory) {
-        this.parentShard = Preconditions.checkNotNull(parentShard);
+            final Collection<DOMDataTreeIdentifier> prefixes,
+            final InMemoryShardDataModificationFactory modificationFactory) {
+        this.parentShard = requireNonNull(parentShard);
         this.prefixes = ImmutableSet.copyOf(prefixes);
-        this.modificationFactory = Preconditions.checkNotNull(modificationFactory);
+        this.modificationFactory = requireNonNull(modificationFactory);
         state = idleState;
     }
 
@@ -136,8 +137,8 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         if (localState instanceof Allocated) {
             final Allocated allocated = (Allocated) localState;
             final InmemoryDOMDataTreeShardWriteTransaction transaction = allocated.getTransaction();
-            Preconditions.checkState(tx.equals(transaction),
-                    "Mis-ordered ready transaction %s last allocated was %s", tx, transaction);
+            checkState(tx.equals(transaction), "Mis-ordered ready transaction %s last allocated was %s", tx,
+                transaction);
             allocated.setSnapshot(modification);
         } else {
             LOG.debug("Ignoring transaction {} readiness due to state {}", tx, localState);
@@ -208,6 +209,6 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
     }
 
     void setModificationFactory(final InMemoryShardDataModificationFactory modificationFactory) {
-        this.modificationFactory = Preconditions.checkNotNull(modificationFactory);
+        this.modificationFactory = requireNonNull(modificationFactory);
     }
 }
