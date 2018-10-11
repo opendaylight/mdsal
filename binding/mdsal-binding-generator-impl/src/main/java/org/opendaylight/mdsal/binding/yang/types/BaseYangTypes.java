@@ -113,7 +113,7 @@ public final class BaseYangTypes {
     }
 
     static {
-        final Builder<String, Type> b = ImmutableMap.<String, Type>builder();
+        final Builder<String, Type> b = ImmutableMap.builder();
 
         b.put("boolean", BOOLEAN_TYPE);
         b.put("empty", EMPTY_TYPE);

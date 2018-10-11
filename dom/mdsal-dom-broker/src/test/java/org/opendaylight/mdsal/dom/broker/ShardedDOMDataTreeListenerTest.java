@@ -33,7 +33,6 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeLoopException;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
@@ -100,20 +99,19 @@ public class ShardedDOMDataTreeListenerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void registerListenerWithEmptySubtrees() throws DOMDataTreeLoopException {
-        treeService.registerListener(listener, Collections.<DOMDataTreeIdentifier>emptyList(), true,
-                Collections.<DOMDataTreeProducer>emptyList());
+        treeService.registerListener(listener, Collections.emptyList(), true, Collections.emptyList());
     }
 
     @Test
     public void registerRootListener() throws DOMDataTreeLoopException {
-        treeService.registerListener(listener, SUBTREES_ROOT, true, Collections.<DOMDataTreeProducer>emptyList());
+        treeService.registerListener(listener, SUBTREES_ROOT, true, Collections.emptyList());
         verify(rootShard, times(1)).registerTreeChangeListener(eq(ROOT_ID.getRootIdentifier()),
                 any(DOMDataTreeChangeListener.class));
     }
 
     @Test
     public void registerTreeListener() throws DOMDataTreeLoopException {
-        treeService.registerListener(listener, SUBTREES_TEST, true, Collections.<DOMDataTreeProducer>emptyList());
+        treeService.registerListener(listener, SUBTREES_TEST, true, Collections.emptyList());
         verify(rootShard, times(1)).registerTreeChangeListener(eq(TEST_ID.getRootIdentifier()),
                 any(DOMDataTreeChangeListener.class));
     }
@@ -121,8 +119,7 @@ public class ShardedDOMDataTreeListenerTest {
     @Test
     public void registerAndCloseListener() throws DOMDataTreeLoopException {
         final ListenerRegistration<DOMDataTreeListener> reg =
-                treeService.registerListener(listener, SUBTREES_TEST, true,
-                        Collections.<DOMDataTreeProducer>emptyList());
+                treeService.registerListener(listener, SUBTREES_TEST, true, Collections.emptyList());
         reg.close();
         verify(storeListenerReg, times(1)).close();
     }
@@ -131,7 +128,7 @@ public class ShardedDOMDataTreeListenerTest {
     public void receiveChangeEvent() throws DOMDataTreeLoopException {
         final ArgumentCaptor<DOMDataTreeChangeListener> storeListener =
                 ArgumentCaptor.forClass(DOMDataTreeChangeListener.class);
-        treeService.registerListener(listener, SUBTREES_TEST, true, Collections.<DOMDataTreeProducer>emptyList());
+        treeService.registerListener(listener, SUBTREES_TEST, true, Collections.emptyList());
         verify(rootShard, times(1)).registerTreeChangeListener(eq(TEST_ID.getRootIdentifier()),
                 storeListener.capture());
 
@@ -139,7 +136,7 @@ public class ShardedDOMDataTreeListenerTest {
                 DataTreeCandidates.fromNormalizedNode(TEST_ID.getRootIdentifier(), TEST_CONTAINER);
         final Collection<DataTreeCandidate> changes = Collections.singleton(sentStoreCandidate);
 
-        doNothing().when(listener).onDataTreeChanged(Mockito.<Collection<DataTreeCandidate>>any(), Mockito.anyMap());
+        doNothing().when(listener).onDataTreeChanged(Mockito.any(), Mockito.anyMap());
         storeListener.getValue().onDataTreeChanged(changes);
 
         final ArgumentCaptor<Collection<DataTreeCandidate>> candidateCapture = captorFor(Collection.class);

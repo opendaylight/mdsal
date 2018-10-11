@@ -92,7 +92,7 @@ public class YangSchemaUtilsTest {
         doReturn(Optional.of(container)).when(context).findModule(any(QNameModule.class));
 
         final DataSchemaNode node = mock(DataSchemaNode.class);
-        doReturn(node).when(container).getDataChildByName((QName) any());
+        doReturn(node).when(container).getDataChildByName(any());
         final TypeDefinition<?> typeDefinition = mock(TypeDefinition.class);
         doReturn(Q_NAME).when(typeDefinition).getQName();
         doReturn(ImmutableSet.of(typeDefinition)).when(container).getTypeDefinitions();
@@ -107,16 +107,16 @@ public class YangSchemaUtilsTest {
 
         final DataNodeContainer dataNode =
                 mock(DataNodeContainer.class, withSettings().extraInterfaces(DataSchemaNode.class));
-        doReturn(dataNode).when(container).getDataChildByName((QName) any());
+        doReturn(dataNode).when(container).getDataChildByName(any());
         doReturn(ImmutableSet.of(typeDefinition)).when(dataNode).getTypeDefinitions();
         assertEquals(typeDefinition, YangSchemaUtils.findTypeDefinition(context,
             SchemaPath.create(false, Q_NAME, Q_NAME)));
 
         final ChoiceSchemaNode choiceNode =
                 mock(ChoiceSchemaNode.class, withSettings().extraInterfaces(DataSchemaNode.class));
-        doReturn(choiceNode).when(container).getDataChildByName((QName) any());
+        doReturn(choiceNode).when(container).getDataChildByName(any());
         final CaseSchemaNode caseNode = mock(CaseSchemaNode.class);
-        doReturn(caseNode).when(choiceNode).getCaseNodeByName((QName) any());
+        doReturn(caseNode).when(choiceNode).getCaseNodeByName(any());
         doReturn(ImmutableSet.of(typeDefinition)).when(caseNode).getTypeDefinitions();
         assertEquals(typeDefinition, YangSchemaUtils.findTypeDefinition(context,
             SchemaPath.create(false, Q_NAME, Q_NAME, Q_NAME)));
