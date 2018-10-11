@@ -29,13 +29,13 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
 
     private final T transactionFactory;
 
-    ManagedTransactionFactoryImpl(T transactionFactory) {
+    ManagedTransactionFactoryImpl(final T transactionFactory) {
         this.transactionFactory = requireNonNull(transactionFactory, "transactionFactory must not be null");
     }
 
     @Override
     public <D extends Datastore, E extends Exception, R> R applyInterruptiblyWithNewReadOnlyTransactionAndClose(
-            Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction)
+            final Class<D> datastoreType, final InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction)
             throws E, InterruptedException {
         try (ReadTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
             TypedReadTransaction<D>
@@ -46,7 +46,7 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
 
     @Override
     public <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(
-            Class<D> datastoreType, CheckedFunction<TypedReadTransaction<D>, R, E> txFunction) throws E {
+            final Class<D> datastoreType, final CheckedFunction<TypedReadTransaction<D>, R, E> txFunction) throws E {
         try (ReadTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
             TypedReadTransaction<D>
                 wrappedTx = new TypedReadTransactionImpl<>(datastoreType, realTx);
@@ -57,15 +57,15 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
     @Override
     @CheckReturnValue
     public <D extends Datastore, E extends Exception, R>
-        FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
-            InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
+        FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(final Class<D> datastoreType,
+            final InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
         return applyWithNewTransactionAndSubmit(datastoreType, transactionFactory::newReadWriteTransaction,
             TypedReadWriteTransactionImpl::new, txFunction, (realTx, wrappedTx) -> realTx.commit());
     }
 
     @Override
     public <D extends Datastore, E extends Exception> void callInterruptiblyWithNewReadOnlyTransactionAndClose(
-            Class<D> datastoreType, InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer)
+            final Class<D> datastoreType, final InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer)
             throws E, InterruptedException {
         try (ReadTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
             TypedReadTransaction<D> wrappedTx = new TypedReadTransactionImpl<>(datastoreType, realTx);
@@ -75,7 +75,7 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
 
     @Override
     public <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(
-            Class<D> datastoreType, CheckedConsumer<TypedReadTransaction<D>, E> txConsumer) throws E {
+            final Class<D> datastoreType, final CheckedConsumer<TypedReadTransaction<D>, E> txConsumer) throws E {
         try (ReadTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
             TypedReadTransaction<D> wrappedTx = new TypedReadTransactionImpl<>(datastoreType, realTx);
             txConsumer.accept(wrappedTx);
@@ -85,16 +85,17 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
     @Override
     @CheckReturnValue
     public <D extends Datastore, E extends Exception>
-        FluentFuture<? extends Object> callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
-            InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
+        FluentFuture<? extends Object> callWithNewReadWriteTransactionAndSubmit(final Class<D> datastoreType,
+            final InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
         return callWithNewTransactionAndSubmit(datastoreType, transactionFactory::newReadWriteTransaction,
             TypedReadWriteTransactionImpl::new, txConsumer, (realTx, wrappedTx) -> realTx.commit());
     }
 
     @Override
     @CheckReturnValue
-    public <D extends Datastore, E extends Exception> FluentFuture<? extends Object> callWithNewWriteOnlyTransactionAndSubmit(
-            Class<D> datastoreType, InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer) {
+    public <D extends Datastore, E extends Exception> FluentFuture<? extends Object>
+            callWithNewWriteOnlyTransactionAndSubmit(final Class<D> datastoreType,
+                    final InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer) {
         return callWithNewTransactionAndSubmit(datastoreType, transactionFactory::newWriteOnlyTransaction,
             TypedWriteTransactionImpl::new, txConsumer, (realTx, wrappedTx) -> realTx.commit());
     }
@@ -102,8 +103,8 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
     @CheckReturnValue
     protected <D extends Datastore, T extends WriteTransaction, W, E extends Exception> FluentFuture<? extends Object>
         callWithNewTransactionAndSubmit(
-            Class<D> datastoreType, Supplier<T> txSupplier, BiFunction<Class<D>, T, W> txWrapper,
-            InterruptibleCheckedConsumer<W, E> txConsumer, BiFunction<T, W, FluentFuture<?>> txSubmitter) {
+            final Class<D> datastoreType, final Supplier<T> txSupplier, final BiFunction<Class<D>, T, W> txWrapper,
+            final InterruptibleCheckedConsumer<W, E> txConsumer, final BiFunction<T, W, FluentFuture<?>> txSubmitter) {
         return applyWithNewTransactionAndSubmit(datastoreType, txSupplier, txWrapper, tx -> {
             txConsumer.accept(tx);
             return null;
@@ -114,8 +115,9 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
     @SuppressWarnings("checkstyle:IllegalCatch")
     protected <D extends Datastore, T extends WriteTransaction, W, R, E extends Exception> FluentFuture<R>
         applyWithNewTransactionAndSubmit(
-            Class<D> datastoreType, Supplier<T> txSupplier, BiFunction<Class<D>, T, W> txWrapper,
-            InterruptibleCheckedFunction<W, R, E> txFunction, BiFunction<T, W, FluentFuture<?>> txSubmitter) {
+            final Class<D> datastoreType, final Supplier<T> txSupplier, final BiFunction<Class<D>, T, W> txWrapper,
+            final InterruptibleCheckedFunction<W, R, E> txFunction,
+            final BiFunction<T, W, FluentFuture<?>> txSubmitter) {
         T realTx = txSupplier.get();
         W wrappedTx = txWrapper.apply(datastoreType, realTx);
         R result;

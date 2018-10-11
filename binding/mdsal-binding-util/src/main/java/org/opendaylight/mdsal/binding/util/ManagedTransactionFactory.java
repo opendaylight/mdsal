@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.binding.api.WriteTransaction;
 /**
  * Managed transaction factories provide managed transactions, <em>i.e.</em> transactions which are automatically
  * submitted or cancelled (write) or closed (read).
+ *
  * <p>
  * This is a common interface for broker- and chain-based transaction managers, and should not be used directly.
  */
@@ -88,7 +89,7 @@ public interface ManagedTransactionFactory {
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txFunction the {@link InterruptibleCheckedFunction} that needs a new read-write transaction
      * @return the {@link FluentFuture} returned by {@link ReadWriteTransaction#commit()}, or a failed future with an
-     * application specific exception (not from submit())
+     *         application specific exception (not from submit())
      */
     @CheckReturnValue
     <D extends Datastore, E extends Exception, R>
@@ -157,7 +158,7 @@ public interface ManagedTransactionFactory {
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedConsumer} that needs a new read-write transaction
      * @return the {@link FluentFuture} returned by {@link ReadWriteTransaction#commit()}, or a failed future with an
-     * application specific exception (not from submit())
+     *         application specific exception (not from submit())
      */
     @CheckReturnValue
     <D extends Datastore, E extends Exception>
@@ -188,7 +189,7 @@ public interface ManagedTransactionFactory {
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedConsumer} that needs a new write only transaction
      * @return the {@link FluentFuture} returned by {@link WriteTransaction#commit()}, or a failed future with an
-     * application specific exception (not from submit())
+     *         application specific exception (not from submit())
      */
     @CheckReturnValue
     <D extends Datastore, E extends Exception>

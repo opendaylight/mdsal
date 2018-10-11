@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
@@ -45,7 +44,7 @@ public final class TransactionAdapter {
      * @throws NullPointerException if the provided transaction is {@code null}.
      */
     public static ReadWriteTransaction toReadWriteTransaction(
-            TypedReadWriteTransaction<? extends Datastore> datastoreTx) {
+            final TypedReadWriteTransaction<? extends Datastore> datastoreTx) {
         if (datastoreTx instanceof TypedReadWriteTransactionImpl) {
             TypedReadWriteTransactionImpl nonSubmitCancelableDatastoreReadWriteTransaction =
                     (TypedReadWriteTransactionImpl) datastoreTx;
@@ -63,7 +62,7 @@ public final class TransactionAdapter {
      * @param datastoreTx The transaction to adapt.
      * @return The adapted transaction.
      */
-    public static WriteTransaction toWriteTransaction(TypedWriteTransaction<? extends Datastore> datastoreTx) {
+    public static WriteTransaction toWriteTransaction(final TypedWriteTransaction<? extends Datastore> datastoreTx) {
         if (datastoreTx instanceof TypedWriteTransactionImpl) {
             TypedWriteTransactionImpl nonSubmitCancelableDatastoreWriteTransaction =
                     (TypedWriteTransactionImpl) datastoreTx;
@@ -81,33 +80,35 @@ public final class TransactionAdapter {
         private final LogicalDatastoreType datastoreType;
         private final T delegate;
 
-        private WriteTransactionAdapter(LogicalDatastoreType datastoreType, T delegate) {
+        private WriteTransactionAdapter(final LogicalDatastoreType datastoreType, final T delegate) {
             this.datastoreType = datastoreType;
             this.delegate = delegate;
         }
 
         @Override
-        public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
+        public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+                final T data) {
             checkStore(store);
             delegate.put(path, data);
         }
 
         @Override
-        public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-                boolean createMissingParents) {
+        public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+                final T data, final boolean createMissingParents) {
             checkStore(store);
             delegate.put(path, data, createMissingParents);
         }
 
         @Override
-        public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
+        public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+                final T data) {
             checkStore(store);
             delegate.merge(path, data);
         }
 
         @Override
-        public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-                boolean createMissingParents) {
+        public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+                final T data, final boolean createMissingParents) {
             checkStore(store);
             delegate.merge(path, data, createMissingParents);
         }
@@ -118,7 +119,7 @@ public final class TransactionAdapter {
         }
 
         @Override
-        public void delete(LogicalDatastoreType store, InstanceIdentifier<?> path) {
+        public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
             checkStore(store);
             delegate.delete(path);
         }
@@ -128,7 +129,7 @@ public final class TransactionAdapter {
             throw new UnsupportedOperationException("Managed transactions must not be committed");
         }
 
-        void checkStore(LogicalDatastoreType store) {
+        void checkStore(final LogicalDatastoreType store) {
             checkArgument(datastoreType.equals(store), "Invalid datastore %s used instead of %s", store, datastoreType);
         }
 
@@ -145,13 +146,14 @@ public final class TransactionAdapter {
 
     private static final class ReadWriteTransactionAdapter<D extends Datastore>
             extends WriteTransactionAdapter<D, TypedReadWriteTransaction<D>> implements ReadWriteTransaction {
-        private ReadWriteTransactionAdapter(LogicalDatastoreType datastoreType, TypedReadWriteTransaction<D> delegate) {
+        private ReadWriteTransactionAdapter(final LogicalDatastoreType datastoreType,
+                final TypedReadWriteTransaction<D> delegate) {
             super(datastoreType, delegate);
         }
 
         @Override
-        public <T extends DataObject> FluentFuture<Optional<T>> read(LogicalDatastoreType store,
-                InstanceIdentifier<T> path) {
+        public <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
+                final InstanceIdentifier<T> path) {
             checkStore(store);
             return delegate().read(path);
         }
