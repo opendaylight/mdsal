@@ -214,14 +214,11 @@ public final class JavaCodePrettyPrint {
         if (splittedByNewLine[cur].contains(JDOC_START)) {
             fixedLines.add(new StringBuilder(splittedByNewLine[cur]).append(NEW_LINE).toString());
             for (int next = cur + 1; next < splittedByNewLine.length - 1; next++) {
+                fixedLines.add(
+                    new StringBuilder().append(SPACE).append(splittedByNewLine[next]).append(NEW_LINE).toString());
                 if (splittedByNewLine[next].contains(JDOC_END)) {
-                    fixedLines.add(new StringBuilder(SPACE)
-                            .append(SPACE).append(splittedByNewLine[next]).append(NEW_LINE).toString());
                     cur = next + 1;
                     break;
-                } else {
-                    fixedLines.add(new StringBuilder(SPACE)
-                            .append(SPACE).append(splittedByNewLine[next]).append(NEW_LINE).toString());
                 }
             }
         }
