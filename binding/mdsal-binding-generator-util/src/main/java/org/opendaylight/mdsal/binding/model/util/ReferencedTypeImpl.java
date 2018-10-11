@@ -10,14 +10,11 @@ package org.opendaylight.mdsal.binding.model.util;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 
 /**
- *
- * Wraps combination of <code>packageName</code> and <code>name</code> to the
- * object representation
+ * Wraps combination of <code>packageName</code> and <code>name</code> to the object representation.
  */
 public final class ReferencedTypeImpl extends AbstractBaseType {
-
     /**
-     * Creates instance of this class with concrete package name and type name
+     * Creates instance of this class with concrete package name and type name.
      *
      * @param identifier JavaTypeName of the referenced type
      */

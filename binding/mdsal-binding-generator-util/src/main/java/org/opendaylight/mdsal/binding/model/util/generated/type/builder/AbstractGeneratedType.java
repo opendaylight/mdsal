@@ -16,10 +16,10 @@ import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
@@ -81,18 +81,20 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
 
     protected static final <T> List<T> makeUnmodifiable(final List<T> list) {
         switch (list.size()) {
-        case 0:
-            return Collections.emptyList();
-        case 1:
-            return Collections.singletonList(list.get(0));
-        default:
-            return Collections.unmodifiableList(list);
+            case 0:
+                return Collections.emptyList();
+            case 1:
+                return Collections.singletonList(list.get(0));
+            default:
+                return Collections.unmodifiableList(list);
         }
     }
 
-    private static List<GeneratedType> toUnmodifiableEnclosedTypes(final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
+    private static List<GeneratedType> toUnmodifiableEnclosedTypes(
+            final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
             final List<GeneratedTOBuilder> enclosedGenTOBuilders) {
-        final ArrayList<GeneratedType> enclosedTypesList = new ArrayList<>(enclosedGenTypeBuilders.size() + enclosedGenTOBuilders.size());
+        final ArrayList<GeneratedType> enclosedTypesList = new ArrayList<>(enclosedGenTypeBuilders.size()
+                + enclosedGenTOBuilders.size());
         for (final GeneratedTypeBuilder builder : enclosedGenTypeBuilders) {
             if (builder != null) {
                 enclosedTypesList.add(builder.build());
@@ -133,7 +135,8 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         return makeUnmodifiable(enums);
     }
 
-    protected final List<GeneratedProperty> toUnmodifiableProperties(final List<GeneratedPropertyBuilder> methodBuilders) {
+    protected final List<GeneratedProperty> toUnmodifiableProperties(
+            final List<GeneratedPropertyBuilder> methodBuilders) {
         final List<GeneratedProperty> methods = new ArrayList<>(methodBuilders.size());
         for (final GeneratedPropertyBuilder methodBuilder : methodBuilders) {
             methods.add(methodBuilder.toInstance(this));

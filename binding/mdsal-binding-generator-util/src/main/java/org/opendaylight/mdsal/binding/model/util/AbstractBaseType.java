@@ -11,7 +11,7 @@ import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
 /**
- * It is used only as ancestor for other <code>Type</code>s
+ * It is used only as ancestor for other <code>Type</code>s.
  */
 public class AbstractBaseType implements Type {
     /**

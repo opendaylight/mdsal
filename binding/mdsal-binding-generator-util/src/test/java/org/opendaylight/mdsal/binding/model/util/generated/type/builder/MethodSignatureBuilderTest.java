@@ -14,15 +14,20 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.model.util.Types;
 
 public class MethodSignatureBuilderTest {
 
-    private MethodSignatureBuilder builder1, builder2, builder3, builder4;
-    private int hash1, hash2, hash3;
+    private MethodSignatureBuilder builder1;
+    private MethodSignatureBuilder builder2;
+    private MethodSignatureBuilder builder3;
+    private MethodSignatureBuilder builder4;
+    private int hash1;
+    private int hash2;
+    private int hash3;
 
     @Before
     public void setup() {

@@ -13,16 +13,22 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.util.Types;
 
 public class MethodParameterImplTest {
 
-    private MethodParameterImpl parameter1, parameter2, parameter3, parameter4;
-    private int hash1, hash2, hash3, hash4;
+    private MethodParameterImpl parameter1;
+    private MethodParameterImpl parameter2;
+    private MethodParameterImpl parameter3;
+    private MethodParameterImpl parameter4;
+    private int hash1;
+    private int hash2;
+    private int hash3;
+    private int hash4;
 
     @Before
-    public void Setup() {
+    public void before() {
         String name = "customParameter";
         Type type = Types.STRING;
         parameter1 = new MethodParameterImpl(name, type);

@@ -27,8 +27,8 @@ import org.opendaylight.yangtools.yang.model.util.type.EnumPairBuilder;
 
 public class EnumerationBuilderImplTest {
 
-    private final QName qName = QName.create("TestQName", "2014-10-10", "TestLocalQName");
-    private final String DESCRIPTION = "Test description of Enum";
+    private final QName qname = QName.create("TestQName", "2014-10-10", "TestLocalQName");
+    private static final String DESCRIPTION = "Test description of Enum";
     private final String packageName = "org.opendaylight.test";
     private final String name = "TestName";
     private final String moduleName = "TestModuleName";
@@ -48,12 +48,13 @@ public class EnumerationBuilderImplTest {
         enumerationBuilder.setDescription(DESCRIPTION);
         enumerationBuilder.setModuleName(moduleName);
         enumerationBuilder.setReference(reference);
-        enumerationBuilder.setSchemaPath(SchemaPath.create(true, qName));
+        enumerationBuilder.setSchemaPath(SchemaPath.create(true, qname));
         enumerationBuilder.addValue(valueName, valueName, value, Status.CURRENT, valueDescription, null);
         enumerationBuilder.addAnnotation(packageName, "TestAnnotation");
         enumerationBuilderSame = new CodegenEnumerationBuilder(JavaTypeName.create(packageName, name));
         enumerationBuilderOtherName = new CodegenEnumerationBuilder(JavaTypeName.create(packageName, "SomeOtherName"));
-        enumerationBuilderOtherPackage = new CodegenEnumerationBuilder(JavaTypeName.create("org.opendaylight.other", name));
+        enumerationBuilderOtherPackage = new CodegenEnumerationBuilder(JavaTypeName.create("org.opendaylight.other",
+            name));
         enumeration = enumerationBuilder.toInstance(enumerationBuilder);
     }
 
@@ -96,7 +97,7 @@ public class EnumerationBuilderImplTest {
         assertEquals(moduleName, enumeration.getModuleName());
         assertEquals(packageName + '.' + name, enumeration.getFullyQualifiedName());
         assertEquals(reference, enumeration.getReference());
-        assertEquals(Collections.singletonList(qName), enumeration.getSchemaPath());
+        assertEquals(Collections.singletonList(qname), enumeration.getSchemaPath());
         assertEquals(Collections.EMPTY_LIST, enumeration.getEnclosedTypes());
         assertEquals(Collections.EMPTY_LIST, enumeration.getEnumerations());
         assertEquals(Collections.EMPTY_LIST, enumeration.getMethodDefinitions());
@@ -111,7 +112,8 @@ public class EnumerationBuilderImplTest {
         assertEquals(enumeration, enumeration);
         assertNotEquals(enumeration, "string");
 
-        final Enumeration enumerationOtherPackage = enumerationBuilderOtherPackage.toInstance(enumerationBuilderOtherPackage);
+        final Enumeration enumerationOtherPackage = enumerationBuilderOtherPackage
+                .toInstance(enumerationBuilderOtherPackage);
         assertNotEquals(enumeration, enumerationOtherPackage);
 
         final Enumeration enumerationOtherName = enumerationBuilderOtherName.toInstance(enumerationBuilderOtherName);
@@ -131,19 +133,17 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void testEnumerationToString() {
-        final String formattedString =
-                "public enum " + name + " {\n" +
-                "\t TestValue " + "(12 );\n" +
-                "}";
+        final String formattedString = "public enum " + name + " {\n"
+                + "\t TestValue " + "(12 );\n"
+                + "}";
         final String s = "Enumeration [packageName=" + packageName + ", definingType=" + packageName + "." + name
                 + ", name=" + name + ", values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]";
 
         assertEquals(s, enumeration.toString());
         assertEquals(formattedString, enumeration.toFormattedString());
 
-        assertEquals("EnumerationBuilderImpl " +
-                "[packageName=org.opendaylight.test, name=TestName, " +
-                "values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]",
+        assertEquals("EnumerationBuilderImpl [packageName=org.opendaylight.test, name=TestName, "
+                + "values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]",
                 enumerationBuilder.toString());
     }
 

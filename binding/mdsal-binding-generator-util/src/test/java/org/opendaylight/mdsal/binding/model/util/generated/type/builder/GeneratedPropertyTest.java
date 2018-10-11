@@ -32,7 +32,8 @@ public class GeneratedPropertyTest {
 
     @Test
     public void testMethodsForGeneratedPropertyImpl() {
-        final GeneratedPropertyImpl propertyImpl = new GeneratedPropertyImpl(null, "Test", null, "test property", AccessModifier.PRIVATE, null, true, true, true, "test value");
+        final GeneratedPropertyImpl propertyImpl = new GeneratedPropertyImpl(null, "Test", null, "test property",
+            AccessModifier.PRIVATE, null, true, true, true, "test value");
 
         assertEquals("test value", propertyImpl.getValue());
         assertTrue(propertyImpl.isReadOnly());

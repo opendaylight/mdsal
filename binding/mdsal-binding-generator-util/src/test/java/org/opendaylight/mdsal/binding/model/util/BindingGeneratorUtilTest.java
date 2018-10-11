@@ -57,7 +57,7 @@ public class BindingGeneratorUtilTest {
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
-    /**
+    /*
      * Tests methods:
      * &lt;ul&gt;
      * &lt;li&gt;moduleNamespaceToPackageName&lt;/li&gt; - with revision
@@ -118,7 +118,7 @@ public class BindingGeneratorUtilTest {
         assertNotEquals(computedSUID, computedSUID2);
     }
 
-    /**
+    /*
      * Test for the method
      * &lt;ul&gt;
      * &lt;li&gt;{@link BindingGeneratorUtil#packageNameForGeneratedType(String, SchemaPath)
@@ -131,7 +131,7 @@ public class BindingGeneratorUtilTest {
         BindingGeneratorUtil.packageNameForGeneratedType(null, null);
     }
 
-    /**
+    /*
      * Test for the method
      * &lt;ul&gt;
      * &lt;li&gt;{@link BindingGeneratorUtil#packageNameForGeneratedType(String, SchemaPath)
@@ -144,7 +144,7 @@ public class BindingGeneratorUtilTest {
         BindingGeneratorUtil.packageNameForGeneratedType("test.package", null);
     }
 
-    /**
+    /*
      * Test for the method
      * &lt;ul&gt;
      * &lt;li&gt;{@link BindingGeneratorUtil#resolveJavaReservedWordEquivalency(String)
@@ -160,7 +160,7 @@ public class BindingGeneratorUtilTest {
                 BindingGeneratorUtil.resolveJavaReservedWordEquivalency("case"));
     }
 
-    /**
+    /*
      * Tests the methods:
      * &lt;ul&gt;
      * &lt;li&gt;parseToClassName&lt;/li&gt;

@@ -15,13 +15,14 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 
 final class GeneratedPropertyImpl extends AbstractTypeMember implements GeneratedProperty {
     private final String value;
-    private final boolean isReadOnly;
+    private final boolean readOnly;
 
-    public GeneratedPropertyImpl(final Type definingType, final String name, final List<AnnotationType> annotations, final String comment,
-                                 final AccessModifier accessModifier, final Type returnType, final boolean isFinal, final boolean isStatic, final boolean isReadOnly, final String value) {
+    GeneratedPropertyImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
+            final String comment, final AccessModifier accessModifier, final Type returnType, final boolean isFinal,
+            final boolean isStatic, final boolean isReadOnly, final String value) {
         super(definingType, name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
         this.value = value;
-        this.isReadOnly = isReadOnly;
+        this.readOnly = isReadOnly;
     }
 
     @Override
@@ -31,7 +32,7 @@ final class GeneratedPropertyImpl extends AbstractTypeMember implements Generate
 
     @Override
     public boolean isReadOnly() {
-        return this.isReadOnly;
+        return this.readOnly;
     }
 
     @Override
@@ -56,7 +57,7 @@ final class GeneratedPropertyImpl extends AbstractTypeMember implements Generate
         builder.append(", isFinal=");
         builder.append(isFinal());
         builder.append(", isReadOnly=");
-        builder.append(this.isReadOnly);
+        builder.append(this.readOnly);
         builder.append(", modifier=");
         builder.append(getAccessModifier());
         builder.append("]");
