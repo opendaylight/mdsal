@@ -42,6 +42,7 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -119,7 +120,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 abstract class AbstractTypeGenerator {
-    private static final Logger LOG = LoggerFactory.getLogger(BindingGeneratorImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractTypeGenerator.class);
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
     private static final JavaTypeName DEPRECATED_ANNOTATION = JavaTypeName.create(Deprecated.class);
     private static final JavaTypeName OVERRIDE_ANNOTATION = JavaTypeName.create(Override.class);
@@ -1164,6 +1165,8 @@ abstract class AbstractTypeGenerator {
      *             <li>if <code>augmentedNodes</code> is null</li>
      *             </ul>
      */
+    // FIXME: nullness rules need to untangled in this method
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH")
     private void generateTypesFromAugmentedChoiceCases(final ModuleContext context,
             final Type targetType, final ChoiceSchemaNode targetNode, final Iterable<DataSchemaNode> augmentedNodes,
             final DataNodeContainer usesNodeParent) {
@@ -1590,20 +1593,6 @@ abstract class AbstractTypeGenerator {
         }
 
         return it;
-    }
-
-    /**
-     * Wraps the calling of the same overloaded method.
-     *
-     * @param packageName string with the package name to which returning generated type builder belongs
-     * @param schemaNode schema node which provide data about the schema node name
-     * @return generated type builder for <code>schemaNode</code>
-     */
-    private GeneratedTypeBuilder addRawInterfaceDefinition(final ModuleContext context, final SchemaNode schemaNode,
-            final String prefix) {
-        return addRawInterfaceDefinition(
-            JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), schemaNode.getPath()),
-                prefix + BindingMapping.getClassName(schemaNode.getQName())), schemaNode);
     }
 
     /**

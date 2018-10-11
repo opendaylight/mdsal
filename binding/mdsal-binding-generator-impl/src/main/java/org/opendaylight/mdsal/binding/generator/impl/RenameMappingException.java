@@ -29,7 +29,7 @@ final class RenameMappingException extends IllegalStateException {
     private static final long serialVersionUID = 1L;
 
     private final JavaTypeName name;
-    private final SchemaNode definition;
+    private final transient SchemaNode definition;
 
     RenameMappingException(final JavaTypeName name, final SchemaNode definition) {
         super("Remap " + name + " occupant " + definition);

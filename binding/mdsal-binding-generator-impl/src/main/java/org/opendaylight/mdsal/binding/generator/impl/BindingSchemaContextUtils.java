@@ -169,7 +169,7 @@ public final class BindingSchemaContextUtils {
         HashSet<AugmentationSchemaNode> augmentations = new HashSet<>();
         augmentations.addAll(ctxNode.getAvailableAugmentations());
         if (ctxNode instanceof DataSchemaNode && ((DataSchemaNode) ctxNode).isAddedByUses()) {
-            LOG.info("{}", ctxNode);
+            LOG.info("DataSchemaNode target added by uses {}", ctxNode);
         }
 
         return augmentations;

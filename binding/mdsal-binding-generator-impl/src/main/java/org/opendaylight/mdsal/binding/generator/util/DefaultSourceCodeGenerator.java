@@ -8,9 +8,11 @@
 
 package org.opendaylight.mdsal.binding.generator.util;
 
+import com.google.common.io.Files;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
@@ -63,7 +65,7 @@ public class DefaultSourceCodeGenerator implements SourceCodeGenerator {
 
             builder.append(";\n");
         } catch (NotFoundException e) {
-            LOG.error("Error building field source for " + field.getName(), e);
+            LOG.error("Error building field source for {}", field.getName(), e);
         }
     }
 
@@ -88,7 +90,7 @@ public class DefaultSourceCodeGenerator implements SourceCodeGenerator {
 
             builder.append(" )\n").append(code).append("\n\n");
         } catch (NotFoundException e) {
-            LOG.error("Error building method source for " + method.getName(), e);
+            LOG.error("Error building method source for {}", method.getName(), e);
         }
     }
 
@@ -118,20 +120,22 @@ public class DefaultSourceCodeGenerator implements SourceCodeGenerator {
                 }
             }
 
-            classBuilder.append(" {\n").append(builder.toString())
-                    .append("\n}");
+            classBuilder.append(" {\n").append(builder).append("\n}");
         } catch (NotFoundException e) {
-            LOG.error("Error building class source for " + name, e);
+            LOG.error("Error building class source for {}", name, e);
             return;
         }
 
         File dir = new File(generatedSourceDir);
-        dir.mkdir();
-        try (FileWriter writer = new FileWriter(new File(dir, name + ".java"))) {
-            writer.append(classBuilder.toString());
+        if (!dir.mkdir()) {
+            LOG.warn("Failed to create directory {}, attempting to continue", generatedSourceDir);
+        }
+
+        try (BufferedWriter writer = Files.newWriter(new File(dir, name + ".java"), StandardCharsets.UTF_8)) {
+            writer.append(classBuilder);
             writer.flush();
         } catch (IOException e) {
-            LOG.error("Error writing class source for " + name, e);
+            LOG.error("Error writing class source for {}", name, e);
         }
     }
 }
