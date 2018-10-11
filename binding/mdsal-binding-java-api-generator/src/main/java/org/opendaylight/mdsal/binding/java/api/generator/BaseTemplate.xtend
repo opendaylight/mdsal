@@ -363,7 +363,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
         formattedText = WS_MATCHER.replaceFrom(formattedText, SPACE)
         formattedText = SPACES_PATTERN.matcher(formattedText).replaceAll(" ")
 
-        val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
+        val tokenizer = new StringTokenizer(formattedText, " ", true);
 
         while (tokenizer.hasMoreTokens) {
             val nextElement = tokenizer.nextToken
@@ -375,9 +375,8 @@ abstract class BaseTemplate extends JavaFileTemplate {
                     lineBuilder.setLength(0)
                     lineBuilder.append(lineBuilder.substring(0, lineBuilder.length - 1))
                 }
-                if (lineBuilder.charAt(0) == ' ') {
-                    lineBuilder.setLength(0)
-                    lineBuilder.append(lineBuilder.substring(1))
+                if (lineBuilder.charAt(0) == SPACE) {
+                    lineBuilder.deleteCharAt(0)
                 }
 
                 sb.append(lineBuilder).append(NEW_LINE)
