@@ -101,7 +101,8 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path,
                     final NormalizedNode<?, ?> data) {
         checkRunning();
-        LOG.debug("{}: Invoking put operation at {}:{} with payload {}", txIdentifier, store, path);
+        LOG.debug("{}: Invoking put operation at {}:{}", txIdentifier, store, path);
+        LOG.trace("{}: payload is {}", txIdentifier, data);
         if (!initialized) {
             initializeDataTreeProducerLayer(path.getParent());
         }
@@ -114,7 +115,8 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path,
                       final NormalizedNode<?, ?> data) {
         checkRunning();
-        LOG.debug("{}: Invoking merge operation at {}:{} with payload {}", txIdentifier, store, path);
+        LOG.debug("{}: Invoking merge operation at {}:{}", txIdentifier, store, path);
+        LOG.trace("{}: payload is {}", txIdentifier, data);
         if (!initialized) {
             initializeDataTreeProducerLayer(path.getParent());
         }
@@ -150,7 +152,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
                 treeService.createProducer(
                         Collections.singleton(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, path))));
 
-        LOG.debug("{}: Creating DOMDataTreeCursorAwareTransactions delegates", txIdentifier, path);
+        LOG.debug("{}: Creating DOMDataTreeCursorAwareTransactions delegates on {}", txIdentifier, path);
         transactionMap.put(LogicalDatastoreType.CONFIGURATION,
                 producerMap.get(LogicalDatastoreType.CONFIGURATION).createTransaction(true));
         transactionMap.put(LogicalDatastoreType.OPERATIONAL,

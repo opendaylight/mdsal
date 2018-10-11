@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransactionFactory<DOMStore>
-        implements DOMDataBroker, AutoCloseable {
+        implements DOMDataBroker {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDOMDataBroker.class);
 
     private final AtomicLong txNum = new AtomicLong();
