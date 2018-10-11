@@ -7,8 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Verify;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Verify.verifyNotNull;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
@@ -72,12 +74,13 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     public <T extends DOMDataTreeShard> DOMDataTreeShardRegistration<T> registerDataTreeShard(
             final DOMDataTreeIdentifier prefix, final T shard, final DOMDataTreeProducer producer)
                     throws DOMDataTreeShardingConflictException {
+        checkArgument(producer instanceof ShardedDOMDataTreeProducer, "Unsupported producer %s", producer);
+        final ShardedDOMDataTreeProducer prod = (ShardedDOMDataTreeProducer) producer;
 
-        final DOMDataTreeIdentifier firstSubtree = Iterables.getOnlyElement(((
-                ShardedDOMDataTreeProducer) producer).getSubtrees());
-        Preconditions.checkArgument(firstSubtree != null, "Producer that is used to verify namespace claim can"
+        final DOMDataTreeIdentifier firstSubtree = Iterables.getOnlyElement(prod.getSubtrees());
+        checkArgument(firstSubtree != null, "Producer that is used to verify namespace claim can"
                 + " only claim a single namespace");
-        Preconditions.checkArgument(prefix.equals(firstSubtree), "Trying to register shard to a different namespace"
+        checkArgument(prefix.equals(firstSubtree), "Trying to register shard to a different namespace"
                 + " than the producer has claimed");
 
         final DOMDataTreeShardRegistration<T> reg;
@@ -106,7 +109,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
             shards.store(prefix, reg);
 
-            ((ShardedDOMDataTreeProducer) producer).subshardAdded(Collections.singletonMap(prefix, shard));
+            prod.subshardAdded(Collections.singletonMap(prefix, shard));
         }
 
         // Notify the parent shard
@@ -152,13 +155,13 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
     @Override
     public synchronized DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees) {
-        Preconditions.checkArgument(!subtrees.isEmpty(), "Subtrees may not be empty");
+        checkArgument(!subtrees.isEmpty(), "Subtrees may not be empty");
 
         final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap = new HashMap<>();
         for (final DOMDataTreeIdentifier subtree : subtrees) {
             // Attempting to create a disconnected producer -- all subtrees have to be unclaimed
             final DOMDataTreeProducer producer = findProducer(subtree);
-            Preconditions.checkArgument(producer == null, "Subtree %s is attached to producer %s", subtree, producer);
+            checkArgument(producer == null, "Subtree %s is attached to producer %s", subtree, producer);
 
             final DOMDataTreePrefixTableEntry<DOMDataTreeShardRegistration<?>> possibleShardReg =
                     shards.lookup(subtree);
@@ -172,7 +175,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
     synchronized DOMDataTreeProducer createProducer(final ShardedDOMDataTreeProducer parent,
             final Collection<DOMDataTreeIdentifier> subtrees) {
-        Preconditions.checkNotNull(parent);
+        requireNonNull(parent);
 
         final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap = new HashMap<>();
         for (final DOMDataTreeIdentifier s : subtrees) {
@@ -187,7 +190,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     public synchronized <T extends DOMDataTreeListener> ListenerRegistration<T> registerListener(final T listener,
             final Collection<DOMDataTreeIdentifier> subtrees, final boolean allowRxMerges,
             final Collection<DOMDataTreeProducer> producers) throws DOMDataTreeLoopException {
-        Preconditions.checkNotNull(listener, "listener");
+        requireNonNull(listener, "listener");
 
         // Cross-check specified trees for exclusivity and eliminate duplicates, noDupSubtrees is effectively a Set
         final Collection<DOMDataTreeIdentifier> noDupSubtrees;
@@ -202,8 +205,8 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
                 for (DOMDataTreeIdentifier toCheck : subtrees) {
                     for (DOMDataTreeIdentifier against : subtrees) {
                         if (!toCheck.equals(against)) {
-                            Preconditions.checkArgument(!toCheck.contains(against), "Subtree %s contains subtree %s",
-                                toCheck, against);
+                            checkArgument(!toCheck.contains(against), "Subtree %s contains subtree %s", toCheck,
+                                against);
                         }
                     }
                 }
@@ -217,7 +220,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         final ListMultimap<DOMDataTreeShardRegistration<?>, DOMDataTreeIdentifier> needed =
                 ArrayListMultimap.create();
         for (final DOMDataTreeIdentifier subtree : subtrees) {
-            final DOMDataTreeShardRegistration<?> reg = Verify.verifyNotNull(shards.lookup(subtree).getValue());
+            final DOMDataTreeShardRegistration<?> reg = verifyNotNull(shards.lookup(subtree).getValue());
             needed.put(reg, subtree);
         }
 
@@ -226,14 +229,14 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         // Sanity check: all selected shards have to support one of the listening interfaces
         needed.asMap().forEach((reg, trees) -> {
             final DOMDataTreeShard shard = reg.getInstance();
-            Preconditions.checkArgument(shard instanceof ListenableDOMDataTreeShard
+            checkArgument(shard instanceof ListenableDOMDataTreeShard
                 || shard instanceof DOMStoreTreeChangePublisher, "Subtrees %s do not point to listenable subtree.",
                 trees);
         });
 
         // Sanity check: all producers have to come from this implementation and must not form loops
         for (DOMDataTreeProducer producer : producers) {
-            Preconditions.checkArgument(producer instanceof ShardedDOMDataTreeProducer);
+            checkArgument(producer instanceof ShardedDOMDataTreeProducer);
             simpleLoopCheck(subtrees, ((ShardedDOMDataTreeProducer) producer).getSubtrees());
         }
 

@@ -45,7 +45,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Joint implementation of {@link DOMNotificationPublishService} and {@link DOMNotificationService}. Provides
  * routing of notifications from publishers to subscribers.
@@ -84,7 +83,6 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
             ListenerRegistry.create();
     private final ScheduledThreadPoolExecutor observer;
 
-    @SuppressWarnings("unchecked")
     @VisibleForTesting
     DOMNotificationRouter(final ExecutorService executor, final int queueDepth, final WaitStrategy strategy) {
         this.executor = Preconditions.checkNotNull(executor);
@@ -162,7 +160,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     private void notifyListenerTypesChanged(final Set<SchemaPath> typesAfter) {
         final List<ListenerRegistration<DOMNotificationSubscriptionListener>> listenersAfter =
                 ImmutableList.copyOf(subscriptionListeners.getListeners());
-        executor.submit(() -> {
+        executor.execute(() -> {
             for (final ListenerRegistration<DOMNotificationSubscriptionListener> subListener : listenersAfter) {
                 try {
                     subListener.getInstance().onSubscriptionChanged(typesAfter);
@@ -177,7 +175,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     public <L extends DOMNotificationSubscriptionListener> ListenerRegistration<L> registerSubscriptionListener(
             final L listener) {
         final Set<SchemaPath> initialTypes = listeners.keySet();
-        executor.submit(() -> listener.onSubscriptionChanged(initialTypes));
+        executor.execute(() -> listener.onSubscriptionChanged(initialTypes));
         return subscriptionListeners.registerWithType(listener);
     }
 
