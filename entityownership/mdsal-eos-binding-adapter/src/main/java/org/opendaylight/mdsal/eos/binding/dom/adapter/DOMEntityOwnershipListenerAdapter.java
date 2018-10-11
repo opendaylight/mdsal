@@ -8,12 +8,15 @@
 package org.opendaylight.mdsal.eos.binding.dom.adapter;
 
 import com.google.common.base.Preconditions;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adapter that bridges between the binding and DOM EntityOwnershipListener interfaces.
@@ -21,6 +24,8 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
  * @author Thomas Pantelis
  */
 class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
+    private static final Logger LOG = LoggerFactory.getLogger(DOMEntityOwnershipListenerAdapter.class);
+
     private final BindingNormalizedNodeSerializer conversionCodec;
     private final EntityOwnershipListener bindingListener;
 
@@ -30,8 +35,9 @@ class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
         this.conversionCodec = Preconditions.checkNotNull(conversionCodec);
     }
 
-    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     public void ownershipChanged(final DOMEntityOwnershipChange ownershipChange) {
         try {
             final Entity entity = new Entity(ownershipChange.getEntity().getType(),
@@ -39,8 +45,7 @@ class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
             bindingListener.ownershipChanged(new EntityOwnershipChange(entity, ownershipChange.getState(),
                     ownershipChange.inJeopardy()));
         } catch (final Exception e) {
-            BindingDOMEntityOwnershipServiceAdapter.LOG.error(
-                    "Error converting DOM entity ID {} to binding InstanceIdentifier",
+            LOG.error("Error converting DOM entity ID {} to binding InstanceIdentifier",
                         ownershipChange.getEntity().getIdentifier(), e);
         }
     }

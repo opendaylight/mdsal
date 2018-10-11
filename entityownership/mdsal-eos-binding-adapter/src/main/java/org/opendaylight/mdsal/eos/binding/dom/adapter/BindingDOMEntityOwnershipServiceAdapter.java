@@ -21,8 +21,6 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Adapter that bridges between the binding and DOM EntityOwnershipService interfaces.
@@ -30,8 +28,6 @@ import org.slf4j.LoggerFactory;
  * @author Thomas Pantelis
  */
 public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipService, AutoCloseable {
-    static final Logger LOG = LoggerFactory.getLogger(BindingDOMEntityOwnershipServiceAdapter.class);
-
     private final @NonNull DOMEntityOwnershipService domService;
     private final @NonNull BindingNormalizedNodeSerializer conversionCodec;
 

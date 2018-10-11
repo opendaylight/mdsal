@@ -132,6 +132,12 @@ public enum EntityOwnershipChangeState {
 
         @Override
         public boolean equals(final Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (!(obj instanceof Key)) {
+                return false;
+            }
             final Key other = (Key) obj;
             return hasOwner == other.hasOwner && isOwner == other.isOwner && wasOwner == other.wasOwner;
         }
