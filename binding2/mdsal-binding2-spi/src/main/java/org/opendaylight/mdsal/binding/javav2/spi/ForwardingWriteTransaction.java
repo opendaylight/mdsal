@@ -40,7 +40,7 @@ public class ForwardingWriteTransaction extends ForwardingObject implements Writ
     @Override
     public <T extends TreeNode> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
             boolean createMissingParents) {
-        put(store, path, data, createMissingParents);
+        delegate.put(store, path, data, createMissingParents);
     }
 
     @Override
