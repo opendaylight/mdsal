@@ -16,9 +16,12 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> implements
             ListenerRegistration<T>, DOMMountPointListener {
+    private static final Logger LOG = LoggerFactory.getLogger(BindingDOMMountPointListenerAdapter.class);
 
     private final T listener;
     private final ListenerRegistration<DOMMountPointListener> registration;
@@ -47,10 +50,8 @@ final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> im
             final InstanceIdentifier<? extends DataObject> bindingPath = toBinding(path);
             listener.onMountPointCreated(bindingPath);
         } catch (final DeserializationException e) {
-            BindingDOMMountPointServiceAdapter.LOG.error("Unable to translate mountPoint path {}."
-                    + " Omitting event.",path,e);
+            LOG.error("Unable to translate mountPoint path {}. Omitting event.", path, e);
         }
-
     }
 
     private InstanceIdentifier<? extends DataObject> toBinding(final YangInstanceIdentifier path)
@@ -58,9 +59,9 @@ final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> im
         final Optional<InstanceIdentifier<? extends DataObject>> instanceIdentifierOptional = codec.toBinding(path);
         if (instanceIdentifierOptional.isPresent()) {
             return instanceIdentifierOptional.get();
-        } else {
-            throw new DeserializationException("Deserialization unsuccessful, " + instanceIdentifierOptional);
         }
+
+        throw new DeserializationException("Deserialization unsuccessful, " + instanceIdentifierOptional);
     }
 
     @Override
@@ -69,8 +70,7 @@ final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> im
             final InstanceIdentifier<? extends DataObject> bindingPath = toBinding(path);
             listener.onMountPointRemoved(bindingPath);
         } catch (final DeserializationException e) {
-            BindingDOMMountPointServiceAdapter.LOG.error("Unable to translate mountPoint path {}."
-                    + " Omitting event.",path,e);
+            LOG.error("Unable to translate mountPoint path {}. Omitting event.", path, e);
         }
     }
 }

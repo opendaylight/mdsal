@@ -15,15 +15,10 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BindingDOMMountPointServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMMountPointService, DOMMountPoint, BindingMountPointAdapter>
         implements MountPointService {
-    // FIXME: this really should be hidden
-    static final Logger LOG = LoggerFactory.getLogger(BindingDOMMountPointServiceAdapter.class);
-
     public BindingDOMMountPointServiceAdapter(final DOMMountPointService mountService,
             final BindingToNormalizedNodeCodec codec) {
         super(codec, mountService);
