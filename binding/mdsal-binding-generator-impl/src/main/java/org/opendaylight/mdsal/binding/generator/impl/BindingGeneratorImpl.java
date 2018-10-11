@@ -32,18 +32,12 @@ public class BindingGeneratorImpl implements BindingGenerator, BindingRuntimeGen
     private static final Logger LOG = LoggerFactory.getLogger(BindingGeneratorImpl.class);
 
     /**
-     * Resolves generated types from <code>context</code> schema nodes only for
-     * modules specified in <code>modules</code>
+     * Resolves generated types from <code>context</code> schema nodes only for modules specified
+     * in <code>modules</code>. Generated types are created for modules, groupings, types, containers, lists, choices,
+     * augments, rpcs, notification, identities.
      *
-     * Generated types are created for modules, groupings, types, containers,
-     * lists, choices, augments, rpcs, notification, identities.
-     *
-     * @param context
-     *            schema context which contains data about all schema nodes
-     *            saved in modules
-     * @param modules
-     *            set of modules for which schema nodes should be generated
-     *            types
+     * @param context schema context which contains data about all schema nodes saved in modules
+     * @param modules set of modules for which schema nodes should be generated types
      * @return list of types (usually <code>GeneratedType</code> or
      *         <code>GeneratedTransferObject</code>) which:
      *         <ul>
@@ -93,13 +87,13 @@ public class BindingGeneratorImpl implements BindingGenerator, BindingRuntimeGen
         checkState(context.getModules() != null, "Schema Context does not contain defined modules.");
     }
 
-    private static void rename(final Map<SchemaNode, JavaTypeName> renames, final RenameMappingException e) {
-        final JavaTypeName name = e.getName();
-        final SchemaNode def = e.getDefinition();
+    private static void rename(final Map<SchemaNode, JavaTypeName> renames, final RenameMappingException ex) {
+        final JavaTypeName name = ex.getName();
+        final SchemaNode def = ex.getDefinition();
         final JavaTypeName existing = renames.get(def);
         if (existing != null) {
             throw new IllegalStateException("Attempted to relocate " + def + " to " + name + ", already remapped to "
-                    + existing, e);
+                    + existing, ex);
         }
 
         final String suffix;
@@ -110,7 +104,7 @@ public class BindingGeneratorImpl implements BindingGenerator, BindingRuntimeGen
         } else if (def instanceof TypeDefinition) {
             suffix = "$T";
         } else {
-            throw new IllegalStateException("Unhandled remapping of " + def + " at " + name, e);
+            throw new IllegalStateException("Unhandled remapping of " + def + " at " + name, ex);
         }
 
         final JavaTypeName newName = name.createSibling(name.simpleName() + suffix);

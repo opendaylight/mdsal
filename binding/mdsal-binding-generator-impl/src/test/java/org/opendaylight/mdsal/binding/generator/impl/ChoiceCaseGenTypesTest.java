@@ -65,7 +65,8 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
         assertFalse("genTypes is empty", genTypes.isEmpty());
 
         // test for file choice-monitoring
-        String pcgPref = "org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.choice.monitoring.rev130701.netconf.state.datastores.datastore.locks";
+        String pcgPref = "org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.choice.monitoring.rev130701."
+                + "netconf.state.datastores.datastore.locks";
         GeneratedType genType = null;
 
         checkGeneratedType(genTypes, "LockType", pcgPref); // choice
@@ -153,20 +154,22 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
         containsMethods(genType, new NameTypePattern("getStorageFormat", "StorageFormat"));
         containsInterface("Augmentation<Datastore>", genType);
 
-        genType = checkGeneratedType(genTypes, "StorageFormat", pcgPref + ".netconf.state.datastores.datastore"); // choice
+        // choice
+        genType = checkGeneratedType(genTypes, "StorageFormat", pcgPref + ".netconf.state.datastores.datastore");
 
         genType = checkGeneratedType(genTypes, "UnknownFiles", pcgPref
                 + ".netconf.state.datastores.datastore.storage.format"); // case
         containsMethods(genType, new NameTypePattern("getFiles", "List<Files>"));
         containsInterface("StorageFormat", genType);
 
-        genType = checkGeneratedType(genTypes, "Xml", pcgPref + ".netconf.state.datastores.datastore.storage.format"); // case
+        // case
+        genType = checkGeneratedType(genTypes, "Xml", pcgPref + ".netconf.state.datastores.datastore.storage.format");
         containsMethods(genType, new NameTypePattern("getXmlDef", "XmlDef"));
         containsInterface("StorageFormat", genType);
 
-        genType = checkGeneratedType(genTypes, "Yang", pcgPref + ".netconf.state.datastores.datastore.storage.format"); // case
+        // case
+        genType = checkGeneratedType(genTypes, "Yang", pcgPref + ".netconf.state.datastores.datastore.storage.format");
         containsMethods(genType, new NameTypePattern("getYangFileName", "String"));
         containsInterface("StorageFormat", genType);
-
     }
 }

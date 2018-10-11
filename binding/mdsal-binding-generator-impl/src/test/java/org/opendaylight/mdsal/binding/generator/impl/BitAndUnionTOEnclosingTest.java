@@ -161,7 +161,8 @@ public class BitAndUnionTOEnclosingTest {
         assertEquals("TypeUnion$1 has incorrect package name.",
                 "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626", typeUnion1.getPackageName());
 
-        assertEquals("TypeUnion1 generated TO has incorrect number of properties", 4, typeUnion1.getProperties().size());
+        assertEquals("TypeUnion1 generated TO has incorrect number of properties", 4,
+            typeUnion1.getProperties().size());
 
         containsAttributes(typeUnion1, true, true, true, new NameTypePattern("uint32", "Long"));
         containsAttributes(typeUnion1, true, true, true, new NameTypePattern("int8", "Byte"));
@@ -174,7 +175,8 @@ public class BitAndUnionTOEnclosingTest {
         assertEquals("TypeUnion$2 has incorrect package name.",
                 "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626", typeUnion2.getPackageName());
 
-        assertEquals("TypeUnion2 generated TO has incorrect number of properties", 2, typeUnion2.getProperties().size());
+        assertEquals("TypeUnion2 generated TO has incorrect number of properties", 2,
+            typeUnion2.getProperties().size());
         containsAttributes(typeUnion2, true, true, true, new NameTypePattern("string", "String"));
         containsAttributes(typeUnion2, true, true, true, new NameTypePattern("uint64", "BigInteger"));
 

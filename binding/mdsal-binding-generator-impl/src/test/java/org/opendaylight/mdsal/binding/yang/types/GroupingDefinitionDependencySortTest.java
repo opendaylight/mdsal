@@ -28,8 +28,9 @@ public class GroupingDefinitionDependencySortTest {
 
     @Test
     public void testSortMethod() {
-        GroupingDefinitionDependencySort groupingDefinitionDependencySort = new GroupingDefinitionDependencySort();
-        List<GroupingDefinition> unsortedGroupingDefs = new ArrayList<>();
+        final GroupingDefinitionDependencySort groupingDefinitionDependencySort =
+                new GroupingDefinitionDependencySort();
+        final List<GroupingDefinition> unsortedGroupingDefs = new ArrayList<>();
 
         GroupingDefinition grp1 = mock(GroupingDefinition.class);
         doReturn(SchemaPath.create(false, QName.create("", "Cont1"), QName.create("", "Cont2"))).when(grp1).getPath();

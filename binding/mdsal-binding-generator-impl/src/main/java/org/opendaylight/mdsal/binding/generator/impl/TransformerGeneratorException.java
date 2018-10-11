@@ -10,11 +10,12 @@ package org.opendaylight.mdsal.binding.generator.impl;
 final class TransformerGeneratorException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    public TransformerGeneratorException(final String message, final Throwable cause) {
+    TransformerGeneratorException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public static TransformerGeneratorException wrap(final Class<?> cls, final Throwable cause) throws TransformerGeneratorException {
+    static TransformerGeneratorException wrap(final Class<?> cls, final Throwable cause)
+            throws TransformerGeneratorException {
         return new TransformerGeneratorException(String.format("Failed to generate for type %s", cls), cause);
     }
 }

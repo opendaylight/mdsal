@@ -18,12 +18,9 @@ import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 
 /**
- * Mock LeafrefDypeDefinition implementation with non-null referenced RevisionAwareXPath.
- *
- * Although RevisionAwareXPath has implemented Override for toString to return null value to reach specific branch
+ * Mock LeafrefDypeDefinition implementation with non-null referenced RevisionAwareXPath. Although RevisionAwareXPath
+ * has implemented Override for toString to return null value to reach specific branch
  * in TypeProviderImpl#provideTypeForLeafref method.
- *
- * Created by lukas on 9/17/14.
  */
 public class LeafrefTypeWithNullToStringInXpath implements LeafrefTypeDefinition {
     @Override

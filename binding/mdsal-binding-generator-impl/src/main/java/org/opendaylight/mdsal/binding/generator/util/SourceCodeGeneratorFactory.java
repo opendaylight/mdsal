@@ -21,6 +21,7 @@ public class SourceCodeGeneratorFactory {
 
     /**
      * Gets a SourceCodeGenerator instance.
+     *
      * <p>
      * Generation of source code is controlled by the <i>org.opendaylight.yangtools.sal.generateCodecSource</i>
      * system property. If set to true, a DefaultSourceCodeGenerator instance is returned, otherwise a

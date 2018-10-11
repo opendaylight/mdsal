@@ -64,8 +64,8 @@ public final class YangSchemaUtils {
     }
 
     public static QName getAugmentationIdentifier(final AugmentationSchemaNode augmentation) {
-        for(final UnknownSchemaNode extension : augmentation.getUnknownSchemaNodes()) {
-            if(AUGMENT_IDENTIFIER.equals(extension.getNodeType().getLocalName())) {
+        for (final UnknownSchemaNode extension : augmentation.getUnknownSchemaNodes()) {
+            if (AUGMENT_IDENTIFIER.equals(extension.getNodeType().getLocalName())) {
                 return extension.getQName();
             }
         }
@@ -78,7 +78,7 @@ public final class YangSchemaUtils {
 
         QName currentArg = arguments.next();
         DataNodeContainer currentNode = context.findModule(currentArg.getModule()).orElse(null);
-        if(currentNode == null) {
+        if (currentNode == null) {
             return null;
         }
         // Last argument is type definition, so we need to cycle until we hit last argument.

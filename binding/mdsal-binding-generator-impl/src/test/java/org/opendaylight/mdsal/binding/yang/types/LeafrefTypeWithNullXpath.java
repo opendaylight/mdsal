@@ -19,7 +19,7 @@ import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 
 /**
- * Mock LeafrefDypeDefinition implementation with RevisionAwareXPath null reference
+ * Mock LeafrefDypeDefinition implementation with RevisionAwareXPath null reference.
  *
  * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */

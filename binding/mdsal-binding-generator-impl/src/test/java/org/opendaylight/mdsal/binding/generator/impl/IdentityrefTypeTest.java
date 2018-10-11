@@ -47,9 +47,8 @@ public class IdentityrefTypeTest {
     }
 
     /**
-     * Test mainly for the method
-     * TypeProviderImpl#provideTypeForIdentityref(IdentityrefTypeDefinition)
-     * provideTypeForIdentityref}
+     * Test mainly for the method TypeProviderImpl#provideTypeForIdentityref(IdentityrefTypeDefinition)
+     * provideTypeForIdentityref}.
      */
     @Test
     public void testIdentityrefYangBuiltInType() {
@@ -85,11 +84,9 @@ public class IdentityrefTypeTest {
                 }
             }
         }
-        assertNotNull("The method 'getLf' wasn't found", typeName);
+        assertNotNull("The method 'getLf' was not found", typeName);
         assertEquals("Return type has incorrect name", "Class", typeName);
         assertEquals("Incorrect number of type parameters", 1, numOfActualTypes);
         assertEquals("Return type has incorrect actual parameter", "SomeIdentity", actualTypeName);
-
     }
-
 }

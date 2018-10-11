@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import com.google.common.base.Preconditions;
@@ -33,8 +32,11 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class BindingSchemaContextUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(BindingSchemaContextUtils.class);
 
     private BindingSchemaContextUtils() {
         throw new UnsupportedOperationException("Utility class should not be instantiated");
@@ -53,7 +55,7 @@ public final class BindingSchemaContextUtils {
             currentContainer = findNotification(ctx, currentQName);
         } else if (BindingReflections.isRpcType(currentArg.getType())) {
             currentContainer = findFirstDataNodeContainerInRpc(ctx, currentArg.getType());
-            if(currentQName == null && currentContainer.isPresent()) {
+            if (currentQName == null && currentContainer.isPresent()) {
                 currentQName = ((DataSchemaNode) currentContainer.get()).getQName();
             }
         } else {
@@ -64,13 +66,14 @@ public final class BindingSchemaContextUtils {
             currentArg = pathArguments.next();
             if (Augmentation.class.isAssignableFrom(currentArg.getType())) {
                 currentQName = BindingReflections.findQName(currentArg.getType());
-                if(pathArguments.hasNext()) {
+                if (pathArguments.hasNext()) {
                     currentArg = pathArguments.next();
                 } else {
                     return currentContainer;
                 }
             }
-            if(ChildOf.class.isAssignableFrom(currentArg.getType()) && BindingReflections.isAugmentationChild(currentArg.getType())) {
+            if (ChildOf.class.isAssignableFrom(currentArg.getType())
+                    && BindingReflections.isAugmentationChild(currentArg.getType())) {
                 currentQName = BindingReflections.findQName(currentArg.getType());
             } else {
                 currentQName = BindingReflections.findQName(currentArg.getType()).withModule(currentQName.getModule());
@@ -83,15 +86,6 @@ public final class BindingSchemaContextUtils {
             }
         }
         return currentContainer;
-    }
-
-    private static Optional<DataNodeContainer> findNotification(final SchemaContext ctx, final QName notificationQName) {
-        for (NotificationDefinition notification : ctx.getNotifications()) {
-            if (notification.getQName().equals(notificationQName)) {
-                return Optional.<DataNodeContainer> of(notification);
-            }
-        }
-        return Optional.empty();
     }
 
     private static Optional<DataNodeContainer> findDataNodeContainer(final DataNodeContainer ctx,
@@ -115,6 +109,16 @@ public final class BindingSchemaContextUtils {
         return Optional.empty();
     }
 
+    private static Optional<DataNodeContainer> findNotification(final SchemaContext ctx,
+            final QName notificationQName) {
+        for (NotificationDefinition notification : ctx.getNotifications()) {
+            if (notification.getQName().equals(notificationQName)) {
+                return Optional.of(notification);
+            }
+        }
+        return Optional.empty();
+    }
+
     private static DataNodeContainer findInCases(final ChoiceSchemaNode choiceNode, final QName targetQName) {
         for (CaseSchemaNode caze : choiceNode.getCases().values()) {
             Optional<DataNodeContainer> potential = findDataNodeContainer(caze, targetQName);
@@ -125,6 +129,7 @@ public final class BindingSchemaContextUtils {
         return null;
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     private static Optional<DataNodeContainer> findFirstDataNodeContainerInRpc(final SchemaContext ctx,
             final Class<? extends DataObject> targetType) {
         final QNameModule targetModule;
@@ -156,17 +161,15 @@ public final class BindingSchemaContextUtils {
         if (targetType.equals(rpcOutputName)) {
             return Optional.of(rpc.getOutput());
         }
-       return Optional.empty();
+        return Optional.empty();
     }
 
     public static Set<AugmentationSchemaNode> collectAllAugmentationDefinitions(final SchemaContext currentSchema,
             final AugmentationTarget ctxNode) {
         HashSet<AugmentationSchemaNode> augmentations = new HashSet<>();
         augmentations.addAll(ctxNode.getAvailableAugmentations());
-        if(ctxNode instanceof DataSchemaNode && ((DataSchemaNode) ctxNode).isAddedByUses()) {
-
-            System.out.println(ctxNode);
-
+        if (ctxNode instanceof DataSchemaNode && ((DataSchemaNode) ctxNode).isAddedByUses()) {
+            LOG.info("{}", ctxNode);
         }
 
         return augmentations;
@@ -190,7 +193,7 @@ public final class BindingSchemaContextUtils {
     public static Optional<CaseSchemaNode> findInstantiatedCase(final ChoiceSchemaNode instantiatedChoice,
             final CaseSchemaNode originalDefinition) {
         CaseSchemaNode potential = instantiatedChoice.getCaseNodeByName(originalDefinition.getQName());
-        if(originalDefinition.equals(potential)) {
+        if (originalDefinition.equals(potential)) {
             return Optional.of(potential);
         }
         if (potential != null) {

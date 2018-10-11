@@ -48,7 +48,7 @@ public class CodegenTypeProvider extends AbstractTypeProvider {
      * Creates new instance of class <code>TypeProviderImpl</code>.
      *
      * @param schemaContext contains the schema data read from YANG files
-     * @param renames
+     * @param renames renaming table
      * @throws IllegalArgumentException if <code>schemaContext</code> is null.
      */
     public CodegenTypeProvider(final SchemaContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {

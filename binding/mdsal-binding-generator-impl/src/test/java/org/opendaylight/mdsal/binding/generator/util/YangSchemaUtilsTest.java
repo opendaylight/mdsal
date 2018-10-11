@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.binding.generator.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -94,22 +96,21 @@ public class YangSchemaUtilsTest {
         final TypeDefinition<?> typeDefinition = mock(TypeDefinition.class);
         doReturn(Q_NAME).when(typeDefinition).getQName();
         doReturn(ImmutableSet.of(typeDefinition)).when(container).getTypeDefinitions();
-        assertEquals(typeDefinition,
-                YangSchemaUtils.findTypeDefinition(context, SchemaPath.create(ImmutableList.of(Q_NAME), false)));
+        assertEquals(typeDefinition, YangSchemaUtils.findTypeDefinition(context, SchemaPath.create(false, Q_NAME)));
 
         final GroupingDefinition grouping = mock(GroupingDefinition.class);
         doReturn(Q_NAME).when(grouping).getQName();
         doReturn(ImmutableSet.of(grouping)).when(container).getGroupings();
         doReturn(ImmutableSet.of(typeDefinition)).when(grouping).getTypeDefinitions();
-        assertEquals(typeDefinition,
-                YangSchemaUtils.findTypeDefinition(context, SchemaPath.create(ImmutableList.of(Q_NAME, Q_NAME), false)));
+        assertEquals(typeDefinition, YangSchemaUtils.findTypeDefinition(context,
+            SchemaPath.create(false, Q_NAME, Q_NAME)));
 
         final DataNodeContainer dataNode =
                 mock(DataNodeContainer.class, withSettings().extraInterfaces(DataSchemaNode.class));
         doReturn(dataNode).when(container).getDataChildByName((QName) any());
         doReturn(ImmutableSet.of(typeDefinition)).when(dataNode).getTypeDefinitions();
-        assertEquals(typeDefinition,
-                YangSchemaUtils.findTypeDefinition(context, SchemaPath.create(ImmutableList.of(Q_NAME, Q_NAME), false)));
+        assertEquals(typeDefinition, YangSchemaUtils.findTypeDefinition(context,
+            SchemaPath.create(false, Q_NAME, Q_NAME)));
 
         final ChoiceSchemaNode choiceNode =
                 mock(ChoiceSchemaNode.class, withSettings().extraInterfaces(DataSchemaNode.class));
@@ -117,19 +118,19 @@ public class YangSchemaUtilsTest {
         final CaseSchemaNode caseNode = mock(CaseSchemaNode.class);
         doReturn(caseNode).when(choiceNode).getCaseNodeByName((QName) any());
         doReturn(ImmutableSet.of(typeDefinition)).when(caseNode).getTypeDefinitions();
-        assertEquals(typeDefinition,
-                YangSchemaUtils.findTypeDefinition(context,
-                        SchemaPath.create(ImmutableList.of(Q_NAME, Q_NAME, Q_NAME), false)));
+        assertEquals(typeDefinition, YangSchemaUtils.findTypeDefinition(context,
+            SchemaPath.create(false, Q_NAME, Q_NAME, Q_NAME)));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void privateConstructTest() throws Throwable {
+    @Test
+    public void privateConstructTest() throws ReflectiveOperationException {
         final Constructor<YangSchemaUtils> constructor = YangSchemaUtils.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();
+            fail();
         } catch (InvocationTargetException e) {
-            throw e.getCause();
+            assertTrue(e.getCause() instanceof UnsupportedOperationException);
         }
     }
 }

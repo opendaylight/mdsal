@@ -18,7 +18,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.common.io.BaseEncoding;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -104,9 +103,6 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     private final SchemaContext schemaContext;
 
-    /**
-     * Map<moduleName, Map<moduleDate, Map<typeName, type>>>
-     */
     private final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap = new HashMap<>();
 
     /**
@@ -119,27 +115,22 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     /**
      * Creates new instance of class <code>TypeProviderImpl</code>.
      *
-     * @param schemaContext
-     *            contains the schema data red from YANG files
-     * @param renames
-     * @throws IllegalArgumentException
-     *             if <code>schemaContext</code> equal null.
+     * @param schemaContext contains the schema data red from YANG files
+     * @param renames renaming table
+     * @throws IllegalArgumentException if <code>schemaContext</code> equal null.
      */
     AbstractTypeProvider(final SchemaContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
         Preconditions.checkArgument(schemaContext != null, "Schema Context cannot be null!");
-
         this.schemaContext = schemaContext;
         this.renames = requireNonNull(renames);
         resolveTypeDefsFromContext();
     }
 
     /**
-     * Puts <code>refType</code> to map with key <code>refTypePath</code>
+     * Puts <code>refType</code> to map with key <code>refTypePath</code>.
      *
-     * @param refTypePath
-     *            schema path used as the map key
-     * @param refType
-     *            type which represents the map value
+     * @param refTypePath schema path used as the map key
+     * @param refType type which represents the map value
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>refTypePath</code> equal null</li>
@@ -164,11 +155,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Converts schema definition type <code>typeDefinition</code> to JAVA
-     * <code>Type</code>
+     * Converts schema definition type <code>typeDefinition</code> to JAVA <code>Type</code>.
      *
-     * @param typeDefinition
-     *            type definition which is converted to JAVA type
+     * @param typeDefinition type definition which is converted to JAVA type
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>typeDefinition</code> equal null</li>
@@ -178,7 +167,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     @Override
     public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode,
-            final Restrictions r) {
+            final Restrictions restrictions) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         Preconditions.checkArgument(typeDefinition.getQName() != null,
                 "Type Definition cannot have non specified QName (QName cannot be NULL!)");
@@ -192,7 +181,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             // a base type which holds these constraints.
             if (typeDefinition instanceof DecimalTypeDefinition) {
                 final Type ret = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(typeDefinition,
-                    parentNode, r);
+                    parentNode, restrictions);
                 if (ret != null) {
                     return ret;
                 }
@@ -214,7 +203,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         }
 
         Type returnType = javaTypeForExtendedType(typeDefinition);
-        if (r != null && returnType instanceof GeneratedTransferObject) {
+        if (restrictions != null && returnType instanceof GeneratedTransferObject) {
             final GeneratedTransferObject gto = (GeneratedTransferObject) returnType;
             final Module module = findParentModule(schemaContext, parentNode);
             final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
@@ -223,19 +212,20 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             final String genTOName = BindingMapping.getClassName(typedefName);
             final String name = packageName + "." + genTOName;
             if (!returnType.getFullyQualifiedName().equals(name)) {
-                returnType = shadedTOWithRestrictions(gto, r);
+                returnType = shadedTOWithRestrictions(gto, restrictions);
             }
         }
         return returnType;
     }
 
-    private GeneratedTransferObject shadedTOWithRestrictions(final GeneratedTransferObject gto, final Restrictions r) {
+    private GeneratedTransferObject shadedTOWithRestrictions(final GeneratedTransferObject gto,
+            final Restrictions restrictions) {
         final GeneratedTOBuilder gtob = newGeneratedTOBuilder(gto.getIdentifier());
         final GeneratedTransferObject parent = gto.getSuperType();
         if (parent != null) {
             gtob.setExtendsType(parent);
         }
-        gtob.setRestrictions(r);
+        gtob.setRestrictions(restrictions);
         for (GeneratedProperty gp : gto.getProperties()) {
             final GeneratedPropertyBuilder gpb = gtob.addProperty(gp.getName());
             gpb.setValue(gp.getValue());
@@ -292,12 +282,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Returns JAVA <code>Type</code> for instances of the type
-     * <code>LeafrefTypeDefinition</code> or
+     * Returns JAVA <code>Type</code> for instances of the type <code>LeafrefTypeDefinition</code> or
      * <code>IdentityrefTypeDefinition</code>.
      *
-     * @param typeDefinition
-     *            type definition which is converted to JAVA <code>Type</code>
+     * @param typeDefinition type definition which is converted to JAVA <code>Type</code>
      * @return JAVA <code>Type</code> instance for <code>typeDefinition</code>
      */
     private Type javaTypeForLeafrefOrIdentityRef(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode) {
@@ -314,11 +302,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Returns JAVA <code>Type</code> for instances of the type
-     * <code>ExtendedType</code>.
+     * Returns JAVA <code>Type</code> for instances of the type <code>ExtendedType</code>.
      *
-     * @param typeDefinition
-     *            type definition which is converted to JAVA <code>Type</code>
+     * @param typeDefinition type definition which is converted to JAVA <code>Type</code>
      * @return JAVA <code>Type</code> instance for <code>typeDefinition</code>
      */
     private Type javaTypeForExtendedType(final TypeDefinition<?> typeDefinition) {
@@ -350,19 +336,15 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Seeks for identity reference <code>idref</code> the JAVA
-     * <code>type</code>.<br />
-     * <br />
+     * Seeks for identity reference <code>idref</code> the JAVA <code>type</code>.
      *
+     * <p>
      * <i>Example:<br />
      * If identy which is referenced via <code>idref</code> has name <b>Idn</b>
      * then returning type is <b>{@code Class<? extends Idn>}</b></i>
      *
-     * @param idref
-     *            identityref type definition for which JAVA <code>Type</code>
-     *            is sought
-     * @return JAVA <code>Type</code> of the identity which is referenced through
-     *         <code>idref</code>
+     * @param idref identityref type definition for which JAVA <code>Type</code> is sought
+     * @return JAVA <code>Type</code> of the identity which is referenced through <code>idref</code>
      */
     private Type provideTypeForIdentityref(final IdentityrefTypeDefinition idref) {
         final Collection<IdentitySchemaNode> identities = idref.getIdentities();
@@ -381,8 +363,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         Preconditions.checkArgument(identity != null, "Target identity '" + baseIdQName + "' do not exists");
 
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
-        final JavaTypeName identifier = JavaTypeName.create(BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-            identity.getPath()), BindingMapping.getClassName(identity.getQName()));
+        final JavaTypeName identifier = JavaTypeName.create(BindingGeneratorUtil.packageNameForGeneratedType(
+            basePackageName, identity.getPath()), BindingMapping.getClassName(identity.getQName()));
         return Types.classType(Types.wildcardTypeFor(identifier));
     }
 
@@ -401,11 +383,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *             <li>if name of <code>typeDefinition</code></li>
      *             </ul>
      */
-    public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode) {
+    public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition,
+            final SchemaNode parentNode) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         if (typeDefinition.getQName() == null) {
-            throw new IllegalArgumentException(
-                    "Type Definition cannot have non specified QName (QName cannot be NULL!)");
+            throw new IllegalArgumentException("Type Definition cannot have unspecified QName (QName cannot be NULL!)");
         }
         Preconditions.checkArgument(typeDefinition.getQName().getLocalName() != null,
                 "Type Definitions Local Name cannot be NULL!");
@@ -498,15 +480,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Converts <code>leafrefType</code> to JAVA <code>Type</code>.
+     * Converts <code>leafrefType</code> to JAVA <code>Type</code>. The path of <code>leafrefType</code> is followed
+     * to find referenced node and its <code>Type</code> is returned.
      *
-     * The path of <code>leafrefType</code> is followed to find referenced node
-     * and its <code>Type</code> is returned.
-     *
-     * @param leafrefType
-     *            leafref type definition for which is the type sought
-     * @return JAVA <code>Type</code> of data schema node which is referenced in
-     *         <code>leafrefType</code>
+     * @param leafrefType leafref type definition for which is the type sought
+     * @return JAVA <code>Type</code> of data schema node which is referenced in <code>leafrefType</code>
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>leafrefType</code> equal null</li>
@@ -515,14 +493,13 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *
      */
     public Type provideTypeForLeafref(final LeafrefTypeDefinition leafrefType, final SchemaNode parentNode) {
-        Type returnType = null;
         Preconditions.checkArgument(leafrefType != null, "Leafref Type Definition reference cannot be NULL!");
-
         Preconditions.checkArgument(leafrefType.getPathStatement() != null,
                 "The Path Statement for Leafref Type Definition cannot be NULL!");
 
         final RevisionAwareXPath xpath = leafrefType.getPathStatement();
         final String strXPath = xpath.toString();
+        Type returnType = null;
 
         if (strXPath != null) {
             if (strXPath.indexOf('[') == -1) {
@@ -557,12 +534,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Checks if <code>dataNode</code> is <code>LeafSchemaNode</code> and if it
-     * so then checks if it is of type <code>EnumTypeDefinition</code>.
+     * Checks if <code>dataNode</code> is <code>LeafSchemaNode</code> and if it so then checks if it is of type
+     * <code>EnumTypeDefinition</code>.
      *
-     * @param dataNode
-     *            data schema node for which is checked if it is leaf and if it
-     *            is of enum type
+     * @param dataNode data schema node for which is checked if it is leaf and if it is of enum type
      * @return boolean value
      *         <ul>
      *         <li>true - if <code>dataNode</code> is leaf of type enumeration</li>
@@ -580,12 +555,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Checks if <code>dataNode</code> is <code>LeafListSchemaNode</code> and if
-     * it so then checks if it is of type <code>EnumTypeDefinition</code>.
+     * Checks if <code>dataNode</code> is <code>LeafListSchemaNode</code> and if it so then checks if it is of type
+     * <code>EnumTypeDefinition</code>.
      *
-     * @param dataNode
-     *            data schema node for which is checked if it is leaflist and if
-     *            it is of enum type
+     * @param dataNode data schema node for which is checked if it is leaflist and if it is of enum type
      * @return boolean value
      *         <ul>
      *         <li>true - if <code>dataNode</code> is leaflist of type
@@ -604,16 +577,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Converts <code>enumTypeDef</code> to
-     * {@link Enumeration
-     * enumeration}.
+     * Converts <code>enumTypeDef</code> to {@link Enumeration enumeration}.
      *
-     * @param enumTypeDef
-     *            enumeration type definition which is converted to enumeration
-     * @param enumName
-     *            string with name which is used as the enumeration name
-     * @return enumeration type which is built with data (name, enum values)
-     *         from <code>enumTypeDef</code>
+     * @param enumTypeDef enumeration type definition which is converted to enumeration
+     * @param enumName string with name which is used as the enumeration name
+     * @return enumeration type which is built with data (name, enum values) from <code>enumTypeDef</code>
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>enumTypeDef</code> equals null</li>
@@ -643,18 +611,12 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Adds enumeration to <code>typeBuilder</code>. The enumeration data are
-     * taken from <code>enumTypeDef</code>.
+     * Adds enumeration to <code>typeBuilder</code>. The enumeration data are taken from <code>enumTypeDef</code>.
      *
-     * @param enumTypeDef
-     *            enumeration type definition is source of enumeration data for
-     *            <code>typeBuilder</code>
-     * @param enumName
-     *            string with the name of enumeration
-     * @param typeBuilder
-     *            generated type builder to which is enumeration added
-     * @return enumeration type which contains enumeration data form
-     *         <code>enumTypeDef</code>
+     * @param enumTypeDef enumeration type definition is source of enumeration data for <code>typeBuilder</code>
+     * @param enumName string with the name of enumeration
+     * @param typeBuilder generated type builder to which is enumeration added
+     * @return enumeration type which contains enumeration data form <code>enumTypeDef</code>
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>enumTypeDef</code> equals null</li>
@@ -701,14 +663,12 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     abstract void addCodegenInformation(GeneratedTypeBuilderBase<?> genTOBuilder, TypeDefinition<?> typeDef);
 
     /**
-     * Converts the pattern constraints from <code>typedef</code> to the list of
-     * the strings which represents these constraints.
+     * Converts the pattern constraints from <code>typedef</code> to the list of the strings which represents these
+     * constraints.
      *
-     * @param typedef
-     *            extended type in which are the pattern constraints sought
+     * @param typedef extended type in which are the pattern constraints sought
      * @return list of strings which represents the constraint patterns
-     * @throws IllegalArgumentException
-     *             if <code>typedef</code> equals null
+     * @throws IllegalArgumentException if <code>typedef</code> equals null
      *
      */
     private Map<String, String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
@@ -723,8 +683,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     /**
      * Converts <code>dataNode</code> to JAVA <code>Type</code>.
      *
-     * @param dataNode
-     *            contains information about YANG type
+     * @param dataNode contains information about YANG type
      * @return JAVA <code>Type</code> representation of <code>dataNode</code>
      */
     private Type resolveTypeFromDataSchemaNode(final SchemaNode dataNode) {
@@ -743,18 +702,15 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Passes through all modules and through all its type definitions and
-     * convert it to generated types.
+     * Passes through all modules and through all its type definitions and convert it to generated types.
      *
-     * The modules are firstly sorted by mutual dependencies. The modules are
-     * sequentially passed. All type definitions of a module are at the
-     * beginning sorted so that type definition with less amount of references
-     * to other type definition are processed first.<br />
+     * <p>
+     * The modules are first sorted by mutual dependencies. The modules are sequentially passed. All type definitions
+     * of a module are at the beginning sorted so that type definition with less amount of references to other type
+     * definition are processed first.<br>
      * For each module is created mapping record in the map
      * {@link AbstractTypeProvider#genTypeDefsContextMap genTypeDefsContextMap}
-     * which map current module name to the map which maps type names to
-     * returned types (generated types).
-     *
+     * which map current module name to the map which maps type names to returned types (generated types).
      */
     private void resolveTypeDefsFromContext() {
         final Set<Module> modules = schemaContext.getModules();
@@ -782,14 +738,12 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
+     * Create Type for specified type definition.
      *
-     * @param basePackageName
-     *            string with name of package to which the module belongs
-     * @param module
-     *            string with the name of the module for to which the
-     *            <code>typedef</code> belongs
-     * @param typedef
-     *            type definition of the node for which should be created JAVA <code>Type</code> (usually generated TO)
+     * @param basePackageName string with name of package to which the module belongs
+     * @param module string with the name of the module for to which the <code>typedef</code> belongs
+     * @param typedef type definition of the node for which should be created JAVA <code>Type</code>
+     *                (usually generated TO)
      * @return JAVA <code>Type</code> representation of <code>typedef</code> or
      *         <code>null</code> value if <code>basePackageName</code> or
      *         <code>modulName</code> or <code>typedef</code> or Q name of
@@ -832,7 +786,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             method.setStatic(true);
             Set<Type> types = additionalTypes.get(module);
             if (types == null) {
-                types = Sets.<Type> newHashSet(unionBuilder.build());
+                types = Sets.newHashSet(unionBuilder.build());
                 additionalTypes.put(module, types);
             } else {
                 types.add(unionBuilder.build());
@@ -874,12 +828,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     /**
      * Wraps base YANG type to generated TO.
      *
-     * @param basePackageName
-     *            string with name of package to which the module belongs
-     * @param typedef
-     *            type definition which is converted to the TO
-     * @param javaType
-     *            JAVA <code>Type</code> to which is <code>typedef</code> mapped
+     * @param basePackageName string with name of package to which the module belongs
+     * @param typedef type definition which is converted to the TO
+     * @param javaType JAVA <code>Type</code> to which is <code>typedef</code> mapped
      * @return generated transfer object which represent<code>javaType</code>
      */
     private GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
@@ -925,14 +876,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Converts <code>typedef</code> to generated TO with
-     * <code>typeDefName</code>. Every union type from <code>typedef</code> is
-     * added to generated TO builder as property.
+     * Converts <code>typedef</code> to generated TO with <code>typeDefName</code>. Every union type from
+     * <code>typedef</code> is added to generated TO builder as property.
      *
      * @param typeName new type identifier
-     * @param typedef
-     *            type definition which should be of type
-     *            <code>UnionTypeDefinition</code>
+     * @param typedef type definition which should be of type <code>UnionTypeDefinition</code>
      * @return generated TO builder which represents <code>typedef</code>
      * @throws NullPointerException
      *             <ul>
@@ -989,20 +937,16 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     /**
      * Wraps code which handles the case when union subtype is also of the type <code>UnionType</code>.
      *
+     * <p>
      * In this case the new generated TO is created for union subtype (recursive call of method
      * {@link #provideGeneratedTOBuildersForUnionTypeDef(String, UnionTypeDefinition, String, SchemaNode)}
      * provideGeneratedTOBuilderForUnionTypeDef} and in parent TO builder <code>parentUnionGenTOBuilder</code> is
      * created property which type is equal to new generated TO.
      *
-     * @param parentUnionGenTOBuilder
-     *            generated TO builder to which is the property with the child
-     *            union subtype added
-     * @param basePackageName
-     *            string with the name of the module package
-     * @param unionSubtype
-     *            type definition which represents union subtype
-     * @return list of generated TO builders. The number of the builders can be
-     *         bigger one due to recursive call of
+     * @param parentUnionGenTOBuilder generated TO builder to which is the property with the child union subtype added
+     * @param basePackageName string with the name of the module package
+     * @param unionSubtype type definition which represents union subtype
+     * @return list of generated TO builders. The number of the builders can be bigger one due to recursive call of
      *         <code>provideGeneratedTOBuildersForUnionTypeDef</code> method.
      */
     private List<GeneratedTOBuilder> resolveUnionSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
@@ -1023,23 +967,14 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Wraps code which handle case when union subtype is of the type
-     * <code>ExtendedType</code>.
+     * Wraps code which handle case when union subtype is of the type <code>ExtendedType</code>. If TO for this type
+     * already exists it is used for the creation of the property in <code>parentUnionGenTOBuilder</code>. Otherwise
+     * the base type is used for the property creation.
      *
-     * If TO for this type already exists it is used for the creation of the
-     * property in <code>parentUnionGenTOBuilder</code>. In other case the base
-     * type is used for the property creation.
-     *
-     * @param parentUnionGenTOBuilder
-     *            generated TO builder in which new property is created
-     * @param unionSubtype
-     *            type definition of the <code>ExtendedType</code> type which
-     *            represents union subtype
-     * @param expressions
-     *            list of strings with the regular expressions
-     * @param parentNode
-     *            parent Schema Node for Extended Subtype
-     *
+     * @param parentUnionGenTOBuilder generated TO builder in which new property is created
+     * @param unionSubtype type definition of the <code>ExtendedType</code> type which represents union subtype
+     * @param expressions list of strings with the regular expressions
+     * @param parentNode parent Schema Node for Extended Subtype
      */
     private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
             final TypeDefinition<?> unionSubtype, final Map<String, String> expressions, final SchemaNode parentNode) {
@@ -1078,18 +1013,17 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Searches for generated TO for <code>searchedTypeDef</code> type
-     * definition in {@link #genTypeDefsContextMap genTypeDefsContextMap}
+     * Searches for generated TO for <code>searchedTypeDef</code> type  definition
+     * in {@link #genTypeDefsContextMap genTypeDefsContextMap}.
      *
-     * @param searchedTypeName
-     *            string with name of <code>searchedTypeDef</code>
-     * @return generated TO for <code>searchedTypeDef</code> or
-     *         <code>null</code> it it doesn't exist
+     * @param searchedTypeName string with name of <code>searchedTypeDef</code>
+     * @return generated TO for <code>searchedTypeDef</code> or <code>null</code> it it doesn't exist
      */
     private Type findGenTO(final String searchedTypeName, final SchemaNode parentNode) {
         final Module typeModule = findParentModule(schemaContext, parentNode);
         if (typeModule != null && typeModule.getName() != null) {
-            final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(typeModule.getName());
+            final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(
+                typeModule.getName());
             final Map<String, Type> genTOs = modulesByDate.get(typeModule.getRevision());
             if (genTOs != null) {
                 return genTOs.get(searchedTypeName);
@@ -1099,21 +1033,19 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Stores generated TO created from <code>genTOBuilder</code> for
-     * <code>newTypeDef</code> to {@link #genTypeDefsContextMap
-     * genTypeDefsContextMap} if the module for <code>newTypeDef</code> exists
+     * Stores generated TO created from <code>genTOBuilder</code> for <code>newTypeDef</code>
+     * to {@link #genTypeDefsContextMap genTypeDefsContextMap} if the module for <code>newTypeDef</code> exists.
      *
-     * @param newTypeDef
-     *            type definition for which is <code>genTOBuilder</code> created
-     * @param genTOBuilder
-     *            generated TO builder which is converted to generated TO and
-     *            stored
+     * @param newTypeDef type definition for which is <code>genTOBuilder</code> created
+     * @param genTOBuilder generated TO builder which is converted to generated TO and stored
      */
-    private void storeGenTO(final TypeDefinition<?> newTypeDef, final GeneratedTOBuilder genTOBuilder, final SchemaNode parentNode) {
+    private void storeGenTO(final TypeDefinition<?> newTypeDef, final GeneratedTOBuilder genTOBuilder,
+            final SchemaNode parentNode) {
         if (!(newTypeDef instanceof UnionTypeDefinition)) {
             final Module parentModule = findParentModule(schemaContext, parentNode);
             if (parentModule != null && parentModule.getName() != null) {
-                final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(parentModule.getName());
+                final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(
+                    parentModule.getName());
                 final Map<String, Type> genTOsMap = modulesByDate.get(parentModule.getRevision());
                 genTOsMap.put(newTypeDef.getQName().getLocalName(), genTOBuilder.build());
             }
@@ -1121,19 +1053,15 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Adds a new property with the name <code>propertyName</code> and with type
-     * <code>type</code> to <code>unonGenTransObject</code>.
+     * Adds a new property with the name <code>propertyName</code> and with type <code>type</code>
+     * to <code>unonGenTransObject</code>.
      *
-     * @param unionGenTransObject
-     *            generated TO to which should be property added
-     * @param type
-     *            JAVA <code>type</code> of the property which should be added
-     *            to <code>unionGentransObject</code>
-     * @param propertyName
-     *            string with name of property which should be added to
-     *            <code>unionGentransObject</code>
+     * @param unionGenTransObject generated TO to which should be property added
+     * @param type JAVA <code>type</code> of the property which should be added to <code>unionGentransObject</code>
+     * @param propertyName string with name of property which should be added to <code>unionGentransObject</code>
      */
-    private static void updateUnionTypeAsProperty(final GeneratedTOBuilder unionGenTransObject, final Type type, final String propertyName) {
+    private static void updateUnionTypeAsProperty(final GeneratedTOBuilder unionGenTransObject, final Type type,
+            final String propertyName) {
         if (unionGenTransObject != null && type != null && !unionGenTransObject.containsProperty(propertyName)) {
             final GeneratedPropertyBuilder propBuilder = unionGenTransObject
                     .addProperty(BindingMapping.getPropertyName(propertyName));
@@ -1148,12 +1076,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     /**
      * Converts <code>typedef</code> to the generated TO builder.
      *
-     * @param basePackageName
-     *            string with name of package to which the module belongs
-     * @param typedef
-     *            type definition from which is the generated TO builder created
-     * @return generated TO builder which contains data from
-     *         <code>typedef</code> and <code>basePackageName</code>
+     * @param basePackageName string with name of package to which the module belongs
+     * @param typedef type definition from which is the generated TO builder created
+     * @return generated TO builder which contains data from <code>typedef</code> and <code>basePackageName</code>
      */
     private GeneratedTOBuilder typedefToTransferObject(final String basePackageName,
             final TypeDefinition<?> typedef, final String moduleName) {
@@ -1172,15 +1097,12 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Converts <code>typeDef</code> which should be of the type
-     * <code>BitsTypeDefinition</code> to <code>GeneratedTOBuilder</code>.
-     *
-     * All the bits of the typeDef are added to returning generated TO as
+     * Converts <code>typeDef</code> which should be of the type <code>BitsTypeDefinition</code>
+     * to <code>GeneratedTOBuilder</code>. All the bits of the typeDef are added to returning generated TO as
      * properties.
      *
      * @param typeName new type identifier
-     * @param typeDef
-     *            type definition from which is the generated TO builder created
+     * @param typeDef type definition from which is the generated TO builder created
      * @return generated TO builder which represents <code>typeDef</code>
      * @throws IllegalArgumentException
      *             <ul>
@@ -1213,15 +1135,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
+     * Adds to the <code>genTOBuilder</code> the constant which contains regular expressions from
+     * the <code>regularExpressions</code>.
      *
-     * Adds to the <code>genTOBuilder</code> the constant which contains regular
-     * expressions from the <code>regularExpressions</code>
-     *
-     * @param genTOBuilder
-     *            generated TO builder to which are
-     *            <code>regular expressions</code> added
-     * @param expressions
-     *            list of string which represent regular expressions
+     * @param genTOBuilder generated TO builder to which are <code>regular expressions</code> added
+     * @param expressions list of string which represent regular expressions
      */
     private static void addStringRegExAsConstant(final GeneratedTOBuilder genTOBuilder,
             final Map<String, String> expressions) {
@@ -1232,25 +1150,19 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Creates generated TO with data about inner extended type
-     * <code>innerExtendedType</code>, about the package name
-     * <code>typedefName</code> and about the generated TO name
-     * <code>typedefName</code>.
+     * Creates generated TO with data about inner extended type <code>innerExtendedType</code>, about the package name
+     * <code>typedefName</code> and about the generated TO name <code>typedefName</code>.
      *
-     * It is supposed that <code>innerExtendedType</code> is already present in
-     * {@link AbstractTypeProvider#genTypeDefsContextMap genTypeDefsContextMap} to
-     * be possible set it as extended type for the returning generated TO.
+     * <p>
+     * It is assumed that <code>innerExtendedType</code> is already present in
+     * {@link AbstractTypeProvider#genTypeDefsContextMap genTypeDefsContextMap} to be possible set it as extended type
+     * for the returning generated TO.
      *
-     * @param typedef
-     *            Type Definition
-     * @param innerExtendedType
-     *            extended type which is part of some other extended type
-     * @param basePackageName
-     *            string with the package name of the module
-     * @param moduleName
-     *            Module Name
-     * @return generated TO which extends generated TO for
-     *         <code>innerExtendedType</code>
+     * @param typedef Type Definition
+     * @param innerExtendedType extended type which is part of some other extended type
+     * @param basePackageName string with the package name of the module
+     * @param moduleName Module Name
+     * @return generated TO which extends generated TO for <code>innerExtendedType</code>
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>extendedType</code> equals null</li>
@@ -1304,11 +1216,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Add {@link Serializable} to implemented interfaces of this TO. Also
-     * compute and add serialVersionUID property.
+     * Add {@link java.io.Serializable} to implemented interfaces of this TO. Also compute and add serialVersionUID
+     * property.
      *
-     * @param gto
-     *            transfer object which needs to be serializable
+     * @param gto transfer object which needs to be made serializable
      */
     private static void makeSerializable(final GeneratedTOBuilder gto) {
         gto.addImplementsType(Types.serializableType());
@@ -1318,18 +1229,14 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Finds out for each type definition how many immersion (depth) is
-     * necessary to get to the base type. Every type definition is inserted to
-     * the map which key is depth and value is list of type definitions with
-     * equal depth. In next step are lists from this map concatenated to one
-     * list in ascending order according to their depth. All type definitions
-     * are in the list behind all type definitions on which depends.
+     * Finds out for each type definition how many immersion (depth) is necessary to get to the base type. Every type
+     * definition is inserted to the map which key is depth and value is list of type definitions with equal depth.
+     * In next step are lists from this map concatenated to one list in ascending order according to their depth. All
+     * type definitions are in the list behind all type definitions on which depends.
      *
-     * @param unsortedTypeDefinitions
-     *            list of type definitions which should be sorted by depth
-     * @return list of type definitions sorted according their each other
-     *         dependencies (type definitions which are depend on other type
-     *         definitions are in list behind them).
+     * @param unsortedTypeDefinitions list of type definitions which should be sorted by depth
+     * @return list of type definitions sorted according their each other dependencies (type definitions which are
+     *              dependent on other type definitions are in list behind them).
      */
     private static List<TypeDefinition<?>> sortTypeDefinitionAccordingDepth(
             final Collection<TypeDefinition<?>> unsortedTypeDefinitions) {
@@ -1352,13 +1259,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Returns how many immersion is necessary to get from the type definition
-     * to the base type.
+     * Returns how many immersion is necessary to get from the type definition to the base type.
      *
-     * @param typeDefinition
-     *            type definition for which is depth sought.
-     * @return number of immersions which are necessary to get from the type
-     *         definition to the base type
+     * @param typeDefinition type definition for which is depth sought.
+     * @return number of immersions which are necessary to get from the type definition to the base type
      */
     private static int getTypeDefinitionDepth(final TypeDefinition<?> typeDefinition) {
         // FIXME: rewrite this in a non-recursive manner
@@ -1445,7 +1349,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 className = basePackageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
             } else {
                 final String basePackageName = BindingMapping.getRootPackageName(parent.getQNameModule());
-                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, type.getPath());
+                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
+                    type.getPath());
                 parentName = BindingMapping.getClassName(parent.getName());
                 className = packageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
             }
@@ -1465,12 +1370,14 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             if (type.getBaseType() != null) {
                 final Module m = getParentModule(type);
                 final String basePackageName = BindingMapping.getRootPackageName(m.getQNameModule());
-                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, type.getPath());
+                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
+                    type.getPath());
                 className = packageName + "." + BindingMapping.getClassName(typeQName);
             } else {
                 final Module parentModule = getParentModule(node);
                 final String basePackageName = BindingMapping.getRootPackageName(parentModule.getQNameModule());
-                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, node.getPath());
+                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
+                    node.getPath());
                 className = packageName + "." + BindingMapping.getClassName(node.getQName());
             }
             result = className + "." + newDefVal;
@@ -1521,7 +1428,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 && !(base instanceof EnumTypeDefinition) && !(base instanceof UnionTypeDefinition)) {
             final Module m = getParentModule(type);
             final String basePackageName = BindingMapping.getRootPackageName(m.getQNameModule());
-            final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, type.getPath());
+            final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
+                type.getPath());
             final String className = packageName + "." + BindingMapping.getClassName(typeQName);
             sb.insert(0, "new " + className + "(");
             sb.insert(sb.length(), ')');
@@ -1566,7 +1474,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
     private static final Comparator<Bit> BIT_NAME_COMPARATOR = Comparator.comparing(Bit::getName);
 
-    private static String bitsToDef(final BitsTypeDefinition type, final String className, final String defaultValue, final boolean isExt) {
+    private static String bitsToDef(final BitsTypeDefinition type, final String className, final String defaultValue,
+            final boolean isExt) {
         final List<Bit> bits = new ArrayList<>(type.getBits());
         bits.sort(BIT_NAME_COMPARATOR);
         final StringBuilder sb = new StringBuilder();
@@ -1596,7 +1505,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         return schemaContext.findModule(qname.getModule()).orElse(null);
     }
 
-    private String leafrefToDef(final LeafSchemaNode parentNode, final LeafrefTypeDefinition leafrefType, final String defaultValue) {
+    private String leafrefToDef(final LeafSchemaNode parentNode, final LeafrefTypeDefinition leafrefType,
+            final String defaultValue) {
         Preconditions.checkArgument(leafrefType != null, "Leafref Type Definition reference cannot be NULL!");
         Preconditions.checkArgument(leafrefType.getPathStatement() != null,
                 "The Path Statement for Leafref Type Definition cannot be NULL!");
@@ -1661,7 +1571,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 parentName = BindingMapping.getClassName(parent.getName()) + "Data";
                 className = basePackageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
             } else {
-                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, UNION_PATH);
+                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
+                    UNION_PATH);
                 className = packageName + "." + BindingMapping.getClassName(node.getQName());
             }
         }

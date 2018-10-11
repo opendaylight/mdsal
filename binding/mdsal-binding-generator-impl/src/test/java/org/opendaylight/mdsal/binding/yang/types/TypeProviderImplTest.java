@@ -188,8 +188,8 @@ public class TypeProviderImplTest {
         try {
             assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
             fail("Expected NoSuchElementException");
-        } catch (Exception e) {
-            assertTrue(e instanceof NoSuchElementException);
+        } catch (NoSuchElementException e) {
+            // Okay
         }
 
         // identityref type
@@ -206,8 +206,7 @@ public class TypeProviderImplTest {
         try {
             assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
             fail("Expected UnsupportedOperationException");
-        } catch (Exception e) {
-            assertTrue(e instanceof UnsupportedOperationException);
+        } catch (UnsupportedOperationException e) {
             assertEquals("Cannot get default construction for identityref type", e.getMessage());
         }
     }

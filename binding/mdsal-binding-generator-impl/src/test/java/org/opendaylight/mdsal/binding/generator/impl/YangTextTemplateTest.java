@@ -7,21 +7,24 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.util.FormattingUtils;
 
 public class YangTextTemplateTest {
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void privateConstructTest() throws Throwable {
+    @Test
+    public void privateConstructTest() throws ReflectiveOperationException  {
         final Constructor<FormattingUtils> constructor = FormattingUtils.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();
+            fail();
         } catch (InvocationTargetException e) {
-            throw e.getCause();
+            assertTrue(e.getCause() instanceof UnsupportedOperationException);
         }
     }
 }

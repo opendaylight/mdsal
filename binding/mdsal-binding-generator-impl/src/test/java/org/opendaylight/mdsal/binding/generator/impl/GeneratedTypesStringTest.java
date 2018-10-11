@@ -53,17 +53,17 @@ public class GeneratedTypesStringTest {
                         } else {
                             break;
                         }
-                        ParameterizedType pType;
+                        ParameterizedType paramType;
                         if (con.getType() instanceof ParameterizedType) {
-                            pType = (ParameterizedType) con.getType();
+                            paramType = (ParameterizedType) con.getType();
                         } else {
                             break;
                         }
 
                         Type[] types;
-                        if (pType.getName().equals("List")) {
+                        if (paramType.getName().equals("List")) {
                             constantRegExListTypeContainer = true;
-                            types = pType.getActualTypeArguments();
+                            types = paramType.getActualTypeArguments();
                         } else {
                             break;
                         }

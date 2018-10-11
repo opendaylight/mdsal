@@ -67,6 +67,7 @@ public final class JavassistUtils {
      * @throws NotFoundException when the prototype class is not found
      */
     @Beta
+    @SuppressWarnings("checkstyle:illegalCatch")
     public synchronized CtClass instantiatePrototype(final String prototype, final String fqn,
             final ClassCustomizer customizer) throws CannotCompileException, NotFoundException {
         final CtClass result = classPool.getAndRename(prototype, fqn);

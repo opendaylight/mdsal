@@ -11,23 +11,22 @@ import org.opendaylight.yangtools.util.TopologicalSort.NodeImpl;
 
 public final class NodeWrappedType extends NodeImpl {
     /**
-     * The payload which is saved inside Node
+     * The payload which is saved inside Node.
      */
     private final Object wrappedType;
 
     /**
      * Create new instance of class <code>NodeWrappedType</code>.
-     * 
-     * @param wrappedType
-     *            object with payload data
+     *
+     * @param wrappedType object with payload data
      */
-    NodeWrappedType(Object wrappedType) {
+    NodeWrappedType(final Object wrappedType) {
         this.wrappedType = wrappedType;
     }
 
     /**
-     * Gets payload from class
-     * 
+     * Gets payload from class.
+     *
      * @return object with <code>wrappedType</code>
      */
     Object getWrappedType() {
@@ -35,14 +34,14 @@ public final class NodeWrappedType extends NodeImpl {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (!(o instanceof NodeWrappedType)) {
+        if (!(obj instanceof NodeWrappedType)) {
             return false;
         }
-        NodeWrappedType nodeWrappedType = (NodeWrappedType) o;
+        NodeWrappedType nodeWrappedType = (NodeWrappedType) obj;
         if (!wrappedType.equals(nodeWrappedType.wrappedType)) {
             return false;
         }
@@ -58,5 +57,4 @@ public final class NodeWrappedType extends NodeImpl {
     public String toString() {
         return "NodeWrappedType{" + "wrappedType=" + wrappedType + '}';
     }
-
 }

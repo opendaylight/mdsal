@@ -252,10 +252,6 @@ public final class BindingRuntimeContext implements Immutable {
         return found;
     }
 
-    private static Type referencedType(final Class<?> type) {
-        return new ReferencedTypeImpl(JavaTypeName.create(type));
-    }
-
     /**
      * Returns schema ({@link DataSchemaNode}, {@link AugmentationSchemaNode} or {@link TypeDefinition})
      * from which supplied class was generated. Returned schema may be augmented with
@@ -329,6 +325,22 @@ public final class BindingRuntimeContext implements Immutable {
         return getEnumMapping(findTypeWithSchema(enumClassName));
     }
 
+    private static BiMap<String, String> getEnumMapping(final Entry<GeneratedType, WithStatus> typeWithSchema) {
+        final TypeDefinition<?> typeDef = (TypeDefinition<?>) typeWithSchema.getValue();
+
+        Preconditions.checkArgument(typeDef instanceof EnumTypeDefinition);
+        final EnumTypeDefinition enumType = (EnumTypeDefinition) typeDef;
+
+        final HashBiMap<String, String> mappedEnums = HashBiMap.create();
+
+        for (final EnumTypeDefinition.EnumPair enumPair : enumType.getValues()) {
+            mappedEnums.put(enumPair.getName(), BindingMapping.getClassName(enumPair.getName()));
+        }
+
+        // TODO cache these maps for future use
+        return mappedEnums;
+    }
+
     private Entry<GeneratedType, WithStatus> findTypeWithSchema(final String className) {
         // All we have is a straight FQCN, which we need to split into a hierarchical JavaTypeName. This involves
         // some amount of guesswork -- we do that by peeling components at the dot and trying out, e.g. given
@@ -373,22 +385,6 @@ public final class BindingRuntimeContext implements Immutable {
         }
 
         throw new IllegalArgumentException("Failed to find type for " + className);
-    }
-
-    private static BiMap<String, String> getEnumMapping(final Entry<GeneratedType, WithStatus> typeWithSchema) {
-        final TypeDefinition<?> typeDef = (TypeDefinition<?>) typeWithSchema.getValue();
-
-        Preconditions.checkArgument(typeDef instanceof EnumTypeDefinition);
-        final EnumTypeDefinition enumType = (EnumTypeDefinition) typeDef;
-
-        final HashBiMap<String, String> mappedEnums = HashBiMap.create();
-
-        for (final EnumTypeDefinition.EnumPair enumPair : enumType.getValues()) {
-            mappedEnums.put(enumPair.getName(), BindingMapping.getClassName(enumPair.getName()));
-        }
-
-        // TODO cache these maps for future use
-        return mappedEnums;
     }
 
     public Set<Class<?>> getCases(final Class<?> choice) {
@@ -447,6 +443,10 @@ public final class BindingRuntimeContext implements Immutable {
             childNames.add(child.getQName());
         }
         return new AugmentationIdentifier(childNames);
+    }
+
+    private static Type referencedType(final Class<?> type) {
+        return new ReferencedTypeImpl(JavaTypeName.create(type));
     }
 
     private static Type referencedType(final Type type) {
