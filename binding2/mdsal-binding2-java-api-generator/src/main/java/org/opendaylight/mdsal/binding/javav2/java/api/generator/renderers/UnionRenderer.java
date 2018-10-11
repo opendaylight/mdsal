@@ -129,8 +129,7 @@ public class UnionRenderer extends ClassRenderer {
         } else if ((retTypeCastProperties == null || retTypeCastProperties.isEmpty())) {
             Preconditions.checkState(typedefType.getSuperType() != null);
 
-            sb.append(generateCharArrayFieldForTypedef(fieldName,
-                    (GeneratedTransferObject) typedefType.getSuperType()));
+            sb.append(generateCharArrayFieldForTypedef(fieldName, typedefType.getSuperType()));
         }
 
         return sb.toString();
@@ -232,7 +231,7 @@ public class UnionRenderer extends ClassRenderer {
 
     @Override
     protected String generateInnerClassBody(GeneratedTransferObject innerClass) {
-        final UnionRenderer unionRenderer = new UnionRenderer((GeneratedTransferObject) innerClass);
+        final UnionRenderer unionRenderer = new UnionRenderer(innerClass);
         final String body = unionRenderer.generateAsInnerClass();
         this.putAllToImportMap(unionRenderer.getImportMap());
         return body;

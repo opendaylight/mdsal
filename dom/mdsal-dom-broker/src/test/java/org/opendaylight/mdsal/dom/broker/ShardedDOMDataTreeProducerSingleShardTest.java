@@ -96,7 +96,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void createProducerWithEmptyList() {
-        treeService.createProducer(Collections.<DOMDataTreeIdentifier>emptySet());
+        treeService.createProducer(Collections.emptySet());
     }
 
     @Test(expected = DOMDataTreeProducerBusyException.class)

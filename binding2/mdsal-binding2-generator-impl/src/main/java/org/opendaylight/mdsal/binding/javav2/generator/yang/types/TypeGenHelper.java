@@ -183,7 +183,8 @@ public final class TypeGenHelper {
         Preconditions.checkNotNull(javaType, "javaType cannot be null");
         final String propertyName = "value";
 
-        final GeneratedTOBuilder genTOBuilder = typedefToTransferObject(basePackageName, typedef, moduleName, context);
+        final GeneratedTOBuilderImpl genTOBuilder = typedefToTransferObject(basePackageName, typedef, moduleName,
+                context);
         genTOBuilder.setRestrictions(BindingGeneratorUtil.getRestrictions(typedef));
         final GeneratedPropertyBuilder genPropBuilder = genTOBuilder.addProperty(propertyName);
         genPropBuilder.setReturnType(javaType);
@@ -198,7 +199,7 @@ public final class TypeGenHelper {
         }
         addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
         genTOBuilder.setTypedef(true);
-        makeSerializable((GeneratedTOBuilderImpl) genTOBuilder);
+        makeSerializable(genTOBuilder);
         return genTOBuilder.toInstance();
     }
 
