@@ -67,7 +67,7 @@ public final class Types {
     private static final ConcreteType SET_TYPE = typeForClass(Set.class);
 
     /**
-     * It is not desirable to create instance of this class
+     * It is not desirable to create instance of this class.
      */
     private Types() {
     }
@@ -121,10 +121,9 @@ public final class Types {
     }
 
     /**
-     * Returns an instance of {@link ConcreteType} describing the class
+     * Returns an instance of {@link ConcreteType} describing the class.
      *
-     * @param cls
-     *            Class to describe
+     * @param cls Class to describe
      * @return Description of class
      */
     public static ConcreteType typeForClass(final Class<?> cls) {
@@ -144,13 +143,10 @@ public final class Types {
     }
 
     /**
-     * Returns an instance of {@link ParameterizedType} describing the typed
-     * {@link Map}&lt;K,V&gt;
+     * Returns an instance of {@link ParameterizedType} describing the typed {@link Map}&lt;K,V&gt;.
      *
-     * @param keyType
-     *            Key Type
-     * @param valueType
-     *            Value Type
+     * @param keyType Key Type
+     * @param valueType Value Type
      * @return Description of generic type instance
      */
     public static ParameterizedType mapTypeFor(final Type keyType, final Type valueType) {
@@ -158,11 +154,10 @@ public final class Types {
     }
 
     /**
-     * Returns an instance of {@link ParameterizedType} describing the typed
-     * {@link Set}&lt;V&gt; with concrete type of value.
+     * Returns an instance of {@link ParameterizedType} describing the typed {@link Set}&lt;V&gt; with concrete type
+     * of value.
      *
-     * @param valueType
-     *            Value Type
+     * @param valueType Value Type
      * @return Description of generic type instance of Set
      */
     public static ParameterizedType setTypeFor(final Type valueType) {
@@ -170,11 +165,10 @@ public final class Types {
     }
 
     /**
-     * Returns an instance of {@link ParameterizedType} describing the typed
-     * {@link List}&lt;V&gt; with concrete type of value.
+     * Returns an instance of {@link ParameterizedType} describing the typed {@link List}&lt;V&gt; with concrete type
+     * of value.
      *
-     * @param valueType
-     *            Value Type
+     * @param valueType Value Type
      * @return Description of type instance of List
      */
     public static ParameterizedType listTypeFor(final Type valueType) {
@@ -186,11 +180,10 @@ public final class Types {
     }
 
     /**
-     * Returns an instance of {@link ParameterizedType} describing the typed
-     * {@link ListenableFuture}&lt;V&gt; with concrete type of value.
+     * Returns an instance of {@link ParameterizedType} describing the typed {@link ListenableFuture}&lt;V&gt;
+     * with concrete type of value.
      *
-     * @param valueType
-     *            Value Type
+     * @param valueType Value Type
      * @return Description of type instance of ListenableFuture
      */
     public static ParameterizedType listenableFutureTypeFor(final Type valueType) {
@@ -209,16 +202,11 @@ public final class Types {
     }
 
     /**
-     * Creates instance of type
-     * {@link org.opendaylight.mdsal.binding.model.api.ParameterizedType
-     * ParameterizedType}
+     * Creates instance of type {@link org.opendaylight.mdsal.binding.model.api.ParameterizedType ParameterizedType}.
      *
-     * @param type
-     *            JAVA <code>Type</code> for raw type
-     * @param parameters
-     *            JAVA <code>Type</code>s for actual parameter types
-     * @return <code>ParametrizedType</code> representation of <code>type</code>
-     *         and its parameters <code>parameters</code>
+     * @param type JAVA <code>Type</code> for raw type
+     * @param parameters JAVA <code>Type</code>s for actual parameter types
+     * @return <code>ParametrizedType</code> representation of <code>type</code> and its <code>parameters</code>
      * @throws NullPointerException if any argument or any member of {@code parameters} is null
      */
     public static ParameterizedType parameterizedTypeFor(final Type type, final Type... parameters) {
@@ -242,8 +230,7 @@ public final class Types {
      * {@link org.opendaylight.yangtools.yang.binding.Augmentable} and actual
      * parameter is <code>valueType</code>.
      *
-     * @param valueType
-     *            JAVA <code>Type</code> with actual parameter
+     * @param valueType JAVA <code>Type</code> with actual parameter
      * @return <code>ParametrizedType</code> representation of raw type
      *         <code>Augmentable</code> with actual parameter
      *         <code>valueType</code>
@@ -254,14 +241,11 @@ public final class Types {
     }
 
     /**
-     * Creates instance of
-     * {@link org.opendaylight.mdsal.binding.model.api.ParameterizedType
-     * ParameterizedType} where raw type is
-     * {@link org.opendaylight.yangtools.yang.binding.Augmentation} and actual
-     * parameter is <code>valueType</code>.
+     * Creates instance of {@link org.opendaylight.mdsal.binding.model.api.ParameterizedType ParameterizedType} where
+     * raw type is {@link org.opendaylight.yangtools.yang.binding.Augmentation} and actual parameter
+     * is <code>valueType</code>.
      *
-     * @param valueType
-     *            JAVA <code>Type</code> with actual parameter
+     * @param valueType JAVA <code>Type</code> with actual parameter
      * @return <code>ParametrizedType</code> reprezentation of raw type
      *         <code>Augmentation</code> with actual parameter
      *         <code>valueType</code>
@@ -276,21 +260,16 @@ public final class Types {
     }
 
     /**
-     *
      * Represents concrete JAVA type.
-     *
      */
     private static final class ConcreteTypeImpl extends AbstractBaseType implements ConcreteType {
         private final Restrictions restrictions;
 
         /**
-         * Creates instance of this class with package <code>pkName</code> and
-         * with the type name <code>name</code>.
+         * Creates instance of this class with package <code>pkName</code> and with the type name <code>name</code>.
          *
-         * @param pkName
-         *            string with package name
-         * @param name
-         *            string with the name of the type
+         * @param pkName string with package name
+         * @param name string with the name of the type
          */
         ConcreteTypeImpl(final JavaTypeName identifier, final Restrictions restrictions) {
             super(identifier);
@@ -306,17 +285,15 @@ public final class Types {
     /**
      * Represents concrete JAVA type with changed restriction values.
      */
-    private static final class BaseTypeWithRestrictionsImpl extends AbstractBaseType implements BaseTypeWithRestrictions {
+    private static final class BaseTypeWithRestrictionsImpl extends AbstractBaseType implements
+            BaseTypeWithRestrictions {
         private final Restrictions restrictions;
 
         /**
-         * Creates instance of this class with package <code>pkName</code> and
-         * with the type name <code>name</code>.
+         * Creates instance of this class with package <code>pkName</code> and with the type name <code>name</code>.
          *
-         * @param pkName
-         *            string with package name
-         * @param name
-         *            string with the name of the type
+         * @param pkName string with package name
+         * @param name string with the name of the type
          */
         BaseTypeWithRestrictionsImpl(final JavaTypeName identifier, final Restrictions restrictions) {
             super(identifier);
@@ -339,9 +316,24 @@ public final class Types {
         private final Type[] actualTypes;
 
         /**
-         * JAVA raw type (like List, Set, Map...)
+         * JAVA raw type (like List, Set, Map...).
          */
         private final Type rawType;
+
+        /**
+         * Creates instance of this class with concrete rawType and array of actual parameters.
+         *
+         * @param rawType JAVA <code>Type</code> for raw type
+         * @param actTypes array of actual parameters
+         */
+        ParametrizedTypeImpl(final Type rawType, final Type[] actTypes) {
+            super(rawType.getIdentifier());
+            this.rawType = requireNonNull(rawType);
+            actualTypes = actTypes.clone();
+            if (Arrays.stream(actualTypes).anyMatch(Objects::isNull)) {
+                throw new NullPointerException("actTypes contains a null");
+            }
+        }
 
         @Override
         public Type[] getActualTypeArguments() {
@@ -353,24 +345,6 @@ public final class Types {
         public Type getRawType() {
             return this.rawType;
         }
-
-        /**
-         * Creates instance of this class with concrete rawType and array of
-         * actual parameters.
-         *
-         * @param rawType
-         *            JAVA <code>Type</code> for raw type
-         * @param actTypes
-         *            array of actual parameters
-         */
-        public ParametrizedTypeImpl(final Type rawType, final Type[] actTypes) {
-            super(rawType.getIdentifier());
-            this.rawType = requireNonNull(rawType);
-            actualTypes = actTypes.clone();
-            if (Arrays.stream(actualTypes).anyMatch(Objects::isNull)) {
-                throw new NullPointerException("actTypes contains a null");
-            }
-        }
     }
 
     /**
@@ -380,17 +354,15 @@ public final class Types {
         /**
          * Creates instance of this class with concrete package and type name.
          *
-         * @param packageName
-         *            string with the package name
-         * @param typeName
-         *            string with the name of type
+         * @param packageName string with the package name
+         * @param typeName string with the name of type
          */
         WildcardTypeImpl(final JavaTypeName identifier) {
             super(identifier);
         }
     }
 
-    public static <T extends Number& Comparable<T>> DefaultRestrictions<T> getDefaultRestrictions(final T min,
+    public static <T extends Number & Comparable<T>> DefaultRestrictions<T> getDefaultRestrictions(final T min,
             final T max) {
         return new DefaultRestrictions<>(min, max);
     }

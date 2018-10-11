@@ -13,13 +13,14 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 
-public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilder<GeneratedPropertyBuilder> implements GeneratedPropertyBuilder {
+public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilder<GeneratedPropertyBuilder>
+        implements GeneratedPropertyBuilder {
     private String value;
-    private boolean isReadOnly;
+    private boolean readOnly;
 
     public GeneratedPropertyBuilderImpl(final String name) {
         super(name);
-        this.isReadOnly = true;
+        this.readOnly = true;
     }
 
     @Override
@@ -30,7 +31,7 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
 
     @Override
     public GeneratedPropertyBuilderImpl setReadOnly(final boolean isReadOnly) {
-        this.isReadOnly = isReadOnly;
+        this.readOnly = isReadOnly;
         return this;
     }
 
@@ -43,7 +44,7 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
     public GeneratedProperty toInstance(final Type definingType) {
         final List<AnnotationType> annotations = toAnnotationTypes();
         return new GeneratedPropertyImpl(definingType, getName(), annotations, getComment(), getAccessModifier(),
-                getReturnType(), isFinal(), isStatic(), this.isReadOnly, this.value);
+                getReturnType(), isFinal(), isStatic(), this.readOnly, this.value);
     }
 
     @Override
@@ -60,7 +61,7 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
         builder.append(", isFinal=");
         builder.append(isFinal());
         builder.append(", isReadOnly=");
-        builder.append(this.isReadOnly);
+        builder.append(this.readOnly);
         builder.append(", modifier=");
         builder.append(getAccessModifier());
         builder.append("]");

@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,8 +16,8 @@ import java.util.List;
 import java.util.Objects;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
@@ -30,7 +31,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     private boolean isStatic;
     private AccessModifier accessModifier;
 
-    public AbstractTypeMemberBuilder(final String name) {
+    AbstractTypeMemberBuilder(final String name) {
         this.name = name;
     }
 
@@ -74,37 +75,34 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     protected abstract T thisInstance();
 
     @Override
-    public T setReturnType(final Type returnType) {
-        Preconditions.checkArgument(returnType != null, "Return Type of member cannot be null!");
-        this.returnType = returnType;
+    public T setReturnType(final Type newReturnType) {
+        checkArgument(newReturnType != null, "Return Type of member cannot be null!");
+        this.returnType = newReturnType;
         return thisInstance();
     }
 
     @Override
     public T setAccessModifier(final AccessModifier modifier) {
-        Preconditions.checkArgument(modifier != null, "Access Modifier for member type cannot be null!");
+        checkArgument(modifier != null, "Access Modifier for member type cannot be null!");
         this.accessModifier = modifier;
         return thisInstance();
     }
 
     @Override
-    public T setComment(final String comment) {
-        if (comment == null) {
-            this.comment = "";
-        }
-        this.comment = comment;
+    public T setComment(final String newComment) {
+        this.comment = newComment == null ? "" : newComment;
         return thisInstance();
     }
 
     @Override
-    public T setFinal(final boolean isFinal) {
-        this.isFinal = isFinal;
+    public T setFinal(final boolean newIsFinal) {
+        this.isFinal = newIsFinal;
         return thisInstance();
     }
 
     @Override
-    public T setStatic(final boolean isStatic) {
-        this.isStatic = isStatic;
+    public T setStatic(final boolean newIsStatic) {
+        this.isStatic = newIsStatic;
         return thisInstance();
     }
 

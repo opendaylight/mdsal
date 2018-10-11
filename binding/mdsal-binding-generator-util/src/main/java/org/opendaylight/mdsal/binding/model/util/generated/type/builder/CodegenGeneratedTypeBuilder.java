@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -99,7 +99,7 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         private final String moduleName;
         private final SchemaPath schemaPath;
 
-        public GeneratedTypeImpl(final CodegenGeneratedTypeBuilder builder) {
+        GeneratedTypeImpl(final CodegenGeneratedTypeBuilder builder) {
             super(builder);
 
             this.description = builder.description;

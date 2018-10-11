@@ -64,14 +64,12 @@ final class ConstantImpl implements Constant {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final ConstantImpl other = (ConstantImpl) obj;
-        return Objects.equals(this.name, other.name) && Objects.equals(this.type, other.type) && Objects.equals(this.value, other.value);
+        return Objects.equals(this.name, other.name) && Objects.equals(this.type, other.type)
+                && Objects.equals(this.value, other.value);
     }
 
     @Override

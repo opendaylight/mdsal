@@ -73,6 +73,11 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -200,13 +205,13 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         private final String value;
         private final List<String> values;
 
-        public ParameterImpl(final String name, final String value) {
+        ParameterImpl(final String name, final String value) {
             this.name = name;
             this.value = value;
             this.values = Collections.emptyList();
         }
 
-        public ParameterImpl(final String name, final List<String> values) {
+        ParameterImpl(final String name, final List<String> values) {
             this.name = name;
             this.values = values;
             this.value = null;

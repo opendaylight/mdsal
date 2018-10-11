@@ -16,19 +16,20 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
 
-final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodSignatureBuilder> implements MethodSignatureBuilder {
+final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodSignatureBuilder>
+        implements MethodSignatureBuilder {
 
     private List<MethodSignature.Parameter> parameters = Collections.emptyList();
-    private List<MethodSignature.Parameter> unmodifiableParams  = Collections.emptyList();
+    private List<MethodSignature.Parameter> unmodifiableParams = Collections.emptyList();
     private boolean isAbstract;
 
-    public MethodSignatureBuilderImpl(final String name) {
+    MethodSignatureBuilderImpl(final String name) {
         super(name);
     }
 
     @Override
-    public MethodSignatureBuilder setAbstract(final boolean isAbstract) {
-        this.isAbstract = isAbstract;
+    public MethodSignatureBuilder setAbstract(final boolean newIsAbstract) {
+        this.isAbstract = newIsAbstract;
         return this;
     }
 
@@ -55,9 +56,9 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + Objects.hashCode(getName());
-        result = (prime * result) + Objects.hashCode(this.parameters);
-        result = (prime * result) + Objects.hashCode(getReturnType());
+        result = prime * result + Objects.hashCode(getName());
+        result = prime * result + Objects.hashCode(this.parameters);
+        result = prime * result + Objects.hashCode(getReturnType());
         return result;
     }
 

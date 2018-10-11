@@ -19,9 +19,9 @@ import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
@@ -52,10 +52,10 @@ public class GeneratedTypeBuilderTest {
 
         Constant constant3 = new ConstantImpl(generatedTypeBuilder, Types.typeForClass(String.class), "myConstant",
                 "myConstantValue");
-        Constant constant4 = new ConstantImpl(generatedTypeBuilder, Types.typeForClass(String.class), "myConstant2",
-                "myConstantValue");
-        Constant constant5 = new ConstantImpl(generatedTypeBuilder, Types.typeForClass(String.class), "myConstant",
-                "myConstantValue2");
+        final Constant constant4 = new ConstantImpl(generatedTypeBuilder, Types.typeForClass(String.class),
+            "myConstant2", "myConstantValue");
+        final Constant constant5 = new ConstantImpl(generatedTypeBuilder, Types.typeForClass(String.class),
+            "myConstant", "myConstantValue2");
 
         assertNotNull(constant);
         assertNotNull(constant2);
@@ -79,9 +79,8 @@ public class GeneratedTypeBuilderTest {
         assertFalse(constant.hashCode() == constant4.hashCode());
         assertTrue(constant.hashCode() == constant5.hashCode());
 
-        assertEquals(
-                "Constant [type=Type (java.lang.String), name=myConstant, value=myConstantValue, definingType=my.package.MyName]",
-                constant.toString());
+        assertEquals("Constant [type=Type (java.lang.String), name=myConstant, value=myConstantValue, "
+                + "definingType=my.package.MyName]", constant.toString());
 
         assertEquals("Type (java.lang.String) myConstant myConstantValue", constant.toFormattedString());
 
@@ -115,13 +114,13 @@ public class GeneratedTypeBuilderTest {
 
     @Test
     public void generatedTypeBuilderEqualsAndHashCodeTest() {
-        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder(
+        final CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder(
             JavaTypeName.create("my.package", "MyName"));
-        CodegenGeneratedTypeBuilder generatedTypeBuilder2 = new CodegenGeneratedTypeBuilder(
+        final CodegenGeneratedTypeBuilder generatedTypeBuilder2 = new CodegenGeneratedTypeBuilder(
             JavaTypeName.create("my.package", "MyName"));
-        CodegenGeneratedTypeBuilder generatedTypeBuilder3 = new CodegenGeneratedTypeBuilder(
+        final CodegenGeneratedTypeBuilder generatedTypeBuilder3 = new CodegenGeneratedTypeBuilder(
             JavaTypeName.create("my.package", "MyName2"));
-        CodegenGeneratedTypeBuilder generatedTypeBuilder4 = new CodegenGeneratedTypeBuilder(
+        final CodegenGeneratedTypeBuilder generatedTypeBuilder4 = new CodegenGeneratedTypeBuilder(
             JavaTypeName.create("my.package2", "MyName"));
 
         assertFalse(generatedTypeBuilder.equals(null));
@@ -220,7 +219,8 @@ public class GeneratedTypeBuilderTest {
 
         assertTrue(enumerations.contains(enumBuilder.toInstance(instance)));
         assertTrue(enumerations.contains(enumBuilder2.toInstance(instance)));
-        assertFalse(enumerations.contains(new CodegenEnumerationBuilder(JavaTypeName.create("my.package", "myEnumName3"))
+        assertFalse(enumerations.contains(new CodegenEnumerationBuilder(JavaTypeName.create("my.package",
+            "myEnumName3"))
             .toInstance(instance)));
 
     }
@@ -251,14 +251,14 @@ public class GeneratedTypeBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addEnclosingTransferObjectIllegalArgumentTest() {
-        new CodegenGeneratedTypeBuilder(JavaTypeName.create("my.package", "MyName"))
-        .addEnclosingTransferObject((String) null);
+        new CodegenGeneratedTypeBuilder(JavaTypeName.create("my.package", "MyName")).addEnclosingTransferObject(
+            (String) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addEnclosingTransferObjectIllegalArgumentTest2() {
-        new CodegenGeneratedTypeBuilder(JavaTypeName.create("my.package", "MyName"))
-        .addEnclosingTransferObject((GeneratedTOBuilder) null);
+        new CodegenGeneratedTypeBuilder(JavaTypeName.create("my.package", "MyName")).addEnclosingTransferObject(
+            (GeneratedTOBuilder) null);
     }
 
     @Test
@@ -308,7 +308,8 @@ public class GeneratedTypeBuilderTest {
         assertEquals("My description ...", instance.getDescription());
         assertEquals("myModuleName", instance.getModuleName());
         assertEquals("myReference", instance.getReference());
-        assertEquals(SchemaPath.create(true, QName.create("test", "/path")).getPathFromRoot(), instance.getSchemaPath());
+        assertEquals(SchemaPath.create(true, QName.create("test", "/path")).getPathFromRoot(),
+            instance.getSchemaPath());
         assertEquals("My comment..", instance.getComment().getJavadoc());
     }
 }

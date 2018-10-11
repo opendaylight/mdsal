@@ -16,7 +16,7 @@ final class MethodParameterImpl implements Parameter {
     private final String name;
     private final Type type;
 
-    public MethodParameterImpl(final String name, final Type type) {
+    MethodParameterImpl(final String name, final Type type) {
         this.name = name;
         this.type = type;
     }
@@ -40,8 +40,8 @@ final class MethodParameterImpl implements Parameter {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + Objects.hashCode(this.name);
-        result = (prime * result) + Objects.hashCode(this.type);
+        result = prime * result + Objects.hashCode(this.name);
+        result = prime * result + Objects.hashCode(this.type);
         return result;
     }
 
@@ -55,10 +55,7 @@ final class MethodParameterImpl implements Parameter {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final MethodParameterImpl other = (MethodParameterImpl) obj;
