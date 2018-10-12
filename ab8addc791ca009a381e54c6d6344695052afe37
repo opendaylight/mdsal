@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9bab9978_1f138e83",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/SimpleDOMActionResult.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-12T14:47:03Z",
+      "side": 0,
+      "message": "This actually is needed to shut eclipse up:\n- output is @Nullable ContainerNode\n- ofNullable() result is Optional\u003c@Nullable ContainerNode\u003e\n- return is dictated to be Optional\u003c@NonNull ContainerNode\u003e by @NonNullByDefault\n\nI know, strange.",
+      "range": {
+        "startLine": 55,
+        "startChar": 15,
+        "endLine": 55,
+        "endChar": 79
+      },
+      "revId": "ab8addc791ca009a381e54c6d6344695052afe37",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
