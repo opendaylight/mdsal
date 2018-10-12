@@ -138,7 +138,6 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
             return obj;
         }
 
-        @SuppressWarnings("unchecked")
         private Class<? extends TreeNodeSerializerImplementation> generateSerializer(final Class<?> type,
                 final String serializerName)
                 throws CannotCompileException, IllegalAccessException, IllegalArgumentException,
@@ -146,7 +145,8 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
             final AbstractTreeNodeSerializerSource source = generateEmitterSource(type, serializerName);
             final CtClass poolClass = generateEmitter0(type, source, serializerName);
             final Class<? extends TreeNodeSerializerImplementation> cls =
-                    poolClass.toClass(type.getClassLoader(), type.getProtectionDomain());
+                    poolClass.toClass(type.getClassLoader(), type.getProtectionDomain())
+                    .asSubclass(TreeNodeSerializerImplementation.class);
 
             /*
              * Due to OSGi class loader rules we cannot initialize the fields
