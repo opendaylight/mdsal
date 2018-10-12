@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -109,6 +110,12 @@ public class ShardedDOMDataTreeTest {
     public void testProducerPathContention() throws Exception {
         dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
         dataTreeService.createProducer(Collections.singletonList(TEST_ID));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testProducerPathContentionReverse() throws Exception {
+        dataTreeService.createProducer(Collections.singletonList(TEST_ID));
+        dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
     }
 
     @Test
