@@ -111,6 +111,12 @@ public class ShardedDOMDataTreeTest {
         dataTreeService.createProducer(Collections.singletonList(TEST_ID));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testProducerPathContentionReverse() throws Exception {
+        dataTreeService.createProducer(Collections.singletonList(TEST_ID));
+        dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
+    }
+
     @Test
     public void testShardRegistrationClose() throws Exception {
         rootShardReg.close();
