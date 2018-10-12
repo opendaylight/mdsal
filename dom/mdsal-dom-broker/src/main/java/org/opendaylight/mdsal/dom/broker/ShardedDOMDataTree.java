@@ -42,6 +42,7 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTreeShardingService {
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTree.class);
 
@@ -49,6 +50,8 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     private final DOMDataTreePrefixTable<DOMDataTreeShardRegistration<?>> shards = DOMDataTreePrefixTable.create();
     @GuardedBy("this")
     private final DOMDataTreePrefixTable<DOMDataTreeProducer> producers = DOMDataTreePrefixTable.create();
+    @GuardedBy("this")
+    private final Map<DOMDataTreeIdentifier, DOMDataTreeProducer> producerMap = new HashMap<>();
 
     void removeShard(final DOMDataTreeShardRegistration<?> reg) {
         final DOMDataTreeIdentifier prefix = reg.getPrefix();
@@ -135,6 +138,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     synchronized void destroyProducer(final ShardedDOMDataTreeProducer producer) {
         for (final DOMDataTreeIdentifier s : producer.getSubtrees()) {
             producers.remove(s);
+            producerMap.remove(s);
         }
     }
 
@@ -150,6 +154,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         final DOMDataTreeProducer ret = ShardedDOMDataTreeProducer.create(this, subtrees, shardMap);
         for (final DOMDataTreeIdentifier subtree : subtrees) {
             producers.store(subtree, ret);
+            producerMap.put(subtree, ret);
         }
 
         return ret;
@@ -164,6 +169,12 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
             // Attempting to create a disconnected producer -- all subtrees have to be unclaimed
             final DOMDataTreeProducer producer = findProducer(subtree);
             checkArgument(producer == null, "Subtree %s is attached to producer %s", subtree, producer);
+
+            for (DOMDataTreeIdentifier producerSubtree : producerMap.keySet()) {
+                checkArgument(!subtree.contains(producerSubtree),
+                    "Subtree %s contains subtree %s which is already attached to producer %s.",
+                    subtree, producerSubtree, producerMap.get(producerSubtree));
+            }
 
             final DOMDataTreePrefixTableEntry<DOMDataTreeShardRegistration<?>> possibleShardReg =
                     shards.lookup(subtree);
