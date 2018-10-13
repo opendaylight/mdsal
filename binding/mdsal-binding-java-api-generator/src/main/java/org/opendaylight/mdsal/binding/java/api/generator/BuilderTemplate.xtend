@@ -12,6 +12,7 @@ import java.util.ArrayList
 import java.util.Arrays
 import java.util.Collection
 import java.util.Collections
+import java.util.Comparator
 import java.util.HashMap
 import java.util.HashSet
 import java.util.LinkedHashSet
@@ -39,6 +40,7 @@ import org.opendaylight.yangtools.yang.binding.Identifiable
  */
 
 class BuilderTemplate extends BaseTemplate {
+    static val Comparator<GeneratedProperty> KEY_PROPS_COMPARATOR = [ p1, p2 | return p1.name.compareTo(p2.name) ]
 
     /**
      * Constant with the name of the concrete method.
@@ -507,7 +509,7 @@ class BuilderTemplate extends BaseTemplate {
             «val keyType = type.getKey»
             «IF isList && keyType !== null»
                 «val keyProps = new ArrayList((keyType as GeneratedTransferObject).properties)»
-                «keyProps.sort([ p1, p2 | return p1.name.compareTo(p2.name) ])»
+                «keyProps.sort(KEY_PROPS_COMPARATOR)»
                 «FOR field : keyProps»
                     «removeProperty(allProps, field.name)»
                 «ENDFOR»
