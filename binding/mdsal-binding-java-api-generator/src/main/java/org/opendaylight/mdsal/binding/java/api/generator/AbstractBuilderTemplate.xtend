@@ -14,7 +14,6 @@ import com.google.common.base.MoreObjects
 import com.google.common.collect.ImmutableMap
 import java.util.ArrayList
 import java.util.Collection
-import java.util.Collections
 import java.util.List
 import java.util.Map
 import java.util.Set
@@ -138,7 +137,7 @@ abstract class AbstractBuilderTemplate extends BaseTemplate {
             «val isList = implementsIfc(targetType, Types.parameterizedTypeFor(Types.typeForClass(Identifiable), targetType))»
             «IF isList && keyType !== null»
                 «val keyProps = new ArrayList((keyType as GeneratedTransferObject).properties)»
-                «Collections.sort(keyProps, [ p1, p2 | return p1.name.compareTo(p2.name) ])»
+                «keyProps.sort([ p1, p2 | return p1.name.compareTo(p2.name) ])»
                 «FOR field : keyProps»
                     «removeProperty(allProps, field.name)»
                 «ENDFOR»
