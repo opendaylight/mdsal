@@ -11,6 +11,7 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTA
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
 
 import com.google.common.base.MoreObjects
+import com.google.common.collect.ImmutableMap
 import java.util.ArrayList
 import java.util.Collection
 import java.util.Collections
@@ -79,11 +80,12 @@ abstract class AbstractBuilderTemplate extends BaseTemplate {
         «ENDIF»
     '''
 
-    def protected final generateAugmentField(boolean isPrivate) '''
-        «IF augmentType !== null»
-            «IF isPrivate»private «ENDIF»«Map.importedName»<«Class.importedName»<? extends «augmentType.importedName»>, «augmentType.importedName»> «AUGMENTATION_FIELD» = «Collections.importedName».emptyMap();
-        «ENDIF»
-    '''
+    def protected final generateAugmentField() {
+        val augmentTypeRef = augmentType.importedName
+        return '''
+           «Map.importedName»<«Class.importedName»<? extends «augmentTypeRef»>, «augmentTypeRef»> «AUGMENTATION_FIELD» = «ImmutableMap.importedName».of();
+        '''
+    }
 
     override generateToString(Collection<GeneratedProperty> properties) '''
         «IF properties !== null»
