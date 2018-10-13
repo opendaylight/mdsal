@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.opendaylight.mdsal.binding.dom.codec.util.AugmentationReader;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -48,6 +50,9 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     private final NormalizedNodeContainer<?, PathArgument, NormalizedNode<?, ?>> data;
     private final DataObjectCodecContext<D,?> context;
 
+    @SuppressWarnings("rawtypes")
+    private static final AtomicReferenceFieldUpdater<LazyDataObject, ImmutableMap> CACHED_AUGMENTATIONS_UPDATER =
+            AtomicReferenceFieldUpdater.newUpdater(LazyDataObject.class, ImmutableMap.class, "cachedAugmentations");
     private volatile ImmutableMap<Class<? extends Augmentation<?>>, Augmentation<?>> cachedAugmentations = null;
     private volatile Integer cachedHashcode = null;
 
@@ -161,18 +166,14 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     }
 
     private Map<Class<? extends Augmentation<?>>, Augmentation<?>> getAugmentationsImpl() {
-        ImmutableMap<Class<? extends Augmentation<?>>, Augmentation<?>> ret = cachedAugmentations;
-        if (ret == null) {
-            synchronized (this) {
-                ret = cachedAugmentations;
-                if (ret == null) {
-                    ret = ImmutableMap.copyOf(context.getAllAugmentationsFrom(data));
-                    cachedAugmentations = ret;
-                }
-            }
+        ImmutableMap<Class<? extends Augmentation<?>>, Augmentation<?>> local = cachedAugmentations;
+        if (local != null) {
+            return local;
         }
 
-        return ret;
+        local = ImmutableMap.copyOf(context.getAllAugmentationsFrom(data));
+        return CACHED_AUGMENTATIONS_UPDATER.compareAndSet(this, null, local) ? local
+                : verifyNotNull(cachedAugmentations);
     }
 
     @Override
