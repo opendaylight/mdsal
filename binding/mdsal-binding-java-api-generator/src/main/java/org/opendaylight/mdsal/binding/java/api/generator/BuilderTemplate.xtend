@@ -507,11 +507,7 @@ class BuilderTemplate extends BaseTemplate {
             «val keyType = type.getKey»
             «IF isList && keyType !== null»
                 «val keyProps = new ArrayList((keyType as GeneratedTransferObject).properties)»
-                «Collections.sort(keyProps,
-                    [ p1, p2 |
-                        return p1.name.compareTo(p2.name)
-                    ])
-                »
+                «keyProps.sort([ p1, p2 | return p1.name.compareTo(p2.name) ])»
                 «FOR field : keyProps»
                     «removeProperty(allProps, field.name)»
                 «ENDFOR»
