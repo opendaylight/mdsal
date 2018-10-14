@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import com.google.common.collect.Iterables;
+import java.util.Optional;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode.ChildAddressabilitySummary;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
@@ -28,6 +29,7 @@ import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+import org.opendaylight.yangtools.yang.model.api.ElementCountConstraint;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -224,8 +226,13 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
         if (schema instanceof ContainerSchemaNode) {
             return new ContainerNodeCodecContext(this);
         } else if (schema instanceof ListSchemaNode) {
-            return Identifiable.class.isAssignableFrom(getBindingClass()) ? new KeyedListNodeCodecContext(this)
-                    : new ListNodeCodecContext(this);
+            final ListSchemaNode listSchema = (ListSchemaNode) schema;
+            if (Identifiable.class.isAssignableFrom(getBindingClass())) {
+                return isMandatory(listSchema) ? new KeyedListNodeCodecContext(this)
+                        : new KeyedListNodeCodecContext.NonMandatory(this);
+            }
+            return isMandatory(listSchema) ? new ListNodeCodecContext(this)
+                    : new ListNodeCodecContext.NonMandatory(this);
         } else if (schema instanceof ChoiceSchemaNode) {
             return new ChoiceNodeCodecContext(this);
         } else if (schema instanceof AugmentationSchemaNode) {
@@ -238,5 +245,14 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
 
     boolean isChoice() {
         return schema instanceof ChoiceSchemaNode;
+    }
+
+    private static boolean isMandatory(final ListSchemaNode schema) {
+        final Optional<ElementCountConstraint> optConstraint = schema.getElementCountConstraint();
+        if (optConstraint.isPresent()) {
+            final Integer minElements = optConstraint.get().getMinElements();
+            return minElements != null && minElements > 0;
+        }
+        return false;
     }
 }

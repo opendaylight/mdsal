@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -344,6 +345,8 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
             return childContext.deserializeObject(domChild.get());
         } else if (childContext instanceof LeafNodeCodecContext) {
             return ((LeafNodeCodecContext)childContext).defaultObject();
+        } else if (childContext instanceof NonMandatoryList) {
+            return ImmutableList.of();
         } else {
             return null;
         }

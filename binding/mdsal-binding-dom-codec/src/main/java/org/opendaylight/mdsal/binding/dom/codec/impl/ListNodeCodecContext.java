@@ -17,13 +17,19 @@ import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 
-class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<D,ListSchemaNode> {
-    protected ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
+class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<D, ListSchemaNode> {
+    static final class NonMandatory<D extends DataObject> extends ListNodeCodecContext<D> implements NonMandatoryList {
+        NonMandatory(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
+            super(prototype);
+        }
+    }
+
+    ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
         super(prototype);
     }
 
     @Override
-    public D deserialize(final NormalizedNode<?, ?> node) {
+    public final D deserialize(final NormalizedNode<?, ?> node) {
         if (node instanceof MapEntryNode) {
             return fromMapEntry((MapEntryNode) node);
         } else if (node instanceof UnkeyedListEntryNode) {
@@ -34,7 +40,7 @@ class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<
     }
 
     @Override
-    protected Object deserializeObject(final NormalizedNode<?, ?> node) {
+    protected final Object deserializeObject(final NormalizedNode<?, ?> node) {
         if (node instanceof MapNode) {
             return fromMap((MapNode) node);
         } else if (node instanceof MapEntryNode) {
