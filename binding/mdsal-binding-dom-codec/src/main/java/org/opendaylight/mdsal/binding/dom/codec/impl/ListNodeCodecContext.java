@@ -7,19 +7,32 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListNode;
+import org.opendaylight.yangtools.yang.model.api.ElementCountConstraint;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 
 class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<D,ListSchemaNode> {
-    protected ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
+    private final @Nullable List<?> defaultObject;
+
+    ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
         super(prototype);
+        final Optional<ElementCountConstraint> optConstraint = prototype.getSchema().getElementCountConstraint();
+        if (optConstraint.isPresent()) {
+            final Integer minElements = optConstraint.get().getMinElements();
+            defaultObject = minElements == null || minElements < 1 ? ImmutableList.of() : null;
+        } else {
+            defaultObject = ImmutableList.of();
+        }
     }
 
     @Override
@@ -46,6 +59,10 @@ class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<
         } else {
             throw new IllegalStateException("Unsupported data type " + node.getClass());
         }
+    }
+
+    final @Nullable Object defaultObject() {
+        return defaultObject;
     }
 
     private List<D> fromMap(final MapNode nodes) {

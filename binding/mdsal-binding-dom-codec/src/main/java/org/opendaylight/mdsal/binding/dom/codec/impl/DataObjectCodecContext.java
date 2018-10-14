@@ -344,6 +344,8 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
             return childContext.deserializeObject(domChild.get());
         } else if (childContext instanceof LeafNodeCodecContext) {
             return ((LeafNodeCodecContext)childContext).defaultObject();
+        } else if (childContext instanceof ListNodeCodecContext) {
+            return ((ListNodeCodecContext) childContext).defaultObject();
         } else {
             return null;
         }
