@@ -34,10 +34,10 @@ public abstract class AbstractForwardedDataBroker extends AbstractBindingAdapter
             final Map<YangInstanceIdentifier, ? extends NormalizedNode<?, ?>> normalized) {
         final Map<InstanceIdentifier<?>, DataObject> newMap = new HashMap<>();
 
-        for (final Map.Entry<YangInstanceIdentifier, ? extends NormalizedNode<?, ?>> entry : normalized.entrySet()) {
+        for (final Entry<YangInstanceIdentifier, ? extends NormalizedNode<?, ?>> entry : normalized.entrySet()) {
             try {
-                final Optional<Entry<InstanceIdentifier<? extends DataObject>, DataObject>> potential
-                        = getCodec().toBinding(entry);
+                final Optional<Entry<InstanceIdentifier<? extends DataObject>, DataObject>> potential = getCodec()
+                        .toBinding(entry);
                 if (potential.isPresent()) {
                     final Entry<InstanceIdentifier<? extends DataObject>, DataObject> binding = potential.get();
                     newMap.put(binding.getKey(), binding.getValue());
@@ -71,12 +71,10 @@ public abstract class AbstractForwardedDataBroker extends AbstractBindingAdapter
     }
 
     @SuppressWarnings("unchecked")
-    protected java.util.Optional<DataObject> toBindingData(final InstanceIdentifier<?> path,
-            final NormalizedNode<?, ?> data) {
+    protected Optional<DataObject> toBindingData(final InstanceIdentifier<?> path, final NormalizedNode<?, ?> data) {
         if (path.isWildcarded()) {
-            return java.util.Optional.empty();
+            return Optional.empty();
         }
-        return (java.util.Optional<DataObject>) getCodec().getCodecRegistry().deserializeFunction(path)
-                .apply(java.util.Optional.of(data));
+        return (Optional<DataObject>) getCodec().getCodecRegistry().deserializeFunction(path).apply(Optional.of(data));
     }
 }

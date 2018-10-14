@@ -446,7 +446,7 @@ public class BindingRuntimeContext implements Immutable {
         final QName root = ((SchemaNode) container).getPath().getPathFromRoot().iterator().next();
         // findFirst makes no sense but just pick up one child to judge whether the target node is
         // in the same module.
-        final java.util.Optional<DataSchemaNode> child = augment.getChildNodes().stream().findFirst();
+        final Optional<DataSchemaNode> child = augment.getChildNodes().stream().findFirst();
         if (child.isPresent()) {
             return root.getModule().equals(child.get().getQName().getModule());
         }

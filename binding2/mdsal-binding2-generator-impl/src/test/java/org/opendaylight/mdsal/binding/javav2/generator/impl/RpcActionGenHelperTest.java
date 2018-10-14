@@ -160,12 +160,12 @@ public class RpcActionGenHelperTest {
         when(module.getName()).thenReturn("module-name");
         when(module.getRevision()).thenReturn(rpcQName.getRevision());
         when(module.getNamespace()).thenReturn(rpcQName.getNamespace());
-        when(module.getDescription()).thenReturn(java.util.Optional.empty());
-        when(module.getReference()).thenReturn(java.util.Optional.empty());
+        when(module.getDescription()).thenReturn(Optional.empty());
+        when(module.getReference()).thenReturn(Optional.empty());
         final Set<RpcDefinition> rpcs = new HashSet<>();
         final RpcDefinition rpcDefinition = mock(RpcDefinition.class);
-        when(rpcDefinition.getDescription()).thenReturn(java.util.Optional.empty());
-        when(rpcDefinition.getReference()).thenReturn(java.util.Optional.empty());
+        when(rpcDefinition.getDescription()).thenReturn(Optional.empty());
+        when(rpcDefinition.getReference()).thenReturn(Optional.empty());
         final SchemaPath rpcPath = SchemaPath.create(true, rpcParentQName, rpcQName);
         when(rpcDefinition.getPath()).thenReturn(rpcPath);
         when(rpcDefinition.getQName()).thenReturn(rpcQName);
@@ -179,8 +179,8 @@ public class RpcActionGenHelperTest {
         final SchemaPath inputSchemaPath = SchemaPath.create(true, rpcQName, qnameInput);
         when(input.getQName()).thenReturn(qnameInput);
         when(input.getPath()).thenReturn(inputSchemaPath);
-        when(input.getDescription()).thenReturn(java.util.Optional.empty());
-        when(input.getReference()).thenReturn(java.util.Optional.empty());
+        when(input.getDescription()).thenReturn(Optional.empty());
+        when(input.getReference()).thenReturn(Optional.empty());
 
         when(rpcDefinition.getInput()).thenReturn(input);
 
@@ -189,8 +189,8 @@ public class RpcActionGenHelperTest {
         final SchemaPath outputSchemaPath = SchemaPath.create(true, rpcQName, qnameOutput);
         when(output.getQName()).thenReturn(qnameOutput);
         when(output.getPath()).thenReturn(outputSchemaPath);
-        when(output.getDescription()).thenReturn(java.util.Optional.empty());
-        when(output.getReference()).thenReturn(java.util.Optional.empty());
+        when(output.getDescription()).thenReturn(Optional.empty());
+        when(output.getReference()).thenReturn(Optional.empty());
         when(rpcDefinition.getOutput()).thenReturn(output);
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
@@ -198,7 +198,7 @@ public class RpcActionGenHelperTest {
         genCtx.put(module, moduleContext);
 
         final SchemaContext schemaContext = mock(SchemaContext.class);
-        when(schemaContext.findModule(rpcQName.getModule())).thenReturn(java.util.Optional.of(module));
+        when(schemaContext.findModule(rpcQName.getModule())).thenReturn(Optional.of(module));
 
         final boolean verboseClassComments = false;
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
@@ -224,8 +224,8 @@ public class RpcActionGenHelperTest {
         when(module.getName()).thenReturn("module-name");
         when(module.getRevision()).thenReturn(actionQName.getRevision());
         when(module.getNamespace()).thenReturn(actionQName.getNamespace());
-        when(module.getDescription()).thenReturn(java.util.Optional.empty());
-        when(module.getReference()).thenReturn(java.util.Optional.empty());
+        when(module.getDescription()).thenReturn(Optional.empty());
+        when(module.getReference()).thenReturn(Optional.empty());
 
         final Collection<DataSchemaNode> childNodes = new ArrayList<>();
         final T actionNodeContainer = mock(clazz);
@@ -245,16 +245,16 @@ public class RpcActionGenHelperTest {
         when(actionDefinition.getQName()).thenReturn(actionQName);
         final SchemaPath actionPath = SchemaPath.create(true, actionQName);
         when(actionDefinition.getPath()).thenReturn(actionPath);
-        when(actionDefinition.getDescription()).thenReturn(java.util.Optional.empty());
-        when(actionDefinition.getReference()).thenReturn(java.util.Optional.empty());
+        when(actionDefinition.getDescription()).thenReturn(Optional.empty());
+        when(actionDefinition.getReference()).thenReturn(Optional.empty());
 
         final ContainerSchemaNode input = mock(ContainerSchemaNode.class);
         final QName qnameInput = QName.create(actionQName, "action-input");
         final SchemaPath inputSchemaPath = SchemaPath.create(true, actionQName, qnameInput);
         when(input.getQName()).thenReturn(qnameInput);
         when(input.getPath()).thenReturn(inputSchemaPath);
-        when(input.getDescription()).thenReturn(java.util.Optional.empty());
-        when(input.getReference()).thenReturn(java.util.Optional.empty());
+        when(input.getDescription()).thenReturn(Optional.empty());
+        when(input.getReference()).thenReturn(Optional.empty());
         when(actionDefinition.getInput()).thenReturn(input);
 
         final ContainerSchemaNode output = mock(ContainerSchemaNode.class);
@@ -262,8 +262,8 @@ public class RpcActionGenHelperTest {
         final SchemaPath outputSchemaPath = SchemaPath.create(true, actionQName, qnameOutput);
         when(output.getQName()).thenReturn(qnameOutput);
         when(output.getPath()).thenReturn(outputSchemaPath);
-        when(output.getDescription()).thenReturn(java.util.Optional.empty());
-        when(output.getReference()).thenReturn(java.util.Optional.empty());
+        when(output.getDescription()).thenReturn(Optional.empty());
+        when(output.getReference()).thenReturn(Optional.empty());
         when(actionDefinition.getOutput()).thenReturn(output);
 
         actions.add(actionDefinition);
@@ -276,7 +276,7 @@ public class RpcActionGenHelperTest {
         genCtx.put(module, moduleContext);
 
         final SchemaContext schemaContext = mock(SchemaContext.class);
-        when(schemaContext.findModule(actionQName.getModule())).thenReturn(java.util.Optional.of(module));
+        when(schemaContext.findModule(actionQName.getModule())).thenReturn(Optional.of(module));
 
         final boolean verboseClassComments = false;
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
@@ -287,8 +287,8 @@ public class RpcActionGenHelperTest {
             final RpcDefinition rpcDef = mock(RpcDefinition.class);
             when(rpcDef.getPath()).thenReturn(outputSchemaPath);
             when(rpcDef.getQName()).thenReturn(qnameOutput);
-            when(rpcDef.getDescription()).thenReturn(java.util.Optional.empty());
-            when(rpcDef.getReference()).thenReturn(java.util.Optional.empty());
+            when(rpcDef.getDescription()).thenReturn(Optional.empty());
+            when(rpcDef.getReference()).thenReturn(Optional.empty());
 
             when(module.getDataChildByName(actionQName)).thenReturn((ContainerSchemaNode) actionNodeContainer);
             final List<UnknownSchemaNode> unknownSchemaNodes = new ArrayList<>();

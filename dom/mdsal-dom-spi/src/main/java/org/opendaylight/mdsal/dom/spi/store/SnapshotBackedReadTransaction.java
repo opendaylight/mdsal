@@ -81,7 +81,7 @@ public final class SnapshotBackedReadTransaction<T> extends
     }
 
     @Override
-    public java.util.Optional<DataTreeSnapshot> getSnapshot() {
-        return java.util.Optional.ofNullable(stableSnapshot);
+    public Optional<DataTreeSnapshot> getSnapshot() {
+        return Optional.ofNullable(stableSnapshot);
     }
 }

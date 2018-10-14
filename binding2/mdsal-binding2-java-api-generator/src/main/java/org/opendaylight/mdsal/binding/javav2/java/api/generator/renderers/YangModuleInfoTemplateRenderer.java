@@ -45,10 +45,10 @@ public class YangModuleInfoTemplateRenderer {
     private final Map<String, String> importMap = new HashMap<>();
     private final String packageName;
     private final String modelBindingProviderName;
-    private final Function<Module, java.util.Optional<String>> moduleFilePathResolver;
+    private final Function<Module, Optional<String>> moduleFilePathResolver;
 
-    public YangModuleInfoTemplateRenderer(final Module module, final SchemaContext ctx, final Function<Module,
-            java.util.Optional<String>> moduleFilePathResolver) {
+    public YangModuleInfoTemplateRenderer(final Module module, final SchemaContext ctx,
+            final Function<Module, Optional<String>> moduleFilePathResolver) {
 
         Preconditions.checkArgument(module != null, "Module must not be null.");
         this.module = module;
@@ -214,7 +214,7 @@ public class YangModuleInfoTemplateRenderer {
     }
 
     public static Module getSortedQName(final Set<Module> modules, final String name) {
-        final TreeMap<java.util.Optional<Revision>, Module> sorted = new TreeMap<>(Revision::compare);
+        final TreeMap<Optional<Revision>, Module> sorted = new TreeMap<>(Revision::compare);
         for (Module module : modules) {
             if (name.equals(module.getName())) {
                 sorted.put(module.getRevision(), module);

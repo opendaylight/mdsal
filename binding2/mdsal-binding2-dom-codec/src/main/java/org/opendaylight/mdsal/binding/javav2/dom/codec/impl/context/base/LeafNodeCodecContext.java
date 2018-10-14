@@ -62,7 +62,7 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
             final SchemaContext schemaContext) {
         if (schema instanceof LeafSchemaNode) {
             TypeDefinition<?> type = ((LeafSchemaNode) schema).getType();
-            java.util.Optional<? extends Object> defaultValue = type.getDefaultValue();
+            Optional<? extends Object> defaultValue = type.getDefaultValue();
             if (defaultValue.isPresent()) {
                 if (type instanceof IdentityrefTypeDefinition) {
                     return qnameDomValueFromString(codec, schema, (String) defaultValue.get(), schemaContext);

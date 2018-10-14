@@ -509,7 +509,7 @@ public final class TextTemplateUtil {
      */
     public static String getSourcePath(final Module module, final Function<Module, Optional<String>>
             moduleFilePathResolver) {
-        final java.util.Optional<String> moduleFilePath = moduleFilePathResolver.apply(module);
+        final Optional<String> moduleFilePath = moduleFilePathResolver.apply(module);
         Preconditions.checkArgument(moduleFilePath.isPresent(), "Module file path for %s is not present", module);
 
         return moduleFilePath.get();

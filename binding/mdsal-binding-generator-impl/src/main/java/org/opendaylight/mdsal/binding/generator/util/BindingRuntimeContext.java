@@ -92,7 +92,7 @@ public final class BindingRuntimeContext implements Immutable {
         new CacheLoader<QName, Class<?>>() {
             @Override
             public Class<?> load(final QName key) {
-                final java.util.Optional<Type> identityType = runtimeTypes.findIdentity(key);
+                final Optional<Type> identityType = runtimeTypes.findIdentity(key);
                 checkArgument(identityType.isPresent(), "Supplied QName %s is not a valid identity", key);
                 try {
                     return strategy.loadClass(identityType.get());
@@ -285,7 +285,7 @@ public final class BindingRuntimeContext implements Immutable {
 
         for (final ChoiceSchemaNode choice :  Iterables.filter(schema.getChildNodes(), ChoiceSchemaNode.class)) {
             final ChoiceSchemaNode originalChoice = getOriginalSchema(choice);
-            final java.util.Optional<Type> optType = runtimeTypes.findType(originalChoice);
+            final Optional<Type> optType = runtimeTypes.findType(originalChoice);
             checkState(optType.isPresent(), "Failed to find generated type for choice %s", originalChoice);
             final Type choiceType = optType.get();
 
@@ -365,13 +365,13 @@ public final class BindingRuntimeContext implements Immutable {
             }
 
             final Type type = new ReferencedTypeImpl(name);
-            final java.util.Optional<WithStatus> optSchema = runtimeTypes.findSchema(type);
+            final Optional<WithStatus> optSchema = runtimeTypes.findSchema(type);
             if (!optSchema.isPresent()) {
                 continue;
             }
 
             final WithStatus schema = optSchema.get();
-            final java.util.Optional<Type> optDefinedType =  runtimeTypes.findType(schema);
+            final Optional<Type> optDefinedType =  runtimeTypes.findType(schema);
             if (!optDefinedType.isPresent()) {
                 continue;
             }
@@ -403,7 +403,7 @@ public final class BindingRuntimeContext implements Immutable {
 
     public Class<?> getClassForSchema(final SchemaNode childSchema) {
         final SchemaNode origSchema = getOriginalSchema(childSchema);
-        final java.util.Optional<Type> clazzType = runtimeTypes.findType(origSchema);
+        final Optional<Type> clazzType = runtimeTypes.findType(origSchema);
         checkArgument(clazzType.isPresent(), "Failed to find binding type for %s (original %s)",
             childSchema, origSchema);
 
@@ -426,7 +426,7 @@ public final class BindingRuntimeContext implements Immutable {
                 }
 
                 if (!augment.getChildNodes().isEmpty()) {
-                    final java.util.Optional<Type> augType = runtimeTypes.findType(augOrig);
+                    final Optional<Type> augType = runtimeTypes.findType(augOrig);
                     if (augType.isPresent()) {
                         identifierToType.put(getAugmentationIdentifier(augment), augType.get());
                     }
