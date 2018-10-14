@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
@@ -18,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -50,9 +52,10 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     private final DataObjectCodecContext<D,?> context;
 
     @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<LazyDataObject, ImmutableMap> CACHED_AUGMENTATIONS_UPDATER =
-            AtomicReferenceFieldUpdater.newUpdater(LazyDataObject.class, ImmutableMap.class, "cachedAugmentations");
-    private volatile ImmutableMap<Class<? extends Augmentation<?>>, Augmentation<?>> cachedAugmentations = null;
+    private static final AtomicReferenceFieldUpdater<LazyDataObject, Map> CACHED_AUGMENTATIONS_UPDATER =
+            AtomicReferenceFieldUpdater.newUpdater(LazyDataObject.class, Map.class, "cachedAugmentations");
+    private volatile Map<Class<? extends Augmentation<?>>, Augmentation<?>> cachedAugmentations = null;
+
     private volatile Integer cachedHashcode = null;
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -165,13 +168,8 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     }
 
     private Map<Class<? extends Augmentation<?>>, Augmentation<?>> getAugmentationsImpl() {
-        ImmutableMap<Class<? extends Augmentation<?>>, Augmentation<?>> local = cachedAugmentations;
-        if (local != null) {
-            return local;
-        }
-
-        local = ImmutableMap.copyOf(context.getAllAugmentationsFrom(data));
-        return CACHED_AUGMENTATIONS_UPDATER.compareAndSet(this, null, local) ? local : cachedAugmentations;
+        final Map<Class<? extends Augmentation<?>>, Augmentation<?>> local = cachedAugmentations;
+        return local instanceof ImmutableMap ? local : computeCachedAugmentations(local);
     }
 
     @Override
@@ -185,28 +183,68 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     private Object getAugmentationImpl(final Class<?> cls) {
         requireNonNull(cls, "Supplied augmentation must not be null.");
 
-        final ImmutableMap<Class<? extends Augmentation<?>>, Augmentation<?>> aug = cachedAugmentations;
-        if (aug != null) {
-            return aug.get(cls);
-        }
-
-        @SuppressWarnings({"unchecked","rawtypes"})
-        final Optional<DataContainerCodecContext<?, ?>> optAugCtx = context.possibleStreamChild((Class) cls);
-        if (optAugCtx.isPresent()) {
-            final DataContainerCodecContext<?, ?> augCtx = optAugCtx.get();
-            // Due to binding specification not representing grouping instantiations we can end up having the same
-            // augmentation applied to a grouping multiple times. While these augmentations have the same shape, they
-            // are still represented by distinct binding classes and therefore we need to make sure the result matches
-            // the augmentation the user is requesting -- otherwise a strict receiver would end up with a cryptic
-            // ClassCastException.
-            if (cls.isAssignableFrom(augCtx.getBindingClass())) {
-                final Optional<NormalizedNode<?, ?>> augData = data.getChild(augCtx.getDomPathArgument());
-                if (augData.isPresent()) {
-                    return augCtx.deserialize(augData.get());
+        for (;;) {
+            final Map<Class<? extends Augmentation<?>>, Augmentation<?>> cached = cachedAugmentations;
+            if (cached != null) {
+                final Augmentation<?> ret = cached.get(cls);
+                if (ret != null || cached instanceof ImmutableMap) {
+                    return ret;
                 }
+
+                final Map<Class<? extends Augmentation<?>>, Augmentation<?>> computed = computeCachedAugmentations(
+                    cached);
+                return computed.get(cls);
+            }
+
+            @SuppressWarnings({"unchecked","rawtypes"})
+            final Optional<DataContainerCodecContext<?, ?>> optAugCtx = context.possibleStreamChild((Class) cls);
+            if (!optAugCtx.isPresent()) {
+                return null;
+            }
+
+            final DataContainerCodecContext<?, ?> augCtx = optAugCtx.get();
+            final Class<?> augClass = augCtx.getBindingClass();
+            if (!cls.isAssignableFrom(augClass)) {
+                // Due to binding specification not representing grouping instantiations we can end up having the same
+                // augmentation applied to a grouping multiple times. While these augmentations have the same shape,
+                // they are still represented by distinct binding classes and therefore we need to make sure the result
+                // matches the augmentation the user is requesting -- otherwise a strict receiver would end up with
+                // a cryptic ClassCastException.
+                return null;
+            }
+
+            final Optional<NormalizedNode<?, ?>> augData = data.getChild(augCtx.getDomPathArgument());
+            if (!augData.isPresent()) {
+                return null;
+            }
+
+            final Augmentation<?> aug = (Augmentation<?>) augCtx.deserialize(augData.get());
+            final Map<Class<?>, Augmentation<?>> singleCache = Collections.singletonMap(augClass, aug);
+            if (CACHED_AUGMENTATIONS_UPDATER.compareAndSet(this, null, singleCache)) {
+                return aug;
             }
         }
-        return null;
+    }
+
+    private Map<Class<? extends Augmentation<?>>, Augmentation<?>> computeCachedAugmentations(final Map<?, ?> initial) {
+        Map<?, ?> prev = initial;
+        for (;;) {
+            final Map<Class<? extends Augmentation<?>>, Augmentation<?>> local = ImmutableMap.copyOf(
+                context.getAllAugmentationsFrom(data));
+            if (CACHED_AUGMENTATIONS_UPDATER.compareAndSet(this, prev, local)) {
+                return local;
+            }
+
+            // We have raced in instantiating the cache, read its new contents.
+            final Map<Class<? extends Augmentation<?>>, Augmentation<?>> reRead = cachedAugmentations;
+            if (reRead instanceof ImmutableMap) {
+                // Another compute has already populated it, reuse
+                return reRead;
+            }
+
+            // A partial cache has been instantiated, retry instantiation
+            prev = verifyNotNull(reRead);
+        }
     }
 
     public String bindingToString() {
