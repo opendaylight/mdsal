@@ -40,6 +40,7 @@ public class InMemoryDOMDataStoreFactoryTest {
         final DOMDataTreeChangeListener domDataTreeChangeListener = mock(DOMDataTreeChangeListener.class);
         doReturn("testListener").when(domDataTreeChangeListener).toString();
         doNothing().when(domDataTreeChangeListener).onDataTreeChanged(any());
+        doNothing().when(domDataTreeChangeListener).onInitialData();
         inMemoryDOMDataStore.onGlobalContextUpdated(TestModel.createTestContext());
         inMemoryDOMDataStore.registerTreeChangeListener(YangInstanceIdentifier.EMPTY, domDataTreeChangeListener);
 

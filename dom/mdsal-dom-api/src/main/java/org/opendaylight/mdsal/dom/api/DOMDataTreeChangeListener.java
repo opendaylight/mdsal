@@ -36,4 +36,16 @@ public interface DOMDataTreeChangeListener extends EventListener {
      * @throws NullPointerException if {@code changes} is null
      */
     void onDataTreeChanged(@NonNull Collection<DataTreeCandidate> changes);
+
+    /**
+     * Invoked only once during registration of the listener if there was no data in the conceptual data tree
+     * for the supplied path, which was used to register this listener, and after this {@link #onDataTreeChanged}
+     * would always be invoked for data changes.
+     *
+     * <p>
+     * Users not care about this event could leave it as default with no-op.
+     */
+    default void onInitialData() {
+        //no-op
+    }
 }
