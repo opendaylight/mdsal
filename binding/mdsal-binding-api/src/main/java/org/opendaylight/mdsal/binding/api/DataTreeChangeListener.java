@@ -41,4 +41,16 @@ public interface DataTreeChangeListener<T extends DataObject> extends EventListe
      * @param changes Collection of change events, may not be null or empty.
      */
     void onDataTreeChanged(@NonNull Collection<DataTreeModification<T>> changes);
+
+    /**
+     * Invoked only once during registration of the listener if there was no data in the conceptual data tree
+     * for the supplied path, which was used to register this listener, and after this {@link #onDataTreeChanged}
+     * would always be invoked for data changes.
+     *
+     * <p>
+     * Users not care about this event could leave it as default with no-op.
+     */
+    default void onInitialData() {
+        //no-op
+    }
 }
