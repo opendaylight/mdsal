@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
 import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager.BatchedInvoker;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidates;
@@ -68,26 +71,71 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
         // FIXME: remove the queue for this registration and make sure we clear it
     }
 
+
     <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(
             final YangInstanceIdentifier treeId, final L listener, final DataTreeSnapshot snapshot) {
         final AbstractDOMDataTreeChangeListenerRegistration<L> reg = registerTreeChangeListener(treeId, listener);
 
-        final Optional<NormalizedNode<?, ?>> node = snapshot.readNode(YangInstanceIdentifier.EMPTY);
-        if (node.isPresent()) {
-            final DataTreeCandidate candidate = DataTreeCandidates.fromNormalizedNode(
-                    YangInstanceIdentifier.EMPTY, node.get());
+        final Optional<NormalizedNode<?, ?>> preExistingData = snapshot.readNode(YangInstanceIdentifier.EMPTY);
+        final NormalizedNode<?, ?> data = preExistingData.get();
 
-            InMemoryDOMStoreTreeChangePublisher publisher =
-                    new InMemoryDOMStoreTreeChangePublisher(notificationManager);
-            publisher.registerTreeChangeListener(treeId, listener);
-            publisher.publishChange(candidate);
+        if (YangInstanceIdentifier.EMPTY.equals(treeId)) {
+            checkState(data instanceof DataContainerNode, "DataContainerNode is expected for the root.");
+            if (((DataContainerNode) data).getValue().isEmpty()) {
+                // If we are listening on root of data tree we still get
+                // empty normalized node, root is always present, we should
+                // filter this out separately and notify it by 'onInitialData()' once.
+                // Otherwise, it's just a valid data node with empty value which also
+                // should be notified by "onDataTreeChanged(Collection<DataTreeCandidate>)".
+                listener.onInitialData();
+                return reg;
+            }
+        }
+
+        final DataTreeCandidate candidate = DataTreeCandidates.fromNormalizedNode(
+                YangInstanceIdentifier.EMPTY, data);
+
+        InMemoryDOMStoreTreeChangePublisher publisher =
+                new InMemoryDOMStoreTreeChangePublisher(notificationManager);
+        publisher.registerTreeChangeListener(treeId, listener);
+        if (!publisher.publishChange(candidate)) {
+            // There is no data in the conceptual data tree then
+            // notify with 'onInitialData()'.
+            listener.onInitialData();
         }
 
         return reg;
     }
 
-    synchronized void publishChange(final @NonNull DataTreeCandidate candidate) {
+    /*
+    <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(
+            final YangInstanceIdentifier treeId, final L listener, final DataTreeSnapshot snapshot) {
+        final AbstractDOMDataTreeChangeListenerRegistration<L> reg = registerTreeChangeListener(treeId, listener);
+
+        final Optional<NormalizedNode<?, ?>> preExistingData = snapshot.readNode(treeId);
+        final DataTreeCandidate initialCandidate;
+
+        if (preExistingData.isPresent()) {
+            final NormalizedNode<?, ?> data = preExistingData.get();
+
+            // if we are listening on root of data tree we still get
+            // empty normalized node, root is always present
+            if (YangInstanceIdentifier.EMPTY.equals(treeId) && (data instanceof DataContainerNode)
+                    && ((DataContainerNode<?>) data).getValue().isEmpty()) {
+                listener.onInitialData();
+            } else {
+                initialCandidate = DataTreeCandidates.fromNormalizedNode(treeId, preExistingData.get());
+                listener.onDataTreeChanged(Collections.singleton(initialCandidate));
+            }
+        } else {
+            listener.onInitialData();
+        }
+
+        return reg;
+    }
+*/
+    synchronized boolean publishChange(final @NonNull DataTreeCandidate candidate) {
         // Runs synchronized with registrationRemoved()
-        processCandidateTree(candidate);
+        return processCandidateTree(candidate);
     }
 }

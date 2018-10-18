@@ -65,12 +65,14 @@ public abstract class AbstractDOMStoreTreeChangePublisher
      * Process a candidate tree with respect to registered listeners.
      *
      * @param candidate candidate three which needs to be processed
+     * @return true if at least one listener was notified or false.
      */
-    protected final void processCandidateTree(final @NonNull DataTreeCandidate candidate) {
+    protected final boolean processCandidateTree(final @NonNull DataTreeCandidate candidate) {
         final DataTreeCandidateNode node = candidate.getRootNode();
+        boolean hasNotified = false;
         if (node.getModificationType() == ModificationType.UNMODIFIED) {
             LOG.debug("Skipping unmodified candidate {}", candidate);
-            return;
+            return false;
         }
 
         try (RegistrationTreeSnapshot<AbstractDOMDataTreeChangeListenerRegistration<?>> snapshot
@@ -84,6 +86,12 @@ public abstract class AbstractDOMStoreTreeChangePublisher
                     listenerChanges.asMap().entrySet()) {
                 notifyListener(entry.getKey(), entry.getValue());
             }
+
+            if (!listenerChanges.isEmpty()) {
+                hasNotified = true;
+            }
+
+            return hasNotified;
         }
     }
 
