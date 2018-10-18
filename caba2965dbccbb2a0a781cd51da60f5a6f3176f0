@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fea94705_38730b55",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ProducerLayout.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-18T08:49:40Z",
+      "side": 1,
+      "message": "also migrate these",
+      "range": {
+        "startLine": 47,
+        "startChar": 28,
+        "endLine": 47,
+        "endChar": 54
+      },
+      "revId": "caba2965dbccbb2a0a781cd51da60f5a6f3176f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "725a22b6_9dc46991",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ProducerLayout.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-18T08:49:40Z",
+      "side": 1,
+      "message": "this should not be public (it does not override an interface and the class itself is not public)",
+      "range": {
+        "startLine": 140,
+        "startChar": 3,
+        "endLine": 140,
+        "endChar": 25
+      },
+      "revId": "caba2965dbccbb2a0a781cd51da60f5a6f3176f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6e7273bf_dee07454",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ProducerLayout.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-18T08:49:40Z",
+      "side": 1,
+      "message": "Entry is already imported, do not refer to it as Map.Entry",
+      "range": {
+        "startLine": 141,
+        "startChar": 19,
+        "endLine": 141,
+        "endChar": 28
+      },
+      "revId": "caba2965dbccbb2a0a781cd51da60f5a6f3176f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "91c93bcc_237fb00d",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMDataTreeProducer.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-18T08:49:40Z",
+      "side": 1,
+      "message": "this is wrong, as layout is volatile. It certainly feels like reshard() should be internally calling close()",
+      "range": {
+        "startLine": 82,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 22
+      },
+      "revId": "caba2965dbccbb2a0a781cd51da60f5a6f3176f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2e5f7e01_7c259d13",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShard.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-18T08:49:40Z",
+      "side": 1,
+      "message": "extra empty line",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 0
+      },
+      "revId": "caba2965dbccbb2a0a781cd51da60f5a6f3176f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3fdba5f8_f4822a88",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShard.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-18T08:49:40Z",
+      "side": 1,
+      "message": "this should be part of what setModificationFactory() does",
+      "range": {
+        "startLine": 128,
+        "startChar": 12,
+        "endLine": 128,
+        "endChar": 47
+      },
+      "revId": "caba2965dbccbb2a0a781cd51da60f5a6f3176f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "52c0bb34_2fbf88ff",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShard.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-18T08:49:40Z",
+      "side": 1,
+      "message": "this is not correct: DOMDataTreeShardProducer.close() is the user does when shutting down a producer, hence the bit about modification factory should be part of that logic -- this method is called to remove the producer, IIRC.",
+      "range": {
+        "startLine": 190,
+        "startChar": 9,
+        "endLine": 190,
+        "endChar": 87
+      },
+      "revId": "caba2965dbccbb2a0a781cd51da60f5a6f3176f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d0a327df_a3c282ce",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardProducer.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-18T08:49:40Z",
+      "side": 1,
+      "message": "this definitely should not be public",
+      "range": {
+        "startLine": 208,
+        "startChar": 4,
+        "endLine": 208,
+        "endChar": 10
+      },
+      "revId": "caba2965dbccbb2a0a781cd51da60f5a6f3176f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
