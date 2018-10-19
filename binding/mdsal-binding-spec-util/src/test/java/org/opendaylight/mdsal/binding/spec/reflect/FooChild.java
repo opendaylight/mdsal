@@ -5,8 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.spec.util;
+package org.opendaylight.mdsal.binding.spec.reflect;
 
-public interface GroupingFoo {
+import org.opendaylight.yangtools.yang.binding.ChildOf;
+
+public interface FooChild extends ChildOf<GroupingFoo> {
 
 }
