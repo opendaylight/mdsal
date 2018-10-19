@@ -163,6 +163,30 @@
     },
     {
       "key": {
+        "uuid": "9884e498_ac9db69d",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShard.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-10-19T02:13:04Z",
+      "side": 1,
+      "message": "Get it, but a little problem there is how does layout close this as the method \u0027getModificationFactory()\u0027 is invisible to \u0027ProducerLayout\u0027 in \u0027mdasal-dom-broker\u0027 ? Besides, the modification factory was created internally by \u0027createProducer\u0027 hence it\u0027s reasonable to be closed by \u0027closeProducer\u0027 ?\nhttps://git.opendaylight.org/gerrit/#/c/76501/10/dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ProducerLayout.java@142",
+      "parentUuid": "52c0bb34_2fbf88ff",
+      "range": {
+        "startLine": 190,
+        "startChar": 9,
+        "endLine": 190,
+        "endChar": 87
+      },
+      "revId": "caba2965dbccbb2a0a781cd51da60f5a6f3176f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d0a327df_a3c282ce",
         "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardProducer.java",
         "patchSetId": 10
