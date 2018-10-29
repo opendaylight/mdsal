@@ -7,9 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.util;
 
+import com.google.common.annotations.Beta;
+
 /**
  * Managed transaction chains provide managed semantics around transaction chains, <em>i.e.</em> chains which provide
  * transactions which are automatically submitted or cancelled.
  */
+@Beta
 public interface ManagedTransactionChain extends ManagedTransactionFactory {
 }

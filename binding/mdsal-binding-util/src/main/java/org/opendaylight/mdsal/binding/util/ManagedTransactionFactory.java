@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.util;
 
+import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import java.util.concurrent.CompletionStage;
@@ -24,6 +25,7 @@ import org.opendaylight.mdsal.binding.api.WriteTransaction;
  * <p>
  * This is a common interface for broker- and chain-based transaction managers, and should not be used directly.
  */
+@Beta
 public interface ManagedTransactionFactory {
     /**
      * Invokes a function with a <b>NEW</b> {@link TypedReadTransaction}, and ensures that that transaction is closed.
