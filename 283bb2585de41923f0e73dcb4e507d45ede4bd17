@@ -2,6 +2,75 @@
   "comments": [
     {
       "key": {
+        "uuid": "87fc5db3_26afcbb4",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMDataTreeChangeListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-31T09:43:14Z",
+      "side": 1,
+      "message": "Please add a note that if there is no data, the other method will be invoked.",
+      "range": {
+        "startLine": 25,
+        "startChar": 54,
+        "endLine": 25,
+        "endChar": 119
+      },
+      "revId": "283bb2585de41923f0e73dcb4e507d45ede4bd17",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a03fbb13_363e2a0f",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMDataTreeChangeListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-31T09:43:14Z",
+      "side": 1,
+      "message": "\"Default implementation does not nothing and is appropriate for users who do not care about ascertaining initial state\".",
+      "range": {
+        "startLine": 46,
+        "startChar": 7,
+        "endLine": 46,
+        "endChar": 76
+      },
+      "revId": "283bb2585de41923f0e73dcb4e507d45ede4bd17",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa09db49_1d17116e",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMDataTreeChangeListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-10-31T09:43:14Z",
+      "side": 1,
+      "message": "onEmptyInitialData",
+      "range": {
+        "startLine": 48,
+        "startChar": 17,
+        "endLine": 48,
+        "endChar": 30
+      },
+      "revId": "283bb2585de41923f0e73dcb4e507d45ede4bd17",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e01bf3cd_a0bb12c6",
         "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/Mdsal217Test.java",
         "patchSetId": 4
