@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "747a46be_926f29ac",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-11-01T22:52:32Z",
+      "side": 1,
+      "message": "I\u0027m not clear on how/why the previous patch breaks genius. Can you please elaborate?",
+      "revId": "a59ac73717c2f6d2c888e6489c22f409635211bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
