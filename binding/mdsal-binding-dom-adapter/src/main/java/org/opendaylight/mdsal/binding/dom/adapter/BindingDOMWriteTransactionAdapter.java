@@ -16,9 +16,8 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> extends
-        AbstractWriteTransaction<T> implements WriteTransaction {
-
+class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> extends AbstractWriteTransaction<T>
+        implements WriteTransaction {
     BindingDOMWriteTransactionAdapter(final T delegateTx, final BindingToNormalizedNodeCodec codec) {
         super(delegateTx, codec);
     }
@@ -26,15 +25,14 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     @Override
     public final <U extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<U> path,
             final U data) {
-        put(store, path, data,false);
+        put(store, path, data, false);
     }
 
     @Override
     public final <D extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<D> path,
             final D data) {
-        merge(store, path, data,false);
+        merge(store, path, data, false);
     }
-
 
     @Override
     public final void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
