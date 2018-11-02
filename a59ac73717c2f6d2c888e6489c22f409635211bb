@@ -16,6 +16,24 @@
       "revId": "a59ac73717c2f6d2c888e6489c22f409635211bb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fc4bcd85_b351f59b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-02T10:46:18Z",
+      "side": 1,
+      "message": "Change the version of binding-parent in commons/binding-parent/pom.xml from 3.0.1 to 3.0.2-SNAPSHOT and \"mvn test\" in  genius/mdsalutil/mdsalutil-api/ and it will fail as seen on https://jenkins.opendaylight.org/releng/view/integration/job/integration-multipatch-test-neon/104/ ...",
+      "parentUuid": "747a46be_926f29ac",
+      "revId": "a59ac73717c2f6d2c888e6489c22f409635211bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
