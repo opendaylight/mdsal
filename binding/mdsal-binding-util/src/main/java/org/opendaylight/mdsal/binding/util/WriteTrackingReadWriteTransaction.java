@@ -16,43 +16,62 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 /**
  * Read-write transaction which keeps track of writes.
  */
-class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransaction implements WriteTrackingTransaction {
+final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransaction
+        implements WriteTrackingTransaction {
     // This is volatile to ensure we get the latest value; transactions aren't supposed to be used in multiple threads,
     // but the cost here is tiny (one read penalty at the end of a transaction) so we play it safe
     private volatile boolean written;
 
-    WriteTrackingReadWriteTransaction(ReadWriteTransaction delegate) {
+    WriteTrackingReadWriteTransaction(final ReadWriteTransaction delegate) {
         super(delegate);
     }
 
     @Override
-    public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
+    public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+            final T data) {
         super.put(store, path, data);
         written = true;
     }
 
     @Override
-    public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-            boolean createMissingParents) {
+    @Deprecated
+    public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+            final T data, final boolean createMissingParents) {
         super.put(store, path, data, createMissingParents);
         written = true;
     }
 
     @Override
-    public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
+    public <T extends DataObject> void createSignificantParentsAndPut(final LogicalDatastoreType store,
+            final InstanceIdentifier<T> path, final T data) {
+        super.createSignificantParentsAndPut(store, path, data);
+        written = true;
+    }
+
+    @Override
+    public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+            final T data) {
         super.merge(store, path, data);
         written = true;
     }
 
     @Override
-    public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-            boolean createMissingParents) {
+    @Deprecated
+    public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+            final T data, final boolean createMissingParents) {
         super.merge(store, path, data, createMissingParents);
         written = true;
     }
 
     @Override
-    public void delete(LogicalDatastoreType store, InstanceIdentifier<?> path) {
+    public <T extends DataObject> void createSignificantParentsAndMerge(final LogicalDatastoreType store,
+            final InstanceIdentifier<T> path, final T data) {
+        super.createSignificantParentsAndMerge(store, path, data);
+        written = true;
+    }
+
+    @Override
+    public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         super.delete(store, path);
         written = true;
     }
