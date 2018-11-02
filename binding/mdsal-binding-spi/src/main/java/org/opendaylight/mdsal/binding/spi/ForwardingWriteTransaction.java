@@ -39,9 +39,16 @@ public class ForwardingWriteTransaction extends ForwardingTransaction implements
     }
 
     @Override
+    @Deprecated
     public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data, final boolean createMissingParents) {
         delegate.put(store, path, data, createMissingParents);
+    }
+
+    @Override
+    public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
+            final InstanceIdentifier<T> path, final T data) {
+        delegate.mergeParentStructurePut(store, path, data);
     }
 
     @Override
@@ -51,9 +58,16 @@ public class ForwardingWriteTransaction extends ForwardingTransaction implements
     }
 
     @Override
+    @Deprecated
     public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data, final boolean createMissingParents) {
         delegate.merge(store, path, data, createMissingParents);
+    }
+
+    @Override
+    public <T extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
+            final InstanceIdentifier<T> path, final T data) {
+        delegate.mergeParentStructureMerge(store, path, data);
     }
 
     @Override
