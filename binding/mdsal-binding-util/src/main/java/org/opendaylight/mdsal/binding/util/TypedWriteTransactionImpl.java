@@ -30,9 +30,17 @@ class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction>
     }
 
     @Override
+    @Deprecated
     public final <T extends DataObject> void put(final InstanceIdentifier<T> path, final T data,
             final boolean createMissingParents) {
         delegate().put(getDatastoreType(), path, data, createMissingParents);
+        postOperation();
+    }
+
+    @Override
+    public final <T extends DataObject> void mergeParentStructurePut(final InstanceIdentifier<T> path,
+            final T data) {
+        delegate().mergeParentStructurePut(getDatastoreType(), path, data);
         postOperation();
     }
 
@@ -43,9 +51,17 @@ class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction>
     }
 
     @Override
+    @Deprecated
     public final <T extends DataObject> void merge(final InstanceIdentifier<T> path, final T data,
             final boolean createMissingParents) {
         delegate().merge(getDatastoreType(), path, data, createMissingParents);
+        postOperation();
+    }
+
+    @Override
+    public final <T extends DataObject> void mergeParentStructureMerge(final InstanceIdentifier<T> path,
+            final T data) {
+        delegate().mergeParentStructureMerge(getDatastoreType(), path, data);
         postOperation();
     }
 

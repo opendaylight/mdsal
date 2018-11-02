@@ -22,9 +22,9 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
- * Abstract Base Transaction for transactions which are backed by
- * {@link DOMDataTreeWriteTransaction}.
+ * Abstract Base Transaction for transactions which are backed by {@link DOMDataTreeWriteTransaction}.
  */
+// FIXME: 4.0.0: hide this class and merge it with BindingDOMWriteTransactionAdapter
 public abstract class AbstractWriteTransaction<T extends DOMDataTreeWriteTransaction> extends
         AbstractForwardedTransaction<T> {
 
@@ -34,9 +34,7 @@ public abstract class AbstractWriteTransaction<T extends DOMDataTreeWriteTransac
 
     public final <U extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<U> path,
             final U data, final boolean createParents) {
-        checkArgument(!path.isWildcarded(), "Cannot put data into wildcarded path %s", path);
-
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> normalized = getCodec().toNormalizedNode(path, data);
+        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> normalized = toNormalized("put", path, data);
         if (createParents) {
             ensureParentsByMerge(store, normalized.getKey(), path);
         }
@@ -46,14 +44,18 @@ public abstract class AbstractWriteTransaction<T extends DOMDataTreeWriteTransac
 
     public final <U extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<U> path,
             final U data,final boolean createParents) {
-        checkArgument(!path.isWildcarded(), "Cannot merge data into wildcarded path %s", path);
-
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> normalized = getCodec().toNormalizedNode(path, data);
+        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> normalized = toNormalized("merge", path, data);
         if (createParents) {
             ensureParentsByMerge(store, normalized.getKey(), path);
         }
 
         getDelegate().merge(store, normalized.getKey(), normalized.getValue());
+    }
+
+    private <U extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> toNormalized(
+            final String operation, final InstanceIdentifier<U> path, final U data) {
+        checkArgument(!path.isWildcarded(), "Cannot %s data into wildcarded path %s", operation, path);
+        return getCodec().toNormalizedNode(path, data);
     }
 
     /**

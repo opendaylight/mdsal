@@ -87,10 +87,18 @@ public final class TransactionAdapter {
         }
 
         @Override
+        @Deprecated
         public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
                 final T data, final boolean createMissingParents) {
             checkStore(store);
             delegate.put(path, data, createMissingParents);
+        }
+
+        @Override
+        public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
+                final InstanceIdentifier<T> path, final T data) {
+            checkStore(store);
+            delegate.mergeParentStructurePut(path, data);
         }
 
         @Override
@@ -101,10 +109,18 @@ public final class TransactionAdapter {
         }
 
         @Override
+        @Deprecated
         public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
                 final T data, final boolean createMissingParents) {
             checkStore(store);
             delegate.merge(path, data, createMissingParents);
+        }
+
+        @Override
+        public <T extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
+                final InstanceIdentifier<T> path, final T data) {
+            checkStore(store);
+            delegate.mergeParentStructureMerge(path, data);
         }
 
         @Override
