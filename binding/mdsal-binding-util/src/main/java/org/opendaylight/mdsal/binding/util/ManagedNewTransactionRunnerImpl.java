@@ -95,10 +95,10 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
         if (wrappedTx.isWritten()) {
             // The transaction contains changes, commit it
             return realTx.commit();
-        } else {
-            // The transaction only handled reads, cancel it
-            realTx.cancel();
-            return CommitInfo.emptyFluentFuture();
         }
+
+        // The transaction only handled reads, cancel it
+        realTx.cancel();
+        return CommitInfo.emptyFluentFuture();
     }
 }

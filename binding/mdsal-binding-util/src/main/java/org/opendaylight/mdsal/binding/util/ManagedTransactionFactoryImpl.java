@@ -101,10 +101,10 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
     }
 
     @CheckReturnValue
-    protected <D extends Datastore, T extends WriteTransaction, W, E extends Exception> FluentFuture<? extends Object>
+    protected <D extends Datastore, X extends WriteTransaction, W, E extends Exception> FluentFuture<? extends Object>
         callWithNewTransactionAndSubmit(
-            final Class<D> datastoreType, final Supplier<T> txSupplier, final BiFunction<Class<D>, T, W> txWrapper,
-            final InterruptibleCheckedConsumer<W, E> txConsumer, final BiFunction<T, W, FluentFuture<?>> txSubmitter) {
+            final Class<D> datastoreType, final Supplier<X> txSupplier, final BiFunction<Class<D>, X, W> txWrapper,
+            final InterruptibleCheckedConsumer<W, E> txConsumer, final BiFunction<X, W, FluentFuture<?>> txSubmitter) {
         return applyWithNewTransactionAndSubmit(datastoreType, txSupplier, txWrapper, tx -> {
             txConsumer.accept(tx);
             return null;
@@ -113,12 +113,12 @@ class ManagedTransactionFactoryImpl<T extends TransactionFactory> implements Man
 
     @CheckReturnValue
     @SuppressWarnings("checkstyle:IllegalCatch")
-    protected <D extends Datastore, T extends WriteTransaction, W, R, E extends Exception> FluentFuture<R>
+    protected <D extends Datastore, X extends WriteTransaction, W, R, E extends Exception> FluentFuture<R>
         applyWithNewTransactionAndSubmit(
-            final Class<D> datastoreType, final Supplier<T> txSupplier, final BiFunction<Class<D>, T, W> txWrapper,
+            final Class<D> datastoreType, final Supplier<X> txSupplier, final BiFunction<Class<D>, X, W> txWrapper,
             final InterruptibleCheckedFunction<W, R, E> txFunction,
-            final BiFunction<T, W, FluentFuture<?>> txSubmitter) {
-        T realTx = txSupplier.get();
+            final BiFunction<X, W, FluentFuture<?>> txSubmitter) {
+        X realTx = txSupplier.get();
         W wrappedTx = txWrapper.apply(datastoreType, realTx);
         R result;
         try {

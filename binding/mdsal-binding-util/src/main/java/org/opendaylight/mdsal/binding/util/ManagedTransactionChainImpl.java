@@ -12,8 +12,9 @@ import org.opendaylight.mdsal.binding.api.TransactionChain;
 /**
  * Implementation of {@link ManagedTransactionChain}, based on {@link ManagedTransactionFactoryImpl}.
  */
-class ManagedTransactionChainImpl extends ManagedTransactionFactoryImpl implements ManagedTransactionChain {
-    ManagedTransactionChainImpl(TransactionChain realTxChain) {
+class ManagedTransactionChainImpl extends ManagedTransactionFactoryImpl<TransactionChain>
+        implements ManagedTransactionChain {
+    ManagedTransactionChainImpl(final TransactionChain realTxChain) {
         super(realTxChain);
     }
 }
