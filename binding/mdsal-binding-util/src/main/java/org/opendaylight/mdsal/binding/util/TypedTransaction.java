@@ -7,16 +7,25 @@
  */
 package org.opendaylight.mdsal.binding.util;
 
+import org.opendaylight.mdsal.binding.api.Transaction;
+import org.opendaylight.mdsal.binding.spi.ForwardingTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
-abstract class TypedTransaction<D extends Datastore> {
+abstract class TypedTransaction<D extends Datastore, X extends Transaction> extends ForwardingTransaction {
     private final LogicalDatastoreType datastoreType;
+    private final X delegate;
 
-    TypedTransaction(final Class<D> datastoreType) {
+    TypedTransaction(final Class<D> datastoreType, final X delegate) {
         this.datastoreType = Datastore.toType(datastoreType);
+        this.delegate = delegate;
+    }
+
+    @Override
+    protected final X delegate() {
+        return delegate;
     }
 
     final LogicalDatastoreType getDatastoreType() {
-        return this.datastoreType;
+        return datastoreType;
     }
 }
