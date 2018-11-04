@@ -62,7 +62,7 @@ public final class TransactionAdapter {
      */
     public static WriteTransaction toWriteTransaction(final TypedWriteTransaction<? extends Datastore> datastoreTx) {
         if (datastoreTx instanceof TypedWriteTransactionImpl) {
-            final TypedWriteTransactionImpl<?> txImpl = (TypedWriteTransactionImpl<?>) datastoreTx;
+            final TypedWriteTransactionImpl<?, ?> txImpl = (TypedWriteTransactionImpl<?, ?>) datastoreTx;
             return new WriteTransactionAdapter<>(txImpl.getDatastoreType(), txImpl);
         }
         throw new IllegalArgumentException("Unsupported TypedWriteTransaction implementation "

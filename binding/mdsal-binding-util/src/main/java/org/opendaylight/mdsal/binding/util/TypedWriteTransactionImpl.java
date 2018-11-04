@@ -15,46 +15,47 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * Implementation of {@link TypedWriteTransaction}.
  *
  * @param <D> The datastore which the transaction targets.
+ * @param <X> WriteTransaction type
  */
-class TypedWriteTransactionImpl<D extends Datastore> extends TypedTransaction<D>
+class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction> extends TypedTransaction<D, X>
         implements TypedWriteTransaction<D> {
-    // Temporarily package protected for TransactionAdapter
-    final WriteTransaction delegate;
-
-    TypedWriteTransactionImpl(final Class<D> datastoreType, final WriteTransaction realTx) {
-        super(datastoreType);
-        this.delegate = realTx;
+    TypedWriteTransactionImpl(final Class<D> datastoreType, final X realTx) {
+        super(datastoreType, realTx);
     }
 
     @Override
-    public <T extends DataObject> void put(final InstanceIdentifier<T> path, final T data) {
-        delegate.put(getDatastoreType(), path, data);
+    public final <T extends DataObject> void put(final InstanceIdentifier<T> path, final T data) {
+        delegate().put(getDatastoreType(), path, data);
+        postOperation();
     }
 
     @Override
-    public <T extends DataObject> void put(final InstanceIdentifier<T> path, final T data,
+    public final <T extends DataObject> void put(final InstanceIdentifier<T> path, final T data,
             final boolean createMissingParents) {
-        delegate.put(getDatastoreType(), path, data, createMissingParents);
+        delegate().put(getDatastoreType(), path, data, createMissingParents);
+        postOperation();
     }
 
     @Override
-    public <T extends DataObject> void merge(final InstanceIdentifier<T> path, final T data) {
-        delegate.merge(getDatastoreType(), path, data);
+    public final <T extends DataObject> void merge(final InstanceIdentifier<T> path, final T data) {
+        delegate().merge(getDatastoreType(), path, data);
+        postOperation();
     }
 
     @Override
-    public <T extends DataObject> void merge(final InstanceIdentifier<T> path, final T data,
+    public final <T extends DataObject> void merge(final InstanceIdentifier<T> path, final T data,
             final boolean createMissingParents) {
-        delegate.merge(getDatastoreType(), path, data, createMissingParents);
+        delegate().merge(getDatastoreType(), path, data, createMissingParents);
+        postOperation();
     }
 
     @Override
-    public void delete(final InstanceIdentifier<?> path) {
-        delegate.delete(getDatastoreType(), path);
+    public final void delete(final InstanceIdentifier<?> path) {
+        delegate().delete(getDatastoreType(), path);
+        postOperation();
     }
 
-    @Override
-    public Object getIdentifier() {
-        return delegate.getIdentifier();
+    void postOperation() {
+        // Defaults to no-op
     }
 }

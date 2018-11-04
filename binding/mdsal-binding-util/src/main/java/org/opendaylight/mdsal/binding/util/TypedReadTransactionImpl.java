@@ -18,22 +18,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  *
  * @param <D> The datastore which the transaction targets.
  */
-class TypedReadTransactionImpl<D extends Datastore> extends TypedTransaction<D>
+final class TypedReadTransactionImpl<D extends Datastore> extends TypedTransaction<D, ReadTransaction>
         implements TypedReadTransaction<D> {
-    private final ReadTransaction delegate;
-
-    TypedReadTransactionImpl(Class<D> datastoreType, ReadTransaction realTx) {
-        super(datastoreType);
-        this.delegate = realTx;
+    TypedReadTransactionImpl(final Class<D> datastoreType, final ReadTransaction realTx) {
+        super(datastoreType, realTx);
     }
 
     @Override
-    public <T extends DataObject> FluentFuture<Optional<T>> read(InstanceIdentifier<T> path) {
-        return FluentFuture.from(delegate.read(getDatastoreType(), path));
-    }
-
-    @Override
-    public Object getIdentifier() {
-        return delegate.getIdentifier();
+    public <T extends DataObject> FluentFuture<Optional<T>> read(final InstanceIdentifier<T> path) {
+        return delegate().read(getDatastoreType(), path);
     }
 }
