@@ -46,13 +46,11 @@ public final class TransactionAdapter {
     public static ReadWriteTransaction toReadWriteTransaction(
             final TypedReadWriteTransaction<? extends Datastore> datastoreTx) {
         if (datastoreTx instanceof TypedReadWriteTransactionImpl) {
-            TypedReadWriteTransactionImpl<?> nonSubmitCancelableDatastoreReadWriteTransaction =
-                    (TypedReadWriteTransactionImpl<?>) datastoreTx;
-            return new ReadWriteTransactionAdapter<>(nonSubmitCancelableDatastoreReadWriteTransaction.datastoreType,
-                    nonSubmitCancelableDatastoreReadWriteTransaction);
+            final TypedReadWriteTransactionImpl<?> txImpl = (TypedReadWriteTransactionImpl<?>) datastoreTx;
+            return new ReadWriteTransactionAdapter<>(txImpl.getDatastoreType(), txImpl);
         }
-        throw new IllegalArgumentException(
-                "Unsupported TypedWriteTransaction implementation " + datastoreTx.getClass());
+        throw new IllegalArgumentException("Unsupported TypedWriteTransaction implementation "
+                + datastoreTx.getClass());
     }
 
     /**
@@ -64,13 +62,11 @@ public final class TransactionAdapter {
      */
     public static WriteTransaction toWriteTransaction(final TypedWriteTransaction<? extends Datastore> datastoreTx) {
         if (datastoreTx instanceof TypedWriteTransactionImpl) {
-            TypedWriteTransactionImpl<?> nonSubmitCancelableDatastoreWriteTransaction =
-                    (TypedWriteTransactionImpl<?>) datastoreTx;
-            return new WriteTransactionAdapter<>(nonSubmitCancelableDatastoreWriteTransaction.datastoreType,
-                    nonSubmitCancelableDatastoreWriteTransaction);
+            final TypedWriteTransactionImpl<?> txImpl = (TypedWriteTransactionImpl<?>) datastoreTx;
+            return new WriteTransactionAdapter<>(txImpl.getDatastoreType(), txImpl);
         }
-        throw new IllegalArgumentException(
-                "Unsupported TypedWriteTransaction implementation " + datastoreTx.getClass());
+        throw new IllegalArgumentException("Unsupported TypedWriteTransaction implementation "
+                + datastoreTx.getClass());
     }
 
     private static class WriteTransactionAdapter<S extends Datastore, D extends TypedWriteTransaction<S>>
