@@ -10,14 +10,13 @@ package org.opendaylight.mdsal.binding.util;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
 abstract class TypedTransaction<D extends Datastore> {
-    // Temporarily package protected for TransactionAdapter
-    final LogicalDatastoreType datastoreType;
+    private final LogicalDatastoreType datastoreType;
 
-    TypedTransaction(Class<D> datastoreType) {
+    TypedTransaction(final Class<D> datastoreType) {
         this.datastoreType = Datastore.toType(datastoreType);
     }
 
-    LogicalDatastoreType getDatastoreType() {
+    final LogicalDatastoreType getDatastoreType() {
         return this.datastoreType;
     }
 }
