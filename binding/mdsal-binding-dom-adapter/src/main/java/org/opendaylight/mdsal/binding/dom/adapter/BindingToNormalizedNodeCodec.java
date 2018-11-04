@@ -449,6 +449,14 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
         return ImmutableNodes.fromInstanceId(runtimeContext().getSchemaContext(), parentPath);
     }
 
+    /**
+     * This method creates an empty list container of a particular type.
+     *
+     * @deprecated This method is not generally useful, as empty lists do not convey information in YANG (they are
+     *             equivalent to non-present lists). It also leaks implementation details to a broader scope and should
+     *             never have been public in the first place.
+     */
+    @Deprecated
     public NormalizedNode<?, ?> getDefaultNodeFor(final YangInstanceIdentifier parentMapPath) {
         final BindingCodecTreeNode<?> mapCodec = requireNonNull(
                 codecRegistry.getCodecContext().getSubtreeCodec(parentMapPath),
