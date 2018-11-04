@@ -46,9 +46,9 @@ public final class TransactionAdapter {
     public static ReadWriteTransaction toReadWriteTransaction(
             final TypedReadWriteTransaction<? extends Datastore> datastoreTx) {
         if (datastoreTx instanceof TypedReadWriteTransactionImpl) {
-            TypedReadWriteTransactionImpl nonSubmitCancelableDatastoreReadWriteTransaction =
-                    (TypedReadWriteTransactionImpl) datastoreTx;
-            return new ReadWriteTransactionAdapter(nonSubmitCancelableDatastoreReadWriteTransaction.datastoreType,
+            TypedReadWriteTransactionImpl<?> nonSubmitCancelableDatastoreReadWriteTransaction =
+                    (TypedReadWriteTransactionImpl<?>) datastoreTx;
+            return new ReadWriteTransactionAdapter<>(nonSubmitCancelableDatastoreReadWriteTransaction.datastoreType,
                     nonSubmitCancelableDatastoreReadWriteTransaction);
         }
         throw new IllegalArgumentException(
@@ -64,23 +64,21 @@ public final class TransactionAdapter {
      */
     public static WriteTransaction toWriteTransaction(final TypedWriteTransaction<? extends Datastore> datastoreTx) {
         if (datastoreTx instanceof TypedWriteTransactionImpl) {
-            TypedWriteTransactionImpl nonSubmitCancelableDatastoreWriteTransaction =
-                    (TypedWriteTransactionImpl) datastoreTx;
-            return new WriteTransactionAdapter(nonSubmitCancelableDatastoreWriteTransaction.datastoreType,
+            TypedWriteTransactionImpl<?> nonSubmitCancelableDatastoreWriteTransaction =
+                    (TypedWriteTransactionImpl<?>) datastoreTx;
+            return new WriteTransactionAdapter<>(nonSubmitCancelableDatastoreWriteTransaction.datastoreType,
                     nonSubmitCancelableDatastoreWriteTransaction);
         }
         throw new IllegalArgumentException(
                 "Unsupported TypedWriteTransaction implementation " + datastoreTx.getClass());
     }
 
-    // We want to subclass this class, even though it has a private constructor
-    @SuppressWarnings("FinalClass")
-    private static class WriteTransactionAdapter<D extends Datastore, T extends TypedWriteTransaction<D>>
+    private static class WriteTransactionAdapter<S extends Datastore, D extends TypedWriteTransaction<S>>
             extends ForwardingObject implements WriteTransaction {
         private final LogicalDatastoreType datastoreType;
-        private final T delegate;
+        private final D delegate;
 
-        private WriteTransactionAdapter(final LogicalDatastoreType datastoreType, final T delegate) {
+        WriteTransactionAdapter(final LogicalDatastoreType datastoreType, final D delegate) {
             this.datastoreType = datastoreType;
             this.delegate = delegate;
         }
@@ -129,25 +127,25 @@ public final class TransactionAdapter {
             throw new UnsupportedOperationException("Managed transactions must not be committed");
         }
 
-        void checkStore(final LogicalDatastoreType store) {
-            checkArgument(datastoreType.equals(store), "Invalid datastore %s used instead of %s", store, datastoreType);
-        }
-
         @Override
         public Object getIdentifier() {
             return delegate.getIdentifier();
         }
 
         @Override
-        protected T delegate() {
+        protected D delegate() {
             return delegate;
+        }
+
+        void checkStore(final LogicalDatastoreType store) {
+            checkArgument(datastoreType.equals(store), "Invalid datastore %s used instead of %s", store, datastoreType);
         }
     }
 
-    private static final class ReadWriteTransactionAdapter<D extends Datastore>
-            extends WriteTransactionAdapter<D, TypedReadWriteTransaction<D>> implements ReadWriteTransaction {
-        private ReadWriteTransactionAdapter(final LogicalDatastoreType datastoreType,
-                final TypedReadWriteTransaction<D> delegate) {
+    private static final class ReadWriteTransactionAdapter<S extends Datastore>
+            extends WriteTransactionAdapter<S, TypedReadWriteTransaction<S>> implements ReadWriteTransaction {
+        ReadWriteTransactionAdapter(final LogicalDatastoreType datastoreType,
+                final TypedReadWriteTransaction<S> delegate) {
             super(datastoreType, delegate);
         }
 
