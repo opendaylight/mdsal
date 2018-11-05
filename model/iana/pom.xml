@@ -27,6 +27,7 @@
     <modules>
         <!-- RFC7224 and updates -->
         <module>iana-if-type</module>
+        <module>rfc8343-based-iana-if-type</module>
 
         <!-- RFC8294 and updates -->
         <module>iana-routing-types</module>
