@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a31643d_4c914285",
+        "filename": "features/odl-mdsal-model-rfc7224/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-05T15:34:36Z",
+      "side": 1,
+      "message": "We cannot do this, as it will wreak havoc on downstreams who expect to see rfc7223-only (i.e. do not have an import with a revision).",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 21
+      },
+      "revId": "32bfb285ddab4f0103b317c0c7780f6b32ffa9fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3b33f332_548503da",
+        "filename": "model/iana/rfc8343-based-iana-if-type/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-05T15:34:36Z",
+      "side": 1,
+      "message": "I would prefer something like \u0027iana-if-type-rfc8343\u0027",
+      "range": {
+        "startLine": 21,
+        "startChar": 17,
+        "endLine": 21,
+        "endChar": 42
+      },
+      "revId": "32bfb285ddab4f0103b317c0c7780f6b32ffa9fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "306e2426_d8c6e9b6",
+        "filename": "model/iana/rfc8343-based-iana-if-type/src/main/yang/iana-if-type@2018-07-03.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-05T15:34:36Z",
+      "side": 1,
+      "message": "we need to import a concrete revision here. same in the iana-if-type artifact, where we should be forcing rfc7223.",
+      "range": {
+        "startLine": 6,
+        "startChar": 4,
+        "endLine": 6,
+        "endChar": 14
+      },
+      "revId": "32bfb285ddab4f0103b317c0c7780f6b32ffa9fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
