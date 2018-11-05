@@ -16,6 +16,24 @@
       "revId": "75a2c24e908747a1fad965249011bc25a8174781",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a2b2069c_21708249",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMDataTree.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-11-05T01:35:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b269d453_12ef20c9",
+      "revId": "75a2c24e908747a1fad965249011bc25a8174781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
