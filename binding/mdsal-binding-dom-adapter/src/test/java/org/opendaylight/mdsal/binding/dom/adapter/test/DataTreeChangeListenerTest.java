@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -79,7 +80,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     }
 
     @Override
-    protected Iterable<YangModuleInfo> getModuleInfos() throws Exception {
+    protected Set<YangModuleInfo> getModuleInfos() throws Exception {
         return ImmutableSet.of(
                 BindingReflections.getModuleInfo(TwoLevelList.class),
                 BindingReflections.getModuleInfo(TreeComplexUsesAugment.class)
