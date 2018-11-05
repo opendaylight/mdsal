@@ -472,11 +472,18 @@
                 <version>1.2.2-SNAPSHOT</version>
             </dependency>
 
-            <!-- RFC7224, live version: https://github.com/YangModels/yang/blob/master/standard/ietf/RFC/iana-if-type.yang -->
+            <!-- RFC7224-20170119, live version: https://github.com/YangModels/yang/blob/master/standard/ietf/RFC/iana-if-type.yang -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-if-type</artifactId>
                 <version>1.0.2-SNAPSHOT</version>
+            </dependency>
+
+            <!-- RFC7224-20180703 version: http://www.iana.org/assignments/yang-parameters/iana-if-type@2018-07-03.yang -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+                <artifactId>rfc7224-20180703-iana-if-type</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
 
             <!-- RFC7277 -->
