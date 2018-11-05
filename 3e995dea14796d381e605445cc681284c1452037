@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "5c76c6fa_c707b184",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/WriteOperations.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-05T15:37:31Z",
+      "side": 1,
+      "message": "I am not sure about the naming of this.. Tom/Stephen: any ideas?",
+      "range": {
+        "startLine": 90,
+        "startChar": 40,
+        "endLine": 90,
+        "endChar": 70
+      },
+      "revId": "3e995dea14796d381e605445cc681284c1452037",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f00a17d1_6a92a5cc",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/WriteTrackingReadWriteTransaction.java",
         "patchSetId": 13
@@ -13,6 +36,30 @@
       "writtenOn": "2018-11-05T03:06:31Z",
       "side": 1,
       "message": "Can these also be wrapped into \u0027postOperation()\u0027?",
+      "range": {
+        "startLine": 32,
+        "startChar": 8,
+        "endLine": 32,
+        "endChar": 23
+      },
+      "revId": "3e995dea14796d381e605445cc681284c1452037",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7d1687c1_ba260128",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/WriteTrackingReadWriteTransaction.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-05T15:37:31Z",
+      "side": 1,
+      "message": "I am not sure there is value in that: this is a final class, hence we\u0027d just introduce a local method, which would not be useful.",
+      "parentUuid": "f00a17d1_6a92a5cc",
       "range": {
         "startLine": 32,
         "startChar": 8,
