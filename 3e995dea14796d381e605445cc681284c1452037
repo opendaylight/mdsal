@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f00a17d1_6a92a5cc",
+        "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/WriteTrackingReadWriteTransaction.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-11-05T03:06:31Z",
+      "side": 1,
+      "message": "Can these also be wrapped into \u0027postOperation()\u0027?",
+      "range": {
+        "startLine": 32,
+        "startChar": 8,
+        "endLine": 32,
+        "endChar": 23
+      },
+      "revId": "3e995dea14796d381e605445cc681284c1452037",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
