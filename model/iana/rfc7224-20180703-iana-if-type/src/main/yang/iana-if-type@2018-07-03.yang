@@ -4,7 +4,7 @@ module iana-if-type {
 
   import ietf-interfaces {
     prefix if;
-    revision-date 2014-05-08;
+    revision-date 2018-02-20;
   }
 
   organization "IANA";
@@ -46,6 +46,41 @@ module iana-if-type {
   reference
     "IANA 'ifType definitions' registry.
      <http://www.iana.org/assignments/smi-numbers>";
+
+  revision 2018-07-03 {
+    description
+      "Corrected revision date.";
+  }
+
+  revision 2018-06-29 {
+    description
+      "Corrected formatting issue.";
+  }
+
+  revision 2018-06-28 {
+    description
+      "Registered ifType 294.";
+  }
+
+  revision 2018-06-28 {
+    description
+      "Registered ifType 293.";
+  }
+
+  revision 2018-06-22 {
+    description
+      "Registered ifType 292.";
+  }
+
+  revision 2018-06-21 {
+    description
+      "Registered ifType 291.";
+  }
+
+  revision 2017-03-30 {
+    description
+      "Registered ifType 290.";
+  }
 
   revision 2017-01-19 {
     description
@@ -1616,5 +1651,38 @@ module iana-if-type {
     base iana-interface-type;
     description
       "Packet Transfer Mode.";
+  }
+  identity ghn {
+    base iana-interface-type;
+    description
+      "G.hn port.";
+  }
+  identity otnOtsi {
+    base iana-interface-type;
+    description
+      "Optical Tributary Signal.";
+    reference
+      "ITU-T G.959.1";
+  }
+  identity otnOtuc {
+    base iana-interface-type;
+    description
+      "OTN OTUCn.";
+    reference
+      "ITU-T G.709/Y.1331";
+  }
+  identity otnOduc {
+    base iana-interface-type;
+    description
+      "OTN ODUC.";
+    reference
+      "ITU-T G.709";
+  }
+  identity otnOtsig {
+    base iana-interface-type;
+    description
+      "OTN OTUC Signal.";
+    reference
+      "ITU-T G.709";
   }
 }
