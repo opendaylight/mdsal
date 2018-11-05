@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "952a1e8d_61aaf8c1",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/WriteOperations.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-05T16:05:35Z",
+      "side": 1,
+      "message": "This always felt like a cascadingPut() to me (using cascade in the SQL sense)...",
+      "parentUuid": "5c76c6fa_c707b184",
+      "range": {
+        "startLine": 90,
+        "startChar": 40,
+        "endLine": 90,
+        "endChar": 70
+      },
+      "revId": "3e995dea14796d381e605445cc681284c1452037",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f00a17d1_6a92a5cc",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/WriteTrackingReadWriteTransaction.java",
         "patchSetId": 13
