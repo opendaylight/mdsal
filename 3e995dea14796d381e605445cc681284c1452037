@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "6aaeba8d_3613ac88",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/WriteOperations.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-06T09:55:10Z",
+      "side": 1,
+      "message": "Hmm... not sure, I only ever heard of \u0027cascade delete\u0027, which is *kind of* an inverse operation.\n\nHistorically, this method was cascading and put() was not, as all elements in the tree required explicit data management.\n\nNowadays, though, put() already \u0027cascades\u0027 non-significant interior nodes (containers, lists, augmentations, choices), as they are cleaned up when no longer needed.\n\nThere are only two parent types, presence containers and list entries, where this method does something different than put().\n\nHence \u0027cascading\u0027 would be a bit of a misnomer...",
+      "parentUuid": "952a1e8d_61aaf8c1",
+      "range": {
+        "startLine": 90,
+        "startChar": 40,
+        "endLine": 90,
+        "endChar": 70
+      },
+      "revId": "3e995dea14796d381e605445cc681284c1452037",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f00a17d1_6a92a5cc",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/WriteTrackingReadWriteTransaction.java",
         "patchSetId": 13
