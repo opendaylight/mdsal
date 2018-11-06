@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "14dce7ca_7e0a329f",
+        "filename": "model/iana/rfc8343-based-iana-if-type/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-11-06T01:32:26Z",
+      "side": 1,
+      "message": "I wonder that putting \u0027rfc8343\u0027 together with \u0027iana-if-type\u0027 would mislead people to mistake \u0027iana-if-type\u0027 belong to \u0027rfc8343\u0027, who already have been familiar with naming of \u0027ietf\u0027, hence just naming like \u0027ietf\u0027 does but adding a revision date, so what do you think, Robert?",
+      "parentUuid": "3b33f332_548503da",
+      "range": {
+        "startLine": 21,
+        "startChar": 17,
+        "endLine": 21,
+        "endChar": 42
+      },
+      "revId": "32bfb285ddab4f0103b317c0c7780f6b32ffa9fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "306e2426_d8c6e9b6",
         "filename": "model/iana/rfc8343-based-iana-if-type/src/main/yang/iana-if-type@2018-07-03.yang",
         "patchSetId": 2
