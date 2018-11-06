@@ -105,7 +105,7 @@ abstract class AbstractTypeMember implements TypeMember {
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("MethodSignatureImpl [name=");
+        builder.append("AbstractTypeMember [name=");
         builder.append(getName());
         builder.append(", comment=");
         builder.append(getComment());
