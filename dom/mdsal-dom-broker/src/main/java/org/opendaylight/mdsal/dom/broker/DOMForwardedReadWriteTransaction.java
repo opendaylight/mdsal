@@ -38,8 +38,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 final class DOMForwardedReadWriteTransaction extends DOMForwardedWriteTransaction<DOMStoreReadWriteTransaction>
         implements DOMDataTreeReadWriteTransaction {
 
-    protected DOMForwardedReadWriteTransaction(final Object identifier,
-            final Map<LogicalDatastoreType, DOMStoreReadWriteTransaction> backingTxs,
+    DOMForwardedReadWriteTransaction(final Object identifier,
+        final Map<LogicalDatastoreType, DOMStoreReadWriteTransaction> backingTxs,
             final AbstractDOMForwardedTransactionFactory<?> commitImpl) {
         super(identifier, backingTxs, commitImpl);
     }
@@ -53,10 +53,5 @@ final class DOMForwardedReadWriteTransaction extends DOMForwardedWriteTransactio
     @Override
     public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         return getSubtransaction(store).exists(path);
-    }
-
-    @Override
-    public void close() {
-        closeSubtransactions();
     }
 }

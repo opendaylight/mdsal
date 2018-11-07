@@ -26,6 +26,6 @@ class BindingDOMReadWriteTransactionAdapter extends BindingDOMWriteTransactionAd
     @Override
     public final <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path) {
-        return doRead(getDelegate(),store, path);
+        return doRead(getDelegate(), store, path);
     }
 }

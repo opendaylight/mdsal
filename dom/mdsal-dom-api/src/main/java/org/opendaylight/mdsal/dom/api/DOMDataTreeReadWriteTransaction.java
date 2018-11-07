@@ -14,5 +14,10 @@ package org.opendaylight.mdsal.dom.api;
  * For more information on usage and examples, please see the documentation in {@link DOMDataTreeReadTransaction}
  * and {@link DOMDataTreeWriteTransaction}.
  */
-public interface DOMDataTreeReadWriteTransaction extends DOMDataTreeReadTransaction, DOMDataTreeWriteTransaction {
+// FIXME: 4.0.0: extend DOMDataTreeReadOperations instead of DOMDataTreeReadTransaction
+public interface DOMDataTreeReadWriteTransaction extends DOMDataTreeWriteTransaction, DOMDataTreeReadTransaction {
+    @Override
+    default void close() {
+        cancel();
+    }
 }
