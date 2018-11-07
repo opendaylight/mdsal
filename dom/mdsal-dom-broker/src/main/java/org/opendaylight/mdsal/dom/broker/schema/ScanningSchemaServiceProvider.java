@@ -39,10 +39,10 @@ public class ScanningSchemaServiceProvider
         implements DOMSchemaService, SchemaContextProvider, DOMYangTextSourceProvider, AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(ScanningSchemaServiceProvider.class);
 
-    @GuardedBy("lock")
-    private final ListenerRegistry<SchemaContextListener> listeners = new ListenerRegistry<>();
-    private final Object lock = new Object();
     private final YangTextSchemaContextResolver contextResolver = YangTextSchemaContextResolver.create("global-bundle");
+    @GuardedBy("lock")
+    private final ListenerRegistry<SchemaContextListener> listeners = ListenerRegistry.create();
+    private final Object lock = new Object();
 
     public void tryToUpdateSchemaContext() {
         synchronized (lock) {
@@ -94,15 +94,9 @@ public class ScanningSchemaServiceProvider
     }
 
     public boolean hasListeners() {
-        boolean hasListeners;
         synchronized (lock) {
-            if (Iterables.size(listeners.getListeners()) > 0) {
-                hasListeners = true;
-            } else {
-                hasListeners = false;
-            }
+            return !Iterables.isEmpty(listeners.getListeners());
         }
-        return hasListeners;
     }
 
     @Override
@@ -119,10 +113,7 @@ public class ScanningSchemaServiceProvider
     public ListenerRegistration<SchemaContextListener>
             registerSchemaContextListener(final SchemaContextListener listener) {
         synchronized (lock) {
-            final Optional<SchemaContext> potentialCtx = contextResolver.getSchemaContext();
-            if (potentialCtx.isPresent()) {
-                listener.onGlobalContextUpdated(potentialCtx.get());
-            }
+            contextResolver.getSchemaContext().ifPresent(listener::onGlobalContextUpdated);
             return listeners.register(listener);
         }
     }
@@ -145,9 +136,7 @@ public class ScanningSchemaServiceProvider
     @Override
     public void close() {
         synchronized (lock) {
-            for (final ListenerRegistration<SchemaContextListener> registration : listeners) {
-                registration.close();
-            }
+            listeners.forEach(ListenerRegistration::close);
         }
     }
 }
