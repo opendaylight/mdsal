@@ -7,12 +7,14 @@
  */
 package org.opendaylight.mdsal.dom.broker.pingpong;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.MoreObjects;
-import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 
@@ -22,16 +24,17 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
  * interface so we have a simple way of propagating the result.
  */
 final class PingPongTransaction implements FutureCallback<CommitInfo> {
-    private final DOMDataTreeReadWriteTransaction delegate;
-    private final SettableFuture<CommitInfo> future;
-    private DOMDataTreeReadWriteTransaction frontendTransaction;
+    private final @NonNull DOMDataTreeReadWriteTransaction delegate;
+    private final @NonNull SettableFuture<CommitInfo> future;
+
+    private @Nullable DOMDataTreeReadWriteTransaction frontendTransaction;
 
     PingPongTransaction(final DOMDataTreeReadWriteTransaction delegate) {
-        this.delegate = Preconditions.checkNotNull(delegate);
+        this.delegate = requireNonNull(delegate);
         future = SettableFuture.create();
     }
 
-    DOMDataTreeReadWriteTransaction getTransaction() {
+    @NonNull DOMDataTreeReadWriteTransaction getTransaction() {
         return delegate;
     }
 
@@ -39,7 +42,7 @@ final class PingPongTransaction implements FutureCallback<CommitInfo> {
         return frontendTransaction;
     }
 
-    ListenableFuture<CommitInfo> getCommitFuture() {
+    @NonNull FluentFuture<CommitInfo> getCommitFuture() {
         return future;
     }
 
@@ -61,10 +64,6 @@ final class PingPongTransaction implements FutureCallback<CommitInfo> {
 
     @Override
     public String toString() {
-        return addToStringAttributes(MoreObjects.toStringHelper(this)).toString();
-    }
-
-    protected ToStringHelper addToStringAttributes(final ToStringHelper toStringHelper) {
-        return toStringHelper.add("delegate", delegate);
+        return MoreObjects.toStringHelper(this).add("delegate", delegate).toString();
     }
 }

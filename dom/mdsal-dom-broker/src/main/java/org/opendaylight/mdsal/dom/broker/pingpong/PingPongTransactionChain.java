@@ -154,7 +154,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
         }
     }
 
-    private synchronized PingPongTransaction slowAllocateTransaction() {
+    private synchronized @NonNull PingPongTransaction slowAllocateTransaction() {
         checkState(shutdownTx == null, "Transaction chain %s has been shut down", this);
 
         if (deadTx != null) {
@@ -175,7 +175,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
         return newTx;
     }
 
-    private PingPongTransaction allocateTransaction() {
+    private @NonNull PingPongTransaction allocateTransaction() {
         // Step 1: acquire current state
         final PingPongTransaction oldTx = READY_UPDATER.getAndSet(this, null);
 
@@ -441,8 +441,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
             public FluentFuture<? extends CommitInfo> commit() {
                 readyTransaction(tx);
                 isOpen = false;
-                return FluentFuture.from(tx.getCommitFuture()).transformAsync(
-                    ignored -> CommitInfo.emptyFluentFuture(), MoreExecutors.directExecutor());
+                return tx.getCommitFuture().transform(ignored -> CommitInfo.empty(), MoreExecutors.directExecutor());
             }
 
             @Override
@@ -451,9 +450,9 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
                     cancelTransaction(tx, this);
                     isOpen = false;
                     return true;
-                } else {
-                    return false;
                 }
+
+                return false;
             }
         };
 

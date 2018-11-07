@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
  */
 public final class PingPongDataBroker extends ForwardingDOMDataBroker implements AutoCloseable,
         DOMDataTreeChangeService {
-    private final DOMDataBroker delegate;
+    private final @NonNull DOMDataBroker delegate;
 
     /**
      * Instantiate a new broker, backed by the the specified delegate
