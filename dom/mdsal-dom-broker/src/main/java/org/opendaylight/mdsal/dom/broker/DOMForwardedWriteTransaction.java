@@ -7,7 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+import static org.opendaylight.yangtools.util.concurrent.FluentFutures.immediateFailedFluentFuture;
+
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
@@ -21,17 +24,14 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Read-Write Transaction, which is composed of several
- * {@link DOMStoreWriteTransaction} transactions. A sub-transaction is selected by
- * {@link LogicalDatastoreType} type parameter in:
- *
+ * Read-Write Transaction, which is composed of several {@link DOMStoreWriteTransaction} transactions. A sub-transaction
+ * is selected by {@link LogicalDatastoreType} type parameter in:
  * <ul>
  * <li>{@link #put(LogicalDatastoreType, YangInstanceIdentifier, NormalizedNode)}
  * <li>{@link #delete(LogicalDatastoreType, YangInstanceIdentifier)}
@@ -41,9 +41,8 @@ import org.slf4j.LoggerFactory;
  * <p>
  * {@link #submit()} will result in invocation of
  * {@link DOMDataCommitImplementation#submit(org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction, Iterable)}
- * invocation with all
- * {@link org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort} for
- * underlying transactions.
+ * invocation with all {@link org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort} for underlying
+ * transactions.
  *
  * @param <T> Subtype of {@link DOMStoreWriteTransaction} which is used as subtransaction.
  */
@@ -59,30 +58,26 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction> extends
     private static final Logger LOG = LoggerFactory.getLogger(DOMForwardedWriteTransaction.class);
     private static final Future<?> CANCELLED_FUTURE = Futures.immediateCancelledFuture();
 
-    /**
-     * Implementation of real commit. It also acts as an indication that
-     * the transaction is running -- which we flip atomically using
-     * {@link #IMPL_UPDATER}.
+    /*
+     * Implementation of real commit. It also acts as an indication that the transaction is running -- which we flip
+     * atomically using {@link #IMPL_UPDATER}.
      */
     private volatile AbstractDOMForwardedTransactionFactory<?> commitImpl;
 
-    /**
-     * Future task of transaction commit. It starts off as null, but is
-     * set appropriately on {@link #submit()} and {@link #cancel()} via
-     * {@link AtomicReferenceFieldUpdater#lazySet(Object, Object)}.
+    /*
+     * Future task of transaction commit. It starts off as null, but is set appropriately on {@link #submit()} and
+     * {@link #cancel()} via {@link AtomicReferenceFieldUpdater#lazySet(Object, Object)}.
      *
-     *<p>
-     * Lazy set is safe for use because it is only referenced to in the
-     * {@link #cancel()} slow path, where we will busy-wait for it. The
-     * fast path gets the benefit of a store-store barrier instead of the
-     * usual store-load barrier.
+     * Lazy set is safe for use because it is only referenced to in the {@link #cancel()} slow path, where we will
+     * busy-wait for it. The fast path gets the benefit of a store-store barrier instead of the usual store-load
+     * barrier.
      */
     private volatile Future<?> commitFuture;
 
-    protected DOMForwardedWriteTransaction(final Object identifier,
-            final Map<LogicalDatastoreType, T> backingTxs, final AbstractDOMForwardedTransactionFactory<?> commitImpl) {
+    protected DOMForwardedWriteTransaction(final Object identifier, final Map<LogicalDatastoreType, T> backingTxs,
+            final AbstractDOMForwardedTransactionFactory<?> commitImpl) {
         super(identifier, backingTxs);
-        this.commitImpl = Preconditions.checkNotNull(commitImpl, "commitImpl must not be null.");
+        this.commitImpl = requireNonNull(commitImpl, "commitImpl must not be null.");
     }
 
     @Override
@@ -142,14 +137,13 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction> extends
 
             ret = impl.commit(this, cohorts);
         } catch (RuntimeException e) {
-            ret = FluentFutures.immediateFailedFluentFuture(
-                    TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER.apply(e));
+            ret = immediateFailedFluentFuture(TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER.apply(e));
         }
         FUTURE_UPDATER.lazySet(this, ret);
         return ret;
     }
 
     private void checkRunning(final AbstractDOMForwardedTransactionFactory<?> impl) {
-        Preconditions.checkState(impl != null, "Transaction %s is no longer running", getIdentifier());
+        checkState(impl != null, "Transaction %s is no longer running", getIdentifier());
     }
 }

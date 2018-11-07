@@ -15,30 +15,32 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
+// FIXME: 4.0.0: make this class package-protected and final
 public class ShardedDOMReadWriteTransactionAdapter extends ShardedDOMWriteTransactionAdapter
         implements DOMDataTreeReadWriteTransaction {
 
     private final ShardedDOMReadTransactionAdapter readAdapter;
 
-    ShardedDOMReadWriteTransactionAdapter(Object identifier, DOMDataTreeService transactionDelegator) {
+    ShardedDOMReadWriteTransactionAdapter(final Object identifier, final DOMDataTreeService transactionDelegator) {
         super(identifier, transactionDelegator);
         readAdapter = new ShardedDOMReadTransactionAdapter(identifier, transactionDelegator);
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(LogicalDatastoreType store,
-            YangInstanceIdentifier path) {
+    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(final LogicalDatastoreType store,
+            final YangInstanceIdentifier path) {
         return readAdapter.read(store, path);
     }
 
     @Override
-    public FluentFuture<Boolean> exists(LogicalDatastoreType store, YangInstanceIdentifier path) {
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         return readAdapter.exists(store, path);
     }
 
     @Override
-    public void close() {
+    public boolean cancel() {
         readAdapter.close();
+        return super.cancel();
     }
 
     ShardedDOMReadTransactionAdapter getReadAdapter() {
