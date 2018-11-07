@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.spec.util;
 
-import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -40,6 +40,6 @@ public final class DataObjectUtils {
      * @return Input list or an empty list.
      */
     public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
-        return input != null ? input : ImmutableList.of();
+        return input != null ? input : new ArrayList<>(0);
     }
 }
