@@ -16,9 +16,8 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-class TransactionChainReadWriteTransaction extends TransactionChainWriteTransaction
+final class TransactionChainReadWriteTransaction extends TransactionChainWriteTransaction
         implements DOMDataTreeReadWriteTransaction {
-
     private final TransactionChainReadTransaction readTx;
 
     TransactionChainReadWriteTransaction(final Object identifier,
@@ -38,9 +37,5 @@ class TransactionChainReadWriteTransaction extends TransactionChainWriteTransact
     @Override
     public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         return readTx.exists(store, path);
-    }
-
-    @Override
-    public void close() {
     }
 }
