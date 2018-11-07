@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.base.Throwables;
 import com.google.common.base.Verify;
@@ -262,7 +263,8 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
             }
         }
         checkArgument(rpc != null, "Supplied class %s is not valid RPC class.", key);
-        final ContainerSchemaNode schema = SchemaNodeUtils.getRpcDataSchema(rpc, qname);
+        // VerifyNotNull because SpotBugs is buggy
+        final ContainerSchemaNode schema = SchemaNodeUtils.getRpcDataSchema(verifyNotNull(rpc), qname);
         checkArgument(schema != null, "Schema for %s does not define input / output.", rpc.getQName());
         return (ContainerNodeCodecContext<?>) DataContainerCodecPrototype.from(key, schema, factory()).get();
     }
