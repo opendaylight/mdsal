@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "a4b16ed7_0d3c2fcb",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/WriteOperations.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-07T16:39:55Z",
+      "side": 1,
+      "message": "Right, it’s not an ideal analogy ;-).\n\nWhat makes this hard to name is that the underlying concerns are rather subtle...",
+      "parentUuid": "6aaeba8d_3613ac88",
+      "range": {
+        "startLine": 90,
+        "startChar": 40,
+        "endLine": 90,
+        "endChar": 70
+      },
+      "revId": "3e995dea14796d381e605445cc681284c1452037",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f00a17d1_6a92a5cc",
         "filename": "binding/mdsal-binding-util/src/main/java/org/opendaylight/mdsal/binding/util/WriteTrackingReadWriteTransaction.java",
         "patchSetId": 13
