@@ -37,25 +37,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An implementation of {@link DOMTransactionChain}, which has a very specific
- * behavior, which some users may find surprising. If keeps the general
- * intent of the contract, but it makes sure there are never more than two
- * transactions allocated at any given time: one of them is being committed,
- * and while that is happening, the other one acts as the scratch pad. Once
- * the committing transaction completes successfully, the scratch transaction
- * is enqueued as soon as it is ready.
+ * An implementation of {@link DOMTransactionChain}, which has a very specific behavior, which some users may find
+ * surprising. If keeps the general intent of the contract, but it makes sure there are never more than two transactions
+ * allocated at any given time: one of them is being committed, and while that is happening, the other one acts as
+ * a scratch pad. Once the committing transaction completes successfully, the scratch transaction is enqueued as soon as
+ * it is ready.
  *
  * <p>
- * This mode of operation means that there is no inherent isolation between
- * the front-end transactions and transactions cannot be reasonably cancelled.
+ * This mode of operation means that there is no inherent isolation between the front-end transactions and transactions
+ * cannot be reasonably cancelled.
  *
  * <p>
- * It furthermore means that the transactions returned by {@link #newReadOnlyTransaction()}
- * counts as an outstanding transaction and the user may not allocate multiple
- * read-only transactions at the same time.
+ * It furthermore means that the transactions returned by {@link #newReadOnlyTransaction()} counts as an outstanding
+ * transaction and the user may not allocate multiple read-only transactions at the same time.
  */
 public final class PingPongTransactionChain implements DOMTransactionChain {
     private static final Logger LOG = LoggerFactory.getLogger(PingPongTransactionChain.class);
+
     private final DOMTransactionChainListener listener;
     private final DOMTransactionChain delegate;
 
@@ -66,33 +64,29 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
     @GuardedBy("this")
     private Entry<PingPongTransaction, Throwable> deadTx;
 
-    /**
-     * This updater is used to manipulate the "ready" transaction. We perform only atomic
-     * get-and-set on it.
-     */
+    //  This updater is used to manipulate the "ready" transaction. We perform only atomic get-and-set on it.
     private static final AtomicReferenceFieldUpdater<PingPongTransactionChain, PingPongTransaction> READY_UPDATER =
             AtomicReferenceFieldUpdater.newUpdater(PingPongTransactionChain.class, PingPongTransaction.class,
                 "readyTx");
     private volatile PingPongTransaction readyTx;
 
-    /**
-     * This updater is used to manipulate the "locked" transaction. A locked transaction
-     * means we know that the user still holds a transaction and should at some point call
-     * us. We perform on compare-and-swap to ensure we properly detect when a user is
-     * attempting to allocated multiple transactions concurrently.
+    /*
+     * This updater is used to manipulate the "locked" transaction. A locked transaction means we know that the user
+     * still holds a transaction and should at some point call us. We perform on compare-and-swap to ensure we properly
+     * detect when a user is attempting to allocated multiple transactions concurrently.
      */
-    private static final AtomicReferenceFieldUpdater<PingPongTransactionChain, PingPongTransaction> LOCKED_UPDATER
-            = AtomicReferenceFieldUpdater
-            .newUpdater(PingPongTransactionChain.class, PingPongTransaction.class, "lockedTx");
+    private static final AtomicReferenceFieldUpdater<PingPongTransactionChain, PingPongTransaction> LOCKED_UPDATER =
+            AtomicReferenceFieldUpdater.newUpdater(PingPongTransactionChain.class, PingPongTransaction.class,
+                "lockedTx");
     private volatile PingPongTransaction lockedTx;
 
-    /**
-     * This updater is used to manipulate the "inflight" transaction. There can be at most
-     * one of these at any given time. We perform only compare-and-swap on these.
+    /*
+     * This updater is used to manipulate the "inflight" transaction. There can be at most one of these at any given
+     * time. We perform only compare-and-swap on these.
      */
-    private static final AtomicReferenceFieldUpdater<PingPongTransactionChain, PingPongTransaction> INFLIGHT_UPDATER
-            = AtomicReferenceFieldUpdater
-            .newUpdater(PingPongTransactionChain.class, PingPongTransaction.class, "inflightTx");
+    private static final AtomicReferenceFieldUpdater<PingPongTransactionChain, PingPongTransaction> INFLIGHT_UPDATER =
+            AtomicReferenceFieldUpdater.newUpdater(PingPongTransactionChain.class, PingPongTransaction.class,
+                "inflightTx");
     private volatile PingPongTransaction inflightTx;
 
     PingPongTransactionChain(final DOMDataBroker broker, final DOMTransactionChainListener listener) {
@@ -151,9 +145,8 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
             failed = true;
 
             /*
-             * If we do not have a locked transaction, we need to ensure that
-             * the backend transaction is cancelled. Otherwise we can defer
-             * until the user calls us.
+             * If we do not have a locked transaction, we need to ensure that the backend transaction is cancelled.
+             * Otherwise we can defer until the user calls us.
              */
             if (lockedTx == null) {
                 processIfReady();
@@ -165,9 +158,9 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
         checkState(shutdownTx == null, "Transaction chain %s has been shut down", this);
 
         if (deadTx != null) {
-            throw new IllegalStateException(
-                    String.format("Transaction chain %s has failed due to transaction %s being canceled", this,
-                                  deadTx.getKey()), deadTx.getValue());
+            throw new IllegalStateException(String.format(
+                "Transaction chain %s has failed due to transaction %s being canceled", this, deadTx.getKey()),
+                deadTx.getValue());
         }
 
         final DOMDataTreeReadWriteTransaction delegateTx = delegate.newReadWriteTransaction();
@@ -195,17 +188,16 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
         if (!LOCKED_UPDATER.compareAndSet(this, null, oldTx)) {
             // Ouch. Delegate chain has not detected a duplicate transaction allocation. This is the best we can do.
             oldTx.getTransaction().cancel();
-            throw new IllegalStateException(
-                    String.format("Reusable transaction %s raced with transaction %s", oldTx, lockedTx));
+            throw new IllegalStateException( String.format("Reusable transaction %s raced with transaction %s", oldTx,
+                lockedTx));
         }
 
         return oldTx;
     }
 
-    /*
-     * This forces allocateTransaction() on a slow path, which has to happen after
-     * this method has completed executing. Also inflightTx may be updated outside
-     * the lock, hence we need to re-check.
+    /**
+     * This forces allocateTransaction() on a slow path, which has to happen after this method has completed executing.
+     * Also inflightTx may be updated outside the lock, hence we need to re-check.
      */
     @GuardedBy("this")
     private void processIfReady() {
@@ -218,8 +210,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
     }
 
     /**
-     * Process a ready transaction. The caller needs to ensure that
-     * each transaction is seen only once by this method.
+     * Process a ready transaction. The caller needs to ensure that each transaction is seen only once by this method.
      *
      * @param tx Transaction which needs processing.
      */
@@ -330,9 +321,9 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
      * and return false for everything else. Cancelling such a transaction will result in all transactions in the
      * batch to be cancelled.
      *
-     * @param tx         Backend shared transaction
+     * @param tx Backend shared transaction
      * @param frontendTx transaction
-     * @param isOpen     indicator whether the transaction was already closed
+     * @param isOpen indicator whether the transaction was already closed
      */
     synchronized void cancelTransaction(final PingPongTransaction tx,
             final DOMDataTreeReadWriteTransaction frontendTx) {
@@ -463,12 +454,6 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
                 } else {
                     return false;
                 }
-            }
-
-            @Override
-            public void close() {
-                // TODO Auto-generated method stub
-
             }
         };
 

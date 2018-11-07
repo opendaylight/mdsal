@@ -12,11 +12,8 @@ import javax.annotation.CheckReturnValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
  * Write transaction provides mutation capabilities for a data tree.
@@ -90,45 +87,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * <b>Implementation Note:</b> This interface is not intended to be implemented
  * by users of MD-SAL, but only to be consumed by them.
  */
-public interface DOMDataTreeWriteTransaction extends DOMDataTreeTransaction {
-    /**
-     * Stores a piece of data at the specified path. This acts as an add / replace operation, which is to say that whole
-     * subtree will be replaced by the specified data.
-     *
-     * <p>
-     * If you need to make sure that a parent object exists but you do not want modify its pre-existing state by using
-     * put, consider using {@link #merge} instead.
-     *
-     * @param store the logical data store which should be modified
-     * @param path the data object path
-     * @param data the data object to be written to the specified path
-     * @throws IllegalStateException if the transaction has already been submitted
-     */
-    void put(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode<?, ?> data);
-
-    /**
-     * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
-     * overwritten will be preserved. This means that if you store a container, its child lists will be merged.
-     *
-     * <p>
-     * If you require an explicit replace operation, use {@link #put} instead.
-     *
-     * @param store the logical data store which should be modified
-     * @param path the data object path
-     * @param data the data object to be merged to the specified path
-     * @throws IllegalStateException if the transaction has already been submitted
-     */
-    void merge(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode<?, ?> data);
-
-    /**
-     * Removes a piece of data from specified path. This operation does not fail if the specified path does not exist.
-     *
-     * @param store Logical data store which should be modified
-     * @param path Data object path
-     * @throws IllegalStateException if the transaction was committed or canceled.
-     */
-    void delete(LogicalDatastoreType store, YangInstanceIdentifier path);
-
+public interface DOMDataTreeWriteTransaction extends DOMDataTreeTransaction, DOMDataTreeWriteOperations {
     /**
      * Commits this transaction to be asynchronously applied to update the logical data tree. The returned
      * {@link FluentFuture} conveys the result of applying the data changes.
