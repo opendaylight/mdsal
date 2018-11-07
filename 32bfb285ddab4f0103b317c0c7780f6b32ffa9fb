@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "17c349ac_d14a958b",
+        "filename": "model/iana/rfc8343-based-iana-if-type/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-07T17:59:37Z",
+      "side": 1,
+      "message": "But I am fine with the current name, too.",
+      "parentUuid": "257cae22_0628c488",
+      "range": {
+        "startLine": 21,
+        "startChar": 17,
+        "endLine": 21,
+        "endChar": 42
+      },
+      "revId": "32bfb285ddab4f0103b317c0c7780f6b32ffa9fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "306e2426_d8c6e9b6",
         "filename": "model/iana/rfc8343-based-iana-if-type/src/main/yang/iana-if-type@2018-07-03.yang",
         "patchSetId": 2
