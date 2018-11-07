@@ -14,8 +14,9 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadOperations;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Identifiable;
@@ -25,14 +26,13 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> implements Delegator<T>,
         Identifiable<Object> {
 
-    private final T delegate;
-    private final BindingToNormalizedNodeCodec codec;
+    private final @NonNull BindingToNormalizedNodeCodec codec;
+    private final @NonNull T delegate;
 
     AbstractForwardedTransaction(final T delegateTx, final BindingToNormalizedNodeCodec codec) {
         this.delegate = requireNonNull(delegateTx, "Delegate must not be null");
         this.codec = requireNonNull(codec, "Codec must not be null");
     }
-
 
     @Override
     public final Object getIdentifier() {
@@ -44,22 +44,20 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
         return delegate;
     }
 
-    @SuppressWarnings("unchecked")
     protected final <S extends DOMDataTreeTransaction> S getDelegateChecked(final Class<S> txType) {
         checkState(txType.isInstance(delegate));
-        return (S) delegate;
+        return txType.cast(delegate);
     }
 
     protected final BindingToNormalizedNodeCodec getCodec() {
         return codec;
     }
 
-    protected final <D extends DataObject> FluentFuture<Optional<D>> doRead(
-            final DOMDataTreeReadTransaction readTx, final LogicalDatastoreType store,
-            final InstanceIdentifier<D> path) {
+    protected final <D extends DataObject> FluentFuture<Optional<D>> doRead(final DOMDataTreeReadOperations readOps,
+            final LogicalDatastoreType store, final InstanceIdentifier<D> path) {
         checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 
-        return readTx.read(store, codec.toYangInstanceIdentifierBlocking(path))
+        return readOps.read(store, codec.toYangInstanceIdentifierBlocking(path))
                 .transform(codec.getCodecRegistry().deserializeFunction(path)::apply, MoreExecutors.directExecutor());
     }
 }
