@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ClassToInstanceMap;
@@ -159,7 +158,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         finished = true;
     }
 
-    static class CachedDataTreeService implements DOMDataTreeService {
+    private static class CachedDataTreeService implements DOMDataTreeService {
 
         private final DOMDataTreeService delegateTreeService;
         private final Map<LogicalDatastoreType, NoopCloseDataProducer> producersMap =
@@ -188,44 +187,41 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         @Override
         public DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees) {
             checkState(subtrees.size() == 1);
-            NoopCloseDataProducer producer = null;
-            for (final DOMDataTreeIdentifier treeId : subtrees) {
-                producer = new NoopCloseDataProducer(delegateTreeService.createProducer(Collections.singleton(treeId)));
-                producersMap.putIfAbsent(treeId.getDatastoreType(),
-                        producer);
-            }
-            return verifyNotNull(producer);
+            DOMDataTreeIdentifier treeId = subtrees.iterator().next();
+            NoopCloseDataProducer producer = new NoopCloseDataProducer(delegateTreeService.createProducer(
+                Collections.singleton(treeId)));
+            producersMap.putIfAbsent(treeId.getDatastoreType(), producer);
+            return producer;
+        }
+    }
+
+    private static final class NoopCloseDataProducer implements DOMDataTreeProducer {
+        private final DOMDataTreeProducer delegateTreeProducer;
+
+        NoopCloseDataProducer(final DOMDataTreeProducer delegateTreeProducer) {
+            this.delegateTreeProducer = delegateTreeProducer;
         }
 
-        static class NoopCloseDataProducer implements DOMDataTreeProducer {
+        @Override
+        public DOMDataTreeCursorAwareTransaction createTransaction(final boolean isolated) {
+            return delegateTreeProducer.createTransaction(isolated);
+        }
 
-            private final DOMDataTreeProducer delegateTreeProducer;
+        @Override
+        public DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees) {
+            return delegateTreeProducer.createProducer(subtrees);
+        }
 
-            NoopCloseDataProducer(final DOMDataTreeProducer delegateTreeProducer) {
-                this.delegateTreeProducer = delegateTreeProducer;
-            }
+        @Override
+        public void close() {
+            // noop
+        }
 
-            @Override
-            public DOMDataTreeCursorAwareTransaction createTransaction(final boolean isolated) {
-                return delegateTreeProducer.createTransaction(isolated);
-            }
-
-            @Override
-            public DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees) {
-                return delegateTreeProducer.createProducer(subtrees);
-            }
-
-            @Override
-            public void close() throws DOMDataTreeProducerException {
-                // noop
-            }
-
-            public void closeDelegate() {
-                try {
-                    delegateTreeProducer.close();
-                } catch (final DOMDataTreeProducerException e) {
-                    throw new IllegalStateException("Trying to close DOMDataTreeProducer with open transaction", e);
-                }
+        public void closeDelegate() {
+            try {
+                delegateTreeProducer.close();
+            } catch (final DOMDataTreeProducerException e) {
+                throw new IllegalStateException("Trying to close DOMDataTreeProducer with open transaction", e);
             }
         }
     }
