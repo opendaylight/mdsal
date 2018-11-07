@@ -7,17 +7,19 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
@@ -34,29 +36,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransaction {
-
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMReadTransactionAdapter.class.getName());
 
-    private final List<ListenerRegistration<DOMDataTreeListener>> registrations = Lists.newArrayList();
-    private final DOMDataTreeService service;
-    private final Object txIdentifier;
+    private final List<ListenerRegistration<DOMDataTreeListener>> registrations = new ArrayList<>();
+    private final @NonNull DOMDataTreeService service;
+    private final @NonNull Object txIdentifier;
 
     private boolean finished = false;
 
     ShardedDOMReadTransactionAdapter(final Object identifier, final DOMDataTreeService service) {
-        this.service = Preconditions.checkNotNull(service);
-        this.txIdentifier = Preconditions.checkNotNull(identifier);
+        this.service = requireNonNull(service);
+        this.txIdentifier = requireNonNull(identifier);
     }
 
     @Override
     public void close() {
-        // TODO should we also cancel all read futures?
         LOG.debug("{}: Closing read transaction", txIdentifier);
         if (finished) {
             return;
         }
 
         registrations.forEach(ListenerRegistration::close);
+        // TODO should we also cancel all read futures?
         finished = true;
     }
 
@@ -77,24 +78,12 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
                     Collections.singleton(new DOMDataTreeIdentifier(store, path)), false, Collections.emptyList());
             registrations.add(reg);
         } catch (final DOMDataTreeLoopException e) {
-            // This should not happen, we are not specifying any
-            // producers when registering listener
+            // This should not happen, we are not specifying any producers when registering listener
             throw new IllegalStateException("Loop in listener and producers detected", e);
         }
 
         // After data tree change future is finished, we can close the listener registration
-        initialDataTreeChangeFuture.addCallback(new FutureCallback<Optional<NormalizedNode<?, ?>>>() {
-            @Override
-            public void onSuccess(final Optional<NormalizedNode<?, ?>> result) {
-                reg.close();
-            }
-
-            @Override
-            public void onFailure(final Throwable throwable) {
-                reg.close();
-            }
-        }, MoreExecutors.directExecutor());
-
+        initialDataTreeChangeFuture.addListener(reg::close, MoreExecutors.directExecutor());
         return initialDataTreeChangeFuture;
     }
 
@@ -106,39 +95,31 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
     }
 
     private void checkRunning() {
-        Preconditions.checkState(!finished, "Transaction is already closed");
+        checkState(!finished, "Transaction is already closed");
     }
 
-    static class ReadShardedListener implements DOMDataTreeListener {
-
+    static final class ReadShardedListener implements DOMDataTreeListener {
         private final SettableFuture<Optional<NormalizedNode<?, ?>>> readResultFuture;
 
         ReadShardedListener(final SettableFuture<Optional<NormalizedNode<?, ?>>> future) {
-            this.readResultFuture = Preconditions.checkNotNull(future);
+            this.readResultFuture = requireNonNull(future);
         }
 
         @Override
         public void onDataTreeChanged(final Collection<DataTreeCandidate> changes,
                 final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees) {
-            Preconditions.checkState(changes.size() == 1 && subtrees.size() == 1,
+            checkState(changes.size() == 1 && subtrees.size() == 1,
                     "DOMDataTreeListener registered exactly on one subtree");
-
-            for (final DataTreeCandidate change : changes) {
-                if (change.getRootNode().getModificationType().equals(ModificationType.UNMODIFIED)) {
-                    readResultFuture.set(Optional.empty());
-                    return;
-                }
-            }
-
-            for (final NormalizedNode<?, ?> initialState : subtrees.values()) {
-                readResultFuture.set(Optional.of(initialState));
+            if (changes.iterator().next().getRootNode().getModificationType().equals(ModificationType.UNMODIFIED)) {
+                readResultFuture.set(Optional.empty());
+            } else {
+                readResultFuture.set(Optional.of(subtrees.values().iterator().next()));
             }
         }
 
         @Override
         public void onDataTreeFailed(final Collection<DOMDataTreeListeningException> causes) {
-            // TODO If we get just one exception, we don't need to do
-            // chaining
+            // TODO If we get just one exception, we don't need to do chaining
 
             // We chain all exceptions and return aggregated one
             readResultFuture.setException(new DOMDataTreeListeningException("Aggregated DOMDataTreeListening exception",
