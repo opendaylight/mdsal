@@ -14,5 +14,17 @@ package org.opendaylight.mdsal.dom.api;
  * For more information on usage and examples, please see the documentation in {@link DOMDataTreeReadTransaction}
  * and {@link DOMDataTreeWriteTransaction}.
  */
-public interface DOMDataTreeReadWriteTransaction extends DOMDataTreeReadTransaction, DOMDataTreeWriteTransaction {
+// FIXME: 4.0.0: extend DOMDataTreeReadOperations instead of DOMDataTreeReadTransaction
+public interface DOMDataTreeReadWriteTransaction extends DOMDataTreeWriteTransaction, DOMDataTreeReadTransaction {
+    /**
+     * This method is an API design mistake. Users should not use it and use {@link #cancel()} instead. Implementations
+     * should not override it and rely instead of its default implementation, which calls {@link #cancel()}.
+     *
+     * @deprecated Use {@link #cancel()} instead.
+     */
+    @Deprecated
+    @Override
+    default void close() {
+        cancel();
+    }
 }
