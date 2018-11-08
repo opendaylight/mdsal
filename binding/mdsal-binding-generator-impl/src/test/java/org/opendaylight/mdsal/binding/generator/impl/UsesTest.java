@@ -289,7 +289,7 @@ public class UsesTest {
 
         containsInterface("GroupingListTest", listTest);
 
-        assertEquals("Number of method in GroupingListTest is incorrect", 4, groupingListTest.getMethodDefinitions()
+        assertEquals("Number of method in GroupingListTest is incorrect", 5, groupingListTest.getMethodDefinitions()
                 .size());
         assertEquals("Number of method in ListTest is incorrect", 1, listTest.getMethodDefinitions().size());
         assertEquals("Number of method in ContainerGroupingListTest is incorrect", 1, containerGroupingListTest
