@@ -5,10 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -34,21 +35,22 @@ import org.slf4j.LoggerFactory;
 public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransaction {
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMWriteTransactionAdapter.class);
 
-    private final Map<LogicalDatastoreType, DOMDataTreeProducer> producerMap;
-    private final Map<LogicalDatastoreType, DOMDataTreeCursorAwareTransaction> transactionMap;
-    private final Map<LogicalDatastoreType, DOMDataTreeWriteCursor> cursorMap;
+    private final Map<LogicalDatastoreType, DOMDataTreeCursorAwareTransaction> transactionMap = new EnumMap<>(
+            LogicalDatastoreType.class);
+    private final Map<LogicalDatastoreType, DOMDataTreeWriteCursor> cursorMap = new EnumMap<>(
+            LogicalDatastoreType.class);
+    private final Map<LogicalDatastoreType, DOMDataTreeProducer> producerMap = new EnumMap<>(
+            LogicalDatastoreType.class);
 
-    private final DOMDataTreeService treeService;
-    private final Object txIdentifier;
+    private final @NonNull DOMDataTreeService treeService;
+    private final @NonNull Object txIdentifier;
+
     private boolean finished = false;
     private boolean initialized = false;
 
     ShardedDOMWriteTransactionAdapter(final Object identifier, final DOMDataTreeService transactionDelegator) {
-        this.treeService = Preconditions.checkNotNull(transactionDelegator);
-        this.txIdentifier = Preconditions.checkNotNull(identifier);
-        this.producerMap = new EnumMap<>(LogicalDatastoreType.class);
-        this.transactionMap = new EnumMap<>(LogicalDatastoreType.class);
-        this.cursorMap = new EnumMap<>(LogicalDatastoreType.class);
+        this.treeService = requireNonNull(transactionDelegator);
+        this.txIdentifier = requireNonNull(identifier);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
         // mark transaction as finished
         cursorMap.values().forEach(DOMDataTreeWriteCursor::close);
         transactionMap.values().forEach(domDataTreeCursorAwareTransaction ->
-                Preconditions.checkState(domDataTreeCursorAwareTransaction.cancel()));
+                checkState(domDataTreeCursorAwareTransaction.cancel()));
         closeProducers();
         finished = true;
         return true;
@@ -99,7 +101,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
 
     @Override
     public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path,
-                    final NormalizedNode<?, ?> data) {
+            final NormalizedNode<?, ?> data) {
         checkRunning();
         LOG.debug("{}: Invoking put operation at {}:{}", txIdentifier, store, path);
         LOG.trace("{}: payload is {}", txIdentifier, data);
@@ -140,9 +142,9 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     // TODO initialize producer, transaction and cursor for only
     // for necessary data store at one time
     private void initializeDataTreeProducerLayer(final YangInstanceIdentifier path) {
-        Preconditions.checkState(producerMap.isEmpty(), "Producers already initialized");
-        Preconditions.checkState(transactionMap.isEmpty(), "Transactions already initialized");
-        Preconditions.checkState(cursorMap.isEmpty(), "Cursors already initialized");
+        checkState(producerMap.isEmpty(), "Producers already initialized");
+        checkState(transactionMap.isEmpty(), "Transactions already initialized");
+        checkState(cursorMap.isEmpty(), "Cursors already initialized");
 
         LOG.debug("{}: Creating data tree producers on path {}", txIdentifier, path);
         producerMap.put(LogicalDatastoreType.CONFIGURATION,
@@ -170,7 +172,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     }
 
     private void checkRunning() {
-        Preconditions.checkState(!finished, "{}: Transaction already finished");
+        checkState(!finished, "{}: Transaction already finished");
     }
 
     private void closeProducers() {
