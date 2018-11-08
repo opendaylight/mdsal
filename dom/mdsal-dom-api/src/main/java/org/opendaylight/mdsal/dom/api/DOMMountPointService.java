@@ -23,7 +23,7 @@ public interface DOMMountPointService extends DOMService {
 
     ListenerRegistration<DOMMountPointListener> registerProvisionListener(DOMMountPointListener listener);
 
-    public interface DOMMountPointBuilder {
+    interface DOMMountPointBuilder {
 
         <T extends DOMService> DOMMountPointBuilder addService(Class<T> type,T impl);
 
