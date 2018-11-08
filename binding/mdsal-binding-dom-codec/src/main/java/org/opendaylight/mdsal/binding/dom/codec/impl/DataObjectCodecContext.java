@@ -365,14 +365,11 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     Object getBindingChildValue(final Method method, final NormalizedNodeContainer domData) {
         final NodeCodecContext<?> childContext = byMethod.get(method).get();
         @SuppressWarnings("unchecked")
-        final java.util.Optional<NormalizedNode<?, ?>> domChild = domData.getChild(childContext.getDomPathArgument());
-        if (domChild.isPresent()) {
-            return childContext.deserializeObject(domChild.get());
-        } else if (childContext instanceof LeafNodeCodecContext) {
-            return ((LeafNodeCodecContext)childContext).defaultObject();
-        } else {
-            return null;
-        }
+        final Optional<NormalizedNode<?, ?>> domChild = domData.getChild(childContext.getDomPathArgument());
+
+        // We do not want to use Optional.map() here because we do not want to invoke defaultObject() when we have
+        // normal value because defaultObject() may end up throwing an exception intentionally.
+        return domChild.isPresent() ? childContext.deserializeObject(domChild.get()) : childContext.defaultObject();
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
