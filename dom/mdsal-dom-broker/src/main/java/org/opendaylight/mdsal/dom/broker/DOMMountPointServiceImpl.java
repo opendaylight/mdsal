@@ -101,7 +101,7 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
     private void doUnregisterMountPoint(final YangInstanceIdentifier mountPointId) {
         synchronized (mountPoints) {
             if (mountPoints.remove(mountPointId) == null) {
-                LOG.warn("Removing non-existent mount point {} at", mountPointId, new Throwable());
+                LOG.warn("Removing non-existent mount point at {}", mountPointId);
                 return;
             }
         }
