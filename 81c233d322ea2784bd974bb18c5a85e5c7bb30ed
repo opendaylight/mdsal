@@ -22,6 +22,30 @@
       "revId": "81c233d322ea2784bd974bb18c5a85e5c7bb30ed",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "edb0903c_315f23f1",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMMountPointServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 4580
+      },
+      "writtenOn": "2018-11-08T14:44:16Z",
+      "side": 1,
+      "message": "SLF4J should use {} placeholder, shouldn\u0027t it?",
+      "parentUuid": "3be75f87_ab78cca1",
+      "range": {
+        "startLine": 104,
+        "startChar": 63,
+        "endLine": 104,
+        "endChar": 65
+      },
+      "revId": "81c233d322ea2784bd974bb18c5a85e5c7bb30ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
