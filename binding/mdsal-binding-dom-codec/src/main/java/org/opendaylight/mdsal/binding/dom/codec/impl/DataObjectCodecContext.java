@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import static com.google.common.base.Verify.verifyNotNull;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -363,7 +365,8 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
 
     @SuppressWarnings("rawtypes")
     Object getBindingChildValue(final Method method, final NormalizedNodeContainer domData) {
-        final NodeCodecContext<?> childContext = byMethod.get(method).get();
+        final NodeCodecContext<?> childContext = verifyNotNull(byMethod.get(method),
+            "Cannot find data handler for method %s", method).get();
         @SuppressWarnings("unchecked")
         final Optional<NormalizedNode<?, ?>> domChild = domData.getChild(childContext.getDomPathArgument());
 
