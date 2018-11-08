@@ -71,6 +71,8 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     private final ImmutableMap<String, LeafNodeCodecContext<?>> leafChild;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
     private final ImmutableSortedMap<Method, NodeContextSupplier> byMethod;
+    // FIXME: NonnullNodeContextSupplier
+    private final ImmutableMap<Method, NodeContextSupplier> nonnullMethods;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStreamClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClass;
     private final ImmutableMap<AugmentationIdentifier, Type> possibleAugmentations;
@@ -116,6 +118,9 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         this.byStreamClass = ImmutableMap.copyOf(byStreamClassBuilder);
         byBindingArgClassBuilder.putAll(byStreamClass);
         this.byBindingArgClass = ImmutableMap.copyOf(byBindingArgClassBuilder);
+
+        // FIXME: scan the class to find all nonnull methods
+        nonnullMethods = ImmutableMap.of();
 
         if (Augmentable.class.isAssignableFrom(bindingClass)) {
             this.possibleAugmentations = factory().getRuntimeContext().getAvailableAugmentationTypes(getSchema());
@@ -366,8 +371,12 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
 
     @SuppressWarnings("rawtypes")
     Object getBindingChildValue(final Method method, final NormalizedNodeContainer domData) {
-        final NodeCodecContext<?> childContext = verifyNotNull(byMethod.get(method),
-            "Cannot find data handler for method %s", method).get();
+        NodeContextSupplier supplier = byMethod.get(method);
+        if (supplier == null) {
+            supplier = nonnullMethods.get(method);
+        }
+        final NodeCodecContext<?> childContext = verifyNotNull(supplier, "Cannot find data handler for method %s",
+            method).get();
         @SuppressWarnings("unchecked")
         final Optional<NormalizedNode<?, ?>> domChild = domData.getChild(childContext.getDomPathArgument());
 
