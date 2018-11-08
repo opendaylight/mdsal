@@ -307,7 +307,7 @@ public class GeneratedTypesTest {
             }
         }
 
-        assertEquals(1, listParentContainerMethodsCount);
+        assertEquals(2, listParentContainerMethodsCount);
         assertEquals(1, listChildContainerMethodsCount);
         assertEquals(1, getSimpleListKeyMethodCount);
         assertEquals(1, listKeyClassCount);
