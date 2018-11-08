@@ -242,14 +242,11 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
     }
 
     private static String getGetterName(final SchemaNode node, final TypeDefinition<?> typeDef) {
-        final String suffix = BindingMapping.getGetterSuffix(node.getQName());
         // Bug 8903: If it is a derived type of boolean or empty, not an inner type, then the return type
         // of method would be the generated type of typedef not build-in types, so here it should be 'get'.
-        if ((typeDef instanceof BooleanTypeDefinition || typeDef instanceof EmptyTypeDefinition)
-                && (typeDef.getPath().equals(node.getPath()) || typeDef.getBaseType() == null)) {
-            return "is" + suffix;
-        }
-        return "get" + suffix;
+        return BindingMapping.getGetterMethodName(node.getQName(),
+            (typeDef instanceof BooleanTypeDefinition || typeDef instanceof EmptyTypeDefinition)
+            && (typeDef.getPath().equals(node.getPath()) || typeDef.getBaseType() == null));
     }
 
     private ImmutableMap<String, LeafNodeCodecContext<?>> getLeafNodesUsingReflection(final Class<?> parentClass,

@@ -1652,15 +1652,7 @@ abstract class AbstractTypeGenerator {
      * @return string with the name of the getter method for <code>methodName</code> in JAVA method format
      */
     public static String getterMethodName(final String localName, final Type returnType) {
-        final StringBuilder method = new StringBuilder();
-        if (BOOLEAN.equals(returnType)) {
-            method.append("is");
-        } else {
-            method.append("get");
-        }
-        final String name = BindingMapping.toFirstUpper(BindingMapping.getPropertyName(localName));
-        method.append(name);
-        return method.toString();
+        return BindingMapping.getGetterMethodName(localName, BOOLEAN.equals(returnType));
     }
 
     /**
