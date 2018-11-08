@@ -54,17 +54,17 @@ public class MountPointServiceTest {
     }
 
     @Test
-    public void unregisterTest() throws Exception {
+    public void unregisterTest() {
         final DOMMountPointListener listener = mock(DOMMountPointListener.class);
         doNothing().when(listener).onMountPointCreated(PATH);
         doNothing().when(listener).onMountPointRemoved(PATH);
         final DOMMountPointServiceImpl service = new DOMMountPointServiceImpl();
         service.registerProvisionListener(listener);
-        service.createMountPoint(PATH).register();
+        final ObjectRegistration<DOMMountPoint> mountPointReg = service.createMountPoint(PATH).register();
 
         assertTrue(service.getMountPoint(PATH).isPresent());
 
-        service.unregisterMountPoint(PATH);
+        mountPointReg.close();
 
         assertFalse(service.getMountPoint(PATH).isPresent());
     }
