@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -31,6 +32,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
@@ -71,6 +73,8 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     private final ImmutableMap<String, LeafNodeCodecContext<?>> leafChild;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
     private final ImmutableSortedMap<Method, NodeContextSupplier> byMethod;
+    // FIXME: NonnullNodeContextSupplier
+    private final ImmutableMap<Method, NodeContextSupplier> nonnullMethods;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStreamClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClass;
     private final ImmutableMap<AugmentationIdentifier, Type> possibleAugmentations;
@@ -116,6 +120,20 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         this.byStreamClass = ImmutableMap.copyOf(byStreamClassBuilder);
         byBindingArgClassBuilder.putAll(byStreamClass);
         this.byBindingArgClass = ImmutableMap.copyOf(byBindingArgClassBuilder);
+
+        final Map<Class<?>, Method> clsToNonnull = BindingReflections.getChildrenClassToNonnullMethod(bindingClass);
+        final Map<Method, NodeContextSupplier> nonnullMethodsBuilder = new HashMap<>();
+        for (final Entry<Class<?>, Method> entry : clsToNonnull.entrySet()) {
+            final Method method = entry.getValue();
+            final DataContainerCodecPrototype<?> supplier = byStreamClass.get(entry.getKey());
+            if (supplier != null) {
+                nonnullMethodsBuilder.put(method, supplier);
+            } else {
+                LOG.warn("Failed to look up data handler for method {}", method);
+            }
+        }
+
+        nonnullMethods = ImmutableMap.copyOf(nonnullMethodsBuilder);
 
         if (Augmentable.class.isAssignableFrom(bindingClass)) {
             this.possibleAugmentations = factory().getRuntimeContext().getAvailableAugmentationTypes(getSchema());
@@ -366,14 +384,23 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
 
     @SuppressWarnings("rawtypes")
     Object getBindingChildValue(final Method method, final NormalizedNodeContainer domData) {
-        final NodeCodecContext<?> childContext = verifyNotNull(byMethod.get(method),
+        final NodeContextSupplier supplier = byMethod.get(method);
+        if (supplier != null) {
+            final NodeCodecContext<?> context = supplier.get();
+            return getBindingChildValue(supplier.get(), domData, context::defaultObject);
+        }
+
+        final NodeCodecContext<?> childContext = verifyNotNull(nonnullMethods.get(method),
             "Cannot find data handler for method %s", method).get();
+        return getBindingChildValue(childContext, domData, ImmutableList::of);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static Object getBindingChildValue(final NodeCodecContext<?> childContext,
+            final NormalizedNodeContainer domData, final Supplier<Object> defaultSupplier) {
         @SuppressWarnings("unchecked")
         final Optional<NormalizedNode<?, ?>> domChild = domData.getChild(childContext.getDomPathArgument());
-
-        // We do not want to use Optional.map() here because we do not want to invoke defaultObject() when we have
-        // normal value because defaultObject() may end up throwing an exception intentionally.
-        return domChild.isPresent() ? childContext.deserializeObject(domChild.get()) : childContext.defaultObject();
+        return domChild.map(childContext::deserializeObject).orElseGet(defaultSupplier);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")

@@ -300,7 +300,9 @@ abstract class AbstractTypeGenerator {
             final Type baseInterface, final ListSchemaNode node) {
         final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, node);
         if (genType != null) {
-            constructGetter(parent, listTypeFor(genType), node);
+            final ParameterizedType listType = listTypeFor(genType);
+            constructGetter(parent, listType, node);
+            constructNonnull(parent, listType, node);
 
             final List<String> listKeys = listKeys(node);
             final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(context, node);
@@ -1503,8 +1505,7 @@ abstract class AbstractTypeGenerator {
             addPatternConstant(typeBuilder, node.getQName().getLocalName(), restrictions.getPatternConstraints());
         }
 
-        final ParameterizedType listType = listTypeFor(returnType);
-        constructGetter(typeBuilder, listType, node);
+        constructGetter(typeBuilder, listTypeFor(returnType), node);
         return true;
     }
 
@@ -1677,6 +1678,14 @@ abstract class AbstractTypeGenerator {
         addComment(getMethod, node);
 
         return getMethod;
+    }
+
+    private static void constructNonnull(final GeneratedTypeBuilder interfaceBuilder, final Type returnType,
+            final ListSchemaNode node) {
+        final MethodSignatureBuilder getMethod = interfaceBuilder.addMethod(
+            BindingMapping.getNonnullMethodName(node.getQName().getLocalName()));
+        getMethod.setReturnType(returnType);
+        annotateDeprecatedIfNecessary(node.getStatus(), getMethod);
     }
 
     /**
