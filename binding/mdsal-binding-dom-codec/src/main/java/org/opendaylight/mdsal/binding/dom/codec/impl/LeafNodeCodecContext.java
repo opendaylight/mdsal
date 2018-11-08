@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.yangtools.concepts.Codec;
@@ -228,12 +227,8 @@ final class LeafNodeCodecContext<D extends DataObject> extends NodeCodecContext<
         return ChildAddressabilitySummary.UNADDRESSABLE;
     }
 
-    /**
-     * Return the default value object.
-     *
-     * @return The default value object, or null if the default value is not defined.
-     */
-    @Nullable Object defaultObject() {
+    @Override
+    Object defaultObject() {
         return defaultObject;
     }
 }
