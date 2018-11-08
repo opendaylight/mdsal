@@ -95,10 +95,6 @@ abstract class BaseTemplate extends JavaFileTemplate {
         return getter.name.substring(prefix).toFirstLower;
     }
 
-    final protected def isAccessor(MethodSignature maybeGetter) {
-        return maybeGetter.name.startsWith("is") || maybeGetter.name.startsWith("get");
-    }
-
     /**
      * Template method which generates the getter method for <code>field</code>
      *
