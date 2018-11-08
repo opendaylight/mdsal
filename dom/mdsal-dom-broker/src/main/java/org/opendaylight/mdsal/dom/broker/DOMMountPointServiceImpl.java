@@ -12,6 +12,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.MutableClassToInstanceMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +54,21 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         return listeners.register(listener);
     }
 
+    /**
+     * Deprecated.
+     *
+     * @deprecated this method should never have been exposed publicly - registration should be done via the public
+     *             {@link #createMountPoint} interface. As such, this method expects the {@code mountPoint} part to be
+     *             of type {@link SimpleDOMMountPoint}.
+     */
+    @Deprecated
     public ObjectRegistration<DOMMountPoint> registerMountPoint(final DOMMountPoint mountPoint) {
+        Preconditions.checkArgument(mountPoint instanceof SimpleDOMMountPoint,
+                "Expected mountpoint argument to be of type SimpleDOMMountPoint");
+        return doRegisterMountPoint((SimpleDOMMountPoint) mountPoint);
+    }
+
+    private ObjectRegistration<DOMMountPoint> doRegisterMountPoint(final SimpleDOMMountPoint mountPoint) {
         final YangInstanceIdentifier mountPointId = mountPoint.getIdentifier();
         synchronized (mountPoints) {
             final DOMMountPoint prev = mountPoints.putIfAbsent(mountPointId, mountPoint);
@@ -64,15 +79,29 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         return new AbstractObjectRegistration<DOMMountPoint>(mountPoint) {
             @Override
             protected void removeRegistration() {
-                unregisterMountPoint(getInstance().getIdentifier());
+                doUnregisterMountPoint(getInstance().getIdentifier());
             }
         };
     }
 
+    /**
+     * Unregisters mountpoint.
+     *
+     * @param mountPointId Mountpoint identifier.
+     *
+     * @deprecated this method should never have been exposed publicly - mountpoint should be unregistered by simply
+     *             closing its registration.
+     *
+     */
+    @Deprecated
     public void unregisterMountPoint(final YangInstanceIdentifier mountPointId) {
+        doUnregisterMountPoint(mountPointId);
+    }
+
+    private void doUnregisterMountPoint(final YangInstanceIdentifier mountPointId) {
         synchronized (mountPoints) {
             if (mountPoints.remove(mountPointId) == null) {
-                LOG.warn("Removed non-existend mount point {} at", mountPointId, new Throwable());
+                LOG.warn("Removing non-existent mount point {} at", mountPointId, new Throwable());
                 return;
             }
         }
@@ -118,7 +147,7 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         public ObjectRegistration<DOMMountPoint> register() {
             checkState(mountPoint == null, "Mount point is already built.");
             mountPoint = SimpleDOMMountPoint.create(path, services,schemaContext);
-            return registerMountPoint(mountPoint);
+            return doRegisterMountPoint(mountPoint);
         }
     }
 }
