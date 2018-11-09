@@ -70,6 +70,30 @@
       "revId": "81c233d322ea2784bd974bb18c5a85e5c7bb30ed",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d0d3a513_3379be0b",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMMountPointServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-11-09T01:30:41Z",
+      "side": 1,
+      "message": "My bad, as \"The slf4J uses org.slf4j.helpers.MessageFormatter\", it\u0027s fine.",
+      "parentUuid": "1bf666fb_b1d82f3d",
+      "range": {
+        "startLine": 104,
+        "startChar": 63,
+        "endLine": 104,
+        "endChar": 65
+      },
+      "revId": "81c233d322ea2784bd974bb18c5a85e5c7bb30ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
