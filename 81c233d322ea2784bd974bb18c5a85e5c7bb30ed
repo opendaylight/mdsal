@@ -46,6 +46,30 @@
       "revId": "81c233d322ea2784bd974bb18c5a85e5c7bb30ed",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1bf666fb_b1d82f3d",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMMountPointServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-11-09T01:08:06Z",
+      "side": 1,
+      "message": "We\u0027d better to reach an agreement about this, Robert/Tom : what\u0027s your opinion as Tom have commented in my recent patch to suggest using \u0027%s\u0027 instead of \u0027{}\u0027.",
+      "parentUuid": "edb0903c_315f23f1",
+      "range": {
+        "startLine": 104,
+        "startChar": 63,
+        "endLine": 104,
+        "endChar": 65
+      },
+      "revId": "81c233d322ea2784bd974bb18c5a85e5c7bb30ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
