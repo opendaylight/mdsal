@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0b45f6a5_e573162d",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-09T09:53:20Z",
+      "side": 1,
+      "message": "I think it would be better/safer/more consistent with the current getter if instead of an immutable list (by Guava\u0027s ImmutableList.of() which is to as it implements ImmutableCollection \u0026 ImmutableList, or the similar Collections.emptyList() from the JDK) this would return new ArrayList\u003c\u003e(0) instead.  More details just added in a comment in MDSAL-18.",
+      "revId": "f9e2d3ed6837f59f82c034248704bcee3c15c021",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
