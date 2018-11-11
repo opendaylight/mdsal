@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.yang.unified.doc.generator.maven;
+package org.opendaylight.mdsal.binding.maven.api.gen.plugin;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,18 +13,22 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Table;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import javax.tools.Diagnostic;
@@ -32,15 +36,15 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
-import org.apache.maven.project.MavenProject;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.maven.api.gen.plugin.CodeGeneratorImpl;
+import org.opendaylight.yangtools.plugin.generator.api.GeneratedFile;
+import org.opendaylight.yangtools.plugin.generator.api.GeneratedFilePath;
+import org.opendaylight.yangtools.plugin.generator.api.GeneratedFileType;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
-import org.sonatype.plexus.build.incremental.DefaultBuildContext;
 
 /**
  * Test correct generation of YangModuleInfo class.
@@ -146,29 +150,36 @@ public class YangModuleInfoCompilationTest {
             throws Exception {
         final List<File> sourceFiles = getSourceFiles(resourceDirPath);
         final EffectiveModelContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
-        CodeGeneratorImpl codegen = new CodeGeneratorImpl();
-        codegen.setBuildContext(new DefaultBuildContext());
-        codegen.generateSources(context, sourcesOutputDir, Set.copyOf(context.getModules()),
-            (module, representation) -> Optional.of(resourceDirPath + File.separator + module.getName()
-            + YangConstants.RFC6020_YANG_FILE_EXTENSION));
+        final Table<GeneratedFileType, GeneratedFilePath, GeneratedFile> codegen = new JavaFileGenerator(Map.of())
+            .generateFiles(context, Set.copyOf(context.getModules()),
+                (module, representation) -> Optional.of(resourceDirPath + File.separator + module.getName()
+                    + YangConstants.RFC6020_YANG_FILE_EXTENSION));
+
+        assertEquals(15, codegen.size());
+        assertEquals(14, codegen.row(GeneratedFileType.SOURCE).size());
+        assertEquals(1, codegen.row(GeneratedFileType.RESOURCE).size());
+
+        for (Entry<GeneratedFilePath, GeneratedFile> entry : codegen.row(GeneratedFileType.SOURCE).entrySet()) {
+            final Path path = new File(sourcesOutputDir,
+                entry.getKey().getPath().replace(GeneratedFilePath.SEPARATOR, File.separatorChar)).toPath();
+
+            Files.createDirectories(path.getParent());
+            try (OutputStream out = Files.newOutputStream(path)) {
+                entry.getValue().writeBody(out);
+            }
+        }
     }
 
     @Test
     public void generateTestSourcesWithAdditionalConfig() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/yang-module-info");
         final EffectiveModelContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
-        CodeGeneratorImpl codegen = new CodeGeneratorImpl();
-        codegen.setBuildContext(new DefaultBuildContext());
-        codegen.setResourceBaseDir(null);
-        codegen.setMavenProject(new MavenProject());
-        codegen.setAdditionalConfig(ImmutableMap.of("test", "test"));
-        Collection<File> files = codegen.generateSources(context, null, Set.copyOf(context.getModules()),
-            (module, representation) -> Optional.of(module.getName()));
-        assertFalse(files.isEmpty());
-        files.forEach(file -> {
-            deleteTestDir(file);
-            assertFalse(file.exists());
-        });
+        JavaFileGenerator codegen = new JavaFileGenerator(Map.of("test", "test"));
+        Table<GeneratedFileType, GeneratedFilePath, GeneratedFile> files = codegen.generateFiles(context,
+            Set.copyOf(context.getModules()), (module, representation) -> Optional.of(module.getName()));
+        assertEquals(15, files.size());
+        assertEquals(14, files.row(GeneratedFileType.SOURCE).size());
+        assertEquals(1, files.row(GeneratedFileType.RESOURCE).size());
     }
 
     private static void testCompilation(final File sourcesOutputDir, final File compiledOutputDir) {

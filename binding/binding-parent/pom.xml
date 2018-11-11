@@ -58,7 +58,7 @@
                         <plugin>
                             <groupId>org.opendaylight.yangtools</groupId>
                             <artifactId>yang-maven-plugin</artifactId>
-                            <version>6.0.0</version>
+                            <version>6.0.1-SNAPSHOT</version>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.opendaylight.mdsal</groupId>
@@ -74,13 +74,6 @@
                                         <goal>generate-sources</goal>
                                     </goals>
                                     <configuration>
-                                        <codeGenerators>
-                                            <generator>
-                                                <codeGeneratorClass>org.opendaylight.mdsal.binding.maven.api.gen.plugin.CodeGeneratorImpl</codeGeneratorClass>
-                                                <outputBaseDir>${salGeneratorPath}</outputBaseDir>
-                                                <resourceBaseDir>${project.build.directory}/generated-sources/spi</resourceBaseDir>
-                                            </generator>
-                                        </codeGenerators>
                                         <inspectDependencies>true</inspectDependencies>
                                     </configuration>
                                 </execution>
