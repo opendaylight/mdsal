@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 import org.opendaylight.mdsal.binding.model.api.CodeGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.plugin.generator.api.GeneratedFileLifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,17 +28,6 @@ import org.slf4j.LoggerFactory;
  * Generates files with JAVA source codes for every specified type.
  */
 public final class GeneratorJavaFile {
-    public enum FileKind {
-        /**
-         * Transient file. It should be generated in target/generated-sources/ directory or similar.
-         */
-        TRANSIENT,
-        /**
-         * Persistent file. It should be generated in src/main/java/ directory or similar.
-         */
-        PERSISTENT,
-    }
-
     private static final class GeneratorStringSupplier implements Supplier<String> {
         private final CodeGenerator generator;
         private final Type type;
@@ -85,17 +75,17 @@ public final class GeneratorJavaFile {
         generators.add(new BuilderGenerator());
     }
 
-    public Table<FileKind, String, Supplier<String>> generateFileContent(final boolean ignoreDuplicates) {
-        final Table<FileKind, String, Supplier<String>> result = HashBasedTable.create();
+    public Table<GeneratedFileLifecycle, String, Supplier<String>> generateFileContent(final boolean ignoreDuplicates) {
+        final Table<GeneratedFileLifecycle, String, Supplier<String>> result = HashBasedTable.create();
         for (Type type : types) {
             for (CodeGenerator generator : generators) {
                 if (!generator.isAcceptable(type)) {
                     continue;
                 }
 
-                final FileKind kind = type instanceof GeneratedTransferObject
+                final GeneratedFileLifecycle kind = type instanceof GeneratedTransferObject
                         && ((GeneratedTransferObject) type).isUnionTypeBuilder()
-                        ? FileKind.PERSISTENT : FileKind.TRANSIENT;
+                        ? GeneratedFileLifecycle.PERSISTENT : GeneratedFileLifecycle.TRANSIENT;
                 final String file = type.getPackageName().replace('.', File.separatorChar)
                         +  File.separator + generator.getUnitName(type) + ".java";
 
