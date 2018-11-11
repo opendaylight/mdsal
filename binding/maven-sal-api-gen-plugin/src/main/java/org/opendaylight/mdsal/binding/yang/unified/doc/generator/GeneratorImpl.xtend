@@ -65,7 +65,7 @@ class GeneratorImpl {
 
     static val Logger LOG = LoggerFactory.getLogger(GeneratorImpl)
 
-    val Map<String, String> imports = new HashMap()
+    val Map<String, String> imports = new HashMap
     val Map<TypeDefinition<?>, SchemaPath> types = new IdentityHashMap
     var Module currentModule
     var EffectiveModelContext ctx
