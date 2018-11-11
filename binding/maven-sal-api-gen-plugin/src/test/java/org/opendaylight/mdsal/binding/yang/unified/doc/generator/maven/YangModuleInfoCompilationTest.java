@@ -35,7 +35,6 @@ import javax.tools.ToolProvider;
 import org.apache.maven.project.MavenProject;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.maven.api.gen.plugin.CodeGeneratorImpl;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -146,7 +145,7 @@ public class YangModuleInfoCompilationTest {
             throws Exception {
         final List<File> sourceFiles = getSourceFiles(resourceDirPath);
         final EffectiveModelContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
-        CodeGeneratorImpl codegen = new CodeGeneratorImpl();
+        JavaFileGenerator codegen = new JavaFileGenerator();
         codegen.setBuildContext(new DefaultBuildContext());
         codegen.generateSources(context, sourcesOutputDir, Set.copyOf(context.getModules()),
             (module, representation) -> Optional.of(resourceDirPath + File.separator + module.getName()
@@ -157,7 +156,7 @@ public class YangModuleInfoCompilationTest {
     public void generateTestSourcesWithAdditionalConfig() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/yang-module-info");
         final EffectiveModelContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
-        CodeGeneratorImpl codegen = new CodeGeneratorImpl();
+        JavaFileGenerator codegen = new JavaFileGenerator();
         codegen.setBuildContext(new DefaultBuildContext());
         codegen.setResourceBaseDir(null);
         codegen.setMavenProject(new MavenProject());
