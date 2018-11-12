@@ -24,22 +24,22 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
 import org.opendaylight.yangtools.yang.model.api.Module
 import org.opendaylight.yangtools.yang.model.api.SchemaContext
 import org.sonatype.plexus.build.incremental.BuildContext
-import org.sonatype.plexus.build.incremental.DefaultBuildContext
 
 class WadlRestconfGenerator {
 
-    File path
-    static val BuildContext CTX = new DefaultBuildContext();
     static val PATH_DELIMETER = '/'
+    val BuildContext buildContext;
+    val File path
     var SchemaContext context;
     var List<DataSchemaNode> configData;
     var List<DataSchemaNode> operationalData;
     var Module module;
     var List<LeafSchemaNode> pathListParams;
 
-    new(File targetPath) {
+    new(BuildContext buildContext, File targetPath) {
         if (!targetPath.exists) targetPath.mkdirs
         path = targetPath
+        this.buildContext = buildContext
     }
 
     def generate(SchemaContext context, Set<Module> modules) {
@@ -61,7 +61,7 @@ class WadlRestconfGenerator {
 
                 this.module = module
                 val destination = new File(path, '''«module.name».wadl''')
-                val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination), StandardCharsets.UTF_8)
+                val fw = new OutputStreamWriter(buildContext.newFileOutputStream(destination), StandardCharsets.UTF_8)
                 val bw = new BufferedWriter(fw)
                 bw.append(application);
                 bw.close();

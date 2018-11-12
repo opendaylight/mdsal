@@ -62,37 +62,37 @@ import org.opendaylight.yangtools.yang.model.api.type.Uint64TypeDefinition
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.sonatype.plexus.build.incremental.BuildContext
-import org.sonatype.plexus.build.incremental.DefaultBuildContext
 
 class GeneratorImpl {
 
-    File path
     static val Logger LOG = LoggerFactory.getLogger(GeneratorImpl)
-    static val BuildContext CTX = new DefaultBuildContext();
-    var Module currentModule;
+
     val Map<String, String> imports = new HashMap();
+    var Module currentModule;
     var SchemaContext ctx;
+    var File path
 
     StringBuilder augmentChildNodesAsString
 
     DataSchemaNode lastNodeInTargetPath = null
 
-    def generate(SchemaContext context, File targetPath, Set<Module> modulesToGen) throws IOException {
+    def generate(BuildContext buildContext, SchemaContext context, File targetPath, Set<Module> modulesToGen)
+            throws IOException {
         path = targetPath;
         path.mkdirs();
         val it = new HashSet;
         for (module : modulesToGen) {
-            add(generateDocumentation(module, context));
+            add(generateDocumentation(buildContext, module, context));
         }
         return it;
     }
 
-    def generateDocumentation(Module module, SchemaContext ctx) {
+    def generateDocumentation(BuildContext buildContext, Module module, SchemaContext ctx) {
         val destination = new File(path, '''«module.name».html''')
         this.ctx = ctx;
         module.imports.forEach[importModule | this.imports.put(importModule.prefix, importModule.moduleName)]
         try {
-            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination), StandardCharsets.UTF_8)
+            val fw = new OutputStreamWriter(buildContext.newFileOutputStream(destination), StandardCharsets.UTF_8)
             val bw = new BufferedWriter(fw)
             currentModule = module;
             bw.append(generate(module, ctx));
@@ -362,7 +362,7 @@ class GeneratorImpl {
                 }
             }
         }
-        if(! nodes.empty) {
+        if (!nodes.empty) {
             lastNodeInTargetPath = nodes.get(nodes.size() - 1)
         }
 

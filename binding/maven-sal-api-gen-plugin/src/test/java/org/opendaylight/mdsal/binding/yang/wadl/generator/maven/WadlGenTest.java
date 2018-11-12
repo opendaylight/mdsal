@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
-import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
+import org.sonatype.plexus.build.incremental.DefaultBuildContext;
 
 public class WadlGenTest {
 
@@ -54,7 +54,8 @@ public class WadlGenTest {
         final List<File> sourceFiles = getSourceFiles("/wadl-gen");
         final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         final Set<Module> modules = context.getModules();
-        final BasicCodeGenerator generator = new WadlGenerator();
+        final WadlGenerator generator = new WadlGenerator();
+        generator.setBuildContext(new DefaultBuildContext());
         Collection<File> generatedWadlFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR, modules,
             module -> Optional.empty());
         assertEquals(3, generatedWadlFiles.size());
@@ -66,7 +67,8 @@ public class WadlGenTest {
         final List<File> sourceFiles = getSourceFiles("/wadl-gen");
         final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         final Set<Module> modules = context.getModules();
-        final BasicCodeGenerator generator = new WadlGenerator();
+        final WadlGenerator generator = new WadlGenerator();
+        generator.setBuildContext(new DefaultBuildContext());
         Collection<File> generatedWadlFiles = generator.generateSources(context, null, modules,
             module -> Optional.empty());
         assertEquals(3, generatedWadlFiles.size());
@@ -79,17 +81,16 @@ public class WadlGenTest {
     private static List<File> getSourceFiles(final String path) throws Exception {
         final URI resPath = WadlGenTest.class.getResource(path).toURI();
         final File sourcesDir = new File(resPath);
-        if (sourcesDir.exists()) {
-            final List<File> sourceFiles = new ArrayList<>();
-            final File[] fileArray = sourcesDir.listFiles();
-            if (fileArray == null) {
-                throw new IllegalArgumentException("Unable to locate files in " + sourcesDir);
-            }
-            sourceFiles.addAll(Arrays.asList(fileArray));
-            return sourceFiles;
-        } else {
+        if (!sourcesDir.exists()) {
             throw new FileNotFoundException("Testing files were not found(" + sourcesDir.getName() + ")");
         }
+        final List<File> sourceFiles = new ArrayList<>();
+        final File[] fileArray = sourcesDir.listFiles();
+        if (fileArray == null) {
+            throw new IllegalArgumentException("Unable to locate files in " + sourcesDir);
+        }
+        sourceFiles.addAll(Arrays.asList(fileArray));
+        return sourceFiles;
     }
 
     private static void deleteTestDir(final File file) {
