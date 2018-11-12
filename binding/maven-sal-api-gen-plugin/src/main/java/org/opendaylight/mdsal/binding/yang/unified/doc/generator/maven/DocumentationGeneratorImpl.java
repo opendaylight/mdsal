@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.yang.unified.doc.generator.maven;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -18,11 +20,20 @@ import org.opendaylight.mdsal.binding.yang.unified.doc.generator.GeneratorImpl;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
+import org.opendaylight.yangtools.yang2sources.spi.BuildContextAware;
+import org.sonatype.plexus.build.incremental.BuildContext;
 
-public class DocumentationGeneratorImpl extends GeneratorImpl implements BasicCodeGenerator {
+public class DocumentationGeneratorImpl extends GeneratorImpl implements BasicCodeGenerator, BuildContextAware {
+    private BuildContext buildContext;
+
     @Override
     public void setAdditionalConfig(final Map<String, String> additionalConfiguration) {
         // no additional config utilized
+    }
+
+    @Override
+    public void setBuildContext(final BuildContext buildContext) {
+        this.buildContext = requireNonNull(buildContext);
     }
 
     @Override
@@ -34,6 +45,6 @@ public class DocumentationGeneratorImpl extends GeneratorImpl implements BasicCo
     public Collection<File> generateSources(final SchemaContext context, final File outputBaseDir,
             final Set<Module> currentModules, final Function<Module, Optional<String>> moduleResourcePathResolver)
             throws IOException {
-        return generate(context, outputBaseDir, currentModules);
+        return generate(buildContext, context, outputBaseDir, currentModules);
     }
 }

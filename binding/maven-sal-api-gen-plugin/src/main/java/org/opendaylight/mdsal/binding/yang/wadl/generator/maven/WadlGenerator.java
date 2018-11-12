@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.yang.wadl.generator.maven;
 
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -18,13 +21,25 @@ import org.opendaylight.mdsal.binding.yang.wadl.generator.WadlRestconfGenerator;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
+import org.opendaylight.yangtools.yang2sources.spi.BuildContextAware;
+import org.sonatype.plexus.build.incremental.BuildContext;
 
-public class WadlGenerator implements BasicCodeGenerator {
+public class WadlGenerator implements BasicCodeGenerator, BuildContextAware {
+    private BuildContext buildContext;
+
     @Override
     public void setAdditionalConfig(final Map<String, String> additionalConfiguration) {
+        // No-op
     }
 
+    @Override
+    public void setBuildContext(final BuildContext buildContext) {
+        this.buildContext = requireNonNull(buildContext);
+    }
+
+    @Override
     public void setResourceBaseDir(final File resourceBaseDir) {
+        // No-op
     }
 
     @Override
@@ -40,7 +55,7 @@ public class WadlGenerator implements BasicCodeGenerator {
             outputDir = outputBaseDir;
         }
 
-        final WadlRestconfGenerator generator = new WadlRestconfGenerator(outputDir);
-        return generator.generate(context, currentModules);
+        checkState(buildContext != null, "BuildContext should have been set");
+        return new WadlRestconfGenerator(buildContext, outputDir).generate(context, currentModules);
     }
 }
