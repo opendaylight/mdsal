@@ -26,7 +26,12 @@ final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransactio
     @Override
     public <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path) {
-        return doRead(getDelegate(),store, path);
+        return doRead(getDelegate(), store, path);
+    }
+
+    @Override
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+        return doExists(getDelegate(), store, path);
     }
 
     @Override

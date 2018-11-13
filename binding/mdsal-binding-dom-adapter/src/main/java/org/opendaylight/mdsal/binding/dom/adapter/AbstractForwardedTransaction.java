@@ -53,11 +53,18 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
         return codec;
     }
 
-    protected final <D extends DataObject> FluentFuture<Optional<D>> doRead(final DOMDataTreeReadOperations readOps,
-            final LogicalDatastoreType store, final InstanceIdentifier<D> path) {
+    protected final <D extends DataObject> @NonNull FluentFuture<Optional<D>> doRead(
+            final DOMDataTreeReadOperations readOps, final LogicalDatastoreType store,
+            final InstanceIdentifier<D> path) {
         checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 
         return readOps.read(store, codec.toYangInstanceIdentifierBlocking(path))
                 .transform(codec.getCodecRegistry().deserializeFunction(path)::apply, MoreExecutors.directExecutor());
+    }
+
+    protected final @NonNull FluentFuture<Boolean> doExists(final DOMDataTreeReadOperations readOps,
+            final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+        checkArgument(!path.isWildcarded(), "Invalid exists of wildcarded path %s", path);
+        return readOps.exists(store, codec.toYangInstanceIdentifierBlocking(path));
     }
 }
