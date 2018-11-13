@@ -151,5 +151,11 @@ public final class TransactionAdapter {
             checkStore(store);
             return delegate().read(path);
         }
+
+        @Override
+        public FluentFuture<Boolean> exists(final LogicalDatastoreType store,final InstanceIdentifier<?> path) {
+            checkStore(store);
+            return delegate().exists(path);
+        }
     }
 }

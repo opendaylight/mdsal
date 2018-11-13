@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.util;
 
 import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.Transaction;
@@ -34,4 +35,18 @@ public interface TypedReadTransaction<D extends Datastore> extends Transaction {
      * @return A future providing access to the result of the read, when it’s available, or any error encountered.
      */
     <T extends DataObject> FluentFuture<Optional<T>> read(InstanceIdentifier<T> path);
+
+    /**
+     * Determines if an object exists at the given path. Default implementation just delegates to
+     * {@link #read(InstanceIdentifier)}. Implementations are recommended to override with a more efficient
+     * implementation.
+     *
+     * @see ReadTransaction#exists(LogicalDatastoreType, InstanceIdentifier)
+     *
+     * @param path The path to read from.
+     * @return A future providing access to the result of the check, when it’s available, or any error encountered.
+     */
+    default FluentFuture<Boolean> exists(final InstanceIdentifier<?> path) {
+        return read(path).transform(Optional::isPresent, MoreExecutors.directExecutor());
+    }
 }

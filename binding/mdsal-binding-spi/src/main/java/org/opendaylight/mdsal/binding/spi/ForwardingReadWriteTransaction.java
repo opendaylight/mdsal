@@ -52,6 +52,11 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
     }
 
     @Override
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+        return delegate.exists(store, path);
+    }
+
+    @Override
     public boolean cancel() {
         return delegate.cancel();
     }
