@@ -28,4 +28,9 @@ class BindingDOMReadWriteTransactionAdapter extends BindingDOMWriteTransactionAd
             final InstanceIdentifier<T> path) {
         return doRead(getDelegate(), store, path);
     }
+
+    @Override
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+        return doExists(getDelegate(), store, path);
+    }
 }

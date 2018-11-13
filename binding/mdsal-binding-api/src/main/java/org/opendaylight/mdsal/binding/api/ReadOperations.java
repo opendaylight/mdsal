@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -42,4 +43,21 @@ public interface ReadOperations {
      */
     <T extends DataObject> @NonNull FluentFuture<Optional<T>> read(@NonNull LogicalDatastoreType store,
             @NonNull InstanceIdentifier<T> path);
+
+    /**
+     * Determines if data data exists in the provided logical data store located at the provided path.
+     *
+     * <p>
+     * Default implementation just delegates to {@link #read(LogicalDatastoreType, InstanceIdentifier)}. Implementations
+     * are recommended to override with a more efficient implementation.
+     *
+     * @param store Logical data store from which read should occur.
+     * @param path Path which uniquely identifies subtree which client want to read
+     * @return a FluentFuture containing the result of the read.
+     * @throws NullPointerException if any of the arguments is null
+     */
+    default @NonNull FluentFuture<Boolean> exists(final @NonNull LogicalDatastoreType store,
+            final @NonNull InstanceIdentifier<?> path) {
+        return read(store, path).transform(Optional::isPresent, MoreExecutors.directExecutor());
+    }
 }
