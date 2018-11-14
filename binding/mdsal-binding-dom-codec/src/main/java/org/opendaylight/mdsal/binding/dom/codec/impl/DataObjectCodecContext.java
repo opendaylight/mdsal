@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -32,8 +33,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -41,6 +40,7 @@ import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -67,10 +67,22 @@ import org.slf4j.LoggerFactory;
 
 abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeContainer & WithStatus>
         extends DataContainerCodecContext<D, T> {
+    private static final class Augmentations implements Immutable {
+        final ImmutableMap<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> byYang;
+        final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStream;
+
+        Augmentations(final ImmutableMap<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> byYang,
+            final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStream) {
+            this.byYang = requireNonNull(byYang);
+            this.byStream = requireNonNull(byStream);
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(DataObjectCodecContext.class);
     private static final MethodType CONSTRUCTOR_TYPE = MethodType.methodType(void.class, InvocationHandler.class);
     private static final MethodType DATAOBJECT_TYPE = MethodType.methodType(DataObject.class, InvocationHandler.class);
     private static final Comparator<Method> METHOD_BY_ALPHABET = Comparator.comparing(Method::getName);
+    private static final Augmentations EMPTY_AUGMENTATIONS = new Augmentations(ImmutableMap.of(), ImmutableMap.of());
 
     private final ImmutableMap<String, LeafNodeCodecContext<?>> leafChild;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
@@ -81,10 +93,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     private final ImmutableMap<AugmentationIdentifier, Type> possibleAugmentations;
     private final MethodHandle proxyConstructor;
 
-    private final ConcurrentMap<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> byYangAugmented =
-            new ConcurrentHashMap<>();
-    private final ConcurrentMap<Class<?>, DataContainerCodecPrototype<?>> byStreamAugmented = new ConcurrentHashMap<>();
-
+    private volatile Augmentations knownAugmentations = EMPTY_AUGMENTATIONS;
     private volatile ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> mismatchedAugmented = ImmutableMap.of();
 
     DataObjectCodecContext(final DataContainerCodecPrototype<T> prototype) {
@@ -162,14 +171,49 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     }
 
     @SuppressFBWarnings("RV_RETURN_VALUE_OF_PUTIFABSENT_IGNORED")
-    private void reloadAllAugmentations() {
+    private synchronized void reloadAllAugmentations() {
+        // Load current values
+        final Augmentations oldAugmentations = knownAugmentations;
+
+        // FIXME: can we detect when we have both maps fully populated and skip all of this?
+
+        // Scratch space for additions
+        final Map<PathArgument, DataContainerCodecPrototype<?>> addByYang = new HashMap<>();
+        final Map<Class<?>, DataContainerCodecPrototype<?>> addByStream = new HashMap<>();
+
+        // Iterate over all possibilities, checking for modifications.
         for (final Type augment : possibleAugmentations.values()) {
             final DataContainerCodecPrototype<?> augProto = getAugmentationPrototype(augment);
             if (augProto != null) {
-                byYangAugmented.putIfAbsent(augProto.getYangArg(), augProto);
-                byStreamAugmented.putIfAbsent(augProto.getBindingClass(), augProto);
+                final PathArgument yangArg = augProto.getYangArg();
+                final Class<?> bindingClass = augProto.getBindingClass();
+                if (!oldAugmentations.byYang.containsKey(yangArg)) {
+                    addByYang.putIfAbsent(yangArg, augProto);
+                }
+                if (!oldAugmentations.byStream.containsKey(bindingClass)) {
+                    addByStream.putIfAbsent(bindingClass, augProto);
+                }
             }
         }
+
+        if (!addByYang.isEmpty() || !addByStream.isEmpty()) {
+            // We have some additions, propagate them out
+            knownAugmentations = new Augmentations(concatMaps(oldAugmentations.byYang, addByYang),
+                concatMaps(oldAugmentations.byStream, addByStream));
+        } else {
+            LOG.trace("No new augmentations discovered in {}", this);
+        }
+    }
+
+    private static <K, V> ImmutableMap<K, V> concatMaps(final ImmutableMap<K, V> old, final Map<K, V> add) {
+        if (add.isEmpty()) {
+            return old;
+        }
+
+        final Builder<K, V> builder = ImmutableMap.builderWithExpectedSize(old.size() + add.size());
+        builder.putAll(old);
+        builder.putAll(add);
+        return builder.build();
     }
 
     @SuppressWarnings("unchecked")
@@ -301,13 +345,15 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     }
 
     private DataContainerCodecPrototype<?> yangAugmentationChild(final AugmentationIdentifier arg) {
-        final DataContainerCodecPrototype<?> firstTry = byYangAugmented.get(arg);
+        final DataContainerCodecPrototype<?> firstTry = knownAugmentations.byYang.get(arg);
         if (firstTry != null) {
             return firstTry;
         }
         if (possibleAugmentations.containsKey(arg)) {
+            // Try to load augmentations, which will potentially update knownAugmentations, hence we re-load that field
+            // again.
             reloadAllAugmentations();
-            return byYangAugmented.get(arg);
+            return knownAugmentations.byYang.get(arg);
         }
         return null;
     }
@@ -349,7 +395,9 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
 
     private @Nullable DataContainerCodecPrototype<?> augmentationByClassOrEquivalentClass(
             final @NonNull Class<?> childClass) {
-        final DataContainerCodecPrototype<?> childProto = byStreamAugmented.get(childClass);
+        // Perform a single load, so we can reuse it if we end up going to the reflection-based slow path
+        final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> local = knownAugmentations.byStream;
+        final DataContainerCodecPrototype<?> childProto = local.get(childClass);
         if (childProto != null) {
             return childProto;
         }
@@ -367,13 +415,14 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         @SuppressWarnings("rawtypes")
         final Class<?> augTarget = BindingReflections.findAugmentationTarget((Class) childClass);
         if (getBindingClass().equals(augTarget)) {
-            for (final DataContainerCodecPrototype<?> realChild : byStreamAugmented.values()) {
+            for (final DataContainerCodecPrototype<?> realChild : local.values()) {
                 if (Augmentation.class.isAssignableFrom(realChild.getBindingClass())
                         && BindingReflections.isSubstitutionFor(childClass, realChild.getBindingClass())) {
                     return cacheMismatched(childClass, realChild);
                 }
             }
         }
+        LOG.trace("Failed to resolve {} as a valid augmentation in {}", childClass, this);
         return null;
     }
 
@@ -392,6 +441,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         builder.put(childClass, prototype);
 
         mismatchedAugmented = builder.build();
+        LOG.trace("Cached mismatched augmentation {} -> {} in {}", childClass, prototype, this);
         return prototype;
     }
 
@@ -459,7 +509,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
                 }
             }
         }
-        for (final DataContainerCodecPrototype<?> value : byStreamAugmented.values()) {
+        for (final DataContainerCodecPrototype<?> value : knownAugmentations.byStream.values()) {
             final Optional<NormalizedNode<?, ?>> augData = data.getChild(value.getYangArg());
             if (augData.isPresent()) {
                 map.put(value.getBindingClass(), value.get().deserializeObject(augData.get()));
