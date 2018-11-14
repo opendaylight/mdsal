@@ -12,13 +12,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>0.13.1-SNAPSHOT</version>
+        <version>0.13.1</version>
         <relativePath>../../../binding/binding-parent</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>iana-afn-safi</artifactId>
-    <version>2013.07.04.13.1-SNAPSHOT</version>
+    <version>2013.07.04.13.1</version>
     <packaging>bundle</packaging>
 </project>
