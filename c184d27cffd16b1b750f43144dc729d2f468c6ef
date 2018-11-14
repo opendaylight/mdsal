@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "88ebce68_54ca5d96",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ProducerLayout.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-14T10:29:39Z",
+      "side": 1,
+      "message": "idToProducer.values().forEach(DOMDataTreeShardProducer::close) ?",
+      "range": {
+        "startLine": 142,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 9
+      },
+      "revId": "c184d27cffd16b1b750f43144dc729d2f468c6ef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "93acda26_004712a3",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/shard/WriteableDOMDataTreeShard.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-14T10:29:39Z",
+      "side": 1,
+      "message": "This should not be here, but rather in DOMDataTreeShardProducer -- that way we can forgo the casts all over the place.\n\nNote that I am not sure if close() operation is really a synchronous thing or it should return a Future. For this we need to consult what the CDS implementation is doing.\n\nI suspect this can be synchronous, in which case it should be inherited from Registration, as it cannot throw and is idempotent.",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 1
+      },
+      "revId": "c184d27cffd16b1b750f43144dc729d2f468c6ef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
