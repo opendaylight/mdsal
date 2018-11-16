@@ -15,6 +15,7 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CON
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableMap;
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -64,7 +65,7 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         switch (method.getParameterCount()) {
             case 0:
                 switch (method.getName()) {
@@ -95,7 +96,7 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
         throw new UnsupportedOperationException("Unsupported method " + method);
     }
 
-    private boolean bindingEquals(final Object other) {
+    private boolean bindingEquals(final Object other) throws Throwable {
         if (other == null) {
             return false;
         }
@@ -104,14 +105,19 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
             return false;
         }
         try {
-            for (final Method m : context.getHashCodeAndEqualsMethods()) {
-                final Object thisValue = getBindingData(m);
-                final Object otherValue = m.invoke(other);
+            final String[] methodNames = context.getHashCodeMethodNames();
+            final MethodHandle[] methodHandles = context.getHashCodeMethodHandles();
+            for (int i = 0, length = methodNames.length; i < length; ++i) {
+                final Object thisValue = getBindingData(methodNames[i]);
+                final Object otherValue = methodHandles[i].invoke(other);
                 /*
                  *   added for valid byte array comparison, when list key type is binary
                  *   deepEquals is not used since it does excessive amount of instanceof calls.
                  */
-                if (thisValue instanceof byte[] && otherValue instanceof byte[]) {
+                if (thisValue instanceof byte[]) {
+                    if (!(otherValue instanceof byte[])) {
+                        return false;
+                    }
                     if (!Arrays.equals((byte[]) thisValue, (byte[]) otherValue)) {
                         return false;
                     }
@@ -150,8 +156,8 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
 
         final int prime = 31;
         int result = 1;
-        for (final Method m : context.getHashCodeAndEqualsMethods()) {
-            final Object value = getBindingData(m);
+        for (final String methodName : context.getHashCodeMethodNames()) {
+            final Object value = getBindingData(methodName);
             result = prime * result + Objects.hashCode(value);
         }
         if (Augmentable.class.isAssignableFrom(context.getBindingClass())) {
@@ -170,19 +176,18 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
         }
 
         final Object readValue = method.isDefault() ? context.nonnullBindingChildValue(methodName, data)
-                : context.getBindingChildValue(method, data);
+                : context.getBindingChildValue(methodName, data);
         return populateCache(methodName, readValue);
     }
 
     // Internal invocation, can only target getFoo() methods
-    private Object getBindingData(final Method method) {
-        final String methodName = method.getName();
+    private Object getBindingData(final String methodName) {
         final Object cached = cachedData.get(methodName);
         if (cached != null) {
             return unmaskNull(cached);
         }
 
-        final Object readValue = context.getBindingChildValue(method, data);
+        final Object readValue = context.getBindingChildValue(methodName, data);
         return populateCache(methodName, readValue);
     }
 
@@ -250,8 +255,8 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
         final Class<D> bindingClass = context.getBindingClass();
         final ToStringHelper helper = MoreObjects.toStringHelper(bindingClass).omitNullValues();
 
-        for (final Method m : context.getHashCodeAndEqualsMethods()) {
-            helper.add(m.getName(), getBindingData(m));
+        for (final String methodName : context.getHashCodeMethodNames()) {
+            helper.add(methodName, getBindingData(methodName));
         }
         if (Augmentable.class.isAssignableFrom(bindingClass)) {
             helper.add("augmentations", getAugmentationsImpl());
