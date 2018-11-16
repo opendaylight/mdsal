@@ -1,0 +1,14 @@
+module mdsal-18 {
+    namespace "mdsal-18";
+    prefix "mdsal18";
+    yang-version 1.1;
+
+    // Test if RPC names do not get confused with getters
+    rpc is-something {
+
+    }
+
+    rpc get-something {
+
+    }
+}
