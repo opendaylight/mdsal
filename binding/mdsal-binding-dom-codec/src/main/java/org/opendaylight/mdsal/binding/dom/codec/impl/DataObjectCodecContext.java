@@ -17,11 +17,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -78,9 +80,11 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     private static final Logger LOG = LoggerFactory.getLogger(DataObjectCodecContext.class);
     private static final MethodType CONSTRUCTOR_TYPE = MethodType.methodType(void.class, InvocationHandler.class);
     private static final MethodType DATAOBJECT_TYPE = MethodType.methodType(DataObject.class, InvocationHandler.class);
+    private static final MethodType OBJECT_TYPE = MethodType.methodType(Object.class, Object.class);
     private static final Comparator<Method> METHOD_BY_ALPHABET = Comparator.comparing(Method::getName);
     private static final Augmentations EMPTY_AUGMENTATIONS = new Augmentations(ImmutableMap.of(), ImmutableMap.of());
-    private static final Method[] EMPTY_METHODS = new Method[0];
+    private static final MethodHandle[] EMPTY_METHOD_HANDLES = new MethodHandle[0];
+    private static final String[] EMPTY_METHOD_NAMES = new String[0];
 
     private final ImmutableMap<String, LeafNodeCodecContext<?>> leafChild;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
@@ -90,7 +94,10 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClass;
     private final ImmutableMap<AugmentationIdentifier, Type> possibleAugmentations;
     private final MethodHandle proxyConstructor;
-    private final Method[] propertyMethods;
+
+    // Both of these have the same size and ordering (by lexical name)
+    private final String[] propertyMethodNames;
+    private final MethodHandle[] propertyMethodHandles;
 
     @SuppressWarnings("rawtypes")
     private static final AtomicReferenceFieldUpdater<DataObjectCodecContext, Augmentations>
@@ -109,7 +116,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         final Map<Class<?>, Method> clsToMethod = BindingReflections.getChildrenClassToMethod(bindingClass);
 
         final Map<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYangBuilder = new HashMap<>();
-        final Map<Method, NodeContextSupplier> tmpMethodToSupplier = new HashMap<>();
+        final SortedMap<Method, NodeContextSupplier> tmpMethodToSupplier = new TreeMap<>(METHOD_BY_ALPHABET);
         final Map<Class<?>, DataContainerCodecPrototype<?>> byStreamClassBuilder = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClassBuilder = new HashMap<>();
 
@@ -136,19 +143,31 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
 
         final int methodCount = tmpMethodToSupplier.size();
         final Builder<String, NodeContextSupplier> byMethodBuilder = ImmutableMap.builderWithExpectedSize(methodCount);
-        this.propertyMethods = methodCount == 0 ? EMPTY_METHODS : new Method[methodCount];
+        if (methodCount == 0) {
+            propertyMethodNames = EMPTY_METHOD_NAMES;
+            propertyMethodHandles = EMPTY_METHOD_HANDLES;
+        } else {
+            propertyMethodNames = new String[methodCount];
+            propertyMethodHandles = new MethodHandle[methodCount];
+        }
 
+        final Lookup lookup = MethodHandles.publicLookup();
         int offset = 0;
         for (Entry<Method, NodeContextSupplier> entry : tmpMethodToSupplier.entrySet()) {
             final Method method = entry.getKey();
-            propertyMethods[offset++] = method;
+            final String methodName = method.getName();
             byMethodBuilder.put(method.getName(), entry.getValue());
+
+            propertyMethodNames[offset] = methodName;
+            try {
+                propertyMethodHandles[offset] = lookup.unreflect(method).asType(OBJECT_TYPE);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException("Failed to unreflect " + method, e);
+            }
+            offset++;
         }
-
-        // Make sure properties are alpha-sorted
-        Arrays.sort(propertyMethods, METHOD_BY_ALPHABET);
-
         this.byMethod = byMethodBuilder.build();
+
         this.byYang = ImmutableMap.copyOf(byYangBuilder);
         this.byStreamClass = ImmutableMap.copyOf(byStreamClassBuilder);
         byBindingArgClassBuilder.putAll(byStreamClass);
@@ -182,8 +201,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         final Class<?> proxyClass = Proxy.getProxyClass(bindingClass.getClassLoader(), bindingClass,
             AugmentationHolder.class);
         try {
-            proxyConstructor = MethodHandles.publicLookup().findConstructor(proxyClass, CONSTRUCTOR_TYPE)
-                    .asType(DATAOBJECT_TYPE);
+            proxyConstructor = lookup.findConstructor(proxyClass, CONSTRUCTOR_TYPE).asType(DATAOBJECT_TYPE);
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new IllegalStateException("Failed to find contructor for class " + proxyClass, e);
         }
@@ -568,8 +586,12 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         return map;
     }
 
-    final Method[] propertyMethods() {
-        return propertyMethods;
+    final String[] getPropertyMethodNames() {
+        return propertyMethodNames;
+    }
+
+    final MethodHandle[] getPropertyMethodHandles() {
+        return propertyMethodHandles;
     }
 
     @Override
