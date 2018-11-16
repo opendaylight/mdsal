@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -26,7 +28,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
  */
 public interface DataObjectModification<T extends DataObject> extends
         org.opendaylight.yangtools.concepts.Identifiable<PathArgument> {
-
     /**
      * Represents type of modification which has occurred.
      */
@@ -54,6 +55,14 @@ public interface DataObjectModification<T extends DataObject> extends
      * @return type of modified object.
      */
     @NonNull Class<T> getDataType();
+
+    @SuppressWarnings("unchecked")
+    default <N extends DataObject> DataObjectModification<N> safeCast(final Class<N> newType) {
+        final Class<T> dataType = getDataType();
+        checkArgument(newType.isAssignableFrom(dataType),
+            "Cannot reinterpret modification of %s as a modification of %s", dataType, newType);
+        return (DataObjectModification<N>) this;
+    }
 
     /**
      * Returns type of modification.

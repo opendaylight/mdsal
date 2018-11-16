@@ -35,6 +35,11 @@ public interface MethodSignatureBuilder extends TypeMemberBuilder<MethodSignatur
      */
     MethodSignatureBuilder setAbstract(boolean isAbstract);
 
+    // FIXME: 4.0.0: make this method non-default
+    default MethodSignatureBuilder setDefault(final boolean isDefault) {
+        throw new UnsupportedOperationException(getClass() + " does not override setDefault");
+    }
+
     /**
      * Adds Parameter into the List of method parameters. Neither the Name or
      * Type of parameter can be <code>null</code>.

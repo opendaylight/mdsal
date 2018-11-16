@@ -8,10 +8,11 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.collect.Iterables;
+import java.util.Iterator;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
@@ -19,6 +20,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
@@ -58,7 +60,15 @@ public class Mdsal320Test {
         assertNotNull(bar1);
         assertTrue(bar1.isUnionType());
 
-        final MethodSignature getBar = Iterables.getOnlyElement(foo.getMethodDefinitions());
+        final Iterator<MethodSignature> fooMethods = foo.getMethodDefinitions().iterator();
+        assertTrue(fooMethods.hasNext());
+        final MethodSignature getImplementedInterface = fooMethods.next();
+        asserEquals(BindingMapping.DATA_CONTAINER_GET_IMPLEMENTED_INTERFACE_NAME, getImplementedInterface.getName());
+
+        assertTrue(fooMethods.hasNext());
+        final MethodSignature getBar = fooMethods.next();
+        assertFalse(fooMethods.hasNext());
+
         final Type getBarType = getBar.getReturnType();
         assertTrue(getBarType instanceof GeneratedTransferObject);
         final GeneratedTransferObject getBarTO = (GeneratedTransferObject) getBarType;
@@ -69,5 +79,10 @@ public class Mdsal320Test {
                 .findFirst().get();
         final Type bar1PropRet = bar1Prop.getReturnType();
         assertEquals(bar1, bar1PropRet);
+    }
+
+    private void asserEquals(final String dataContainerGetImplementedInterfaceName, final String name) {
+        // TODO Auto-generated method stub
+
     }
 }
