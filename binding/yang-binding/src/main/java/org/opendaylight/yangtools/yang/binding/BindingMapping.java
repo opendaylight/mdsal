@@ -60,6 +60,16 @@ public final class BindingMapping {
     public static final String MODULE_INFO_CLASS_NAME = "$YangModuleInfoImpl";
     public static final String MODEL_BINDING_PROVIDER_CLASS_NAME = "$YangModelBindingProvider";
 
+    /**
+     * Name of {@link Augmentable#getAugmentation(Class)}.
+     */
+    public static final String AUGMENTABLE_GET_AUGMENTATION_NAME = "getAugmentation";
+
+    /**
+     * Name of {@link DataContainer#getImplementedInterface()}.
+     */
+    public static final String DATA_CONTAINER_GET_IMPLEMENTED_INTERFACE_NAME = "getImplementedInterface";
+
     public static final String RPC_INPUT_SUFFIX = "Input";
     public static final String RPC_OUTPUT_SUFFIX = "Output";
 

@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import static org.opendaylight.yangtools.yang.binding.BindingMapping.AUGMENTABLE_GET_AUGMENTATION_NAME;
+import static org.opendaylight.yangtools.yang.binding.BindingMapping.DATA_CONTAINER_GET_IMPLEMENTED_INTERFACE_NAME;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Optional;
@@ -34,10 +37,8 @@ import org.slf4j.LoggerFactory;
 class LazyDataObject<D extends DataObject> implements InvocationHandler, AugmentationReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(LazyDataObject.class);
-    private static final String GET_IMPLEMENTED_INTERFACE = "getImplementedInterface";
     private static final String TO_STRING = "toString";
     private static final String EQUALS = "equals";
-    private static final String GET_AUGMENTATION = "getAugmentation";
     private static final String HASHCODE = "hashCode";
     private static final String AUGMENTATIONS = "augmentations";
     private static final Object NULL_VALUE = new Object();
@@ -56,10 +57,10 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) {
         if (method.getParameterTypes().length == 0) {
             final String name = method.getName();
-            if (GET_IMPLEMENTED_INTERFACE.equals(name)) {
+            if (DATA_CONTAINER_GET_IMPLEMENTED_INTERFACE_NAME.equals(name)) {
                 return context.getBindingClass();
             } else if (TO_STRING.equals(name)) {
                 return bindingToString();
@@ -69,7 +70,7 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
                 return getAugmentationsImpl();
             }
             return getBindingData(method);
-        } else if (GET_AUGMENTATION.equals(method.getName())) {
+        } else if (AUGMENTABLE_GET_AUGMENTATION_NAME.equals(method.getName())) {
             return getAugmentationImpl((Class<?>) args[0]);
         } else if (EQUALS.equals(method.getName())) {
             return bindingEquals(args[0]);
