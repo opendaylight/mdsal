@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.util.AugmentationReader;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
@@ -43,8 +44,10 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     private static final String EQUALS = "equals";
     private static final String HASHCODE = "hashCode";
     private static final String AUGMENTATIONS = "augmentations";
-    private static final Object NULL_VALUE = new Object();
+    private static final @NonNull Object NULL_VALUE = new Object();
 
+    // Method.getName() is guaranteed to be interned and all getter methods have zero arguments, name is sufficient to
+    // identify the data, skipping Method.hashCode() computation.
     private final ConcurrentHashMap<String, Object> cachedData = new ConcurrentHashMap<>();
     private final NormalizedNodeContainer<?, PathArgument, NormalizedNode<?, ?>> data;
     private final DataObjectCodecContext<D,?> context;
@@ -75,7 +78,7 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
                     case AUGMENTATIONS:
                         return getAugmentationsImpl();
                     default:
-                        return getBindingData(method);
+                        return invokeAccessorMethod(method);
                 }
             case 1:
                 switch (method.getName()) {
@@ -107,9 +110,9 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
                 final Object thisValue = getBindingData(m);
                 final Object otherValue = m.invoke(other);
                 /*
-                *   added for valid byte array comparison, when list key type is binary
-                *   deepEquals is not used since it does excessive amount of instanceof calls.
-                */
+                 *   added for valid byte array comparison, when list key type is binary
+                 *   deepEquals is not used since it does excessive amount of instanceof calls.
+                 */
                 if (thisValue instanceof byte[] && otherValue instanceof byte[]) {
                     if (!Arrays.equals((byte[]) thisValue, (byte[]) otherValue)) {
                         return false;
@@ -160,23 +163,41 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
         return result;
     }
 
-    private Object getBindingData(final Method method) {
-        // Guaranteed to be interned and since method has zero arguments, name is sufficient to identify the data,
-        // skipping Method.hashCode() computation.
+    // Invocation from user, needs to deal with nonnullFoo() methods
+    private Object invokeAccessorMethod(final Method method) {
         final String methodName = method.getName();
-        Object cached = cachedData.get(methodName);
-        if (cached == null) {
-            final Object readedValue = context.getBindingChildValue(method, data);
-            cached = readedValue == null ? NULL_VALUE : readedValue;
-
-            final Object raced = cachedData.putIfAbsent(methodName, cached);
-            if (raced != null) {
-                // Load/store raced, we should return the stored value
-                cached = raced;
-            }
+        final Object cached = cachedData.get(methodName);
+        if (cached != null) {
+            return unmaskNull(cached);
+        }
+        if (!method.isDefault()) {
+            return decodeBindingData(method);
         }
 
-        return cached == NULL_VALUE ? null : cached;
+        // Always non-null, no need to mask
+        final @NonNull Object value = context.nonnullBindingChildValue(methodName, data);
+        return populateCache(methodName, value, value);
+    }
+
+    // Internal invocation, can only target getFoo() methods
+    private Object getBindingData(final Method method) {
+        final Object cached = cachedData.get(method.getName());
+        return cached != null ? unmaskNull(cached) : decodeBindingData(method);
+    }
+
+    private Object decodeBindingData(final Method method) {
+        final Object value = context.getBindingChildValue(method, data);
+        return populateCache(method.getName(), value == null ? NULL_VALUE : value, value);
+    }
+
+    private Object populateCache(final String methodName, final @NonNull Object masked, final Object value) {
+        final Object raced = cachedData.putIfAbsent(methodName, masked);
+        // If we raced we need to return previously-stored value
+        return raced != null ? unmaskNull(raced) : value;
+    }
+
+    private static Object unmaskNull(final @NonNull Object masked) {
+        return masked == NULL_VALUE ? null : masked;
     }
 
     private Map<Class<? extends Augmentation<?>>, Augmentation<?>> getAugmentationsImpl() {
