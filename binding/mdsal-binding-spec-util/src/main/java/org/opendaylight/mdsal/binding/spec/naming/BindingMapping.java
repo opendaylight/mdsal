@@ -80,6 +80,11 @@ public final class BindingMapping {
     public static final String DATA_CONTAINER_GET_IMPLEMENTED_INTERFACE_NAME = "getImplementedInterface";
 
     /**
+     * Name of {@link DataContainer#getImplementedInterface()}.
+     */
+    public static final String DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME = "implementedInterface";
+
+    /**
      * Prefix for getter methods working on top of boolean.
      */
     public static final String BOOLEAN_GETTER_PREFIX = "is";
