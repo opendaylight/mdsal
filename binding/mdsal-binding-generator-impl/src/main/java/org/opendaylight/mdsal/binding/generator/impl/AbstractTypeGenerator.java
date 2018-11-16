@@ -1911,8 +1911,14 @@ abstract class AbstractTypeGenerator {
     }
 
     private static void overrideDataObjectMethods(final GeneratedTypeBuilder typeBuilder) {
+        final ParameterizedType ifaceType = classType(wildcardTypeFor(typeBuilder.getIdentifier()));
+
         typeBuilder.addMethod(BindingMapping.DATA_CONTAINER_GET_IMPLEMENTED_INTERFACE_NAME)
         .setAccessModifier(AccessModifier.PUBLIC)
-        .setDefault(true).setReturnType(classType(wildcardTypeFor(typeBuilder.getIdentifier())));
+        .setDefault(true).setReturnType(ifaceType).addAnnotation(DEPRECATED_ANNOTATION);
+
+        typeBuilder.addMethod(BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME)
+        .setAccessModifier(AccessModifier.PUBLIC)
+        .setDefault(true).setReturnType(ifaceType);
     }
 }
