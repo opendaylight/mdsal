@@ -32,9 +32,14 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifier;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.keyedListAction;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.rpcResult;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
+import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
+import static org.opendaylight.mdsal.binding.model.util.Types.augmentationTypeFor;
+import static org.opendaylight.mdsal.binding.model.util.Types.classType;
 import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.listenableFutureTypeFor;
+import static org.opendaylight.mdsal.binding.model.util.Types.primitiveVoidType;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
+import static org.opendaylight.mdsal.binding.model.util.Types.wildcardTypeFor;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
@@ -74,7 +79,6 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.model.util.TypeConstants;
-import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider;
@@ -566,6 +570,7 @@ abstract class AbstractTypeGenerator {
 
                 final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition(
                     context.modulePackageName(), notification, DATA_OBJECT, context);
+
                 annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
                 notificationInterface.addImplementsType(NOTIFICATION);
                 context.addChildNodeType(notification, notificationInterface);
@@ -576,7 +581,7 @@ abstract class AbstractTypeGenerator {
 
                 addComment(listenerInterface.addMethod("on" + notificationInterface.getName())
                     .setAccessModifier(AccessModifier.PUBLIC).addParameter(notificationInterface, "notification")
-                    .setReturnType(Types.primitiveVoidType()), notification);
+                    .setReturnType(primitiveVoidType()), notification);
             }
         }
 
@@ -913,7 +918,9 @@ abstract class AbstractTypeGenerator {
             JavaTypeName.create(augmentPackageName, augTypeName));
 
         augTypeBuilder.addImplementsType(DATA_OBJECT);
-        augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
+        overrideImplementedInterface(augTypeBuilder);
+
+        augTypeBuilder.addImplementsType(augmentationTypeFor(targetTypeRef));
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
         addImplementedInterfaceFromUses(augSchema, augTypeBuilder);
 
@@ -1537,7 +1544,7 @@ abstract class AbstractTypeGenerator {
 
         final MethodSignatureBuilder method = unionBuilder.addMethod("getDefaultInstance");
         method.setReturnType(returnType);
-        method.addParameter(Types.STRING, "defaultValue");
+        method.addParameter(STRING, "defaultValue");
         method.setAccessModifier(AccessModifier.PUBLIC);
         method.setStatic(true);
 
@@ -1585,6 +1592,8 @@ abstract class AbstractTypeGenerator {
         final GeneratedTypeBuilder it = addRawInterfaceDefinition(name, schemaNode);
 
         it.addImplementsType(baseInterface);
+        overrideImplementedInterface(it);
+
         if (!(schemaNode instanceof GroupingDefinition)) {
             it.addImplementsType(augmentable(it));
         }
@@ -1898,5 +1907,12 @@ abstract class AbstractTypeGenerator {
         if (status == Status.DEPRECATED) {
             builder.addAnnotation(DEPRECATED_ANNOTATION);
         }
+    }
+
+    private static void overrideImplementedInterface(final GeneratedTypeBuilder typeBuilder) {
+        typeBuilder.addMethod(BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME)
+        .setAccessModifier(AccessModifier.PUBLIC)
+        .setDefault(true)
+        .setReturnType(classType(wildcardTypeFor(typeBuilder.getIdentifier())));
     }
 }

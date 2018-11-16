@@ -34,6 +34,11 @@ public interface MethodSignatureBuilder extends TypeMemberBuilder<MethodSignatur
      */
     MethodSignatureBuilder setAbstract(boolean isAbstract);
 
+    // FIXME: 4.0.0: make this method non-default
+    default MethodSignatureBuilder setDefault(final boolean isDefault) {
+        throw new UnsupportedOperationException(getClass() + " does not override setDefault");
+    }
+
     /**
      * Sets the flag indicating whether this is a {@code default interface} method.
      *
