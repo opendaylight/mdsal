@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "eecbd1d1_34f27606",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ProducerLayout.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-11-16T05:46:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "88ebce68_54ca5d96",
+      "range": {
+        "startLine": 142,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 9
+      },
+      "revId": "c184d27cffd16b1b750f43144dc729d2f468c6ef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "93acda26_004712a3",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/shard/WriteableDOMDataTreeShard.java",
         "patchSetId": 16
