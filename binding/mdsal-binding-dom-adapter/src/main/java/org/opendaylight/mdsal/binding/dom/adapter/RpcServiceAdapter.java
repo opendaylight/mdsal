@@ -76,7 +76,7 @@ class RpcServiceAdapter implements InvocationHandler {
 
         final RpcInvocationStrategy rpc = rpcNames.get(method);
         if (rpc != null) {
-            if (method.getParameterTypes().length == 0) {
+            if (method.getParameterCount() == 0) {
                 return rpc.invokeEmpty();
             }
             if (args.length != 1) {
@@ -87,17 +87,17 @@ class RpcServiceAdapter implements InvocationHandler {
 
         switch (method.getName()) {
             case "toString":
-                if (method.getReturnType().equals(String.class) && method.getParameterTypes().length == 0) {
+                if (method.getReturnType().equals(String.class) && method.getParameterCount() == 0) {
                     return type.getName() + "$Adapter{delegate=" + delegate.toString() + "}";
                 }
                 break;
             case "hashCode":
-                if (method.getReturnType().equals(int.class) && method.getParameterTypes().length == 0) {
+                if (method.getReturnType().equals(int.class) && method.getParameterCount() == 0) {
                     return System.identityHashCode(proxy);
                 }
                 break;
             case "equals":
-                if (method.getReturnType().equals(boolean.class) && method.getParameterTypes().length == 1
+                if (method.getReturnType().equals(boolean.class) && method.getParameterCount() == 1
                         && method.getParameterTypes()[0] == Object.class) {
                     return proxy == args[0];
                 }
