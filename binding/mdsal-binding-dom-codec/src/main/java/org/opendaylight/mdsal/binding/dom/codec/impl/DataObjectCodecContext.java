@@ -7,26 +7,25 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import static com.google.common.base.Verify.verifyNotNull;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import com.google.common.collect.ImmutableSortedMap;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.annotation.Nonnull;
@@ -61,15 +60,17 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     private static final Logger LOG = LoggerFactory.getLogger(DataObjectCodecContext.class);
     private static final MethodType CONSTRUCTOR_TYPE = MethodType.methodType(void.class, InvocationHandler.class);
     private static final MethodType DATAOBJECT_TYPE = MethodType.methodType(DataObject.class, InvocationHandler.class);
-    private static final Comparator<Method> METHOD_BY_ALPHABET = (o1, o2) -> o1.getName().compareTo(o2.getName());
+    private static final Comparator<Method> METHOD_BY_ALPHABET = Comparator.comparing(Method::getName);
+    private static final Method[] EMPTY_METHODS = new Method[0];
 
     private final ImmutableMap<String, LeafNodeCodecContext<?>> leafChild;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
-    private final ImmutableSortedMap<Method, NodeContextSupplier> byMethod;
+    private final ImmutableMap<String, NodeContextSupplier> byMethod;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStreamClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClass;
     private final ImmutableMap<AugmentationIdentifier, Type> possibleAugmentations;
     private final MethodHandle proxyConstructor;
+    private final Method[] propertyMethods;
 
     private final ConcurrentMap<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> byYangAugmented =
             new ConcurrentHashMap<>();
@@ -85,19 +86,19 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         final Map<Class<?>, Method> clsToMethod = BindingReflections.getChildrenClassToMethod(getBindingClass());
 
         final Map<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYangBuilder = new HashMap<>();
-        final SortedMap<Method, NodeContextSupplier> byMethodBuilder = new TreeMap<>(METHOD_BY_ALPHABET);
+        final Map<Method, NodeContextSupplier> tmpMethodToSupplier = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byStreamClassBuilder = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClassBuilder = new HashMap<>();
 
         // Adds leaves to mapping
         for (final LeafNodeCodecContext<?> leaf : leafChild.values()) {
-            byMethodBuilder.put(leaf.getGetter(), leaf);
+            tmpMethodToSupplier.put(leaf.getGetter(), leaf);
             byYangBuilder.put(leaf.getDomPathArgument(), leaf);
         }
 
         for (final Entry<Class<?>, Method> childDataObj : clsToMethod.entrySet()) {
             final DataContainerCodecPrototype<?> childProto = loadChildPrototype(childDataObj.getKey());
-            byMethodBuilder.put(childDataObj.getValue(), childProto);
+            tmpMethodToSupplier.put(childDataObj.getValue(), childProto);
             byStreamClassBuilder.put(childProto.getBindingClass(), childProto);
             byYangBuilder.put(childProto.getYangArg(), childProto);
             if (childProto.isChoice()) {
@@ -107,7 +108,22 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
                 }
             }
         }
-        this.byMethod = ImmutableSortedMap.copyOfSorted(byMethodBuilder);
+
+        final int methodCount = tmpMethodToSupplier.size();
+        final Builder<String, NodeContextSupplier> byMethodBuilder = ImmutableMap.builderWithExpectedSize(methodCount);
+        this.propertyMethods = methodCount == 0 ? EMPTY_METHODS : new Method[methodCount];
+
+        int offset = 0;
+        for (Entry<Method, NodeContextSupplier> entry : tmpMethodToSupplier.entrySet()) {
+            final Method method = entry.getKey();
+            propertyMethods[offset++] = method;
+            byMethodBuilder.put(method.getName(), entry.getValue());
+        }
+
+        // Make sure properties are alpha-sorted
+        Arrays.sort(propertyMethods, METHOD_BY_ALPHABET);
+
+        this.byMethod = byMethodBuilder.build();
         this.byYang = ImmutableMap.copyOf(byYangBuilder);
         this.byStreamClass = ImmutableMap.copyOf(byStreamClassBuilder);
         byBindingArgClassBuilder.putAll(byStreamClass);
@@ -342,8 +358,9 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     }
 
     @SuppressWarnings("rawtypes")
-    Object getBindingChildValue(final Method method, final NormalizedNodeContainer domData) {
-        final NodeCodecContext<?> childContext = byMethod.get(method).get();
+    @Nullable Object getBindingChildValue(final String method, final NormalizedNodeContainer domData) {
+        final NodeCodecContext<?> childContext = verifyNotNull(byMethod.get(method),
+            "Cannot find data handler for method %s", method).get();
         @SuppressWarnings("unchecked")
         final java.util.Optional<NormalizedNode<?, ?>> domChild = domData.getChild(childContext.getDomPathArgument());
         if (domChild.isPresent()) {
@@ -391,8 +408,8 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         return map;
     }
 
-    Collection<Method> getHashCodeAndEqualsMethods() {
-        return byMethod.keySet();
+    final Method[] propertyMethods() {
+        return propertyMethods;
     }
 
     @Override
