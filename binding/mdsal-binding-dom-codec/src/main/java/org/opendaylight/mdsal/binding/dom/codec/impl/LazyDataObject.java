@@ -15,12 +15,14 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CON
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableMap;
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -64,7 +66,7 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         switch (method.getParameterCount()) {
             case 0:
                 switch (method.getName()) {
@@ -95,18 +97,19 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
         throw new UnsupportedOperationException("Unsupported method " + method);
     }
 
-    private boolean bindingEquals(final Object other) {
-        if (other == null) {
+    private boolean bindingEquals(final Object obj) throws Throwable {
+        if (obj == null) {
             return false;
         }
         final Class<D> bindingClass = context.getBindingClass();
-        if (!bindingClass.isAssignableFrom(other.getClass())) {
+        if (!bindingClass.isAssignableFrom(obj.getClass())) {
             return false;
         }
+        final D other = bindingClass.cast(obj);
         try {
-            for (final Method m : context.getHashCodeAndEqualsMethods()) {
-                final Object thisValue = getBindingData(m);
-                final Object otherValue = m.invoke(other);
+            for (final Entry<String, MethodHandle> entry : context.getHashCodeAndEqualsMethods().entrySet()) {
+                final Object thisValue = getBindingData(entry.getKey());
+                final Object otherValue = entry.getValue().invoke(other);
                 /*
                  *   added for valid byte array comparison, when list key type is binary
                  *   deepEquals is not used since it does excessive amount of instanceof calls.
@@ -150,8 +153,8 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
 
         final int prime = 31;
         int result = 1;
-        for (final Method m : context.getHashCodeAndEqualsMethods()) {
-            final Object value = getBindingData(m);
+        for (final String methodName : context.getHashCodeAndEqualsMethods().keySet()) {
+            final Object value = getBindingData(methodName);
             result = prime * result + Objects.hashCode(value);
         }
         if (Augmentable.class.isAssignableFrom(context.getBindingClass())) {
@@ -170,19 +173,18 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
         }
 
         final Object readValue = method.isDefault() ? context.nonnullBindingChildValue(methodName, data)
-                : context.getBindingChildValue(method, data);
+                : context.getBindingChildValue(methodName, data);
         return populateCache(methodName, readValue);
     }
 
     // Internal invocation, can only target getFoo() methods
-    private Object getBindingData(final Method method) {
-        final String methodName = method.getName();
+    private Object getBindingData(final String methodName) {
         final Object cached = cachedData.get(methodName);
         if (cached != null) {
             return unmaskNull(cached);
         }
 
-        final Object readValue = context.getBindingChildValue(method, data);
+        final Object readValue = context.getBindingChildValue(methodName, data);
         return populateCache(methodName, readValue);
     }
 
@@ -250,8 +252,8 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
         final Class<D> bindingClass = context.getBindingClass();
         final ToStringHelper helper = MoreObjects.toStringHelper(bindingClass).omitNullValues();
 
-        for (final Method m : context.getHashCodeAndEqualsMethods()) {
-            helper.add(m.getName(), getBindingData(m));
+        for (final String methodName : context.getHashCodeAndEqualsMethods().keySet()) {
+            helper.add(methodName, getBindingData(methodName));
         }
         if (Augmentable.class.isAssignableFrom(bindingClass)) {
             helper.add("augmentations", getAugmentationsImpl());

@@ -19,12 +19,11 @@ import com.google.common.collect.ImmutableSortedMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,11 +69,12 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     private static final Logger LOG = LoggerFactory.getLogger(DataObjectCodecContext.class);
     private static final MethodType CONSTRUCTOR_TYPE = MethodType.methodType(void.class, InvocationHandler.class);
     private static final MethodType DATAOBJECT_TYPE = MethodType.methodType(DataObject.class, InvocationHandler.class);
-    private static final Comparator<Method> METHOD_BY_ALPHABET = Comparator.comparing(Method::getName);
+    private static final MethodType OBJECT_TYPE = MethodType.methodType(Object.class, DataObject.class);
 
     private final ImmutableMap<String, LeafNodeCodecContext<?>> leafChild;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
-    private final ImmutableSortedMap<Method, NodeContextSupplier> byMethod;
+    private final ImmutableMap<String, NodeContextSupplier> byMethod;
+    private final ImmutableSortedMap<String, MethodHandle> hashCodeEqualsMethods;
     private final ImmutableMap<String, NodeContextSupplier> nonnullMethods;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStreamClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClass;
@@ -96,13 +96,13 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         final Map<Class<?>, Method> clsToMethod = BindingReflections.getChildrenClassToMethod(bindingClass);
 
         final Map<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYangBuilder = new HashMap<>();
-        final SortedMap<Method, NodeContextSupplier> byMethodBuilder = new TreeMap<>(METHOD_BY_ALPHABET);
+        final Map<Method, NodeContextSupplier> methodToSupplier = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byStreamClassBuilder = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClassBuilder = new HashMap<>();
 
         // Adds leaves to mapping
         for (final LeafNodeCodecContext<?> leaf : leafChild.values()) {
-            byMethodBuilder.put(leaf.getGetter(), leaf);
+            methodToSupplier.put(leaf.getGetter(), leaf);
             byYangBuilder.put(leaf.getDomPathArgument(), leaf);
         }
 
@@ -110,7 +110,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
             final Method method = childDataObj.getValue();
             verify(!method.isDefault(), "Unexpected default method %s in %s", method, bindingClass);
             final DataContainerCodecPrototype<?> childProto = loadChildPrototype(childDataObj.getKey());
-            byMethodBuilder.put(method, childProto);
+            methodToSupplier.put(method, childProto);
             byStreamClassBuilder.put(childProto.getBindingClass(), childProto);
             byYangBuilder.put(childProto.getYangArg(), childProto);
             if (childProto.isChoice()) {
@@ -120,7 +120,25 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
                 }
             }
         }
-        this.byMethod = ImmutableSortedMap.copyOfSorted(byMethodBuilder);
+
+        final Builder<String, NodeContextSupplier> byMethodBuilder = ImmutableMap.builderWithExpectedSize(
+            methodToSupplier.size());
+        final SortedMap<String, MethodHandle> hashCodeEqualsMethodsBuilder = new TreeMap<>();
+        final Lookup lookup = MethodHandles.publicLookup();
+        for (Entry<Method, NodeContextSupplier> entry : methodToSupplier.entrySet()) {
+            final Method method = entry.getKey();
+            final String methodName = method.getName();
+            byMethodBuilder.put(methodName, entry.getValue());
+
+            try {
+                hashCodeEqualsMethodsBuilder.put(methodName, lookup.unreflect(method).asType(OBJECT_TYPE));
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException("Failed to unreflect " + method, e);
+            }
+        }
+        this.byMethod = byMethodBuilder.build();
+        this.hashCodeEqualsMethods = ImmutableSortedMap.copyOfSorted(hashCodeEqualsMethodsBuilder);
+
         this.byYang = ImmutableMap.copyOf(byYangBuilder);
         this.byStreamClass = ImmutableMap.copyOf(byStreamClassBuilder);
         byBindingArgClassBuilder.putAll(byStreamClass);
@@ -412,7 +430,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         return DataContainerCodecPrototype.from(augClass, augSchema.getKey(), augSchema.getValue(), factory());
     }
 
-    Object getBindingChildValue(final Method method, final NormalizedNodeContainer<?, ?, ?> domData) {
+    Object getBindingChildValue(final String method, final NormalizedNodeContainer<?, ?, ?> domData) {
         return getBindingChildValue(byMethod, method, domData, NodeCodecContext::defaultObject);
     }
 
@@ -471,8 +489,8 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         return map;
     }
 
-    Collection<Method> getHashCodeAndEqualsMethods() {
-        return byMethod.keySet();
+    ImmutableSortedMap<String, MethodHandle> getHashCodeAndEqualsMethods() {
+        return hashCodeEqualsMethods;
     }
 
     @Override
