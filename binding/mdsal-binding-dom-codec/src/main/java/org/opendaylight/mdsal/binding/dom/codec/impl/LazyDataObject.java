@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME;
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_GET_IMPLEMENTED_INTERFACE_NAME;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Optional;
@@ -22,7 +25,6 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.opendaylight.mdsal.binding.dom.codec.util.AugmentationReader;
-import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -36,7 +38,6 @@ import org.slf4j.LoggerFactory;
 class LazyDataObject<D extends DataObject> implements InvocationHandler, AugmentationReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(LazyDataObject.class);
-    private static final String GET_IMPLEMENTED_INTERFACE = "getImplementedInterface";
     private static final String TO_STRING = "toString";
     private static final String EQUALS = "equals";
     private static final String HASHCODE = "hashCode";
@@ -60,10 +61,10 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) {
         if (method.getParameterTypes().length == 0) {
             final String name = method.getName();
-            if (GET_IMPLEMENTED_INTERFACE.equals(name)) {
+            if (DATA_CONTAINER_GET_IMPLEMENTED_INTERFACE_NAME.equals(name)) {
                 return context.getBindingClass();
             } else if (TO_STRING.equals(name)) {
                 return bindingToString();
@@ -73,7 +74,7 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
                 return getAugmentationsImpl();
             }
             return getBindingData(method);
-        } else if (BindingMapping.AUGMENTABLE_AUGMENTATION_NAME.equals(method.getName())) {
+        } else if (AUGMENTABLE_AUGMENTATION_NAME.equals(method.getName())) {
             return getAugmentationImpl((Class<?>) args[0]);
         } else if (EQUALS.equals(method.getName())) {
             return bindingEquals(args[0]);

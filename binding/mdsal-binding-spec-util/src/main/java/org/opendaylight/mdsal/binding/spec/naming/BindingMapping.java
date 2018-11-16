@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
+import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
@@ -72,6 +73,11 @@ public final class BindingMapping {
      * Name of {@link Identifiable#key()}.
      */
     public static final String IDENTIFIABLE_KEY_NAME = "key";
+
+    /**
+     * Name of {@link DataContainer#getImplementedInterface()}.
+     */
+    public static final String DATA_CONTAINER_GET_IMPLEMENTED_INTERFACE_NAME = "getImplementedInterface";
 
     public static final String RPC_INPUT_SUFFIX = "Input";
     public static final String RPC_OUTPUT_SUFFIX = "Output";
