@@ -45,6 +45,8 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     private static final String AUGMENTATIONS = "augmentations";
     private static final Object NULL_VALUE = new Object();
 
+    // Method.getName() is guaranteed to be interned and all getter methods have zero arguments, name is sufficient to
+    // identify the data, skipping Method.hashCode() computation.
     private final ConcurrentHashMap<String, Object> cachedData = new ConcurrentHashMap<>();
     private final NormalizedNodeContainer<?, PathArgument, NormalizedNode<?, ?>> data;
     private final DataObjectCodecContext<D,?> context;
@@ -75,7 +77,7 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
                     case AUGMENTATIONS:
                         return getAugmentationsImpl();
                     default:
-                        return getBindingData(method);
+                        return invokeAccessorMethod(method);
                 }
             case 1:
                 switch (method.getName()) {
@@ -107,9 +109,9 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
                 final Object thisValue = getBindingData(m);
                 final Object otherValue = m.invoke(other);
                 /*
-                *   added for valid byte array comparison, when list key type is binary
-                *   deepEquals is not used since it does excessive amount of instanceof calls.
-                */
+                 *   added for valid byte array comparison, when list key type is binary
+                 *   deepEquals is not used since it does excessive amount of instanceof calls.
+                 */
                 if (thisValue instanceof byte[] && otherValue instanceof byte[]) {
                     if (!Arrays.equals((byte[]) thisValue, (byte[]) otherValue)) {
                         return false;
@@ -160,23 +162,44 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
         return result;
     }
 
-    private Object getBindingData(final Method method) {
-        // Guaranteed to be interned and since method has zero arguments, name is sufficient to identify the data,
-        // skipping Method.hashCode() computation.
+    // Invocation from user, needs to deal with nonnullFoo() methods
+    private Object invokeAccessorMethod(final Method method) {
         final String methodName = method.getName();
-        Object cached = cachedData.get(methodName);
-        if (cached == null) {
-            final Object readedValue = context.getBindingChildValue(method, data);
-            cached = readedValue == null ? NULL_VALUE : readedValue;
-
-            final Object raced = cachedData.putIfAbsent(methodName, cached);
-            if (raced != null) {
-                // Load/store raced, we should return the stored value
-                cached = raced;
-            }
+        final Object cached = cachedData.get(methodName);
+        if (cached != null) {
+            return unmaskNull(cached);
         }
 
-        return cached == NULL_VALUE ? null : cached;
+        final Object readValue = method.isDefault() ? context.nonnullBindingChildValue(methodName, data)
+                : context.getBindingChildValue(method, data);
+        return populateCache(methodName, readValue);
+    }
+
+    // Internal invocation, can only target getFoo() methods
+    private Object getBindingData(final Method method) {
+        final String methodName = method.getName();
+        final Object cached = cachedData.get(methodName);
+        if (cached != null) {
+            return unmaskNull(cached);
+        }
+
+        final Object readValue = context.getBindingChildValue(method, data);
+        return populateCache(methodName, readValue);
+    }
+
+    private static Object unmaskNull(final Object masked) {
+        return masked == NULL_VALUE ? null : masked;
+    }
+
+    private Object populateCache(final String methodName, final Object value) {
+        final Object masked = value == null ? NULL_VALUE : value;
+        final Object raced = cachedData.putIfAbsent(methodName, masked);
+        if (raced == null) {
+            return value;
+        }
+
+        // Load/store raced, we should return the stored value
+        return unmaskNull(raced);
     }
 
     private Map<Class<? extends Augmentation<?>>, Augmentation<?>> getAugmentationsImpl() {

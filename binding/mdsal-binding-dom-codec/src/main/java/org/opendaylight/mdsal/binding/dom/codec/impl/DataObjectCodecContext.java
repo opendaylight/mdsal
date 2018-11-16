@@ -75,7 +75,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     private final ImmutableMap<String, LeafNodeCodecContext<?>> leafChild;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
     private final ImmutableSortedMap<Method, NodeContextSupplier> byMethod;
-    private final ImmutableMap<Method, NodeContextSupplier> nonnullMethods;
+    private final ImmutableMap<String, NodeContextSupplier> nonnullMethods;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStreamClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClass;
     private final ImmutableMap<AugmentationIdentifier, Type> possibleAugmentations;
@@ -127,7 +127,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         this.byBindingArgClass = ImmutableMap.copyOf(byBindingArgClassBuilder);
 
         final Map<Class<?>, Method> clsToNonnull = BindingReflections.getChildrenClassToNonnullMethod(bindingClass);
-        final Map<Method, NodeContextSupplier> nonnullMethodsBuilder = new HashMap<>();
+        final Map<String, NodeContextSupplier> nonnullMethodsBuilder = new HashMap<>();
         for (final Entry<Class<?>, Method> entry : clsToNonnull.entrySet()) {
             final Method method = entry.getValue();
             if (!method.isDefault()) {
@@ -136,7 +136,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
             }
             final DataContainerCodecPrototype<?> supplier = byStreamClass.get(entry.getKey());
             if (supplier != null) {
-                nonnullMethodsBuilder.put(method, supplier);
+                nonnullMethodsBuilder.put(method.getName(), supplier);
             } else {
                 LOG.warn("Failed to look up data handler for method {}", method);
             }
@@ -412,13 +412,16 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         return DataContainerCodecPrototype.from(augClass, augSchema.getKey(), augSchema.getValue(), factory());
     }
 
+    Object nonnullBindingChildValue(final String method, final NormalizedNodeContainer<?, ?, ?> domData) {
+        return getBindingChildValue(nonnullMethods, method, domData, dummy -> ImmutableList.of());
+    }
+
     Object getBindingChildValue(final Method method, final NormalizedNodeContainer<?, ?, ?> domData) {
-        return method.isDefault() ? getBindingChildValue(nonnullMethods, method, domData, dummy -> ImmutableList.of())
-                : getBindingChildValue(byMethod, method, domData, NodeCodecContext::defaultObject);
+        return getBindingChildValue(byMethod, method, domData, NodeCodecContext::defaultObject);
     }
 
     @SuppressWarnings("rawtypes")
-    private static Object getBindingChildValue(final ImmutableMap<Method, NodeContextSupplier> map, final Method method,
+    private static <T> Object getBindingChildValue(final ImmutableMap<T, NodeContextSupplier> map, final T method,
             final NormalizedNodeContainer domData, final Function<NodeCodecContext<?>, Object> getDefaultObject) {
         final NodeCodecContext<?> childContext = verifyNotNull(map.get(method),
             "Cannot find data handler for method %s", method).get();
