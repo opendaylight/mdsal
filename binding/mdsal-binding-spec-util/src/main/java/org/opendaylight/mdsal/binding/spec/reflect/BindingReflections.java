@@ -136,7 +136,7 @@ public final class BindingReflections {
                 // resolveRpcInputClass() check.While RpcMethodInvoker counts with one argument for
                 // non input type and two arguments for input type, resolveRpcInputClass() counting
                 // with zero for non input and one for input type
-                && possibleMethod.getParameterTypes().length <= 2;
+                && possibleMethod.getParameterCount() <= 2;
     }
 
     /**
@@ -297,7 +297,7 @@ public final class BindingReflections {
      */
     public static boolean isNotificationCallback(final Method method) {
         checkArgument(method != null);
-        if (method.getName().startsWith("on") && method.getParameterTypes().length == 1) {
+        if (method.getName().startsWith("on") && method.getParameterCount() == 1) {
             Class<?> potentialNotification = method.getParameterTypes()[0];
             if (isNotification(potentialNotification)
                     && method.getName().equals("on" + potentialNotification.getSimpleName())) {
@@ -424,7 +424,7 @@ public final class BindingReflections {
     @SuppressWarnings({ "unchecked", "rawtypes", "checkstyle:illegalCatch" })
     private static Optional<Class<? extends DataContainer>> getYangModeledReturnType(final Method method) {
         if ("getClass".equals(method.getName()) || !method.getName().startsWith("get")
-                || method.getParameterTypes().length > 0) {
+                || method.getParameterCount() > 0) {
             return Optional.absent();
         }
 
