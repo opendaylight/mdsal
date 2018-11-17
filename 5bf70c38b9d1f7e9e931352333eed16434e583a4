@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "36b17dc8_0583a134",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/mdsal-18.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-11-17T15:59:03Z",
+      "side": 1,
+      "message": "I\u0027m not clear on the purpose of this yang and how it relates to the presence of @Nullable.",
+      "revId": "5bf70c38b9d1f7e9e931352333eed16434e583a4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
