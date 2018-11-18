@@ -13,9 +13,11 @@ import com.google.common.base.CharMatcher
 import com.google.common.base.MoreObjects
 import com.google.common.base.Splitter
 import com.google.common.collect.Iterables
+import java.util.Arrays
 import java.util.Collection
 import java.util.List
 import java.util.Map.Entry
+import java.util.Objects
 import java.util.StringTokenizer
 import java.util.regex.Pattern
 import org.opendaylight.mdsal.binding.model.api.ConcreteType
@@ -476,4 +478,23 @@ abstract class BaseTemplate extends JavaFileTemplate {
            «ENDIF»
        «ENDFOR»
     '''
+
+    def protected hashCodeResult(Collection<GeneratedProperty> properties) '''
+        final int prime = 31;
+        int result = 0;
+        «FOR property : properties»
+            result = prime * result + «property.propertyHashCode»
+        «ENDFOR»
+    '''
+
+    def protected final propertyHashCode(GeneratedProperty property) '''
+        «property.utilClass».hashCode(«property.fieldName»);
+    '''
+
+    def protected final utilClass(GeneratedProperty property) {
+        if (property.returnType.name.contains("[")) {
+            return Arrays.importedName
+        }
+        return Objects.importedName
+    }
 }
