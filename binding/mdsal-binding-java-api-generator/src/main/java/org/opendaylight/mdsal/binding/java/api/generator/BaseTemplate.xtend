@@ -476,4 +476,16 @@ abstract class BaseTemplate extends JavaFileTemplate {
            «ENDIF»
        «ENDFOR»
     '''
+
+    def protected hashCodeResult(Collection<GeneratedProperty> properties) '''
+        final int prime = 31;
+        int result = 0;
+        «FOR property : properties»
+            result = prime * result + «property.propertyHashCode»
+        «ENDFOR»
+    '''
+
+    def protected final propertyHashCode(GeneratedProperty property) '''
+        «property.importedUtilClass».hashCode(«property.fieldName»);
+    '''
 }
