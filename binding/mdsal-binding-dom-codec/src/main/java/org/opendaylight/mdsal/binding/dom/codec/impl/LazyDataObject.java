@@ -141,9 +141,9 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     }
 
     private Integer bindingHashCode() {
-        final Integer ret = cachedHashcode;
-        if (ret != null) {
-            return ret;
+        final Integer cached = cachedHashcode;
+        if (cached != null) {
+            return cached;
         }
 
         final int prime = 31;
@@ -155,8 +155,9 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
         if (Augmentable.class.isAssignableFrom(context.getBindingClass())) {
             result = prime * result + getAugmentationsImpl().hashCode();
         }
-        cachedHashcode = result;
-        return result;
+        final Integer ret = result;
+        cachedHashcode = ret;
+        return ret;
     }
 
     private Object getBindingData(final Method method) {
