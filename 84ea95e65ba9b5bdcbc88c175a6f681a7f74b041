@@ -22,6 +22,30 @@
       "revId": "84ea95e65ba9b5bdcbc88c175a6f681a7f74b041",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fdf81935_e054a8b6",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShard.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-11-21T00:49:01Z",
+      "side": 1,
+      "message": "It\u0027s for concurrency, since we could call this \u0027closeProducer()\u0027 or producer\u0027s \u0027close()\u0027concurrently, but the \u0027close()\u0027 also called \u0027closeProducer()\u0027 internally, then what if two or more threads do this processes ...",
+      "parentUuid": "439820aa_eb4849f1",
+      "range": {
+        "startLine": 180,
+        "startChar": 8,
+        "endLine": 180,
+        "endChar": 29
+      },
+      "revId": "84ea95e65ba9b5bdcbc88c175a6f681a7f74b041",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
