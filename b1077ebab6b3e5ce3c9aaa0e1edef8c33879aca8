@@ -46,6 +46,30 @@
       "revId": "b1077ebab6b3e5ce3c9aaa0e1edef8c33879aca8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b5f7228e_8c20e266",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/IdentifiableItemCodec.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-22T14:53:40Z",
+      "side": 1,
+      "message": "1) happy to abandon this in favour of https://git.opendaylight.org/gerrit/#/c/78053/\n\n3) Huh?  keyValueContexts is an ImmutableMap.copyOf(keys) from line 59, and ImmutableMap.size() does not have a noteworthy cost?",
+      "parentUuid": "f71e8f67_0fea2694",
+      "range": {
+        "startLine": 117,
+        "startChar": 62,
+        "endLine": 117,
+        "endChar": 85
+      },
+      "revId": "b1077ebab6b3e5ce3c9aaa0e1edef8c33879aca8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
