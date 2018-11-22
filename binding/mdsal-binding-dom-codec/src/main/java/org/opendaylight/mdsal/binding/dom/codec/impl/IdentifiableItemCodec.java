@@ -114,7 +114,7 @@ final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPredicates,
     public NodeIdentifierWithPredicates serialize(final IdentifiableItem<?, ?> input) {
         final Object value = input.getKey();
 
-        final Map<QName, Object> values = new LinkedHashMap<>();
+        final Map<QName, Object> values = new LinkedHashMap<>(keyValueContexts.size());
         for (final Entry<QName, ValueContext> valueCtx : keyValueContexts.entrySet()) {
             values.put(valueCtx.getKey(), valueCtx.getValue().getAndSerialize(value));
         }
