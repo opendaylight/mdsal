@@ -11,6 +11,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -126,11 +127,11 @@ public final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPred
     public NodeIdentifierWithPredicates serialize(final IdentifiableItem<?, ?> input) {
         final Object value = input.getKey();
 
-        final Map<QName, Object> values = new LinkedHashMap<>();
+        final Builder<QName, Object> mapBuilder = ImmutableMap.builderWithExpectedSize(keyValueContexts.size());
         for (final Entry<QName, ValueContext> valueCtx : keyValueContexts.entrySet()) {
-            values.put(valueCtx.getKey(), valueCtx.getValue().getAndSerialize(value));
+            mapBuilder.put(valueCtx.getKey(), valueCtx.getValue().getAndSerialize(value));
         }
-        return new NodeIdentifierWithPredicates(schema.getQName(), values);
+        return new NodeIdentifierWithPredicates(schema.getQName(), mapBuilder.build());
     }
 
     @SuppressWarnings("unchecked")
