@@ -11,6 +11,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -68,11 +69,12 @@ public final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPred
         /*
          * We need to re-index to make sure we instantiate nodes in the order in which they are defined.
          */
-        final Map<QName, ValueContext> keys = new LinkedHashMap<>();
-        for (final QName qname : schema.getKeyDefinition()) {
-            keys.put(qname, keyValueContexts.get(qname));
+        final List<QName> qnames = schema.getKeyDefinition();
+        final Builder<QName, ValueContext> mapBuilder = ImmutableMap.builderWithExpectedSize(qnames.size());
+        for (final QName qname : qnames) {
+            mapBuilder.put(qname, keyValueContexts.get(qname));
         }
-        this.keyValueContexts = ImmutableMap.copyOf(keys);
+        this.keyValueContexts = mapBuilder.build();
 
         /*
          * When instantiating binding objects we need to specify constructor arguments in alphabetic order. We
@@ -86,7 +88,7 @@ public final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPred
          *
          * BUG-2755: remove this if order is made declaration-order-dependent
          */
-        final List<QName> unsortedKeys = schema.getKeyDefinition();
+        final List<QName> unsortedKeys = qnames;
         final List<QName> sortedKeys;
         if (unsortedKeys.size() > 1) {
             final List<QName> tmp = new ArrayList<>(unsortedKeys);
