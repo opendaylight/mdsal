@@ -70,6 +70,30 @@
       "revId": "b1077ebab6b3e5ce3c9aaa0e1edef8c33879aca8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ad75c4b6_f4cc2b4f",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/IdentifiableItemCodec.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-22T15:51:35Z",
+      "side": 1,
+      "message": "ad 1) are you sure it is actually an improvement in terms of CPU usage? This is a hot path, CPU usage is quite critical.\n\n3) no, look at HashMap and what it does with expectedSize.",
+      "parentUuid": "b5f7228e_8c20e266",
+      "range": {
+        "startLine": 117,
+        "startChar": 62,
+        "endLine": 117,
+        "endChar": 85
+      },
+      "revId": "b1077ebab6b3e5ce3c9aaa0e1edef8c33879aca8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
