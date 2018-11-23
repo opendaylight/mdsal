@@ -11,6 +11,6 @@ package org.opendaylight.yangtools.yang.binding;
  * Marker interface for YANG-defined notifications.
  */
 public interface Notification extends DataContainer {
-
+    @Override
+    Class<? extends Notification> implementedInterface();
 }
-
