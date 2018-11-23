@@ -18,18 +18,26 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
 
     private final List<Parameter> params;
     private final boolean isAbstract;
+    private final boolean isDefault;
 
     MethodSignatureImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
             final String comment, final AccessModifier accessModifier, final Type returnType,
-            final List<Parameter> params, final boolean isFinal, final boolean isAbstract, final boolean isStatic) {
+            final List<Parameter> params, final boolean isFinal, final boolean isAbstract, final boolean isStatic,
+            final boolean isDefault) {
         super(definingType, name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
         this.params = params;
         this.isAbstract = isAbstract;
+        this.isDefault = isDefault;
     }
 
     @Override
     public boolean isAbstract() {
         return this.isAbstract;
+    }
+
+    @Override
+    public boolean isDefault() {
+        return isDefault;
     }
 
     @Override
