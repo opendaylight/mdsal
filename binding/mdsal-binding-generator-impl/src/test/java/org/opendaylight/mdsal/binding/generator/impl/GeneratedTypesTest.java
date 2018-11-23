@@ -60,8 +60,8 @@ public class GeneratedTypesTest {
         }
         assertNotNull(simpleContainer);
         assertNotNull(nestedContainer);
-        assertEquals(3, simpleContainer.getMethodDefinitions().size());
-        assertEquals(2, nestedContainer.getMethodDefinitions().size());
+        assertEquals(4, simpleContainer.getMethodDefinitions().size());
+        assertEquals(3, nestedContainer.getMethodDefinitions().size());
 
         int getFooMethodCounter = 0;
         int getBarMethodCounter = 0;
@@ -144,8 +144,8 @@ public class GeneratedTypesTest {
         }
         assertNotNull(simpleContainer);
         assertNotNull(nestedContainer);
-        assertEquals(3, simpleContainer.getMethodDefinitions().size());
-        assertEquals(2, nestedContainer.getMethodDefinitions().size());
+        assertEquals(4, simpleContainer.getMethodDefinitions().size());
+        assertEquals(3, nestedContainer.getMethodDefinitions().size());
 
         int getFooMethodCounter = 0;
         int getBarMethodCounter = 0;
@@ -155,6 +155,9 @@ public class GeneratedTypesTest {
         String getBarMethodReturnTypeName = "";
         String getNestedContainerReturnTypeName = "";
         for (final MethodSignature method : simpleContainer.getMethodDefinitions()) {
+            if (method.isDefault()) {
+                continue;
+            }
             if (method.getName().equals("getFoo")) {
                 getFooMethodCounter++;
                 getFooMethodReturnTypeName = method.getReturnType().getName();
@@ -307,8 +310,8 @@ public class GeneratedTypesTest {
             }
         }
 
-        assertEquals(2, listParentContainerMethodsCount);
-        assertEquals(1, listChildContainerMethodsCount);
+        assertEquals(3, listParentContainerMethodsCount);
+        assertEquals(2, listChildContainerMethodsCount);
         assertEquals(1, getSimpleListKeyMethodCount);
         assertEquals(1, listKeyClassCount);
 
@@ -333,7 +336,7 @@ public class GeneratedTypesTest {
         assertEquals(0, setSimpleLeafListMethodCount);
         assertEquals(1, getBarMethodCount);
 
-        assertEquals(6, simpleListMethodsCount);
+        assertEquals(7, simpleListMethodsCount);
     }
 
     @Test
