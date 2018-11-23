@@ -33,5 +33,6 @@ package org.opendaylight.yangtools.yang.binding;
  * @author Robert Varga
  */
 public interface ChoiceIn<P> extends DataContainer {
-
+    @Override
+    Class<? extends ChoiceIn<P>> implementedInterface();
 }
