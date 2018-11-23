@@ -13,6 +13,6 @@ package org.opendaylight.yangtools.yang.binding;
  * @author Tony Tkacik
  */
 public interface DataObject extends DataContainer {
-
-
+    @Override
+    Class<? extends DataObject> implementedInterface();
 }
