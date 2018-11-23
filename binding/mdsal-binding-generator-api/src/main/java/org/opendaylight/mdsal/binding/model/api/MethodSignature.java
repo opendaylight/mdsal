@@ -22,22 +22,29 @@ import java.util.List;
  * Method Signature.
  */
 public interface MethodSignature extends TypeMember {
-
     /**
      * Returns <code>true</code> if the method signature is defined as abstract. <br>
-     * By default in java all method declarations in interface are defined as
-     * abstract, but the user don't need necessary to declare abstract keyword
-     * in front of each method. <br>
-     * The abstract methods are allowed in Class definitions but only when the
-     * class is declared as abstract.
+     * By default in java all method declarations in interface are defined as abstract, but the user does not need
+     * necessarily to declare abstract keyword in front of each method. <br>
+     * The abstract methods are allowed in Class definitions but only when the class is declared as abstract.
      *
      * @return <code>true</code> if the method signature is defined as abstract.
      */
     boolean isAbstract();
 
     /**
-     * Returns the List of parameters that method declare. If the method does
-     * not contain any parameters, the method will return empty List.
+     * Returns {@code true} if this method is a {@code interface default} method.
+     *
+     * @return <code>true</code> if the method signature is defined as default.
+     */
+    // FIXME: 4.0.0: make this method non-default
+    default boolean isDefault() {
+        return false;
+    }
+
+    /**
+     * Returns the List of parameters that method declare. If the method does not contain any parameters, the method
+     * will return empty List.
      *
      * @return the List of parameters that method declare.
      */
