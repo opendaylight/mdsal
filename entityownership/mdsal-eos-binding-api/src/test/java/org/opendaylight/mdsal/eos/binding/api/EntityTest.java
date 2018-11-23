@@ -13,7 +13,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
-import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -73,15 +72,27 @@ public class EntityTest {
 
     static class TestDataObject1 implements DataObject {
         @Override
-        public Class<? extends DataContainer> getImplementedInterface() {
-            return null;
+        @Deprecated
+        public Class<? extends DataObject> getImplementedInterface() {
+            return DataObject.class;
+        }
+
+        @Override
+        public Class<? extends DataObject> implementedInterface() {
+            return DataObject.class;
         }
     }
 
     static class TestDataObject2 implements DataObject {
         @Override
-        public Class<? extends DataContainer> getImplementedInterface() {
-            return null;
+        @Deprecated
+        public Class<? extends DataObject> getImplementedInterface() {
+            return DataObject.class;
+        }
+
+        @Override
+        public Class<? extends DataObject> implementedInterface() {
+            return DataObject.class;
         }
     }
 }
