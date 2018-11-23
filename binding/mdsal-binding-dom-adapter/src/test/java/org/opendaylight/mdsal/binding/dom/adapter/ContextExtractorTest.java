@@ -31,7 +31,13 @@ public final class ContextExtractorTest {
     private static final Transitive TEST_GROUPING = new Transitive() {
 
         @Override
+        @Deprecated
         public Class<? extends DataContainer> getImplementedInterface() {
+            return Transitive.class;
+        }
+
+        @Override
+        public Class<? extends Transitive> implementedInterface() {
             return Transitive.class;
         }
 

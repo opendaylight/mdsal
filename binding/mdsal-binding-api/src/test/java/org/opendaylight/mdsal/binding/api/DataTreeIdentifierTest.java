@@ -59,15 +59,27 @@ public class DataTreeIdentifierTest {
 
     private static class TestDataObject1 implements DataObject {
         @Override
+        @Deprecated
         public Class<? extends DataContainer> getImplementedInterface() {
-            return null;
+            return DataObject.class;
+        }
+
+        @Override
+        public Class<? extends DataObject> implementedInterface() {
+            return DataObject.class;
         }
     }
 
     private static class TestDataObject2 implements DataObject {
         @Override
+        @Deprecated
         public Class<? extends DataContainer> getImplementedInterface() {
-            return null;
+            return DataObject.class;
+        }
+
+        @Override
+        public Class<? extends DataObject> implementedInterface() {
+            return DataObject.class;
         }
     }
 }
