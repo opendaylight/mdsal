@@ -40,11 +40,6 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
 
             «generateCopyConstructor(builderType, type)»
 
-            @«Override.importedName»
-            public «Class.importedName»<«targetType.importedName»> getImplementedInterface() {
-                return «targetType.importedName».class;
-            }
-
             «generateGetters(true)»
 
             «generateHashCode()»

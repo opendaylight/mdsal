@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
+import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_GET_IMPLEMENTED_INTERFACE_NAME
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.getGetterMethodForNonnull
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isGetterMethodName
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isNonnullMethodName
@@ -185,7 +186,18 @@ class InterfaceTemplate extends BaseTemplate {
 
     def private generateDefaultMethod(MethodSignature method) {
         if (method.name.isNonnullMethodName) {
-            return generateNonnullMethod(method)
+            generateNonnullMethod(method)
+        } else {
+            switch method.name {
+                case DATA_CONTAINER_GET_IMPLEMENTED_INTERFACE_NAME : '''
+                    «method.annotations.generateAnnotations»
+                    @«Override.importedName»
+                    default «method.returnType.importedName» «method.name»() {
+                        return «type.name».class;
+                    }
+                '''
+                default : ""
+            }
         }
     }
 

@@ -181,9 +181,11 @@ public final class BuilderGenerator implements CodeGenerator {
         }
         final Set<GeneratedProperty> result = new LinkedHashSet<>();
         for (MethodSignature m : methods) {
-            final GeneratedProperty createdField = propertyFromGetter(m);
-            if (createdField != null) {
-                result.add(createdField);
+            if (!m.isDefault()) {
+                final GeneratedProperty createdField = propertyFromGetter(m);
+                if (createdField != null) {
+                    result.add(createdField);
+                }
             }
         }
         return result;
