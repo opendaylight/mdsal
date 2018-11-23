@@ -26,18 +26,27 @@ import org.opendaylight.mdsal.binding.model.api.Type;
  */
 public interface MethodSignatureBuilder extends TypeMemberBuilder<MethodSignatureBuilder> {
     /**
-     * Sets the flag for declaration of method as abstract or non abstract. If
-     * the flag <code>isAbstract == true</code> The instantiated Method
-     * Signature MUST have return value for {@link MethodSignature#isAbstract()}
-     * also equals to <code>true</code>.
+     * Sets the flag for declaration of method as abstract or non abstract. If the flag {@code isAbstract == true}
+     * the instantiated Method Signature MUST have return value for {@link MethodSignature#isAbstract()} also equals to
+     * <code>true</code>.
      *
      * @param isAbstract is abstract flag
      */
     MethodSignatureBuilder setAbstract(boolean isAbstract);
 
     /**
-     * Adds Parameter into the List of method parameters. Neither the Name or
-     * Type of parameter can be <code>null</code>.
+     * Sets the flag indicating whether this is a {@code default interface} method.
+     *
+     * @param isDefault true if this signature is to represent a default method.
+     * @return this builder
+     */
+    // FIXME: 4.0.0: make this method non-default
+    default MethodSignatureBuilder setDefault(final boolean isDefault) {
+        throw new UnsupportedOperationException(getClass() + " does not override setDefault");
+    }
+
+    /**
+     * Adds Parameter into the List of method parameters. Neither the Name or Type of parameter can be {@code null}.
      *
      * <br>
      * In case that any of parameters are defined as <code>null</code> the
@@ -50,11 +59,9 @@ public interface MethodSignatureBuilder extends TypeMemberBuilder<MethodSignatur
 
     /**
      * Returns <code>new</code> <i>immutable</i> instance of Method Signature. <br>
-     * The <code>definingType</code> param cannot be <code>null</code>. The
-     * every method in Java MUST be declared and defined inside the scope of
-     * <code>class</code> or <code>interface</code> definition. In case that
-     * defining Type will be passed as <code>null</code> reference the method
-     * SHOULD thrown {@link IllegalArgumentException}.
+     * The <code>definingType</code> param cannot be <code>null</code>. Every method in Java MUST be declared and
+     * defined inside the scope of <code>class</code> or <code>interface</code> definition. In case that defining Type
+     * will be passed as <code>null</code> reference the method SHOULD thrown {@link IllegalArgumentException}.
      *
      * @param definingType Defining Type of Method Signature
      * @return <code>new</code> <i>immutable</i> instance of Method Signature.

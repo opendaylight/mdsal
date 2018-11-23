@@ -1684,7 +1684,7 @@ abstract class AbstractTypeGenerator {
             final ListSchemaNode node) {
         final MethodSignatureBuilder getMethod = interfaceBuilder.addMethod(
             BindingMapping.getNonnullMethodName(node.getQName().getLocalName()));
-        getMethod.setReturnType(returnType);
+        getMethod.setReturnType(returnType).setDefault(true);
         annotateDeprecatedIfNecessary(node.getStatus(), getMethod);
     }
 
