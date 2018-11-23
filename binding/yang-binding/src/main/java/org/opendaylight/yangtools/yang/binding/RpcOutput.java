@@ -7,6 +7,8 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+import static com.google.common.base.Verify.verifyNotNull;
+
 import com.google.common.annotations.Beta;
 
 /**
@@ -17,5 +19,10 @@ import com.google.common.annotations.Beta;
  */
 @Beta
 public interface RpcOutput extends DataObject {
-
+    // FIXME: 4.0.0: MDSAL-395: make this default non-default
+    @Override
+    @SuppressWarnings({ "unchecked", "deprecation" })
+    default Class<? extends RpcOutput> implementedInterface() {
+        return (Class<? extends RpcOutput>) verifyNotNull(getImplementedInterface());
+    }
 }
