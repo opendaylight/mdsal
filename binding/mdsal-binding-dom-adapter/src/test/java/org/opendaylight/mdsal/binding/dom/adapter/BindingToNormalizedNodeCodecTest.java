@@ -59,9 +59,10 @@ public class BindingToNormalizedNodeCodecTest {
 
         final DataObject value = fromNormalizedNode.getValue();
         assertNotNull(value);
-        assertEquals("Cont", value.getImplementedInterface().getSimpleName());
+        final Class<? extends DataObject> iface = value.implementedInterface();
+        assertEquals("Cont", iface.getSimpleName());
         final Object[] objs = {};
-        final Object invoked = value.getImplementedInterface().getDeclaredMethods()[0].invoke(value, objs);
+        final Object invoked = iface.getDeclaredMethod("getVlanId").invoke(value, objs);
         final Field declaredField = invoked.getClass().getDeclaredField("_id");
         declaredField.setAccessible(true);
         final Object id = declaredField.get(invoked);
@@ -89,10 +90,11 @@ public class BindingToNormalizedNodeCodecTest {
         final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
         final DataObject value = fromNormalizedNode.getValue();
         assertNotNull(value);
-        assertEquals("Cont", value.getImplementedInterface().getSimpleName());
+        final Class<? extends DataObject> iface = value.implementedInterface();
+        assertEquals("Cont", iface.getSimpleName());
         final Object[] objs = {};
         try {
-            value.getImplementedInterface().getDeclaredMethods()[0].invoke(value, objs);
+            iface.getDeclaredMethod("getVlanId").invoke(value, objs);
             fail();
         } catch (final InvocationTargetException e) {
             final Throwable cause = e.getCause();
