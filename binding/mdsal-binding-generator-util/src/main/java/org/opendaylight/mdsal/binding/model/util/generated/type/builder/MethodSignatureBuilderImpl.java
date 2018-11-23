@@ -22,6 +22,7 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
     private List<MethodSignature.Parameter> parameters = Collections.emptyList();
     private List<MethodSignature.Parameter> unmodifiableParams = Collections.emptyList();
     private boolean isAbstract;
+    private boolean isDefault;
 
     MethodSignatureBuilderImpl(final String name) {
         super(name);
@@ -30,6 +31,12 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
     @Override
     public MethodSignatureBuilder setAbstract(final boolean newIsAbstract) {
         this.isAbstract = newIsAbstract;
+        return this;
+    }
+
+    @Override
+    public MethodSignatureBuilder setDefault(final boolean newIsDefault) {
+        this.isDefault = newIsDefault;
         return this;
     }
 
@@ -49,7 +56,7 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
     public MethodSignature toInstance(final Type definingType) {
         final List<AnnotationType> annotations = toAnnotationTypes();
         return new MethodSignatureImpl(definingType, getName(), annotations, getComment(), getAccessModifier(),
-                getReturnType(), this.unmodifiableParams, isFinal(), this.isAbstract, isStatic());
+                getReturnType(), this.unmodifiableParams, isFinal(), this.isAbstract, isStatic(), isDefault);
     }
 
     @Override
