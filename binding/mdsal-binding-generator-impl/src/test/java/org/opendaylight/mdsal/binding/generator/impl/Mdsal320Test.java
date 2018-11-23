@@ -8,10 +8,11 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.collect.Iterables;
+import java.util.Iterator;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
@@ -58,7 +59,15 @@ public class Mdsal320Test {
         assertNotNull(bar1);
         assertTrue(bar1.isUnionType());
 
-        final MethodSignature getBar = Iterables.getOnlyElement(foo.getMethodDefinitions());
+        final Iterator<MethodSignature> it = foo.getMethodDefinitions().iterator();
+        assertTrue(it.hasNext());
+        final MethodSignature getImplIface = it.next();
+        assertEquals("implementedInterface", getImplIface.getName());
+        assertTrue(getImplIface.isDefault());
+        assertTrue(it.hasNext());
+
+        final MethodSignature getBar = it.next();
+        assertFalse(it.hasNext());
         final Type getBarType = getBar.getReturnType();
         assertTrue(getBarType instanceof GeneratedTransferObject);
         final GeneratedTransferObject getBarTO = (GeneratedTransferObject) getBarType;
