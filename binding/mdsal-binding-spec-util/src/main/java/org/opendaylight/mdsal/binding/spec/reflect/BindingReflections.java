@@ -98,7 +98,7 @@ public final class BindingReflections {
 
     /**
      * Find data hierarchy parent from concrete Data class. This method is shorthand which gets DataObject class by
-     * invoking {@link DataObject#getImplementedInterface()} and uses {@link #findHierarchicalParent(Class)}.
+     * invoking {@link DataObject#implementedInterface()} and uses {@link #findHierarchicalParent(Class)}.
      *
      * @param child
      *            Child object for which the parent needs to be located.
@@ -106,7 +106,7 @@ public final class BindingReflections {
      */
     public static Class<?> findHierarchicalParent(final DataObject child) {
         if (child instanceof ChildOf) {
-            return ClassLoaderUtils.findFirstGenericArgument(child.getImplementedInterface(), ChildOf.class);
+            return ClassLoaderUtils.findFirstGenericArgument(child.implementedInterface(), ChildOf.class);
         }
         return null;
     }

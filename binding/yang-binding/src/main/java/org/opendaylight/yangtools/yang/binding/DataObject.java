@@ -7,12 +7,18 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+import static com.google.common.base.Verify.verifyNotNull;
+
 /**
  * Data container is an interface which has structured contents.
  *
  * @author Tony Tkacik
  */
 public interface DataObject extends DataContainer {
-
-
+    // FIXME: 4.0.0: MDSAL-395: make this default non-default
+    @Override
+    @SuppressWarnings({ "unchecked", "deprecation" })
+    default Class<? extends DataObject> implementedInterface() {
+        return (Class<? extends DataObject>) verifyNotNull(getImplementedInterface());
+    }
 }
