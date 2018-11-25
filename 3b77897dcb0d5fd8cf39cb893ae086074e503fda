@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "11fb8029_b0595541",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/IdentifiableItemCodec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-25T16:34:36Z",
+      "side": 1,
+      "message": "ImmutableMap.Builder not suited for temporary maps, as it spends some time to make the map lookup-efficient.",
+      "range": {
+        "startLine": 118,
+        "startChar": 50,
+        "endLine": 118,
+        "endChar": 62
+      },
+      "revId": "3b77897dcb0d5fd8cf39cb893ae086074e503fda",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
