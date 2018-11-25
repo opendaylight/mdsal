@@ -43,11 +43,9 @@ import org.opendaylight.yangtools.yang.binding.DataObjectSerializer;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -319,8 +317,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
     }
 
     @Override
-    public Codec<NodeIdentifierWithPredicates, IdentifiableItem<?, ?>> getPathArgumentCodec(final Class<?> listClz,
-            final ListSchemaNode schema) {
+    public IdentifiableItemCodec getPathArgumentCodec(final Class<?> listClz, final ListSchemaNode schema) {
         final Class<? extends Identifier<?>> identifier = ClassLoaderUtils.findFirstGenericArgument(listClz,
                 Identifiable.class);
         final Map<QName, ValueContext> valueCtx = new HashMap<>();
@@ -328,7 +325,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
             final QName name = leaf.getDomPathArgument().getNodeType();
             valueCtx.put(name, new ValueContext(identifier, leaf));
         }
-        return new IdentifiableItemCodec(schema, identifier, listClz, valueCtx);
+        return IdentifiableItemCodec.of(schema, identifier, listClz, valueCtx);
     }
 
     @SuppressWarnings("unchecked")
