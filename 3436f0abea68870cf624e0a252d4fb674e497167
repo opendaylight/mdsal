@@ -46,6 +46,30 @@
       "revId": "3436f0abea68870cf624e0a252d4fb674e497167",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "652153dc_173297f2",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/IdentifiableItemCodec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-26T10:12:39Z",
+      "side": 1,
+      "message": "ImmutableMap does not allow duplicate puts, whereas LinkedHashMap does -- that is a difference that is not noted anywhere.\n\nIt does not show up in MDSAL-387, that is a different codepath.",
+      "parentUuid": "f8507f8a_889fa84c",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 51
+      },
+      "revId": "3436f0abea68870cf624e0a252d4fb674e497167",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
