@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.function.Function;
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -52,6 +53,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     }
 
     @Override
+    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
     public <R> R applyWithNewTransactionChainAndClose(final Function<ManagedTransactionChain, R> chainConsumer) {
         try (TransactionChain realTxChain = getTransactionFactory().createTransactionChain(
             new TransactionChainListener() {
