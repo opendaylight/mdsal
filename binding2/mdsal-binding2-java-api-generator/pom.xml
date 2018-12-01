@@ -149,4 +149,17 @@
 
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <!-- FIXME: org.opendaylight.mdsal.binding.javav2.java.api.generator.txt is not found -->
+            <id>javadoc-java11-disable</id>
+            <activation>
+                <jdk>[11,)</jdk>
+            </activation>
+            <properties>
+                <maven.javadoc.skip>true</maven.javadoc.skip>
+            </properties>
+        </profile>
+    </profiles>
 </project>
