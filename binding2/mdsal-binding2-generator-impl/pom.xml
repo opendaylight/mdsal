@@ -70,6 +70,10 @@
                             org.opendaylight.mdsal.binding2.generator.impl,
                             ;-split-package:=error
                         </Export-Package>
+                        <Import-Package>
+                            !javax.annotation,
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
