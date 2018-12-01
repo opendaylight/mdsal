@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.generator.util;
 
 import com.google.common.io.Files;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -95,6 +96,7 @@ public class DefaultSourceCodeGenerator implements SourceCodeGenerator {
     }
 
     @Override
+    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
     public void outputGeneratedSource(final CtClass ctClass) {
         String name = ctClass.getName();
 
