@@ -48,21 +48,21 @@ public class DOMDataTreeChangeListenerTest {
     @Test
     public void receiveOnDataInitialEventForEmptyRoot() throws InterruptedException, ExecutionException {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
-        doNothing().when(listener).onInitialData();
+        doNothing().when(listener).onEmptyInitialData();
 
         domStore.registerTreeChangeListener(YangInstanceIdentifier.EMPTY, listener);
-        verify(listener, timeout(1000)).onInitialData();
+        verify(listener, timeout(1000)).onEmptyInitialData();
     }
 
     @Test
     public void receiveOnDataInitialEventForNonExistingData() throws InterruptedException, ExecutionException {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
         final ArgumentCaptor<Collection> candidateCapture = ArgumentCaptor.forClass(Collection.class);
-        doNothing().when(listener).onInitialData();
+        doNothing().when(listener).onEmptyInitialData();
         doNothing().when(listener).onDataTreeChanged(any());
 
         domStore.registerTreeChangeListener(TestModel.TEST_PATH, listener);
-        verify(listener, times(1)).onInitialData();
+        verify(listener, times(1)).onEmptyInitialData();
 
         final NormalizedNode<?, ?> testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();

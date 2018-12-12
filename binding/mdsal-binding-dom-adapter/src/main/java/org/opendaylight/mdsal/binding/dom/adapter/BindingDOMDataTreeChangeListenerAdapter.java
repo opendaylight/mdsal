@@ -42,7 +42,7 @@ class BindingDOMDataTreeChangeListenerAdapter<T extends DataObject> implements D
     }
 
     @Override
-    public void onInitialData() {
-        listener.onInitialData();
+    public void onEmptyInitialData() {
+        listener.onEmptyInitialData();
     }
 }

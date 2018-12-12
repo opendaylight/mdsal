@@ -28,6 +28,9 @@ public interface DataTreeChangeListener<T extends DataObject> extends EventListe
      * path. This initial event will contain all pre-existing data as created.
      *
      * <p>
+     * Note: If there is no pre-existing data, the method {@link #onEmptyInitialData} will be invoked.
+     *
+     * <p>
      * A data change event may be triggered spuriously, e.g. such that data before
      * and after compare as equal. Implementations of this interface are expected
      * to recover from such events. Event producers are expected to exert reasonable
@@ -48,9 +51,10 @@ public interface DataTreeChangeListener<T extends DataObject> extends EventListe
      * would always be invoked for data changes.
      *
      * <p>
-     * Users not care about this event could leave it as default with no-op.
+     * Default implementation does not nothing and is appropriate for users who do not care about ascertaining
+     * initial state.
      */
-    default void onInitialData() {
+    default void onEmptyInitialData() {
         //no-op
     }
 }
