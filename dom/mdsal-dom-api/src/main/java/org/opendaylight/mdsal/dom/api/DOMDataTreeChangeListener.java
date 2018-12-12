@@ -25,6 +25,9 @@ public interface DOMDataTreeChangeListener extends EventListener {
      * in the conceptual data tree for supplied path. This initial event will contain all pre-existing data as created.
      *
      * <p>
+     * Note: If there is no pre-existing data, the method {@link #onInitialData} will be invoked.
+     *
+     * <p>
      * A data change event may be triggered spuriously, e.g. such that data before and after compare as equal.
      * Implementations of this interface are expected to recover from such events. Event producers are expected to exert
      * reasonable effort to suppress such events. In other words, it is completely acceptable to observe
@@ -43,7 +46,8 @@ public interface DOMDataTreeChangeListener extends EventListener {
      * would always be invoked for data changes.
      *
      * <p>
-     * Users not care about this event could leave it as default with no-op.
+     * Default implementation does nothing and is appropriate for users who do not care about ascertaining
+     * initial stat.
      */
     default void onInitialData() {
         //no-op
