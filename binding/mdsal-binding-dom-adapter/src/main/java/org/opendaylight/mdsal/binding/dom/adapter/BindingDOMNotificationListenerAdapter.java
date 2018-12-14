@@ -28,7 +28,7 @@ class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
 
     private final BindingNormalizedNodeSerializer codec;
     private final NotificationListener delegate;
-    private final Map<SchemaPath,NotificationListenerInvoker> invokers;
+    private final ImmutableMap<SchemaPath, NotificationListenerInvoker> invokers;
 
     BindingDOMNotificationListenerAdapter(final BindingNormalizedNodeSerializer codec,
             final NotificationListener delegate) {
@@ -59,7 +59,7 @@ class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
         return invokers.keySet();
     }
 
-    public static Map<SchemaPath, NotificationListenerInvoker> createInvokerMapFor(
+    private static ImmutableMap<SchemaPath, NotificationListenerInvoker> createInvokerMapFor(
             final Class<? extends NotificationListener> implClz) {
         final Map<SchemaPath, NotificationListenerInvoker> builder = new HashMap<>();
         for (final TypeToken<?> ifaceToken : TypeToken.of(implClz).getTypes().interfaces()) {

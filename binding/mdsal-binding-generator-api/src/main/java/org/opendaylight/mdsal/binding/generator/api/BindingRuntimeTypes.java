@@ -31,10 +31,10 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 @ThreadSafe
 public final class BindingRuntimeTypes implements Immutable {
 
-    private final Map<Type, AugmentationSchemaNode> typeToAugmentation;
-    private final BiMap<Type, WithStatus> typeToSchema;
-    private final Multimap<Type, Type> choiceToCases;
-    private final Map<QName, Type> identities;
+    private final ImmutableMap<Type, AugmentationSchemaNode> typeToAugmentation;
+    private final ImmutableBiMap<Type, WithStatus> typeToSchema;
+    private final ImmutableMultimap<Type, Type> choiceToCases;
+    private final ImmutableMap<QName, Type> identities;
 
     public BindingRuntimeTypes(final Map<Type, AugmentationSchemaNode> typeToAugmentation,
             final BiMap<Type, WithStatus> typeToDefiningSchema, final Multimap<Type, Type> choiceToCases,

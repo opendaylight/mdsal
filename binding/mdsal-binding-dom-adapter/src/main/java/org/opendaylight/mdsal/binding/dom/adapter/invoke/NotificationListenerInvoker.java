@@ -21,7 +21,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -48,7 +47,8 @@ public final class NotificationListenerInvoker {
                     return new NotificationListenerInvoker(createInvokerMap(key));
                 }
 
-                private Map<QName, MethodHandle> createInvokerMap(final Class<? extends NotificationListener> key) {
+                private ImmutableMap<QName, MethodHandle> createInvokerMap(
+                        final Class<? extends NotificationListener> key) {
                     final Builder<QName, MethodHandle> ret = ImmutableMap.builder();
                     for (final Method method : key.getMethods()) {
                         if (BindingReflections.isNotificationCallback(method)) {
@@ -70,9 +70,9 @@ public final class NotificationListenerInvoker {
                 }
             });
 
-    private final Map<QName, MethodHandle> methodInvokers;
+    private final ImmutableMap<QName, MethodHandle> methodInvokers;
 
-    NotificationListenerInvoker(final Map<QName, MethodHandle> map) {
+    NotificationListenerInvoker(final ImmutableMap<QName, MethodHandle> map) {
         this.methodInvokers = map;
     }
 
