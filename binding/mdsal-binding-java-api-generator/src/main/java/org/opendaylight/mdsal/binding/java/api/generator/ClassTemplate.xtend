@@ -434,16 +434,17 @@ class ClassTemplate extends BaseTemplate {
     def protected constantsDeclarations() '''
         «IF !consts.empty»
             «FOR c : consts»
-                «IF c.name == TypeConstants.PATTERN_CONSTANT_NAME»
+                «IF c.name.startsWith(TypeConstants.PATTERN_CONSTANT_NAME)»
+                    «val String fieldSuffix = c.getName.substring(TypeConstants.PATTERN_CONSTANT_NAME.length)»
                     «val cValue = c.value as Map<String, String>»
-                    public static final «List.importedName»<String> «TypeConstants.PATTERN_CONSTANT_NAME» = «ImmutableList.importedName».of(«
+                    public static final «List.importedName»<String> «c.name» = «ImmutableList.importedName».of(«
                     FOR v : cValue.keySet SEPARATOR ", "»"«v.escapeJava»"«ENDFOR»);
                     «IF cValue.size == 1»
-                        private static final «Pattern.importedName» «Constants.MEMBER_PATTERN_LIST» = «Pattern.importedName».compile(«TypeConstants.PATTERN_CONSTANT_NAME».get(0));
-                        private static final String «Constants.MEMBER_REGEX_LIST» = "«cValue.values.get(0).escapeJava»";
+                        private static final «Pattern.importedName» «Constants.MEMBER_PATTERN_LIST»«fieldSuffix» = «Pattern.importedName».compile(«c.name».get(0));
+                        private static final String «Constants.MEMBER_REGEX_LIST»«fieldSuffix» = "«cValue.values.get(0).escapeJava»";
                     «ELSE»
-                        private static final «Pattern.importedName»[] «Constants.MEMBER_PATTERN_LIST» = «CodeHelpers.importedName».compilePatterns(«TypeConstants.PATTERN_CONSTANT_NAME»);
-                        private static final String[] «Constants.MEMBER_REGEX_LIST» = { «
+                        private static final «Pattern.importedName»[] «Constants.MEMBER_PATTERN_LIST»«fieldSuffix» = «CodeHelpers.importedName».compilePatterns(«c.name»);
+                        private static final String[] «Constants.MEMBER_REGEX_LIST»«fieldSuffix» = { «
                         FOR v : cValue.values SEPARATOR ", "»"«v.escapeJava»"«ENDFOR» };
                     «ENDIF»
                 «ELSE»
