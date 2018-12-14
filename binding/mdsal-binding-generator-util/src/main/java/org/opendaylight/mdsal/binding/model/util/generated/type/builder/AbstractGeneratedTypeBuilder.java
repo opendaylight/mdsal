@@ -147,7 +147,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         checkArgument(type != null, "Returning Type for Constant cannot be null!");
         checkArgument(name != null, "Name of constant cannot be null!");
         checkArgument(!containsConstant(name),
-            "This generated type already contains constant with the same name.");
+            "This generated type already contains a \"%s\" constant", name);
 
         final Constant constant = new ConstantImpl(this, type, name, value);
         this.constants = LazyCollections.lazyAdd(this.constants, constant);
