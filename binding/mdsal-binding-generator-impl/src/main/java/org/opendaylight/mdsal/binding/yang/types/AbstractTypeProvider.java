@@ -8,6 +8,8 @@
 package org.opendaylight.mdsal.binding.yang.types;
 
 import static java.util.Objects.requireNonNull;
+import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
+import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
@@ -15,8 +17,10 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
+import com.google.common.collect.Table;
 import com.google.common.io.BaseEncoding;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -28,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
@@ -39,6 +44,7 @@ import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
@@ -92,6 +98,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractTypeProvider implements TypeProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTypeProvider.class);
     private static final Pattern GROUPS_PATTERN = Pattern.compile("\\[(.*?)\\]");
+    private static final ParameterizedType LIST_STRING_TYPE = listTypeFor(STRING);
 
     // Backwards compatibility: Union types used to be instantiated in YANG namespace, which is no longer
     // the case, as unions are emitted to their correct schema path.
@@ -905,16 +912,41 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         addCodegenInformation(unionGenTOBuilder, typedef);
         generatedTOBuilders.add(unionGenTOBuilder);
 
-        // Pattern string is the key, XSD regex is the value. The reason for this choice is that the pattern carries
-        // also negation information and hence guarantees uniqueness.
-        final Map<String, String> expressions = new HashMap<>();
+        // In order to handle multiple derivations from the same type, like:
+        //
+        // union foo {
+        //     type string {
+        //         pattern "[a-z]+";
+        //     }
+        //     type string {
+        //         pattern "[0-9]+";
+        //     }
+        // }
+        //
+        // we maintain a table, where the row key is member name ("string"), the column key is the Pattern string
+        // and the value is the XSD regex. Since Pattern also negation information and hence guarantees uniqueness
+        // in the table.
+        //
+        // FIXME: Unfortunately this is not a perfect solution, because each type needs to be treated separately when
+        //        pattern negations are in play: a failure to match first member will cause the second member's patterns
+        //        not to be traversed.
+        //        In order to fix that case, though, we need to track multiple groups of regular expressions, e.g.
+        //        "PATTERN_CONSTANTS_string$0" and "PATTERN_CONSTANTS_string$0" and codegen needs to understand to
+        //        traverse these in order.
+        final Table<String, String, String> memberExpressions = HashBasedTable.create();
         for (TypeDefinition<?> unionType : unionTypes) {
             final String unionTypeName = unionType.getQName().getLocalName();
 
             // If we have a base type we should follow the type definition backwards, except for identityrefs, as those
             // do not follow type encapsulation -- we use the general case for that.
             if (unionType.getBaseType() != null  && !(unionType instanceof IdentityrefTypeDefinition)) {
-                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, expressions, parentNode);
+                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, parentNode);
+                if (unionType instanceof StringTypeDefinition) {
+                    final Map<String, String> expressions = resolveRegExpressionsFromTypedef(unionType);
+                    if (!expressions.isEmpty()) {
+                        memberExpressions.row(unionTypeName).putAll(expressions);
+                    }
+                }
             } else if (unionType instanceof UnionTypeDefinition) {
                 generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder,
                     (UnionTypeDefinition) unionType, parentNode));
@@ -927,11 +959,29 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 updateUnionTypeAsProperty(unionGenTOBuilder, javaType, unionTypeName);
             }
         }
-        addStringRegExAsConstant(unionGenTOBuilder, expressions);
+
+        for (Entry<String, Map<String, String>> entry : memberExpressions.rowMap().entrySet()) {
+            addPatternConstant(unionGenTOBuilder, entry.getKey(), entry.getValue());
+        }
 
         storeGenTO(typedef, unionGenTOBuilder, parentNode);
 
         return generatedTOBuilders;
+    }
+
+    public final void addPatternConstant(final GeneratedTypeBuilder typeBuilder, final String leafName,
+            final List<PatternConstraint> patternConstraints) {
+        if (!patternConstraints.isEmpty()) {
+            addPatternConstant(typeBuilder, leafName, resolveRegExpressions(patternConstraints));
+        }
+    }
+
+    private static void addPatternConstant(final GeneratedTypeBuilderBase<?> typeBuilder, final String leafName,
+            final Map<String, String> expressions) {
+        if (!expressions.isEmpty()) {
+            typeBuilder.addConstant(LIST_STRING_TYPE, TypeConstants.PATTERN_CONSTANT_NAME + "_"
+                    + BindingMapping.getPropertyName(leafName), expressions);
+        }
     }
 
     /**
@@ -977,7 +1027,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      * @param parentNode parent Schema Node for Extended Subtype
      */
     private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
-            final TypeDefinition<?> unionSubtype, final Map<String, String> expressions, final SchemaNode parentNode) {
+            final TypeDefinition<?> unionSubtype, final SchemaNode parentNode) {
         final String unionTypeName = unionSubtype.getQName().getLocalName();
         final Type genTO = findGenTO(unionTypeName, unionSubtype);
         if (genTO != null) {
@@ -1006,9 +1056,6 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType,
                     javaType.getName() + parentUnionGenTOBuilder.getName() + "Value");
             }
-        }
-        if (baseType instanceof StringTypeDefinition) {
-            expressions.putAll(resolveRegExpressionsFromTypedef(unionSubtype));
         }
     }
 
