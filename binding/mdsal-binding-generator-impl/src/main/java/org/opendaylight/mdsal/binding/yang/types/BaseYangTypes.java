@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.yang.types;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -26,20 +25,14 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
 public final class BaseYangTypes {
     /**
-     * mapping of basic built-in YANG types (keys) to JAVA {@link org.opendaylight.mdsal.binding.model.api.Type Type}.
-     * This map is filled with mapping data in static initialization block.
-     */
-    private static final Map<String, Type> TYPE_MAP;
-
-    /**
      * <code>Type</code> representation of <code>boolean</code> YANG type.
      */
-    public static final Type BOOLEAN_TYPE = Types.typeForClass(Boolean.class);
+    public static final Type BOOLEAN_TYPE = Types.BOOLEAN;
 
     /**
      * <code>Type</code> representation of <code>empty</code> YANG type.
      */
-    public static final Type EMPTY_TYPE = Types.typeForClass(Boolean.class);
+    public static final Type EMPTY_TYPE = BOOLEAN_TYPE;
 
     public static final Type ENUM_TYPE = Types.typeForClass(Enum.class);
 
@@ -66,7 +59,7 @@ public final class BaseYangTypes {
     /**
      * <code>Type</code> representation of <code>string</code> YANG type.
      */
-    public static final Type STRING_TYPE = Types.typeForClass(String.class);
+    public static final Type STRING_TYPE = Types.STRING;
 
     /**
      * <code>Type</code> representation of <code>decimal64</code> YANG type.
@@ -106,33 +99,33 @@ public final class BaseYangTypes {
             .typeForClass(InstanceIdentifier.class));
 
     /**
+     * mapping of basic built-in YANG types (keys) to JAVA {@link org.opendaylight.mdsal.binding.model.api.Type Type}.
+     * This map is filled with mapping data in static initialization block.
+     */
+    private static final Map<String, Type> TYPE_MAP = ImmutableMap.<String, Type>builder()
+            .put("boolean", BOOLEAN_TYPE)
+            .put("empty", EMPTY_TYPE)
+            .put("enumeration", ENUM_TYPE)
+            .put("int8", INT8_TYPE)
+            .put("int16", INT16_TYPE)
+            .put("int32", INT32_TYPE)
+            .put("int64", INT64_TYPE)
+            .put("string", STRING_TYPE)
+            .put("decimal64", DECIMAL64_TYPE)
+            .put("uint8", UINT8_TYPE)
+            .put("uint16", UINT16_TYPE)
+            .put("uint32", UINT32_TYPE)
+            .put("uint64", UINT64_TYPE)
+            .put("union", UNION_TYPE)
+            .put("binary", BINARY_TYPE)
+            .put("instance-identifier", INSTANCE_IDENTIFIER)
+            .build();
+
+    /**
      * It is undesirable to create instance of this class.
      */
     private BaseYangTypes() {
         throw new UnsupportedOperationException();
-    }
-
-    static {
-        final Builder<String, Type> b = ImmutableMap.<String, Type>builder();
-
-        b.put("boolean", BOOLEAN_TYPE);
-        b.put("empty", EMPTY_TYPE);
-        b.put("enumeration", ENUM_TYPE);
-        b.put("int8", INT8_TYPE);
-        b.put("int16", INT16_TYPE);
-        b.put("int32", INT32_TYPE);
-        b.put("int64", INT64_TYPE);
-        b.put("string", STRING_TYPE);
-        b.put("decimal64", DECIMAL64_TYPE);
-        b.put("uint8", UINT8_TYPE);
-        b.put("uint16", UINT16_TYPE);
-        b.put("uint32", UINT32_TYPE);
-        b.put("uint64", UINT64_TYPE);
-        b.put("union", UNION_TYPE);
-        b.put("binary", BINARY_TYPE);
-        b.put("instance-identifier", INSTANCE_IDENTIFIER);
-
-        TYPE_MAP = b.build();
     }
 
     /**
