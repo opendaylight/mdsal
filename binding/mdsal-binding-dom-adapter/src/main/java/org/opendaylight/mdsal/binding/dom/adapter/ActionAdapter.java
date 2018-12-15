@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
+import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 import static org.opendaylight.yangtools.yang.common.YangConstants.operationInputQName;
 
 import com.google.common.util.concurrent.FluentFuture;
@@ -68,7 +69,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                         getCodec().toLazyNormalizedNodeActionInput(type, inputName, input));
 
                     // Invocation returned a future we know about -- return that future instead
-                    if (future instanceof BindingRpcFutureAware) {
+                    if (ENABLE_CODEC_SHORTCUT && future instanceof BindingRpcFutureAware) {
                         return ((BindingRpcFutureAware) future).getBindingFuture();
                     }
 
