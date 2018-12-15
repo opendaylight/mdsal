@@ -7,7 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.FluentFuture;
@@ -33,9 +35,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
+    private static final Cache<Class<?>, RpcServiceInvoker> SERVICE_INVOKERS = CacheBuilder.newBuilder().weakKeys()
+            .build();
 
-    private static final Cache<Class<?>, RpcServiceInvoker> SERVICE_INVOKERS
-            = CacheBuilder.newBuilder().weakKeys().build();
     // Default implementations are 0, we need to perform some translation, hence we have a slightly higher cost
     private static final int COST = 1;
 
@@ -59,8 +61,8 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
             throw new IllegalArgumentException("Failed to create invokers for type " + type, e);
         }
 
-        this.codec = Preconditions.checkNotNull(codec);
-        this.delegate = Preconditions.checkNotNull(delegate);
+        this.codec = requireNonNull(codec);
+        this.delegate = requireNonNull(delegate);
         inputQname = YangConstants.operationInputQName(BindingReflections.getQNameModule(type)).intern();
     }
 
@@ -78,7 +80,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
     }
 
     private DataObject deserialize(final SchemaPath rpcPath, final NormalizedNode<?, ?> input) {
-        if (input instanceof BindingDataAware) {
+        if (ENABLE_CODEC_SHORTCUT && input instanceof BindingDataAware) {
             return ((BindingDataAware) input).bindingData();
         }
         final SchemaPath inputSchemaPath = rpcPath.createChild(inputQname);
