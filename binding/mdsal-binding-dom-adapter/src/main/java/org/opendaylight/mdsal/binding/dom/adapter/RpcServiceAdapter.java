@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static java.util.Objects.requireNonNull;
+import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Futures;
@@ -47,9 +50,9 @@ class RpcServiceAdapter implements InvocationHandler {
 
     RpcServiceAdapter(final Class<? extends RpcService> type, final BindingToNormalizedNodeCodec codec,
             final DOMRpcService domService) {
-        this.type = Preconditions.checkNotNull(type);
-        this.codec = Preconditions.checkNotNull(codec);
-        this.delegate = Preconditions.checkNotNull(domService);
+        this.type = requireNonNull(type);
+        this.codec = requireNonNull(codec);
+        this.delegate = requireNonNull(domService);
         final ImmutableMap.Builder<Method, RpcInvocationStrategy> rpcBuilder = ImmutableMap.builder();
         for (final Entry<Method, RpcDefinition> rpc : codec.getRpcMethodToSchema(type).entrySet()) {
             rpcBuilder.put(rpc.getKey(), createStrategy(rpc.getKey(), rpc.getValue()));
@@ -133,7 +136,7 @@ class RpcServiceAdapter implements InvocationHandler {
 
         ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final ContainerNode input) {
             final ListenableFuture<DOMRpcResult> result = delegate.invokeRpc(schemaPath, input);
-            if (result instanceof BindingRpcFutureAware) {
+            if (ENABLE_CODEC_SHORTCUT && result instanceof BindingRpcFutureAware) {
                 return ((BindingRpcFutureAware) result).getBindingFuture();
             }
 
