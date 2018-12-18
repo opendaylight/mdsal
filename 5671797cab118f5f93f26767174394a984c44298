@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b22d9553_92f88468",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/StaticConfiguration.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-12-18T02:03:23Z",
+      "side": 1,
+      "message": "How could users define this property, copy the name from here ? or did ODL provide a central place(etc. global.ini)?",
+      "range": {
+        "startLine": 32,
+        "startChar": 8,
+        "endLine": 32,
+        "endChar": 73
+      },
+      "revId": "5671797cab118f5f93f26767174394a984c44298",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
