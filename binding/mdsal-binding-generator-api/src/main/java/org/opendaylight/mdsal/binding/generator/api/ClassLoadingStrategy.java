@@ -10,8 +10,9 @@ package org.opendaylight.mdsal.binding.generator.api;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
 public interface ClassLoadingStrategy {
-
-    Class<?> loadClass(Type type) throws ClassNotFoundException;
-
     Class<?> loadClass(String fullyQualifiedName) throws ClassNotFoundException;
+
+    default Class<?> loadClass(Type type) throws ClassNotFoundException {
+        return loadClass(type.getFullyQualifiedName());
+    }
 }
