@@ -28,21 +28,19 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode;
 
 public class GroupingDefinitionDependencySort {
     /**
-     * Sorts set <code>groupingDefinitions</code> according to the mutual dependencies.<br>
-     * Elements of <code>groupingDefinitions</code> are firstly transformed to {@link TopologicalSort.Node Node}
-     * interfaces and then are sorted by {@link TopologicalSort#sort(Set) sort()} method
-     * of <code>TopologicalSort</code>.<br>
+     * Sorts set {@code groupingDefinitions} according to the mutual dependencies.<br>
+     * Elements of {@code groupingDefinitions} are firstly transformed to {@link Node} interfaces and then are
+     * sorted by {@link TopologicalSort#sort(Set) sort()} method of {@code TopologicalSort}.<br>
      *
      * <i>Definition of dependency relation:<br>
-     * The first <code>GroupingDefinition</code> object (in this context)
-     * depends on second <code>GroupingDefinition</code> object if the first one
-     * contains in its set of <code>UsesNode</code> (obtained through
-     * {@link org.opendaylight.yangtools.yang.model.api.DataNodeContainer#getUses()
-     * getUses} method) reference to the second one.</i>
+     * The first {@code GroupingDefinition} object (in this context) depends on second {@code GroupingDefinition} object
+     * if the first one contains in its set of {@code UsesNode} (obtained through {@link DataNodeContainer#getUses()})
+     * a reference to the second one.
+     * </i>
      *
      * @param groupingDefinitions set of grouping definition which should be sorted according to mutual dependencies
-     * @return list of grouping definitiond which are sorted by mutual dependencies
-     * @throws IllegalArgumentException if <code>groupingDefinitions</code>
+     * @return list of grouping definitions which are sorted by mutual dependencies
+     * @throws IllegalArgumentException if {@code groupingDefinitions}
      *
      */
     public List<GroupingDefinition> sort(final Collection<GroupingDefinition> groupingDefinitions) {
@@ -132,5 +130,4 @@ public class GroupingDefinitionDependencySort {
         }
         return ret;
     }
-
 }
