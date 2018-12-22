@@ -23,6 +23,12 @@
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.odlparent</groupId>
+            <artifactId>odl-apache-commons-lang3</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.odlparent</groupId>
             <artifactId>odl-javassist-3</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
