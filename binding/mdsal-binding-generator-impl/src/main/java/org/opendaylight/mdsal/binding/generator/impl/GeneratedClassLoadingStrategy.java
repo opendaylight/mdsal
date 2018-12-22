@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 
 public abstract class GeneratedClassLoadingStrategy implements ClassLoadingStrategy {
@@ -21,11 +20,6 @@ public abstract class GeneratedClassLoadingStrategy implements ClassLoadingStrat
             throw new ClassNotFoundException(fullyQualifiedName);
         }
     };
-
-    @Override
-    public Class<?> loadClass(final Type type) throws ClassNotFoundException {
-        return loadClass(type.getFullyQualifiedName());
-    }
 
     @Override
     public abstract Class<?> loadClass(String fullyQualifiedName) throws ClassNotFoundException;
