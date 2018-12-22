@@ -102,21 +102,19 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     @SuppressWarnings("checkstyle:illegalCatch")
     @SuppressFBWarnings("REC_CATCH_EXCEPTION")
     private boolean resolveModuleInfo(final YangModuleInfo moduleInfo) {
+        final SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
+        final YangModuleInfo previous = sourceIdentifierToModuleInfo.putIfAbsent(identifier, moduleInfo);
+        if (previous != null) {
+            return false;
+        }
 
-        SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
-        YangModuleInfo previous = sourceIdentifierToModuleInfo.putIfAbsent(identifier, moduleInfo);
         ClassLoader moduleClassLoader = moduleInfo.getClass().getClassLoader();
         try {
-            if (previous == null) {
-                String modulePackageName = moduleInfo.getClass().getPackage().getName();
-                packageNameToClassLoader.putIfAbsent(modulePackageName,
-                        new WeakReference<>(moduleClassLoader));
-                ctxResolver.registerSource(toYangTextSource(identifier, moduleInfo));
-                for (YangModuleInfo importedInfo : moduleInfo.getImportedModules()) {
-                    resolveModuleInfo(importedInfo);
-                }
-            } else {
-                return false;
+            String modulePackageName = moduleInfo.getClass().getPackage().getName();
+            packageNameToClassLoader.putIfAbsent(modulePackageName, new WeakReference<>(moduleClassLoader));
+            ctxResolver.registerSource(toYangTextSource(identifier, moduleInfo));
+            for (YangModuleInfo importedInfo : moduleInfo.getImportedModules()) {
+                resolveModuleInfo(importedInfo);
             }
         } catch (Exception e) {
             LOG.error("Not including {} in YANG sources because of error.", moduleInfo, e);
