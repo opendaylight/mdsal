@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="odl-mdsal-dom-api">
+    <feature name="odl-mdsal-binding-dom-adapter">
+        <feature version="[4.0.5,5)">odl-lmax-3</feature>
+    </feature>
+</features>
