@@ -19,7 +19,7 @@
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>mdsal-artifacts</artifactId>
-    <version>3.0.3-SNAPSHOT</version>
+    <version>3.0.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <dependencyManagement>
@@ -28,14 +28,14 @@
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>features-mdsal</artifactId>
                 <classifier>features</classifier>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>features-mdsal-experimental</artifactId>
                 <classifier>features</classifier>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <type>xml</type>
             </dependency>
 
@@ -43,38 +43,38 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-common-api</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-common-util</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-api</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-spi</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-broker</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-schema-service-osgi</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
 
             <!-- Binding MD-SAL & Java Binding -->
@@ -123,44 +123,44 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-api</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-adapter</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-adapter</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-codec</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-codec-osgi</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-spi</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-util</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-test-utils</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <scope>test</scope>
             </dependency>
 
@@ -251,42 +251,42 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-common-api</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-common-spi</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-dom-api</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-dom-simple</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-binding-api</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-binding-adapter</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-singleton-common-api</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-singleton-dom-impl</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
             </dependency>
 
             <!-- Features -->
@@ -294,35 +294,35 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-base</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-runtime</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-api</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-dom-adapter</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -331,35 +331,35 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding2</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding2-base</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding2-runtime</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding2-api</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding2-dom-adapter</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -368,21 +368,21 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-dom</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-dom-api</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-dom-broker</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -391,7 +391,7 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-common</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -400,21 +400,21 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-eos-common</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-eos-dom</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-eos-binding</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -423,14 +423,14 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-singleton-common</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-singleton-dom</artifactId>
-                <version>3.0.3-SNAPSHOT</version>
+                <version>3.0.4-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>

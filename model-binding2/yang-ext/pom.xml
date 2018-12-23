@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>mdsal-model-binding2-parent</artifactId>
-        <version>3.0.3-SNAPSHOT</version>
+        <version>3.0.4-SNAPSHOT</version>
         <relativePath>../../binding2/mdsal-model-binding2-parent</relativePath>
     </parent>
 
