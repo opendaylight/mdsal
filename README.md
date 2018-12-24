@@ -1,6 +1,9 @@
-= MD-SAL
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.opendaylight.mdsal/mdsal-artifacts/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.opendaylight.mdsal/mdsal-artifacts)
+[![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://opensource.org/licenses/EPL-1.0)
 
-== Overview
+# MD-SAL
+
+## Overview
 
 The Model-Driven Service Adaptation Layer (MD-SAL) is message-bus inspired
 extensible middleware component that provides messaging and data storage
@@ -9,12 +12,12 @@ functionality based on data and interface models defined by application develope
 
 The MD-SAL:
 
- * Defines a *common-layer, concepts, data model building blocks and messaging
+* Defines a *common-layer, concepts, data model building blocks and messaging
    patterns* and provides infrastructure / framework for applications and
    inter-application communication.
 
 // FIXME: Common integration point / reword this better
- * Provide common support for user-defined transport and payload formats, including
+* Provide common support for user-defined transport and payload formats, including
    payload serialization and adaptation (e.g. binary, XML or JSON).
 
 The MD-SAL uses *YANG* as the modeling language for both interface and data
@@ -42,7 +45,7 @@ For example *RESTCONF Connector* is an application built on top of MD-SAL
 and exposes YANG-modeled application APIs transparently via HTTP and adds support
 for XML and JSON payload type.
 
-== Contributing
+## Contributing
 
 MD-SAL is part of http://opendaylight.org[OpenDaylight Project], where we
 use http://git.opendaylight.org[Gerrit] for incoming patch reviews.
