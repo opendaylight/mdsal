@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
@@ -89,7 +90,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         this.observer = new ScheduledThreadPoolExecutor(1, new ThreadFactoryBuilder()
                 .setDaemon(true).setNameFormat("DOMNotificationRouter-%d").build());
         disruptor = new Disruptor<>(DOMNotificationRouterEvent.FACTORY,
-                queueDepth, executor, ProducerType.MULTI, strategy);
+                queueDepth, ((ThreadPoolExecutor) executor).getThreadFactory(), ProducerType.MULTI, strategy);
         disruptor.handleEventsWith(DISPATCH_NOTIFICATIONS);
         disruptor.after(DISPATCH_NOTIFICATIONS).handleEventsWith(NOTIFY_FUTURE);
         disruptor.start();
