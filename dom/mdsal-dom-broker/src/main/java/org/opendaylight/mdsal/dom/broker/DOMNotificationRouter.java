@@ -7,14 +7,14 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.lmax.disruptor.EventHandler;
@@ -41,6 +41,7 @@ import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistr
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +68,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         DOMNotificationService, DOMNotificationSubscriptionListenerRegistry {
 
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouter.class);
-    private static final ListenableFuture<Void> NO_LISTENERS = Futures.immediateFuture(null);
+    private static final ListenableFuture<Void> NO_LISTENERS = FluentFutures.immediateNullFluentFuture();
     private static final WaitStrategy DEFAULT_STRATEGY = PhasedBackoffWaitStrategy.withLock(
             1L, 30L, TimeUnit.MILLISECONDS);
     private static final EventHandler<DOMNotificationRouterEvent> DISPATCH_NOTIFICATIONS =
@@ -75,40 +76,38 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     private static final EventHandler<DOMNotificationRouterEvent> NOTIFY_FUTURE =
         (event, sequence, endOfBatch) -> event.setFuture();
 
-    private final Disruptor<DOMNotificationRouterEvent> disruptor;
-    private final ExecutorService executor;
-    private volatile Multimap<SchemaPath, ListenerRegistration<? extends
-            DOMNotificationListener>> listeners = ImmutableMultimap.of();
     private final ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners =
             ListenerRegistry.create();
+    private final Disruptor<DOMNotificationRouterEvent> disruptor;
     private final ScheduledThreadPoolExecutor observer;
+    private final ExecutorService executor;
+
+    private volatile Multimap<SchemaPath, ListenerRegistration<? extends DOMNotificationListener>> listeners =
+            ImmutableMultimap.of();
 
     @VisibleForTesting
-    DOMNotificationRouter(final ExecutorService executor, final int queueDepth, final WaitStrategy strategy) {
-        this.executor = Preconditions.checkNotNull(executor);
-        this.observer = new ScheduledThreadPoolExecutor(1, new ThreadFactoryBuilder()
-                .setDaemon(true).setNameFormat("DOMNotificationRouter-%d").build());
-        disruptor = new Disruptor<>(DOMNotificationRouterEvent.FACTORY,
-                queueDepth, executor, ProducerType.MULTI, strategy);
+    DOMNotificationRouter(final int queueDepth, final WaitStrategy strategy) {
+        observer = new ScheduledThreadPoolExecutor(1,
+            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("DOMNotificationRouter-observer-%d").build());
+        executor = Executors.newCachedThreadPool(
+            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("DOMNotificationRouter-listeners-%d").build());
+        disruptor = new Disruptor<>(DOMNotificationRouterEvent.FACTORY, queueDepth,
+                new ThreadFactoryBuilder().setNameFormat("DOMNotificationRouter-disruptor-%d").build(),
+                ProducerType.MULTI, strategy);
         disruptor.handleEventsWith(DISPATCH_NOTIFICATIONS);
         disruptor.after(DISPATCH_NOTIFICATIONS).handleEventsWith(NOTIFY_FUTURE);
         disruptor.start();
     }
 
     public static DOMNotificationRouter create(final int queueDepth) {
-        final ExecutorService executor = Executors.newCachedThreadPool();
-
-        return new DOMNotificationRouter(executor, queueDepth, DEFAULT_STRATEGY);
+        return new DOMNotificationRouter(queueDepth, DEFAULT_STRATEGY);
     }
 
-    public static DOMNotificationRouter create(final int queueDepth, final long spinTime,
-            final long parkTime, final TimeUnit unit) {
-        Preconditions.checkArgument(Long.lowestOneBit(queueDepth) == Long.highestOneBit(queueDepth),
+    public static DOMNotificationRouter create(final int queueDepth, final long spinTime, final long parkTime,
+            final TimeUnit unit) {
+        checkArgument(Long.lowestOneBit(queueDepth) == Long.highestOneBit(queueDepth),
                 "Queue depth %s is not power-of-two", queueDepth);
-        final ExecutorService executor = Executors.newCachedThreadPool();
-        final WaitStrategy strategy = PhasedBackoffWaitStrategy.withLock(spinTime, parkTime, unit);
-
-        return new DOMNotificationRouter(executor, queueDepth, strategy);
+        return new DOMNotificationRouter(queueDepth, PhasedBackoffWaitStrategy.withLock(spinTime, parkTime, unit));
     }
 
     @Override
@@ -257,12 +256,16 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     public void close() {
         observer.shutdown();
         disruptor.shutdown();
-        executor.shutdown();
     }
 
     @VisibleForTesting
     ExecutorService executor() {
         return executor;
+    }
+
+    @VisibleForTesting
+    ExecutorService observer() {
+        return observer;
     }
 
     @VisibleForTesting
@@ -274,5 +277,4 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners() {
         return subscriptionListeners;
     }
-
 }

@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
@@ -110,30 +109,30 @@ public class DOMNotificationRouterTest extends TestUtils {
         doReturn("test").when(domNotification).toString();
         doReturn(SchemaPath.ROOT).when(domNotification).getType();
         doReturn(TEST_CHILD).when(domNotification).getBody();
-        final TestRouter testRouter = TestRouter.create(1);
-        assertNotNull(testRouter.registerNotificationListener(testListener, SchemaPath.ROOT));
-        assertNotNull(testRouter.registerNotificationListener(testListener, SchemaPath.SAME));
 
-        assertNotEquals(DOMNotificationPublishService.REJECTED,
+        try (TestRouter testRouter = new TestRouter(1)) {
+            assertNotNull(testRouter.registerNotificationListener(testListener, SchemaPath.ROOT));
+            assertNotNull(testRouter.registerNotificationListener(testListener, SchemaPath.SAME));
+
+            assertNotEquals(DOMNotificationPublishService.REJECTED,
                 testRouter.offerNotification(domNotification, 3, TimeUnit.SECONDS));
-        assertTrue("Listener was not notified", latch.await(5, TimeUnit.SECONDS));
-        assertEquals("Received notifications", 1, testListener.getReceivedNotifications().size());
+            assertTrue("Listener was not notified", latch.await(5, TimeUnit.SECONDS));
+            assertEquals("Received notifications", 1, testListener.getReceivedNotifications().size());
 
-        assertEquals(DOMNotificationPublishService.REJECTED,
+            assertEquals(DOMNotificationPublishService.REJECTED,
                 testRouter.offerNotification(domNotification, 1, TimeUnit.SECONDS));
-        assertEquals("Received notifications", 1, testListener.getReceivedNotifications().size());
-
+            assertEquals("Received notifications", 1, testListener.getReceivedNotifications().size());
+        }
     }
 
     @Test
     public void close() throws Exception {
         final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1);
+        final ExecutorService observer = domNotificationRouter.observer();
 
-        final ExecutorService executor = domNotificationRouter.executor();
-
-        assertFalse(executor.isShutdown());
+        assertFalse(observer.isShutdown());
         domNotificationRouter.close();
-        assertTrue(executor.isShutdown());
+        assertTrue(observer.isShutdown());
     }
 
     private static class TestListener implements DOMNotificationListener {
@@ -156,9 +155,8 @@ public class DOMNotificationRouterTest extends TestUtils {
     }
 
     private static class TestRouter extends DOMNotificationRouter {
-
-        TestRouter(final ExecutorService executor, final int queueDepth, final WaitStrategy strategy) {
-            super(executor, queueDepth, strategy);
+        TestRouter(final int queueDepth) {
+            super(queueDepth, DEFAULT_STRATEGY);
         }
 
         @Override
@@ -172,12 +170,6 @@ public class DOMNotificationRouterTest extends TestUtils {
                 throws InterruptedException {
             Thread.sleep(2000);
             return super.putNotification(notification);
-        }
-
-        public static TestRouter create(final int queueDepth) {
-            final ExecutorService executor = Executors.newCachedThreadPool();
-
-            return new TestRouter(executor, queueDepth, DEFAULT_STRATEGY);
         }
     }
 }
