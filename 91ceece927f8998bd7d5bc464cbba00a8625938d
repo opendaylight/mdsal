@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c694159e_2d94fa6e",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-07T16:30:10Z",
+      "side": 1,
+      "message": "Should we assume a ThreadPoolExecutor here? Or how about just pass in a new ThreadFactory instance with a specific naming format?",
+      "range": {
+        "startLine": 93,
+        "startChar": 30,
+        "endLine": 93,
+        "endChar": 48
+      },
+      "revId": "91ceece927f8998bd7d5bc464cbba00a8625938d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
