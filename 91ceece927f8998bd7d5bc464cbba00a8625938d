@@ -22,6 +22,30 @@
       "revId": "91ceece927f8998bd7d5bc464cbba00a8625938d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "303b0ac5_26d6e96e",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-01-07T18:51:13Z",
+      "side": 1,
+      "message": "I agree. this is @VisibleForTesting, hence we should be able to refactor it properly -- after all we are creating the ExecutorService internally.",
+      "parentUuid": "c694159e_2d94fa6e",
+      "range": {
+        "startLine": 93,
+        "startChar": 30,
+        "endLine": 93,
+        "endChar": 48
+      },
+      "revId": "91ceece927f8998bd7d5bc464cbba00a8625938d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
