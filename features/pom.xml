@@ -27,6 +27,9 @@
         <module>features-mdsal</module>
         <module>features-mdsal-experimental</module>
 
+        <!-- Blueprint extension core -->
+        <module>odl-mdsal-blueprint</module>
+
         <!-- Binding -->
         <module>odl-mdsal-binding</module>
         <module>odl-mdsal-binding-api</module>
