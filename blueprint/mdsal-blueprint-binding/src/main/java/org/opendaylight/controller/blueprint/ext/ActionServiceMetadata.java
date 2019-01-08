@@ -8,6 +8,8 @@
 package org.opendaylight.controller.blueprint.ext;
 
 import java.util.function.Predicate;
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.RpcRoutingStrategy;
 
 /**
@@ -28,8 +30,9 @@ final class ActionServiceMetadata extends AbstractInvokableServiceMetadata {
      * interface contract can let some actions to be invoked, while failing for others. This is a shortcoming of the
      * Binding Specification and will be addressed in Binding V2 -- where each action is its own interface.
      */
-    ActionServiceMetadata(final String id, final String interfaceName) {
-        super(id, interfaceName);
+    ActionServiceMetadata(final String id, final BlueprintContainerRestartService restartService,
+            final String interfaceName) {
+        super(id, restartService, interfaceName);
     }
 
     @Override
