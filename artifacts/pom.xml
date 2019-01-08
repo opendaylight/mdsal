@@ -289,6 +289,22 @@
                 <version>3.0.4-SNAPSHOT</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-trace-api</artifactId>
+                <version>1.0.4-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-trace-cli</artifactId>
+                <version>1.0.4-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-trace-impl</artifactId>
+                <version>1.0.4-SNAPSHOT</version>
+            </dependency>
+
             <!-- Features -->
             <!-- BINDING -->
             <dependency>

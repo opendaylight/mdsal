@@ -34,6 +34,7 @@
         <module>model-binding2</module>
         <module>entityownership</module>
         <module>singleton-service</module>
+        <module>trace</module>
     </modules>
 
     <properties>
