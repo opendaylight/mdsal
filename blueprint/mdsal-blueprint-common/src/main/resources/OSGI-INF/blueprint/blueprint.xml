@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright © 2019 Pantheon Technologies, s.r.o. and others.  All rights reserved.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+ -->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+	<reference id="restartService" interface="org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService"/>
+
+    <bean id="namespaceHandler" class="org.opendaylight.mdsal.blueprint.common.CommonNamespaceHandler">
+        <argument ref="restartService"/>
+    </bean>
+
+    <service ref="namespaceHandler" interface="org.apache.aries.blueprint.NamespaceHandler">
+        <service-properties>
+            <entry key="osgi.service.blueprint.namespace">
+                <value type="java.lang.String">http://opendaylight.org/xmlns/mdsal/blueprint/common/v1.0.0</value>
+            </entry>
+        </service-properties>
+    </service>
+</blueprint>
+

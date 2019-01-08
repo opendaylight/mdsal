@@ -22,7 +22,9 @@ import org.apache.aries.blueprint.services.BlueprintExtenderService;
 import org.apache.aries.quiesce.participant.QuiesceParticipant;
 import org.apache.aries.util.AriesFrameworkUtil;
 import org.opendaylight.controller.blueprint.ext.OpendaylightNamespaceHandler;
+import org.opendaylight.mdsal.blueprint.common.NamespaceHandlerUtils;
 import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
+import org.opendaylight.mdsal.blueprint.restart.impl.BlueprintContainerRestartServiceImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -80,7 +82,8 @@ public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCus
 
         registerBlueprintEventHandler(context);
 
-        registerNamespaceHandler(context);
+        namespaceReg = NamespaceHandlerUtils.registerNamespaceHandler(context,
+            OpendaylightNamespaceHandler.NAMESPACE_1_0_0, new OpendaylightNamespaceHandler());
 
         bundleTracker = new BundleTracker<>(context, Bundle.ACTIVE, this);
 
@@ -287,7 +290,7 @@ public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCus
         LOG.info("Shutdown of blueprint containers complete");
     }
 
-    private List<Bundle> getBundlesToDestroy(final Collection<Bundle> containerBundles) {
+    private static List<Bundle> getBundlesToDestroy(final Collection<Bundle> containerBundles) {
         List<Bundle> bundlesToDestroy = new ArrayList<>();
 
         // Find all container bundles that either have no registered services or whose services are no
@@ -333,7 +336,7 @@ public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCus
     }
 
     @Nullable
-    private Bundle findBundleWithHighestUsedServiceId(final Collection<Bundle> containerBundles) {
+    private static Bundle findBundleWithHighestUsedServiceId(final Collection<Bundle> containerBundles) {
         ServiceReference<?> highestServiceRef = null;
         for (Bundle bundle : containerBundles) {
             ServiceReference<?>[] references = bundle.getRegisteredServices();
