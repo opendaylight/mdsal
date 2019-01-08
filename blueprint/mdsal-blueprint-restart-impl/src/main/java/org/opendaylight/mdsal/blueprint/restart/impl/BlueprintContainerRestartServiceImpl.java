@@ -5,15 +5,18 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint;
+package org.opendaylight.mdsal.blueprint.restart.impl;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import java.text.DateFormat;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Deque;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
@@ -26,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.aries.blueprint.services.BlueprintExtenderService;
 import org.apache.aries.quiesce.participant.QuiesceParticipant;
 import org.apache.aries.util.AriesFrameworkUtil;
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -40,36 +44,21 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thomas Pantelis
  */
-class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintContainerRestartService {
+public class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintContainerRestartService,
+        BlueprintListener {
     private static final Logger LOG = LoggerFactory.getLogger(BlueprintContainerRestartServiceImpl.class);
     private static final int CONTAINER_CREATE_TIMEOUT_IN_MINUTES = 5;
 
     private final ExecutorService restartExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
             .setDaemon(true).setNameFormat("BlueprintContainerRestartService").build());
 
-    private BlueprintExtenderService blueprintExtenderService;
-    private QuiesceParticipant quiesceParticipant;
+    private final BlueprintExtenderService blueprintExtenderService;
+    private final QuiesceParticipant quiesceParticipant;
 
-    void setBlueprintExtenderService(final BlueprintExtenderService blueprintExtenderService) {
-        this.blueprintExtenderService = blueprintExtenderService;
-    }
-
-    void setQuiesceParticipant(final QuiesceParticipant quiesceParticipant) {
-        this.quiesceParticipant = quiesceParticipant;
-    }
-
-    public void restartContainer(final Bundle bundle, final List<Object> paths) {
-        LOG.debug("restartContainer for bundle {}", bundle);
-
-        if (restartExecutor.isShutdown()) {
-            LOG.debug("Already closed - returning");
-            return;
-        }
-
-        restartExecutor.execute(() -> {
-            blueprintExtenderService.destroyContainer(bundle, blueprintExtenderService.getContainer(bundle));
-            blueprintExtenderService.createContainer(bundle, paths);
-        });
+    public BlueprintContainerRestartServiceImpl(final BlueprintExtenderService blueprintExtenderService,
+            final QuiesceParticipant quiesceParticipant) {
+        this.blueprintExtenderService = requireNonNull(blueprintExtenderService);
+        this.quiesceParticipant = requireNonNull(quiesceParticipant);
     }
 
     @Override
@@ -83,10 +72,58 @@ class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintCo
         restartExecutor.execute(() -> restartContainerAndDependentsInternal(bundle));
     }
 
-    private void restartContainerAndDependentsInternal(final Bundle forBundle) {
-        Preconditions.checkNotNull(blueprintExtenderService);
-        Preconditions.checkNotNull(quiesceParticipant);
+    /**
+     * Implemented from BlueprintListener to listen for blueprint events.
+     *
+     * @param event the event to handle
+     */
+    @Override
+    public void blueprintEvent(BlueprintEvent event) {
+        switch (event.getType()) {
+            case BlueprintEvent.CREATED:
+                LOG.info("Blueprint container for bundle {} was successfully created at {}", event.getBundle(),
+                        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(
+                                new Date(event.getTimestamp())));
+                break;
+            case BlueprintEvent.CREATING:
+                LOG.info("Creating blueprint container for bundle {} at {}", event.getBundle(),
+                        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(
+                                new Date(event.getTimestamp())));
+                break;
+            case BlueprintEvent.FAILURE:
+                // If the container timed out waiting for dependencies, we'll destroy it and start it again. This
+                // is indicated via a non-null DEPENDENCIES property containing the missing dependencies. The
+                // default timeout is 5 min and ideally we would set this to infinite but the timeout can only
+                // be set at the bundle level in the manifest - there's no way to set it globally.
+                if (event.getDependencies() != null) {
+                    final Bundle bundle = event.getBundle();
+                    LOG.warn(
+                        "Blueprint container for bundle {} timed out waiting for dependencies at {} - restarting it",
+                        bundle, DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(
+                                new Date(event.getTimestamp())));
+                    restartContainer(bundle);
+                }
+                break;
+            default:
+                LOG.debug("Ignoring event {}", event.getType());
+        }
+    }
 
+    private void restartContainer(final Bundle bundle) {
+        LOG.debug("restartContainer for bundle {}", bundle);
+
+        if (restartExecutor.isShutdown()) {
+            LOG.debug("Already closed - returning");
+            return;
+        }
+
+        restartExecutor.execute(() -> {
+            blueprintExtenderService.destroyContainer(bundle, blueprintExtenderService.getContainer(bundle));
+            blueprintExtenderService.createContainer(bundle);
+        });
+    }
+
+    private void restartContainerAndDependentsInternal(final Bundle forBundle) {
         // We use a LinkedHashSet to preserve insertion order as we walk the service usage hierarchy.
         Set<Bundle> containerBundlesSet = new LinkedHashSet<>();
         findDependentContainersRecursively(forBundle, containerBundlesSet);
@@ -187,11 +224,8 @@ class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintCo
 
     private void createContainers(final List<Bundle> containerBundles) {
         containerBundles.forEach(bundle -> {
-            List<Object> paths = BlueprintBundleTracker.findBlueprintPaths(bundle);
-
-            LOG.info("Restarting blueprint container for bundle {} with paths {}", bundle, paths);
-
-            blueprintExtenderService.createContainer(bundle, paths);
+            LOG.info("Restarting blueprint container for bundle {}", bundle);
+            blueprintExtenderService.createContainer(bundle);
         });
     }
 
@@ -223,15 +257,14 @@ class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintCo
         }
     }
 
-    private ServiceRegistration<?> registerEventHandler(final BundleContext bundleContext,
+    private static ServiceRegistration<?> registerEventHandler(final BundleContext bundleContext,
             final BlueprintListener listener) {
-        return bundleContext.registerService(BlueprintListener.class.getName(), listener, new Hashtable<>());
+        return bundleContext.registerService(BlueprintListener.class, listener, new Hashtable<>());
     }
 
     @Override
     public void close() {
         LOG.debug("Closing");
-
         restartExecutor.shutdownNow();
     }
 }
