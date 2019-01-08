@@ -5,8 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint.ext;
+package org.opendaylight.mdsal.blueprint.common;
 
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.osgi.service.blueprint.container.ComponentDefinitionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,9 @@ class StaticReferenceMetadata extends AbstractDependentComponentFactoryMetadata 
     private final String interfaceName;
     private volatile Object retrievedService;
 
-    StaticReferenceMetadata(final String id, final String interfaceName) {
-        super(id);
+    StaticReferenceMetadata(final String id, final BlueprintContainerRestartService restartService,
+            final String interfaceName) {
+        super(id, restartService);
         this.interfaceName = interfaceName;
     }
 
