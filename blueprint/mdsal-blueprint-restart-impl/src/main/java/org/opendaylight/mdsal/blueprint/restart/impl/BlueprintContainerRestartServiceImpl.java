@@ -5,16 +5,19 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint;
+package org.opendaylight.mdsal.blueprint.restart.impl;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -26,10 +29,15 @@ import java.util.concurrent.TimeUnit;
 import org.apache.aries.blueprint.services.BlueprintExtenderService;
 import org.apache.aries.quiesce.participant.QuiesceParticipant;
 import org.apache.aries.util.AriesFrameworkUtil;
+import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.SynchronousBundleListener;
+import org.osgi.service.blueprint.container.BlueprintContainer;
 import org.osgi.service.blueprint.container.BlueprintEvent;
 import org.osgi.service.blueprint.container.BlueprintListener;
 import org.slf4j.Logger;
@@ -40,25 +48,28 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thomas Pantelis
  */
-class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintContainerRestartService {
+public class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintContainerRestartService,
+        SynchronousBundleListener {
     private static final Logger LOG = LoggerFactory.getLogger(BlueprintContainerRestartServiceImpl.class);
     private static final int CONTAINER_CREATE_TIMEOUT_IN_MINUTES = 5;
+    private static final long SYSTEM_BUNDLE_ID = 0;
 
     private final ExecutorService restartExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
             .setDaemon(true).setNameFormat("BlueprintContainerRestartService").build());
 
-    private BlueprintExtenderService blueprintExtenderService;
-    private QuiesceParticipant quiesceParticipant;
+    private final BlueprintExtenderService blueprintExtenderService;
+    private final QuiesceParticipant quiesceParticipant;
+    private final BundleContext bundleContext;
 
-    void setBlueprintExtenderService(final BlueprintExtenderService blueprintExtenderService) {
-        this.blueprintExtenderService = blueprintExtenderService;
+    public BlueprintContainerRestartServiceImpl(final BundleContext bundleContext,
+            final BlueprintExtenderService blueprintExtenderService, final QuiesceParticipant quiesceParticipant) {
+        this.bundleContext = requireNonNull(bundleContext);
+        this.blueprintExtenderService = requireNonNull(blueprintExtenderService);
+        this.quiesceParticipant = requireNonNull(quiesceParticipant);
     }
 
-    void setQuiesceParticipant(final QuiesceParticipant quiesceParticipant) {
-        this.quiesceParticipant = quiesceParticipant;
-    }
-
-    public void restartContainer(final Bundle bundle, final List<Object> paths) {
+    @Override
+    public void restartContainer(final Bundle bundle) {
         LOG.debug("restartContainer for bundle {}", bundle);
 
         if (restartExecutor.isShutdown()) {
@@ -68,7 +79,7 @@ class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintCo
 
         restartExecutor.execute(() -> {
             blueprintExtenderService.destroyContainer(bundle, blueprintExtenderService.getContainer(bundle));
-            blueprintExtenderService.createContainer(bundle, paths);
+            blueprintExtenderService.createContainer(bundle);
         });
     }
 
@@ -83,10 +94,19 @@ class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintCo
         restartExecutor.execute(() -> restartContainerAndDependentsInternal(bundle));
     }
 
-    private void restartContainerAndDependentsInternal(final Bundle forBundle) {
-        Preconditions.checkNotNull(blueprintExtenderService);
-        Preconditions.checkNotNull(quiesceParticipant);
+    /**
+     * Implemented from SynchronousBundleListener.
+     */
+    @Override
+    public void bundleChanged(final BundleEvent event) {
+        // If the system bundle (id 0) is stopping, do an orderly shutdown of all blueprint containers. On
+        // shutdown the system bundle is stopped first.
+        if (event.getBundle().getBundleId() == SYSTEM_BUNDLE_ID && event.getType() == BundleEvent.STOPPING) {
+            shutdownAllContainers();
+        }
+    }
 
+    private void restartContainerAndDependentsInternal(final Bundle forBundle) {
         // We use a LinkedHashSet to preserve insertion order as we walk the service usage hierarchy.
         Set<Bundle> containerBundlesSet = new LinkedHashSet<>();
         findDependentContainersRecursively(forBundle, containerBundlesSet);
@@ -187,11 +207,8 @@ class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintCo
 
     private void createContainers(final List<Bundle> containerBundles) {
         containerBundles.forEach(bundle -> {
-            List<Object> paths = BlueprintBundleTracker.findBlueprintPaths(bundle);
-
-            LOG.info("Restarting blueprint container for bundle {} with paths {}", bundle, paths);
-
-            blueprintExtenderService.createContainer(bundle, paths);
+            LOG.info("Restarting blueprint container for bundle {}", bundle);
+            blueprintExtenderService.createContainer(bundle);
         });
     }
 
@@ -223,9 +240,107 @@ class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintCo
         }
     }
 
-    private ServiceRegistration<?> registerEventHandler(final BundleContext bundleContext,
+    private void shutdownAllContainers() {
+        shuttingDown = true;
+
+        LOG.info("Shutting down all blueprint containers...");
+
+        Collection<Bundle> containerBundles = new HashSet<>(Arrays.asList(bundleContext.getBundles()));
+        while (!containerBundles.isEmpty()) {
+            // For each iteration of getBundlesToDestroy, as containers are destroyed, other containers become
+            // eligible to be destroyed. We loop until we've destroyed them all.
+            for (Bundle bundle : getBundlesToDestroy(containerBundles)) {
+                containerBundles.remove(bundle);
+                BlueprintContainer container = blueprintExtenderService.getContainer(bundle);
+                if (container != null) {
+                    blueprintExtenderService.destroyContainer(bundle, container);
+                }
+            }
+        }
+
+        LOG.info("Shutdown of blueprint containers complete");
+    }
+
+    private static List<Bundle> getBundlesToDestroy(final Collection<Bundle> containerBundles) {
+        List<Bundle> bundlesToDestroy = new ArrayList<>();
+
+        // Find all container bundles that either have no registered services or whose services are no
+        // longer in use.
+        for (Bundle bundle : containerBundles) {
+            ServiceReference<?>[] references = bundle.getRegisteredServices();
+            int usage = 0;
+            if (references != null) {
+                for (ServiceReference<?> reference : references) {
+                    usage += getServiceUsage(reference);
+                }
+            }
+
+            LOG.debug("Usage for bundle {} is {}", bundle, usage);
+            if (usage == 0) {
+                bundlesToDestroy.add(bundle);
+            }
+        }
+
+        if (!bundlesToDestroy.isEmpty()) {
+            bundlesToDestroy.sort((b1, b2) -> (int) (b2.getLastModified() - b1.getLastModified()));
+
+            LOG.debug("Selected bundles {} for destroy (no services in use)", bundlesToDestroy);
+        } else {
+            // There's either no more container bundles or they all have services being used. For
+            // the latter it means there's either circular service usage or a service is being used
+            // by a non-container bundle. But we need to make progress so we pick the bundle with a
+            // used service with the highest service ID. Each service is assigned a monotonically
+            // increasing ID as they are registered. By picking the bundle with the highest service
+            // ID, we're picking the bundle that was (likely) started after all the others and thus
+            // is likely the safest to destroy at this point.
+
+            Bundle bundle = findBundleWithHighestUsedServiceId(containerBundles);
+            if (bundle != null) {
+                bundlesToDestroy.add(bundle);
+            }
+
+            LOG.debug("Selected bundle {} for destroy (lowest ranking service or highest service ID)",
+                    bundlesToDestroy);
+        }
+
+        return bundlesToDestroy;
+    }
+
+    private static ServiceRegistration<?> registerEventHandler(final BundleContext bundleContext,
             final BlueprintListener listener) {
-        return bundleContext.registerService(BlueprintListener.class.getName(), listener, new Hashtable<>());
+        return bundleContext.registerService(BlueprintListener.class, listener, new Hashtable<>());
+    }
+
+    private static @Nullable Bundle findBundleWithHighestUsedServiceId(final Collection<Bundle> containerBundles) {
+        ServiceReference<?> highestServiceRef = null;
+        for (Bundle bundle : containerBundles) {
+            ServiceReference<?>[] references = bundle.getRegisteredServices();
+            if (references == null) {
+                continue;
+            }
+
+            for (ServiceReference<?> reference : references) {
+                // We did check the service usage previously but it's possible the usage has changed since then.
+                if (getServiceUsage(reference) == 0) {
+                    continue;
+                }
+
+                // Choose 'reference' if it has a lower service ranking or, if the rankings are equal
+                // which is usually the case, if it has a higher service ID. For the latter the < 0
+                // check looks backwards but that's how ServiceReference#compareTo is documented to work.
+                if (highestServiceRef == null || reference.compareTo(highestServiceRef) < 0) {
+                    LOG.debug("Currently selecting bundle {} for destroy (with reference {})", bundle, reference);
+                    highestServiceRef = reference;
+                }
+            }
+        }
+
+        return highestServiceRef == null ? null : highestServiceRef.getBundle();
+    }
+
+    private static int getServiceUsage(final ServiceReference<?> ref) {
+        Bundle[] usingBundles = ref.getUsingBundles();
+        return usingBundles != null ? usingBundles.length : 0;
     }
 
     @Override
