@@ -41,6 +41,13 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-blueprint</artifactId>
+            <version>1.0.4-SNAPSHOT</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-dom-api</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
