@@ -5,7 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint.ext;
+package org.opendaylight.mdsal.blueprint.common;
+
+import static org.opendaylight.mdsal.blueprint.common.NamespaceHandlerUtils.addBlueprintBundleRefProperty;
+import static org.opendaylight.mdsal.blueprint.common.NamespaceHandlerUtils.createBeanMetadata;
+import static org.opendaylight.mdsal.blueprint.common.NamespaceHandlerUtils.createServiceRef;
+import static org.opendaylight.mdsal.blueprint.common.NamespaceHandlerUtils.createValue;
 
 import com.google.common.base.Strings;
 import java.util.ArrayList;
@@ -16,20 +21,23 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.aries.blueprint.ComponentDefinitionRegistry;
 import org.apache.aries.blueprint.ComponentDefinitionRegistryProcessor;
+import org.apache.aries.blueprint.ParserContext;
 import org.apache.aries.blueprint.ext.AbstractPropertyPlaceholder;
 import org.apache.aries.blueprint.mutable.MutableBeanMetadata;
 import org.apache.aries.blueprint.mutable.MutableServiceReferenceMetadata;
 import org.apache.aries.util.AriesFrameworkUtil;
-import org.opendaylight.controller.blueprint.BlueprintContainerRestartService;
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.blueprint.container.ComponentDefinitionException;
 import org.osgi.service.blueprint.reflect.BeanProperty;
 import org.osgi.service.blueprint.reflect.ComponentMetadata;
 import org.osgi.service.blueprint.reflect.ValueMetadata;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Attr;
 
 /**
  * The singleton component processor that is invoked by the blueprint container to perform operations on
@@ -38,9 +46,8 @@ import org.slf4j.LoggerFactory;
  * @author Thomas Pantelis
  */
 public class ComponentProcessor implements ComponentDefinitionRegistryProcessor {
-    static final String DEFAULT_TYPE_FILTER = "(|(type=default)(!(type=*)))";
-
     private static final Logger LOG = LoggerFactory.getLogger(ComponentProcessor.class);
+    private static final String COMPONENT_PROCESSOR_NAME = ComponentProcessor.class.getName();
     private static final String CM_PERSISTENT_ID_PROPERTY = "persistentId";
 
     private final List<ServiceRegistration<?>> managedServiceRegs = new ArrayList<>();
@@ -48,6 +55,34 @@ public class ComponentProcessor implements ComponentDefinitionRegistryProcessor 
     private BlueprintContainerRestartService blueprintContainerRestartService;
     private boolean restartDependentsOnUpdates;
     private boolean useDefaultForReferenceTypes;
+
+    static MutableBeanMetadata register(final ParserContext context) {
+        ComponentDefinitionRegistry registry = context.getComponentDefinitionRegistry();
+        MutableBeanMetadata metadata = (MutableBeanMetadata) registry.getComponentDefinition(COMPONENT_PROCESSOR_NAME);
+        if (metadata == null) {
+            metadata = createBeanMetadata(context, COMPONENT_PROCESSOR_NAME, ComponentProcessor.class, false, true);
+            metadata.setProcessor(true);
+            addBlueprintBundleRefProperty(context, metadata);
+            metadata.addProperty("blueprintContainerRestartService", createServiceRef(context,
+                    BlueprintContainerRestartService.class, null));
+
+            LOG.debug("Registering ComponentProcessor bean: {}", metadata);
+
+            registry.registerComponentDefinition(metadata);
+        }
+
+        return metadata;
+    }
+
+    static ComponentMetadata decorateRestartDependentsOnUpdates(final Attr attr, final ComponentMetadata component,
+            final ParserContext context) {
+        return enableProperty(attr, component, context, "restartDependentsOnUpdates");
+    }
+
+    static ComponentMetadata decorateUseDefaultForReferenceTypes(final Attr attr, final ComponentMetadata component,
+            final ParserContext context) {
+        return enableProperty(attr, component, context, "useDefaultForReferenceTypes");
+    }
 
     public void setBundle(final Bundle bundle) {
         this.bundle = bundle;
@@ -98,7 +133,7 @@ public class ComponentProcessor implements ComponentDefinitionRegistryProcessor 
                 serviceRef.getId(), filter, extFilter);
 
         if (Strings.isNullOrEmpty(filter) && Strings.isNullOrEmpty(extFilter)) {
-            serviceRef.setFilter(DEFAULT_TYPE_FILTER);
+            serviceRef.setFilter(BlueprintConstants.DEFAULT_TYPE_FILTER);
 
             LOG.debug("{}: processServiceReferenceMetadata for {} set filter to {}", logName(),
                     serviceRef.getId(), serviceRef.getFilter());
@@ -164,5 +199,22 @@ public class ComponentProcessor implements ComponentDefinitionRegistryProcessor 
 
     private String logName() {
         return bundle.getSymbolicName();
+    }
+
+    private static ComponentMetadata enableProperty(final Attr attr, final ComponentMetadata component,
+            final ParserContext context, final String propertyName) {
+        if (component != null) {
+            throw new ComponentDefinitionException("Attribute " + attr.getNodeName()
+                    + " can only be used on the root <blueprint> element");
+        }
+
+        LOG.debug("Property {} = {}", propertyName, attr.getValue());
+        if (!Boolean.parseBoolean(attr.getValue())) {
+            return component;
+        }
+
+        MutableBeanMetadata metadata = ComponentProcessor.register(context);
+        metadata.addProperty(propertyName, createValue(context, "true"));
+        return component;
     }
 }

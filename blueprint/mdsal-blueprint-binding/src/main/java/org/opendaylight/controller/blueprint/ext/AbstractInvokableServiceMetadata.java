@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import org.apache.aries.blueprint.services.ExtendedBlueprintContainer;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.mdsal.blueprint.common.AbstractDependentComponentFactoryMetadata;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
