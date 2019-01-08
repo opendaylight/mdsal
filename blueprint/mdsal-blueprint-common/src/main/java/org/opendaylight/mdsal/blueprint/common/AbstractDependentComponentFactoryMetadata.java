@@ -5,9 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint.ext;
+package org.opendaylight.mdsal.blueprint.common;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,13 +33,17 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thomas Pantelis
  */
-abstract class AbstractDependentComponentFactoryMetadata implements DependentComponentFactoryMetadata {
+public abstract class AbstractDependentComponentFactoryMetadata implements DependentComponentFactoryMetadata {
     @SuppressFBWarnings("SLF4J_LOGGER_SHOULD_BE_PRIVATE")
-    final Logger log = LoggerFactory.getLogger(getClass());
-    private final String id;
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+
     private final AtomicBoolean started = new AtomicBoolean();
     private final AtomicBoolean satisfied = new AtomicBoolean();
     private final AtomicBoolean restarting = new AtomicBoolean();
+
+    private final BlueprintContainerRestartService restartService;
+    private final String id;
+
     @GuardedBy("serviceRecipes")
     private final List<StaticServiceReferenceRecipe> serviceRecipes = new ArrayList<>();
     private volatile ExtendedBlueprintContainer container;
@@ -49,12 +54,14 @@ abstract class AbstractDependentComponentFactoryMetadata implements DependentCom
     @GuardedBy("serviceRecipes")
     private boolean stoppedServiceRecipes;
 
-    protected AbstractDependentComponentFactoryMetadata(final String id) {
-        this.id = Preconditions.checkNotNull(id);
+    protected AbstractDependentComponentFactoryMetadata(final String id,
+            final BlueprintContainerRestartService restartService) {
+        this.id = requireNonNull(id);
+        this.restartService = requireNonNull(restartService);
     }
 
     @Override
-    public String getId() {
+    public final String getId() {
         return id;
     }
 
@@ -216,7 +223,6 @@ abstract class AbstractDependentComponentFactoryMetadata implements DependentCom
 
     protected void restartContainer() {
         if (restarting.compareAndSet(false, true)) {
-            BlueprintContainerRestartService restartService = getOSGiService(BlueprintContainerRestartService.class);
             if (restartService != null) {
                 log.debug("{}: Restarting container", logName());
                 restartService.restartContainerAndDependents(container().getBundleContext().getBundle());
