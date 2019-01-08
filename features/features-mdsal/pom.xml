@@ -34,6 +34,14 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Blueprint Extensions core -->
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-blueprint</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+
         <!-- Binding -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
