@@ -7,6 +7,8 @@
  */
 package org.opendaylight.controller.blueprint.ext;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.io.File;
@@ -16,7 +18,6 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
@@ -30,6 +31,8 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.blueprint.common.AbstractDependentComponentFactoryMetadata;
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -78,15 +81,16 @@ public class DataStoreAppConfigMetadata extends AbstractDependentComponentFactor
     // project are still used - conversion to the mdsal binding classes hasn't occurred yet.
     private volatile BindingNormalizedNodeSerializer bindingSerializer;
 
-    public DataStoreAppConfigMetadata(@Nonnull final String id, @Nonnull final String appConfigBindingClassName,
-            @Nullable final String appConfigListKeyValue, @Nullable final String defaultAppConfigFileName,
-            @Nonnull final UpdateStrategy updateStrategyValue, @Nullable final Element defaultAppConfigElement) {
-        super(id);
+    public DataStoreAppConfigMetadata( final String id, final BlueprintContainerRestartService restartService,
+            final String appConfigBindingClassName, final String appConfigListKeyValue,
+            final String defaultAppConfigFileName, final UpdateStrategy updateStrategyValue,
+            final Element defaultAppConfigElement) {
+        super(id, restartService);
         this.defaultAppConfigElement = defaultAppConfigElement;
         this.defaultAppConfigFileName = defaultAppConfigFileName;
         this.appConfigBindingClassName = appConfigBindingClassName;
         this.appConfigListKeyValue = appConfigListKeyValue;
-        this.appConfigUpdateStrategy = updateStrategyValue;
+        this.appConfigUpdateStrategy = requireNonNull(updateStrategyValue);
     }
 
     @Override

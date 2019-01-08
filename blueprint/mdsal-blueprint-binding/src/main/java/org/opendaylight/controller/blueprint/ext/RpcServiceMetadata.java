@@ -8,6 +8,7 @@
 package org.opendaylight.controller.blueprint.ext;
 
 import java.util.function.Predicate;
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.opendaylight.mdsal.dom.spi.RpcRoutingStrategy;
 
 /**
@@ -17,8 +18,9 @@ import org.opendaylight.mdsal.dom.spi.RpcRoutingStrategy;
  * @author Thomas Pantelis
  */
 final class RpcServiceMetadata extends AbstractInvokableServiceMetadata {
-    RpcServiceMetadata(final String id, final String interfaceName) {
-        super(id, interfaceName);
+    RpcServiceMetadata(final String id, final BlueprintContainerRestartService restartService,
+            final String interfaceName) {
+        super(id, restartService, interfaceName);
     }
 
     @Override
