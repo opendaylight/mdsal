@@ -26,7 +26,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.osgi.service.blueprint.container.ComponentDefinitionException;
 
-abstract class AbstractInvokableServiceMetadata extends AbstractDependentComponentFactoryMetadata {
+abstract class AbstractInvokableServiceMetadata extends AbstractRestartableDependentComponentFactoryMetadata {
     private final String interfaceName;
 
     private ListenerRegistration<DOMRpcAvailabilityListener> rpcListenerReg;

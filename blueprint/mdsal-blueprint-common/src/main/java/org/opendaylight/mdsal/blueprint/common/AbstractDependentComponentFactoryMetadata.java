@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint.ext;
+package org.opendaylight.mdsal.blueprint.common;
 
 import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -21,7 +21,6 @@ import org.apache.aries.blueprint.di.ExecutionContext;
 import org.apache.aries.blueprint.di.Recipe;
 import org.apache.aries.blueprint.ext.DependentComponentFactoryMetadata;
 import org.apache.aries.blueprint.services.ExtendedBlueprintContainer;
-import org.opendaylight.controller.blueprint.BlueprintContainerRestartService;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.blueprint.container.ComponentDefinitionException;
 import org.slf4j.Logger;
@@ -32,13 +31,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thomas Pantelis
  */
-abstract class AbstractDependentComponentFactoryMetadata implements DependentComponentFactoryMetadata {
+public abstract class AbstractDependentComponentFactoryMetadata implements DependentComponentFactoryMetadata {
     @SuppressFBWarnings("SLF4J_LOGGER_SHOULD_BE_PRIVATE")
-    final Logger log = LoggerFactory.getLogger(getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+
     private final String id;
     private final AtomicBoolean started = new AtomicBoolean();
     private final AtomicBoolean satisfied = new AtomicBoolean();
-    private final AtomicBoolean restarting = new AtomicBoolean();
     @GuardedBy("serviceRecipes")
     private final List<StaticServiceReferenceRecipe> serviceRecipes = new ArrayList<>();
     private volatile ExtendedBlueprintContainer container;
@@ -54,7 +53,7 @@ abstract class AbstractDependentComponentFactoryMetadata implements DependentCom
     }
 
     @Override
-    public String getId() {
+    public final String getId() {
         return id;
     }
 
@@ -211,16 +210,6 @@ abstract class AbstractDependentComponentFactoryMetadata implements DependentCom
             }
 
             serviceRecipes.clear();
-        }
-    }
-
-    protected void restartContainer() {
-        if (restarting.compareAndSet(false, true)) {
-            BlueprintContainerRestartService restartService = getOSGiService(BlueprintContainerRestartService.class);
-            if (restartService != null) {
-                log.debug("{}: Restarting container", logName());
-                restartService.restartContainerAndDependents(container().getBundleContext().getBundle());
-            }
         }
     }
 

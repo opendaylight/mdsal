@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint.ext;
+package org.opendaylight.mdsal.blueprint.common;
 
 import org.osgi.service.blueprint.container.ComponentDefinitionException;
 import org.slf4j.Logger;
@@ -18,13 +18,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thomas Pantelis
  */
-class StaticReferenceMetadata extends AbstractDependentComponentFactoryMetadata {
+public class StaticReferenceMetadata extends AbstractDependentComponentFactoryMetadata {
     private static final Logger LOG = LoggerFactory.getLogger(StaticReferenceMetadata.class);
 
     private final String interfaceName;
     private volatile Object retrievedService;
 
-    StaticReferenceMetadata(final String id, final String interfaceName) {
+    public StaticReferenceMetadata(final String id, final String interfaceName) {
         super(id);
         this.interfaceName = interfaceName;
     }

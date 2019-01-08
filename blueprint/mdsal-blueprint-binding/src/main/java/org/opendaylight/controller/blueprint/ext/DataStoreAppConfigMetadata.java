@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
  *
  * @author Thomas Pantelis
  */
-public class DataStoreAppConfigMetadata extends AbstractDependentComponentFactoryMetadata {
+public class DataStoreAppConfigMetadata extends AbstractRestartableDependentComponentFactoryMetadata {
     private static final Logger LOG = LoggerFactory.getLogger(DataStoreAppConfigMetadata.class);
 
     static final String BINDING_CLASS = "binding-class";

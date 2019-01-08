@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thomas Pantelis
  */
-class SpecificReferenceListMetadata extends AbstractDependentComponentFactoryMetadata {
+class SpecificReferenceListMetadata extends AbstractRestartableDependentComponentFactoryMetadata {
     private static final Logger LOG = LoggerFactory.getLogger(SpecificReferenceListMetadata.class);
 
     private final String interfaceName;

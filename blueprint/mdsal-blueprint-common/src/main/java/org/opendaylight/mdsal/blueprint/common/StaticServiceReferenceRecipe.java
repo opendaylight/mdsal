@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint.ext;
+package org.opendaylight.mdsal.blueprint.common;
 
 import com.google.common.base.Preconditions;
 import java.util.Collections;
@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thomas Pantelis
  */
+// XXX: hide this class?
 class StaticServiceReferenceRecipe extends AbstractServiceReferenceRecipe {
     private static final Logger LOG = LoggerFactory.getLogger(StaticServiceReferenceRecipe.class);
 
@@ -41,7 +42,7 @@ class StaticServiceReferenceRecipe extends AbstractServiceReferenceRecipe {
                 Collections.emptyList());
     }
 
-    void startTracking(final Consumer<Object> newServiceSatisfiedCallback) {
+    public void startTracking(final Consumer<Object> newServiceSatisfiedCallback) {
         this.serviceSatisfiedCallback = newServiceSatisfiedCallback;
         super.start(NOOP_LISTENER);
     }

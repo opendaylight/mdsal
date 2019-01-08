@@ -16,7 +16,7 @@
         <relativePath>../../dom/dom-parent</relativePath>
     </parent>
 
-    <artifactId>mdsal-blueprint-binding</artifactId>
+    <artifactId>mdsal-blueprint-common</artifactId>
     <packaging>bundle</packaging>
     <name>${project.artifactId}</name>
     <version>1.0.4-SNAPSHOT</version>
@@ -35,11 +35,8 @@
             <groupId>org.apache.aries</groupId>
             <artifactId>org.apache.aries.util</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-blueprint-common</artifactId>
-            <version>1.0.4-SNAPSHOT</version>
-        </dependency>
+
+        <!-- FIXME: eliminate references to MD-SAL services -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-dom-api</artifactId>
