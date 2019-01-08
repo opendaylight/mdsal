@@ -22,6 +22,7 @@ import org.apache.aries.blueprint.services.BlueprintExtenderService;
 import org.apache.aries.quiesce.participant.QuiesceParticipant;
 import org.apache.aries.util.AriesFrameworkUtil;
 import org.opendaylight.controller.blueprint.ext.OpendaylightNamespaceHandler;
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
