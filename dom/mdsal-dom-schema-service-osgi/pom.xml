@@ -70,10 +70,6 @@
                 <configuration>
                     <instructions>
                         <Bundle-Name>osgiBundleScanningSchema</Bundle-Name>
-                        <Import-Package>
-                            *,
-                            org.opendaylight.mdsal.dom.api
-                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
