@@ -21,7 +21,7 @@ import org.apache.aries.blueprint.di.ExecutionContext;
 import org.apache.aries.blueprint.di.Recipe;
 import org.apache.aries.blueprint.ext.DependentComponentFactoryMetadata;
 import org.apache.aries.blueprint.services.ExtendedBlueprintContainer;
-import org.opendaylight.controller.blueprint.BlueprintContainerRestartService;
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.blueprint.container.ComponentDefinitionException;
 import org.slf4j.Logger;

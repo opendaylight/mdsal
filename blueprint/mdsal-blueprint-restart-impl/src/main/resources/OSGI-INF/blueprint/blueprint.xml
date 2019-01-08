@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright © 2019 Pantheon Technologies, s.r.o. and others.  All rights reserved.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+ -->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+	<reference id="blueprintExtenderService" interface="org.apache.aries.blueprint.services.BlueprintExtenderService"/>
+	<reference id="quiesceParticipant" interface="org.apache.aries.quiesce.participant.QuiesceParticipant"/>
+
+    <bean id="restartService" class="org.opendaylight.mdsal.blueprint.restart.impl.BlueprintContainerRestartServiceImpl" destroy-method="close">
+        <argument ref="blueprintExtenderService"/>
+        <argument ref="quiesceParticipant"/>
+    </bean>
+
+    <service ref="restartService" interface="org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService"/>
+</blueprint>
+

@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint;
+package org.opendaylight.mdsal.blueprint.restart.api;
 
 import org.osgi.framework.Bundle;
 
@@ -15,6 +15,12 @@ import org.osgi.framework.Bundle;
  * @author Thomas Pantelis
  */
 public interface BlueprintContainerRestartService {
+    /**
+     * Restarts the blueprint container for the given bundle.
+     *
+     * @param bundle the bundle to restart
+     */
+    void restartContainer(Bundle bundle);
 
     /**
      * Restarts the blueprint container for the given bundle and all its dependent containers in an atomic
