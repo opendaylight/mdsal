@@ -5,7 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint;
+package org.opendaylight.mdsal.blueprint.restart.impl;
+
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -26,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.aries.blueprint.services.BlueprintExtenderService;
 import org.apache.aries.quiesce.participant.QuiesceParticipant;
 import org.apache.aries.util.AriesFrameworkUtil;
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -40,25 +43,24 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thomas Pantelis
  */
-class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintContainerRestartService {
+public class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintContainerRestartService {
     private static final Logger LOG = LoggerFactory.getLogger(BlueprintContainerRestartServiceImpl.class);
     private static final int CONTAINER_CREATE_TIMEOUT_IN_MINUTES = 5;
 
     private final ExecutorService restartExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
             .setDaemon(true).setNameFormat("BlueprintContainerRestartService").build());
 
-    private BlueprintExtenderService blueprintExtenderService;
-    private QuiesceParticipant quiesceParticipant;
+    private final BlueprintExtenderService blueprintExtenderService;
+    private final QuiesceParticipant quiesceParticipant;
 
-    void setBlueprintExtenderService(final BlueprintExtenderService blueprintExtenderService) {
-        this.blueprintExtenderService = blueprintExtenderService;
+    public BlueprintContainerRestartServiceImpl(final BlueprintExtenderService blueprintExtenderService,
+            final QuiesceParticipant quiesceParticipant) {
+        this.blueprintExtenderService = requireNonNull(blueprintExtenderService);
+        this.quiesceParticipant = requireNonNull(quiesceParticipant);
     }
 
-    void setQuiesceParticipant(final QuiesceParticipant quiesceParticipant) {
-        this.quiesceParticipant = quiesceParticipant;
-    }
-
-    public void restartContainer(final Bundle bundle, final List<Object> paths) {
+    @Override
+    public void restartContainer(final Bundle bundle) {
         LOG.debug("restartContainer for bundle {}", bundle);
 
         if (restartExecutor.isShutdown()) {
@@ -68,7 +70,7 @@ class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintCo
 
         restartExecutor.execute(() -> {
             blueprintExtenderService.destroyContainer(bundle, blueprintExtenderService.getContainer(bundle));
-            blueprintExtenderService.createContainer(bundle, paths);
+            blueprintExtenderService.createContainer(bundle);
         });
     }
 
@@ -187,11 +189,8 @@ class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintCo
 
     private void createContainers(final List<Bundle> containerBundles) {
         containerBundles.forEach(bundle -> {
-            List<Object> paths = BlueprintBundleTracker.findBlueprintPaths(bundle);
-
-            LOG.info("Restarting blueprint container for bundle {} with paths {}", bundle, paths);
-
-            blueprintExtenderService.createContainer(bundle, paths);
+            LOG.info("Restarting blueprint container for bundle {}", bundle);
+            blueprintExtenderService.createContainer(bundle);
         });
     }
 
@@ -223,7 +222,7 @@ class BlueprintContainerRestartServiceImpl implements AutoCloseable, BlueprintCo
         }
     }
 
-    private ServiceRegistration<?> registerEventHandler(final BundleContext bundleContext,
+    private static ServiceRegistration<?> registerEventHandler(final BundleContext bundleContext,
             final BlueprintListener listener) {
         return bundleContext.registerService(BlueprintListener.class.getName(), listener, new Hashtable<>());
     }
