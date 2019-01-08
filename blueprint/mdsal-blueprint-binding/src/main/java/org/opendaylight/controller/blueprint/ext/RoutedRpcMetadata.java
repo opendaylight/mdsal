@@ -11,8 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.aries.blueprint.ext.ComponentFactoryMetadata;
 import org.apache.aries.blueprint.services.ExtendedBlueprintContainer;
-import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RoutedRpcRegistration;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.osgi.service.blueprint.container.ComponentDefinitionException;
 import org.slf4j.Logger;
@@ -52,7 +51,7 @@ class RoutedRpcMetadata implements ComponentFactoryMetadata {
 
     @Override
     public List<String> getDependsOn() {
-        return Arrays.asList(OpendaylightNamespaceHandler.RPC_REGISTRY_NAME, implementationRefId);
+        return Arrays.asList(OpendaylightNamespaceHandler.BINDING_RPC_PROVIDER_SERVICE_NAME, implementationRefId);
     }
 
     @Override
@@ -65,8 +64,8 @@ class RoutedRpcMetadata implements ComponentFactoryMetadata {
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public Object create() throws ComponentDefinitionException {
-        RpcProviderRegistry rpcRegistry = (RpcProviderRegistry) container.getComponentInstance(
-                OpendaylightNamespaceHandler.RPC_REGISTRY_NAME);
+        RpcProviderService rpcRegistry = (RpcProviderService) container.getComponentInstance(
+                OpendaylightNamespaceHandler.BINDING_RPC_PROVIDER_SERVICE_NAME);
 
         Object implementation = container.getComponentInstance(implementationRefId);
 
