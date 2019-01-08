@@ -26,6 +26,7 @@
     <modules>
         <module>mdsal-blueprint-restart-api</module>
         <module>mdsal-blueprint-restart-impl</module>
+        <module>mdsal-blueprint-common</module>
     </modules>
 
     <properties>
