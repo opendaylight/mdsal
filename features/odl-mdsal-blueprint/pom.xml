@@ -36,5 +36,9 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-blueprint-restart-impl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-blueprint-common</artifactId>
+        </dependency>
     </dependencies>
 </project>
