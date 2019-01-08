@@ -58,6 +58,9 @@
         <module>odl-mdsal-singleton-common</module>
         <module>odl-mdsal-singleton-dom</module>
 
+        <!-- Trace -->
+        <module>odl-mdsal-trace</module>
+
         <!-- Models -->
         <!-- Standards -->
         <module>odl-mdsal-model-rfc6991</module>
