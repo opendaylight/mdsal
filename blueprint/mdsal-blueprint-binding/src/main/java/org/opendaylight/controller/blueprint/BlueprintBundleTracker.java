@@ -146,7 +146,7 @@ public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCus
         restartService.setBlueprintExtenderService(blueprintExtenderService);
 
         blueprintContainerRestartReg = bundleContext.registerService(
-                BlueprintContainerRestartService.class.getName(), restartService, new Hashtable<>());
+                BlueprintContainerRestartService.class, restartService, new Hashtable<>());
 
         return blueprintExtenderService;
     }
@@ -154,12 +154,11 @@ public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCus
     private void registerNamespaceHandler(final BundleContext context) {
         Dictionary<String, Object> props = new Hashtable<>();
         props.put("osgi.service.blueprint.namespace", OpendaylightNamespaceHandler.NAMESPACE_1_0_0);
-        namespaceReg = context.registerService(NamespaceHandler.class.getName(),
-                new OpendaylightNamespaceHandler(), props);
+        namespaceReg = context.registerService(NamespaceHandler.class, new OpendaylightNamespaceHandler(), props);
     }
 
     private void registerBlueprintEventHandler(final BundleContext context) {
-        eventHandlerReg = context.registerService(BlueprintListener.class.getName(), this, new Hashtable<>());
+        eventHandlerReg = context.registerService(BlueprintListener.class, this, new Hashtable<>());
     }
 
     /**
