@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint.ext;
+package org.opendaylight.mdsal.blueprint.common;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.ServiceReference;
@@ -52,8 +53,9 @@ class SpecificReferenceListMetadata extends AbstractDependentComponentFactoryMet
     private volatile BundleTracker<Bundle> bundleTracker;
     private volatile ServiceTracker<Object, Object> serviceTracker;
 
-    SpecificReferenceListMetadata(final String id, final String interfaceName) {
-        super(id);
+    SpecificReferenceListMetadata(final String id, final BlueprintContainerRestartService restartService,
+            final String interfaceName) {
+        super(id, restartService);
         this.interfaceName = interfaceName;
         serviceResourcePath = "META-INF/services/" + interfaceName;
     }
@@ -141,21 +143,21 @@ class SpecificReferenceListMetadata extends AbstractDependentComponentFactoryMet
 
     private Object serviceAdded(final ServiceReference<Object> reference) {
         Object service = container().getBundleContext().getService(reference);
-        String serviceType = (String) reference.getProperty(OpendaylightNamespaceHandler.TYPE_ATTR);
+        String serviceType = (String) reference.getProperty(CommonNamespaceHandler.TYPE_ATTR);
 
         LOG.debug("{}: Service type {} added from bundle {}", logName(), serviceType,
                 reference.getBundle().getSymbolicName());
 
         if (serviceType == null) {
             LOG.error("{}: Missing OSGi service property '{}' for service interface {} in bundle {}", logName(),
-                    OpendaylightNamespaceHandler.TYPE_ATTR, interfaceName,  reference.getBundle().getSymbolicName());
+                CommonNamespaceHandler.TYPE_ATTR, interfaceName,  reference.getBundle().getSymbolicName());
             return service;
         }
 
         if (!expectedServiceTypes.contains(serviceType)) {
             LOG.error("{}: OSGi service property '{}' for service interface {} in bundle {} was not found in the "
                     + "expected service types {} obtained via {} bundle resources. Is the bundle resource missing or "
-                    + "the service type misspelled?", logName(), OpendaylightNamespaceHandler.TYPE_ATTR, interfaceName,
+                    + "the service type misspelled?", logName(), CommonNamespaceHandler.TYPE_ATTR, interfaceName,
                     reference.getBundle().getSymbolicName(), expectedServiceTypes, serviceResourcePath);
             return service;
         }
