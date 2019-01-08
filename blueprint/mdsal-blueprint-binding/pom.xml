@@ -19,7 +19,7 @@
     <artifactId>mdsal-blueprint-binding</artifactId>
     <packaging>bundle</packaging>
     <name>${project.artifactId}</name>
-    <version>2.0.2-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -34,6 +34,10 @@
         <dependency>
             <groupId>org.apache.aries</groupId>
             <artifactId>org.apache.aries.util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-blueprint-restart-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
