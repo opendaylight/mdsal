@@ -5,9 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint.ext;
+package org.opendaylight.mdsal.blueprint.common;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +25,7 @@ class MandatoryServiceReferenceMetadata implements ServiceReferenceMetadata {
     private final String id;
 
     MandatoryServiceReferenceMetadata(final String id, final String interfaceClass) {
-        this.id = Preconditions.checkNotNull(id);
+        this.id = requireNonNull(id);
         this.interfaceClass = interfaceClass;
     }
 
@@ -60,7 +61,7 @@ class MandatoryServiceReferenceMetadata implements ServiceReferenceMetadata {
 
     @Override
     public String getFilter() {
-        return ComponentProcessor.DEFAULT_TYPE_FILTER;
+        return BlueprintConstants.DEFAULT_TYPE_FILTER;
     }
 
     @Override
