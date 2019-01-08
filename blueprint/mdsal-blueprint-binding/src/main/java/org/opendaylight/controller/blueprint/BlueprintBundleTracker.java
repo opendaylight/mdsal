@@ -7,31 +7,23 @@
  */
 package org.opendaylight.controller.blueprint;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import javax.annotation.Nullable;
 import org.apache.aries.blueprint.NamespaceHandler;
 import org.apache.aries.blueprint.services.BlueprintExtenderService;
 import org.apache.aries.quiesce.participant.QuiesceParticipant;
 import org.apache.aries.util.AriesFrameworkUtil;
 import org.opendaylight.controller.blueprint.ext.OpendaylightNamespaceHandler;
+import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.framework.SynchronousBundleListener;
-import org.osgi.service.blueprint.container.BlueprintContainer;
-import org.osgi.service.blueprint.container.BlueprintEvent;
-import org.osgi.service.blueprint.container.BlueprintListener;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.osgi.util.tracker.ServiceTracker;
@@ -47,12 +39,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thomas Pantelis
  */
-public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCustomizer<Bundle>, BlueprintListener,
-        SynchronousBundleListener {
+public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCustomizer<Bundle> {
     private static final Logger LOG = LoggerFactory.getLogger(BlueprintBundleTracker.class);
     private static final String BLUEPRINT_FILE_PATH = "org/opendaylight/blueprint/";
     private static final String BLUEPRINT_FLE_PATTERN = "*.xml";
-    private static final long SYSTEM_BUNDLE_ID = 0;
 
     private ServiceTracker<BlueprintExtenderService, BlueprintExtenderService> blueprintExtenderServiceTracker;
     private ServiceTracker<QuiesceParticipant, QuiesceParticipant> quiesceParticipantTracker;
@@ -76,8 +66,6 @@ public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCus
         restartService = new BlueprintContainerRestartServiceImpl();
 
         bundleContext = context;
-
-        registerBlueprintEventHandler(context);
 
         registerNamespaceHandler(context);
 
@@ -157,10 +145,6 @@ public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCus
         namespaceReg = context.registerService(NamespaceHandler.class, new OpendaylightNamespaceHandler(), props);
     }
 
-    private void registerBlueprintEventHandler(final BundleContext context) {
-        eventHandlerReg = context.registerService(BlueprintListener.class, this, new Hashtable<>());
-    }
-
     /**
      * Implemented from BundleActivator.
      */
@@ -170,21 +154,8 @@ public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCus
         blueprintExtenderServiceTracker.close();
         quiesceParticipantTracker.close();
 
-        AriesFrameworkUtil.safeUnregisterService(eventHandlerReg);
         AriesFrameworkUtil.safeUnregisterService(namespaceReg);
         AriesFrameworkUtil.safeUnregisterService(blueprintContainerRestartReg);
-    }
-
-    /**
-     * Implemented from SynchronousBundleListener.
-     */
-    @Override
-    public void bundleChanged(final BundleEvent event) {
-        // If the system bundle (id 0) is stopping, do an orderly shutdown of all blueprint containers. On
-        // shutdown the system bundle is stopped first.
-        if (event.getBundle().getBundleId() == SYSTEM_BUNDLE_ID && event.getType() == BundleEvent.STOPPING) {
-            shutdownAllContainers();
-        }
     }
 
     /**
@@ -224,35 +195,6 @@ public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCus
         // BlueprintExtenderService will handle this.
     }
 
-    /**
-     * Implemented from BlueprintListener to listen for blueprint events.
-     *
-     * @param event the event to handle
-     */
-    @Override
-    public void blueprintEvent(BlueprintEvent event) {
-        if (event.getType() == BlueprintEvent.CREATED) {
-            LOG.info("Blueprint container for bundle {} was successfully created", event.getBundle());
-            return;
-        }
-
-        // If the container timed out waiting for dependencies, we'll destroy it and start it again. This
-        // is indicated via a non-null DEPENDENCIES property containing the missing dependencies. The
-        // default timeout is 5 min and ideally we would set this to infinite but the timeout can only
-        // be set at the bundle level in the manifest - there's no way to set it globally.
-        if (event.getType() == BlueprintEvent.FAILURE && event.getDependencies() != null) {
-            Bundle bundle = event.getBundle();
-
-            List<Object> paths = findBlueprintPaths(bundle);
-            if (!paths.isEmpty()) {
-                LOG.warn("Blueprint container for bundle {} timed out waiting for dependencies - restarting it",
-                        bundle);
-
-                restartService.restartContainer(bundle, paths);
-            }
-        }
-    }
-
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static List<Object> findBlueprintPaths(final Bundle bundle) {
         Enumeration<?> rntries = bundle.findEntries(BLUEPRINT_FILE_PATH, BLUEPRINT_FLE_PATTERN, false);
@@ -261,106 +203,5 @@ public class BlueprintBundleTracker implements BundleActivator, BundleTrackerCus
         } else {
             return Collections.list((Enumeration)rntries);
         }
-    }
-
-    private void shutdownAllContainers() {
-        shuttingDown = true;
-
-        restartService.close();
-
-        LOG.info("Shutting down all blueprint containers...");
-
-        Collection<Bundle> containerBundles = new HashSet<>(Arrays.asList(bundleContext.getBundles()));
-        while (!containerBundles.isEmpty()) {
-            // For each iteration of getBundlesToDestroy, as containers are destroyed, other containers become
-            // eligible to be destroyed. We loop until we've destroyed them all.
-            for (Bundle bundle : getBundlesToDestroy(containerBundles)) {
-                containerBundles.remove(bundle);
-                BlueprintContainer container = blueprintExtenderService.getContainer(bundle);
-                if (container != null) {
-                    blueprintExtenderService.destroyContainer(bundle, container);
-                }
-            }
-        }
-
-        LOG.info("Shutdown of blueprint containers complete");
-    }
-
-    private List<Bundle> getBundlesToDestroy(final Collection<Bundle> containerBundles) {
-        List<Bundle> bundlesToDestroy = new ArrayList<>();
-
-        // Find all container bundles that either have no registered services or whose services are no
-        // longer in use.
-        for (Bundle bundle : containerBundles) {
-            ServiceReference<?>[] references = bundle.getRegisteredServices();
-            int usage = 0;
-            if (references != null) {
-                for (ServiceReference<?> reference : references) {
-                    usage += getServiceUsage(reference);
-                }
-            }
-
-            LOG.debug("Usage for bundle {} is {}", bundle, usage);
-            if (usage == 0) {
-                bundlesToDestroy.add(bundle);
-            }
-        }
-
-        if (!bundlesToDestroy.isEmpty()) {
-            bundlesToDestroy.sort((b1, b2) -> (int) (b2.getLastModified() - b1.getLastModified()));
-
-            LOG.debug("Selected bundles {} for destroy (no services in use)", bundlesToDestroy);
-        } else {
-            // There's either no more container bundles or they all have services being used. For
-            // the latter it means there's either circular service usage or a service is being used
-            // by a non-container bundle. But we need to make progress so we pick the bundle with a
-            // used service with the highest service ID. Each service is assigned a monotonically
-            // increasing ID as they are registered. By picking the bundle with the highest service
-            // ID, we're picking the bundle that was (likely) started after all the others and thus
-            // is likely the safest to destroy at this point.
-
-            Bundle bundle = findBundleWithHighestUsedServiceId(containerBundles);
-            if (bundle != null) {
-                bundlesToDestroy.add(bundle);
-            }
-
-            LOG.debug("Selected bundle {} for destroy (lowest ranking service or highest service ID)",
-                    bundlesToDestroy);
-        }
-
-        return bundlesToDestroy;
-    }
-
-    @Nullable
-    private Bundle findBundleWithHighestUsedServiceId(final Collection<Bundle> containerBundles) {
-        ServiceReference<?> highestServiceRef = null;
-        for (Bundle bundle : containerBundles) {
-            ServiceReference<?>[] references = bundle.getRegisteredServices();
-            if (references == null) {
-                continue;
-            }
-
-            for (ServiceReference<?> reference : references) {
-                // We did check the service usage previously but it's possible the usage has changed since then.
-                if (getServiceUsage(reference) == 0) {
-                    continue;
-                }
-
-                // Choose 'reference' if it has a lower service ranking or, if the rankings are equal
-                // which is usually the case, if it has a higher service ID. For the latter the < 0
-                // check looks backwards but that's how ServiceReference#compareTo is documented to work.
-                if (highestServiceRef == null || reference.compareTo(highestServiceRef) < 0) {
-                    LOG.debug("Currently selecting bundle {} for destroy (with reference {})", bundle, reference);
-                    highestServiceRef = reference;
-                }
-            }
-        }
-
-        return highestServiceRef == null ? null : highestServiceRef.getBundle();
-    }
-
-    private static int getServiceUsage(final ServiceReference<?> ref) {
-        Bundle[] usingBundles = ref.getUsingBundles();
-        return usingBundles != null ? usingBundles.length : 0;
     }
 }

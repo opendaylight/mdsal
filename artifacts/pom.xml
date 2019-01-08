@@ -177,6 +177,17 @@
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-blueprint-restart-api</artifactId>
+                <version>1.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-blueprint-restart-impl</artifactId>
+                <version>1.0.3-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-common-api</artifactId>
                 <version>5.0.0-SNAPSHOT</version>
             </dependency>
@@ -233,6 +244,15 @@
             </dependency>
 
             <!-- Features -->
+            <!-- BLUEPRINT EXTENSION CORE -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>odl-mdsal-blueprint</artifactId>
+                <version>1.0.3-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+
             <!-- BINDING -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
