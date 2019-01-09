@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint.ext;
+package org.opendaylight.mdsal.blueprint.binding;
 
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.blueprint.common.BlueprintConstants.INTERFACE;
@@ -39,7 +39,6 @@ import org.opendaylight.yangtools.util.xml.UntrustedXML;
 import org.osgi.service.blueprint.container.ComponentDefinitionException;
 import org.osgi.service.blueprint.reflect.ComponentMetadata;
 import org.osgi.service.blueprint.reflect.Metadata;
-import org.osgi.service.blueprint.reflect.ReferenceMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -54,7 +53,7 @@ import org.xml.sax.SAXException;
  * @author Thomas Pantelis
  */
 public final class OpendaylightNamespaceHandler implements NamespaceHandler {
-    public static final String NAMESPACE_1_0_0 = "http://opendaylight.org/xmlns/blueprint/v1.0.0";
+    public static final String NAMESPACE_1_0_0 = "http://opendaylight.org/xmlns/mdsal/blueprint/binding//v1.0.0";
     static final String ROUTED_RPC_REG_CONVERTER_NAME = "org.opendaylight.blueprint.RoutedRpcRegConverter";
     static final String DOM_RPC_PROVIDER_SERVICE_NAME = "org.opendaylight.blueprint.DOMRpcProviderService";
     static final String BINDING_RPC_PROVIDER_SERVICE_NAME = "org.opendaylight.blueprint.RpcProviderService";
@@ -84,7 +83,7 @@ public final class OpendaylightNamespaceHandler implements NamespaceHandler {
     @Override
     public URL getSchemaLocation(final String namespace) {
         if (NAMESPACE_1_0_0.equals(namespace)) {
-            URL url = getClass().getResource("/opendaylight-blueprint-ext-1.0.0.xsd");
+            URL url = getClass().getResource("/odl-mdsal-blueprint-binding-1.0.0.xsd");
             LOG.debug("getSchemaLocation for {} returning URL {}", namespace, url);
             return url;
         }
@@ -98,8 +97,6 @@ public final class OpendaylightNamespaceHandler implements NamespaceHandler {
 
         if (nodeNameEquals(element, RpcImplementationBean.RPC_IMPLEMENTATION)) {
             return parseRpcImplementation(element, context);
-        } else if (nodeNameEquals(element, RoutedRpcMetadata.ROUTED_RPC_IMPLEMENTATION)) {
-            return parseRoutedRpcImplementation(element, context);
         } else if (nodeNameEquals(element, RPC_SERVICE)) {
             return parseRpcService(element, context);
         } else if (nodeNameEquals(element, NotificationListenerBean.NOTIFICATION_LISTENER)) {
@@ -160,18 +157,6 @@ public final class OpendaylightNamespaceHandler implements NamespaceHandler {
         return metadata;
     }
 
-    private static Metadata parseRoutedRpcImplementation(final Element element, final ParserContext context) {
-        registerBindingRpcProviderServiceRefBean(context);
-        registerRoutedRpcRegistrationConverter(context);
-
-        ComponentFactoryMetadata metadata = new RoutedRpcMetadata(getId(context, element),
-                element.getAttribute(INTERFACE), element.getAttribute(REF_ATTR));
-
-        LOG.debug("parseRoutedRpcImplementation returning {}", metadata);
-
-        return metadata;
-    }
-
     private Metadata parseActionService(final Element element, final ParserContext context) {
         ComponentFactoryMetadata metadata = new ActionServiceMetadata(getId(context, element), restartService,
                 element.getAttribute(INTERFACE));
@@ -188,16 +173,6 @@ public final class OpendaylightNamespaceHandler implements NamespaceHandler {
         LOG.debug("parseRpcService returning {}", metadata);
 
         return metadata;
-    }
-
-    private static void registerRoutedRpcRegistrationConverter(final ParserContext context) {
-        ComponentDefinitionRegistry registry = context.getComponentDefinitionRegistry();
-        if (registry.getComponentDefinition(ROUTED_RPC_REG_CONVERTER_NAME) == null) {
-            MutableBeanMetadata metadata = createBeanMetadata(context, ROUTED_RPC_REG_CONVERTER_NAME,
-                    RoutedRpcRegistrationConverter.class, false, false);
-            metadata.setActivation(ReferenceMetadata.ACTIVATION_LAZY);
-            registry.registerTypeConverter(metadata);
-        }
     }
 
     private static void registerDomRpcProviderServiceRefBean(final ParserContext context) {
