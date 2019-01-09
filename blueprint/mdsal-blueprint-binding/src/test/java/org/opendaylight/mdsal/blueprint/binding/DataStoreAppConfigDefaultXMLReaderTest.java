@@ -5,15 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint.tests;
+package org.opendaylight.mdsal.blueprint.binding;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.Test;
-import org.opendaylight.controller.blueprint.ext.DataStoreAppConfigDefaultXMLReader;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.store.rev140422.Lists;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.store.rev140422.lists.unordered.container.UnorderedList;
 
 /**
  * Example unit test using the {@link DataStoreAppConfigDefaultXMLReader}.
