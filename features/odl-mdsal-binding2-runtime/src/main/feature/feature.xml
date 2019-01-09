@@ -2,7 +2,7 @@
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="odl-mdsal-binding2-runtime">
     <feature name="odl-mdsal-binding2-runtime">
         <feature version="[4,5)">odl-javassist-3</feature>
-        <feature version="[4.0.5,5)">odl-apache-commons-lang3</feature>
+        <feature version="[4.0.8,5)">odl-apache-commons-lang3</feature>
         <feature version="[2.1,3)">odl-yangtools-data</feature>
     </feature>
 </features>
