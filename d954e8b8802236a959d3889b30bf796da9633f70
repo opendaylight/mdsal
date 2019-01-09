@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d16b0514_46fdf11e",
+        "filename": "blueprint/mdsal-blueprint-binding/src/main/java/org/opendaylight/controller/blueprint/BlueprintBundleTracker.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-09T19:30:28Z",
+      "side": 1,
+      "message": "All this is related to the restart service so can be removed. In fact the only thing we need this class to do now is to registerNamespaceHandler. We should rename to BlueprintActivator. In fact I think we could remove this class and advertise the OpendaylightNamespaceHandler via BP xml.",
+      "range": {
+        "startLine": 74,
+        "startChar": 8,
+        "endLine": 140,
+        "endChar": 5
+      },
+      "revId": "d954e8b8802236a959d3889b30bf796da9633f70",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d64180b2_f466439a",
+        "filename": "blueprint/mdsal-blueprint-restart-impl/src/main/java/org/opendaylight/mdsal/blueprint/restart/impl/BlueprintContainerRestartServiceImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-09T19:30:28Z",
+      "side": 1,
+      "message": "This code + shutdownAllContainers etc wasn\u0027t part of this service - it was related to the org/opendaylight/blueprint support so we don\u0027t need it.",
+      "revId": "d954e8b8802236a959d3889b30bf796da9633f70",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1530ef15_5d0f2cc1",
+        "filename": "blueprint/mdsal-blueprint-restart-impl/src/main/resources/OSGI-INF/blueprint/blueprint.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-09T19:30:28Z",
+      "side": 1,
+      "message": "remove tabs",
+      "revId": "d954e8b8802236a959d3889b30bf796da9633f70",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "53e195b1_860210a3",
+        "filename": "blueprint/mdsal-blueprint-restart-impl/src/main/resources/OSGI-INF/blueprint/blueprint.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-09T19:30:28Z",
+      "side": 1,
+      "message": "This isn\u0027t needed",
+      "revId": "d954e8b8802236a959d3889b30bf796da9633f70",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
