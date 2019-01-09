@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.blueprint.ext;
+package org.opendaylight.mdsal.blueprint.binding;
 
 import static java.util.Objects.requireNonNull;
 
@@ -22,7 +22,6 @@ import javax.annotation.Nullable;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.aries.blueprint.services.ExtendedBlueprintContainer;
-import org.opendaylight.controller.blueprint.ext.DataStoreAppConfigDefaultXMLReader.ConfigURLProvider;
 import org.opendaylight.mdsal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
@@ -31,6 +30,7 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.blueprint.binding.DataStoreAppConfigDefaultXMLReader.ConfigURLProvider;
 import org.opendaylight.mdsal.blueprint.common.AbstractDependentComponentFactoryMetadata;
 import org.opendaylight.mdsal.blueprint.restart.api.BlueprintContainerRestartService;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -81,7 +81,7 @@ public class DataStoreAppConfigMetadata extends AbstractDependentComponentFactor
     // project are still used - conversion to the mdsal binding classes hasn't occurred yet.
     private volatile BindingNormalizedNodeSerializer bindingSerializer;
 
-    public DataStoreAppConfigMetadata( final String id, final BlueprintContainerRestartService restartService,
+    public DataStoreAppConfigMetadata(final String id, final BlueprintContainerRestartService restartService,
             final String appConfigBindingClassName, final String appConfigListKeyValue,
             final String defaultAppConfigFileName, final UpdateStrategy updateStrategyValue,
             final Element defaultAppConfigElement) {
