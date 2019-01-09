@@ -260,6 +260,11 @@
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-blueprint-binding</artifactId>
+                <version>1.0.4-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-blueprint-common</artifactId>
                 <version>1.0.4-SNAPSHOT</version>
             </dependency>
