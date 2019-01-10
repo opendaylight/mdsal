@@ -17,7 +17,7 @@
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-odl-l2-types</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.4-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Model :: OpenDaylight L2 Types</name>

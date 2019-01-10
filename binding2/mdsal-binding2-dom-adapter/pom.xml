@@ -16,7 +16,7 @@
     </parent>
 
     <artifactId>mdsal-binding2-dom-adapter</artifactId>
-    <version>0.15.3-SNAPSHOT</version>
+    <version>0.15.4-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <dependencies>

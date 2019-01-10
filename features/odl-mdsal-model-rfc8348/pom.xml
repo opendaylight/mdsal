@@ -17,7 +17,7 @@
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-rfc8348</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.4-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Model :: RFC8348</name>

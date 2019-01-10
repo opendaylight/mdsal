@@ -17,7 +17,7 @@
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-draft-ietf-lisp-lcaf-10</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.4-SNAPSHOT</version>
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Model :: draft-ietf-lisp-lcaf-10</name>

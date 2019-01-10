@@ -18,7 +18,7 @@
     </parent>
 
     <artifactId>mdsal-binding-util-tests</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.4-SNAPSHOT</version>
 
     <dependencies>
         <dependency>

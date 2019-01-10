@@ -19,7 +19,7 @@
     <artifactId>mdsal-binding2-spec</artifactId>
     <name>${project.artifactId}</name>
     <description>Java Binding for YANG</description>
-    <version>0.15.3-SNAPSHOT</version>
+    <version>0.15.4-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <dependencies>
