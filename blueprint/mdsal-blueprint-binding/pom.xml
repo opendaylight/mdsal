@@ -12,14 +12,14 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>dom-parent</artifactId>
-        <version>3.0.4-SNAPSHOT</version>
+        <version>3.0.5-SNAPSHOT</version>
         <relativePath>../../dom/dom-parent</relativePath>
     </parent>
 
     <artifactId>mdsal-blueprint-binding</artifactId>
     <packaging>bundle</packaging>
     <name>${project.artifactId}</name>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
