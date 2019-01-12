@@ -17,8 +17,8 @@
 
     <artifactId>odl-mdsal-dom</artifactId>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: DOM</name>
+    <description>MD-SAL full DOM functionality</description>
 
     <dependencies>
         <dependency>

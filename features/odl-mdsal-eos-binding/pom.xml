@@ -17,8 +17,8 @@
 
     <artifactId>odl-mdsal-eos-binding</artifactId>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: EOS :: Binding</name>
+    <description>Entity Ownership Service Binding support</description>
 
     <dependencies>
         <dependency>

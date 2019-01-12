@@ -17,8 +17,8 @@
 
     <artifactId>odl-mdsal-singleton-common</artifactId>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: Singleton :: Common</name>
+    <description>MD-SAL Cluster Singleton Service commons</description>
 
     <dependencies>
         <dependency>

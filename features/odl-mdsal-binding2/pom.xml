@@ -17,8 +17,8 @@
 
     <artifactId>odl-mdsal-binding2</artifactId>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: Binding 2</name>
+    <description>MD-SAL full Java Binding 2 functionality (experimental)</description>
 
     <dependencies>
         <dependency>

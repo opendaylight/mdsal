@@ -21,6 +21,7 @@
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Model :: RFC7224</name>
+    <description>Models from RFC7224 with RFC7223</description>
 
     <dependencies>
         <dependency>

@@ -17,8 +17,8 @@
 
     <artifactId>odl-mdsal-eos-dom</artifactId>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: EOS :: DOM</name>
+    <description>Entity Ownership Service DOM API</description>
 
     <dependencies>
         <dependency>

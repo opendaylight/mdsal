@@ -10,8 +10,9 @@
 
     <artifactId>odl-mdsal-trace</artifactId>
     <version>1.0.5-SNAPSHOT</version>
-    <name>OpenDaylight :: TracingBroker</name>
     <packaging>feature</packaging>
+    <name>OpenDaylight :: TracingBroker</name>
+    <description>MD-SAL Trace tooling</description>
 
     <dependencies>
         <dependency>

@@ -19,8 +19,8 @@
     <artifactId>odl-mdsal-model-draft-bierman-netconf-restconf-02</artifactId>
     <version>1.2.5-SNAPSHOT</version>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: Model :: draft-bierman-netconf-restconf-02</name>
+    <description>Models from draft-bierman-netconf-restconf-02</description>
 
     <dependencies>
         <dependency>

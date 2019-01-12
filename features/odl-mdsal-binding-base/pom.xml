@@ -17,8 +17,8 @@
 
     <artifactId>odl-mdsal-binding-base</artifactId>
     <packaging>feature</packaging>
-
-    <name>OpenDaylight :: MD-SAL :: Binding Base Concepts</name>
+    <name>OpenDaylight :: MD-SAL :: Binding Base</name>
+    <description>MD-SAL Java Binding base support</description>
 
     <dependencies>
         <dependency>

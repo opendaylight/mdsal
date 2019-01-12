@@ -17,8 +17,8 @@
 
     <artifactId>odl-mdsal-binding-dom-adapter</artifactId>
     <packaging>feature</packaging>
-
-    <name>OpenDaylight :: MD-SAL :: DOM Adapter</name>
+    <name>OpenDaylight :: MD-SAL :: Binding/DOM Adapter</name>
+    <description>MD-SAL Java Binding/DOM adapter</description>
 
     <dependencies>
         <dependency>

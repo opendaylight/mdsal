@@ -17,8 +17,8 @@
 
     <artifactId>odl-mdsal-dom-api</artifactId>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: DOM API and SPI</name>
+    <description>MD-SAL DOM APIs</description>
 
     <dependencies>
         <dependency>

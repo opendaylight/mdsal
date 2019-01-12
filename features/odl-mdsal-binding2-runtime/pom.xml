@@ -17,8 +17,8 @@
 
     <artifactId>odl-mdsal-binding2-runtime</artifactId>
     <packaging>feature</packaging>
-
-    <name>OpenDaylight :: MD-SAL :: Binding 2 Generator</name>
+    <name>OpenDaylight :: MD-SAL :: Binding 2 Runtime</name>
+    <description>MD-SAL Java Binding 2 runtime (experimental)</description>
 
     <dependencies>
         <dependency>

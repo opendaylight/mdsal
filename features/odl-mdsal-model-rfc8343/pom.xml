@@ -19,8 +19,8 @@
     <artifactId>odl-mdsal-model-rfc8343</artifactId>
     <version>1.2.5-SNAPSHOT</version>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: Model :: RFC8343</name>
+    <description>Models from RFC8343</description>
 
     <dependencies>
         <dependency>

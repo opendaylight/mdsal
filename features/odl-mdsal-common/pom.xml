@@ -17,8 +17,8 @@
 
     <artifactId>odl-mdsal-common</artifactId>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: Common</name>
+    <description>MD-SAL common APIs and utilities</description>
 
     <dependencies>
         <dependency>

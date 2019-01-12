@@ -19,8 +19,8 @@
     <artifactId>odl-mdsal-model-draft-ietf-netmod-acl-model-07</artifactId>
     <version>1.2.5-SNAPSHOT</version>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: Model :: draft-ietf-netmod-acl-model-07</name>
+    <description>Models from draft-ietf-netmod-acl-model-07</description>
 
     <dependencies>
         <dependency>

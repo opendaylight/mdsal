@@ -19,8 +19,8 @@
     <artifactId>odl-mdsal-model-rfc7895</artifactId>
     <version>1.2.5-SNAPSHOT</version>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: Model :: RFC7895</name>
+    <description>Models from RFC7895</description>
 
     <dependencies>
         <dependency>

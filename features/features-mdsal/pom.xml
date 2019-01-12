@@ -20,6 +20,8 @@
     <artifactId>features-mdsal</artifactId>
     <version>3.0.5-SNAPSHOT</version>
     <packaging>feature</packaging>
+    <name>OpenDaylight :: MD-SAL :: Stable Features</name>
+    <description>MD-SAL stable feature repository</description>
 
     <dependencyManagement>
         <dependencies>

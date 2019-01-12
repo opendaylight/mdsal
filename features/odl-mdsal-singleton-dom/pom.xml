@@ -17,8 +17,8 @@
 
     <artifactId>odl-mdsal-singleton-dom</artifactId>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: Singleton :: DOM</name>
+    <description>MD-SAL Cluster Singleton Service implementation</description>
 
     <dependencies>
         <dependency>

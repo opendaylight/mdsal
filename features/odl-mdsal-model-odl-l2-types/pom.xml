@@ -19,8 +19,8 @@
     <artifactId>odl-mdsal-model-odl-l2-types</artifactId>
     <version>1.2.5-SNAPSHOT</version>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: Model :: OpenDaylight L2 Types</name>
+    <description>OpenDaylight-specific model of Layer 2 types</description>
 
     <dependencies>
         <dependency>

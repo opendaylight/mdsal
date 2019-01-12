@@ -19,8 +19,8 @@
     <artifactId>odl-mdsal-model-rfc7224-20180703</artifactId>
     <version>1.0.5-SNAPSHOT</version>
     <packaging>feature</packaging>
-
     <name>OpenDaylight :: MD-SAL :: Model :: RFC7224 :: 20180703</name>
+    <description>Models from RFC7224 with RFC8343</description>
 
     <dependencies>
         <dependency>
