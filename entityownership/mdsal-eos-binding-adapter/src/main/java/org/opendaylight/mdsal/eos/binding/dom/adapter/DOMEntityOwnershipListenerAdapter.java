@@ -7,14 +7,20 @@
  */
 package org.opendaylight.mdsal.eos.binding.dom.adapter;
 
+import static com.google.common.base.Verify.verifyNotNull;
+
 import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,14 +45,23 @@ class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
     @SuppressWarnings("checkstyle:IllegalCatch")
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     public void ownershipChanged(final DOMEntityOwnershipChange ownershipChange) {
+        final DOMEntity domEntity = ownershipChange.getEntity();
+        final YangInstanceIdentifier domId = domEntity.getIdentifier();
+        final @NonNull InstanceIdentifier<?> bindingId;
         try {
-            final Entity entity = new Entity(ownershipChange.getEntity().getType(),
-                    conversionCodec.fromYangInstanceIdentifier(ownershipChange.getEntity().getIdentifier()));
-            bindingListener.ownershipChanged(new EntityOwnershipChange(entity, ownershipChange.getState(),
-                    ownershipChange.inJeopardy()));
-        } catch (final Exception e) {
-            LOG.error("Error converting DOM entity ID {} to binding InstanceIdentifier",
-                        ownershipChange.getEntity().getIdentifier(), e);
+            bindingId = verifyNotNull(conversionCodec.fromYangInstanceIdentifier(domId));
+        } catch (RuntimeException e) {
+            LOG.error("Error converting DOM entity ID {} to binding InstanceIdentifier", domId, e);
+            return;
+        }
+
+        final Entity bindingEntity = new Entity(domEntity.getType(), bindingId);
+        final EntityOwnershipChange change = new EntityOwnershipChange(bindingEntity,
+            ownershipChange.getState(), ownershipChange.inJeopardy());
+        try {
+            bindingListener.ownershipChanged(change);
+        } catch (Exception e) {
+            LOG.error("Listener {} failed during change notification {}", bindingListener, change, e);
         }
     }
 }
