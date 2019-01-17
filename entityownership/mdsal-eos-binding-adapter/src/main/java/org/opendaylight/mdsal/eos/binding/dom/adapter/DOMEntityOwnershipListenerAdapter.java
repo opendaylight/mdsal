@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.eos.binding.dom.adapter;
 
-import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -48,7 +47,7 @@ class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
         final YangInstanceIdentifier domId = domEntity.getIdentifier();
         final InstanceIdentifier<?> bindingId;
         try {
-            bindingId = verifyNotNull(conversionCodec.fromYangInstanceIdentifier(domId));
+            bindingId = conversionCodec.coerceFromYangInstanceIdentifier(domId);
         } catch (RuntimeException e) {
             LOG.error("Error converting DOM entity ID {} to binding InstanceIdentifier", domId, e);
             return;
