@@ -19,7 +19,7 @@
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>mdsal-artifacts</artifactId>
-    <version>3.0.5-SNAPSHOT</version>
+    <version>3.0.5</version>
     <packaging>pom</packaging>
 
     <dependencyManagement>
@@ -28,14 +28,14 @@
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>features-mdsal</artifactId>
                 <classifier>features</classifier>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>features-mdsal-experimental</artifactId>
                 <classifier>features</classifier>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <type>xml</type>
             </dependency>
 
@@ -43,266 +43,266 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-common-api</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-common-util</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-api</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-spi</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-broker</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-schema-service-osgi</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
 
             <!-- Binding MD-SAL & Java Binding -->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>maven-sal-api-gen-plugin</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-generator-api</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-generator-util</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-generator-impl</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-java-api-generator</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>yang-binding</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-spec-util</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-test-model</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-api</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-adapter</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-adapter</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-codec</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-codec-osgi</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-spi</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-util</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-test-utils</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>yang-ext</artifactId>
-                <version>2013.09.07.15.5-SNAPSHOT</version>
+                <version>2013.09.07.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>general-entity</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
 
             <!-- Binding specification version 2-->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-maven-api-gen-plugin</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-runtime</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-dom-codec</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-api</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-dom-adapter</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-spi</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-test-model</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-generator-api</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-spec</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-generator-impl</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-java-api-generator</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-generator-util</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-util</artifactId>
-                <version>0.15.5-SNAPSHOT</version>
+                <version>0.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model.binding2</groupId>
                 <artifactId>yang-ext</artifactId>
-                <version>2013.09.07.15.5-SNAPSHOT</version>
+                <version>2013.09.07.15.5</version>
             </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-common-api</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-common-spi</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-dom-api</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-dom-simple</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-binding-api</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-binding-adapter</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-singleton-common-api</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-singleton-dom-impl</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
             </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-trace-api</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-trace-cli</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-trace-impl</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
 
             <!-- Features -->
@@ -310,35 +310,35 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-base</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-runtime</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-api</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding-dom-adapter</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -347,35 +347,35 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding2</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding2-base</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding2-runtime</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding2-api</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-binding2-dom-adapter</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -384,21 +384,21 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-dom</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-dom-api</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-dom-broker</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -407,7 +407,7 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-common</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -416,21 +416,21 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-eos-common</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-eos-dom</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-eos-binding</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -439,14 +439,14 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-singleton-common</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-singleton-dom</artifactId>
-                <version>3.0.5-SNAPSHOT</version>
+                <version>3.0.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -455,29 +455,29 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>opendaylight-l2-types</artifactId>
-                <version>2013.08.27.15.5-SNAPSHOT</version>
+                <version>2013.08.27.15.5</version>
             </dependency>
 
             <!-- RFC6991 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc6991</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc6991-ietf-inet-types</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc6991-ietf-yang-types</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-type-util</artifactId>
-                <version>2.3.5-SNAPSHOT</version>
+                <version>2.3.5</version>
             </dependency>
 
             <!-- RFC7223 -->
@@ -485,21 +485,21 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc7223</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
 
             <!-- RFC7224-20170119, live version: https://github.com/YangModels/yang/blob/master/standard/ietf/RFC/iana-if-type.yang -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-if-type</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
 
             <!-- RFC7224-20180703 version: http://www.iana.org/assignments/yang-parameters/iana-if-type@2018-07-03.yang -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>rfc7224-20180703-iana-if-type</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
+                <version>1.0.5</version>
             </dependency>
 
             <!-- RFC7277 -->
@@ -507,140 +507,140 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc7277</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
 
             <!-- RFC7895 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc7895</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
 
             <!-- RFC7952 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc7952</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
 
             <!-- RFC8294 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8294</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8294-ietf-routing-types</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-routing-types</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
 
             <!-- RFC8342 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8342</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8342-ietf-datastores</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8342-ietf-origin</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
 
             <!-- RFC8343 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8343</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
 
             <!-- RFC8344 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8344</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
 
             <!-- RFC8345 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8345</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8345-ietf-network</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8345-ietf-network-state</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8345-ietf-network-topology</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8345-ietf-network-topology-state</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
 
             <!-- RFC8348 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8348</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8348-ietf-hardware</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8348-ietf-hardware-state</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
                 <artifactId>iana-hardware</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
 
             <!-- RFC8349 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8349</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8349-ietf-routing</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8349-ietf-ipv4-unicast-routing</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8349-ietf-ipv6-unicast-routing</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
             </dependency>
 
             <!-- draft-bierman-netconf-restconf-02 -->
@@ -648,7 +648,7 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-restconf</artifactId>
-                <version>2013.10.19.15.5-SNAPSHOT</version>
+                <version>2013.10.19.15.5</version>
             </dependency>
 
             <!-- draft-clemm-netmod-yang-network-topo-01 -->
@@ -660,37 +660,37 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-ted</artifactId>
-                <version>2013.10.21.15.5-SNAPSHOT</version>
+                <version>2013.10.21.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-topology</artifactId>
-                <version>2013.10.21.15.5-SNAPSHOT</version>
+                <version>2013.10.21.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-topology-isis</artifactId>
-                <version>2013.10.21.15.5-SNAPSHOT</version>
+                <version>2013.10.21.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-topology-l3-unicast-igp</artifactId>
-                <version>2013.10.21.15.5-SNAPSHOT</version>
+                <version>2013.10.21.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-topology-ospf</artifactId>
-                <version>2013.10.21.15.5-SNAPSHOT</version>
+                <version>2013.10.21.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-topology-l3-unicast</artifactId>
-                <version>2013.10.21.15.5-SNAPSHOT</version>
+                <version>2013.10.21.15.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-lisp-address-types-2015-11-05</artifactId>
-                <version>1.4.5-SNAPSHOT</version>
+                <version>1.4.5</version>
             </dependency>
 
             <!-- draft-ietf-netmod-acl-model-07 -->
@@ -699,124 +699,124 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-packet-fields</artifactId>
-                <version>0.13.5-SNAPSHOT</version>
+                <version>0.13.5</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-access-control-list</artifactId>
-                <version>0.13.5-SNAPSHOT</version>
+                <version>0.13.5</version>
             </dependency>
 
             <!-- draft-ietf-netmod-iana-afn-safi-00, expired -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>iana-afn-safi</artifactId>
-                <version>2013.07.04.15.5-SNAPSHOT</version>
+                <version>2013.07.04.15.5</version>
             </dependency>
 
             <!-- Features -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc6991</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7223</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7224</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7277</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7895</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7952</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8294</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8342</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8343</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8344</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8345</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8345-non-nmda</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8348</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8348-non-nmda</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8349</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
@@ -824,49 +824,49 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-bierman-netconf-restconf-02</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-ietf-lisp-lcaf-10</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-ietf-netmod-acl-model-07</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-ietf-netmod-iana-afn-safi-00</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-odl-l2-types</artifactId>
-                <version>1.2.5-SNAPSHOT</version>
+                <version>1.2.5</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
