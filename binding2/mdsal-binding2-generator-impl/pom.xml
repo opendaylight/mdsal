@@ -12,12 +12,12 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>dom-parent</artifactId>
-        <version>3.0.6-SNAPSHOT</version>
+        <version>3.0.6</version>
         <relativePath>../../dom/dom-parent</relativePath>
     </parent>
 
     <artifactId>mdsal-binding2-generator-impl</artifactId>
-    <version>0.15.6-SNAPSHOT</version>
+    <version>0.15.6</version>
     <packaging>bundle</packaging>
 
     <dependencies>
