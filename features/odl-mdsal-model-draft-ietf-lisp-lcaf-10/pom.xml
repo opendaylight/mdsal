@@ -11,14 +11,14 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>3.0.6-SNAPSHOT</version>
+        <version>3.0.7-SNAPSHOT</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <!-- FIXME: 4.0.0: rename to draft-ietf-lisp-yang-06 -->
     <artifactId>odl-mdsal-model-draft-ietf-lisp-lcaf-10</artifactId>
-    <version>1.2.6-SNAPSHOT</version>
+    <version>1.2.7-SNAPSHOT</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Model :: draft-ietf-lisp-yang-06</name>
     <description>Models from draft-ietf-lisp-yang-06</description>
