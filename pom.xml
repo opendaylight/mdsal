@@ -36,6 +36,7 @@
         <module>entityownership</module>
         <module>singleton-service</module>
         <module>trace</module>
+        <module>wiring</module>
     </modules>
 
     <properties>
