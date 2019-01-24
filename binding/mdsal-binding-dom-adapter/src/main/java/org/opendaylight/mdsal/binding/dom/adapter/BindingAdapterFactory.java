@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
@@ -39,9 +41,11 @@ import org.opendaylight.yangtools.concepts.Immutable;
  */
 @Beta
 @NonNullByDefault
+@Singleton
 public final class BindingAdapterFactory implements AdapterFactory, Immutable {
     private final BindingToNormalizedNodeCodec codec;
 
+    @Inject
     public BindingAdapterFactory(final BindingToNormalizedNodeCodec codec) {
         this.codec = requireNonNull(codec);
     }

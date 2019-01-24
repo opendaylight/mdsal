@@ -28,6 +28,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
@@ -81,6 +84,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * NOTE: this class is non-final to allow controller adapter migration without duplicated code.
  */
+@Singleton
 public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
         BindingNormalizedNodeSerializer, SchemaContextListener, AutoCloseable {
 
@@ -99,6 +103,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     private final FutureSchema futureSchema;
     private ListenerRegistration<?> listenerRegistration;
 
+    @Inject
     public BindingToNormalizedNodeCodec(final ClassLoadingStrategy classLoadingStrategy,
             final BindingNormalizedNodeCodecRegistry codecRegistry) {
         this(classLoadingStrategy, codecRegistry, false);
@@ -320,6 +325,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     }
 
     @Override
+    @PreDestroy
     public void close() {
         if (listenerRegistration != null) {
             listenerRegistration.close();
