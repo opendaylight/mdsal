@@ -4,13 +4,14 @@
 
   <!-- Runtime binding/normalized mapping service -->
   <reference id="classLoadingStrategy" interface="org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy"/>
-  <reference id="schemaService" interface="org.opendaylight.mdsal.dom.api.DOMSchemaService" />
+  <reference id="domSchemaService" interface="org.opendaylight.mdsal.dom.api.DOMSchemaService" />
 
-  <bean id="mappingCodec" class="org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec"
-         factory-method="newInstance" destroy-method="close">
+  <bean id="wiring" class="org.opendaylight.mdsal.binding.dom.adapter.BindingWiring" destroy-method="close">
     <argument ref="classLoadingStrategy"/>
-    <argument ref="schemaService"/>
+    <argument ref="domSchemaService"/>
   </bean>
+
+  <bean id="mappingCodec" factory-ref="wiring" factory-method="getBindingNormalizedNodeSerializer" destroy-method="close" />
 
   <service ref="mappingCodec" odl:type="default">
     <interfaces>
@@ -20,9 +21,7 @@
   </service>
 
   <!-- Adapter factory based on the codec -->
-  <bean id="adapterFactory" class="org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory">
-    <argument ref="mappingCodec"/>
-  </bean>
+  <bean id="adapterFactory" factory-ref="wiring" factory-method="getAdapterFactory" />
 
   <!-- Automatic DOM/Binding adapter instantiation -->
   <bean id="dynamicAdapter" class="org.opendaylight.mdsal.binding.dom.adapter.osgi.DynamicBindingAdapter"
