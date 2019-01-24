@@ -32,6 +32,7 @@ public class BindingWiring {
     @Inject
     public BindingWiring(ClassLoadingStrategy classLoadingStrategy, DOMSchemaService schemaService) {
         codec = BindingToNormalizedNodeCodec.newInstance(classLoadingStrategy, schemaService);
+        schemaService.registerSchemaContextListener(codec);
         adapterFactory = new BindingAdapterFactory(codec);
     }
 
