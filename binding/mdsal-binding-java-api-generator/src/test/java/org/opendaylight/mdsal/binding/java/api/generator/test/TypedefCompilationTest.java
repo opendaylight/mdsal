@@ -273,7 +273,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         CompilationTestUtils.assertContainsField(unionExt1Class, "_int16", Short.class);
         CompilationTestUtils.assertContainsField(unionExt1Class, "_int32", Integer.class);
         CompilationTestUtils.assertContainsFieldWithValue(unionExt1Class, "serialVersionUID", Long.TYPE,
-            -6955858981055390623L, new Class<?>[] { Short.class }, Short.valueOf("1"));
+                -3811255231989043841L, new Class<?>[] { Short.class }, Short.valueOf("1"));
         assertEquals(3, unionExt1Class.getDeclaredFields().length);
         CompilationTestUtils.assertContainsMethod(unionExt1Class, Short.class, "getInt16");
         CompilationTestUtils.assertContainsMethod(unionExt1Class, Integer.class, "getInt32");
@@ -302,7 +302,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         CompilationTestUtils.assertContainsFieldWithValue(unionExt3Class, UNITS, String.class, "object id",
             new Class<?>[] { String.class }, "");
         CompilationTestUtils.assertContainsFieldWithValue(unionExt3Class, "serialVersionUID", Long.TYPE,
-            -1558836942803815106L, new Class<?>[] { String.class }, "");
+            -8694752765728532192L, new Class<?>[] { String.class }, "");
         assertEquals(4, unionExt3Class.getDeclaredFields().length);
         CompilationTestUtils.assertContainsMethod(unionExt3Class, String.class, "getString");
         CompilationTestUtils.assertContainsMethod(unionExt3Class, unionExt2Class, "getUnionExt2");
@@ -319,7 +319,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         CompilationTestUtils.assertContainsField(unionExt4Class, "_empty", Boolean.class);
         CompilationTestUtils.assertContainsField(unionExt4Class, "_myDecimalType", myDecimalTypeClass);
         CompilationTestUtils.assertContainsFieldWithValue(unionExt4Class, "serialVersionUID", Long.TYPE,
-            8089656970520476667L, new Class<?>[] { Boolean.class }, false);
+                -5979570667507632835L, new Class<?>[] { Boolean.class }, false);
         assertEquals(5, unionExt4Class.getDeclaredFields().length);
         CompilationTestUtils.assertContainsMethod(unionExt4Class, unionExt3Class, "getUnionExt3");
         CompilationTestUtils.assertContainsMethod(unionExt4Class, int32Ext2Class, "getInt32Ext2");

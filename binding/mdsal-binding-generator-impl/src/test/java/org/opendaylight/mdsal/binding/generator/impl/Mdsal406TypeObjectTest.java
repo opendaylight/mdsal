@@ -58,4 +58,23 @@ public class Mdsal406TypeObjectTest {
                         .equals("org.opendaylight.yangtools.yang.binding.TypeObject")).findAny().get();
         assertEquals(TYPE_OBJECT, objectType);
     }
+
+    @Test
+    public void typeObjectForUnionTypedefTest() {
+        final SchemaContext context = YangParserTestUtils.parseYangResources(ExtendedTypedefTest.class,
+                "/type-provider/test.yang", "/ietf/ietf-inet-types.yang");
+
+        final List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
+        assertNotNull(generateTypes);
+
+        final Type typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
+                .equals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.MyUnion")).findFirst().get();
+
+        assertTrue(typedefType instanceof GeneratedType);
+        assertNotNull(((GeneratedType)  typedefType).getImplements());
+        Type objectType = ((GeneratedType)  typedefType).getImplements().stream()
+                .filter(type -> type.getFullyQualifiedName()
+                        .equals("org.opendaylight.yangtools.yang.binding.TypeObject")).findAny().get();
+        assertEquals(TYPE_OBJECT, objectType);
+    }
 }
