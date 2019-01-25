@@ -93,7 +93,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         CompilationTestUtils.assertContainsField(bitsExtClass, "_sfmof", Boolean.class);
         CompilationTestUtils.assertContainsField(bitsExtClass, "_sfapc", Boolean.class);
         CompilationTestUtils.assertContainsFieldWithValue(bitsExtClass, "serialVersionUID", Long.TYPE,
-            -2922917845344851623L, Boolean.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class,
+                -5309344257091465648L, Boolean.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class,
             Boolean.class, Boolean.class);
 
         assertEquals(8, bitsExtClass.getDeclaredFields().length);
@@ -113,7 +113,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         assertFalse(int32Ext1Class.isInterface());
         CompilationTestUtils.assertContainsField(int32Ext1Class, VAL, Integer.class);
         CompilationTestUtils.assertContainsFieldWithValue(int32Ext1Class, "serialVersionUID", Long.TYPE,
-            5351634010010233292L, Integer.class);
+                7988972296040462895L, Integer.class);
         assertEquals(2, int32Ext1Class.getDeclaredFields().length);
 
         expectedConstructor = CompilationTestUtils.assertContainsConstructor(int32Ext1Class, Integer.class);
@@ -137,7 +137,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         assertFalse(int32Ext2Class.isInterface());
         CompilationTestUtils.assertContainsFieldWithValue(int32Ext2Class, UNITS, String.class, "mile", Integer.class);
         CompilationTestUtils.assertContainsFieldWithValue(int32Ext2Class, "serialVersionUID", Long.TYPE,
-            317831889060130988L, Integer.class);
+                317831889060130988L, Integer.class);
         assertEquals(2, int32Ext2Class.getDeclaredFields().length);
         expectedConstructor = CompilationTestUtils.assertContainsConstructor(int32Ext2Class, Integer.class);
         CompilationTestUtils.assertContainsConstructor(int32Ext2Class, int32Ext2Class);
@@ -163,7 +163,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         CompilationTestUtils.assertContainsField(stringExt1Class, "patterns", Pattern.class);
         CompilationTestUtils.assertContainsField(stringExt1Class, "PATTERN_CONSTANTS", List.class);
         CompilationTestUtils.assertContainsFieldWithValue(stringExt1Class, "serialVersionUID", Long.TYPE,
-            6943827552297110991L, String.class);
+                -1613949508631330931L, String.class);
         assertEquals(5, stringExt1Class.getDeclaredFields().length);
         expectedConstructor = CompilationTestUtils.assertContainsConstructor(stringExt1Class, String.class);
         CompilationTestUtils.assertContainsConstructor(stringExt1Class, stringExt1Class);
@@ -224,7 +224,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         assertFalse(myDecimalTypeClass.isInterface());
         CompilationTestUtils.assertContainsField(myDecimalTypeClass, VAL, BigDecimal.class);
         CompilationTestUtils.assertContainsFieldWithValue(myDecimalTypeClass, "serialVersionUID", Long.TYPE,
-            3143735729419861095L, BigDecimal.class);
+                -6222359257663828526L, BigDecimal.class);
         assertEquals(3, myDecimalTypeClass.getDeclaredFields().length);
         CompilationTestUtils.assertContainsMethod(myDecimalTypeClass, BigDecimal.class, "getValue");
         expectedConstructor = CompilationTestUtils.assertContainsConstructor(myDecimalTypeClass, BigDecimal.class);
@@ -248,7 +248,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         assertFalse(myDecimalType2Class.isInterface());
         CompilationTestUtils.assertContainsField(myDecimalType2Class, VAL, BigDecimal.class);
         CompilationTestUtils.assertContainsFieldWithValue(myDecimalType2Class, "serialVersionUID", Long.TYPE,
-            -672265764962082714L, BigDecimal.class);
+                2737162668763707239L, BigDecimal.class);
         assertEquals(3, myDecimalType2Class.getDeclaredFields().length);
         CompilationTestUtils.assertContainsMethod(myDecimalType2Class, BigDecimal.class, "getValue");
         expectedConstructor = CompilationTestUtils.assertContainsConstructor(myDecimalType2Class, BigDecimal.class);
@@ -273,7 +273,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         CompilationTestUtils.assertContainsField(unionExt1Class, "_int16", Short.class);
         CompilationTestUtils.assertContainsField(unionExt1Class, "_int32", Integer.class);
         CompilationTestUtils.assertContainsFieldWithValue(unionExt1Class, "serialVersionUID", Long.TYPE,
-            -6955858981055390623L, new Class<?>[] { Short.class }, Short.valueOf("1"));
+                -3811255231989043841L, new Class<?>[] { Short.class }, Short.valueOf("1"));
         assertEquals(3, unionExt1Class.getDeclaredFields().length);
         CompilationTestUtils.assertContainsMethod(unionExt1Class, Short.class, "getInt16");
         CompilationTestUtils.assertContainsMethod(unionExt1Class, Integer.class, "getInt32");
@@ -302,7 +302,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         CompilationTestUtils.assertContainsFieldWithValue(unionExt3Class, UNITS, String.class, "object id",
             new Class<?>[] { String.class }, "");
         CompilationTestUtils.assertContainsFieldWithValue(unionExt3Class, "serialVersionUID", Long.TYPE,
-            -1558836942803815106L, new Class<?>[] { String.class }, "");
+            -8694752765728532192L, new Class<?>[] { String.class }, "");
         assertEquals(4, unionExt3Class.getDeclaredFields().length);
         CompilationTestUtils.assertContainsMethod(unionExt3Class, String.class, "getString");
         CompilationTestUtils.assertContainsMethod(unionExt3Class, unionExt2Class, "getUnionExt2");
@@ -319,7 +319,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         CompilationTestUtils.assertContainsField(unionExt4Class, "_empty", Boolean.class);
         CompilationTestUtils.assertContainsField(unionExt4Class, "_myDecimalType", myDecimalTypeClass);
         CompilationTestUtils.assertContainsFieldWithValue(unionExt4Class, "serialVersionUID", Long.TYPE,
-            8089656970520476667L, new Class<?>[] { Boolean.class }, false);
+                -5979570667507632835L, new Class<?>[] { Boolean.class }, false);
         assertEquals(5, unionExt4Class.getDeclaredFields().length);
         CompilationTestUtils.assertContainsMethod(unionExt4Class, unionExt3Class, "getUnionExt3");
         CompilationTestUtils.assertContainsMethod(unionExt4Class, int32Ext2Class, "getInt32Ext2");
