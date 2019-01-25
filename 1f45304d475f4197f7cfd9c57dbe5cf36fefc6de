@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d7542306_c2a32431",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/spi/AdapterFactoryWiring.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-25T02:45:30Z",
+      "side": 1,
+      "message": "Why a separate class and not merge this into BindingWiring?",
+      "revId": "1f45304d475f4197f7cfd9c57dbe5cf36fefc6de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c5ccd40c_23d0c499",
+        "filename": "wiring/src/main/java/org/opendaylight/mdsal/wiring/InMemoryWiring.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-25T02:45:30Z",
+      "side": 1,
+      "message": "How about InMemoryDOMDataBrokerWiring?",
+      "range": {
+        "startLine": 33,
+        "startChar": 13,
+        "endLine": 33,
+        "endChar": 27
+      },
+      "revId": "1f45304d475f4197f7cfd9c57dbe5cf36fefc6de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3b7a6daf_c943f81d",
+        "filename": "wiring/src/main/java/org/opendaylight/mdsal/wiring/MdsalWiring.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-25T02:45:30Z",
+      "side": 1,
+      "message": "MdsalDOMWiring?",
+      "range": {
+        "startLine": 22,
+        "startChar": 13,
+        "endLine": 22,
+        "endChar": 24
+      },
+      "revId": "1f45304d475f4197f7cfd9c57dbe5cf36fefc6de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e0fff0df_6900e14d",
+        "filename": "wiring/src/main/java/org/opendaylight/mdsal/wiring/guice/InMemoryModule.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-25T02:45:30Z",
+      "side": 1,
+      "message": "InMemoryDOMDataBrokerModule?",
+      "range": {
+        "startLine": 22,
+        "startChar": 13,
+        "endLine": 22,
+        "endChar": 27
+      },
+      "revId": "1f45304d475f4197f7cfd9c57dbe5cf36fefc6de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "abb2eb37_e32ee5c0",
+        "filename": "wiring/src/main/java/org/opendaylight/mdsal/wiring/guice/MdsalModule.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-25T02:45:30Z",
+      "side": 1,
+      "message": "MdsalDOMModule",
+      "range": {
+        "startLine": 28,
+        "startChar": 13,
+        "endLine": 28,
+        "endChar": 24
+      },
+      "revId": "1f45304d475f4197f7cfd9c57dbe5cf36fefc6de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
