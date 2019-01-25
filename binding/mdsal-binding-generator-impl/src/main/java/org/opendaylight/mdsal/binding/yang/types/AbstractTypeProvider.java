@@ -894,6 +894,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         unionGenTOBuilder.setIsUnion(true);
         unionGenTOBuilder.setSchemaPath(typedef.getPath());
         unionGenTOBuilder.setModuleName(module.getName());
+        unionGenTOBuilder.addImplementsType(TYPE_OBJECT);
         addCodegenInformation(unionGenTOBuilder, typedef);
         generatedTOBuilders.add(unionGenTOBuilder);
 
