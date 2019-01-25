@@ -1108,6 +1108,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         genTOBuilder.setSchemaPath(typeDef.getPath());
         genTOBuilder.setModuleName(moduleName);
         genTOBuilder.setBaseType(typeDef);
+        genTOBuilder.addImplementsType(TYPE_OBJECT);
         addCodegenInformation(genTOBuilder, typeDef);
 
         final List<Bit> bitList = typeDef.getBits();
