@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.model.util;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Iterables;
@@ -186,7 +187,7 @@ public final class BindingGeneratorUtil {
             dout.writeUTF(to.getName());
             dout.writeInt(to.isAbstract() ? 3 : 7);
 
-            for (final Type ifc : sortedCollection(SUID_NAME_COMPARATOR, to.getImplementsTypes())) {
+            for (final Type ifc : sortedCollection(SUID_NAME_COMPARATOR, filteredImplementsTypes(to))) {
                 dout.writeUTF(ifc.getFullyQualifiedName());
             }
 
@@ -212,6 +213,10 @@ public final class BindingGeneratorUtil {
             hash = hash << 8 | hashBytes[i] & 0xFF;
         }
         return hash;
+    }
+
+    private static Collection<Type> filteredImplementsTypes(final GeneratedTypeBuilderBase<?> to) {
+        return Collections2.filter(to.getImplementsTypes(), item -> !BindingTypes.TYPE_OBJECT.equals(item));
     }
 
     private static <T extends Optional<?>> T currentOrEmpty(final T current, final T base) {

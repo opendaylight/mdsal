@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.yang.types;
 
 import static java.util.Objects.requireNonNull;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.TYPE_OBJECT;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
@@ -834,6 +835,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         genTOBuilder.addEqualsIdentity(genPropBuilder);
         genTOBuilder.addHashIdentity(genPropBuilder);
         genTOBuilder.addToStringProperty(genPropBuilder);
+        genTOBuilder.addImplementsType(TYPE_OBJECT);
         if (typedef.getStatus() == Status.DEPRECATED) {
             genTOBuilder.addAnnotation("java.lang", "Deprecated");
         }
@@ -892,6 +894,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         unionGenTOBuilder.setIsUnion(true);
         unionGenTOBuilder.setSchemaPath(typedef.getPath());
         unionGenTOBuilder.setModuleName(module.getName());
+        unionGenTOBuilder.addImplementsType(TYPE_OBJECT);
         addCodegenInformation(unionGenTOBuilder, typedef);
         generatedTOBuilders.add(unionGenTOBuilder);
 
@@ -1106,6 +1109,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         genTOBuilder.setSchemaPath(typeDef.getPath());
         genTOBuilder.setModuleName(moduleName);
         genTOBuilder.setBaseType(typeDef);
+        genTOBuilder.addImplementsType(TYPE_OBJECT);
         addCodegenInformation(genTOBuilder, typeDef);
 
         final List<Bit> bitList = typeDef.getBits();
