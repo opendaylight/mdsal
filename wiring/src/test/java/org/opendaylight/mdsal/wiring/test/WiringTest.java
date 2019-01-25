@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.wiring.test;
 import javax.inject.Inject;
 import org.junit.Rule;
 import org.junit.Test;
-import org.opendaylight.infrautils.inject.guice.GuiceClassPathBinder;
 import org.opendaylight.infrautils.inject.guice.testutils.AnnotationsModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -24,10 +23,7 @@ import org.opendaylight.mdsal.wiring.MdsalModule;
  */
 public class WiringTest {
 
-    private static final GuiceClassPathBinder CLASS_PATH_BINDER = new GuiceClassPathBinder("org.opendaylight.mdsal");
-
-    public @Rule GuiceRule guice = new GuiceRule(new InMemoryModule(), new MdsalModule(CLASS_PATH_BINDER),
-            new AnnotationsModule());
+    public @Rule GuiceRule guice = new GuiceRule(InMemoryModule.class, MdsalModule.class, AnnotationsModule.class);
 
     @Inject DataBroker dataBroker;
 

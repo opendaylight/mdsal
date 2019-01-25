@@ -7,10 +7,10 @@
  */
 package org.opendaylight.mdsal.wiring;
 
+import com.google.inject.Binder;
+import com.google.inject.Module;
 import com.google.inject.Provides;
 import javax.inject.Singleton;
-import org.opendaylight.infrautils.inject.guice.AutoWiringModule;
-import org.opendaylight.infrautils.inject.guice.GuiceClassPathBinder;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactoryWiring;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
@@ -24,10 +24,10 @@ import org.opendaylight.mdsal.dom.api.DOMSchemaService;
  *
  * @author Michael Vorburger.ch
  */
-public class MdsalModule extends AutoWiringModule {
+public class MdsalModule implements Module {
 
-    public MdsalModule(GuiceClassPathBinder classPathBinder) {
-        super(classPathBinder, "org.opendaylight.mdsal");
+    @Override
+    public void configure(Binder binder) {
     }
 
     @Provides
@@ -44,4 +44,5 @@ public class MdsalModule extends AutoWiringModule {
     @Singleton DataBroker getDataBroker(AdapterFactoryWiring adapterFactoryWiring) {
         return adapterFactoryWiring.getDataBroker();
     }
+
 }
