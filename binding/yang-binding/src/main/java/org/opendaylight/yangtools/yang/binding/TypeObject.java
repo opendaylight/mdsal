@@ -8,11 +8,9 @@
 package org.opendaylight.yangtools.yang.binding;
 
 /**
- * Data container is an interface which has structured contents.
+ * TypeObject is a mark interface for all derived types.
  *
- * @author Tony Tkacik
+ * @author Jie Han
  */
-public interface DataObject extends DataContainer, BindingObject {
-
-
+public interface TypeObject extends BindingObject {
 }
