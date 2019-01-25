@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.yang.types;
 
 import static java.util.Objects.requireNonNull;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.TYPE_OBJECT;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
@@ -840,6 +841,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         genTOBuilder.addEqualsIdentity(genPropBuilder);
         genTOBuilder.addHashIdentity(genPropBuilder);
         genTOBuilder.addToStringProperty(genPropBuilder);
+        genTOBuilder.addImplementsType(TYPE_OBJECT);
         if (typedef.getStatus() == Status.DEPRECATED) {
             genTOBuilder.addAnnotation("java.lang", "Deprecated");
         }
