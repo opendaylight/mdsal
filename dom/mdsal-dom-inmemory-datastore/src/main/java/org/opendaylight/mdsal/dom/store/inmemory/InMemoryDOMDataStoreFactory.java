@@ -64,6 +64,6 @@ public final class InMemoryDOMDataStoreFactory {
         // subsequent submitted notifications will block the calling thread.
         return SpecialExecutors.newBlockingBoundedFastThreadPool(
             props.getMaxDataChangeExecutorPoolSize(), props.getMaxDataChangeExecutorQueueSize(),
-            name + "-DCL", InMemoryDOMDataStore.class);
+            name + "-DCL", InMemoryDOMDataStoreFactory.class);
     }
 }
