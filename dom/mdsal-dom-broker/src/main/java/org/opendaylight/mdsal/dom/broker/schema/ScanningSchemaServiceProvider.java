@@ -8,8 +8,6 @@
 package org.opendaylight.mdsal.dom.broker.schema;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.io.IOException;
@@ -18,15 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.concurrent.GuardedBy;
-import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
-import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
+import org.opendaylight.mdsal.dom.spi.AbstractDOMSchemaService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
@@ -35,8 +30,8 @@ import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ScanningSchemaServiceProvider
-        implements DOMSchemaService, SchemaContextProvider, DOMYangTextSourceProvider, AutoCloseable {
+public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.WithYangTextSources
+        implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(ScanningSchemaServiceProvider.class);
 
     private final YangTextSchemaContextResolver contextResolver = YangTextSchemaContextResolver.create("global-bundle");
@@ -100,18 +95,13 @@ public class ScanningSchemaServiceProvider
     }
 
     @Override
-    public SchemaContext getSessionContext() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public SchemaContext getGlobalContext() {
         return contextResolver.getSchemaContext().orElse(null);
     }
 
     @Override
-    public ListenerRegistration<SchemaContextListener>
-            registerSchemaContextListener(final SchemaContextListener listener) {
+    public ListenerRegistration<SchemaContextListener> registerSchemaContextListener(
+            final SchemaContextListener listener) {
         synchronized (lock) {
             contextResolver.getSchemaContext().ifPresent(listener::onGlobalContextUpdated);
             return listeners.register(listener);
@@ -119,18 +109,8 @@ public class ScanningSchemaServiceProvider
     }
 
     @Override
-    public SchemaContext getSchemaContext() {
-        return getGlobalContext();
-    }
-
-    @Override
     public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
         return contextResolver.getSource(sourceIdentifier);
-    }
-
-    @Override
-    public ClassToInstanceMap<DOMSchemaServiceExtension> getExtensions() {
-        return ImmutableClassToInstanceMap.of(DOMYangTextSourceProvider.class, this);
     }
 
     @Override

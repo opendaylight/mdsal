@@ -27,5 +27,6 @@ public interface DOMExtensibleService<T extends DOMExtensibleService<T, E>,
      *
      * @return A map of supported functionality.
      */
+    // FIXME: make this a default method returning empty
     @NonNull ClassToInstanceMap<E> getExtensions();
 }
