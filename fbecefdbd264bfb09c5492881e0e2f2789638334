@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "785bfb65_d7770da5",
+        "filename": "binding/mdsal-binding-dom-adapter/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-28T16:46:58Z",
+      "side": 1,
+      "message": "You are right, it did not (I ran a local build with Java 11) - well spotted!  \n\nBTW why don\u0027t we have verify jobs that fail for Java 11 ?\n\nFixed, inspired by your https://git.opendaylight.org/gerrit/#/c/79936/1/inject/inject-guice-testutils/pom.xml, I\u0027ve added a javax.annotation:javax.annotation-api dependency, and that helped.  We don\u0027t seem to need \u003coptional\u003efalse here; my local Java 11 build, incl SFT, passed just fine without (and if we do need that, perhaps we should change that in odlparent?)\n\nPS: When I do reviews and know the solution, I usually just make the suggestion of what needs to be done instead of asking a question.",
+      "parentUuid": "96cdbd7b_130fb2c3",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 21
+      },
+      "revId": "fbecefdbd264bfb09c5492881e0e2f2789638334",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3383c93b_6a4855a0",
         "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingWiring.java",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-01-28T10:54:57Z",
       "side": 1,
       "message": "This needs a better name",
+      "range": {
+        "startLine": 27,
+        "startChar": 13,
+        "endLine": 27,
+        "endChar": 26
+      },
+      "revId": "fbecefdbd264bfb09c5492881e0e2f2789638334",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ece8bca_b6f5cac5",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingWiring.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-28T16:46:58Z",
+      "side": 1,
+      "message": "sure, any suggestions that you would prefer?  I\u0027m assuming you would like to replace the Binding* prefix not the *Wiring suffix?  In previous changes, which you merged, we had used *Wiring for classes which are not specific to any particular DI framework (and *Module for any Guice specific ones).",
+      "parentUuid": "3383c93b_6a4855a0",
       "range": {
         "startLine": 27,
         "startChar": 13,
