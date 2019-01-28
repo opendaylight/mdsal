@@ -11,11 +11,15 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
+import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 
 /**
  * {@link SchemaContextProvider} which internally uses (a cached version of the) {@link ModuleInfoBackedContext}.
@@ -27,8 +31,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
  *
  * @author Michael Vorburger.ch
  */
-public class FixedModuleInfoSchemaContextProvider implements SchemaContextProvider {
-    // TODO SchemaSourceProvider<YangTextSchemaSource> /* AKA DOMYangTextSourceProvider */ {
+public class FixedModuleInfoSchemaContextProvider
+        implements SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
 
     private static final LoadingCache<ClassLoader, Set<YangModuleInfo>> MODULE_INFO_CACHE = CacheBuilder.newBuilder()
             .weakKeys().weakValues().build(new CacheLoader<ClassLoader, Set<YangModuleInfo>>() {
@@ -38,13 +42,14 @@ public class FixedModuleInfoSchemaContextProvider implements SchemaContextProvid
                 }
             });
 
+    private static final ModuleInfoBackedContext MODULE_CONTEXT = ModuleInfoBackedContext.create();
+
     private static final LoadingCache<Set<YangModuleInfo>, SchemaContext> SCHEMA_CONTEXT_CACHE =
             CacheBuilder.newBuilder().weakValues().build(new CacheLoader<Set<YangModuleInfo>, SchemaContext>() {
                 @Override
                 public SchemaContext load(final Set<YangModuleInfo> key) {
-                    final ModuleInfoBackedContext moduleContext = ModuleInfoBackedContext.create();
-                    moduleContext.addModuleInfos(key);
-                    return moduleContext.tryToCreateSchemaContext().get();
+                    MODULE_CONTEXT.addModuleInfos(key);
+                    return MODULE_CONTEXT.tryToCreateSchemaContext().get();
                 }
             });
 
@@ -57,5 +62,8 @@ public class FixedModuleInfoSchemaContextProvider implements SchemaContextProvid
         return SCHEMA_CONTEXT_CACHE.getUnchecked(ImmutableSet.copyOf(getModuleInfos()));
     }
 
-    // TODO public ListenableFuture<? extends YangTextSchemaSource> getSource(SourceIdentifier sourceIdentifier)
+    @Override
+    public ListenableFuture<? extends YangTextSchemaSource> getSource(SourceIdentifier sourceIdentifier) {
+        return MODULE_CONTEXT.getSource(sourceIdentifier);
+    }
 }
