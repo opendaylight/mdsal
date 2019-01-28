@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -33,6 +34,7 @@ import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Beta
 public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         implements ModuleInfoRegistry, SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
 
