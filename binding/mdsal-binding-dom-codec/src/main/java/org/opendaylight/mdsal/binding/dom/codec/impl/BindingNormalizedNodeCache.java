@@ -12,14 +12,16 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-final class BindingNormalizedNodeCache extends CacheLoader<DataObject, NormalizedNode<?, ?>> {
+final class BindingNormalizedNodeCache extends CacheLoader<BindingObject, NormalizedNode<?, ?>> {
 
-    private final LoadingCache<DataObject, NormalizedNode<?, ?>> cache = CacheBuilder.newBuilder().weakValues()
+    private final LoadingCache<BindingObject, NormalizedNode<?, ?>> cache = CacheBuilder.newBuilder().weakValues()
             .build(this);
-    final DataContainerCodecContext<?, ?> subtreeRoot;
+    final NodeCodecContext<?> subtreeRoot;
     final AbstractBindingNormalizedNodeCacheHolder cacheHolder;
 
     BindingNormalizedNodeCache(final AbstractBindingNormalizedNodeCacheHolder cacheHolder,
@@ -29,8 +31,16 @@ final class BindingNormalizedNodeCache extends CacheLoader<DataObject, Normalize
     }
 
     @Override
-    public NormalizedNode<?, ?> load(final DataObject key) throws Exception {
-        return CachingNormalizedNodeSerializer.serializeUsingStreamWriter(cacheHolder, subtreeRoot, key);
+    public NormalizedNode<?, ?> load(final BindingObject key) {
+        if (key instanceof DataObject) {
+            Preconditions.checkArgument(subtreeRoot instanceof  DataContainerCodecContext);
+            return CachingNormalizedNodeSerializer.serializeUsingStreamWriter(cacheHolder,
+                    (DataContainerCodecContext) subtreeRoot, (DataObject) key);
+        }
+
+        Preconditions.checkArgument(subtreeRoot instanceof  LeafNodeCodecContext);
+        Preconditions.checkArgument(key instanceof TypeObject);
+        return CachingNormalizedNodeSerializer.serializeLeafNode((LeafNodeCodecContext) subtreeRoot, (TypeObject) key);
     }
 
     /**
@@ -40,7 +50,7 @@ final class BindingNormalizedNodeCache extends CacheLoader<DataObject, Normalize
      * @param obj Binding object to be deserialized
      * @return NormalizedNode representation of binding object.
      */
-    NormalizedNode<?, ?> get(final DataObject obj) {
+    NormalizedNode<?, ?> get(final BindingObject obj) {
         return cache.getUnchecked(obj);
     }
 }

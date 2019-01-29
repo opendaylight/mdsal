@@ -13,7 +13,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.BindingObject;
 
 /**
  * Abstract Holder of Binding to Normalized Node caches indexed by {@link DataContainerCodecContext} to which cache is
@@ -21,20 +21,20 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  */
 abstract class AbstractBindingNormalizedNodeCacheHolder {
 
-    private final ImmutableSet<Class<? extends DataObject>> cachedValues;
-    private final LoadingCache<DataContainerCodecContext<?, ?>, BindingNormalizedNodeCache> caches = CacheBuilder
-            .newBuilder().build(new CacheLoader<DataContainerCodecContext<?, ?>, BindingNormalizedNodeCache>() {
+    private final ImmutableSet<Class<? extends BindingObject>> cachedValues;
+    private final LoadingCache<NodeCodecContext<?>, BindingNormalizedNodeCache> caches = CacheBuilder
+            .newBuilder().build(new CacheLoader<NodeCodecContext<?>, BindingNormalizedNodeCache>() {
                 @Override
-                public BindingNormalizedNodeCache load(final DataContainerCodecContext<?, ?> key) {
+                public BindingNormalizedNodeCache load(final NodeCodecContext<?>  key) {
                     return new BindingNormalizedNodeCache(AbstractBindingNormalizedNodeCacheHolder.this, key);
                 }
             });
 
-    AbstractBindingNormalizedNodeCacheHolder(final ImmutableSet<Class<? extends DataObject>> cacheSpec) {
+    AbstractBindingNormalizedNodeCacheHolder(final ImmutableSet<Class<? extends BindingObject>> cacheSpec) {
         cachedValues = requireNonNull(cacheSpec);
     }
 
-    BindingNormalizedNodeCache getCachingSerializer(final DataContainerCodecContext<?, ?> childCtx) {
+    BindingNormalizedNodeCache getCachingSerializer(final NodeCodecContext<?> childCtx) {
         if (isCached(childCtx.getBindingClass())) {
             return caches.getUnchecked(childCtx);
         }
