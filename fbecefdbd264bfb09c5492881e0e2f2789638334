@@ -93,6 +93,30 @@
       "revId": "fbecefdbd264bfb09c5492881e0e2f2789638334",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "74d4b94f_394b446e",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingWiring.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-01-29T12:42:50Z",
+      "side": 1,
+      "message": "Yeah, this is not wiring for Binding, this is wiring for BindingDOMAdapter, so if we expect users to import this into their project, we should use a descriptive name.\n\nIf, on the other hand, we do not expect that to happen, we can go with \"Wiring\" only, as the package name fully expresses what wiring it is.",
+      "parentUuid": "3ece8bca_b6f5cac5",
+      "range": {
+        "startLine": 27,
+        "startChar": 13,
+        "endLine": 27,
+        "endChar": 26
+      },
+      "revId": "fbecefdbd264bfb09c5492881e0e2f2789638334",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
