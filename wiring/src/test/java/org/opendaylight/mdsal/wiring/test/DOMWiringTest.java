@@ -40,6 +40,8 @@ import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
  * <p>Note how this test, contrary to the {@link BindingWiringTest}, does
  * not use the {@link BindingModule}, only the {@link DOMModule}.
  *
+ * <p>See also {@link HybridWiringTest} for an alternative wiring.
+ *
  * @author Michael Vorburger.ch
  */
 public class DOMWiringTest {
@@ -77,9 +79,13 @@ public class DOMWiringTest {
 
         assertEquals(true, Scopes.isSingleton(injector.getBinding(DOMDataBroker.class)));
 
-        try (Registration registration = yangRegisterer
-                .registerYANG(getClass().getResource("/META-INF/yang/test@2017-01-01.yang").toURI())) {
-            DOMDataTreeReadWriteTransaction tx = domDataBroker.newReadWriteTransaction();
+        testDOMDataBroker(yangRegisterer, domDataBroker);
+    }
+
+    static void testDOMDataBroker(YangRegisterer registerer, DOMDataBroker db) throws Exception {
+        try (Registration registration = registerer
+                .registerYANG(DOMWiringTest.class.getResource("/META-INF/yang/test@2017-01-01.yang").toURI())) {
+            DOMDataTreeReadWriteTransaction tx = db.newReadWriteTransaction();
             YangInstanceIdentifier contYIID = YangInstanceIdentifier.of(Cont.QNAME);
             NodeIdentifier nodeIdentifier = NodeIdentifier.create(Cont.QNAME);
             tx.put(CONFIGURATION, contYIID,
