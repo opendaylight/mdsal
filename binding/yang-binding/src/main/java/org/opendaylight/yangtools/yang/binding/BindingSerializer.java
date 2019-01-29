@@ -14,4 +14,6 @@ package org.opendaylight.yangtools.yang.binding;
 // FIXME: MDSAL-401: deprecate this interface once we no longer to have in a public place
 public interface BindingSerializer<P, I> {
     P serialize(I input);
+
+    P serialize(String name, I input);
 }
