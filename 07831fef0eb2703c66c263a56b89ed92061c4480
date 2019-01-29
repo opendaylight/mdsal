@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b902291b_5c01e00d",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/FixedModuleInfoSchemaContextProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-29T14:41:15Z",
+      "side": 1,
+      "message": "\u003e Simple environments really says they are single-classloader with a fixed set of models \n\nYes, that\u0027s what I\u0027m trying to say in this JavaDoc... concrete suggestions for better wording are most welcome!\n\n\u003ein which case they are better served by using ModuleInfoBackedContext directly.\n\nBut ModuleInfoBackedContext alone doesn\u0027t do the caching which makes tests run faster, which is why we had those two LoadingCache in AbstractSchemaAwareTest.  I would like to get us to a point where we can use the exact same code path e.g. for component tests and simple/light(y) production runtimes, therefore I\u0027m proposing this to align things.\n\n\u003e Is this going someplace which actually reduces confusion as to how exactly things are instantiated?\n\nYes, guess what, I\u0027m for once not just having fun but this and related changes are all work for achieving MDSAL-418 and use it e.g. in a future follow-up change to https://git.opendaylight.org/gerrit/#/c/79388/ and then finish up in CONTROLLER-1831.\n\n\u003e The thing is, this enlarges the production code, hence any refactor (to deal with above) will need to deal with this, too.\n\nI did not understand this feedback, can you clarify, if needed?  Unless I\u0027m completely mistaken, this -intentionally- doesn\u0027t actually touch any of the current \"production\" (as in Karaf OSGi) code path at all - if that\u0027s what you meant.",
+      "parentUuid": "9a862208_2b095649",
+      "range": {
+        "startLine": 24,
+        "startChar": 49,
+        "endLine": 26,
+        "endChar": 27
+      },
+      "revId": "07831fef0eb2703c66c263a56b89ed92061c4480",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b67fdf98_ff71bf0e",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/FixedModuleInfoSchemaContextProvider.java",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-01-29T12:49:48Z",
       "side": 1,
       "message": "public classes always start their life as @Beta.",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 6
+      },
+      "revId": "07831fef0eb2703c66c263a56b89ed92061c4480",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c2a6663b_69f7937b",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/FixedModuleInfoSchemaContextProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-29T14:41:15Z",
+      "side": 1,
+      "message": "Sure thing, you got it; done in Patch Set 2.",
+      "parentUuid": "b67fdf98_ff71bf0e",
       "range": {
         "startLine": 30,
         "startChar": 0,
