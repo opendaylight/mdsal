@@ -16,11 +16,12 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.mdsal.dom.spi.ForwardingDOMDataBroker;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 /**
  * An implementation of a {@link DOMDataBroker} which throws clearer errors than
@@ -34,11 +35,11 @@ final class CheckingDOMDataBroker extends ForwardingDOMDataBroker implements DOM
     // intentionally just package local for now; move somewhere shared, some time later.
 
     private final DOMDataBroker delegate;
-    private final SchemaContextProvider schemaContextProvider;
+    private final DOMSchemaService schemaService;
 
-    CheckingDOMDataBroker(DOMDataBroker delegate, SchemaContextProvider schemaContextProvider) {
+    CheckingDOMDataBroker(DOMDataBroker delegate, DOMSchemaService schemaService) {
         this.delegate = requireNonNull(delegate, "delegate");
-        this.schemaContextProvider = requireNonNull(schemaContextProvider, "schemaContextProvider");
+        this.schemaService = requireNonNull(schemaService, "schemaService");
     }
 
     @Override
@@ -47,13 +48,16 @@ final class CheckingDOMDataBroker extends ForwardingDOMDataBroker implements DOM
     }
 
     protected void check() {
-        if (schemaContextProvider.getSchemaContext() == null) {
+        SchemaContext globalContext = schemaService.getGlobalContext();
+        if (globalContext == null) {
             throw new IllegalStateException(
-                    "There currently is *NO* SchemaContext; this is most likely a bug in your configuration");
+                    "There currently is *NO* SchemaContext; this is most likely a bug in your configuration; "
+                            + "schemaService = " + schemaService);
         }
-        if (schemaContextProvider.getSchemaContext().getModules().isEmpty()) {
+        if (globalContext.getModules().isEmpty()) {
             throw new IllegalStateException(
-                    "There are currently *NO* YANG modules available; this is most likely a bug in your configuration");
+                    "There are currently *NO* YANG modules available; this is most likely a bug in your configuration; "
+                            + "schemaService = " + schemaService);
         }
     }
 
