@@ -47,8 +47,8 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
         final Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> codecCtx = codec.getSubtreeCodec(
             domChange.getRootPath());
         final DataTreeIdentifier<?> path = DataTreeIdentifier.create(datastoreType, codecCtx.getKey());
-        final DataObjectModification<?> modification = LazyDataObjectModification.create(codecCtx.getValue(),
-            domChange.getRootNode());
+        final DataObjectModification<?> modification = LazyDataObjectModification.create(
+                (BindingCodecTreeNode<? extends DataObject>) codecCtx.getValue(), domChange.getRootNode());
         return new LazyDataTreeModification(path, modification);
     }
 
@@ -59,8 +59,8 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
             candidate.getRootPath().getRootIdentifier());
         final DataTreeIdentifier<?> path = DataTreeIdentifier.create(candidate.getRootPath().getDatastoreType(),
             codecCtx.getKey());
-        final DataObjectModification<?> modification = LazyDataObjectModification.create(codecCtx.getValue(),
-            candidate.getRootNode());
+        final DataObjectModification<?> modification = LazyDataObjectModification.create(
+                (BindingCodecTreeNode<? extends DataObject>) codecCtx.getValue(), candidate.getRootNode());
         return new LazyDataTreeModification(path, modification);
     }
 
