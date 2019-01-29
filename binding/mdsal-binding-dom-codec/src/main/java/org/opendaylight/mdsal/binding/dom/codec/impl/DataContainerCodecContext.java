@@ -109,7 +109,7 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends WithSta
     }
 
     @Override
-    public abstract <C extends DataObject> DataContainerCodecContext<C, ?> streamChild(Class<C> childClass);
+    public abstract <C extends DataObject> DataContainerCodecContext<C, ?> streamChild(@NonNull Class<C> childClass);
 
     /**
      * Returns child context as if it was walked by {@link BindingStreamEventWriter}. This means that to enter case, one
