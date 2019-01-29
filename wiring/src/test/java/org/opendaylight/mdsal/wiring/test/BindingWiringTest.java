@@ -37,6 +37,8 @@ import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 /**
  * Tests all the *Wiring and *Module classes in mdsal, for applications using binding.
  *
+ * <p>See the {@link DOMWiringTest} and {@link HybridWiringTest} for alternative wirings.
+ *
  * @author Michael Vorburger.ch
  */
 public class BindingWiringTest {
@@ -84,7 +86,11 @@ public class BindingWiringTest {
 
         assertEquals(true, Scopes.isSingleton(injector.getBinding(DataBroker.class)));
 
-        ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
+        testDataBroker(dataBroker);
+    }
+
+    static void testDataBroker(DataBroker db) throws Exception {
+        ReadWriteTransaction tx = db.newReadWriteTransaction();
         tx.put(CONFIGURATION,
                InstanceIdentifier.create(Cont.class),
                new ContBuilder().setVlanId(new VlanId(new Id(123))).build());
