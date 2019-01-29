@@ -51,7 +51,6 @@ final class ModuleInfoBundleTracker implements BundleTrackerCustomizer<Collectio
 
     void finishStart() {
         starting = false;
-        moduleInfoRegistry.updateService();
     }
 
     @Override
@@ -89,10 +88,6 @@ final class ModuleInfoBundleTracker implements BundleTrackerCustomizer<Collectio
             }
 
             registrations.add(moduleInfoRegistry.registerModuleInfo(moduleInfo));
-        }
-
-        if (!starting) {
-            moduleInfoRegistry.updateService();
         }
 
         LOG.trace("Bundle {} resultend in registrations {}", bundle, registrations);
