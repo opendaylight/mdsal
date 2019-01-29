@@ -22,7 +22,6 @@ import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreFactory;
 
@@ -51,7 +50,7 @@ public class InMemoryDOMDataBrokerWiring {
                 CONFIGURATION, createDOMStore(CONFIGURATION, schemaService, properties));
 
         DOMDataBroker memoryDB = new SerializedDOMDataBroker(datastores, createCommitCoordinatorExecutor());
-        this.domDataBroker = new CheckingDOMDataBroker(memoryDB, () -> schemaService.getGlobalContext());
+        this.domDataBroker = new CheckingDOMDataBroker(memoryDB, schemaService);
     }
 
     public DOMDataBroker getDOMDataBroker() {
@@ -60,10 +59,7 @@ public class InMemoryDOMDataBrokerWiring {
 
     protected DOMStore createDOMStore(LogicalDatastoreType type, DOMSchemaService schemaService,
             InMemoryDOMDataStoreConfigProperties properties) {
-
-        InMemoryDOMDataStore store = InMemoryDOMDataStoreFactory.create(type.name(), properties, schemaService);
-        schemaService.registerSchemaContextListener(store);
-        return store;
+        return InMemoryDOMDataStoreFactory.create(type.name(), properties, schemaService);
     }
 
     protected ListeningExecutorService createCommitCoordinatorExecutor() {
