@@ -117,6 +117,30 @@
       "revId": "fbecefdbd264bfb09c5492881e0e2f2789638334",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "401922b2_a3cce202",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingWiring.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-29T14:44:01Z",
+      "side": 1,
+      "message": "I wouldn\u0027t expect end users to directly import this into test or simple/light distribution projects, but I\u0027m only using this class as part of a series of MdsalXyzModule/s which I\u0027m actively working on and hope to share more about very soon. So merge as is, or rename ... perhaps to BindingDOMAdapterWiring, would that work better for you? Certainly totally fine by me, and happy to update this, let\u0027s just first agree on the name - unless you are OK to merge it as is already.",
+      "parentUuid": "74d4b94f_394b446e",
+      "range": {
+        "startLine": 27,
+        "startChar": 13,
+        "endLine": 27,
+        "endChar": 26
+      },
+      "revId": "fbecefdbd264bfb09c5492881e0e2f2789638334",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
