@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "70641207_9eeeec71",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/FixedModuleInfoSchemaContextProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-29T15:28:37Z",
+      "side": 1,
+      "message": "\u003e \u003e Simple environments really says they are single-classloader with\n \u003e a fixed set of models\n \u003e \n \u003e Yes, that\u0027s what I\u0027m trying to say in this JavaDoc... concrete\n \u003e suggestions for better wording are most welcome!\n \u003e \n \u003e \u003ein which case they are better served by using \n        ModuleInfoBackedContext\n \u003e directly.\n \u003e \n \u003e But ModuleInfoBackedContext alone doesn\u0027t do the caching which\n \u003e makes tests run faster, which is why we had those two LoadingCache\n \u003e in AbstractSchemaAwareTest.  I would like to get us to a point\n \u003e where we can use the exact same code path e.g. for component tests\n \u003e and simple/light(y) production runtimes, therefore I\u0027m proposing\n \u003e this to align things.\n \u003e \n\nLooking at this further, in a single ClassLoader env, like a UT or standalone-dist, I don\u0027t see the purpose of MODULE_INFO_CACHE as there would ever only be on entry in the cache. It seems you can just build the ModuleInfoBackedContext/SchemaContext directly once on startup, ie:\n\n  final ModuleInfoBackedContext moduleContext \u003d \n      ModuleInfoBackedContext.create();\n  moduleContext.addModuleInfos(\n      BindingReflections.loadModuleInfos(getClass().getClassLoader()));\n  schemaContext \u003d tryToCreateSchemaContext().get();\n\nI think that\u0027s what Robert means or maybe I\u0027m missing something here...",
+      "parentUuid": "b902291b_5c01e00d",
+      "range": {
+        "startLine": 24,
+        "startChar": 49,
+        "endLine": 26,
+        "endChar": 27
+      },
+      "revId": "07831fef0eb2703c66c263a56b89ed92061c4480",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b67fdf98_ff71bf0e",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/FixedModuleInfoSchemaContextProvider.java",
         "patchSetId": 1
