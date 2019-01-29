@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "5b579274_c2c28742",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/FixedModuleInfoSchemaContextProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-29T15:36:29Z",
+      "side": 1,
+      "message": "\u003e On further thought, if you would rather that I entirely ditch this\n \u003e new FixedModuleInfoSchemaContextProvider and that we instead make\n \u003e the ModuleInfoBackedContext use those two LoadingCache, or perhaps\n \u003e even just ditch the LoadingCache all together (I\u0027m not sure I\n \u003e really understand what their point is...) and just have a static\n \u003e INSTANCE field in ModuleInfoBackedContext, that could certainly\n \u003e work for me as well - thoughts?\n\nOur comments crossed but, yeah, the LoadingCaches don\u0027t seem to make sense in a single ClassLoader env. The FixedModuleInfoSchemaContextProvider still makes sense since it implements SchemaContextProvider but just create the ModuleInfoBackedContext and SchemaContext in the ctor.",
+      "parentUuid": "370ec33d_9b626eb6",
+      "range": {
+        "startLine": 24,
+        "startChar": 49,
+        "endLine": 26,
+        "endChar": 27
+      },
+      "revId": "07831fef0eb2703c66c263a56b89ed92061c4480",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b67fdf98_ff71bf0e",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/FixedModuleInfoSchemaContextProvider.java",
         "patchSetId": 1
