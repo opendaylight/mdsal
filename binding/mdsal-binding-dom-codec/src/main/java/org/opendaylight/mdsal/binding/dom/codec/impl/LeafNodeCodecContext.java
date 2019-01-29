@@ -20,9 +20,11 @@ import java.util.Set;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.yangtools.concepts.Codec;
+import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
@@ -39,7 +41,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 
-final class LeafNodeCodecContext<D extends DataObject> extends NodeCodecContext<D> implements NodeContextSupplier {
+final class LeafNodeCodecContext<D extends TypeObject> extends NodeCodecContext<D> implements NodeContextSupplier {
 
     private final YangInstanceIdentifier.PathArgument yangIdentifier;
     private final Codec<Object, Object> valueCodec;
@@ -156,13 +158,17 @@ final class LeafNodeCodecContext<D extends DataObject> extends NodeCodecContext<
 
     @Override
     public BindingNormalizedNodeCachingCodec<D> createCachingCodec(
-            final ImmutableCollection<Class<? extends DataObject>> cacheSpecifier) {
+            final ImmutableCollection<Class<? extends BindingObject>> cacheSpecifier) {
         throw new UnsupportedOperationException("Leaves does not support caching codec.");
     }
 
     @Override
     public Class<D> getBindingClass() {
-        throw new UnsupportedOperationException("Leaf does not have DataObject representation");
+        if (TypeObject.class.isAssignableFrom(getter.getReturnType())) {
+            return (Class<D>) getter.getReturnType();
+        }
+
+        throw new UnsupportedOperationException("Leaf does not have TypeObject representation");
     }
 
     @Override

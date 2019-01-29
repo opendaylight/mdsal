@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.BindingStreamEventWriter;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -24,7 +25,7 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
  * Subtree codec specific to model subtree between Java Binding and NormalizedNode.
  */
 @Beta
-public interface BindingCodecTreeNode<T extends DataObject> extends BindingNormalizedNodeCodec<T> {
+public interface BindingCodecTreeNode<T extends BindingObject> extends BindingNormalizedNodeCodec<T> {
 
     /**
      * Returns binding class of interface which represents API of current schema node. The result is same as invoking
@@ -99,7 +100,7 @@ public interface BindingCodecTreeNode<T extends DataObject> extends BindingNorma
      * @return Codec whihc uses cache for serialization / deserialization.
      */
     @NonNull BindingNormalizedNodeCachingCodec<T> createCachingCodec(
-            @NonNull ImmutableCollection<Class<? extends DataObject>> cacheSpecifier);
+            @NonNull ImmutableCollection<Class<? extends BindingObject>> cacheSpecifier);
 
     @Beta
     void writeAsNormalizedNode(T data, NormalizedNodeStreamWriter writer);
