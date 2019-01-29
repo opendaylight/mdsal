@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "370ec33d_9b626eb6",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/FixedModuleInfoSchemaContextProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-29T15:23:53Z",
+      "side": 1,
+      "message": "On further thought, if you would rather that I entirely ditch this new FixedModuleInfoSchemaContextProvider and that we instead make the ModuleInfoBackedContext use those two LoadingCache, or perhaps even just ditch the LoadingCache all together (I\u0027m not sure I really understand what their point is...) and just have a static INSTANCE field in ModuleInfoBackedContext, that could certainly work for me as well - thoughts?",
+      "parentUuid": "b902291b_5c01e00d",
+      "range": {
+        "startLine": 24,
+        "startChar": 49,
+        "endLine": 26,
+        "endChar": 27
+      },
+      "revId": "07831fef0eb2703c66c263a56b89ed92061c4480",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b67fdf98_ff71bf0e",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/FixedModuleInfoSchemaContextProvider.java",
         "patchSetId": 1
