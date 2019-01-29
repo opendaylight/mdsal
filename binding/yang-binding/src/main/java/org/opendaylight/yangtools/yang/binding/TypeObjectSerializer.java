@@ -7,8 +7,6 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
-public interface BindingSerializer<P,I> {
-    P serialize(I input);
-
+public interface TypeObjectSerializer<P,I> {
     P serialize(String name, I input);
 }

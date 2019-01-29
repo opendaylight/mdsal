@@ -7,11 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import com.google.common.base.Preconditions;
 import java.io.IOException;
+import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.BindingSerializer;
 import org.opendaylight.yangtools.yang.binding.BindingStreamEventWriter;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.TypeObject;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 
 /**
@@ -27,7 +32,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
  * for inspection and to prevent streaming of already serialized object.
  */
 final class CachingNormalizedNodeSerializer extends ForwardingBindingStreamEventWriter implements
-        BindingSerializer<Object, DataObject> {
+        BindingSerializer<Object, BindingObject> {
 
     private final NormalizedNodeResult domResult;
     private final NormalizedNodeWriterWithAddChild domWriter;
@@ -35,7 +40,7 @@ final class CachingNormalizedNodeSerializer extends ForwardingBindingStreamEvent
     private final AbstractBindingNormalizedNodeCacheHolder cacheHolder;
 
     CachingNormalizedNodeSerializer(final AbstractBindingNormalizedNodeCacheHolder cacheHolder,
-            final DataContainerCodecContext<?, ?> subtreeRoot) {
+            final NodeCodecContext<?> subtreeRoot) {
         this.cacheHolder = cacheHolder;
         this.domResult = new NormalizedNodeResult();
         this.domWriter = new NormalizedNodeWriterWithAddChild(domResult);
@@ -65,14 +70,29 @@ final class CachingNormalizedNodeSerializer extends ForwardingBindingStreamEvent
      * streaming of data when non-null result is returned.
      */
     @Override
-    public NormalizedNode<?, ?> serialize(final DataObject input) {
-        final BindingNormalizedNodeCache cachingSerializer = getCacheSerializer(input.getImplementedInterface());
-        if (cachingSerializer != null) {
-            final NormalizedNode<?, ?> domData = cachingSerializer.get(input);
-            domWriter.addChild(domData);
-            return domData;
-        }
-        return null;
+    public NormalizedNode<?, ?> serialize(final BindingObject input) {
+        final BindingNormalizedNodeCache cachingSerializer =
+                getCacheSerializer(((DataObject) input).getImplementedInterface());
+        return getNormalizedNode(input, cachingSerializer);
+    }
+
+    /**
+     * Serializes leaf data with derived type if it is cached, returns null otherwise.
+     *
+     * <p>
+     * If input is cached it uses {@link NormalizedNodeWriterWithAddChild#addChild(NormalizedNode)}
+     * to provide already serialized value to underlying NormalizedNodeWriter in order to reuse
+     * value instead of creating new one using Normalized Node stream APIs.
+     *
+     * <p>
+     * Note that this optional is serialization of child node invoked from
+     * {@link org.opendaylight.yangtools.yang.binding.DataObjectSerializer}, which may opt-out from
+     * streaming of data when non-null result is returned.
+     */
+    @Override
+    public NormalizedNode<?, ?> serialize(final String name, final BindingObject input) {
+        final BindingNormalizedNodeCache cachingSerializer = getCacheSerializer(name, input.getClass());
+        return getNormalizedNode(input, cachingSerializer);
     }
 
     /**
@@ -93,6 +113,17 @@ final class CachingNormalizedNodeSerializer extends ForwardingBindingStreamEvent
         return serializeUsingStreamWriter(cacheHolder, subtreeRoot, data);
     }
 
+
+    private NormalizedNode<?, ?> getNormalizedNode(BindingObject input, BindingNormalizedNodeCache cachingSerializer) {
+        if (cachingSerializer != null) {
+            final NormalizedNode<?, ?> domData = cachingSerializer.get(input);
+            domWriter.addChild(domData);
+            return domData;
+        }
+        return null;
+    }
+
+
     @SuppressWarnings({"rawtypes", "unchecked"})
     private BindingNormalizedNodeCache getCacheSerializer(final Class type) {
         if (cacheHolder.isCached(type)) {
@@ -101,6 +132,18 @@ final class CachingNormalizedNodeSerializer extends ForwardingBindingStreamEvent
                 return cacheHolder.getCachingSerializer(currentCtx);
             }
             return cacheHolder.getCachingSerializer(currentCtx.streamChild(type));
+        }
+        return null;
+    }
+
+    private BindingNormalizedNodeCache getCacheSerializer(final String name, final Class type) {
+        if (cacheHolder.isCached(type)) {
+            final NodeCodecContext<?> currentCtx = delegate.current();
+            if (type.equals(currentCtx.getBindingClass())) {
+                return cacheHolder.getCachingSerializer(currentCtx);
+            }
+            Preconditions.checkArgument(currentCtx instanceof DataObjectCodecContext);
+            return cacheHolder.getCachingSerializer(((DataObjectCodecContext<?, ?>) currentCtx).getLeafChild(name));
         }
         return null;
     }
@@ -122,5 +165,10 @@ final class CachingNormalizedNodeSerializer extends ForwardingBindingStreamEvent
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    static NormalizedNode<?, ?> serializeLeafNode(final LeafNodeCodecContext<?> subtreeRoot, final TypeObject data) {
+        return ImmutableNodes.leafNode((YangInstanceIdentifier.NodeIdentifier) subtreeRoot.getDomPathArgument(),
+                subtreeRoot.getValueCodec().serialize(data));
     }
 }
