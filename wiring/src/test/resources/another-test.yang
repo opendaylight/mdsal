@@ -1,0 +1,26 @@
+module another-test {
+    namespace "urn:another-test";
+    prefix tst2;
+
+    revision 2019-01-29;
+
+    typedef id {
+        type uint16 {
+          range "1..4094";
+        }
+    }
+
+    container cont{
+        leaf vlan-id {
+            type union {
+              type id;
+              type enumeration {
+                enum "any" {
+                  value 4096;
+                }
+              }
+            }
+            mandatory true;
+          }
+    }
+}
