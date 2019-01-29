@@ -121,6 +121,30 @@
     },
     {
       "key": {
+        "uuid": "4db5be13_1f3bc244",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/FixedModuleInfoSchemaContextProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-29T18:59:06Z",
+      "side": 1,
+      "message": "but we want the whole circus to only happen once per ClassLoader, because e.g. in \"component\" tests this, from the AbstractSchemaAwareTest, is instantiated several times... so static, not constructor, agreed?  And that is what it already is in Patch Set 4:\n\n    private static final ModuleInfoBackedContext MODULE_CONTEXT \u003d ModuleInfoBackedContext.create();\n\nI sure could make the Set\u003cYangModuleInfo\u003e and the SchemaContext equally simply static ... but Git archeology on https://github.com/opendaylight/mdsal/commit/d4c66cbf18aff525a274b3d3c74b3ff54da3cc9f#diff-bb4a711c27cd85233cb568efc27b5a8e shows that Robert chose to use a LoadingCache instead of static, so... Robert, what would you like me to do here so that you are comfortable with merging this soon-ish?",
+      "parentUuid": "5b579274_c2c28742",
+      "range": {
+        "startLine": 24,
+        "startChar": 49,
+        "endLine": 26,
+        "endChar": 27
+      },
+      "revId": "07831fef0eb2703c66c263a56b89ed92061c4480",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b67fdf98_ff71bf0e",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/FixedModuleInfoSchemaContextProvider.java",
         "patchSetId": 1
