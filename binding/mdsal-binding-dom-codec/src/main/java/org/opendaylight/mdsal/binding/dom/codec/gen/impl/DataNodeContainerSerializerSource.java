@@ -142,7 +142,12 @@ abstract class DataNodeContainerSerializerSource extends DataObjectSerializerSou
     private void emitChildInner(final StringBuilder sb, final String getterName, final Type childType,
             final DataSchemaNode child) {
         if (child instanceof LeafSchemaNode) {
-            sb.append(statement(leafNode(child.getQName().getLocalName(), getterName)));
+            if (((LeafSchemaNode) child).getType().getBaseType() != null) {
+                sb.append(tryToUseLeafCacheElse(child.getQName().getLocalName(), getterName,
+                        statement(leafNode(child.getQName().getLocalName(), getterName))));
+            } else {
+                sb.append(statement(leafNode(child.getQName().getLocalName(), getterName)));
+            }
         } else if (child instanceof AnyXmlSchemaNode) {
             sb.append(statement(anyxmlNode(child.getQName().getLocalName(), getterName)));
         } else if (child instanceof LeafListSchemaNode) {
@@ -177,6 +182,18 @@ abstract class DataNodeContainerSerializerSource extends DataObjectSerializerSou
         b.append("if ( ");
         b.append(SERIALIZER).append("== null || ");
         b.append(invoke(SERIALIZER, "serialize", getterName)).append("== null");
+        b.append(") {");
+        b.append(statement);
+        b.append('}');
+        return b;
+    }
+
+    private static StringBuilder tryToUseLeafCacheElse(final String name, final String getterName,
+                                                       final CharSequence statement) {
+        final StringBuilder b = new StringBuilder();
+        b.append("if ( ");
+        b.append(SERIALIZER).append("== null || ");
+        b.append(invoke(SERIALIZER, "serialize", escape(name), getterName)).append("== null");
         b.append(") {");
         b.append(statement);
         b.append('}');

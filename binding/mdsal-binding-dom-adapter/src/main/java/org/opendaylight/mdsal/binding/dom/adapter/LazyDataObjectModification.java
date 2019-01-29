@@ -114,7 +114,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
                 break;
             case UNKNOWN:
             case VISIBLE_CONTAINER:
-                result.add(create(childCodec, domChildNode));
+                result.add(create((BindingCodecTreeNode<? extends DataObject>) childCodec, domChildNode));
                 break;
             default:
         }
@@ -124,7 +124,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
             final BindingCodecTreeNode<?> codec, final Collection<DataTreeCandidateNode> childNodes) {
         for (final DataTreeCandidateNode child : childNodes) {
             if (child.getModificationType() != UNMODIFIED) {
-                result.add(create(codec, child));
+                result.add(create((BindingCodecTreeNode<? extends DataObject>) codec, child));
             }
         }
     }
@@ -246,7 +246,8 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
         while (toEnter.hasNext() && current != null) {
             current = current.getModifiedChild(toEnter.next());
         }
-        return current != null && current.getModificationType() != UNMODIFIED ? create(childCodec, current) : null;
+        return current != null && current.getModificationType() != UNMODIFIED ? create(
+                (BindingCodecTreeNode<? extends DataObject>) childCodec, current) : null;
     }
 
     @Override
