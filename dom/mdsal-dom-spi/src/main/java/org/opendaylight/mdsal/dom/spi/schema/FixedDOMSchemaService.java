@@ -18,8 +18,8 @@ import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 
 /**
  * {@link DOMSchemaService} (and {@link DOMYangTextSourceProvider}) implementation
- * back by a {@link SchemaContextProvider} which is known to be fixed and never change schemas.
-
+ * backed by a {@link SchemaContextProvider} which is known to be fixed and never change schemas.
+ *
  * @author Michael Vorburger.ch
  */
 public class FixedDOMSchemaService extends AbstractDOMSchemaService {

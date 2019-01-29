@@ -42,6 +42,8 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService impl
     }
 
     private ScanningSchemaServiceProvider(YangTextSchemaContextResolver contextResolver) {
+        // do NOT use internalSchemaContext() here, but fix contextResolver.getSchemaContext()
+        // because in a subclass which overrides internalSchemaContext() this still needs to be our own
         super(() -> contextResolver.getSchemaContext().orElse(null),
             sourceIdentifier -> contextResolver.getSource(sourceIdentifier));
         this.contextResolver = contextResolver;
@@ -49,7 +51,7 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService impl
 
     public void tryToUpdateSchemaContext() {
         synchronized (lock) {
-            final Optional<SchemaContext> schema = contextResolver.getSchemaContext();
+            final Optional<SchemaContext> schema = internalGetSchemaContextToNotify();
             if (schema.isPresent()) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Got new SchemaContext: # of modules {}", schema.get().getModules().size());
@@ -106,7 +108,7 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService impl
     public ListenerRegistration<SchemaContextListener>
             registerSchemaContextListener(final SchemaContextListener listener) {
         synchronized (lock) {
-            contextResolver.getSchemaContext().ifPresent(listener::onGlobalContextUpdated);
+            internalGetSchemaContextToNotify().ifPresent(listener::onGlobalContextUpdated);
             return listeners.register(listener);
         }
     }
@@ -116,5 +118,9 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService impl
         synchronized (lock) {
             listeners.forEach(ListenerRegistration::close);
         }
+    }
+
+    protected Optional<SchemaContext> internalGetSchemaContextToNotify() {
+        return contextResolver.getSchemaContext();
     }
 }
