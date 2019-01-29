@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -34,6 +35,7 @@ import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.yang.binding.Action;
+import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.BindingStreamEventWriter;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -218,9 +220,10 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
             return null;
         }
 
-        final DataObject lazyObj = codec.deserialize(data);
+        final BindingObject lazyObj = codec.deserialize(data);
         final InstanceIdentifier<?> bindingPath = InstanceIdentifier.create(builder);
-        return new SimpleEntry<>(bindingPath, lazyObj);
+        Preconditions.checkArgument(lazyObj instanceof DataObject);
+        return new SimpleEntry<>(bindingPath, (DataObject) lazyObj);
     }
 
     @Override
