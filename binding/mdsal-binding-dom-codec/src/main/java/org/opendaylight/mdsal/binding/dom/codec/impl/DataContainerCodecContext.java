@@ -15,6 +15,7 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
+import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.BindingStreamEventWriter;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataObjectSerializer;
@@ -106,7 +107,7 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends WithSta
     }
 
     @Override
-    public abstract <C extends DataObject> DataContainerCodecContext<C, ?> streamChild(Class<C> childClass);
+    public abstract <C extends DataObject> DataContainerCodecContext<C, ?>  streamChild(@NonNull Class<C> childClass);
 
     /**
      * Returns child context as if it was walked by {@link BindingStreamEventWriter}. This means that to enter case, one
@@ -126,7 +127,7 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends WithSta
 
     @Override
     public BindingNormalizedNodeCachingCodec<D> createCachingCodec(
-            final ImmutableCollection<Class<? extends DataObject>> cacheSpecifier) {
+            final ImmutableCollection<Class<? extends BindingObject>> cacheSpecifier) {
         if (cacheSpecifier.isEmpty()) {
             return new NonCachingCodec<>(this);
         }
