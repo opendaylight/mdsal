@@ -16,8 +16,15 @@ import com.google.inject.Injector;
 import com.google.inject.Scopes;
 import javax.inject.Inject;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.api.ActionProviderService;
+import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.MountPointService;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
@@ -72,15 +79,15 @@ public class BindingWiringTest {
 
     // Binding
     @Inject DataBroker dataBroker;
+    // @Inject DataTreeService dataTreeService;
     @Inject BindingNormalizedNodeSerializer codec; // NOT BindingToNormalizedNodeCodec, that's impl, this is API
-    // TODO @Inject NotificationService notificationService;
-    // TODO @Inject NotificationPublishService notificationPublishService;
-    // TODO @Inject DataTreeService dataTreeService;
-    // TODO @Inject MountPointService mountPointService;
-    // TODO @Inject RpcConsumerRegistry rpcConsumerRegistry;
-    // TODO @Inject RpcProviderService rpcProviderService;
-    // TODO @Inject ActionService actionService;
-    // TODO @Inject ActionProviderService actionProviderService;
+    @Inject NotificationService notificationService;
+    @Inject NotificationPublishService notificationPublishService;
+    @Inject MountPointService mountPointService;
+    @Inject RpcConsumerRegistry rpcConsumerRegistry;
+    @Inject RpcProviderService rpcProviderService;
+    @Inject ActionService actionService;
+    @Inject ActionProviderService actionProviderService;
 
     @Test
     public void testWiring() throws Exception {
