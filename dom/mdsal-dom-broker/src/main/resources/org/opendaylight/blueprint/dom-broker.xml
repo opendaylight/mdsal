@@ -4,6 +4,8 @@
            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
     odl:restart-dependents-on-updates="false">
 
+  <!-- Wiring -->
+
   <cm:property-placeholder persistent-id="org.opendaylight.mdsal.dom.notification" update-strategy="none">
     <cm:default-properties>
       <cm:property name="notification-queue-depth" value="65536"/>
@@ -12,19 +14,27 @@
     </cm:default-properties>
   </cm:property-placeholder>
 
-  <!-- Schema Service -->
-
   <odl:static-reference id="schemaService" interface="org.opendaylight.mdsal.dom.api.DOMSchemaService"/>
 
-  <!-- DOM Notification Service -->
+  <reference id="domDefaultDataBroker" interface="org.opendaylight.mdsal.dom.api.DOMDataBroker"
+      odl:type="default"/>
 
-  <bean id="domNotificationRouter" class="org.opendaylight.mdsal.dom.broker.DOMNotificationRouter"
-          factory-method="create">
+  <bean id="domNotificationRouterConfig" class="org.opendaylight.mdsal.dom.broker.DOMNotificationRouterConfig.Immutable">
     <argument value="${notification-queue-depth}"/>
     <argument value="${notification-queue-spin}"/>
     <argument value="${notification-queue-park}"/>
     <argument value="MILLISECONDS"/>
   </bean>
+
+  <bean id="wiring" class="org.opendaylight.mdsal.dom.broker.DOMBrokerWiring" destroy-method="close">
+    <argument ref="domNotificationRouterConfig" />
+    <argument ref="schemaService"/>
+    <argument ref="domDefaultDataBroker"/>
+  </bean>
+
+  <!-- DOM Notification Service -->
+
+  <bean id="domNotificationRouter" factory-ref="wiring" factory-method="getDOMNotificationService" />
 
   <service ref="domNotificationRouter" odl:type="default">
     <interfaces>
@@ -36,33 +46,28 @@
 
   <!-- DOM RPC Service -->
 
-  <bean id="domRpcRouter" class="org.opendaylight.mdsal.dom.broker.DOMRpcRouter"
-          factory-method="newInstance" destroy-method="close">
-    <argument ref="schemaService"/>
-  </bean>
-
-  <bean id="domRpcService" factory-ref="domRpcRouter" factory-method="getRpcService"/>
+  <bean id="domRpcService" factory-ref="wiring" factory-method="getDOMRpcService" />
   <service ref="domRpcService" odl:type="default">
     <interfaces>
       <value>org.opendaylight.mdsal.dom.api.DOMRpcService</value>
     </interfaces>
   </service>
 
-  <bean id="domRpcProviderService" factory-ref="domRpcRouter" factory-method="getRpcProviderService"/>
+  <bean id="domRpcProviderService" factory-ref="wiring" factory-method="getDOMRpcProviderService" />
   <service ref="domRpcProviderService" odl:type="default">
     <interfaces>
       <value>org.opendaylight.mdsal.dom.api.DOMRpcProviderService</value>
     </interfaces>
   </service>
 
-  <bean id="domActionService" factory-ref="domRpcRouter" factory-method="getActionService"/>
+  <bean id="domActionService" factory-ref="wiring" factory-method="getDOMActionService" />
   <service ref="domActionService" odl:type="default">
     <interfaces>
       <value>org.opendaylight.mdsal.dom.api.DOMActionService</value>
     </interfaces>
   </service>
 
-  <bean id="domActionProviderService" factory-ref="domRpcRouter" factory-method="getActionProviderService"/>
+  <bean id="domActionProviderService" factory-ref="wiring" factory-method="getDOMActionProviderService" />
   <service ref="domActionProviderService" odl:type="default">
     <interfaces>
       <value>org.opendaylight.mdsal.dom.api.DOMActionProviderService</value>
@@ -71,20 +76,13 @@
 
   <!-- DOM MountPoint Service -->
 
-  <bean id="domMountPointService" class="org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl"/>
-
+  <bean id="domMountPointService" factory-ref="wiring" factory-method="getDOMMountPointService" />
   <service ref="domMountPointService" interface="org.opendaylight.mdsal.dom.api.DOMMountPointService"
         odl:type="default"/>
 
   <!-- DOM PingPong Data Broker -->
 
-  <reference id="domDefaultDataBroker" interface="org.opendaylight.mdsal.dom.api.DOMDataBroker"
-      odl:type="default"/>
-
-  <bean id="domPingPongDataBroker" class="org.opendaylight.mdsal.dom.broker.pingpong.PingPongDataBroker">
-    <argument ref="domDefaultDataBroker"/>
-  </bean>
-
+  <bean id="domPingPongDataBroker" factory-ref="wiring" factory-method="getPingPongDOMDataBroker" />
   <service ref="domPingPongDataBroker" interface="org.opendaylight.mdsal.dom.api.DOMDataBroker"
       odl:type="pingpong"/>
 
