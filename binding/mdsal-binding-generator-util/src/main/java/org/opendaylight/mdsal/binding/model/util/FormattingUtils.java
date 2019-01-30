@@ -39,7 +39,8 @@ public final class FormattingUtils {
         final StringBuilder sb = new StringBuilder();
         final StringBuilder lineBuilder = new StringBuilder();
         final String lineIndent = Strings.repeat(" ", nextLineIndent);
-        final String formattedText = MULTIPLE_SPACES_PATTERN.matcher(NEWLINE_OR_TAB.removeFrom(text)).replaceAll(" ");
+        final String formattedText = MULTIPLE_SPACES_PATTERN.matcher(NEWLINE_OR_TAB.replaceFrom(text, " "))
+                .replaceAll(" ");
         final StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
 
         boolean isFirstElementOnNewLineEmptyChar = false;
