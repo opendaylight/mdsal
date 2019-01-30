@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a58eab87_85dc9292",
+        "filename": "wiring/src/main/java/org/opendaylight/mdsal/wiring/schema/HybridSchemaWiring.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-30T20:31:37Z",
+      "side": 1,
+      "message": "This results in calls to 2 non-private methods from the HybridSchemaWiring\u0027s ctor which isn\u0027t safe (findbugs should catch this). Instead of inlining the return values, you can store as members in HybridSchemaWiring and pass here.",
+      "revId": "d19c6fb15d3071b4a5f6776b29a595f5dedae3b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
