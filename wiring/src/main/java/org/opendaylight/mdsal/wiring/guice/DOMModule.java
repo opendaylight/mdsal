@@ -14,7 +14,7 @@ import org.opendaylight.mdsal.wiring.schema.SchemaWiring;
 import org.opendaylight.mdsal.wiring.schema.guice.SchemaModule;
 
 /**
- * Guice Module which Guice binds mdsal DOM related services.
+ * Guice Module which Guice binds all mdsal DOM related services.
  *
  * <p>This modules expects another module to bind a {@link DOMDataBroker}.
  *
@@ -30,7 +30,7 @@ public class DOMModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        binder.bind(SchemaWiring.class).toInstance(schemaWiring);
         binder.install(new SchemaModule(schemaWiring));
+        binder.install(new DOMBrokerModule());
     }
 }
