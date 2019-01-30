@@ -19,9 +19,17 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
+import org.opendaylight.mdsal.dom.api.DOMNotificationService;
+import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
+import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.mdsal.wiring.guice.BindingModule;
 import org.opendaylight.mdsal.wiring.guice.InMemoryDOMDataBrokerModule;
 import org.opendaylight.mdsal.wiring.schema.PurelyClassLoadingSchemaWiring;
@@ -51,25 +59,23 @@ public class BindingWiringTest {
     @Inject DOMDataBroker domDataBroker;
     @Inject DOMSchemaService domSchemaService;
     @Inject DOMYangTextSourceProvider domYangTextSourceProvider;
-    // TODO @Inject DOMNotificationService domNotificationService;
-    // TODO @Inject DOMNotificationPublishService domNotificationPublishService;
-    // TODO @Inject DOMNotificationRouter domNotificationRouter;
-    // TODO @Inject DOMDataTreeService domDataTreeService;
-    // TODO @Inject DOMMountPointService domMountPointService;
-    // TODO @Inject DOMRpcService domRpcService;
-    // TODO @Inject DOMRpcProviderService domRpcProviderService;
-    // TODO @Inject DOMActionService domActionService;
-    // TODO @Inject DOMActionProviderService domActionProviderService;
+    @Inject DOMNotificationService domNotificationService;
+    @Inject DOMNotificationPublishService domNotificationPublishService;
+    @Inject DOMMountPointService domMountPointService;
+    @Inject DOMRpcService domRpcService;
+    @Inject DOMRpcProviderService domRpcProviderService;
+    @Inject DOMActionService domActionService;
+    @Inject DOMActionProviderService domActionProviderService;
 
     // DOM SPI (services required e.g. by netconf/restconf)
-    // TODO DOMNotificationSubscriptionListenerRegistry domNotificationSubscriptionListenerRegistry;
+    @Inject DOMNotificationSubscriptionListenerRegistry domNotificationSubscriptionListenerRegistry;
 
     // Binding
     @Inject DataBroker dataBroker;
     @Inject BindingNormalizedNodeSerializer codec; // NOT BindingToNormalizedNodeCodec, that's impl, this is API
     // TODO @Inject NotificationService notificationService;
     // TODO @Inject NotificationPublishService notificationPublishService;
-    // TODO DataTreeService dataTreeService;
+    // TODO @Inject DataTreeService dataTreeService;
     // TODO @Inject MountPointService mountPointService;
     // TODO @Inject RpcConsumerRegistry rpcConsumerRegistry;
     // TODO @Inject RpcProviderService rpcProviderService;
