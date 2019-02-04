@@ -18,7 +18,7 @@
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-rfc7224</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Model :: RFC7224</name>
@@ -28,7 +28,7 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>mdsal-model-artifacts</artifactId>
-                <version>0.13.2-SNAPSHOT</version>
+                <version>0.13.2</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

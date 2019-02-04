@@ -14,13 +14,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>0.13.2-SNAPSHOT</version>
+        <version>0.13.2</version>
         <relativePath>../../../binding/binding-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
     <artifactId>rfc8349-ietf-ipv6-unicast-routing</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>bundle</packaging>
 
     <name>${project.artifactId}</name>
@@ -31,7 +31,7 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>mdsal-model-artifacts</artifactId>
-                <version>0.13.2-SNAPSHOT</version>
+                <version>0.13.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
