@@ -48,11 +48,11 @@ public abstract class AbstractBaseDataBrokerTest extends AbstractSchemaAwareTest
         return domBroker;
     }
 
-    protected static final void assertCommit(final ListenableFuture<Void> commit) {
+    protected static final void assertCommit(final ListenableFuture<?> commit) {
         assertCommit(commit, ASSERT_COMMIT_DEFAULT_TIMEOUT);
     }
 
-    protected static final void assertCommit(final ListenableFuture<Void> commit, long timeoutInMS) {
+    protected static final void assertCommit(final ListenableFuture<?> commit, long timeoutInMS) {
         try {
             commit.get(timeoutInMS, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
