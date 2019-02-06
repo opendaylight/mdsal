@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f77800b3_5c1b4388",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/BindingObject.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-02-06T15:15:18Z",
+      "side": 1,
+      "message": "wrong attribution?",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 35
+      },
+      "revId": "d0d809a8f7d9f03c26c66afb3e4a562afb20f11f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "db947dcc_d03bca9a",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/TypeObject.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-02-06T15:15:18Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 2,
+        "startChar": 22,
+        "endLine": 2,
+        "endChar": 40
+      },
+      "revId": "d0d809a8f7d9f03c26c66afb3e4a562afb20f11f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
