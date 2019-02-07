@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.testutils;
 
 import ch.vorburger.xtendbeans.AssertBeans;
+import com.github.difflib.algorithm.DiffException;
 import com.google.common.base.Objects;
 import org.junit.ComparisonFailure;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -67,8 +68,12 @@ public final class AssertDataObjects {
     static void assertEqualByText(String expectedText, Object actual) throws ComparisonFailure {
         String actualText = GENERATOR.getExpression(actual);
         if (!expectedText.equals(actualText)) {
-            String diff = DiffUtil.diff(expectedText, actualText);
-            LOG.warn("diff for ComparisonFailure about to be thrown:\n{}", diff);
+            try {
+                String diff = DiffUtil.diff(expectedText, actualText);
+                LOG.warn("diff for ComparisonFailure about to be thrown:\n{}", diff);
+            } catch (DiffException e) {
+                LOG.error("Error generating a comparison diff", e);
+            }
             throw new ComparisonFailure("Expected and actual beans do not match", expectedText, actualText);
         }
     }
