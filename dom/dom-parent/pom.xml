@@ -19,7 +19,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>dom-parent</artifactId>
-    <version>0.13.2-SNAPSHOT</version>
+    <version>0.13.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>pom.xml for MD-SAL DOM plugins</description>
@@ -36,14 +36,14 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>2.5.2-SNAPSHOT</version>
+                <version>2.5.3-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>mdsal-model-artifacts</artifactId>
-                <version>0.13.2-SNAPSHOT</version>
+                <version>0.13.3-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

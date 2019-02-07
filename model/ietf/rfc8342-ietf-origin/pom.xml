@@ -14,13 +14,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>0.13.2-SNAPSHOT</version>
+        <version>0.13.3-SNAPSHOT</version>
         <relativePath>../../../binding/binding-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
     <artifactId>rfc8342-ietf-origin</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>${project.artifactId}</name>
@@ -31,7 +31,7 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>mdsal-model-artifacts</artifactId>
-                <version>0.13.2-SNAPSHOT</version>
+                <version>0.13.3-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
