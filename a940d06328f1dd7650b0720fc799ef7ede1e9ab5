@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d86f0905_9288ae61",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/DiffUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-02-07T17:40:43Z",
+      "side": 1,
+      "message": "Why does a DiffException indicate that the arguments are illegal?",
+      "revId": "a940d06328f1dd7650b0720fc799ef7ede1e9ab5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
