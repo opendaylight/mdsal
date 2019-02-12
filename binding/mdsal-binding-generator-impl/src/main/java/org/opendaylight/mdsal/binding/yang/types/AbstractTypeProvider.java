@@ -17,10 +17,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
-import com.google.common.io.BaseEncoding;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1455,8 +1455,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
     private static String binaryToDef(final String defaultValue) {
         final StringBuilder sb = new StringBuilder();
-        final BaseEncoding en = BaseEncoding.base64();
-        final byte[] encoded = en.decode(defaultValue);
+        final byte[] encoded = Base64.getDecoder().decode(defaultValue);
         sb.append("new byte[] {");
         for (int i = 0; i < encoded.length; i++) {
             sb.append(encoded[i]);
