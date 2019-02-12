@@ -41,13 +41,13 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1543,12 +1543,7 @@ abstract class AbstractTypeGenerator {
         method.setStatic(true);
 
         final GeneratedTransferObject unionBuilderType = unionBuilder.build();
-        final Set<Type> types = typeProvider.getAdditionalTypes().get(parentModule);
-        if (types == null) {
-            typeProvider.getAdditionalTypes().put(parentModule, Sets.newHashSet(unionBuilderType));
-        } else {
-            types.add(unionBuilderType);
-        }
+        typeProvider.getAdditionalTypes().computeIfAbsent(parentModule, key -> new HashSet<>()).add(unionBuilderType);
     }
 
     private GeneratedTypeBuilder addDefaultInterfaceDefinition(final ModuleContext context,

@@ -30,11 +30,10 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -893,13 +892,7 @@ public final class TypeProviderImpl implements TypeProvider {
         method.setAccessModifier(AccessModifier.PUBLIC);
         method.setStatic(true);
 
-        final Set<Type> types = this.getAdditionalTypes().get(parentModule);
-        if (types == null) {
-            this.getAdditionalTypes().put(parentModule,
-                    Sets.newHashSet(unionBuilder.toInstance()));
-        } else {
-            types.add(unionBuilder.toInstance());
-        }
+        getAdditionalTypes().computeIfAbsent(parentModule, key -> new HashSet<>()).add(unionBuilder.toInstance());
 
         return unionBuilder;
     }

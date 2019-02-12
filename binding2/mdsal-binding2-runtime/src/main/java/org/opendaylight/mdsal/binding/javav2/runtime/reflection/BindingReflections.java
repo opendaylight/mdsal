@@ -16,11 +16,11 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
-import com.google.common.collect.Sets;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -637,8 +638,8 @@ public final class BindingReflections {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static boolean isSubstitutionFor(final Class potential, final Class target) {
-        final HashSet<Class> subImplemented = Sets.newHashSet(potential.getInterfaces());
-        final HashSet<Class> targetImplemented = Sets.newHashSet(target.getInterfaces());
+        Set<Class> subImplemented = new HashSet<>(Arrays.asList(potential.getInterfaces()));
+        Set<Class> targetImplemented = new HashSet<>(Arrays.asList(target.getInterfaces()));
         if (!subImplemented.equals(targetImplemented)) {
             return false;
         }

@@ -16,7 +16,6 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -780,13 +780,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             method.addParameter(Types.STRING, "defaultValue");
             method.setAccessModifier(AccessModifier.PUBLIC);
             method.setStatic(true);
-            Set<Type> types = additionalTypes.get(module);
-            if (types == null) {
-                types = Sets.newHashSet(unionBuilder.build());
-                additionalTypes.put(module, types);
-            } else {
-                types.add(unionBuilder.build());
-            }
+            additionalTypes.computeIfAbsent(module, key -> new HashSet<>()).add(unionBuilder.build());
         } else if (baseTypedef instanceof EnumTypeDefinition) {
             // enums are automatically Serializable
             final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) baseTypedef;

@@ -12,10 +12,10 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
-import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -72,7 +72,7 @@ public class ShardedDOMReadTransactionAdapterTest {
             registerListener(final T listener, final Collection<DOMDataTreeIdentifier> subtrees,
                     final boolean allowRxMerges, final Collection<DOMDataTreeProducer> producers)
                             throws DOMDataTreeLoopException {
-            final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtree = Maps.newHashMap();
+            final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtree = new HashMap<>();
             subtree.put(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH),
                     TestUtils.TEST_CONTAINER);
 

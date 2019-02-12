@@ -8,10 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.yang.types;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -89,8 +88,8 @@ public class GroupingDefinitionDependencySort {
      * @return set of nodes where every one contains wrapped grouping definition
      */
     private Set<Node> groupingDefinitionsToNodes(final Collection<GroupingDefinition> groupingDefinitions) {
-        final Map<SchemaPath, Node> nodeMap = Maps.newHashMap();
-        final Set<Node> resultNodes = Sets.newHashSet();
+        final Map<SchemaPath, Node> nodeMap = new HashMap<>();
+        final Set<Node> resultNodes = new HashSet<>();
 
         for (final GroupingDefinition groupingDefinition : groupingDefinitions) {
             final Node node = new NodeWrappedType(groupingDefinition);
