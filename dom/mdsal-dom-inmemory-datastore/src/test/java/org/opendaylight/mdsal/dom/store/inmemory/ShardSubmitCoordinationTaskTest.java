@@ -33,7 +33,7 @@ public class ShardSubmitCoordinationTaskTest {
     @Test
     public void basicTest() throws Exception {
         final ShardSubmitCoordinationTask shardSubmitCoordinationTask =
-                new ShardSubmitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, Collections.EMPTY_SET, tx);
+                new ShardSubmitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, Collections.emptySet(), tx);
 
         final ShardCanCommitCoordinationTask canCommitCoordinationTask = mock(ShardCanCommitCoordinationTask.class);
         doNothing().when(canCommitCoordinationTask).canCommitBlocking();

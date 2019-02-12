@@ -34,9 +34,9 @@ public class ForwardingDOMNotificationServiceTest extends ForwardingDOMNotificat
         verify(domNotificationService).registerNotificationListener(domNotificationListener);
 
         doReturn(null).when(domNotificationService).registerNotificationListener(domNotificationListener,
-                Collections.EMPTY_SET);
-        this.registerNotificationListener(domNotificationListener, Collections.EMPTY_SET);
-        verify(domNotificationService).registerNotificationListener(domNotificationListener, Collections.EMPTY_SET);
+                Collections.emptySet());
+        this.registerNotificationListener(domNotificationListener, Collections.emptySet());
+        verify(domNotificationService).registerNotificationListener(domNotificationListener, Collections.emptySet());
     }
 
     @Override

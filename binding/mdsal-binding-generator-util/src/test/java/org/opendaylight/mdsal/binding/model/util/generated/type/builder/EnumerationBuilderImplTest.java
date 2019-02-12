@@ -98,12 +98,12 @@ public class EnumerationBuilderImplTest {
         assertEquals(packageName + '.' + name, enumeration.getFullyQualifiedName());
         assertEquals(reference, enumeration.getReference());
         assertEquals(Collections.singletonList(qname), enumeration.getSchemaPath());
-        assertEquals(Collections.EMPTY_LIST, enumeration.getEnclosedTypes());
-        assertEquals(Collections.EMPTY_LIST, enumeration.getEnumerations());
-        assertEquals(Collections.EMPTY_LIST, enumeration.getMethodDefinitions());
-        assertEquals(Collections.EMPTY_LIST, enumeration.getConstantDefinitions());
-        assertEquals(Collections.EMPTY_LIST, enumeration.getProperties());
-        assertEquals(Collections.EMPTY_LIST, enumeration.getImplements());
+        assertEquals(Collections.emptyList(), enumeration.getEnclosedTypes());
+        assertEquals(Collections.emptyList(), enumeration.getEnumerations());
+        assertEquals(Collections.emptyList(), enumeration.getMethodDefinitions());
+        assertEquals(Collections.emptyList(), enumeration.getConstantDefinitions());
+        assertEquals(Collections.emptyList(), enumeration.getProperties());
+        assertEquals(Collections.emptyList(), enumeration.getImplements());
         assertNotNull(enumeration.getValues());
         assertNotNull(enumeration.getAnnotations());
 

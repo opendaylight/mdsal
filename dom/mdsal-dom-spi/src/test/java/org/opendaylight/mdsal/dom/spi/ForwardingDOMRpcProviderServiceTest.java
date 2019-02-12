@@ -34,9 +34,9 @@ public class ForwardingDOMRpcProviderServiceTest extends ForwardingDOMRpcProvide
         verify(domRpcProviderService).registerRpcImplementation(domRpcImplementation);
 
         doReturn(null).when(domRpcProviderService).registerRpcImplementation(domRpcImplementation,
-                Collections.EMPTY_SET);
-        this.registerRpcImplementation(domRpcImplementation, Collections.EMPTY_SET);
-        verify(domRpcProviderService).registerRpcImplementation(domRpcImplementation, Collections.EMPTY_SET);
+                Collections.emptySet());
+        this.registerRpcImplementation(domRpcImplementation, Collections.emptySet());
+        verify(domRpcProviderService).registerRpcImplementation(domRpcImplementation, Collections.emptySet());
     }
 
     @Override
