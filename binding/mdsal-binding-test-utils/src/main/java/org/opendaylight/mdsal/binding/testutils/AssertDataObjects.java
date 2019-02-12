@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.testutils;
 
 import ch.vorburger.xtendbeans.AssertBeans;
 import com.github.difflib.algorithm.DiffException;
-import com.google.common.base.Objects;
+import java.util.Objects;
 import org.junit.ComparisonFailure;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ public final class AssertDataObjects {
      * @see AssertBeans#assertEqualBeans(Object, Object)
      */
     public static void assertEqualBeans(Object expected, Object actual) throws ComparisonFailure {
-        if (!Objects.equal(expected, actual)) {
+        if (!Objects.equals(expected, actual)) {
             String expectedText = GENERATOR.getExpression(expected);
             assertEqualByText(expectedText, actual);
             throw new ComparisonFailure(
