@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.MissingSchemaException;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
@@ -31,7 +32,7 @@ public final class MissingSchemaForClassException extends MissingSchemaException
 
     private MissingSchemaForClassException(final Class<?> clz) {
         super(String.format("Schema is not available for %s", clz));
-        this.bindingClass = Preconditions.checkNotNull(clz);
+        this.bindingClass = requireNonNull(clz);
     }
 
     static MissingSchemaForClassException forClass(final Class<?> clz) {

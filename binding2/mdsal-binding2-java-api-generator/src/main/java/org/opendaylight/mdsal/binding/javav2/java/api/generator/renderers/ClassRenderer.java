@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.fieldName;
 import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.setterMethod;
 
@@ -83,7 +84,7 @@ public class ClassRenderer extends BaseRenderer {
 
         if (restrictions != null && restrictions.getRangeConstraint().isPresent()) {
             rangeGenerator = AbstractRangeGenerator.forType(findProperty(genType, "value").getReturnType());
-            Preconditions.checkNotNull(rangeGenerator);
+            requireNonNull(rangeGenerator);
         } else {
             rangeGenerator = null;
         }

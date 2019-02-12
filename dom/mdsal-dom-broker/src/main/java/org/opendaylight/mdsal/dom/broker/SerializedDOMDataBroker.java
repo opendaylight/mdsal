@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -53,7 +55,7 @@ public class SerializedDOMDataBroker extends AbstractDOMDataBroker {
     public SerializedDOMDataBroker(final Map<LogicalDatastoreType, DOMStore> datastores,
             final ListeningExecutorService executor) {
         super(datastores);
-        this.executor = Preconditions.checkNotNull(executor, "executor must not be null.");
+        this.executor = requireNonNull(executor, "executor must not be null.");
     }
 
     public DurationStatisticsTracker getCommitStatsTracker() {

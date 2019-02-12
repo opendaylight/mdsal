@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -27,7 +28,7 @@ final class InMemoryShardDataModificationFactory {
             final DOMDataTreeIdentifier root,
             final Map<PathArgument, WriteableModificationNode> children,
             final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards) {
-        this.root = Preconditions.checkNotNull(root);
+        this.root = requireNonNull(root);
         this.children = ImmutableMap.copyOf(children);
         this.childShards = ImmutableMap.copyOf(childShards);
     }

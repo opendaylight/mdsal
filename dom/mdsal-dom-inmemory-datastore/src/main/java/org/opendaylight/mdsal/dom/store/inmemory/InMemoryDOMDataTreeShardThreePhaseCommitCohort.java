@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -34,9 +36,9 @@ class InMemoryDOMDataTreeShardThreePhaseCommitCohort implements DOMStoreThreePha
     InMemoryDOMDataTreeShardThreePhaseCommitCohort(final DataTree dataTree,
                                                    final DataTreeModification modification,
                                                    final InMemoryDOMDataTreeShardChangePublisher changePublisher) {
-        this.dataTree = Preconditions.checkNotNull(dataTree);
-        this.modification = Preconditions.checkNotNull(modification);
-        this.changePublisher = Preconditions.checkNotNull(changePublisher);
+        this.dataTree = requireNonNull(dataTree);
+        this.modification = requireNonNull(modification);
+        this.changePublisher = requireNonNull(changePublisher);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")

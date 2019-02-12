@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.runtime.reflection;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -97,7 +98,7 @@ abstract class AugmentationFieldGetter {
         private final MethodHandle fieldGetter;
 
         ReflectionAugmentationFieldGetter(final MethodHandle mh) {
-            this.fieldGetter = Preconditions.checkNotNull(mh);
+            this.fieldGetter = requireNonNull(mh);
         }
 
         @Override

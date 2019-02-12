@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.eos.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
@@ -27,8 +28,8 @@ class BindingEntityOwnershipListenerRegistration extends AbstractObjectRegistrat
     BindingEntityOwnershipListenerRegistration(String entityType, EntityOwnershipListener listener,
             DOMEntityOwnershipListenerRegistration domRegistration) {
         super(listener);
-        this.entityType = Preconditions.checkNotNull(entityType);
-        this.domRegistration = Preconditions.checkNotNull(domRegistration);
+        this.entityType = requireNonNull(entityType);
+        this.domRegistration = requireNonNull(domRegistration);
     }
 
     @Override

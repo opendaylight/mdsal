@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -107,12 +109,12 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
      *            - binding normalized node codec registry
      */
     public BindingCodecContext(final BindingRuntimeContext context, final BindingNormalizedNodeCodecRegistry registry) {
-        this.context = Preconditions.checkNotNull(context, "Binding Runtime Context is required.");
+        this.context = requireNonNull(context, "Binding Runtime Context is required.");
         this.root = SchemaRootCodecContext.create(this);
         this.identityCodec = new IdentityCodec(context);
         this.anyxmlCodec = new AnyxmlCodec(context);
         this.instanceIdentifierCodec = new InstanceIdentifierCodec(this);
-        this.registry = Preconditions.checkNotNull(registry);
+        this.registry = requireNonNull(registry);
     }
 
     @Override

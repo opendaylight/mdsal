@@ -35,13 +35,10 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.paramet
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
@@ -106,7 +103,7 @@ final class RpcActionGenHelper {
                                        final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final
                                        Map<Module, ModuleContext> genCtx,
                                        final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
-        Preconditions.checkNotNull(parent, "Parent should not be NULL.");
+        requireNonNull(parent, "Parent should not be NULL.");
         final Collection<DataSchemaNode> potentials = parent.getChildNodes();
         for (DataSchemaNode potential : potentials) {
             if (resolveDataSchemaNodesCheck(module, schemaContext, potential)) {

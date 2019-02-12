@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import org.opendaylight.mdsal.dom.spi.store.AbstractSnapshotBackedTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
@@ -18,7 +19,7 @@ final class DOMStoreTransactionChainImpl extends AbstractSnapshotBackedTransacti
     private final InMemoryDOMDataStore store;
 
     DOMStoreTransactionChainImpl(final InMemoryDOMDataStore store) {
-        this.store = Preconditions.checkNotNull(store);
+        this.store = requireNonNull(store);
     }
 
     @Override

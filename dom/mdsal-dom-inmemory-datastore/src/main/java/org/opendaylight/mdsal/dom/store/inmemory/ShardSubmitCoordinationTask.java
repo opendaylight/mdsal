@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -37,7 +38,7 @@ public class ShardSubmitCoordinationTask implements Callable<Void> {
     public ShardSubmitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
                                        final Collection<DOMStoreThreePhaseCommitCohort> cohorts,
                                        final InmemoryDOMDataTreeShardWriteTransaction transaction) {
-        this.rootShardPrefix = Preconditions.checkNotNull(rootShardPrefix);
+        this.rootShardPrefix = requireNonNull(rootShardPrefix);
         this.transaction = transaction;
 
         canCommitCoordinationTask = new ShardCanCommitCoordinationTask(rootShardPrefix, cohorts);

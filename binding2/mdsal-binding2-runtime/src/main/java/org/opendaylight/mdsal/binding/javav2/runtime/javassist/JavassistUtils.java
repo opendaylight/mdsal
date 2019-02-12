@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.runtime.javassist;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
@@ -39,7 +41,7 @@ public final class JavassistUtils {
     private final ClassPool classPool;
 
     private JavassistUtils(final ClassPool pool) {
-        classPool = Preconditions.checkNotNull(pool);
+        classPool = requireNonNull(pool);
     }
 
     /**
@@ -52,7 +54,7 @@ public final class JavassistUtils {
      * @return shared utility instance for specified pool
      */
     public static synchronized JavassistUtils forClassPool(final ClassPool pool) {
-        JavassistUtils ret = INSTANCES.get(Preconditions.checkNotNull(pool));
+        JavassistUtils ret = INSTANCES.get(requireNonNull(pool));
         if (ret == null) {
             ret = new JavassistUtils(pool);
             INSTANCES.put(pool, ret);

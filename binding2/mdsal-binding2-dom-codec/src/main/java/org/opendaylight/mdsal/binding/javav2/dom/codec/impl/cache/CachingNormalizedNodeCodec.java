@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.cache;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingNormalizedNodeCachingCodec;
@@ -32,7 +33,7 @@ public class CachingNormalizedNodeCodec<D extends TreeNode> extends AbstractBind
     public CachingNormalizedNodeCodec(final DataContainerCodecContext<D, ?> subtreeRoot,
             final Set<Class<? extends TreeNode>> cacheSpec) {
         super(cacheSpec);
-        this.context = Preconditions.checkNotNull(subtreeRoot);
+        this.context = requireNonNull(subtreeRoot);
     }
 
     @Nonnull

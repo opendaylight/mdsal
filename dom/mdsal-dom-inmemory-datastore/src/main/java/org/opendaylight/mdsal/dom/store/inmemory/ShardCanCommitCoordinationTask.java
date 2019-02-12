@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
 import java.util.concurrent.Callable;
@@ -33,8 +34,8 @@ public class ShardCanCommitCoordinationTask implements Callable<Boolean> {
 
     public ShardCanCommitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
                                        final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
-        this.rootShardPrefix = Preconditions.checkNotNull(rootShardPrefix);
-        this.cohorts = Preconditions.checkNotNull(cohorts);
+        this.rootShardPrefix = requireNonNull(rootShardPrefix);
+        this.cohorts = requireNonNull(cohorts);
     }
 
     @Override

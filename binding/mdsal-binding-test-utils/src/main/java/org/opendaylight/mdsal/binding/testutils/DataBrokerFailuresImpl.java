@@ -7,9 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.testutils;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -59,26 +60,26 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     @Override
     public void failReads(ReadFailedException exception) {
         unfailReads();
-        readException = Objects.requireNonNull(exception, "exception == null");
+        readException = requireNonNull(exception, "exception == null");
     }
 
     @Override
     public void failReads(int howManyTimes, ReadFailedException exception) {
         unfailReads();
         howManyFailingReads.set(howManyTimes);
-        readException = Objects.requireNonNull(exception, "exception == null");
+        readException = requireNonNull(exception, "exception == null");
     }
 
     @Override
     public void failCommits(TransactionCommitFailedException exception) {
         unfailCommits();
-        this.commitException = Objects.requireNonNull(exception, "exception == null");
+        this.commitException = requireNonNull(exception, "exception == null");
     }
 
     @Override
     public void failCommits(int howManyTimes, TransactionCommitFailedException exception) {
         howManyFailingCommits.set(howManyTimes);
-        this.commitException = Objects.requireNonNull(exception, "exception == null");
+        this.commitException = requireNonNull(exception, "exception == null");
     }
 
     @Override

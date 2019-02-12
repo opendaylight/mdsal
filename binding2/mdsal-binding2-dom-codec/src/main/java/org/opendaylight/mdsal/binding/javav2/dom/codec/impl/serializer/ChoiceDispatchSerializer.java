@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.io.IOException;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
@@ -33,7 +34,7 @@ public final class ChoiceDispatchSerializer implements TreeNodeSerializerImpleme
 
     @SuppressWarnings("rawtypes")
     private ChoiceDispatchSerializer(final Class choiceClass) {
-        this.choiceClass = Preconditions.checkNotNull(choiceClass);
+        this.choiceClass = requireNonNull(choiceClass);
     }
 
     /**

@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.FluentFuture;
@@ -56,9 +58,9 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
 
     ShardedDOMDataTreeWriteTransaction(final ShardedDOMDataTreeProducer producer,
         final Map<DOMDataTreeIdentifier, DOMDataTreeShardWriteTransaction> transactions, final ProducerLayout layout) {
-        this.producer = Preconditions.checkNotNull(producer);
+        this.producer = requireNonNull(producer);
         this.transactions = ImmutableMap.copyOf(transactions);
-        this.layout = Preconditions.checkNotNull(layout);
+        this.layout = requireNonNull(layout);
         this.identifier = "SHARDED-DOM-" + COUNTER.getAndIncrement();
         LOG.debug("Created new transaction {}", identifier);
     }
@@ -179,8 +181,8 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         private final DOMDataTreeIdentifier rootPosition;
 
         DelegatingCursor(final DOMDataTreeWriteCursor delegate, final DOMDataTreeIdentifier rootPosition) {
-            this.delegate = Preconditions.checkNotNull(delegate);
-            this.rootPosition = Preconditions.checkNotNull(rootPosition);
+            this.delegate = requireNonNull(delegate);
+            this.rootPosition = requireNonNull(rootPosition);
             currentArgs.addAll(rootPosition.getRootIdentifier().getPathArguments());
         }
 

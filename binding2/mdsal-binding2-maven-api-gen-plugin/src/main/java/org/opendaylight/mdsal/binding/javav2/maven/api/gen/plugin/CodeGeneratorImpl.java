@@ -8,12 +8,12 @@
 
 package org.opendaylight.mdsal.binding.javav2.maven.api.gen.plugin;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer.normalizeFullPackageName;
 import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.getRootPackageName;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
 import java.io.BufferedWriter;
@@ -106,7 +106,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
     @Override
     public void setBuildContext(BuildContext buildContext) {
-        this.buildContext = Preconditions.checkNotNull(buildContext);
+        this.buildContext = requireNonNull(buildContext);
     }
 
     @Override

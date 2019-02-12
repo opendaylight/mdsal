@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.data.tree;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Collection;
@@ -38,8 +39,8 @@ public class BindingDOMDataTreeCommitCohortAdapter<T extends TreeNode> implement
 
     public BindingDOMDataTreeCommitCohortAdapter(final BindingToNormalizedNodeCodec codec,
             final DataTreeCommitCohort<T> cohort) {
-        this.codec = Preconditions.checkNotNull(codec);
-        this.cohort = Preconditions.checkNotNull(cohort);
+        this.codec = requireNonNull(codec);
+        this.cohort = requireNonNull(cohort);
     }
 
     @Nonnull

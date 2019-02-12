@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.generator.util;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Preconditions;
 import java.net.URI;
@@ -36,7 +36,7 @@ public final class YangSchemaUtils {
     }
 
     public static QName getAugmentationQName(final AugmentationSchemaNode augmentation) {
-        checkNotNull(augmentation, "Augmentation must not be null.");
+        requireNonNull(augmentation, "Augmentation must not be null.");
         final QName identifier = getAugmentationIdentifier(augmentation);
         if (identifier != null) {
             return identifier;

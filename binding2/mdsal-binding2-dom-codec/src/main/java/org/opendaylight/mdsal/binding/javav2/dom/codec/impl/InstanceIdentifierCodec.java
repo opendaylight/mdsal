@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public final class InstanceIdentifierCodec implements Codec<YangInstanceIdentifi
      *            - binding codec context
      */
     public InstanceIdentifierCodec(final BindingCodecContext context) {
-        this.context = Preconditions.checkNotNull(context);
+        this.context = requireNonNull(context);
     }
 
     @Override

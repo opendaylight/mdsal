@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -54,8 +56,8 @@ class LazyTreeNode<D extends TreeNode> implements InvocationHandler, Augmentatio
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     LazyTreeNode(final TreeNodeCodecContext<D,?> ctx, final NormalizedNodeContainer data) {
-        this.context = Preconditions.checkNotNull(ctx, "Context must not be null");
-        this.data = Preconditions.checkNotNull(data, "Data must not be null");
+        this.context = requireNonNull(ctx, "Context must not be null");
+        this.data = requireNonNull(data, "Data must not be null");
     }
 
     @Override
@@ -188,7 +190,7 @@ class LazyTreeNode<D extends TreeNode> implements InvocationHandler, Augmentatio
         if (aug != null) {
             return aug.get(cls);
         }
-        Preconditions.checkNotNull(cls,"Supplied augmentation must not be null.");
+        requireNonNull(cls,"Supplied augmentation must not be null.");
 
         @SuppressWarnings({"unchecked","rawtypes"})
         final Optional<DataContainerCodecContext<?,?>> augCtx = context.possibleStreamChild((Class) cls);

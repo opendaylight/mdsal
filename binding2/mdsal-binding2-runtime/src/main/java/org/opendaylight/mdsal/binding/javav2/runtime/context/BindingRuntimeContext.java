@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.runtime.context;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
@@ -346,10 +348,10 @@ public class BindingRuntimeContext implements Immutable {
 
     private Entry<GeneratedType, Object> getTypeWithSchema(final Type referencedType) {
         final Object schema = this.typeToDefiningSchema.get(referencedType);
-        Preconditions.checkNotNull(schema, "Failed to find schema for type %s", referencedType);
+        requireNonNull(schema, () -> "Failed to find schema for type " + referencedType);
 
         final Type definedType = this.typeToDefiningSchema.inverse().get(schema);
-        Preconditions.checkNotNull(definedType, "Failed to find defined type for %s schema %s", referencedType, schema);
+        requireNonNull(definedType, () -> "Failed to find defined type for " + referencedType + " schema " + schema);
 
         if (definedType instanceof GeneratedTypeBuilder) {
             return new SimpleEntry<>(((GeneratedTypeBuilder) definedType).toInstance(), schema);

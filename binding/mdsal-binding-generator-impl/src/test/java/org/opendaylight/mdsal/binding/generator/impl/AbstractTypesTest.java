@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -27,8 +28,7 @@ public abstract class AbstractTypesTest {
     @Before
     public void loadTestResources() throws URISyntaxException {
         File testSourcesDir = new File(testSourcesDirUrl.toURI());
-        File[] testFiles = Preconditions.checkNotNull(testSourcesDir.listFiles(), testSourcesDir
-                + " does not denote a directory");
+        File[] testFiles = requireNonNull(testSourcesDir.listFiles(), testSourcesDir + " does not denote a directory");
         testModels = new HashSet<>();
         for (File file : testFiles) {
             if (file.isFile()) {

@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -101,9 +103,9 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
                                              final InMemoryDOMDataTreeShardChangePublisher changePublisher,
                                              final ListeningExecutorService executor) {
         this.producer = producer;
-        this.modification = Preconditions.checkNotNull(root);
-        this.rootShardDataTree = Preconditions.checkNotNull(rootShardDataTree);
-        this.changePublisher = Preconditions.checkNotNull(changePublisher);
+        this.modification = requireNonNull(root);
+        this.rootShardDataTree = requireNonNull(rootShardDataTree);
+        this.changePublisher = requireNonNull(changePublisher);
         this.identifier = "INMEMORY-SHARD-TX-" + COUNTER.getAndIncrement();
         LOG.debug("Shard transaction{} created", identifier);
         this.executor = executor;
@@ -155,7 +157,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     }
 
     void cursorClosed() {
-        Preconditions.checkNotNull(cursor);
+        requireNonNull(cursor);
         modification.closeCursor();
         cursor = null;
     }
@@ -168,7 +170,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     public void ready() {
         Preconditions.checkState(!finished, "Attempting to ready an already finished transaction.");
         Preconditions.checkState(cursor == null, "Attempting to ready a transaction that has an open cursor.");
-        Preconditions.checkNotNull(modification, "Attempting to ready an empty transaction.");
+        requireNonNull(modification, "Attempting to ready an empty transaction.");
 
         LOG.debug("Readying open transaction on shard {}", modification.getPrefix());
         rootModification = modification.seal();
@@ -187,7 +189,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     public ListenableFuture<Void> submit() {
         LOG.debug("Submitting open transaction on shard {}", modification.getPrefix());
 
-        Preconditions.checkNotNull(cohorts);
+        requireNonNull(cohorts);
         Preconditions.checkState(!cohorts.isEmpty(), "Transaction was not readied yet.");
 
         return executor.submit(new ShardSubmitCoordinationTask(modification.getPrefix(), cohorts, this));
@@ -212,7 +214,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     }
 
     DataTreeModification getRootModification() {
-        Preconditions.checkNotNull(rootModification, "Transaction wasn't sealed yet");
+        requireNonNull(rootModification, "Transaction wasn't sealed yet");
         return rootModification;
     }
 

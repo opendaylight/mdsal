@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
 import java.util.concurrent.Callable;
@@ -35,9 +36,9 @@ public class ShardCommitCoordinationTask implements Callable<Void> {
     public ShardCommitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
                                        final Collection<DOMStoreThreePhaseCommitCohort> cohorts,
                                        final InmemoryDOMDataTreeShardWriteTransaction transaction) {
-        this.rootShardPrefix = Preconditions.checkNotNull(rootShardPrefix);
-        this.cohorts = Preconditions.checkNotNull(cohorts);
-        this.transaction = Preconditions.checkNotNull(transaction);
+        this.rootShardPrefix = requireNonNull(rootShardPrefix);
+        this.cohorts = requireNonNull(cohorts);
+        this.transaction = requireNonNull(transaction);
     }
 
     @Override

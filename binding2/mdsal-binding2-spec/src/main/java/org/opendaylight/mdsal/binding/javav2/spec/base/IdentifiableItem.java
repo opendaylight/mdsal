@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.spec.base;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 
 /**
  * An IdentifiableItem represents a object that is usually present in a collection and can be
@@ -24,8 +25,8 @@ public final class IdentifiableItem<I extends TreeNode, T> extends TreeArgument<
     private final T key;
 
     public IdentifiableItem(final Class<I> type, final T key) {
-        this.type = Preconditions.checkNotNull(type);
-        this.key = Preconditions.checkNotNull(key, "Key may not be null.");
+        this.type = requireNonNull(type);
+        this.key = requireNonNull(key, "Key may not be null.");
     }
 
     @Override

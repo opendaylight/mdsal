@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.spec.runtime;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 
 /**
  * Binding Namespace is structure of Java packages designed to prevent conflicts in YANG Java
@@ -29,7 +30,7 @@ public enum BindingNamespaceType {
     private final String packagePrefix;
 
     BindingNamespaceType(String packagePrefix) {
-        this.packagePrefix = Preconditions.checkNotNull(packagePrefix);
+        this.packagePrefix = requireNonNull(packagePrefix);
     }
 
     public String getPackagePrefix() {

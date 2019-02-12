@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.eos.dom.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -45,6 +46,6 @@ public class DOMEntity extends GenericEntity<YangInstanceIdentifier> {
      */
     public DOMEntity(final @NonNull String type, final @NonNull String entityName) {
         super(type, YangInstanceIdentifier.builder().node(ENTITY).nodeWithKey(ENTITY, ENTITY_NAME,
-                Preconditions.checkNotNull(entityName, "entityName should not be null")).build());
+                requireNonNull(entityName, "entityName should not be null")).build());
     }
 }

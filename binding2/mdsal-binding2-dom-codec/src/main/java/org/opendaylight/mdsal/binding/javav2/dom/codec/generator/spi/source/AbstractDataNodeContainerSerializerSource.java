@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,8 +57,8 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
     public AbstractDataNodeContainerSerializerSource(final AbstractGenerator generator, final GeneratedType type,
             final DataNodeContainer node) {
         super(generator);
-        this.dtoType = Preconditions.checkNotNull(type);
-        this.schemaNode = Preconditions.checkNotNull(node);
+        this.dtoType = requireNonNull(type);
+        this.schemaNode = requireNonNull(node);
     }
 
     /**

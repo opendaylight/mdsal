@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -32,8 +33,8 @@ public final class DataTreeIdentifier<T extends TreeNode> implements Immutable,
     private final LogicalDatastoreType datastoreType;
 
     private DataTreeIdentifier(final LogicalDatastoreType datastoreType, final InstanceIdentifier<T> rootIdentifier) {
-        this.datastoreType = Preconditions.checkNotNull(datastoreType);
-        this.rootIdentifier = Preconditions.checkNotNull(rootIdentifier);
+        this.datastoreType = requireNonNull(datastoreType);
+        this.rootIdentifier = requireNonNull(rootIdentifier);
     }
 
     public static <T extends TreeNode> DataTreeIdentifier<T> create(final LogicalDatastoreType datastoreType,

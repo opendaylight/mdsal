@@ -8,7 +8,8 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -28,8 +29,8 @@ class ShardRootModificationContext implements Identifiable<DOMDataTreeIdentifier
 
     ShardRootModificationContext(final DOMDataTreeIdentifier identifier,
             final CursorAwareDataTreeSnapshot snapshot) {
-        this.identifier = Preconditions.checkNotNull(identifier);
-        this.snapshot = Preconditions.checkNotNull(snapshot);
+        this.identifier = requireNonNull(identifier);
+        this.snapshot = requireNonNull(snapshot);
     }
 
     @Override

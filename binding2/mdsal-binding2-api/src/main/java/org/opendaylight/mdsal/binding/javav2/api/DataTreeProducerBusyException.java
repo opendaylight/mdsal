@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
 
 /**
@@ -23,10 +24,10 @@ public class DataTreeProducerBusyException extends DataTreeProducerException {
 
 
     public DataTreeProducerBusyException(@Nonnull final String message, @Nonnull final Throwable cause) {
-        super(Preconditions.checkNotNull(message, "message"), cause);
+        super(requireNonNull(message, "message"), cause);
     }
 
     public DataTreeProducerBusyException(@Nonnull final String message) {
-        super(Preconditions.checkNotNull(message, "message"));
+        super(requireNonNull(message, "message"));
     }
 }

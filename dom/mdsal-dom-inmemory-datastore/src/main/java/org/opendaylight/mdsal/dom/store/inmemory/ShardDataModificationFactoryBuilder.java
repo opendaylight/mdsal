@@ -8,7 +8,8 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -26,7 +27,7 @@ public abstract class ShardDataModificationFactoryBuilder<T> extends Modificatio
     protected final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards = new HashMap<>();
 
     public ShardDataModificationFactoryBuilder(final DOMDataTreeIdentifier root) {
-        this.root = Preconditions.checkNotNull(root);
+        this.root = requireNonNull(root);
     }
 
     public void addSubshard(final ForeignShardModificationContext value) {

@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ForwardingObject;
 import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -20,7 +21,7 @@ final class DataTreeModificationCursorAdaptor extends ForwardingObject implement
     private final DataTreeModificationCursor delegate;
 
     private DataTreeModificationCursorAdaptor(final DataTreeModificationCursor delegate) {
-        this.delegate = Preconditions.checkNotNull(delegate);
+        this.delegate = requireNonNull(delegate);
     }
 
     static DataTreeModificationCursorAdaptor of(final DataTreeModificationCursor dataTreeCursor) {

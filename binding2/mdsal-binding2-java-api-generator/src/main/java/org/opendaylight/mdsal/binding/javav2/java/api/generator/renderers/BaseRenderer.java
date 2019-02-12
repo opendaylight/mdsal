@@ -9,8 +9,8 @@
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collection;
@@ -44,7 +44,7 @@ public abstract class BaseRenderer {
     private final Map<String, String> importedNames = new HashMap<>();
 
     protected BaseRenderer(final GeneratedType type) {
-        this.genType = Preconditions.checkNotNull(type);
+        this.genType = requireNonNull(type);
         this.importMap = new HashMap<>();
     }
 
@@ -167,9 +167,9 @@ public abstract class BaseRenderer {
         checkArgument(parentGenType.getPackageName() != null,
                 "Parent Generated Type cannot have Package Name referenced as NULL!");
 
-        final String typeName = Preconditions.checkNotNull(type.getName());
-        final String typePackageName = Preconditions.checkNotNull(type.getPackageName());
-        final String parentTypeName = Preconditions.checkNotNull(parentGenType.getName());
+        final String typeName = requireNonNull(type.getName());
+        final String typePackageName = requireNonNull(type.getPackageName());
+        final String parentTypeName = requireNonNull(parentGenType.getName());
         if (typeName.equals(parentTypeName) || typePackageName.startsWith("java.lang") || typePackageName.isEmpty()) {
             return;
         }
@@ -199,8 +199,8 @@ public abstract class BaseRenderer {
         checkArgument(type != null, "Type parameter MUST be specified and cannot be NULL!");
         checkArgument(importMap != null, "Imports Map cannot be NULL!");
 
-        final String typePackageName = Preconditions.checkNotNull(type.getPackageName());
-        final String typeName = Preconditions.checkNotNull(type.getName());
+        final String typePackageName = requireNonNull(type.getPackageName());
+        final String typeName = requireNonNull(type.getName());
         final String importedPackageName = importMap.get(typeName);
         final StringBuilder sb;
         if (typePackageName.equals(importedPackageName)) {
@@ -325,7 +325,7 @@ public abstract class BaseRenderer {
     protected String getterMethod(final GeneratedProperty field) {
         final StringBuilder sb = new StringBuilder();
         final String name = TextTemplateUtil.fieldName(field);
-        final String importedName = Preconditions.checkNotNull(importedName(field.getReturnType()));
+        final String importedName = requireNonNull(importedName(field.getReturnType()));
         sb.append("public ")
                 .append(importedName)
                 .append(' ')

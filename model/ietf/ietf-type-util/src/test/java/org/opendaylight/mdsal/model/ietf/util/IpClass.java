@@ -8,13 +8,13 @@
 
 package org.opendaylight.mdsal.model.ietf.util;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
 
 public class IpClass {
     private final String _value;
 
     public IpClass(final String value) {
-        this._value = Preconditions.checkNotNull(value);
+        this._value = requireNonNull(value);
     }
 
     public IpClass(final IpClass template) {

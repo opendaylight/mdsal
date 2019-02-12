@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.Maps;
 import java.util.Comparator;
 import java.util.List;
@@ -25,7 +26,7 @@ abstract class AbstractDOMRpcRoutingTableEntry extends AbstractDOMRoutingTableEn
     AbstractDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId, final Map<YangInstanceIdentifier,
         List<DOMRpcImplementation>> implementations) {
         super(rpcId.getType(), implementations);
-        this.rpcId = Preconditions.checkNotNull(rpcId);
+        this.rpcId = requireNonNull(rpcId);
     }
 
     final DOMRpcIdentifier getRpcId() {

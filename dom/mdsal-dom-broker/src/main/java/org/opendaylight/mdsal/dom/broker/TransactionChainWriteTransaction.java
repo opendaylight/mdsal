@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -26,9 +27,9 @@ public class TransactionChainWriteTransaction implements DOMDataTreeWriteTransac
 
     public TransactionChainWriteTransaction(final Object identifier, final DOMDataTreeWriteTransaction delegateTx,
                                             final ShardedDOMTransactionChainAdapter txChain) {
-        this.delegateTx = Preconditions.checkNotNull(delegateTx);
-        this.identifier = Preconditions.checkNotNull(identifier);
-        this.txChain = Preconditions.checkNotNull(txChain);
+        this.delegateTx = requireNonNull(delegateTx);
+        this.identifier = requireNonNull(identifier);
+        this.txChain = requireNonNull(txChain);
     }
 
 

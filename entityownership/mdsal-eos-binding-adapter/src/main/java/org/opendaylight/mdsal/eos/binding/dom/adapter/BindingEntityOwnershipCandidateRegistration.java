@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.eos.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipCandidateRegistration;
@@ -26,7 +27,7 @@ class BindingEntityOwnershipCandidateRegistration extends AbstractObjectRegistra
     BindingEntityOwnershipCandidateRegistration(DOMEntityOwnershipCandidateRegistration domRegistration,
             Entity entity) {
         super(entity);
-        this.domRegistration = Preconditions.checkNotNull(domRegistration);
+        this.domRegistration = requireNonNull(domRegistration);
     }
 
     @Override

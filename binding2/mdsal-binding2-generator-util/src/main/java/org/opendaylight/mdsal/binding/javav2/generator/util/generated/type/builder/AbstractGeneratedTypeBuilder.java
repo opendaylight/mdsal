@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -128,7 +130,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
 
     @Override
     public T addComment(final TypeComment typeComment) {
-        this.comment = Preconditions.checkNotNull(typeComment);
+        this.comment = requireNonNull(typeComment);
         return thisInstance();
     }
 
@@ -262,7 +264,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
 
     @Override
     public void setYangSourceDefinition(final YangSourceDefinition definition) {
-        yangSourceDefinition = Preconditions.checkNotNull(definition);
+        yangSourceDefinition = requireNonNull(definition);
     }
 
     @Override

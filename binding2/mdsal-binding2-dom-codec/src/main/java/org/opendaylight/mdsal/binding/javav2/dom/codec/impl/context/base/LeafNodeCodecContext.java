@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableCollection;
@@ -51,9 +53,9 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
     LeafNodeCodecContext(final DataSchemaNode schema, final Codec<Object, Object> codec, final Method getter,
             final SchemaContext schemaContext) {
         this.yangIdentifier = new YangInstanceIdentifier.NodeIdentifier(schema.getQName());
-        this.valueCodec = Preconditions.checkNotNull(codec);
-        this.getter = Preconditions.checkNotNull(getter);
-        this.schema = Preconditions.checkNotNull(schema);
+        this.valueCodec = requireNonNull(codec);
+        this.getter = requireNonNull(getter);
+        this.schema = requireNonNull(schema);
 
         this.defaultObject = createDefaultObject(schema, valueCodec, schemaContext);
     }

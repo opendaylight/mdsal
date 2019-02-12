@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import javax.xml.transform.dom.DOMSource;
@@ -29,7 +31,7 @@ public final class AnyxmlCodec implements Codec<DOMSource, Document> {
      *            - binding runtime context
      */
     public AnyxmlCodec(final BindingRuntimeContext context) {
-        this.context = Preconditions.checkNotNull(context);
+        this.context = requireNonNull(context);
     }
 
     @Override

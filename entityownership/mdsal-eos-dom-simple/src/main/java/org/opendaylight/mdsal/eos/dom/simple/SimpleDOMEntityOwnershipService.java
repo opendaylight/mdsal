@@ -7,13 +7,13 @@
  */
 package org.opendaylight.mdsal.eos.dom.simple;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED;
 import static org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NO_OWNER;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
@@ -58,7 +58,7 @@ public final class SimpleDOMEntityOwnershipService implements DOMEntityOwnership
 
     @VisibleForTesting
     SimpleDOMEntityOwnershipService(final UUID uuid) {
-        this.uuid = Preconditions.checkNotNull(uuid);
+        this.uuid = requireNonNull(uuid);
     }
 
     public SimpleDOMEntityOwnershipService() {
@@ -187,7 +187,7 @@ public final class SimpleDOMEntityOwnershipService implements DOMEntityOwnership
 
         ListenerRegistration(final String entityType, final DOMEntityOwnershipListener listener) {
             super(listener);
-            this.entityType = Preconditions.checkNotNull(entityType);
+            this.entityType = requireNonNull(entityType);
         }
 
         @Override

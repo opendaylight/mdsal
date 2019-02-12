@@ -61,9 +61,9 @@ class RpcServiceAdapter implements InvocationHandler {
 
     RpcServiceAdapter(final Class<? extends Rpc<?, ?>> type, final BindingToNormalizedNodeCodec codec,
             final DOMRpcService domService) {
-        this.type = Preconditions.checkNotNull(type);
-        this.codec = Preconditions.checkNotNull(codec);
-        this.delegate = Preconditions.checkNotNull(domService);
+        this.type = requireNonNull(type);
+        this.codec = requireNonNull(codec);
+        this.delegate = requireNonNull(domService);
         strategy = createStrategy(type);
         proxy = (Rpc<?, ?>) Proxy.newProxyInstance(type.getClassLoader(), new Class[] { type }, this);
     }

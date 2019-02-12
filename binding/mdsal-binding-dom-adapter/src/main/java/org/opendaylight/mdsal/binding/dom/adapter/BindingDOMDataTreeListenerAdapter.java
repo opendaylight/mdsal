@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.Maps;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +36,7 @@ public class BindingDOMDataTreeListenerAdapter extends AbstractBindingAdapter<Da
     protected BindingDOMDataTreeListenerAdapter(final DataTreeListener delegate,
             final BindingToNormalizedNodeCodec codec, final LogicalDatastoreType store) {
         super(codec, delegate);
-        this.store = Preconditions.checkNotNull(store, "store");
+        this.store = requireNonNull(store, "store");
     }
 
     @Override

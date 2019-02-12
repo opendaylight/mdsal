@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import java.util.Map;
@@ -45,7 +46,7 @@ public abstract class AbstractRangeGenerator<T extends Number & Comparable<T>> {
     private final Class<T> type;
 
     protected AbstractRangeGenerator(final Class<T> typeClass) {
-        this.type = Preconditions.checkNotNull(typeClass);
+        this.type = requireNonNull(typeClass);
     }
 
     public static AbstractRangeGenerator<?> forType(@Nonnull final Type type) {

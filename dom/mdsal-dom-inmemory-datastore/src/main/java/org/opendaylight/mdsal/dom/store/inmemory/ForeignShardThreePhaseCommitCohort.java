@@ -8,7 +8,8 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -29,8 +30,8 @@ public class ForeignShardThreePhaseCommitCohort implements DOMStoreThreePhaseCom
 
     public ForeignShardThreePhaseCommitCohort(final DOMDataTreeIdentifier prefix,
             final ForeignShardModificationContext shard) {
-        this.prefix = Preconditions.checkNotNull(prefix);
-        this.shard = Preconditions.checkNotNull(shard);
+        this.prefix = requireNonNull(prefix);
+        this.shard = requireNonNull(shard);
     }
 
     @Override

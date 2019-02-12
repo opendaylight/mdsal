@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 
 /**
  * Definition of static property for Binding objects.
@@ -29,9 +30,9 @@ public class StaticBindingProperty {
     private final Object value;
 
     public StaticBindingProperty(final String name, final Class<?> type, final Object value) {
-        this.name = Preconditions.checkNotNull(name);
-        this.type = Preconditions.checkNotNull(type);
-        this.value = Preconditions.checkNotNull(value);
+        this.name = requireNonNull(name);
+        this.type = requireNonNull(type);
+        this.value = requireNonNull(value);
     }
 
     public String getName() {

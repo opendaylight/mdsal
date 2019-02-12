@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.java.api.generator;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -69,8 +71,8 @@ public final class GeneratorJavaFile {
      *            set of types for which JAVA code should be generated
      */
     public GeneratorJavaFile(final BuildContext buildContext, final Collection<? extends Type> types) {
-        this.buildContext = Preconditions.checkNotNull(buildContext);
-        this.types = Preconditions.checkNotNull(types);
+        this.buildContext = requireNonNull(buildContext);
+        this.types = requireNonNull(types);
         this.generators.add(new EnumGenerator());
         this.generators.add(new InterfaceGenerator());
         this.generators.add(new BuilderGenerator());

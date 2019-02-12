@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.util;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -46,9 +47,9 @@ public final class StringValueObjectFactory<T> {
     private final T template;
 
     private StringValueObjectFactory(final T template, final MethodHandle constructor, final MethodHandle setter) {
-        this.template = Preconditions.checkNotNull(template);
+        this.template = requireNonNull(template);
         this.constructor = constructor.bindTo(template);
-        this.setter = Preconditions.checkNotNull(setter);
+        this.setter = requireNonNull(setter);
     }
 
     public static <T> StringValueObjectFactory<T> create(final Class<T> clazz, final String templateString) {
@@ -116,7 +117,7 @@ public final class StringValueObjectFactory<T> {
     }
 
     public T newInstance(final String string) {
-        Preconditions.checkNotNull(string, "Argument may not be null");
+        requireNonNull(string, "Argument may not be null");
 
         try {
             final T ret = (T) constructor.invokeExact();

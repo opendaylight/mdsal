@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
@@ -83,7 +85,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
     }
 
     protected AbstractStreamWriterGenerator(final JavassistUtils utils) {
-        this.javassist = Preconditions.checkNotNull(utils, "JavassistUtils instance is required.");
+        this.javassist = requireNonNull(utils, "JavassistUtils instance is required.");
         this.serializeArguments = new CtClass[] { javassist.asCtClass(TreeNodeSerializerRegistry.class),
                 javassist.asCtClass(TreeNode.class), javassist.asCtClass(BindingStreamEventWriter.class), };
         javassist.appendClassLoaderIfMissing(TreeNodeSerializerPrototype.class.getClassLoader());

@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
@@ -51,10 +52,10 @@ public final class DataContainerCodecPrototype<T> implements NodeContextSupplier
     @SuppressWarnings({"rawtypes", "unchecked"})
     private DataContainerCodecPrototype(final Class<?> cls, final YangInstanceIdentifier.PathArgument arg,
             final T nodeSchema, final CodecContextFactory factory) {
-        this.bindingClass = Preconditions.checkNotNull(cls);
-        this.yangArg = Preconditions.checkNotNull(arg);
-        this.schema = Preconditions.checkNotNull(nodeSchema);
-        this.factory = Preconditions.checkNotNull(factory);
+        this.bindingClass = requireNonNull(cls);
+        this.yangArg = requireNonNull(arg);
+        this.schema = requireNonNull(nodeSchema);
+        this.factory = requireNonNull(factory);
 
         this.bindingArg = new Item(bindingClass);
 

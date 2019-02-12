@@ -7,9 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -44,7 +45,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
 
     AbstractDOMRoutingTable(final Map<SchemaPath, E> operations,
             final SchemaContext schemaContext) {
-        this.operations = Preconditions.checkNotNull(operations);
+        this.operations = requireNonNull(operations);
         this.schemaContext = schemaContext;
     }
 

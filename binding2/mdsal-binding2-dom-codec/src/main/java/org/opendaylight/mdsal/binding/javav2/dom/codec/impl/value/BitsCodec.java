@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.value;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -46,7 +48,7 @@ final class BitsCodec extends ReflectionBasedCodec implements SchemaUnawareCodec
             final Map<String, Method> getters) {
 
         super(typeClass);
-        this.ctor = Preconditions.checkNotNull(ctor);
+        this.ctor = requireNonNull(ctor);
         this.ctorArgs = ImmutableSet.copyOf(ctorArgs);
         this.getters = ImmutableMap.copyOf(getters);
     }

@@ -831,7 +831,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     private GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
             final Type javaType, final String moduleName) {
-        Preconditions.checkNotNull(javaType, "javaType cannot be null");
+        requireNonNull(javaType, "javaType cannot be null");
 
         final GeneratedTOBuilder genTOBuilder = typedefToTransferObject(basePackageName, typedef, moduleName);
         genTOBuilder.setRestrictions(BindingGeneratorUtil.getRestrictions(typedef));
@@ -887,8 +887,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     public List<GeneratedTOBuilder> provideGeneratedTOBuildersForUnionTypeDef(final JavaTypeName typeName,
             final UnionTypeDefinition typedef, final SchemaNode parentNode) {
-        Preconditions.checkNotNull(typedef, "Type Definition cannot be NULL!");
-        Preconditions.checkNotNull(typedef.getQName(), "Type definition QName cannot be NULL!");
+        requireNonNull(typedef, "Type Definition cannot be NULL!");
+        requireNonNull(typedef.getQName(), "Type definition QName cannot be NULL!");
 
         final List<GeneratedTOBuilder> generatedTOBuilders = new ArrayList<>();
         final List<TypeDefinition<?>> unionTypes = typedef.getTypes();
@@ -1325,9 +1325,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final TypeDefinition<?> type = CompatUtils.compatLeafType(node);
         final QName typeQName = type.getQName();
         final TypeDefinition<?> base = baseTypeDefForExtendedType(type);
-        Preconditions.checkNotNull(type, "Cannot provide default construction for null type of %s", node);
-        Preconditions.checkNotNull(defaultValue, "Cannot provide default construction for null default statement of %s",
-                node);
+        requireNonNull(type, () -> "Cannot provide default construction for null type of " + node);
+        requireNonNull(defaultValue, () -> "Cannot provide default construction for null default statement of "
+            + node);
 
         final StringBuilder sb = new StringBuilder();
         String result = null;

@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.data.tree;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeCommitCohortRegistry;
@@ -31,8 +32,8 @@ public final class BindingDOMDataTreeCommitCohortRegistryAdapter implements Data
 
     private BindingDOMDataTreeCommitCohortRegistryAdapter(final BindingToNormalizedNodeCodec codec,
             final DOMDataTreeCommitCohortRegistry registry) {
-        this.codec = Preconditions.checkNotNull(codec);
-        this.registry = Preconditions.checkNotNull(registry);
+        this.codec = requireNonNull(codec);
+        this.registry = requireNonNull(registry);
     }
 
     /**

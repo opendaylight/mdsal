@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.data.tree;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,9 +44,9 @@ public class BindingDOMDataTreeListenerAdapter implements DOMDataTreeListener {
 
     public BindingDOMDataTreeListenerAdapter(final DataTreeListener delegate,
             final BindingToNormalizedNodeCodec codec, final LogicalDatastoreType store) {
-        this.delegate = Preconditions.checkNotNull(delegate, "delegate");
-        this.codec = Preconditions.checkNotNull(codec, "codec");
-        this.store = Preconditions.checkNotNull(store, "store");
+        this.delegate = requireNonNull(delegate, "delegate");
+        this.codec = requireNonNull(codec, "codec");
+        this.store = requireNonNull(store, "store");
     }
 
     @Override

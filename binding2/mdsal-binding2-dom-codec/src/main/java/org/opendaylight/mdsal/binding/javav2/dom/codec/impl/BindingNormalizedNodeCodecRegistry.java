@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -80,7 +81,7 @@ public class BindingNormalizedNodeCodecRegistry implements TreeNodeSerializerReg
      *            - serializer generator
      */
     public BindingNormalizedNodeCodecRegistry(final TreeNodeSerializerGenerator generator) {
-        this.generator = Preconditions.checkNotNull(generator);
+        this.generator = requireNonNull(generator);
         this.serializers = CacheBuilder.newBuilder().weakKeys().build(new GeneratorLoader());
     }
 

@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -41,8 +42,8 @@ final class CommitCoordinationTask implements Callable<CommitInfo> {
     CommitCoordinationTask(final DOMDataTreeWriteTransaction transaction,
             final Collection<DOMStoreThreePhaseCommitCohort> cohorts,
             final DurationStatisticsTracker commitStatTracker) {
-        this.tx = Preconditions.checkNotNull(transaction, "transaction must not be null");
-        this.cohorts = Preconditions.checkNotNull(cohorts, "cohorts must not be null");
+        this.tx = requireNonNull(transaction, "transaction must not be null");
+        this.cohorts = requireNonNull(cohorts, "cohorts must not be null");
         this.commitStatTracker = commitStatTracker;
     }
 

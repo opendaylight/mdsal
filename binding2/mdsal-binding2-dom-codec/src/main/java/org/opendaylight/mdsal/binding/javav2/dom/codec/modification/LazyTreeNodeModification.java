@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.modification;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -51,8 +52,8 @@ final class LazyTreeNodeModification<T extends TreeNode> implements TreeNodeModi
     private Collection<TreeNodeModification<? extends TreeNode>> childNodesCache;
 
     private LazyTreeNodeModification(final BindingTreeNodeCodec<T> codec, final DataTreeCandidateNode domData) {
-        this.codec = Preconditions.checkNotNull(codec);
-        this.domData = Preconditions.checkNotNull(domData);
+        this.codec = requireNonNull(codec);
+        this.domData = requireNonNull(domData);
         this.identifier = codec.deserializePathArgument(domData.getIdentifier());
     }
 

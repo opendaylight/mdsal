@@ -9,8 +9,8 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
@@ -39,9 +39,9 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
                                            final SnapshotBackedWriteTransaction<String> writeTransaction,
                                            final DataTreeModification modification,
                                            final Exception operationError) {
-        this.transaction = Preconditions.checkNotNull(writeTransaction);
-        this.modification = Preconditions.checkNotNull(modification);
-        this.store = Preconditions.checkNotNull(store);
+        this.transaction = requireNonNull(writeTransaction);
+        this.modification = requireNonNull(modification);
+        this.store = requireNonNull(store);
         this.operationError = operationError;
     }
 

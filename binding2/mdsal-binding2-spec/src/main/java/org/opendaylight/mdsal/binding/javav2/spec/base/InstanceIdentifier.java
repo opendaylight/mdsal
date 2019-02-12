@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.spec.base;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -89,8 +91,8 @@ public class InstanceIdentifier<T extends TreeNode> implements Path<InstanceIden
     }
 
     InstanceIdentifier(final Class<T> type, final Iterable<TreeArgument> pathArguments, final boolean wildcarded, final int hash) {
-        this.pathArguments = Preconditions.checkNotNull(pathArguments);
-        this.targetType = Preconditions.checkNotNull(type);
+        this.pathArguments = requireNonNull(pathArguments);
+        this.targetType = requireNonNull(type);
         this.wildcarded = wildcarded;
         this.hash = hash;
     }
@@ -289,7 +291,7 @@ public class InstanceIdentifier<T extends TreeNode> implements Path<InstanceIden
      */
     @Override
     public final boolean contains(final InstanceIdentifier<? extends TreeNode> other) {
-        Preconditions.checkNotNull(other, "other should not be null");
+        requireNonNull(other, "other should not be null");
 
         final Iterator<?> lit = pathArguments.iterator();
         final Iterator<?> oit = other.pathArguments.iterator();
@@ -316,7 +318,7 @@ public class InstanceIdentifier<T extends TreeNode> implements Path<InstanceIden
      * @return true if this identifier contains the other object
      */
     public final boolean containsWildcarded(final InstanceIdentifier<?> other) {
-        Preconditions.checkNotNull(other, "other should not be null");
+        requireNonNull(other, "other should not be null");
 
         final Iterator<TreeArgument> lit = pathArguments.iterator();
         final Iterator<TreeArgument> oit = other.pathArguments.iterator();
@@ -441,7 +443,7 @@ public class InstanceIdentifier<T extends TreeNode> implements Path<InstanceIden
      *         contains a null element.
      */
     private static InstanceIdentifier<?> internalCreate(final Iterable<TreeArgument> pathArguments) {
-        final Iterator<? extends TreeArgument> it = Preconditions.checkNotNull(pathArguments, "pathArguments may not be null").iterator();
+        final Iterator<? extends TreeArgument> it = requireNonNull(pathArguments, "pathArguments may not be null").iterator();
         final HashCodeBuilder<TreeArgument> hashBuilder = new HashCodeBuilder<>();
         boolean wildcard = false;
         TreeArgument a = null;
@@ -514,7 +516,7 @@ public class InstanceIdentifier<T extends TreeNode> implements Path<InstanceIden
 
     public static <N extends TreeNode, K> K keyOf(
             final InstanceIdentifier<N> id) {
-        Preconditions.checkNotNull(id);
+        requireNonNull(id);
         Preconditions.checkArgument(id instanceof KeyedInstanceIdentifier, "%s does not have a key", id);
 
         @SuppressWarnings("unchecked")

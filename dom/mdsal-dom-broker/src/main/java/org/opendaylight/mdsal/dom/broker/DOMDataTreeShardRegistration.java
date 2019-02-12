@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
@@ -21,8 +22,8 @@ public final class DOMDataTreeShardRegistration<T extends DOMDataTreeShard> exte
     public DOMDataTreeShardRegistration(final ShardedDOMDataTree tree, final DOMDataTreeIdentifier prefix,
             final T shard) {
         super(shard);
-        this.tree = Preconditions.checkNotNull(tree);
-        this.prefix = Preconditions.checkNotNull(prefix);
+        this.tree = requireNonNull(tree);
+        this.prefix = requireNonNull(prefix);
     }
 
     public DOMDataTreeIdentifier getPrefix() {

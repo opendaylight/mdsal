@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.data.tree;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.api.CursorAwareWriteTransaction;
@@ -32,7 +33,7 @@ public final class BindingDOMDataTreeProducerAdapter implements DataTreeProducer
 
     private BindingDOMDataTreeProducerAdapter(final DOMDataTreeProducer delegate,
             final BindingToNormalizedNodeCodec codec) {
-        this.delegate = Preconditions.checkNotNull(delegate);
+        this.delegate = requireNonNull(delegate);
         this.codec = codec;
     }
 

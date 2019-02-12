@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator.AbstractGenerator;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator.AbstractStreamWriterGenerator;
 import org.opendaylight.mdsal.binding.javav2.generator.api.ClassLoadingStrategy;
@@ -39,7 +40,7 @@ public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
      *            -parent generator
      */
     AbstractTreeNodeSerializerSource(final AbstractGenerator generator) {
-        this.generator = Preconditions.checkNotNull(generator);
+        this.generator = requireNonNull(generator);
     }
 
     @SuppressWarnings("unchecked")

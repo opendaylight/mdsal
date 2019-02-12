@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.maven.api.gen.plugin;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
 import com.google.common.collect.Table;
@@ -166,7 +167,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     }
 
     private static void setOutputBaseDirAsSourceFolder(final File outputBaseDir, final MavenProject mavenProject) {
-        Preconditions.checkNotNull(mavenProject, "Maven project needs to be set in this phase");
+        requireNonNull(mavenProject, "Maven project needs to be set in this phase");
         mavenProject.addCompileSourceRoot(outputBaseDir.getPath());
     }
 
@@ -188,7 +189,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
     @Override
     public void setBuildContext(final BuildContext buildContext) {
-        this.buildContext = Preconditions.checkNotNull(buildContext);
+        this.buildContext = requireNonNull(buildContext);
     }
 
     private Set<File> generateYangModuleInfo(final File outputBaseDir, final Module module, final SchemaContext ctx,

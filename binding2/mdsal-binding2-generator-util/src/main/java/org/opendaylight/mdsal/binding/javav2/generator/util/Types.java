@@ -8,9 +8,10 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.util;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -306,13 +307,13 @@ public final class Types {
          */
         private BaseTypeWithRestrictionsImpl(final String pkName, final String name, final Restrictions restrictions) {
             super(pkName, name, null);
-            this.restrictions = Preconditions.checkNotNull(restrictions);
+            this.restrictions = requireNonNull(restrictions);
         }
 
         private BaseTypeWithRestrictionsImpl(final String pkName, final String name, final Restrictions restrictions,
                                              final ModuleContext moduleContext) {
             super(pkName, name, moduleContext);
-            this.restrictions = Preconditions.checkNotNull(restrictions);
+            this.restrictions = requireNonNull(restrictions);
         }
 
         @Override
@@ -398,8 +399,8 @@ public final class Types {
         private final RangeConstraint<T> rangeConstraint;
 
         private DefaultRestrictions(final T min, final T max) {
-            Preconditions.checkNotNull(min);
-            Preconditions.checkNotNull(max);
+            requireNonNull(min);
+            requireNonNull(max);
             this.rangeConstraint = new RangeConstraint<T>() {
 
                 @Override

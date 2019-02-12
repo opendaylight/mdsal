@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
@@ -76,8 +78,8 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
             final AbstractDOMDataBroker broker, final DOMTransactionChainListener listener) {
         super(chains);
         this.chainId = chainId;
-        this.broker = Preconditions.checkNotNull(broker);
-        this.listener = Preconditions.checkNotNull(listener);
+        this.broker = requireNonNull(broker);
+        this.listener = requireNonNull(listener);
     }
 
     private void checkNotFailed() {

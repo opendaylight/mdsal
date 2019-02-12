@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableSet;
@@ -58,7 +60,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     ShardedDOMDataTreeProducer(final ShardedDOMDataTree dataTree,
                                final Collection<DOMDataTreeIdentifier> subtrees,
                                final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
-        this.dataTree = Preconditions.checkNotNull(dataTree);
+        this.dataTree = requireNonNull(dataTree);
         this.subtrees = ImmutableSet.copyOf(subtrees);
         this.layout = ProducerLayout.create(shardMap);
     }
@@ -274,6 +276,6 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     void bindToListener(final DOMDataTreeListener listener) {
         final DOMDataTreeListener local = attachedListener;
         Preconditions.checkState(local == null, "Producer %s is already attached to listener %s", this, local);
-        this.attachedListener = Preconditions.checkNotNull(listener);
+        this.attachedListener = requireNonNull(listener);
     }
 }

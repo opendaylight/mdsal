@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.eos.binding.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.EntityKey;
@@ -42,6 +43,6 @@ public class Entity extends GenericEntity<InstanceIdentifier<?>> {
     public Entity(final @NonNull String type, final @NonNull String entityName) {
         super(type, InstanceIdentifier.builder(org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang
                 .mdsal.core.general.entity.rev150930.Entity.class,
-                    new EntityKey(Preconditions.checkNotNull(entityName, "entityName should not be null"))).build());
+                    new EntityKey(requireNonNull(entityName, "entityName should not be null"))).build());
     }
 }

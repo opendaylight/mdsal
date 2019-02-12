@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.notification;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -114,7 +116,7 @@ public final class NotificationListenerInvoker {
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void invokeNotification(@Nonnull final NotificationListener impl, @Nonnull final QName notificationName,
             @Nullable final Instantiable<?> input) {
-        Preconditions.checkNotNull(impl, "implementation must be supplied");
+        requireNonNull(impl, "implementation must be supplied");
         final MethodHandle invoker = methodInvokers.get(notificationName);
         Preconditions.checkArgument(invoker != null, "Supplied notification is not valid for implementation %s", impl);
         try {

@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.addTOToTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.annotateDeprecatedIfNecessary;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.constructGetter;
@@ -299,14 +300,14 @@ final class GenHelperUtil {
                 if (superChildNode instanceof DataNodeContainer || superChildNode instanceof ChoiceSchemaNode) {
                     final QName childQName = createQNameFromSuperNode(module, node, superChildNode);
                     DataSchemaNode childNode = ((DataNodeContainer) node).getDataChildByName(childQName);
-                    Preconditions.checkNotNull(childNode, "%s->%s", node, childQName);
+                    requireNonNull(childNode, () -> node + "->" + childQName);
 
                     final GeneratedTypeBuilder type = genCtx.get(module).getChildNode(childNode.getPath());
                     final GeneratedTypeBuilder superType = genCtx.get(superModule).getChildNode(superChildNode
                             .getPath());
 
-                    Preconditions.checkNotNull(type, "%s->%s", module, childNode.getPath());
-                    Preconditions.checkNotNull(superType, "%s->%s", superModule, superChildNode.getPath());
+                    requireNonNull(type, () -> module + "->" + childNode.getPath());
+                    requireNonNull(superType, () -> superModule + "->" + superChildNode.getPath());
                     type.addImplementsType(superType);
                     if (superChildNode instanceof ListSchemaNode
                             && !((ListSchemaNode) superChildNode).getKeyDefinition().isEmpty()) {
@@ -326,12 +327,12 @@ final class GenHelperUtil {
             for (CaseSchemaNode superCaseNode : ((ChoiceSchemaNode) superNode).getCases().values()) {
                 final QName childQName = createQNameFromSuperNode(module, node, superCaseNode);
                 CaseSchemaNode caseNode = ((ChoiceSchemaNode) node).getCaseNodeByName(childQName);
-                Preconditions.checkNotNull(caseNode, "%s->%s", node, childQName);
+                requireNonNull(caseNode, () -> node + "->" + childQName);
 
                 final GeneratedTypeBuilder type = genCtx.get(module).getCase(caseNode.getPath());
                 final GeneratedTypeBuilder superType = genCtx.get(superModule).getCase(superCaseNode.getPath());
-                Preconditions.checkNotNull(type, "%s->%s", module, caseNode.getPath());
-                Preconditions.checkNotNull(superType, "%s->%s", superModule, superCaseNode.getPath());
+                requireNonNull(type, () -> module + "->" + caseNode.getPath());
+                requireNonNull(superType, () -> superModule + "->" + superCaseNode.getPath());
                 type.addImplementsType(superType);
                 addUsesImplements(superCaseNode, superModule, caseNode, module, schemaContext, genCtx, namespaceType);
             }
@@ -364,7 +365,7 @@ final class GenHelperUtil {
             }
         }
 
-        Preconditions.checkNotNull(groupingNode, "%s->%s", module, usesNode.getGroupingPath());
+        requireNonNull(groupingNode, () -> module + "->" + usesNode.getGroupingPath());
         Preconditions.checkState(groupingNode instanceof GroupingDefinition, "%s->%s", module,
                 usesNode.getGroupingPath());
         return (GroupingDefinition) groupingNode;
@@ -910,7 +911,7 @@ final class GenHelperUtil {
                         || typeDef instanceof UnionTypeDefinition || typeDef instanceof BitsTypeDefinition)) {
                     LeafSchemaNode originalLeaf = (LeafSchemaNode) ((DerivableSchemaNode) leaf).getOriginal()
                             .orElse(null);
-                    Preconditions.checkNotNull(originalLeaf);
+                    requireNonNull(originalLeaf);
                     returnType = genCtx.get(findParentModule(schemaContext, originalLeaf)).getInnerType(typeDef
                             .getPath());
                 } else {
@@ -1388,7 +1389,7 @@ final class GenHelperUtil {
                                                                   final IdentitySchemaNode identity, final Module
                                                                           module, final boolean verboseClassComments,
                                                                   final Map<Module, ModuleContext> genCtx) {
-        Preconditions.checkNotNull(identity, "Identity can not be null!");
+        requireNonNull(identity, "Identity can not be null!");
 
         //check first if identity has been resolved as base identity of some other one
         GeneratedTypeBuilder newType = findIdentityByQname(identity.getQName(), genCtx);

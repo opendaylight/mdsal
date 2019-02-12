@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.yang.types;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl.addUnitsToGenTO;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
@@ -180,7 +181,7 @@ public final class TypeGenHelper {
     static GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
                                                       final Type javaType, final String moduleName, final
                                                       ModuleContext context) {
-        Preconditions.checkNotNull(javaType, "javaType cannot be null");
+        requireNonNull(javaType, "javaType cannot be null");
         final String propertyName = "value";
 
         final GeneratedTOBuilderImpl genTOBuilder = typedefToTransferObject(basePackageName, typedef, moduleName,

@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.Range;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,9 +27,9 @@ abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>>
     protected AbstractPrimitiveRangeGenerator(final Class<T> typeClass, final String primitiveName, final T minValue,
             final T maxValue) {
         super(typeClass);
-        this.primitiveName = Preconditions.checkNotNull(primitiveName);
-        this.minValue = Preconditions.checkNotNull(minValue);
-        this.maxValue = Preconditions.checkNotNull(maxValue);
+        this.primitiveName = requireNonNull(primitiveName);
+        this.minValue = requireNonNull(minValue);
+        this.maxValue = requireNonNull(maxValue);
     }
 
     /**

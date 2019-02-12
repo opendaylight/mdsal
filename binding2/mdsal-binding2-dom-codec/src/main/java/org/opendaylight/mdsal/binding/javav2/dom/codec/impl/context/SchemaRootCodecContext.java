@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -126,8 +128,8 @@ public final class SchemaRootCodecContext<D extends TreeNode> extends DataContai
      * @return operation schema or null, if operation is not present in schema context.
      */
     private ContainerSchemaNode getOperationDataSchema(final SchemaContext schema, final SchemaPath path) {
-        Preconditions.checkNotNull(schema, "Schema context must not be null.");
-        Preconditions.checkNotNull(path, "Schema path must not be null.");
+        requireNonNull(schema, "Schema context must not be null.");
+        requireNonNull(path, "Schema path must not be null.");
         final Iterator<QName> it = path.getPathFromRoot().iterator();
         Preconditions.checkArgument(it.hasNext(), "Operation must have QName.");
         final QName operationName = it.next();
@@ -151,8 +153,8 @@ public final class SchemaRootCodecContext<D extends TreeNode> extends DataContai
     }
 
     private ContainerSchemaNode getOperationDataSchema(final OperationDefinition operation, final QName qname) {
-        Preconditions.checkNotNull(operation, "Operation Schema must not be null.");
-        Preconditions.checkNotNull(qname, "QName must not be null.");
+        requireNonNull(operation, "Operation Schema must not be null.");
+        requireNonNull(qname, "QName must not be null.");
         switch (qname.getLocalName()) {
             case "input":
                 return operation.getInput();

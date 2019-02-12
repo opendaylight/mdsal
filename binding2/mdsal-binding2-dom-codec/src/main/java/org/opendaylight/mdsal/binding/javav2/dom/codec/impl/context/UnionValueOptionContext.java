@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -50,8 +51,8 @@ public class UnionValueOptionContext {
      */
     public UnionValueOptionContext(final Class<?> unionType, final Class<?> valueType, final Method getter,
             final Codec<Object, Object> codec) {
-        this.bindingType = Preconditions.checkNotNull(valueType);
-        this.codec = Preconditions.checkNotNull(codec);
+        this.bindingType = requireNonNull(valueType);
+        this.codec = requireNonNull(codec);
 
         try {
             this.getter = MethodHandles.publicLookup().unreflect(getter).asType(OBJECT_TYPE);

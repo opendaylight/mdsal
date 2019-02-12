@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,7 @@ final class LocalNameRpcServiceInvoker extends AbstractMappedRpcInvoker<String> 
 
     private LocalNameRpcServiceInvoker(final QNameModule module, final Map<String, Method> map) {
         super(map);
-        this.module = Preconditions.checkNotNull(module);
+        this.module = requireNonNull(module);
     }
 
     static RpcServiceInvoker instanceFor(final QNameModule module, final Map<QName, Method> qnameToMethod) {

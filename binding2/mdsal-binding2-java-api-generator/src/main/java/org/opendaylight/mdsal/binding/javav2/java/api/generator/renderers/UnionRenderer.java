@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.BOOLEAN;
 
 import com.google.common.base.Preconditions;
@@ -188,7 +189,7 @@ public class UnionRenderer extends ClassRenderer {
 
         final StringBuilder sb1 = new StringBuilder();
         final String name = TextTemplateUtil.fieldName(field);
-        final String importedName = Preconditions.checkNotNull(importedName(field.getReturnType()));
+        final String importedName = requireNonNull(importedName(field.getReturnType()));
         sb1.append("public ")
                 .append(importedName)
                 .append(' ')

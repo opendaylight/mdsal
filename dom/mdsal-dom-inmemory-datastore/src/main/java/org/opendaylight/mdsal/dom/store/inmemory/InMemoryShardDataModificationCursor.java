@@ -8,7 +8,8 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import org.opendaylight.mdsal.dom.spi.shard.AbstractDataModificationCursor;
 import org.opendaylight.mdsal.dom.spi.shard.WriteCursorStrategy;
 
@@ -19,7 +20,7 @@ class InMemoryShardDataModificationCursor extends AbstractDataModificationCursor
     InMemoryShardDataModificationCursor(final ShardDataModification root,
                                         final InmemoryDOMDataTreeShardWriteTransaction parent) {
         super(root);
-        this.parent = Preconditions.checkNotNull(parent);
+        this.parent = requireNonNull(parent);
     }
 
     @Override

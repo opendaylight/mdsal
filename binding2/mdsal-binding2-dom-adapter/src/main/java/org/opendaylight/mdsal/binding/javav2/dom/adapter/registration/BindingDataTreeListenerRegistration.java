@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.registration;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeListener;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -27,7 +28,7 @@ public class BindingDataTreeListenerRegistration<L extends DataTreeListener>
 
     public BindingDataTreeListenerRegistration(final L listener, final ListenerRegistration<?> domReg) {
         super(listener);
-        this.domReg = Preconditions.checkNotNull(domReg);
+        this.domReg = requireNonNull(domReg);
     }
 
     @Override

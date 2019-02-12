@@ -8,8 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.spec.base;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 
 /**
  * An Item represents an object that probably is only one of it's kind. For example a Nodes object
@@ -23,7 +24,7 @@ public final class Item<T extends TreeNode> extends TreeArgument<T> {
     private final Class<T> type;
 
     public Item(final Class<T> type) {
-        this.type = Preconditions.checkNotNull(type);
+        this.type = requireNonNull(type);
     }
 
     @Override

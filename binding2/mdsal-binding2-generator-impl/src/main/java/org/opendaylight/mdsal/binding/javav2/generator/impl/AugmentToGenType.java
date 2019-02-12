@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.processUsesImplements;
 
 import com.google.common.annotations.Beta;
@@ -178,7 +179,7 @@ final class AugmentToGenType {
 
     public static Module findAugmentTargetModule(final SchemaContext schemaContext,
             final AugmentationSchemaNode aug) {
-        Preconditions.checkNotNull(aug, "Augmentation schema can not be null.");
+        requireNonNull(aug, "Augmentation schema can not be null.");
         final QName first = aug.getTargetPath().getPathFromRoot().iterator().next();
         return schemaContext.findModule(first.getModule()).orElse(null);
     }

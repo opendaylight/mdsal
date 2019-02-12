@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.yang.types;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameWithNamespacePrefix;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.getOuterClassPackageName;
@@ -345,9 +346,9 @@ public final class TypeProviderImpl implements TypeProvider {
     public List<GeneratedTOBuilder> provideGeneratedTOBuildersForUnionTypeDef(final String basePackageName,
             final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode,
             final ModuleContext context) {
-        Preconditions.checkNotNull(basePackageName, "Base Package Name cannot be NULL!");
-        Preconditions.checkNotNull(typedef, "Type Definition cannot be NULL!");
-        Preconditions.checkNotNull(typedef.getQName(), "Type definition QName cannot be NULL!");
+        requireNonNull(basePackageName, "Base Package Name cannot be NULL!");
+        requireNonNull(typedef, "Type Definition cannot be NULL!");
+        requireNonNull(typedef.getQName(), "Type definition QName cannot be NULL!");
 
         final List<GeneratedTOBuilder> generatedTOBuilders = new ArrayList<>();
         final List<TypeDefinition<?>> unionTypes = typedef.getTypes();

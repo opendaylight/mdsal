@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
@@ -112,8 +113,8 @@ public final class BindingToNormalizedNodeCodec
      */
     public BindingToNormalizedNodeCodec(final GeneratedClassLoadingStrategy classLoadingStrategy,
             final BindingNormalizedNodeCodecRegistry codecRegistry, final boolean waitForSchema) {
-        this.classLoadingStrategy = Preconditions.checkNotNull(classLoadingStrategy, "classLoadingStrategy");
-        this.codecRegistry = Preconditions.checkNotNull(codecRegistry, "codecRegistry");
+        this.classLoadingStrategy = requireNonNull(classLoadingStrategy, "classLoadingStrategy");
+        this.codecRegistry = requireNonNull(codecRegistry, "codecRegistry");
         this.futureSchema = waitForSchema ? new FutureSchema(WAIT_DURATION_SEC, TimeUnit.SECONDS) : null;
     }
 

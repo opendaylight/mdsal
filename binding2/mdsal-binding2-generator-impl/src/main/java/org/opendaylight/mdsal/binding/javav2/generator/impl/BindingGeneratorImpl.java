@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
@@ -136,8 +138,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         final List<Type> filteredGenTypes = new ArrayList<>();
         for (final Module m : modules) {
-            final ModuleContext ctx = Preconditions.checkNotNull(this.genCtx.get(m),
-                    "Module context not found for module %s", m);
+            final ModuleContext ctx = requireNonNull(this.genCtx.get(m),
+                () -> "Module context not found for module " + m);
             filteredGenTypes.addAll(ctx.getGeneratedTypes());
             final Set<Type> additionalTypes = ((TypeProviderImpl) this.typeProvider).getAdditionalTypes().get(m);
             if (additionalTypes != null) {

@@ -8,7 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class InterfaceRenderer extends BaseRenderer {
      */
     public InterfaceRenderer(final GeneratedType type) {
         super(type);
-        Preconditions.checkNotNull(type, "Generated type reference cannot be NULL!");
+        requireNonNull(type, "Generated type reference cannot be NULL!");
     }
 
     @Override

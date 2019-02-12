@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.util;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -381,7 +383,7 @@ public final class TextTemplateUtil {
      * @return underscored string form
      */
     public static String fieldName(final GeneratedProperty property) {
-        final String name = Preconditions.checkNotNull(property.getName());
+        final String name = requireNonNull(property.getName());
         return UNDERSCORE.concat(name);
     }
 
@@ -402,8 +404,8 @@ public final class TextTemplateUtil {
      * @return getter for property
      */
     public static String getterMethodName(final GeneratedProperty field) {
-        final Type type = Preconditions.checkNotNull(field.getReturnType());
-        final String name = Preconditions.checkNotNull(field.getName());
+        final Type type = requireNonNull(field.getReturnType());
+        final String name = requireNonNull(field.getName());
         final String prefix = Types.BOOLEAN.equals(type) ? "is" : "get";
         return prefix.concat(toFirstUpper(name));
     }
@@ -458,7 +460,7 @@ public final class TextTemplateUtil {
      * @return getter name without prefix
      */
     public static String propertyNameFromGetter(final MethodSignature getter) {
-        final String name = Preconditions.checkNotNull(getter.getName());
+        final String name = requireNonNull(getter.getName());
         int prefix;
         if (name.startsWith("is")) {
             prefix = 2;

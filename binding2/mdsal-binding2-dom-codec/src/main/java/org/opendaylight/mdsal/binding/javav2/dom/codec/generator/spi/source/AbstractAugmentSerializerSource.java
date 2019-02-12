@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator.AbstractGenerator;
@@ -28,7 +29,7 @@ public abstract class AbstractAugmentSerializerSource extends AbstractDataNodeCo
                                            final Collection<AugmentationSchemaNode> augmentationSchemas) {
         // Note: passing first augmentation schema node just to avoid exceptions from super class.
         super(generator, type, augmentationSchemas.stream().findFirst().get());
-        this.augmentationSchemas = Preconditions.checkNotNull(augmentationSchemas);
+        this.augmentationSchemas = requireNonNull(augmentationSchemas);
     }
 
     /**
