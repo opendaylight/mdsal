@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.md.sal.trace.cli;
+package org.opendaylight.mdsal.trace.cli;
 
 import java.util.List;
 import org.apache.karaf.shell.api.action.Action;
