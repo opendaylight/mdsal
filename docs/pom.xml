@@ -552,6 +552,10 @@
                             <packages>org.opendaylight.mdsal.trace*:org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsaltrace*</packages>
                         </group>
                         <group>
+                            <title>Baseline utilities for interacting with RFC6991 models</title>
+                            <packages>org.opendaylight.mdsal.model.ietf.util</packages>
+                        </group>
+                        <group>
                             <title>Java Bindings for iana-afn-safi.yang</title>
                             <packages>org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana.afn.safi*</packages>
                         </group>
