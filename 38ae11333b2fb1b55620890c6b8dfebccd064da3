@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "700a6bce_db6b3929",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/test/TypedefCompilationTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-02-14T09:58:53Z",
+      "side": 1,
+      "message": "Argh, this is worrysome. Can you squash the three patches, please?",
+      "range": {
+        "startLine": 116,
+        "startChar": 16,
+        "endLine": 116,
+        "endChar": 35
+      },
+      "revId": "38ae11333b2fb1b55620890c6b8dfebccd064da3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
