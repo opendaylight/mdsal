@@ -1,0 +1,28 @@
+module etsi-nfv {
+  yang-version 1.1;
+  namespace "urn:etsi:params:xml:ns:yang:etsi-nfv";
+  prefix nfv;
+
+  include etsi-nfv-vnf;
+  include etsi-nfv-pnf;
+  include etsi-nfv-ns;
+
+  organization
+    "European Telecommunications Standards Institute (ETSI)";
+
+  description
+    "Network Function Virtualization Descriptors";
+
+  revision 2018-06-13 {
+    description
+      "Initial revision.
+       NSD and PNFD according to ETSI GS NFV-IFA 014 Ed251v244
+       VNFD according to ETSI GS NFV-IFA 011 Ed251v243";
+  }
+
+  container nfv {
+    uses vnfd;
+    uses nsd;
+    uses pnfd;
+  }
+}

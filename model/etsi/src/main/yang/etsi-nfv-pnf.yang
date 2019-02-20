@@ -1,0 +1,118 @@
+submodule etsi-nfv-pnf {
+  yang-version 1.1;
+  belongs-to etsi-nfv {
+    prefix nfv;
+  }
+
+  /*
+   * Import
+   */
+  import etsi-nfv-common {
+    prefix common;
+  }
+
+  description
+    "Models for PNFD according to GS NFV-IFA 014.";
+
+  revision 2018-06-25 {
+    description
+      "Initial revision.
+
+       Common data structure to support VNFD according to:
+       ETSI GS NFV-IFA 014 Ed251v244";
+
+    reference
+      "ETSI GS NFV-IFA 014 Ed251v244";
+  }
+
+  grouping pnfd {
+    description
+      "The Pnfd information element is a deployment template
+       enabling on-boarding PNFs and referencing them from an NSD.
+       It focuses on connectivity aspects only";
+    reference
+      "GS NFV-IFA014: Section 6.6.2, Pnfd information element";
+
+    list pnfd {
+      key "id";
+
+      leaf id {
+        type string;
+        description
+          "Identifier of this Pnfd information element. It uniquely
+           identifies the PNFD.";
+        reference
+          "GS NFV-IFA014: Section 6.6.2, Pnfd information element";
+      }
+      leaf function-description {
+        type string;
+        description
+          "Describes the PNF function.";
+        reference
+          "GS NFV-IFA014: Section 6.6.2, Pnfd information element";
+      }
+      leaf provider {
+        type string;
+        description
+          "Identifies the provider of the PNFD.";
+        reference
+          "GS NFV-IFA014: Section 6.6.2, Pnfd information element";
+      }
+      leaf version {
+        type string;
+        mandatory true;
+        description
+          "Identifies the version of the PNFD.";
+        reference
+          "GS NFV-IFA014: Section 6.6.2, Pnfd information element";
+      }
+      leaf invariant-id {
+        type string;
+        description
+          "Identifies a PNFD in a version independent manner. This
+           attribute is invariant across versions of PNFD.";
+        reference
+          "GS NFV-IFA014: Section 6.6.2, Pnfd information element";
+      }
+      leaf name {
+        type string;
+        description
+          "Provides the human readable name of the PNFD.";
+        reference
+          "GS NFV-IFA014: Section 6.6.2, Pnfd information element";
+      }
+      list ext-cpd {
+        key "id";
+        uses common:cpd;
+        description
+          "Specifies the characteristics of one or more connection
+           points where to connect the PNF to a VL.";
+        reference
+          "GS NFV-IFA014: Section 6.6.2, Pnfd information element";
+      }
+      list security {
+        key "signature";
+        uses common:security-parameters;
+        description
+          "Provides a signature to prevent tampering.
+           Editor's Note: While IFA014 does specify that the PNFD
+           includes a security parameter. SOL001 does not have one.
+           We need to harmonize SOL001 & SOL006 on this point.";
+        reference
+          "GS NFV-IFA014: Section 6.6.2, Pnfd information element";
+      }
+      leaf geographical-location-info {
+        type string;
+        description
+          "It provides information about the geographical location
+           (e.g. geographic coordinates or address of the building,
+           etc.) of the PNF. The cardinality 0 is used when the
+           location is unknown.
+           Editor's Note: The type is TBD in SOL001. We need to make
+           a common SOL001/SOL006 decision.";
+        reference
+          "GS NFV-IFA014: Section 6.6.2, Pnfd information element";
+      }
+    }
+  }
+}

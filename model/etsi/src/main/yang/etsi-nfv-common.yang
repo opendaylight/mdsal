@@ -1,0 +1,442 @@
+module etsi-nfv-common {
+  namespace "urn:etsi:params:xml:ns:yang:etsi-nfv-common";
+  yang-version 1.1;
+  prefix common;
+
+  description
+    "Common data types for ETSI data models.";
+
+  revision 2018-06-19 {
+    description
+      "Initial revision
+
+       Common data structures to support VNFD and NSD according to:
+       ETSI GS NFV-IFA 014 Ed251v244
+       ETSI GS NFV-IFA 011 Ed251v243";
+  }
+
+  /*
+   * Identities.
+   */
+  identity layer-protocol {
+  }
+  identity Ethernet {
+    base layer-protocol;
+  }
+  identity MPLS {
+    base layer-protocol;
+  }
+  identity ODU2 {
+    base layer-protocol;
+  }
+  identity IPv4 {
+    base layer-protocol;
+  }
+  identity IPv6 {
+    base layer-protocol;
+  }
+  identity Pseudo-Wire {
+    base layer-protocol;
+  }
+
+  identity address-type {
+    description
+      "Describes the type of the address to be assigned to the CP 
+       instantiated from the parent CPD.
+       Value:
+       • MAC address.
+       • IP address.
+       • …
+       The content type shall be aligned with the address type 
+       supported by the layerProtocol attribute of the parent CPD.";
+    reference
+      "GS NFV IFA011: Section 7.1.3.3, AddressData information
+       element.";
+  }
+  identity mac-address {
+    base address-type;
+  }
+  identity ip-address {
+    base address-type;
+  }
+
+  identity supported-operation {
+    description
+      "Indicates which operations are available for this DF via the
+       VNF LCM interface. Instantiate VNF, Query VNF and Terminate
+       VNF are supported in all DF and therefore need not be
+       included in this list.";
+    reference
+      "GS NFV IFA011: Section 7.1.8.2 VnfDf information element";
+  }
+  identity instantiate-vnf {
+    base supported-operation;
+    description
+      "This operation instantiates a particular DF of a VNF based on
+       the definition in the VNFD.";
+    reference
+      "GS NFV IFA007: Section 7.2.3 Instantiate VNF Operation";
+  }
+  identity scale-vnf {
+    base supported-operation;
+    description
+      "This operation provides methods to request scaling a VNF in
+       multiple ways:
+       • horizontal scaling:
+         - scale out: adding additional VNFC instances to the VNF to
+           increase capacity
+         - scale in: removing VNFC instances from the VNF, in order to
+           release unused capacity";
+    reference
+      "GS NFV IFA007: Section 7.2.4 Scale VNF Operation";
+  }
+  identity scale-vnf-to-level {
+    base supported-operation;
+    description
+      "This operation scales an instantiated VNF of a particular DF to
+       a target size. The target size is either expressed as an
+       instantiation level of that DF as defined in the VNFD, or given
+       as a list of scale levels, one per scaling aspect of that DF.
+       Instantiation levels and scaling aspects are declared in the
+       VNFD. Typically, the result of this operation is adding and/or
+       removing Network Functions Virtualization Infrastructure (NFVI)
+       resources to/from the VNF.";
+    reference
+      "GS NFV IFA007: Section 7.2.5 Scale VNF To Level Operation";
+  }
+  identity change-vnf-flavour {
+    base supported-operation;
+    description
+      "This operation changes the DF of a VNF instance.";
+    reference
+      "GS NFV IFA007: Section 7.2.6 Change VNF Flavour Operation";
+  }
+  identity terminate-vnf {
+    base supported-operation;
+    description
+      "This operation terminates a VNF.
+
+       A VNF can be terminated gracefully or forcefully. Graceful
+       termination means that the VNFM arranges to take the
+       VNF out of service, e.g. by asking the VNF's EM to take the
+       VNF out of service, and only after that shuts down the
+       VNF and releases the resources. Forceful termination means that
+       the VNFM immediately shuts down the VNF and releases the
+       resources. A time interval can be specified for taking the VNF
+       out of service, after which the VNF is shut down if taking it
+       out of service has not completed.";
+    reference
+      "GS NFV IFA007: Section 7.2.7 Terminate VNF Operation";
+  }
+  identity query-vnf {
+    base supported-operation;
+    description
+      "This operation provides information about VNF instances. The
+       applicable VNF instances can be chosen based on
+       filtering criteria, and the information can be restricted to
+       selected attributes.";
+    reference
+      "GS NFV IFA007: Section 7.2.9 Query VNF Operation";
+  }
+  identity heal-vnf {
+    base supported-operation;
+    description
+      "This operation enables the NFVO to request a VNFM to perform a
+       VNF healing procedure.";
+    reference
+      "GS NFV IFA007: Section 7.2.10 Heal VNF Operation";
+  }
+  identity operate-vnf {
+    base supported-operation;
+    description
+      "This operation enables requesting to change the state of a VNF
+       instance, including starting and stopping the VNF instance.";
+    reference
+      "GS NFV IFA007: Section 7.2.11 Operate VNF Operation";
+  }
+  identity modify-vnf-information {
+    base supported-operation;
+    description
+      "This operation allows updating information about a VNF
+       instance.";
+    reference
+      "GS NFV IFA007: Section 7.2.12 Modify VNF Operation";
+  }
+
+  identity cp-role {
+    description
+      "Identifies the role of the port in the context of the traffic
+       flow patterns in the VNF or parent NS.";
+    reference
+      "GS NFV IFA011: Section 7.1.6.3 Cpd information element";
+  }
+  identity root {
+    base cp-role;
+  }
+  identity leaf {
+    base cp-role;
+  }
+
+  /*
+   * Typedefs
+   */
+      
+  typedef flow-pattern {
+    type enumeration {
+      enum line;
+      enum tree;
+      enum mesh;
+    }
+  }
+
+  typedef affinity-type {
+    type enumeration {
+      enum "affinity";
+      enum "anti-affinity";
+    }
+  }
+
+  typedef affinity-scope {
+    type enumeration {
+      enum "nfvi-node";
+      enum "zone-group";
+      enum "zone";
+      enum "nfvi-pop";
+    }
+  }
+
+  typedef internal-lifecycle-management-script-event {
+    type enumeration {
+      enum "start-instantiation";
+      enum "end-instantiation";
+      enum "start-scaling";
+      enum "end-scaling";
+      enum "start-healing";
+      enum "end-healing";
+      enum "start-termination";
+      enum "end-termination";
+      enum "start-vnf-flavor-change";
+      enum "end-vnf-flavor-change";
+      enum "start-vnf-operation-change";
+      enum "end-vnf-operation-change";
+      enum "start-vnf-ext-conn-change";
+      enum "end-vnf-ext-conn-change";
+      enum "start-vnfinfo-modification";
+      enum "end-vnfinfo-modification";
+    }
+  }
+
+  grouping local-affinity-or-anti-affinity-rule {
+    list local-affinity-or-anti-affinity-rule {
+      key "affinity-type affinity-scope";
+      leaf affinity-type {
+        type affinity-type;
+        description
+          "Specifies whether the rule is an affinity rule or an
+           anti-affinity rule.";
+        reference
+          "GS NFV IFA011: Section 7.1.8.11,
+           LocalAffinityOrAntiAffinityRule information element.";
+      }
+
+      leaf affinity-scope {
+        type affinity-scope;
+        description
+          "Specifies the scope of the rule, possible values are
+           'NFVI-PoP', 'Zone', 'ZoneGroup', 'NFVI-node'.";
+        reference
+          "GS NFV IFA011: Section 7.1.8.11,
+           LocalAffinityOrAntiAffinityRule information element.";
+      }
+    }
+  }
+
+  grouping connectivity-type {
+    container connectivity-type {
+      leaf layer-protocol {
+        mandatory true;
+        type identityref {
+          base layer-protocol;
+        }
+        description
+          "Identifies the protocol this VL gives access to (Ethernet,
+           MPLS, ODU2, IPV4, IPV6, Pseudo-Wire).";
+        reference
+          "GS NFV IFA011: Section 7.1.7.3, ConnectivityType
+           information element.";
+      }
+
+      leaf flow-pattern {
+        type flow-pattern;
+        description
+          "Identifies the flow pattern of the connectivity (Line,
+           Tree, Mesh).";
+        reference
+          "GS NFV IFA011: Section 7.1.7.3, ConnectivityType
+           information element.";
+      }
+    }
+  }
+
+  grouping link-bitrate-requirements {
+    leaf root {
+      type uint64;
+      units "Mbps";
+      mandatory true;
+      description
+        "Specifies the throughput requirement of
+         the link (e.g. bitrate of E-Line, root bitrate
+         of E-Tree, aggregate capacity of E-LAN).";
+      reference
+        "GS NFV IFA011: Section 7.1.8.6, LinkBitrateRequirements
+         information element.";
+    }
+
+    leaf leaf {
+      type uint64;
+      units "Mbps";
+      description
+        "Specifies the throughput requirement of
+        leaf connections to the link when
+        applicable to the connectivity type (e.g. for
+        E-Tree and E-LAN branches).";
+      reference
+        "GS NFV IFA011: Section 7.1.8.6, LinkBitrateRequirements
+         information element.";
+    }
+  }
+
+  grouping monitoring-parameter {
+    leaf name {
+      type string;
+      description
+        "Human readable name of the monitoring parameter.";
+      reference
+        "GS NFV IFA011: Section 7.1.11.3, MonitoringParameter
+         information element.";
+    }
+    leaf performance-metric {
+      type string;
+      description
+        "Performance metric that is monitored. This attribute shall
+         contain the related 'Measurement Name' value as defined in
+         clause 7.2 of ETSI GS NFV-IFA 027";
+      reference
+        "GS NFV IFA011: Section 7.1.11.3, MonitoringParameter
+         information element and Section 7.2 of ETSI GS NFV-IFA 027.";
+    }
+    leaf collection-period {
+      type uint64;
+      units "ms";
+      description
+        "An attribute that describes the recommended periodicity at
+         which to collect the performance information. VNFM determines
+         if this parameter is considered.
+
+         The vendor may provide this information as a guidance for
+         creating PmJobs if needed.";
+      reference
+        "GS NFV IFA011: Section 7.1.11.3, MonitoringParameter
+         information element.";
+    }
+  }
+
+  grouping security-parameters {
+    leaf signature {
+      type string;
+      description
+        "Provides the signature of the signed part of the
+         descriptor.";
+      reference
+        "GS NFV IFA014: Section 6.2.5, SecurityParameters
+         information element.";
+    }
+    leaf algorithm {
+      type string;
+      description
+        "Identifies the algorithm used to compute the signature.";
+      reference
+        "GS NFV IFA014: Section 6.2.5, SecurityParameters
+         information element.";
+    }
+    leaf certificate {
+      type string;
+      description
+        "Provides a certificate or a reference to a certificate to
+         validate the signature.";
+      reference
+        "GS NFV IFA014: Section 6.2.5, SecurityParameters
+         information element.";
+    }
+  }
+
+  // The following grouping is Cpd information element as defined in
+  // IFA014. IFA011 defines its own Cpd information element, which
+  // is defined in etsi-nfv-vnf.yang file. Do not use this grouping
+  // for inclusion in a Vnf.
+  grouping cpd {
+    description
+      "The Cpd information element specifies the characteristics of
+       connection points attached to NFs and NSs. This is an
+       abstract class used as parent for the various Cpd classes.
+       It has an attribute 'trunkMode' which enables the NFVO to
+       identify whether the Cp instantiated from the Cpd is in trunk
+       mode or not.";
+    reference
+      "GS NFC IFA014: Section 6.6.3.1 Cpd information element";
+
+    leaf id {
+      type string;
+      description
+        "Identifier of this Cpd information element.";
+      reference
+        "GS NFC IFA014: Section 6.6.3.1 Cpd information element";
+    }
+    leaf layer-protocol {
+      mandatory true;
+      type identityref {
+        base common:layer-protocol;
+      }
+      description
+        "Identifies a protocol that the connection points
+         corresponding to the CPD support for connectivity purposes
+         (e.g. Ethernet, MPLS, ODU2, IPV4, IPV6, Pseudo-Wire, etc.).";
+      reference
+        "GS NFC IFA014: Section 6.6.3.1 Cpd information element";
+    }
+    leaf role {
+      type identityref {
+        base common:cp-role;
+      }
+      description
+        "Identifies the role of the connection points
+         corresponding to the CPD in the context of the traffic
+         flow patterns in the VNF, PNF or NS. For example an NS with
+         a tree flow pattern within the NS will have legal cpRoles
+         of ROOT and LEAF.";
+      reference
+        "GS NFC IFA014: Section 6.6.3.1 Cpd information element";
+    }
+    leaf description {
+      type string;
+      description
+        "Provides human-readable information on the purpose of the
+         connection point (e.g. connection point for control plane
+         traffic).";
+      reference
+        "GS NFC IFA014: Section 6.6.3.1 Cpd information element";
+    }
+    leaf trunk-mode {
+      type boolean;
+      description
+        "Information about whether the Cp instantiated from this CPD
+         is in Trunk mode (802.1Q or other). When operating in
+         'trunk mode', the Cp is capable of carrying traffic for
+         several VLANs. A cardinality of 0 implies that trunkMode
+         is not configured for the Cp i.e. It is equivalent to
+         Boolean value 'false'.";
+      reference
+        "GS NFC IFA014: Section 6.6.3.1 Cpd information element";
+    }
+  }
+}

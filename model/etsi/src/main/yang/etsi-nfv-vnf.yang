@@ -1,0 +1,2268 @@
+submodule etsi-nfv-vnf {
+  yang-version 1.1;
+  belongs-to etsi-nfv {
+    prefix nfv;
+  }
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+  import etsi-nfv-common {
+    prefix common;
+  }
+
+  description
+    "Models for VNFD according to GS NFV-IFA 011.";
+
+  revision 2018-06-19 {
+    description
+      "Initial revision.
+
+       Common data structure to support VNFD according to:
+       VNFD according to ETSI GS NFV-IFA 011 Ed251v243";
+
+    reference
+      "ETSI GS NFV-IFA 011 Ed251v243";
+  }
+
+  grouping virtual-network-interface-requirements {
+    list virtual-network-interface-requirement {
+      key "name";
+      description
+        "Specifies requirements on a virtual network interface
+         realising the CPs instantiated from this CPD.";
+      reference
+        "GS NFV-IFA011: Section 7.1.6.4, VduCpd information
+         element";
+
+      leaf name {
+        type string;
+        description
+          "Provides a human readable name for the requirement.";
+        reference
+          "GS NFV-IFA011: Section 7.1.6.6,
+           VirtualNetworkInterfaceRequirements information element";
+      }
+      leaf description {
+        type string;
+        description
+          "Provides a human readable description of the requirement.";
+        reference
+          "GS NFV-IFA011: Section 7.1.6.6,
+           VirtualNetworkInterfaceRequirements information element";
+      }
+      leaf support-mandatory {
+        mandatory true;
+        type boolean;
+        description
+          "Indicates whether fulfilling the constraint is
+           mandatory (true) for successful operation or desirable
+           (false).";
+        reference
+          "GS NFV-IFA011: Section 7.1.6.6,
+           VirtualNetworkInterfaceRequirements information element";
+      }
+      list network-interface-requirements {
+        key "key";
+        leaf key {
+          type string;
+        }
+        leaf value {
+          type string;
+        }
+        description
+          "The network interface requirements. An element from an
+           array of key-value pairs that articulate the network
+           interface deployment requirements.";
+        reference
+          "GS NFV-IFA011: Section 7.1.6.6,
+           VirtualNetworkInterfaceRequirements information element";
+      }
+      leaf niclo-requirements {
+        mandatory true;
+        type string; // remove once leafref is resolved.
+        //type leafref {
+          // add path statement here to logical-node-data.
+        //}
+        description
+          "This references (couples) the CPD with any logical node I/O
+           requirements (for network devices) that may have been
+           created. Linking these attributes is necessary so that so
+           that I/O requirements that need to be articulated at the
+           logical node level can be associated with the network
+           interface requirements associated with the CPD.";
+        reference
+          "GS NFV-IFA011: Section 7.1.6.6,
+           VirtualNetworkInterfaceRequirements information element";
+      }
+    }
+  }
+
+  // This grouping definition is for use within Vnfd as defined in
+  // IFA011. A similar definition of Cpd exists in IFA014, but
+  // that is for use with Sapd and Pnfd. Do not use this grouping
+  // for that.
+  grouping cpd {
+    description
+      "A Cpd information element describes network
+       connectivity to a compute resource or a VL.";
+    reference
+      "GS NFC IFA011: Section 7.1.6.3 Cpd Information
+       Element";
+    leaf id {
+      type string;
+      description
+	"Identifier of this Cpd information element.";
+      reference
+	"GS NFV IFA011: Section 7.1.6.3, Cpd information element.";
+    }
+    leaf layer-protocol {
+      mandatory true;
+      type identityref {
+	base common:layer-protocol;
+      }
+      description
+	"Identifies which protocol the CP uses for connectivity
+         purposes (Ethernet, MPLS, ODU2, IPV4, IPV6, Pseudo-Wire,
+         etc.).";
+      reference
+	"GS NFV IFA011: Section 7.1.6.3, Cpd information element.";
+    }
+    leaf role {
+      type identityref {
+	base common:cp-role;
+      }
+      description
+	"Identifies the role of the port in the context of the
+         traffic flow patterns in the VNF or parent NS. For example a
+         VNF with a tree flow pattern within the VNF will have legal
+         cpRoles of ROOT and LEAF.";
+      reference
+	"GS NFV IFA011: Section 7.1.6.3, Cpd information element.";
+    }
+    leaf description {
+      type string;
+      description
+	"Human readable description of the connection point";
+      reference
+	"GS NFV IFA011: Section 7.1.6.3, Cpd information element.";
+    }
+    container protocol {
+      description
+	"Identifies the protocol layering information the CP uses for
+         connectivity purposes and associated information. There shall
+         be one cpProtocol for each layer protocol as indicated by the
+         attribute layerProtocol.";
+      reference
+	"GS NFV IFA011: Section 7.1.6.3, Cpd information element.";
+      leaf associated-layer-protocol {
+	type identityref {
+	  base common:layer-protocol;
+	}
+	description
+	  "One of the values of the attribute layerProtocol of the Cpd
+           IE.";
+	reference
+	  "GS NFV IFA011: Section 7.1.6.8, CpProtocolData information
+           element.";
+      }
+
+      list address-data {
+	key "address-type";
+	leaf address-type {
+	  type identityref {
+	    base common:address-type;
+	  }
+	  description
+	    "Describes the type of the address to be assigned to the CP
+             instantiated from the parent CPD.
+             Value:
+             • MAC address.
+             • IP address.
+             • …
+             The content type shall be aligned with the address type
+             supported by the layerProtocol attribute of the parent CPD.";
+	  reference
+	    "GS NFV IFA011: Section 7.1.3.3, AddressData information
+             element.";
+	}
+	container l2-address-data {
+	  when "../address-type='mac-address'";
+	}
+	container l3-address-data {
+	  when "../address-type='ip-address'";
+	  leaf ip-address-assignment {
+	    type boolean;
+	    description
+	      "Specify if the address assignment is the responsibility
+               of management and orchestration function or not. If it
+               is set to True, it is the management and orchestration
+               function responsibility. ";
+	    reference
+	      "GS NFV IFA011: Section 7.1.3.4, L3AddressData
+               information element.";
+	  }
+	  leaf floating-ip-activated {
+	    type boolean;
+	    description
+	      "Specify if the floating IP scheme is activated on the CP
+               or not.";
+	    reference
+	      "GS NFV IFA011: Section 7.1.3.4, L3AddressData
+               information element.";
+	  }
+	  leaf ip-address-type {
+	    type enumeration {
+	      enum "ipv4";
+	      enum "ipv6";
+	    }
+	    description
+	      "Define address type. The address type should be aligned
+               with the address type supported by the layerProtocol
+               attribute of the parent VnfExtCpd.";
+	    reference
+	      "GS NFV IFA011: Section 7.1.3.4, L3AddressData
+               information element.";
+	  }
+	  leaf number-of-ip-addresses {
+	    type uint32;
+	    description
+	      "Minimum number of IP addresses to be assigned based on
+               this L3AddressData information element.";
+	    reference
+	      "GS NFV IFA011: Section 7.1.3.4, L3AddressData
+               information element.";
+	  }
+	}
+	description
+	  "The AddressData information element supports providing
+           information about the addressing scheme and parameters
+           applicable to a CP.";
+	reference
+	  "GS NFV IFA011: Section 7.1.3.3, AddressData information
+           element.";
+      }
+    }
+    leaf trunk-mode {
+      type boolean;
+      description
+	"Information about whether the CP instantiated from this CPD
+         is in Trunk mode (802.1Q or other).";
+      reference
+	"GS NFV IFA011: Section 7.1.6.3, Cpd information element.";
+    }
+  }
+  
+  grouping vnfd {
+    list vnfd {
+      key "id";
+      description
+        "A VNF Descriptor (VNFD) is a deployment template which
+         describes a VNF in terms of deployment and operational
+         behaviour requirements. It also contains connectivity,
+         interface and virtualised resource requirements";
+      reference
+        "GS NFV-IFA011: Section 7.1.2, VNFD information element";
+      leaf id {
+        type string;
+        description
+          "Identifier of this VNFD information element. This attribute
+           shall be globally unique. The format will be defined in the
+           data model specification phase.";
+        reference
+          "GS NFV-IFA011: Section 7.1.2, VNFD information element";
+      }
+      leaf provider {
+        type string;
+        mandatory true;
+        description
+          "Provider of the VNF and of the VNFD";
+        reference
+          "GS NFV-IFA011: Section 7.1.2, VNFD information element";
+      }
+      leaf product-name {
+        type string;
+        mandatory true;
+        description
+          "Name to identify the VNF Product. Invariant for the VNF
+           Product lifetime.";
+        reference
+          "GS NFV-IFA011: Section 7.1.2, VNFD information element";
+      }
+      leaf software-version {
+        type string;
+        mandatory true;
+        description
+          "Software version of the VNF. This is changed when there is
+           any change to the software that is included in the VNF
+           Package";
+        reference
+          "GS NFV-IFA011: Section 7.1.2, VNFD information element";
+      }
+      leaf version {
+        type string;
+        mandatory true;
+        description
+          "Identifies the version of the VNFD";
+        reference
+          "GS NFV-IFA011: Section 7.1.2, VNFD information element";
+      }
+      leaf product-info-name {
+        type string;
+        description
+          "Human readable name of the VNFD. Can change
+           during the VNF Product lifetime.";
+        reference
+          "GS NFV-IFA011: Section 7.1.2, VNFD information element";
+      }
+      leaf product-info-description {
+        type string;
+        description
+          "Human readable description of the VNFD. Can change during
+           the VNF Product lifetime.";
+        reference
+          "GS NFV-IFA011: Section 7.1.2, VNFD information element";
+      }
+      leaf-list vnfm-info {
+        type string;
+        min-elements 1;
+        description
+          "Identifies VNFM(s) compatible with the VNF described in
+           this version of the VNFD.";
+        reference
+          "GS NFV-IFA011: Section 7.1.2, VNFD information element";
+      }
+      leaf localization-language {
+        type string;
+        description
+          "Information about the language of the VNF.";
+        reference
+          "GS NFV-IFA011: Section 7.1.2, VNFD information element";
+      }
+      leaf default-localization-language {
+        when "../localization-language";
+        type string;
+        description
+          "Default localization language that is instantiated if no
+           information about selected localization language is
+           available. Shall be present if 'localization-language'
+           is present and shall be absent otherwise.";
+        reference
+          "GS NFV-IFA011: Section 7.1.2, VNFD information element";
+      }
+
+      list vdu {
+        key "id";
+        min-elements 1;
+        description
+          "The Virtualisation Deployment Unit (VDU) is a construct supporting
+           the description of the deployment and operational behaviour of a
+           VNF component, or the entire VNF if it was not componentized in
+           components.";
+        reference
+          "GS NFV IFA011: Section 7.1.2, VNFD information element";
+        leaf id {
+          type string;
+          description
+            "Unique identifier of this VDU in VNFD.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.2, Vdu information element";
+        }
+        leaf name {
+          type string;
+          mandatory true;
+          description
+            "Human readable name of the VDU.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.2, Vdu information element";
+        }
+        leaf description {
+          type string;
+          description
+            "Human readable description of the VDU.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.2, Vdu information element";
+        }
+        list int-cpd {
+          key "id";
+          min-elements 1;
+          description
+            "A internal-connection-point element is a type of
+             connection point and describes network connectivity
+             between a VDU instance and an internal Virtual Link or
+             an external connection point.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.2, Vdu information element";
+
+          choice cp-connection {
+            mandatory true;
+            description
+              "A connection point must either connect to an internal
+               virtual link or to an external connection points.";
+            leaf int-virtual-link-desc {
+              type leafref {
+                path "../../../nfv:int-virtual-link-desc/nfv:id";
+              }
+              description
+                "Reference of the internal VLD which this internal CPD
+                 connects to.";
+              reference
+                "GS NFV IFA011: Section 7.1.6.4, VduCpd information
+                 element";
+            }
+            leaf ext-cpd {
+              description
+                "Connect to an external connection point";
+              type leafref {
+                path "../../../nfv:ext-cpd/nfv:id";
+              }
+            }
+          }
+          leaf bitrate-requirement {
+            type uint64;
+            units "Mbps";
+            description
+              "Bitrate requirement on this CP.";
+            reference
+              "GS NFV IFA011: Section 7.1.6.4, VduCpd information
+               element.";
+          }
+          uses virtual-network-interface-requirements;
+          leaf-list order {
+            type uint32;
+            description
+              "The order of the NIC to be assigned on the compute
+               instance (e.g. 2 for eth2).
+
+               Note: when binding more than one port to a single
+               compute (aka multi vNICs) and ordering is desired, it
+               is mandatory that all ports will be set with an order
+               value. The order values shall represent a positive,
+               arithmetic progression that starts with 0 (i.e. 0, 1,
+               2,..., n).
+
+               If the property is not present, it shall be left to the
+               VIM to assign a value when creating the instance.";
+            reference
+              "GS NFV IFA011: Section 7.1.6.4, VduCpd information
+               element.";
+          }
+
+          uses cpd;
+        }
+        leaf virtual-compute-desc {
+          type leafref {
+            path "../../nfv:virtual-compute-descriptor/" +
+                 "nfv:id";
+          }
+          must "../../nfv:virtual-compute-descriptor[id=current()]/" +
+               "nfv:virtual-memory/size >=" +
+               "../../nfv:sw-image-desc[id=current()/" +
+               "../sw-image-desc]/min-ram" {
+          }
+          description
+            "Describes CPU, Memory and acceleration requirements of
+             the Virtualisation Container realizing this VDU.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.2, VDU information
+             element, and Section 7.1.9.2.2, VirtualComputeDesc
+             information element.";
+        }
+
+        leaf-list virtual-storage-desc {
+          type leafref {
+            path "../../nfv:virtual-storage-descriptor/" +
+                 "nfv:id";
+          }
+          description
+            "Describes storage requirements for a VirtualStorage
+             instance attached to the virtualisation container
+             created from virtualComputeDesc defined for this VDU.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.2, VDU information
+             element, and Section 7.1.9.4, Information elements
+             related to Virtual Storage.";
+        }
+        list boot-order {
+          ordered-by user;
+          key "key";
+          leaf key {
+            type uint32;
+          }
+          leaf value {
+            type leafref {
+              path "../../nfv:virtual-storage-desc";
+            }
+          }
+          description
+            "The key indicates the boot index (lowest index defines
+             highest boot priority). The Value references a descriptor
+             from which a valid boot device is created e.g.
+             VirtualStorageDesc from which a VirtualStorage instance
+             is created.
+
+             Editor's note: The boot-order node requires further
+             study.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.2, Vdu information
+             element.";
+        }
+        leaf sw-image-desc {
+          type leafref {
+            path "../../sw-image-desc/id";
+          }
+          description
+            "Describes the software image which is directly loaded on
+             the virtualisation container realising this Vdu.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.2, Vdu information
+             element.";
+        }
+        leaf-list nfvi-constraint {
+          type string;
+          description
+            "Describes constraints on the NFVI for the VNFC
+             instance(s) created from this Vdu. For example, aspects
+             of a secure hosting environment for the VNFC instance
+             that involve additional entities or processes.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.2, VDU Information
+             element.";
+        }
+        list monitoring-parameter {
+          key "id";
+          leaf id {
+            type string;
+            description
+              "Unique identifier of the monitoring parameter.";
+            reference
+              "GS NFV IFA011: Section 7.1.11.3, MonitoringParameter
+               information element.";
+          }
+          uses common:monitoring-parameter;
+        }
+        list configurable-properties {
+          key "key";
+          leaf key {
+            type string;
+          }
+          leaf value {
+            type string;
+          }
+          description
+            "It provides VNFC configurable properties that can be
+             modified using the ModifyVnfInfo operation.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.7,
+             VnfcConfigurableProperties Information element.";
+        }
+        list boot-data {
+          key "key";
+          leaf key {
+            type string;
+          }
+          leaf value {
+            type string;
+          }
+          description
+            "Contains a string or a URL to a file contained in the
+             VNF package used to customize a virtualised compute
+             resource at boot time. The bootData may contain variable
+             parts that are replaced by deployment specific values
+             before being sent to the VIM.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.7,
+             VnfcConfigurableProperties Information element.";
+        }
+      }
+
+      list virtual-compute-descriptor {
+        key "id";
+        description
+          "Defines descriptors of virtual compute resources to be
+           used by the VNF.";
+        leaf id {
+          type string;
+          description
+            "Unique identifier of this VirtualComputeDesc in the
+             VNFD.";
+          reference
+            "GS NFV IFA011: Section 7.1.9.2, Information elements
+             related to Virtual CPU.";
+        }
+
+        list logical-node {
+          key "id";
+
+          leaf id {
+            type string;
+            description
+              "Identifies this set of logical node requirements.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.6, LogicalNodeRequirements
+               Information elements.";
+          }
+
+          list requirement-detail {
+            key "key";
+
+            leaf key {
+              type string;
+            }
+            leaf value {
+              type string;
+            }
+            description
+              "The logical node-level compute, memory and I/O
+               requirements. An array of key-value pairs that
+               articulate the deployment requirements.
+
+               This could include the number of CPU cores on this
+               logical node, a memory configuration specific to a
+               logical node (e.g. such as available in the Linux
+               kernel via the libnuma library) or a requirement
+               related to the association of an I/O device with the
+               logical node.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.6, LogicalNodeRequirements
+               information element.";
+          }
+          description
+            "The logical node requirements.";
+          reference
+            "GS NFV IFA011: Section 7.1.9.2, VirtualComputeDesc
+             information element.";
+        }
+
+        list request-additional-capability {
+          key "name";
+          leaf name {
+            type string;
+            description
+              "Identifies a requested additional capability for the
+               VDU. ETSI GS NFV-IFA 002 [i.1] describes acceleration
+               capabilities.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.5,
+               RequestedAdditionalCapabilityData Information
+               element.";
+          }
+          leaf support-mandatory {
+            type boolean;
+            description
+              "Indicates whether the requested additional capability
+               is mandatory for successful operation.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.5,
+               RequestedAdditionalCapabilityData Information
+               element.";
+          }
+
+          leaf min-version {
+            type string;
+            description
+              "Identifies the minimum version of the requested
+               additional capability.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.5,
+               RequestedAdditionalCapabilityData Information
+               element.";
+          }
+
+          leaf preferred-version {
+            type string;
+            description
+              "Identifies the preferred version of the requested
+               additional capability.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.5, 
+               RequestedAdditionalCapabilityData Information
+               element.";
+          }
+          list target-performance-parameters {
+            key "key";
+            leaf key {
+              type string;
+            }
+            leaf value {
+              type string;
+            }
+            description
+              "Identifies specific attributes, dependent on the 
+               requested additional capability type.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.5, 
+               RequestedAdditionalCapabilityData Information
+               element.";
+          }
+        }
+
+        leaf compute-requirements {
+          type string;
+          description
+            "Specifies compute requirements.";
+          reference
+            "GS NFV IFA011: Section 7.1.9.2.2, VirtualComputeDesc
+             Information element.";
+        }
+
+        container virtual-memory {
+          leaf size {
+            type decimal64 {
+              fraction-digits 1;
+              range "0..max";
+            }
+            units "Gb";
+            mandatory true;
+            description
+              "Amount of virtual memory in MB.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.3, Information elements
+               related to Virtual Memory.";
+          }
+          leaf over-subscription-policy {
+            type string;
+            description
+              "The memory core oversubscription policy in terms of
+               virtual memory to physical memory on the platform.
+               The cardinality can be 0 during the allocation
+               request, if no particular value is requested.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.3, Information elements
+               related to Virtual Memory.";
+          }
+          list vdu-mem-requirements {
+            key "key";
+            leaf key {
+              type string;
+            }
+            leaf value {
+              type string;
+            }
+            description
+              "Array of key-value pair requirements on the memory for
+               the VDU.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.3.2, VirtualMemoryData
+               information element.";
+          }
+
+          leaf numa-enabled {
+            type boolean;
+            description
+              "It specifies the memory allocation to be cognisant of
+               the relevant process/core allocation. The cardinality
+               can be 0 during the allocation request, if no
+               particular value is requested.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.3, Information elements
+               related to Virtual Memory.";
+          }
+          description
+            "The virtual memory of the virtualised compute.";
+          reference
+            "GS NFV IFA011: Section 7.1.9.2.2, VirtualComputeDesc
+             Information element.";
+        }
+        container virtual-cpu {
+          description
+            "The virtual CPU(s)of the virtualised compute.";
+          reference
+            "GS NFV IFA011: Section 7.1.9.2.2, VirtualComputeDesc
+             Information element.";
+
+          leaf cpu-architecture {
+            type string;
+            description
+              "CPU architecture type. Examples are x86, ARM. The
+               cardinality can be 0 during the allocation request,
+               if no particular CPU architecture type is requested.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.2.3, VirtualCpuData
+               information elements.";
+          }
+          leaf num-virtual-cpu {
+            type uint16 {
+              range "1..max";
+            }
+            mandatory true;
+            description
+              "Number of virtual CPUs.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.2.3, VirtualCpuData
+               information elements.";
+          }
+          leaf clock {
+            type uint32;
+            units "MHz";
+            description
+              "Minimum virtual CPU clock rate (e.g. in MHz). The
+               cardinality can be 0 during the allocation request,
+               if no particular value is requested.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.2.3, VirtualCpuData
+               information elements.";
+          }
+          leaf oversubscription-policy {
+            type string;
+            description
+              "The CPU core oversubscription policy e.g. the relation
+               of virtual CPU cores to physical CPU cores/threads.
+               The cardinality can be 0 during the allocation request,
+               if no particular value is requested.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.2.3, VirtualCpuData
+               information elements.";
+          }
+          list vdu-cpu-requirements {
+            key "key";
+            leaf key {
+              type string;
+            }
+            leaf value {
+              type string;
+            }
+            description
+              "Array of key-value pair requirements on the compute
+               (CPU) for the VDU.";
+            reference
+              "GS NFV IFA011: Section 7.1.9.3.2, VirtualCpuData
+               information element.";
+          }
+          container virtual-cpu-pinning {
+            presence "Set to specify CPU pinning.";
+            leaf cpu-pinning-policy {
+              mandatory true;
+              type enumeration {
+                enum "static";
+                enum "dynamic";
+              }
+              description
+                "Indicates the policy for CPU pinning. The policy can
+                 take values of 'static' or 'dynamic'. The cardinality
+                 can be 0 during the allocation request, if no
+                 particular value is requested.";
+            }
+            container cpu-pinning-map {
+              when "../nfv:cpu-pinning-policy = 'static'";
+            }
+            description
+              "If cpuPinningPolicy is defined as 'static', the
+               cpuPinningMap provides the map of pinning virtual
+               CPU cores to physical CPU cores/threads. Cardinality
+               is 0 if cpuPinningPolicy has a different value than
+               'static'.";
+          }
+        }
+      }
+
+      list virtual-storage-descriptor {
+        key "id";
+        description
+          "Storage requirements for a Virtual Storage instance
+           attached to the VNFC created from this VDU";
+        leaf id {
+          type string;
+          description
+            "Unique identifier of this VirtualStorageDesc in the
+             VNFD.";
+          reference
+            "GS NFV IFA011: Section 7.1.9.4, Information elements
+             related to Virtual Storage.";
+        }
+
+        leaf type-of-storage {
+          // Needed to be able to onboard images
+          type enumeration {
+            enum "root";
+            enum "swap";
+            enum "ephemeral";
+          }
+          mandatory true;
+          description
+            "Type of virtualised storage resource (e.g. volume,
+             object).";
+          reference
+            "GS NFV IFA011: Section 7.1.9.4, Information elements
+             related to Virtual Storage.";
+        }
+        leaf size-of-storage {
+          type uint64;
+          units "Gb";
+          mandatory true;
+          description
+            "Size of virtualised storage resource (e.g. size of
+             volume, in Gb)";
+          reference
+            "GS NFV IFA011: Section 7.1.9.4, Information elements
+             related to Virtual Storage.";
+        }
+        list vdu-storage-requirements {
+          key "key";
+          leaf key {
+            type string;
+          }
+          leaf value {
+            type string;
+          }
+          description
+            "Array of key-value pairs that articulate the storage
+             deployment requirements.";
+          reference
+            "GS NFV IFA011: Section 7.1.9.4.2, VirtualStorageDesc
+             information element.";
+        }
+        leaf rdma-enabled {
+          type boolean;
+          description
+            "Indicate if the storage support RDMA.";
+          reference
+            "GS NFV IFA011: Section 7.1.9.4, Information elements
+             related to Virtual Storage.";
+        }
+        leaf sw-image-desc {
+          type leafref {
+            path "../../sw-image-desc/id";
+          }
+          must "../nfv:size-of-storage >=" +
+            "../../nfv:sw-image-desc[id=current()]/min-disk" {
+          }
+          description
+            "Software image to be loaded on the VirtualStorage
+             resource created based on this VirtualStorageDesc.";
+          reference
+            "GS NFV IFA011: Section 7.1.9.4, Information elements
+             related to Virtual Storage.";
+        }
+      }
+
+      list sw-image-desc {
+        key "id";
+        description
+          "Defines descriptors of software images to be used by the
+           VNF.";
+        reference
+          "GS NFV IFA011: Section 7.1.2, VNFD Information element.";
+        leaf id {
+          type string;
+          description
+            "The identifier of this software image.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.5, SwImageDesc
+             information element";
+        }
+        leaf name {
+          type string;
+          description
+            "The name of this software image.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.5 SwImageDesc
+             information element.";
+        }
+        leaf version {
+          type string;
+          description
+            "The version of this software image.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.5 SwImageDesc
+             information element.";
+        }
+        leaf checksum {
+          type string;
+          description
+            "The checksum of the software image file.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.5 SwImageDesc
+             information element.";
+        }
+        leaf container-format {
+          mandatory true;
+          type enumeration {
+            enum "aki" {
+              description
+                "An Amazon kernel image.";
+            }
+            enum "ami" {
+              description
+                "An Amazon machine image.";
+            }
+            enum "ari" {
+              description
+                "An Amazon ramdisk image.";
+            }
+            enum "bare" {
+              description
+                "The image does not have a container or metadata
+                 envelope.";
+            }
+            enum "docker" {
+              description
+                "A docker container format.";
+            }
+            enum "ova" {
+              description
+                "An OVF package in a tarfile.";
+            }
+            enum "ovf" {
+              description
+                "The OVF container format.";
+            }
+          }
+          description
+            "The container format describes the container file
+             format in which software image is provided.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.5 SwImageDesc
+             information element.";
+        }
+        leaf disk-format {
+          mandatory true;
+          type enumeration {
+            enum "aki" {
+              description
+                "An Amazon kernel image.";
+            }
+            enum "ami" {
+              description
+                "An Amazon machine image.";
+            }
+            enum "ari" {
+              description
+                "An Amazon ramdisk image.";
+            }
+            enum "iso" {
+              description
+                "An archive format for the data contents of an
+                 disk, such as CD-ROM.";
+            }
+            enum "qcow2" {
+              description
+                "Supported by the QEMU emulator that can expand
+                 dynamically and supports Copy on Write.";
+            }
+            enum "raw" {
+              description
+                "An unstructured disk image format; if you have a
+                 file without an extension it is possibly a raw
+                 format.";
+            }
+            enum "vdi" {
+              description
+                "Supported by VirtualBox virtual machine monitor
+                 and the QEMU emulator.";
+            }
+            enum "vhd" {
+              description
+                "The VHD disk format, a common disk format used by
+                 virtual machine monitors from VMware, Xen,
+                 Microsoft, VirtualBox, and others.";
+            }
+            enum "vhdx" {
+              description
+                "The VHDX disk format, an enhanced version of the
+                 VHD format, which supports larger disk sizes among
+                 other features.";
+            }
+            enum "vmdk" {
+              description
+                "Common disk format supported by many common virtual
+                 machine monitors.";
+            }
+          }
+          description
+            "The disk format of a software image is the format of
+             the underlying disk image.";
+        }
+        leaf min-disk {
+          type uint64;
+          units "Gb";
+          default 0;
+          description
+            "The minimal disk size requirement for this software
+             image. The value of the 'size of storage' attribute
+             of the VirtualStorageDesc referencing this
+             SwImageDesc shall not be smaller than the value of
+             minDisk.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.5, SwImageDesc
+             information element.";
+        }
+        leaf min-ram {
+          type decimal64 {
+            fraction-digits 1;
+            range "0..max";
+          }
+          units "Gb";
+          default 0;
+          description
+            "The minimal RAM requirement for this software image.
+             The value of the 'size' attribute of
+             VirtualMemoryData of the Vdu referencing this
+             SwImageDesc shall not be smaller than the value of
+             minRam.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.5, SwImageDesc
+             information element.";
+        }
+        leaf size {
+          type uint64;
+          units "Gb";
+          description
+            "The size of this software image.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.5, SwImageDesc
+             information element.";
+        }
+        leaf image {
+          mandatory true;
+          type inet:uri;
+          description
+            "This is a reference to the actual software image.
+             The reference can be relative to the root of the VNF
+             Package or can be a URL";
+          reference
+            "GS NFV IFA011: Section 7.1.6.5, SwImageDesc
+             information element.";
+        }
+        leaf operating-system {
+          type string;
+          description
+            "Identifies the operating system used in the software
+             image. This attribute may also identify if a 32 bit
+             or 64 bit software image is used.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.5, SwImageDesc
+             information element.";
+        }
+        leaf-list supported-virtualization-environment {
+          type string;
+          description
+            "Identifies the virtualisation environments
+             (e.g. hypervisor) compatible with this software
+             image.";
+          reference
+            "GS NFV IFA011: Section 7.1.6.5, SwImageDesc
+             information element.";
+        }
+      }
+
+      list int-virtual-link-desc {
+        key "id";
+        description
+          "Represents the type of network connectivity mandated by the
+           VNF provider between two or more CPs which includes at
+           least one internal CP.";
+        reference
+          "GS NFV IFA011: Section 7.1.2, Vnfd information element.";
+        leaf id {
+          type string;
+          description
+            "Unique identifier of this internal VLD in VNFD.";
+          reference
+            "GS NFV IFA011: Section 7.1.7.2, VnfVirtualLinkDesc
+             Information elements.";
+        }
+
+        list desc-flavor {
+          key "id";
+          description
+            "Describes a specific flavour of the VL with specific
+             bitrate requirements.";
+          reference
+            "GS NFV IFA011: Section 7.1.7.2, VnfVirtualLinkDesc
+             Information elements.";
+
+          leaf id {
+            type string;
+            description
+              "Identifies a flavour within a VnfVirtualLinkDesc.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.5, VirtualLinkDescFlavor
+               information element.";
+          }
+          container qos {
+            description
+              "QoS of the VL.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.5, VirtualLinkDescFlavor
+               information element.";
+
+            leaf latency {
+              type uint32;
+              units "ms";
+              mandatory true;
+              description
+                "Specifies the maximum latency in ms.";
+              reference
+                "GS NFV IFA011: Section 7.1.8.10, QoS information
+                 element.";
+            }
+
+            leaf packet-delay-variation {
+              type uint32;
+              units "ms";
+              mandatory true;
+              description
+                "Specifies the maximum jitter in ms.";
+              reference
+                "GS NFV IFA011: Section 7.1.8.10, QoS information
+                 element.";
+            }
+
+            leaf packet-loss-ratio {
+              type decimal64 {
+                fraction-digits "2";
+                range "0..1.00";
+              }
+              description
+                "Specifies the maximum packet loss ratio.";
+              reference
+                "GS NFV IFA011: Section 7.1.8.10, QoS information
+                 element.";
+            }
+          }
+        }
+
+        uses common:connectivity-type;
+
+        leaf-list test-access {
+          type string;
+          description
+            "Specifies test access facilities expected on the VL
+             (e.g. none, passive monitoring, or active (intrusive)
+             loopbacks at endpoints.";
+          reference
+            "GS NFV IFA011: Section 7.1.7.2, VnfVirtualLinkDesc
+             information element.";
+        }
+        leaf description {
+          type string;
+          description
+            "Provides human-readable information on the purpose of
+             the VL (e.g. control plane traffic).";
+          reference
+            "GS NFV IFA011: Section 7.1.7.2, VnfVirtualLinkDesc
+             information element.";
+        }
+        list monitoring-parameters {
+          key "id";
+          leaf id {
+            type string;
+            description
+              "Unique identifier of the monitoring parameter.";
+          reference
+            "GS NFV IFA011: Section 7.1.11.3, MonitoringParameter
+             information element.";
+          }
+          uses common:monitoring-parameter;
+        }
+      }
+
+      list ext-cpd {
+        key "id";
+        min-elements 1;
+
+        description
+          "Describes an external interface exposed by this VNF enabling
+           connection with a Virual Link";
+        reference
+          "GS NFV IFA011: Section 7.1.2, VNFD information element.";
+
+        leaf int-virtual-link-desc {
+          description
+            "Reference to the internal Virtual Link Descriptor (VLD)
+             to which CPs instantiated from this external CP
+             Descriptor (CPD) connect. Either intVirtualLinkDesc or
+             intCpd shall be present.";
+          type leafref {
+            path "../../nfv:int-virtual-link-desc/nfv:id";
+          }
+        }
+        /*
+          intCpd
+          we reference from the VDU's CP to the ext-CP instead of the
+          ext-CP to the VDU's CP.
+        */
+        uses virtual-network-interface-requirements;
+        uses cpd;
+      }
+
+      list df {
+        must "nfv:default-instantiation-level or " +
+             "count(nfv:instantiation-level) = 1";
+        key "id";
+        min-elements 1;
+        description
+          "Describes a specific Deployment Flavour (DF) of a VNF with
+           specific requirements for capacity and performance.";
+        reference
+          "GS NFV IFA011: Section 7.1.2, VNFD information element.";
+        leaf id {
+          type string;
+          description
+            "Identifier of this DF within the VNFD.";
+          reference
+            "GS NFV IFA011: Section 7.1.8, Information elements
+             to the DeploymentFlavor.";
+        }
+        leaf description {
+          type string;
+          description
+            "Human readable description of the deployment flavor";
+          reference
+            "GS NFV IFA011: Section 7.1.8, Information elements
+             to the DeploymentFlavor.";
+        }
+        list vdu-profile {
+          key "id";
+          min-elements 1;
+          description
+            "The Vduprofile describes additional instantiation data for
+             a given VDU used in a deployment flavour.";
+          reference
+            "GS NFV IFA011: Section 7.1.8, Information elements
+             to the DeploymentFlavor.";
+          leaf id {
+            type leafref {
+              path "../../../nfv:vdu/nfv:id";
+            }
+            reference
+              "GS NFV IFA011: Section 7.1.8.3, VduProfile information
+               element.";
+          }
+          leaf min-number-of-instances {
+            type uint16;
+            mandatory true;
+            description
+              "Minimum number of instances of the VNFC based on this
+               VDU that is permitted to exist for this flavour.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.3, VduProfile information
+               element.";
+          }
+          leaf max-number-of-instances {
+            type uint16;
+            mandatory true;
+            must ". >= ../nfv:min-number-of-instances";
+            reference
+              "GS NFV IFA011: Section 7.1.8.3, VduProfile information
+               element.";
+          }
+          uses common:local-affinity-or-anti-affinity-rule;
+          list affinity-or-anti-affinity-group {
+            key "id";
+            description
+              "Identifier(s) of the affinity or anti-affinity
+               group(s) the VDU belongs to.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.3, VduProfile information
+               element.";
+            leaf id {
+              type leafref {
+                path "../../../" +
+                     "nfv:affinity-or-anti-affinity-group/" +
+                     "nfv:id";
+              }
+              description
+                "Identifies an affinity or anti-affinity group to
+                  which the affinity or anti-affinity rule applies.";
+              reference
+                "GS NFV IFA011: Section 7.1.8.12, AffinityOrAntiAffinity
+                 information element.";
+            }
+            leaf type {
+              type enumeration {
+                enum affinity;
+                enum anti-affinity;
+              }
+              description
+                "Specifies whether the rule is an affinity rule or an
+                 anti-affinity rule.";
+              reference
+                "GS NFV IFA011: Section 7.1.8.12, AffinityOrAntiAffinity
+                 information element.";
+            }
+            leaf scope {
+              type common:affinity-scope;
+              description
+                "Specifies the scope of the rule, possible values are
+                 'NFVI-PoP', 'Zone', 'ZoneGroup', 'NFVI-node'";
+              reference
+                "GS NFV IFA011: Section 7.1.8.12, AffinityOrAntiAffinity
+                 information element.";
+            }
+          }
+        }
+        list virtual-link-profile {
+          key "id flavor";
+          description
+            "Defines the internal VLD along with additional data which
+             is used in this DF.";
+          reference
+            "GS NFV IFA011: Section 7.1.8.2, VnfDf information
+             element.";
+
+          leaf id {
+            type leafref {
+              path "../../../nfv:int-virtual-link-desc/nfv:id";
+            }
+            description
+              "Uniquely identifies a Vnf VLD.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.4, VirtualLinkProfile
+               information element.";
+          }
+          leaf flavor {
+            type leafref {
+              path "deref(../../../ext-cpd/int-virtual-link-desc)" +
+                   "/../desc-flavor/id";
+            }
+            description
+              "Identifies a flavour within the VnfVirtualLinkDesc.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.4, VirtualLinkProfile
+               information element.";
+          }
+          uses common:local-affinity-or-anti-affinity-rule;
+          list affinity-or-anti-affinity-group {
+            key "id";
+            leaf id {
+              type leafref {
+                path "../../../" +
+                     "nfv:affinity-or-anti-affinity-group/" +
+                     "nfv:id";
+              }
+            }
+            description
+              "Identifier(s) of the affinity or anti-affinity
+               group(s) the VnfVirtualLinkDesc belongs to.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.4, VirtualLinkProfile
+               information element.";
+          }
+        }
+        list instantiation-level {
+          key "id";
+          min-elements 1;
+          description
+            "Describes the various levels of resources that can be
+             used to instantiate the VNF using this flavour.
+             Examples: Small, Medium, Large. If there is only one
+             'instantiationLevel' entry, it shall be treated as the
+             default instantiation level for this DF.
+
+             The InstantiationLevel information element describes a
+             given level of resources to be instantiated within a
+             deployment flavour in term of the number of VNFC instances
+             to be created from each VDU.
+             All the VDUs referenced in the level shall be part of the
+             corresponding deployment flavour and their number shall
+             be within the range (min/max) for this deployment flavour.";
+          reference
+            "GS NFV IFA011: Section 7.1.8.2 VnfDf information element";
+          leaf id {
+            type string;
+            description
+              "Uniquely identifies a level with the DF.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.7 InstantiationLevel
+               information element";
+          }
+          leaf description {
+            type string;
+            description
+              "Human readable description of the instantiation level";
+            reference
+              "GS NFV IFA011: Section 7.1.8.7 InstantiationLevel
+               information element";
+          }
+          list vdu-level {
+            key "id";
+            min-elements 1;
+            description
+              "Sets the number of instances for the VDU in this
+               instantiation level.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.7 InstantiationLevel
+               information element";
+            leaf id {
+              type leafref {
+                path "../../../../nfv:vdu/nfv:id";
+              }
+              description
+                "Uniquely identifies a VDU.";
+              reference
+                "GS NFV IFA011: Section 7.1.8.9 VduLevel information
+                 element";
+            }
+            leaf number-of-instances {
+              type uint16;
+              must ". <= ../../../../nfv:df/" +
+                   "nfv:vdu-profile[id=current()/../nfv:id]/" +
+                   "nfv:max-number-of-instances";
+              must ". >= ../../../../nfv:df/" +
+                   "nfv:vdu-profile[id=current()/../nfv:id]/" +
+                   "nfv:min-number-of-instances";
+              mandatory true;
+              description
+                "Number of instances of VNFC based on this VDU to
+                 deploy for this level.";
+              reference
+                "GS NFV IFA011: Section 7.1.8.9 VduLevel information
+                 element";
+            }
+          }
+          list scaling-info {
+            key "id";
+            description
+              "The InstantiationLevel information element describes a
+               given level of resources to be instantiated within a
+               DF in term of the number of VNFC instances to be 
+               created from each VDU.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.7 InstantiationLevel
+               information element";
+            leaf id {
+              type leafref {
+                path "../../../nfv:scaling-aspect/nfv:id";
+              }
+              description
+                "Identifier of the scaling aspect.";
+              reference
+                "GS NFV IFA011: Section 7.1.8.8 ScaleInfo information
+                 element";
+            }
+            leaf scale-level {
+              type uint32;
+              description
+                "The scale level, greater than or equal to 0.";
+              reference
+                "GS NFV IFA011: Section 7.1.8.8 ScaleInfo information
+                 element";
+            }
+          }
+        }
+        leaf default-instantiation-level {
+          type leafref {
+            path "../nfv:instantiation-level/nfv:id";
+          }
+          description
+            "This attribute references the 'instantiationLevel'
+             entry which defines the default instantiation level for
+             this DF. It shall be present if there are multiple
+             'instantiationLevel' entries.";
+          reference
+            "GS NFV IFA011: Section 7.1.8.2 VnfDf information
+                 element";
+        }
+        leaf-list supported-operation {
+          type identityref {
+            base common:supported-operation;
+          }
+          description
+            "Indicates which operations are available for this DF via
+             the VNF LCM interface. Instantiate VNF, Query VNF and
+             Terminate VNF are supported in all DF and therefore
+             need not be included in this list.";
+          reference
+            "GS NFV IFA011: Section 7.1.8.2 VnfDf information
+                 element";
+        }
+        container lcm-operations-configuration {
+          description
+            "This information element is a container for all
+             attributes that affect the invocation of the VNF
+             Lifecycle Management operations, structured by
+             operation.";
+          reference
+            "GS NFV IFA011: Section 7.1.8.2 VnfDf information
+             element";
+
+          leaf instantiate-vnf-op-config {
+            type string;
+            description
+              "Configuration parameters for the InstantiateVnf
+               operation.";
+            reference
+              "GS NFV IFA011: Section 7.1.5.2
+               VnfLcmOperationsConfiguration information element";
+          }
+          container scale-vnf-op-config {
+            description
+              "Configuration parameters for the ScaleVnf operation.";
+            reference
+              "GS NFV IFA011: Section 7.1.5.2
+               VnfLcmOperationsConfiguration information element";
+
+            list parameter {
+              key "key";
+              leaf key {
+                type string;
+              }
+              leaf value {
+                type string;
+              }
+              description
+                "VNF-specific parameter to be passed when invoking
+                 the ScaleVnf operation.";
+              reference
+                "GS NFV IFA011: Section 7.1.5.4 ScaleVnfOpConfig
+                 information element";
+            }
+            leaf scaling-by-more-than-one-step-supported {
+              type boolean;
+              default false;
+              description
+                "Signals whether passing a value larger than one in
+                 the numScalingSteps parameter of the ScaleVnf
+                 operation is supported by this VNF.
+                 Default is FALSE, i.e. 'not supported'.";
+              reference
+                "GS NFV IFA011: Section 7.1.5.4
+                 ScaleVnfOpConfig information element";
+            }
+          }
+          container scale-vnf-to-level-op-config {
+            description
+              "This information element defines attributes that
+               affect the invocation of the ScaleVnfToLevel
+               operation.";
+            reference
+              "GS NFV IFA011: Section 7.1.5.2
+               VnfLcmOperationsConfiguration information element";
+
+            list parameter {
+              key "key";
+              leaf key {
+                type string;
+              }
+              leaf value {
+                type string;
+              }
+              description
+                "VNF-specific parameter to be passed when invoking
+                 the ScaleVnfToLevel operation.";
+              reference
+                "GS NFV IFA011: Section 7.1.5.5
+                 ScaleVnfToLevelOpConfig information element";
+            }
+            leaf arbitrary-target-levels-supported {
+              type boolean;
+              description
+                "Signals whether scaling according to the parameter
+                 'scaleInfo' is supported by this VNF.";
+              reference
+                "GS NFV IFA011: Section 7.1.5.5
+                 ScaleVnfToLevelOpConfig information element";
+            }
+          }
+          container heal-vnf-op-config {
+            description
+              "This information element defines attributes that
+               affect the invocation of the HealVnf operation.";
+            reference
+              "GS NFV IFA011: Section 7.1.5.2
+               VnfLcmOperationsConfiguration information element";
+
+            leaf parameter {
+              type string;
+              description
+                "VNF-specific parameter to be passed when invoking
+                 the HealVnf operation.";
+              reference
+                "GS NFV IFA011: Section 7.1.5.6 HealVnfOpConfig
+                 information element";
+            }
+            leaf cause {
+              type string;
+              description
+                "Supported 'cause' parameter values.";
+              reference
+                "GS NFV IFA011: Section 7.1.5.6 HealVnfOpConfig
+                 information element";
+            }
+          }
+          container terminate-vnf-op-config {
+            description
+              "This information element defines attributes that
+               affect the invocation of the TerminateVnf operation.";
+            reference
+              "GS NFV IFA011: Section 7.1.5.2
+               VnfLcmOperationsConfiguration information element";
+            leaf min-graceful-termination {
+              type yang:timeticks;
+              description
+                "Minimum timeout value for graceful termination of
+                 a VNF instance.";
+              reference
+                "GS NFV IFA011: Section 7.1.5.7
+                 TerminateVnfOpConfig information element";
+            }
+            leaf max-recommended-graceful-termination {
+              type yang:timeticks;
+              description
+                "Maximum recommended timeout value that can be needed
+                 to gracefully terminate a VNF instance of a
+                 particular type under certain conditions, such as
+                 maximum load condition. This is provided by VNF
+                 provider as information for the operator
+                 facilitating the selection of optimal timeout value.
+                 This value is not used as constraint.";
+              reference
+                "GS NFV IFA011: Section 7.1.5.7
+                 TerminateVnfOpConfig information element";
+            }
+          }
+          container operate-vnf-op-config {
+            description
+              "This information element defines attributes that 
+               affect the invocation of the OperateVnf operation.";
+            reference
+              "GS NFV IFA011: Section 7.1.5.2
+               VnfLcmOperationsConfiguration information element";
+
+            leaf min-graceful-stop-timeout {
+              type yang:timeticks;
+              description
+                "Minimum timeout value for graceful stop of a VNF
+                 instance.";
+              reference
+                "GS NFV IFA011: Section 7.1.5.8
+                 OperateVnfOpConfig information element";
+            }
+            leaf max-recommended-graceful-stop-timeout {
+              type yang:timeticks;
+              description
+                "Maximum recommended timeout value that can be 
+                 needed to gracefully stop a VNF instance of a
+                 particular type under certain conditions, such as
+                 maximum load condition. This is provided by VNF
+                 provider as information for the operator facilitating
+                 the selection of optimal timeout value. This value
+                 is not used as constraint.";
+              reference
+                "GS NFV IFA011: Section 7.1.5.8
+                 OperateVnfOpConfig information element";
+            }
+          }
+        }
+        list affinity-or-anti-affinity-group {
+          key "id";
+          description
+            "The AffinityOrAntiAffinityGroup describes the affinity
+             or anti-affinity relationship applicable between the
+             virtualization containers to be created based on
+             different VDUs, or between internal VLs to be created
+             based on different VnfVirtualLinkDesc(s).
+
+             Per VNF, the affinity/anti-affinity rules defined using
+             this information element, using the
+             LocalAffinityOrAntiAffinityRule information element, and
+             using the placement constraints in the
+             GrantLifecycleOperation as defined in ETSI GS NFV-IFA
+             007 [i.3] should be conflict-free. In case of conflicts,
+             the placement constraints in the
+             GrantLifecycleOperation shall take precedence.";
+
+          reference
+            "GS NFV IFA011: Section 7.1.8.2 VnfDf information
+             element";
+
+          leaf id {
+            type string;
+            description
+              "Identifies an affinity or anti-affinity group to which
+               the affinity or anti-affinity rule applies.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.12
+               AffinityOrAntiAffinityGroup information element";
+          }
+
+          leaf type {
+            mandatory true;
+            type common:affinity-type;
+            description
+              "Specifies whether the rule is an affinity rule or an
+               anti-affinity rule.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.12
+               AffinityOrAntiAffinityGroup information element";
+          }
+
+          leaf scope {
+            mandatory true;
+            type common:affinity-scope;
+            description
+              "Specifies the scope of the rule, possible values are
+               'NFVI-PoP', 'Zone', 'ZoneGroup', 'NFVI-node'.";
+            reference
+              "GS NFV IFA011: Section 7.1.8.12
+               AffinityOrAntiAffinityGroup information element";
+          }
+        }
+        list monitoring-parameter {
+          key "id";
+
+          description
+            "Defines the virtualised resources monitoring parameters
+             on VNF level.";
+          reference
+            "GS NFV IFA011: Section 7.1.8.2 VnfDf information
+             element";
+
+          leaf id {
+            type string;
+            description
+              "Unique identifier of the monitoring parameter.";
+            reference
+              "GS NFV IFA011: Section 7.1.11.3 MonitoringParameter
+               information element";
+          }
+          uses common:monitoring-parameter;
+        }
+
+        list scaling-aspect {
+          key "id";
+
+          description
+            "The scaling aspects supported by this DF of the VNF.
+             scalingAspect shall be present if the VNF supports
+             scaling.";
+          reference
+            "GS NFV IFA011: Section 7.1.8.2 VnfDf information
+             element";
+
+          leaf id {
+            type string;
+            description
+              "Unique identifier of this aspect in the VNFD.";
+            reference
+              "GS NFV IFA011: Section 7.1.10.2 ScalingAspect
+               information element";
+          }
+          leaf name {
+            type string;
+            description
+              "Human readable name of the aspect.";
+            reference
+              "GS NFV IFA011: Section 7.1.10.2 ScalingAspect
+               information element";
+          }
+          leaf description {
+            type string;
+            description
+              "Human readable description of the aspect.";
+            reference
+              "GS NFV IFA011: Section 7.1.10.2 ScalingAspect
+               information element";
+          }
+          leaf max-scale-level {
+            type uint32 {
+              range "1..max";
+            }
+            description
+              "The maximum scaleLevel for total number of scaling
+               steps that can be applied w.r.t. this aspect. The
+               value of this attribute corresponds to the number of
+               scaling steps can be applied to this aspect when
+               scaling it from the minimum scale level (i.e. 0) to the
+               maximum scale level defined by this attribute.";
+            reference
+              "GS NFV IFA011: Section 7.1.10.2 ScalingAspect
+               information element";
+          }
+
+          container aspect-delta-details {
+            list deltas {
+              key "id";
+              min-elements 1;
+
+              leaf id {
+                type string;
+                description
+                  "Identifier of this scaling delta.";
+                reference
+                  "GS NFV IFA011: Section 7.1.10.4 ScalingDelta
+                   information element";
+              }
+
+              list vdu-delta {
+                key "id";
+
+                leaf id {
+                  type leafref {
+                    path "/nfv/vnfd/vdu/id";
+                  }
+                  description
+                    "Uniquely identifies a VDU.";
+                  reference
+                    "GS NFV IFA011: Section 7.1.8.9 VduLevel
+                     information element";
+                }
+
+                leaf number-of-instances {
+                  type uint32 {
+                    range "0..max";
+                  }
+                  description
+                    "Number of instances of VNFC based on this VDU to
+                     deploy for an instantiation level or for a
+                     scaling delta. Shall be zero or greater.";
+                  reference
+                    "GS NFV IFA011: Section 7.1.8.9 VduLevel
+                     information element";
+                }
+                description
+                  "The number of VNFC instances based on particular
+                   VDUs to be created or removed.";
+                reference
+                  "GS NFV IFA011: Section 7.1.10.4 ScalingDelta
+                   information element";
+              }
+
+              list virtual-link-bit-rate-delta {
+                key "id";
+
+                leaf id {
+                  type string;
+                  description
+                    "Uniquely identifies a VnfVirtualLinkDesc.";
+                  reference
+                    "GS NFV IFA011: Section 7.1.10.5
+                     VirtualLinkBitRateLevel information element";
+                }
+
+                container bit-rate-requirements {
+                  leaf root {
+                    type uint32;
+                    units bits/sec;
+                    mandatory true;
+                    description
+                      "Throughput requirement of the link (e.g.
+                       bitrate of E-Line, root bitrate of E-Tree,
+                       aggregate capacity of E-LAN).";
+                    reference
+                      "GS NFV IFA011: Section 7.1.8.6
+                       LinkBitrateRequirements information element";
+                  }
+
+                  leaf leaf {
+                    type uint32;
+                    units bits/sec;
+                    description
+                      "Throughput requirement of leaf connections to
+                       the link when applicable to the connectivity
+                       type (e.g. for E-Tree and E-LAN branches).";
+                    reference
+                      "GS NFV IFA011: Section 7.1.8.6
+                       LinkBitrateRequirements information element";
+                  }
+                  description
+                    "Bitrate requirements for an instantiation level
+                     or bitrate delta for a scaling step.";
+                  reference
+                    "GS NFV IFA011: Section 7.1.10.5
+                     VirtualLinkBitRateLevel information element";
+                }
+                description
+                  "The bitrate to be added or removed to virtual links
+                   created from particular virtual link descriptors.";
+                reference
+                  "GS NFV IFA011: Section 7.1.10.4 ScalingDelta
+                   information element";
+              }
+              description
+                "Declares different scaling deltas, each of which is
+                 applied for one or more scaling steps of this
+                 aspect.";
+              reference
+                "GS NFV IFA011: Section 7.1.10.3 AspectDeltaDetails
+                 information element";
+            }
+
+            leaf step-deltas {
+              type leafref {
+                path "../deltas/id";
+              }
+              description
+                "Identifiers of the individual scaling deltas to be
+                 applied for the subsequent scaling steps of this
+                 aspect. The first entry in the array shall correspond
+                 to the first scaling step (between scale levels 0 to
+                 1) and the last entry in the array shall correspond
+                 to the last scaling step (between maxScaleLevel-1
+                 and maxScaleLevel).
+
+                 Each referenced scaling delta shall be declared in
+                 the 'deltas' attribute.";
+              reference
+                "GS NFV IFA011: Section 7.1.10.3 AspectDeltaDetails
+                 information element";
+            }
+            description
+              "A specification of the deltas in terms of number of
+               instances of VNFCs and virtual link bit rates that
+               correspond to the scaling steps of this aspect. A
+               cardinality of zero indicates that this mapping has to
+               be specified in a lifecycle management script or be
+               otherwise known to the VNFM. The information in this
+               attribute, if provided, shall be consistent with the
+               information provided in the 'InstantiationLevel'
+               information element. If this attribute is provided, it
+               shall be provided for all scaling aspects.";
+            reference
+              "GS NFV IFA011: Section 7.1.10.2 ScalingAspect
+               information element";
+          }
+        }
+      }
+
+      container configurable-properties {
+        description
+          "Describes the configurable properties of the VNF
+           (e.g. related to auto scaling and auto healing).";
+        reference
+          "GS NFV IFA011: Section 7.1.2 VNFD information element";
+
+        leaf auto-scalable {
+          type boolean;
+          description
+            "It permits to enable (TRUE) / disable (FALSE) the
+             auto-scaling functionality.";
+          reference
+            "GS NFV IFA011: Section 7.1.12 VnfConfigurableProperties
+             information element";
+        }
+        leaf auto-healable {
+          type boolean;
+          description
+            "It permits to enable (TRUE) / disable (FALSE) the
+             auto-healing functionality.";
+          reference
+            "GS NFV IFA011: Section 7.1.12 VnfConfigurableProperties
+             information element";
+        }
+        list additional-configurable-property {
+          key "key";
+          leaf key {
+            type string;
+          }
+          leaf value {
+            type string;
+          }
+          description
+            "It provides VNF specific configurable properties that can
+             be modified using the ModifyVnfConfiguration operation.";
+          reference
+            "GS NFV IFA011: Section 7.1.12 VnfConfigurableProperties
+             information element";
+        }
+      }
+
+      container modifiable-attributes {
+        description
+          "Describes the modifiable attributes of the VNF.";
+        reference
+          "GS NFV IFA011: Section 7.1.2 VNFD information element";
+
+        leaf-list extension {
+          type string;
+          description
+            "'Extension' attributes of VnfInfo that are writeable.";
+          reference
+            "GS NFV IFA011: Section 7.1.14 VnfInfoModifiableAttributes
+             information element";
+        }
+        leaf-list metadata {
+          type string;
+          description
+            "'Metadata' attributes of VnfInfo that are writeable.";
+          reference
+            "GS NFV IFA011: Section 7.1.14 VnfInfoModifiableAttributes
+             information element";
+        }
+      }
+
+      list lifecycle-management-script {
+        key "event";
+        description
+          "Includes a list of events and corresponding management
+           scripts performed for the VNF.";
+        reference
+          "GS NFV IFA011: Section 7.1.2 VNFD information element";
+
+        leaf event {
+          type common:internal-lifecycle-management-script-event;
+          description
+            "Describes VNF lifecycle event(s) or an external stimulus
+             detected on a VNFM reference point.";
+          reference
+            "GS NFV IFA011: Section 7.1.13 LifeCycleManagementScript
+             information element";
+        }
+        leaf lcm-transition-event {
+          type string;
+          description
+            "Describes the transition VNF lifecycle event(s) that
+             cannot be mapped to any of the enumerated values
+             defined for the event attribute.";
+          reference
+            "GS NFV IFA011: Section 7.1.13 LifeCycleManagementScript
+             information element";
+        }
+        leaf script {
+          type string;
+          description
+            "Includes a VNF LCM script (e.g. written in a DSL as
+             specified in requirement VNF_PACK.LCM.001) triggered to
+             react to one of the events listed in the event
+             attribute.";
+          reference
+            "GS NFV IFA011: Section 7.1.13 LifeCycleManagementScript
+             information element";
+        }
+        leaf script-dsl {
+          type string;
+          description
+            "Defines the domain specific language (i.e. the type) of
+             script that is provided. Types of scripts could include
+             bash, python, etc.";
+          reference
+            "GS NFV IFA011: Section 7.1.13 LifeCycleManagementScript
+             information element";
+        }
+        list script-input {
+          key "key";
+          leaf key {
+            type string;
+          }
+          leaf value {
+            type string;
+          }
+          description
+            "Array of KVP requirements with the key as the parameter
+             name and the value as the parameter that need to be
+             passed as an input to the script.";
+          reference
+            "GS NFV IFA011: Section 7.1.13 LifeCycleManagementScript
+             information element";
+        }
+      }
+
+      list element-group {
+        key "id";
+        description
+          "Describes the associated elements of a VNFD for a certain
+           purpose during VNF lifecycle management.";
+        reference
+          "GS NFV IFA011: Section 7.1.2 VNFD information element";
+
+        leaf id {
+          type string;
+          description
+            "Unique identifier of this group in the VNFD.";
+          reference
+            "GS NFV IFA011: Section 7.1.4 VnfdElementGroup
+             information element";
+        }
+        leaf description {
+          type string;
+          description
+            "Human readable description of the group.";
+          reference
+            "GS NFV IFA011: Section 7.1.4 VnfdElementGroup
+             information element";
+        }
+        leaf-list vdu {
+          type leafref {
+            path "../../nfv:vdu/nfv:id";
+          }
+          description
+            "References to Vdus that are part of this group.";
+          reference
+            "GS NFV IFA011: Section 7.1.4 VnfdElementGroup
+             information element";
+        }
+        leaf-list virtual-link-desc {
+          type leafref {
+            path "../../nfv:int-virtual-link-desc/nfv:id";
+          }
+          description
+            "References to VnfVirtualLinkDesc that are part of this
+             group.";
+          reference
+            "GS NFV IFA011: Section 7.1.4 VnfdElementGroup
+             information element";
+        }
+      }
+
+      list indicator {
+        key "id";
+        description
+          "Declares the VNF indicators that are supported by this
+           VNF.";
+        reference
+          "GS NFV IFA011: Section 7.1.2 VNFD information element";
+
+        leaf id {
+          type string;
+          description
+            "Unique identifier";
+          reference
+            "GS NFV IFA011: Section 7.1.11.2 VnfdIndicator
+             information element";
+        }
+        leaf name {
+          type string;
+          description
+            "The human readable name of the VnfIndicator.";
+          reference
+            "GS NFV IFA011: Section 7.1.11.2 VnfdIndicator
+             information element";
+        }
+        leaf-list indicator-value {
+          type string;
+          description
+            "Defines the allowed values or value ranges of this
+             indicator.";
+          reference
+            "GS NFV IFA011: Section 7.1.11.2 VnfdIndicator
+             information element";
+        }
+        leaf source {
+          type enumeration {
+            enum "vnf";
+            enum "em";
+            enum "both";
+          }
+          description
+            "Describe the source of the indicator. The possible values
+             are:
+             • VNF.
+             • EM.
+             • Both.
+             This tells the consumer where to send the subscription
+             request.";
+          reference
+            "GS NFV IFA011: Section 7.1.11.2 VnfdIndicator
+             information element";
+        }
+      }
+
+      leaf-list auto-scale {
+        type string;
+        description
+          "Rule that determines when a scaling action needs to be
+           triggered on a VNF instance e.g. based on certain VNF
+           indicator values or VNF indicator value changes or a
+           combination of VNF indicator value(s) and monitoring
+           parameter(s).";
+        reference
+          "GS NFV IFA011: Section 7.1.2 VNFD information element";
+      }
+    }
+  }
+}
