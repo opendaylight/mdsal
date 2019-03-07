@@ -221,6 +221,12 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-model-rfc8528</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
 
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
