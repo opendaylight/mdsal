@@ -657,6 +657,13 @@
                 <version>1.0.7-SNAPSHOT</version>
             </dependency>
 
+            <!-- RFC8530 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8530</artifactId>
+                <version>1.0.7-SNAPSHOT</version>
+            </dependency>
+
             <!-- draft-bierman-netconf-restconf-02 -->
             <!-- FIXME: upgrade to RFC8040 -->
             <dependency>
@@ -839,6 +846,13 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8529</artifactId>
+                <version>1.0.7-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc8530</artifactId>
                 <version>1.0.7-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
