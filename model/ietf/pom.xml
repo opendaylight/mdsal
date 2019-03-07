@@ -84,6 +84,9 @@
         <!-- RFC8529 Network Instances -->
         <module>rfc8529</module>
 
+        <!-- RFC8530 Logical Network Elements -->
+        <module>rfc8530</module>
+
         <module>ietf-packet-fields</module>
         <module>ietf-access-control-list</module>
         <module>ietf-lisp-address-types</module>
