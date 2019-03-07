@@ -304,6 +304,10 @@
             <artifactId>rfc8349-ietf-ipv6-unicast-routing</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8528</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-restconf</artifactId>
         </dependency>
@@ -646,6 +650,10 @@
                         <group>
                             <title>Java Bindings for ietf-yang-library.yang</title>
                             <packages>org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library*</packages>
+                        </group>
+                        <group>
+                            <title>Java Bindings for ietf-yang-schema-mount.yang</title>
+                            <packages>org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.schema.mount*</packages>
                         </group>
                         <group>
                             <title>Java Bindings for ietf-yang-types.yang</title>
