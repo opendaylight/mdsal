@@ -78,6 +78,12 @@
         <module>rfc8349-ietf-ipv4-unicast-routing</module>
         <module>rfc8349-ietf-ipv6-unicast-routing</module>
 
+        <!-- RFC8519 Network Access Control Lists -->
+        <module>rfc8519</module>
+        <module>rfc8519-ietf-access-control-list</module>
+        <module>rfc8519-ietf-ethertypes</module>
+        <module>rfc8519-ietf-packet-fields</module>
+
         <!-- RFC8528 YANG Schema Mount -->
         <module>rfc8528</module>
 
@@ -87,8 +93,10 @@
         <!-- RFC8530 Logical Network Elements -->
         <module>rfc8530</module>
 
+        <!-- Legacy Network Access Control Lists -->
         <module>ietf-packet-fields</module>
         <module>ietf-access-control-list</module>
+
         <module>ietf-lisp-address-types</module>
 
         <!-- Legacy IETF topology models -->

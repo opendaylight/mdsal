@@ -643,6 +643,28 @@
                 <version>1.2.7-SNAPSHOT</version>
             </dependency>
 
+            <!-- RFC8519 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8519</artifactId>
+                <version>1.0.7-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8519-ietf-access-control-list</artifactId>
+                <version>1.0.7-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8519-ietf-ethertypes</artifactId>
+                <version>1.0.7-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8519-ietf-packet-fields</artifactId>
+                <version>1.0.7-SNAPSHOT</version>
+            </dependency>
+
             <!-- RFC8528 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
@@ -833,6 +855,13 @@
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8349</artifactId>
                 <version>1.2.7-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc8519</artifactId>
+                <version>1.0.7-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
