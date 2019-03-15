@@ -84,7 +84,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
 
         // After data tree change future is finished, we can close the listener registration
         initialDataTreeChangeFuture.addListener(reg::close, MoreExecutors.directExecutor());
-        return initialDataTreeChangeFuture;
+        return FluentFuture.from(initialDataTreeChangeFuture);
     }
 
     @Override
