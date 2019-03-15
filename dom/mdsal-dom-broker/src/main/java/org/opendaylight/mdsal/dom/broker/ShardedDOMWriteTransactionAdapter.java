@@ -55,7 +55,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
 
     @Override
     public boolean cancel() {
-        LOG.debug("{}: Cancelling transaction");
+        LOG.debug("{}: Cancelling transaction", txIdentifier);
         if (finished) {
             return false;
         }
@@ -160,7 +160,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
         transactionMap.put(LogicalDatastoreType.OPERATIONAL,
                 producerMap.get(LogicalDatastoreType.OPERATIONAL).createTransaction(true));
 
-        LOG.debug("{}: Creating DOMDataTreeWriteCursors delegates");
+        LOG.debug("{}: Creating DOMDataTreeWriteCursors delegates", txIdentifier);
         cursorMap.put(LogicalDatastoreType.CONFIGURATION,
                 transactionMap.get(LogicalDatastoreType.CONFIGURATION)
                         .createCursor(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, path)));
