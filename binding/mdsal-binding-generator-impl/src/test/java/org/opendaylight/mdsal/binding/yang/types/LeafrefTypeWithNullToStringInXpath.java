@@ -11,11 +11,12 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.RevisionAwareXPath;
+import org.opendaylight.yangtools.yang.model.api.PathExpression;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
+import org.opendaylight.yangtools.yang.xpath.api.YangLocationPath;
 
 /**
  * Mock LeafrefDypeDefinition implementation with non-null referenced RevisionAwareXPath. Although RevisionAwareXPath
@@ -24,16 +25,21 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
  */
 public class LeafrefTypeWithNullToStringInXpath implements LeafrefTypeDefinition {
     @Override
-    public RevisionAwareXPath getPathStatement() {
-        return new RevisionAwareXPath() {
+    public PathExpression getPathStatement() {
+        return new PathExpression() {
             @Override
             public boolean isAbsolute() {
                 return false;
             }
 
             @Override
-            public String toString() {
+            public String getOriginalString() {
                 return null;
+            }
+
+            @Override
+            public YangLocationPath getLocation() {
+                throw new UnsupportedOperationException();
             }
         };
     }
