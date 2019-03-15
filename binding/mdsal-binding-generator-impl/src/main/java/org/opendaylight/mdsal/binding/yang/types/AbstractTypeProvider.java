@@ -580,7 +580,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     private static boolean leafContainsEnumDefinition(final SchemaNode dataNode) {
         if (dataNode instanceof LeafSchemaNode) {
             final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
-            return CompatUtils.compatLeafType(leaf) instanceof EnumTypeDefinition;
+            return CompatUtils.compatType(leaf) instanceof EnumTypeDefinition;
         }
         return false;
     }
@@ -720,7 +720,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         if (dataNode != null) {
             if (dataNode instanceof LeafSchemaNode) {
                 final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
-                final TypeDefinition<?> type = CompatUtils.compatLeafType(leaf);
+                final TypeDefinition<?> type = CompatUtils.compatType(leaf);
                 returnType = javaTypeForSchemaDefinitionType(type, leaf);
             } else if (dataNode instanceof LeafListSchemaNode) {
                 final LeafListSchemaNode leafList = (LeafListSchemaNode) dataNode;
@@ -1352,7 +1352,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     public String getTypeDefaultConstruction(final LeafSchemaNode node, final String defaultValue) {
-        final TypeDefinition<?> type = CompatUtils.compatLeafType(node);
+        final TypeDefinition<?> type = CompatUtils.compatType(node);
         final QName typeQName = type.getQName();
         final TypeDefinition<?> base = baseTypeDefForExtendedType(type);
         requireNonNull(type, () -> "Cannot provide default construction for null type of " + node);
@@ -1561,7 +1561,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     private String unionToDef(final LeafSchemaNode node) {
-        final TypeDefinition<?> type = CompatUtils.compatLeafType(node);
+        final TypeDefinition<?> type = CompatUtils.compatType(node);
         String parentName;
         String className;
 

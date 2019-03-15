@@ -31,8 +31,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.lock.qual.GuardedBy;
+import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
@@ -69,7 +69,6 @@ import org.slf4j.LoggerFactory;
  * @param <G> the GenericEntityOwnershipListener type
  * @param <S> the GenericEntityOwnershipService type
  */
-@ThreadSafe
 final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends GenericEntity<P>,
         C extends GenericEntityOwnershipChange<P, E>,  G extends GenericEntityOwnershipListener<P, C>,
         S extends GenericEntityOwnershipService<P, E, G>> extends ClusterSingletonServiceGroup<P, E, C> {
@@ -344,7 +343,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      *
      * @param ownershipChange reported change
      */
-    @GuardedBy("this")
+    @Holding("this")
     private void lockedOwnershipChanged(final C ownershipChange) {
         final E entity = ownershipChange.getEntity();
         if (serviceEntity.equals(entity)) {
@@ -358,7 +357,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         }
     }
 
-    @GuardedBy("this")
+    @Holding("this")
     private void cleanupCandidateOwnershipChanged(final EntityOwnershipChangeState state, final boolean jeopardy) {
         if (jeopardy) {
             switch (state) {
@@ -403,7 +402,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         }
     }
 
-    @GuardedBy("this")
+    @Holding("this")
     private void serviceOwnershipChanged(final EntityOwnershipChangeState state, final boolean jeopardy) {
         if (jeopardy) {
             LOG.info("Service group {} service entity ownership uncertain", identifier);

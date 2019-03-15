@@ -17,7 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
-import javax.annotation.concurrent.GuardedBy;
+import org.checkerframework.checker.lock.qual.GuardedBy;
+import org.checkerframework.checker.lock.qual.Holding;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -145,7 +146,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         }
     }
 
-    @GuardedBy("this")
+    @Holding("this")
     private void submitTransaction(final ShardedDOMDataTreeWriteTransaction tx) {
         lastTx = tx;
         tx.doSubmit(this::transactionSuccessful, this::transactionFailed);

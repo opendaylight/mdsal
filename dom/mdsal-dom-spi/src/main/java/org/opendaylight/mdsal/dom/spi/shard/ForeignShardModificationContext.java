@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.spi.shard;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -13,16 +12,15 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
-import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.concepts.Mutable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Beta
-@NotThreadSafe
-public final class ForeignShardModificationContext implements Identifiable<DOMDataTreeIdentifier> {
+public final class ForeignShardModificationContext implements Identifiable<DOMDataTreeIdentifier>, Mutable {
     private static final Logger LOG = LoggerFactory.getLogger(ForeignShardModificationContext.class);
 
     private final DOMDataTreeIdentifier identifier;
