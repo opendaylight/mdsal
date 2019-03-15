@@ -8,12 +8,12 @@
 package org.opendaylight.mdsal.model.ietf.util;
 
 import java.util.regex.Pattern;
-import javax.annotation.RegEx;
+import org.checkerframework.checker.regex.qual.Regex;
 
 final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpClass, IpClass, IpClass, IpClass, IpClass,
         IpClass> {
 
-    @RegEx
+    @Regex
     private static final String IP_V4_REGEX = "^\\d+\\.\\d+\\.\\d+\\.\\d+$";
     private static final Pattern IP_V4_PATTERN = Pattern.compile(IP_V4_REGEX);
 

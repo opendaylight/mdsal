@@ -22,7 +22,7 @@ import com.google.common.collect.Table;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
-import javax.annotation.concurrent.GuardedBy;
+import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
