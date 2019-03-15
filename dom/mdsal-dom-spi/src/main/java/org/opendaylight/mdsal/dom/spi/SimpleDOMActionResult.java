@@ -16,7 +16,6 @@ import com.google.common.collect.ImmutableList;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.Optional;
-import javax.annotation.concurrent.ThreadSafe;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
@@ -26,7 +25,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 @Beta
 @NonNullByDefault
-@ThreadSafe
 public final class SimpleDOMActionResult implements DOMActionResult, Immutable {
     private final Collection<RpcError> errors;
     private final @Nullable ContainerNode output;
