@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
-import javax.annotation.concurrent.GuardedBy;
+import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListeningException;

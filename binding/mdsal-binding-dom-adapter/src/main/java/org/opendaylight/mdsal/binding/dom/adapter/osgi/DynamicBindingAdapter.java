@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
 import com.google.common.collect.ImmutableList;
 import java.util.List;
-import javax.annotation.concurrent.GuardedBy;
+import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.BindingService;
