@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.annotations.Beta;
-import javax.annotation.concurrent.NotThreadSafe;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
@@ -16,9 +15,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 /**
  * A cursor holding a logical position within a conceptual data tree. It allows operations relative to that position,
  * as well as moving the position up or down the tree.
+ *
+ * <p>
+ * Implementations of this interface are expected to be inherently non-thread-safe.
  */
 @Beta
-@NotThreadSafe
 public interface DataTreeCursor extends AutoCloseable {
     /**
      * Move the cursor to the specified child of the current position.

@@ -9,7 +9,7 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.util.concurrent.FluentFuture;
-import javax.annotation.CheckReturnValue;
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -45,9 +45,8 @@ public interface CursorAwareWriteTransaction extends DataTreeCursorProvider {
      * Invoking cancel() on finished transaction (future returned by {@link #commit()} already
      * successfully completed) will always fail (return false).
      *
-     * @return <tt>false</tt> if the task could not be cancelled, typically because it has already
-     *         completed normally; <tt>true</tt> otherwise
-     *
+     * @return {@code false} if the task could not be cancelled, typically because it has already
+     *         completed normally; {@code true} otherwise
      */
     boolean cancel();
 
