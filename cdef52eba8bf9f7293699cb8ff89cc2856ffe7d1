@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "959fdb82_78bd435d",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/LazyDataObjectModification.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-03-15T21:24:43Z",
+      "side": 1,
+      "message": "These casts are ugly -- bindingPathArgumentChild() is getting a PathArgument, which means it needs to guarantee we are getting a DataObject specialization.",
+      "range": {
+        "startLine": 250,
+        "startChar": 16,
+        "endLine": 250,
+        "endChar": 60
+      },
+      "revId": "cdef52eba8bf9f7293699cb8ff89cc2856ffe7d1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e1133f2c_63ff3316",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/api/BindingCodecTreeNode.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-03-15T21:24:43Z",
+      "side": 1,
+      "message": "This is API-incompatible change.\n\nWhy do we even need to change this? I understand the implementation side of things where we track enum values, etc. and have a tree organized through SchemaPath.\n\nThis change makes things inconsistent right below ...",
+      "range": {
+        "startLine": 28,
+        "startChar": 48,
+        "endLine": 28,
+        "endChar": 61
+      },
+      "revId": "cdef52eba8bf9f7293699cb8ff89cc2856ffe7d1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fab3ff3a_2a4d9591",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/api/BindingCodecTreeNode.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-03-15T21:24:43Z",
+      "side": 1,
+      "message": "... right here. Since T is now BindingObject, the entire reference to getImplementedInterface() is wrong -- typedef\u0027d BindingObjects do not have getImplementedInterface(), because they are concrete classes.",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 40
+      },
+      "revId": "cdef52eba8bf9f7293699cb8ff89cc2856ffe7d1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e1a53241_98456389",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/gen/impl/DataNodeContainerSerializerSource.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-03-15T21:24:43Z",
+      "side": 1,
+      "message": "Why is this check needed? Note that getBaseType() follows yang type rules, so:\n\nleaf foo {\n    type string {\n        pattern \"[ab]\";\n    }\n}\n\ndoes not have a base type, but it does have restrictions and it does have a generated BindingObject.",
+      "range": {
+        "startLine": 145,
+        "startChar": 12,
+        "endLine": 145,
+        "endChar": 75
+      },
+      "revId": "cdef52eba8bf9f7293699cb8ff89cc2856ffe7d1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9efbf61c_84bd2f38",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/BindingSerializer.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-03-15T21:24:43Z",
+      "side": 1,
+      "message": "what is this method supposed to do? what does \u0027name\u0027 stand for?",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 13,
+        "endChar": 38
+      },
+      "revId": "cdef52eba8bf9f7293699cb8ff89cc2856ffe7d1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
