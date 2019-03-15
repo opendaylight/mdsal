@@ -52,7 +52,7 @@ import org.opendaylight.yangtools.yang.model.util.type.StringTypeBuilder;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorUtilTest {
-    private static final SchemaPath ROOT_PATH = SchemaPath.create(true, QName.create("test", "/root"));
+    private static final SchemaPath ROOT_PATH = SchemaPath.create(true, QName.create("test", "root"));
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();

@@ -8,8 +8,8 @@
 package org.opendaylight.yangtools.yang.binding;
 
 import com.google.common.annotations.Beta;
-import com.google.common.util.concurrent.FluentFuture;
-import javax.annotation.CheckReturnValue;
+import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
@@ -30,5 +30,5 @@ public interface Action<P extends InstanceIdentifier<?>, I extends RpcInput, O e
      * @throws NullPointerException if any of the arguments are null
      */
     @CheckReturnValue
-    @NonNull FluentFuture<@NonNull RpcResult<@NonNull O>> invoke(@NonNull P path, @NonNull I input);
+    @NonNull ListenableFuture<@NonNull RpcResult<@NonNull O>> invoke(@NonNull P path, @NonNull I input);
 }

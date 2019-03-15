@@ -37,8 +37,8 @@ public interface DOMDataTreeCursorAwareTransaction extends DOMDataTreeCursorProv
      * Invoking cancel() on a finished transaction (future returned by {@link #commit()} already
      * successfully completed will always fail (return false).
      *
-     * @return <tt>false</tt> if the task could not be cancelled, typically because it has already
-     *         completed normally; <tt>true</tt> otherwise
+     * @return {@code false} if the task could not be cancelled, typically because it has already
+     *         completed normally; {@code true} otherwise
      *
      */
     boolean cancel();

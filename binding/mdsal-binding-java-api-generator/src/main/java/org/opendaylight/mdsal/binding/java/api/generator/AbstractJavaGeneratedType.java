@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.concurrent.NotThreadSafe;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -35,7 +34,6 @@ import org.opendaylight.mdsal.binding.model.api.WildcardType;
  * @author Robert Varga
  */
 @NonNullByDefault
-@NotThreadSafe
 abstract class AbstractJavaGeneratedType {
     private final Map<JavaTypeName, @Nullable String> nameCache = new HashMap<>();
     private final ImmutableMap<String, NestedJavaGeneratedType> enclosedTypes;
