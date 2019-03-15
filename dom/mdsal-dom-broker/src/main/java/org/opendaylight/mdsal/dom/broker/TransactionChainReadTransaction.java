@@ -64,7 +64,7 @@ public class TransactionChainReadTransaction implements DOMDataTreeReadTransacti
             }
         }, MoreExecutors.directExecutor());
 
-        return readResult;
+        return FluentFuture.from(readResult);
     }
 
     @Override
