@@ -67,11 +67,11 @@ public class DOMNotificationRouterTest extends TestUtils {
         ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners =
                 domNotificationRouter.subscriptionListeners();
 
-        assertFalse(subscriptionListeners.iterator().hasNext());
+        assertFalse(subscriptionListeners.getRegistrations().iterator().hasNext());
         assertNotNull(domNotificationRouter.registerSubscriptionListener(domNotificationSubscriptionListener));
 
         subscriptionListeners = domNotificationRouter.subscriptionListeners();
-        assertTrue(subscriptionListeners.iterator().hasNext());
+        assertTrue(subscriptionListeners.getRegistrations().iterator().hasNext());
 
         final DOMNotification domNotification = mock(DOMNotification.class);
         doReturn("test").when(domNotification).toString();
