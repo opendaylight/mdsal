@@ -59,7 +59,7 @@ module abstract-topology {
 
         leaf cond-leafref {
             type leafref {
-                path "/tp:topology/tp:network-nodes/tp:network-node[node-id = 'super-node']";
+                path "/tp:topology/tp:network-nodes/tp:network-node[node-id = current()/super-node]";
             }
         }
 
