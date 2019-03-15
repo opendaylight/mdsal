@@ -5,14 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.yang.types;
 
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.RevisionAwareXPath;
+import org.opendaylight.yangtools.yang.model.api.PathExpression;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
@@ -25,7 +24,7 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
  */
 public class LeafrefTypeWithNullXpath implements LeafrefTypeDefinition {
     @Override
-    public RevisionAwareXPath getPathStatement() {
+    public PathExpression getPathStatement() {
         return null;
     }
 
