@@ -26,12 +26,14 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 final class PingPongTransaction implements FutureCallback<CommitInfo> {
     private final @NonNull DOMDataTreeReadWriteTransaction delegate;
     private final @NonNull SettableFuture<CommitInfo> future;
+    private final @NonNull FluentFuture<CommitInfo> fluent;
 
     private @Nullable DOMDataTreeReadWriteTransaction frontendTransaction;
 
     PingPongTransaction(final DOMDataTreeReadWriteTransaction delegate) {
         this.delegate = requireNonNull(delegate);
         future = SettableFuture.create();
+        fluent = FluentFuture.from(future);
     }
 
     @NonNull DOMDataTreeReadWriteTransaction getTransaction() {
@@ -43,7 +45,7 @@ final class PingPongTransaction implements FutureCallback<CommitInfo> {
     }
 
     @NonNull FluentFuture<CommitInfo> getCommitFuture() {
-        return future;
+        return fluent;
     }
 
     @Override
