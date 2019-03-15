@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.concurrent.GuardedBy;
+import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
@@ -60,7 +60,8 @@ public class ScanningSchemaServiceProvider
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void notifyListeners(final SchemaContext schemaContext) {
         synchronized (lock) {
-            for (final ListenerRegistration<SchemaContextListener> registration : listeners) {
+            for (final ListenerRegistration<? extends SchemaContextListener> registration
+                    : listeners.getRegistrations()) {
                 try {
                     registration.getInstance().onGlobalContextUpdated(schemaContext);
                 } catch (final Exception e) {
@@ -84,7 +85,8 @@ public class ScanningSchemaServiceProvider
 
     public void removeListener(final SchemaContextListener schemaContextListener) {
         synchronized (lock) {
-            for (final ListenerRegistration<SchemaContextListener> listenerRegistration : listeners.getListeners()) {
+            for (final ListenerRegistration<? extends SchemaContextListener> listenerRegistration
+                    : listeners.getRegistrations()) {
                 if (listenerRegistration.getInstance().equals(schemaContextListener)) {
                     listenerRegistration.close();
                     break;
@@ -95,7 +97,7 @@ public class ScanningSchemaServiceProvider
 
     public boolean hasListeners() {
         synchronized (lock) {
-            return !Iterables.isEmpty(listeners.getListeners());
+            return !Iterables.isEmpty(listeners.getRegistrations());
         }
     }
 
@@ -136,7 +138,7 @@ public class ScanningSchemaServiceProvider
     @Override
     public void close() {
         synchronized (lock) {
-            listeners.forEach(ListenerRegistration::close);
+            listeners.getRegistrations().forEach(ListenerRegistration::close);
         }
     }
 }

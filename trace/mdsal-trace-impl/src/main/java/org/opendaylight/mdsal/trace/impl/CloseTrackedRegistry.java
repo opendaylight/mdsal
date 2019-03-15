@@ -20,14 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
-import javax.annotation.concurrent.ThreadSafe;
 
 /**
  * Registry of {@link CloseTracked} instances.
  *
  * @author Michael Vorburger.ch
  */
-@ThreadSafe
 class CloseTrackedRegistry<T extends CloseTracked<T>> {
 
     private final Object anchor;
@@ -52,7 +50,8 @@ class CloseTrackedRegistry<T extends CloseTracked<T>> {
      *            course) an expensive operation, and should only be used during
      *            troubleshooting
      */
-    public CloseTrackedRegistry(Object anchor, String createDescription, boolean isDebugContextEnabled) {
+    public CloseTrackedRegistry(final Object anchor, final String createDescription,
+            final boolean isDebugContextEnabled) {
         this.anchor = anchor;
         this.createDescription = createDescription;
         this.isDebugContextEnabled = isDebugContextEnabled;
@@ -71,12 +70,12 @@ class CloseTrackedRegistry<T extends CloseTracked<T>> {
     }
 
     // package protected, not public; only CloseTrackedTrait invokes this
-    void add(CloseTracked<T> closeTracked) {
+    void add(final CloseTracked<T> closeTracked) {
         tracked.add(closeTracked);
     }
 
     // package protected, not public; only CloseTrackedTrait invokes this
-    void remove(CloseTracked<T> closeTracked) {
+    void remove(final CloseTracked<T> closeTracked) {
         tracked.remove(closeTracked);
     }
 

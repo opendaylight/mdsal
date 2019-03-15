@@ -32,6 +32,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
@@ -157,14 +158,15 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     private void notifyListenerTypesChanged(final Set<SchemaPath> typesAfter) {
-        final List<ListenerRegistration<DOMNotificationSubscriptionListener>> listenersAfter =
-                ImmutableList.copyOf(subscriptionListeners.getListeners());
+        final List<@NonNull ? extends DOMNotificationSubscriptionListener> listenersAfter =
+                subscriptionListeners.getRegistrations().stream().map(ListenerRegistration::getInstance)
+                .collect(ImmutableList.toImmutableList());
         executor.execute(() -> {
-            for (final ListenerRegistration<DOMNotificationSubscriptionListener> subListener : listenersAfter) {
+            for (final DOMNotificationSubscriptionListener subListener : listenersAfter) {
                 try {
-                    subListener.getInstance().onSubscriptionChanged(typesAfter);
+                    subListener.onSubscriptionChanged(typesAfter);
                 } catch (final Exception e) {
-                    LOG.warn("Uncaught exception during invoking listener {}", subListener.getInstance(), e);
+                    LOG.warn("Uncaught exception during invoking listener {}", subListener, e);
                 }
             }
         });
@@ -175,7 +177,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
             final L listener) {
         final Set<SchemaPath> initialTypes = listeners.keySet();
         executor.execute(() -> listener.onSubscriptionChanged(initialTypes));
-        return subscriptionListeners.registerWithType(listener);
+        return subscriptionListeners.register(listener);
     }
 
     private ListenableFuture<Void> publish(final long seq, final DOMNotification notification,

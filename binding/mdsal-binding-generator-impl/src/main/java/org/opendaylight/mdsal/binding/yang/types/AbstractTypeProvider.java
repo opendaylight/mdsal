@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.yang.types;
 
-import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.TYPE_OBJECT;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
@@ -63,7 +62,7 @@ import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.RevisionAwareXPath;
+import org.opendaylight.yangtools.yang.model.api.PathExpression;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -83,7 +82,7 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
-import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
+import org.opendaylight.yangtools.yang.model.util.PathExpressionImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
@@ -243,9 +242,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
     private boolean isLeafRefSelfReference(final LeafrefTypeDefinition leafref, final SchemaNode parentNode) {
         final SchemaNode leafRefValueNode;
-        final RevisionAwareXPath leafRefXPath = leafref.getPathStatement();
-        final RevisionAwareXPath leafRefStrippedXPath = new RevisionAwareXPathImpl(
-            GROUPS_PATTERN.matcher(leafRefXPath.toString()).replaceAll(""), leafRefXPath.isAbsolute());
+        final PathExpression leafRefXPath = leafref.getPathStatement();
+        final PathExpression leafRefStrippedXPath = new PathExpressionImpl(
+            GROUPS_PATTERN.matcher(leafRefXPath.getOriginalString()).replaceAll(""), leafRefXPath.isAbsolute());
 
         ///// skip leafrefs in augments - they're checked once augments are resolved
         final Iterator<QName> iterator = parentNode.getPath().getPathFromRoot().iterator();
@@ -501,10 +500,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             final boolean inGrouping) {
         Preconditions.checkArgument(leafrefType != null, "Leafref Type Definition reference cannot be NULL!");
 
-        final RevisionAwareXPath xpath = leafrefType.getPathStatement();
+        final PathExpression xpath = leafrefType.getPathStatement();
         Preconditions.checkArgument(xpath != null, "The Path Statement for Leafref Type Definition cannot be NULL!");
 
-        final String strXPath = verifyNotNull(xpath.toString());
+        final String strXPath = xpath.getOriginalString();
         if (strXPath.indexOf('[') != -1) {
             // XXX: why are we special-casing this?
             return Types.objectType();
@@ -580,7 +579,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     private static boolean leafContainsEnumDefinition(final SchemaNode dataNode) {
         if (dataNode instanceof LeafSchemaNode) {
             final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
-            return CompatUtils.compatLeafType(leaf) instanceof EnumTypeDefinition;
+            return CompatUtils.compatType(leaf) instanceof EnumTypeDefinition;
         }
         return false;
     }
@@ -720,7 +719,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         if (dataNode != null) {
             if (dataNode instanceof LeafSchemaNode) {
                 final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
-                final TypeDefinition<?> type = CompatUtils.compatLeafType(leaf);
+                final TypeDefinition<?> type = CompatUtils.compatType(leaf);
                 returnType = javaTypeForSchemaDefinitionType(type, leaf);
             } else if (dataNode instanceof LeafListSchemaNode) {
                 final LeafListSchemaNode leafList = (LeafListSchemaNode) dataNode;
@@ -1352,7 +1351,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     public String getTypeDefaultConstruction(final LeafSchemaNode node, final String defaultValue) {
-        final TypeDefinition<?> type = CompatUtils.compatLeafType(node);
+        final TypeDefinition<?> type = CompatUtils.compatType(node);
         final QName typeQName = type.getQName();
         final TypeDefinition<?> base = baseTypeDefForExtendedType(type);
         requireNonNull(type, () -> "Cannot provide default construction for null type of " + node);
@@ -1536,8 +1535,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         Preconditions.checkArgument(leafrefType.getPathStatement() != null,
                 "The Path Statement for Leafref Type Definition cannot be NULL!");
 
-        final RevisionAwareXPath xpath = leafrefType.getPathStatement();
-        final String strXPath = xpath.toString();
+        final PathExpression xpath = leafrefType.getPathStatement();
+        final String strXPath = xpath.getOriginalString();
 
         if (strXPath != null) {
             if (strXPath.indexOf('[') == -1) {
@@ -1561,7 +1560,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     private String unionToDef(final LeafSchemaNode node) {
-        final TypeDefinition<?> type = CompatUtils.compatLeafType(node);
+        final TypeDefinition<?> type = CompatUtils.compatType(node);
         String parentName;
         String className;
 

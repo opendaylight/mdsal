@@ -1300,7 +1300,7 @@ abstract class AbstractTypeGenerator {
         final Module parentModule = findParentModule(schemaContext, leaf);
         Type returnType = null;
 
-        final TypeDefinition<?> typeDef = CompatUtils.compatLeafType(leaf);
+        final TypeDefinition<?> typeDef = CompatUtils.compatType(leaf);
         if (isInnerType(leaf, typeDef)) {
             if (typeDef instanceof EnumTypeDefinition) {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, inGrouping);
@@ -1419,7 +1419,7 @@ abstract class AbstractTypeGenerator {
             final boolean isReadOnly) {
         if (leaf != null && toBuilder != null) {
             Type returnType;
-            final TypeDefinition<?> typeDef = CompatUtils.compatLeafType(leaf);
+            final TypeDefinition<?> typeDef = CompatUtils.compatType(leaf);
             if (typeDef instanceof UnionTypeDefinition) {
                 // GeneratedType for this type definition should have be already created
                 final ModuleContext mc = moduleContext(typeDef.getQName().getModule());
