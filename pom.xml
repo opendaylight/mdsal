@@ -30,9 +30,7 @@
         <module>features</module>
         <module>dom</module>
         <module>binding</module>
-        <module>binding2</module>
         <module>model</module>
-        <module>model-binding2</module>
         <module>entityownership</module>
         <module>singleton-service</module>
         <module>trace</module>

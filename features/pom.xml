@@ -34,13 +34,6 @@
         <module>odl-mdsal-binding-dom-adapter</module>
         <module>odl-mdsal-binding-runtime</module>
 
-        <!-- Binding 2 -->
-        <module>odl-mdsal-binding2</module>
-        <module>odl-mdsal-binding2-api</module>
-        <module>odl-mdsal-binding2-base</module>
-        <module>odl-mdsal-binding2-dom-adapter</module>
-        <module>odl-mdsal-binding2-runtime</module>
-
         <!-- Common -->
         <module>odl-mdsal-common</module>
 
