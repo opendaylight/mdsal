@@ -141,7 +141,7 @@ public final class OsgiBundleScanningSchemaService extends ScanningSchemaService
                     urls.add(u);
                     LOG.debug("Registered {}", u);
                 } catch (final Exception e) {
-                    LOG.warn("Failed to register {}, ignoring it", e);
+                    LOG.warn("Failed to register {}, ignoring it", u, e);
                 }
             }
 
