@@ -7,11 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.mdsal.dom.spi.shard.ChildShardContext;
@@ -29,9 +27,8 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
 
     private static final BatchedInvoker<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
         MANAGER_INVOKER = (listener, notifications) -> {
-            final DOMDataTreeChangeListener inst = listener.getInstance();
-            if (inst != null) {
-                inst.onDataTreeChanged(ImmutableList.copyOf(notifications));
+            if (!listener.isClosed()) {
+                listener.getInstance().onDataTreeChanged(notifications);
             }
         };
 
