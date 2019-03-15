@@ -395,7 +395,7 @@ public class TypeProviderTest {
         provider.provideTypeForLeafref(leafrePath, this.schemaNode, false);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = NullPointerException.class)
     public void provideTypeForLeafrefWithNullParentModuleTest() {
         final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
         final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "bar",
