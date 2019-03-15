@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
-import javax.annotation.concurrent.ThreadSafe;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
@@ -31,6 +30,7 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.yangtools.concepts.Immutable;
 
 /**
  * Implementation of AdapterFactory.
@@ -39,8 +39,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
  */
 @Beta
 @NonNullByDefault
-@ThreadSafe
-public final class BindingAdapterFactory implements AdapterFactory {
+public final class BindingAdapterFactory implements AdapterFactory, Immutable {
     private final BindingToNormalizedNodeCodec codec;
 
     public BindingAdapterFactory(final BindingToNormalizedNodeCodec codec) {
