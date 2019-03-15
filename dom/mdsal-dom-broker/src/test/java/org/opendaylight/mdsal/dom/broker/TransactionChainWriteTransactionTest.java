@@ -14,12 +14,12 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 public class TransactionChainWriteTransactionTest {
 
@@ -51,11 +51,11 @@ public class TransactionChainWriteTransactionTest {
         transactionChainWriteTransaction.delete(any(), any());
         verify(writeTransaction).delete(any(), any());
 
-        ListenableFuture<? extends CommitInfo> writeResult = Futures.immediateFuture(null);
+        ListenableFuture<? extends CommitInfo> writeResult = CommitInfo.emptyFluentFuture();
         doReturn(writeResult).when(writeTransaction).commit();
         assertEquals(writeResult, transactionChainWriteTransaction.commit());
 
-        writeResult = Futures.immediateFailedFuture(mock(TransactionCommitFailedException.class));
+        writeResult = FluentFutures.immediateFailedFluentFuture(mock(TransactionCommitFailedException.class));
         doNothing().when(chainAdapter).transactionFailed(any(), any());
         doReturn(writeResult).when(writeTransaction).commit();
         assertEquals(writeResult, transactionChainWriteTransaction.commit());
