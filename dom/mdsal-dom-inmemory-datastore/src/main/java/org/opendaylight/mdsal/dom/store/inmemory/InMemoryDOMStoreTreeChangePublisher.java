@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -32,9 +31,8 @@ import org.slf4j.LoggerFactory;
 final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChangePublisher {
     private static final BatchedInvoker<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
         MANAGER_INVOKER = (listener, notifications) -> {
-            final DOMDataTreeChangeListener inst = listener.getInstance();
-            if (inst != null) {
-                inst.onDataTreeChanged(ImmutableList.copyOf(notifications));
+            if (!listener.isClosed()) {
+                listener.getInstance().onDataTreeChanged(notifications);
             }
         };
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMStoreTreeChangePublisher.class);

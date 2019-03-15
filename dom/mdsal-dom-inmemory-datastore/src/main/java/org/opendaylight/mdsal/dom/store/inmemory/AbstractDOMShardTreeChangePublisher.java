@@ -256,7 +256,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
             // strip nodes we do not need since this listener doesn't have to be registered at the root of the DataTree
             DataTreeCandidateNode modifiedChild = dataTree.prepare(modification).getRootNode();
             for (final PathArgument pathArgument : listenerPath.getPathArguments()) {
-                modifiedChild = modifiedChild.getModifiedChild(pathArgument);
+                modifiedChild = modifiedChild.getModifiedChild(pathArgument).orElse(null);
             }
 
             if (modifiedChild == null) {
