@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import javax.annotation.concurrent.GuardedBy;
+import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
@@ -123,7 +123,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         Preconditions.checkState(openCursor == null, "Cannot submit transaction while there is a cursor open");
 
         producer.transactionSubmitted(this);
-        return future;
+        return FluentFuture.from(future);
     }
 
     void doSubmit(final Consumer<ShardedDOMDataTreeWriteTransaction> success,

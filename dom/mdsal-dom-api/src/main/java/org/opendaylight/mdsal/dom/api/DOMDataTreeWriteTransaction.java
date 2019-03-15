@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.util.concurrent.FluentFuture;
-import javax.annotation.CheckReturnValue;
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
