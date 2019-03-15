@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -63,13 +62,11 @@ public class LazySerializedContainerNodeTest {
         assertNotNull(lazySerializedContainerNode);
         assertEquals(leafNode, lazySerializedContainerNode.getChild(leafNode.getIdentifier()).get());
         assertFalse(lazySerializedContainerNode.getChild(mock(PathArgument.class)).isPresent());
-        assertTrue(lazySerializedContainerNode.getAttributes().isEmpty());
 
         assertTrue(lazySerializedContainerNode.getValue().isEmpty());
         assertEquals(lazySerializedContainerNode.getIdentifier().getNodeType(),
                 lazySerializedContainerNode.getNodeType());
         assertEquals(rpcName.getLastComponent(), lazySerializedContainerNode.getIdentifier().getNodeType());
-        assertNull(lazySerializedContainerNode.getAttributeValue(null));
         assertEquals(dataObject, lazySerializedContainerNode.bindingData());
     }
 }

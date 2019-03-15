@@ -60,7 +60,7 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
             final DOMMountPoint prev = mountPoints.putIfAbsent(mountPointId, mountPoint);
             checkState(prev == null, "Mount point %s already exists as %s", mountPointId, prev);
         }
-        listeners.forEach(listener -> {
+        listeners.getRegistrations().forEach(listener -> {
             try {
                 listener.getInstance().onMountPointCreated(mountPointId);
             } catch (final Exception ex) {
@@ -85,7 +85,7 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
             }
         }
 
-        listeners.forEach(listener -> {
+        listeners.getRegistrations().forEach(listener -> {
             try {
                 listener.getInstance().onMountPointRemoved(mountPointId);
             } catch (final Exception ex) {
