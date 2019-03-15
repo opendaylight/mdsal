@@ -55,7 +55,8 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void notifyListeners(final SchemaContext schemaContext) {
         synchronized (lock) {
-            for (final ListenerRegistration<SchemaContextListener> registration : listeners) {
+            for (final ListenerRegistration<? extends SchemaContextListener> registration
+                    : listeners.getRegistrations()) {
                 try {
                     registration.getInstance().onGlobalContextUpdated(schemaContext);
                 } catch (final Exception e) {
@@ -79,7 +80,8 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
 
     public void removeListener(final SchemaContextListener schemaContextListener) {
         synchronized (lock) {
-            for (final ListenerRegistration<SchemaContextListener> listenerRegistration : listeners.getListeners()) {
+            for (final ListenerRegistration<? extends SchemaContextListener> listenerRegistration
+                    : listeners.getRegistrations()) {
                 if (listenerRegistration.getInstance().equals(schemaContextListener)) {
                     listenerRegistration.close();
                     break;
@@ -90,7 +92,7 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
 
     public boolean hasListeners() {
         synchronized (lock) {
-            return !Iterables.isEmpty(listeners.getListeners());
+            return !Iterables.isEmpty(listeners.getRegistrations());
         }
     }
 
@@ -116,7 +118,7 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
     @Override
     public void close() {
         synchronized (lock) {
-            listeners.forEach(ListenerRegistration::close);
+            listeners.getRegistrations().forEach(ListenerRegistration::close);
         }
     }
 }

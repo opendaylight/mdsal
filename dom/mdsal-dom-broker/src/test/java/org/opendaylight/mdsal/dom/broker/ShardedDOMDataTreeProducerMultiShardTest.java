@@ -52,7 +52,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.DataContainerNodeAttrBuilder;
+import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.DataContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -423,7 +423,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
                 ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(
                         new NodeIdentifier(TestModel.SHARDED_VALUE_2)).withValue("sharded value 2").build();
 
-        final DataContainerNodeAttrBuilder<NodeIdentifier, ContainerNode> containerNodeBuilder =
+        final DataContainerNodeBuilder<NodeIdentifier, ContainerNode> containerNodeBuilder =
                 ImmutableContainerNodeBuilder.create();
         final ContainerNode containerNode =
                 containerNodeBuilder
