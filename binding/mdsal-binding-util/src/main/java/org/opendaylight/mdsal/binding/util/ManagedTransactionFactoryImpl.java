@@ -11,10 +11,10 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-import javax.annotation.CheckReturnValue;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.TransactionFactory;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
