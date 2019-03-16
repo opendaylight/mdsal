@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "2bc11ab5_b041c98a",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/api/BindingCodecTreeNode.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2019-03-16T00:42:11Z",
+      "side": 1,
+      "message": "That is going to be compatible with typedef class so we reuse BindingCodecTreeNode, or else we have to redefine a new struct like BindingCodecLeafNode just for typedef type, and then consequently many changes come.",
+      "parentUuid": "e1133f2c_63ff3316",
+      "range": {
+        "startLine": 28,
+        "startChar": 48,
+        "endLine": 28,
+        "endChar": 61
+      },
+      "revId": "cdef52eba8bf9f7293699cb8ff89cc2856ffe7d1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fab3ff3a_2a4d9591",
         "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/api/BindingCodecTreeNode.java",
         "patchSetId": 8
