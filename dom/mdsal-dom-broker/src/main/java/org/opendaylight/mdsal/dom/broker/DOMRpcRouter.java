@@ -21,7 +21,8 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,7 +64,6 @@ import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -371,11 +371,11 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
         }
 
         @Override
-        public FluentFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
+        public ListenableFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
                 final DOMDataTreeIdentifier path, final ContainerNode input) {
             final DOMActionRoutingTableEntry entry = (DOMActionRoutingTableEntry) actionRoutingTable.getEntry(type);
             if (entry == null) {
-                return FluentFutures.immediateFailedFluentFuture(
+                return Futures.immediateFailedFuture(
                     new DOMActionNotAvailableException("No implementation of Action %s available", type));
             }
 
@@ -413,10 +413,10 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
 
     private final class RpcServiceFacade implements DOMRpcService {
         @Override
-        public FluentFuture<DOMRpcResult> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {
+        public ListenableFuture<DOMRpcResult> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {
             final AbstractDOMRpcRoutingTableEntry entry = (AbstractDOMRpcRoutingTableEntry) routingTable.getEntry(type);
             if (entry == null) {
-                return FluentFutures.immediateFailedFluentFuture(
+                return Futures.immediateFailedFuture(
                     new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
             }
 
@@ -470,15 +470,15 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
     static final class OperationInvocation {
         private static final Logger LOG = LoggerFactory.getLogger(OperationInvocation.class);
 
-        static FluentFuture<? extends DOMActionResult> invoke(final DOMActionRoutingTableEntry entry,
+        static ListenableFuture<? extends DOMActionResult> invoke(final DOMActionRoutingTableEntry entry,
                 final SchemaPath type, final DOMDataTreeIdentifier path, final ContainerNode input) {
             return entry.getImplementations(path).get(0).invokeAction(type, path, input);
         }
 
-        static FluentFuture<DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
+        static ListenableFuture<DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
                 final NormalizedNode<?, ?> input) {
             if (entry instanceof UnknownDOMRpcRoutingTableEntry) {
-                return FluentFutures.immediateFailedFluentFuture(
+                return Futures.immediateFailedFuture(
                     new DOMRpcImplementationNotAvailableException("SchemaPath %s is not resolved to an RPC",
                         entry.getType()));
             } else if (entry instanceof RoutedDOMRpcRoutingTableEntry) {
@@ -487,11 +487,11 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                 return invokeGlobalRpc((GlobalDOMRpcRoutingTableEntry) entry, input);
             }
 
-            return FluentFutures.immediateFailedFluentFuture(
+            return Futures.immediateFailedFuture(
                 new DOMRpcImplementationNotAvailableException("Unsupported RPC entry."));
         }
 
-        private static FluentFuture<DOMRpcResult> invokeRoutedRpc(final RoutedDOMRpcRoutingTableEntry entry,
+        private static ListenableFuture<DOMRpcResult> invokeRoutedRpc(final RoutedDOMRpcRoutingTableEntry entry,
                 final NormalizedNode<?, ?> input) {
             final Optional<NormalizedNode<?, ?>> maybeKey = NormalizedNodes.findNode(input,
                 entry.getRpcId().getContextReference());
@@ -532,12 +532,12 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                 return impls.get(0).invokeRpc(entry.getRpcId(), input);
             }
 
-            return FluentFutures.immediateFailedFluentFuture(
+            return Futures.immediateFailedFuture(
                 new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available",
                     entry.getType()));
         }
 
-        private static FluentFuture<DOMRpcResult> invokeGlobalRpc(final GlobalDOMRpcRoutingTableEntry entry,
+        private static ListenableFuture<DOMRpcResult> invokeGlobalRpc(final GlobalDOMRpcRoutingTableEntry entry,
                 final NormalizedNode<?, ?> input) {
             return entry.getImplementations(YangInstanceIdentifier.EMPTY).get(0).invokeRpc(entry.getRpcId(), input);
         }

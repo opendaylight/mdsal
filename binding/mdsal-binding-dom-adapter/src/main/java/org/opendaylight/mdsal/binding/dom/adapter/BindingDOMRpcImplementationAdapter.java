@@ -12,7 +12,6 @@ import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENA
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -67,7 +66,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
     }
 
     @Override
-    public FluentFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
+    public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
         final SchemaPath schemaPath = rpc.getType();
         final DataObject bindingInput = input != null ? deserialize(rpc.getType(), input) : null;
         final ListenableFuture<RpcResult<?>> bindingResult = invoke(schemaPath, bindingInput);
