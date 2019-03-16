@@ -89,8 +89,8 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      * Invoking cancel() on finished transaction (future returned by {@link #commit()} already successfully completed)
      * will always fail (return false).
      *
-     * @return <tt>false</tt> if the task could not be cancelled, typically because it has already completed normally;
-     *         <tt>true</tt> otherwise
+     * @return {@code false} if the task could not be cancelled, typically because it has already completed normally;
+     *         {@code true} otherwise
      */
     boolean cancel();
 
@@ -172,7 +172,8 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      * Following table shows state changes and failures between two concurrent transactions, which are based on same
      * initial state, Tx 1 completes successfully before Tx 2 is committed.
      *
-     * <table summary="Change compatibility of leaf values">
+     * <table>
+     * <caption>Change compatibility of leaf values</caption>
      * <tr>
      * <th>Initial state</th>
      * <th>Tx 1</th>
@@ -249,7 +250,8 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      * Following table shows state changes and failures between two concurrent transactions, which are based on same
      * initial state, Tx 1 completes successfully before Tx 2 is committed.
      *
-     * <table summary="Change compatibility of containers">
+     * <table>
+     * <caption>Change compatibility of containers</caption>
      * <tr>
      * <th>Initial state</th>
      * <th>Tx 1</th>
