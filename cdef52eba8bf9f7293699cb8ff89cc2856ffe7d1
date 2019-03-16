@@ -162,6 +162,30 @@
       "revId": "cdef52eba8bf9f7293699cb8ff89cc2856ffe7d1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7ea9401_d4ff5c14",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/BindingSerializer.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2019-03-16T01:00:47Z",
+      "side": 1,
+      "message": "Here is for reusing DataObjectCodecContext#getLeafChild(String leafnName) to get leaf codec context, the name stands for the leaf node name.",
+      "parentUuid": "9efbf61c_84bd2f38",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 13,
+        "endChar": 38
+      },
+      "revId": "cdef52eba8bf9f7293699cb8ff89cc2856ffe7d1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
