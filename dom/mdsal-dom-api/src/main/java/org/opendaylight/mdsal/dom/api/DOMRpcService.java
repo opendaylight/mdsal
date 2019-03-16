@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -27,11 +27,11 @@ public interface DOMRpcService extends DOMService {
      *
      * @param type SchemaPath of the RPC to be invoked
      * @param input Input arguments, null if the RPC does not take any.
-     * @return A {@link FluentFuture} which will return either a result structure, or report a subclass
+     * @return A {@link ListenableFuture} which will return either a result structure, or report a subclass
      *         of {@link DOMRpcException} reporting a transport error.
      */
     // FIXME: 4.0.0: do not allow null input
-    @NonNull FluentFuture<DOMRpcResult> invokeRpc(@NonNull SchemaPath type, @Nullable NormalizedNode<?, ?> input);
+    @NonNull ListenableFuture<DOMRpcResult> invokeRpc(@NonNull SchemaPath type, @Nullable NormalizedNode<?, ?> input);
 
     /**
      * Register a {@link DOMRpcAvailabilityListener} with this service to receive notifications
