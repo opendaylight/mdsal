@@ -11,8 +11,8 @@ import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 import static org.opendaylight.yangtools.yang.common.YangConstants.operationInputQName;
 
-import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -64,7 +64,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                 if (args.length == 2) {
                     final InstanceIdentifier<?> path = (InstanceIdentifier<?>) requireNonNull(args[0]);
                     final RpcInput input = (RpcInput) requireNonNull(args[1]);
-                    final FluentFuture<? extends DOMActionResult> future = getDelegate().invokeAction(schemaPath,
+                    final ListenableFuture<? extends DOMActionResult> future = getDelegate().invokeAction(schemaPath,
                         new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, getCodec().toNormalized(path)),
                         getCodec().toLazyNormalizedNodeActionInput(type, inputName, input));
 
