@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
-import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.StoreTreeNode;
@@ -34,7 +34,7 @@ public interface DOMActionImplementation {
      * @return A FluentFuture which completes with the result of invocation
      * @throws NullPointerException if any of the arguments is null
      */
-    FluentFuture<? extends DOMActionResult> invokeAction(SchemaPath type, DOMDataTreeIdentifier path,
+    ListenableFuture<? extends DOMActionResult> invokeAction(SchemaPath type, DOMDataTreeIdentifier path,
             ContainerNode input);
 
     /**
