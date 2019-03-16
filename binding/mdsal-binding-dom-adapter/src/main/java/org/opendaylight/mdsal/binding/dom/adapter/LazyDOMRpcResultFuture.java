@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.AbstractFuture;
-import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -47,7 +46,7 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
         this.codec = requireNonNull(codec, "codec");
     }
 
-    static @NonNull FluentFuture<DOMRpcResult> create(final BindingNormalizedNodeCodecRegistry codec,
+    static @NonNull LazyDOMRpcResultFuture create(final BindingNormalizedNodeCodecRegistry codec,
             final ListenableFuture<RpcResult<?>> bindingResult) {
         return new LazyDOMRpcResultFuture(bindingResult, codec);
     }
