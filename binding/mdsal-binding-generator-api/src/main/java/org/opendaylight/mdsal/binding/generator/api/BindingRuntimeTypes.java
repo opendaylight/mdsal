@@ -17,7 +17,6 @@ import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.concurrent.ThreadSafe;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -28,7 +27,6 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
  * The result of BindingGenerator run. Contains mapping between Types and SchemaNodes.
  */
 @Beta
-@ThreadSafe
 public final class BindingRuntimeTypes implements Immutable {
 
     private final ImmutableMap<Type, AugmentationSchemaNode> typeToAugmentation;
