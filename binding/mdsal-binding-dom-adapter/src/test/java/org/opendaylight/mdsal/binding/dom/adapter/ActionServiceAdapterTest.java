@@ -19,8 +19,8 @@ import static org.opendaylight.yangtools.yang.data.impl.schema.Builders.leafBuil
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
@@ -77,7 +77,7 @@ public class ActionServiceAdapterTest extends AbstractAdapterTest {
     @Test
     public void testInvocation() throws ExecutionException {
         final Foo handle = service.getActionHandle(Foo.class, ImmutableSet.of());
-        final FluentFuture<RpcResult<Output>> future = handle.invoke(InstanceIdentifier.create(Cont.class),
+        final ListenableFuture<RpcResult<Output>> future = handle.invoke(InstanceIdentifier.create(Cont.class),
             BINDING_FOO_INPUT);
         assertNotNull(future);
         assertFalse(future.isDone());
