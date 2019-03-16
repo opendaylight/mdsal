@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -28,7 +28,8 @@ public interface DOMRpcImplementation {
      *         error.
      */
     // FIXME: 4.0.0: do not allow null input
-    @NonNull FluentFuture<DOMRpcResult> invokeRpc(@NonNull DOMRpcIdentifier rpc, @Nullable NormalizedNode<?, ?> input);
+    @NonNull ListenableFuture<DOMRpcResult> invokeRpc(@NonNull DOMRpcIdentifier rpc,
+            @Nullable NormalizedNode<?, ?> input);
 
     /**
      * Return the relative invocation cost of this implementation. Default implementation return 0.
