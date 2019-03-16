@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -102,9 +102,9 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
 
         @Override
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        public FluentFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
+        public ListenableFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
                 final DOMDataTreeIdentifier path, final ContainerNode input) {
-            final FluentFuture<RpcResult<?>> userFuture = implementation.invoke(
+            final ListenableFuture<RpcResult<?>> userFuture = implementation.invoke(
                 codec.fromYangInstanceIdentifier(path.getRootIdentifier()),
                 codec.fromNormalizedNodeActionInput(actionInterface, input));
             if (userFuture instanceof BindingOperationFluentFuture) {

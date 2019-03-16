@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Proxy;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -65,7 +65,7 @@ public final class ActionServiceAdapter
         }
 
         @Override
-        public FluentFuture<RpcResult<RpcOutput>> invoke(final InstanceIdentifier<?> path, final RpcInput input) {
+        public ListenableFuture<RpcResult<RpcOutput>> invoke(final InstanceIdentifier<?> path, final RpcInput input) {
             checkState(nodes.contains(DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, path)),
                 "Cannot service %s", path);
             return delegate.invoke(path, input);

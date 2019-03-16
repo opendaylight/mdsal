@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.AbstractFuture;
-import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -31,7 +30,7 @@ final class BindingOperationFluentFuture<O extends RpcOutput> extends AbstractFu
 
     private BindingNormalizedNodeSerializer codec;
 
-    BindingOperationFluentFuture(final FluentFuture<RpcResult<O>> userFuture,
+    BindingOperationFluentFuture(final ListenableFuture<RpcResult<O>> userFuture,
             final Class<? extends Action<?, ?, O>> action, final NodeIdentifier identifier,
             final BindingNormalizedNodeSerializer codec) {
         this.userFuture = requireNonNull(userFuture);
