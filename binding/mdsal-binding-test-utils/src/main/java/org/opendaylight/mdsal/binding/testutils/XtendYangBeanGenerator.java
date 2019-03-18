@@ -40,12 +40,12 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
 
     private final AugmentableExtension augmentableExtension = new AugmentableExtension();
 
-    private boolean useBuilderExtensions(Object bean) {
+    private boolean useBuilderExtensions(final Object bean) {
         return bean instanceof DataObject;
     }
 
     @Override
-    public String getExpression(Object bean) {
+    public String getExpression(final Object bean) {
         final String beanText = super.getExpression(bean);
         if (useBuilderExtensions(bean)) {
             return new StringBuilder("import static extension ").append(XtendBuilderExtensions.class.getName())
@@ -56,7 +56,7 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
     }
 
     @Override
-    protected boolean isUsingBuilder(Object bean, Class<?> builderClass) {
+    protected boolean isUsingBuilder(final Object bean, final Class<?> builderClass) {
         if (useBuilderExtensions(bean)) {
             return false;
         } else {
@@ -65,7 +65,7 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
     }
 
     @Override
-    protected String getOperator(Object bean, Class<?> builderClass) {
+    protected String getOperator(final Object bean, final Class<?> builderClass) {
         if (useBuilderExtensions(bean)) {
             return ">>";
         } else {
@@ -74,11 +74,11 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
     }
 
     @Override
-    protected CharSequence getNewBeanExpression(Object bean) {
+    protected CharSequence getNewBeanExpression(final Object bean) {
         if (bean instanceof DataContainer) {
             DataContainer dataContainerBean = (DataContainer) bean;
             Optional<Class<?>> optBuilderClass = getOptionalBuilderClassByAppendingBuilderToClassName(
-                    dataContainerBean.getImplementedInterface());
+                    dataContainerBean.implementedInterface());
             if (optBuilderClass.isPresent()) {
                 return super.getNewBeanExpression(dataContainerBean, optBuilderClass.get());
             } else {
@@ -90,17 +90,17 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
     }
 
     @Override
-    protected String stringify(Class<?> klass) {
+    protected String stringify(final Class<?> klass) {
         return klass.getSimpleName();
     }
 
     @Override
-    protected Iterable<Property> filter(Iterable<Property> properties) {
+    protected Iterable<Property> filter(final Iterable<Property> properties) {
         // YANG keys duplicate existing other properties (there are getter/setter for both), so filter them
         return Iterables.filter(properties, property -> !property.getName().equals("key"));
     }
 
-    private Optional<ClassToInstanceMap<Augmentation<?>>> getAugmentations(Object bean) {
+    private Optional<ClassToInstanceMap<Augmentation<?>>> getAugmentations(final Object bean) {
         if (bean instanceof Augmentable<?>) {
             Augmentable<?> augmentable = (Augmentable<?>) bean;
             ClassToInstanceMap<Augmentation<?>> augmentables = augmentableExtension.getAugmentations(augmentable);
@@ -112,7 +112,7 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
     }
 
     @Override
-    protected CharSequence getAdditionalInitializationExpression(Object bean, Class<?> builderClass) {
+    protected CharSequence getAdditionalInitializationExpression(final Object bean, final Class<?> builderClass) {
         Optional<ClassToInstanceMap<Augmentation<?>>> optional = getAugmentations(bean);
         if (optional.isPresent()) {
             StringBuilder sb = new StringBuilder();
