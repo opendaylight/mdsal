@@ -72,24 +72,12 @@ public class EntityTest {
 
     static class TestDataObject1 implements DataObject {
         @Override
-        @Deprecated
-        public Class<? extends DataObject> getImplementedInterface() {
-            return DataObject.class;
-        }
-
-        @Override
         public Class<? extends DataObject> implementedInterface() {
             return DataObject.class;
         }
     }
 
     static class TestDataObject2 implements DataObject {
-        @Override
-        @Deprecated
-        public Class<? extends DataObject> getImplementedInterface() {
-            return DataObject.class;
-        }
-
         @Override
         public Class<? extends DataObject> implementedInterface() {
             return DataObject.class;
