@@ -32,6 +32,7 @@ import org.opendaylight.mdsal.binding.model.api.Restrictions
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
 import org.opendaylight.yangtools.yang.binding.CodeHelpers
+import org.opendaylight.yangtools.yang.common.Empty
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition
 
 /**
@@ -336,6 +337,8 @@ class ClassTemplate extends BaseTemplate {
                     return new «genTO.name»(«Base64.importedName».getDecoder().decode(defaultValue));
                 «ELSEIF STRING.equals(prop.returnType)»
                     return new «genTO.name»(defaultValue);
+                «ELSEIF Constants.EMPTY.equals(prop.returnType)»
+                    return new «genTO.name»(«Empty.importedName».getInstance());
                 «ELSEIF allProperties.size > 1»
                     «bitsArgs»
                 «ELSEIF BOOLEAN.equals(prop.returnType)»
