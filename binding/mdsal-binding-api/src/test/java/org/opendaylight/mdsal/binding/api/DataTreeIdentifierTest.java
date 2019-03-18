@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -59,24 +58,12 @@ public class DataTreeIdentifierTest {
 
     private static class TestDataObject1 implements DataObject {
         @Override
-        @Deprecated
-        public Class<? extends DataContainer> getImplementedInterface() {
-            return DataObject.class;
-        }
-
-        @Override
         public Class<? extends DataObject> implementedInterface() {
             return DataObject.class;
         }
     }
 
     private static class TestDataObject2 implements DataObject {
-        @Override
-        @Deprecated
-        public Class<? extends DataContainer> getImplementedInterface() {
-            return DataObject.class;
-        }
-
         @Override
         public Class<? extends DataObject> implementedInterface() {
             return DataObject.class;
