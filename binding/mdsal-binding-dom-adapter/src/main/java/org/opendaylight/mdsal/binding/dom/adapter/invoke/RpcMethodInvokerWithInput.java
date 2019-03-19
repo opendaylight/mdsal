@@ -32,7 +32,7 @@ class RpcMethodInvokerWithInput extends RpcMethodInvoker {
             return (ListenableFuture<RpcResult<?>>) handle.invokeExact(impl,input);
         } catch (Throwable e) {
             Throwables.throwIfUnchecked(e);
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 }

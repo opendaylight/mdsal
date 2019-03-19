@@ -50,7 +50,7 @@ abstract class FutureSchema implements AutoCloseable {
                 schemaPromise.get(FutureSchema.this.duration, FutureSchema.this.unit);
                 return true;
             } catch (final InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             } catch (final TimeoutException e) {
                 return false;
             } finally {

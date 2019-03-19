@@ -38,7 +38,7 @@ final class DirectGetterRouteContextExtractor extends ContextReferenceExtractor 
             return (InstanceIdentifier<?>) handle.invokeExact(obj);
         } catch (final Throwable e) {
             Throwables.throwIfUnchecked(e);
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 }
