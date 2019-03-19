@@ -107,7 +107,7 @@ public final class NotificationListenerInvoker {
             invoker.invokeExact(impl, input);
         } catch (final Throwable e) {
             Throwables.throwIfUnchecked(e);
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 }

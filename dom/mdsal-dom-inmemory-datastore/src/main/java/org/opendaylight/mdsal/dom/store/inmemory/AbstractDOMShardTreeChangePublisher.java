@@ -250,7 +250,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
                 dataTree.validate(modification);
             } catch (final DataValidationFailedException e) {
                 LOG.error("Validation failed for built modification", e);
-                throw new RuntimeException("Notification validation failed", e);
+                throw new IllegalStateException("Notification validation failed", e);
             }
 
             // strip nodes we do not need since this listener doesn't have to be registered at the root of the DataTree
