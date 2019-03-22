@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("checkstyle:memberName")
 public final class MacClass {
     private final String _value;
 

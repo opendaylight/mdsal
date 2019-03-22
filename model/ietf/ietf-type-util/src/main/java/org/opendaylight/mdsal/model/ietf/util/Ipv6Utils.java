@@ -49,91 +49,92 @@ final class Ipv6Utils {
     private static final int INT16SZ = Short.BYTES;
 
     private Ipv6Utils() {
-        throw new UnsupportedOperationException();
+
     }
 
     /**
-     * Convert Ipv6Address object to a valid Canonical v6 address in byte format
+     * Convert Ipv6Address object to a valid Canonical v6 address in byte format.
      *
      * @param bytes Byte array for output
      * @param str String representation
      * @param strLimit String offset which should not be processed
      * @throws NullPointerException if ipv6address is null
      */
+    @SuppressWarnings("checkstyle:localVariableName")
     static void fillIpv6Bytes(final byte @NonNull[] bytes, final String str, final int strLimit) {
-       // Leading :: requires some special handling.
-       int i = 0;
-       if (str.charAt(i) == ':') {
-           // Note ++i side-effect in check
-           checkArgument(str.charAt(++i) == ':', "Invalid v6 address '%s'", str);
-       }
+        // Leading :: requires some special handling.
+        int i = 0;
+        if (str.charAt(i) == ':') {
+            // Note ++i side-effect in check
+            checkArgument(str.charAt(++i) == ':', "Invalid v6 address '%s'", str);
+        }
 
-       boolean haveVal = false;
-       int val = 0;
-       int colonp = -1;
-       int j = 0;
-       int curtok = i;
-       while (i < strLimit) {
-           final char ch = str.charAt(i++);
+        boolean haveVal = false;
+        int val = 0;
+        int colonp = -1;
+        int j = 0;
+        int curtok = i;
+        while (i < strLimit) {
+            final char ch = str.charAt(i++);
 
-           // v6 separator
-           if (ch == ':') {
-               curtok = i;
-               if (haveVal) {
-                   // removed overrun check - the regexp checks for valid data
-                   bytes[j++] = (byte) (val >>> 8 & 0xff);
-                   bytes[j++] = (byte) (val & 0xff);
-                   haveVal = false;
-                   val = 0;
-               } else {
-                   // no need to check separator position validity - regexp does that
-                   colonp = j;
-               }
+            // v6 separator
+            if (ch == ':') {
+                curtok = i;
+                if (haveVal) {
+                    // removed overrun check - the regexp checks for valid data
+                    bytes[j++] = (byte) (val >>> 8 & 0xff);
+                    bytes[j++] = (byte) (val & 0xff);
+                    haveVal = false;
+                    val = 0;
+                } else {
+                    // no need to check separator position validity - regexp does that
+                    colonp = j;
+                }
 
-               continue;
-           }
+                continue;
+            }
 
-           // frankenstein - v4 attached to v6, mixed notation
-           if (ch == '.' && j + INADDR4SZ <= INADDR6SZ) {
-               /*
-                * This has passed the regexp so it is fairly safe to parse it
-                * straight away. Use the Ipv4Utils for that.
-                */
-               Ipv4Utils.fillIpv4Bytes(bytes, j, str, curtok, strLimit);
-               j += INADDR4SZ;
-               haveVal = false;
-               break;
-           }
+            // frankenstein - v4 attached to v6, mixed notation
+            if (ch == '.' && j + INADDR4SZ <= INADDR6SZ) {
+                /*
+                 * This has passed the regexp so it is fairly safe to parse it
+                 * straight away. Use the Ipv4Utils for that.
+                 */
+                Ipv4Utils.fillIpv4Bytes(bytes, j, str, curtok, strLimit);
+                j += INADDR4SZ;
+                haveVal = false;
+                break;
+            }
 
-           /*
-            * Business as usual - ipv6 address digit.
-            * We can remove all checks from the original BSD code because
-            * the regexp has already verified that we are not being fed
-            * anything bigger than 0xffff between the separators.
-            */
-           final int chval = AbstractIetfYangUtil.hexValue(ch);
-           val = val << 4 | chval;
-           haveVal = true;
-       }
+            /*
+             * Business as usual - ipv6 address digit.
+             * We can remove all checks from the original BSD code because
+             * the regexp has already verified that we are not being fed
+             * anything bigger than 0xffff between the separators.
+             */
+            final int chval = AbstractIetfYangUtil.hexValue(ch);
+            val = val << 4 | chval;
+            haveVal = true;
+        }
 
-       if (haveVal) {
-           verify(j + INT16SZ <= INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
-           bytes[j++] = (byte) (val >> 8 & 0xff);
-           bytes[j++] = (byte) (val & 0xff);
-       }
+        if (haveVal) {
+            verify(j + INT16SZ <= INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
+            bytes[j++] = (byte) (val >> 8 & 0xff);
+            bytes[j++] = (byte) (val & 0xff);
+        }
 
-       if (colonp != -1) {
-           verify(j != INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
-           expandZeros(bytes, colonp, j);
-       } else {
-           verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
-       }
-   }
+        if (colonp != -1) {
+            verify(j != INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
+            expandZeros(bytes, colonp, j);
+        } else {
+            verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
+        }
+    }
 
-   private static void expandZeros(final byte[] bytes, final int where, final int filledBytes) {
-       final int tailLength = filledBytes - where;
-       final int tailOffset = INADDR6SZ - tailLength;
-       System.arraycopy(bytes, where, bytes, tailOffset, tailLength);
-       Arrays.fill(bytes, where, tailOffset, (byte)0);
+    private static void expandZeros(final byte[] bytes, final int where, final int filledBytes) {
+        final int tailLength = filledBytes - where;
+        final int tailOffset = INADDR6SZ - tailLength;
+        System.arraycopy(bytes, where, bytes, tailOffset, tailLength);
+        Arrays.fill(bytes, where, tailOffset, (byte)0);
     }
 }

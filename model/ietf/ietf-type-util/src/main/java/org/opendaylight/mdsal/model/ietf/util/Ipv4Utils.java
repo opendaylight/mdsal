@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 final class Ipv4Utils {
     private Ipv4Utils() {
-        throw new UnsupportedOperationException();
+
     }
 
     static void fillIpv4Bytes(final byte @NonNull[] bytes, final int byteStart, final String str, final int strStart,
