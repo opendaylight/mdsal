@@ -330,7 +330,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
 
         if (isDirty()) {
             if (!tryLock()) {
-                LOG.debug("Service group {} postponing ownership change sync");
+                LOG.debug("Service group {} postponing ownership change sync", identifier);
                 return;
             }
 
