@@ -58,7 +58,7 @@ abstract class ContextReferenceExtractor {
                     } catch (final IllegalAccessException e) {
                         LOG.warn(
                                 "Class {} does not conform to Binding Specification v1. Falling back to NULL_EXTRACTOR",
-                                e);
+                                returnType, e);
                     }
                     return NULL_EXTRACTOR;
                 }
