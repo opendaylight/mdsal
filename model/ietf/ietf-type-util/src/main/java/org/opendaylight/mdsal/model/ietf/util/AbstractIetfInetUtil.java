@@ -26,9 +26,11 @@ import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
  * A set of utility methods to efficiently instantiate various ietf-inet-types DTOs.
  */
 @Beta
+@SuppressWarnings("checkstyle:classTypeParameterName")
 public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ extends A6, P6, A, ANZ, P> {
     private static final int INET4_LENGTH = 4;
     private static final int INET6_LENGTH = 16;
+
     private final StringValueObjectFactory<A4> address4Factory;
     private final StringValueObjectFactory<A4NZ> address4NoZoneFactory;
     private final StringValueObjectFactory<P4> prefix4Factory;
@@ -48,20 +50,31 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     }
 
     protected abstract @NonNull A ipv4Address(@NonNull A4 addr);
+
     protected abstract @NonNull ANZ ipv4AddressNoZone(@NonNull A4NZ addr);
+
     protected abstract @NonNull A ipv6Address(@NonNull A6 addr);
+
     protected abstract @NonNull ANZ ipv6AddressNoZone(@NonNull A6NZ addr);
 
     protected abstract @Nullable A4 maybeIpv4Address(@NonNull A addr);
+
     protected abstract @Nullable A4NZ maybeIpv4AddressNoZone(@NonNull ANZ addr);
+
     protected abstract @Nullable A6 maybeIpv6Address(@NonNull A addr);
+
     protected abstract @Nullable A6NZ maybeIpv6AddressNoZone(@NonNull ANZ addr);
 
     protected abstract @NonNull P ipv4Prefix(@NonNull P4 addr);
+
     protected abstract @NonNull P ipv6Prefix(@NonNull P6 addr);
+
     protected abstract @NonNull String ipv4AddressString(@NonNull A4 addr);
+
     protected abstract @NonNull String ipv6AddressString(@NonNull A6 addr);
+
     protected abstract @NonNull String ipv4PrefixString(@NonNull P4 prefix);
+
     protected abstract @NonNull String ipv6PrefixString(@NonNull P6 prefix);
 
     /**
@@ -324,26 +337,8 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         return prefix4Factory.newInstance(prefixStringV4(address, mask));
     }
 
-    public final @NonNull P4 ipv4PrefixForShort(final byte @NonNull[] address, final int mask) {
-        if (mask == 0) {
-            // Easy case, reuse the template
-            return prefix4Factory.getTemplate();
-        }
-
-        return v4PrefixForShort(address, 0, mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1), mask);
-    }
-
-    public final @NonNull P4 ipv4PrefixForShort(final byte @NonNull[] array, final int startOffset, final int mask) {
-        if (mask == 0) {
-            // Easy case, reuse the template
-            return prefix4Factory.getTemplate();
-        }
-
-        return v4PrefixForShort(array, startOffset, mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1), mask);
-    }
-
     /**
-     * Create a /32 Ipv4Prefix for an {@link Inet4Address}
+     * Create a /32 Ipv4Prefix for an {@link Inet4Address}.
      *
      * @param addr An {@link Inet4Address}
      * @return An Ipv4Prefix object
@@ -389,6 +384,24 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     public final @NonNull P4 ipv4PrefixForNoZone(final @NonNull A4NZ addr, final int mask) {
         requireNonNull(addr, "Address must not be null");
         return newIpv4Prefix(ipv4AddressString(addr), mask);
+    }
+
+    public final @NonNull P4 ipv4PrefixForShort(final byte @NonNull[] address, final int mask) {
+        if (mask == 0) {
+            // Easy case, reuse the template
+            return prefix4Factory.getTemplate();
+        }
+
+        return v4PrefixForShort(address, 0, mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1), mask);
+    }
+
+    public final @NonNull P4 ipv4PrefixForShort(final byte @NonNull[] array, final int startOffset, final int mask) {
+        if (mask == 0) {
+            // Easy case, reuse the template
+            return prefix4Factory.getTemplate();
+        }
+
+        return v4PrefixForShort(array, startOffset, mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1), mask);
     }
 
     private static String stripZone(final String str) {
@@ -524,25 +537,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         return prefix6Factory.newInstance(addressStringV6(address) + '/' + mask);
     }
 
-    public final @NonNull P6 ipv6PrefixForShort(final byte @NonNull[] address, final int mask) {
-        return ipv6PrefixForShort(address, 0, mask);
-    }
-
-    public final @NonNull P6 ipv6PrefixForShort(final byte @NonNull[] array, final int startOffset, final int mask) {
-        if (mask == 0) {
-            // Easy case, reuse the template
-            return prefix6Factory.getTemplate();
-        }
-
-        checkArgument(mask > 0 && mask <= 128, "Invalid mask %s", mask);
-        final int size = mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1);
-
-        // Until we can instantiate an IPv6 address for a partial array, use a temporary buffer
-        byte[] tmp = new byte[INET6_LENGTH];
-        System.arraycopy(array, startOffset, tmp, 0, size);
-        return ipv6PrefixFor(tmp, mask);
-    }
-
     /**
      * Create a /128 Ipv6Prefix by interpreting input bytes as an IPv4 address.
      *
@@ -591,6 +585,25 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     public final @NonNull P6 ipv6PrefixForNoZone(final @NonNull A6NZ addr, final int mask) {
         requireNonNull(addr, "Address must not be null");
         return newIpv6Prefix(ipv6AddressString(addr), mask);
+    }
+
+    public final @NonNull P6 ipv6PrefixForShort(final byte @NonNull[] address, final int mask) {
+        return ipv6PrefixForShort(address, 0, mask);
+    }
+
+    public final @NonNull P6 ipv6PrefixForShort(final byte @NonNull[] array, final int startOffset, final int mask) {
+        if (mask == 0) {
+            // Easy case, reuse the template
+            return prefix6Factory.getTemplate();
+        }
+
+        checkArgument(mask > 0 && mask <= 128, "Invalid mask %s", mask);
+        final int size = mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1);
+
+        // Until we can instantiate an IPv6 address for a partial array, use a temporary buffer
+        byte[] tmp = new byte[INET6_LENGTH];
+        System.arraycopy(array, startOffset, tmp, 0, size);
+        return ipv6PrefixFor(tmp, mask);
     }
 
     private P6 newIpv6Prefix(final String addr, final int mask) {

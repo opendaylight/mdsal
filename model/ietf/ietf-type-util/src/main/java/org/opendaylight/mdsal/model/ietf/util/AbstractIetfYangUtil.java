@@ -26,6 +26,7 @@ public abstract class AbstractIetfYangUtil<M, P> {
     private static final int MAC_BYTE_LENGTH = 6;
     private static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
     private static final byte[] HEX_VALUES;
+
     static {
         final byte[] b = new byte['f' + 1];
         Arrays.fill(b, (byte)-1);
@@ -118,21 +119,21 @@ public abstract class AbstractIetfYangUtil<M, P> {
 
     protected abstract String getPhysValue(P physAddress);
 
-    static byte hexValue(final char c) {
-        byte v;
+    static byte hexValue(final char ch) {
+        byte value;
         try {
             // Performance optimization: access the array and rely on the VM for catching
             // illegal access (which boils down to illegal character, which should never happen.
-            v = HEX_VALUES[c];
+            value = HEX_VALUES[ch];
         } catch (IndexOutOfBoundsException e) {
-            v = -1;
+            value = -1;
         }
 
-        if (v < 0) {
-            throw new IllegalArgumentException("Invalid character '" + c + "' encountered");
+        if (value < 0) {
+            throw new IllegalArgumentException("Invalid character '" + ch + "' encountered");
         }
 
-        return v;
+        return value;
     }
 
     /**
@@ -178,8 +179,8 @@ public abstract class AbstractIetfYangUtil<M, P> {
         return sb.toString();
     }
 
-    private static final void appendHexByte(final StringBuilder sb, final byte b) {
-        final int v = Byte.toUnsignedInt(b);
-        sb.append(HEX_CHARS[v >>> 4]).append(HEX_CHARS[v & 15]);
+    private static void appendHexByte(final StringBuilder sb, final byte byteVal) {
+        final int intVal = Byte.toUnsignedInt(byteVal);
+        sb.append(HEX_CHARS[intVal >>> 4]).append(HEX_CHARS[intVal & 15]);
     }
 }
