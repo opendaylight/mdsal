@@ -96,7 +96,7 @@ public final class OsgiBundleScanningSchemaService extends ScanningSchemaService
     }
 
     @VisibleForTesting
-    public static void destroyInstance() throws Exception {
+    public static void destroyInstance() {
         final OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.getAndSet(null);
         if (instance != null) {
             instance.closeInstance();
