@@ -14,16 +14,18 @@ import com.google.common.annotations.Beta;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An entry in DOMDataTreePrefixTable. This class is not thread-safe.
+ */
 @Beta
-@NotThreadSafe
-public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathArgument> {
+public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathArgument>, Mutable {
     private static final Logger LOG = LoggerFactory.getLogger(DOMDataTreePrefixTableEntry.class);
     // FIXME: We do probably want to adapt map
     private final Map<PathArgument, DOMDataTreePrefixTableEntry<V>> children = new HashMap<>();
