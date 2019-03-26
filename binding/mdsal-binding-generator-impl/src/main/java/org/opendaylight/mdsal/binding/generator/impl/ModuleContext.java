@@ -22,12 +22,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
+import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
@@ -44,8 +44,10 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@NotThreadSafe
-public final class ModuleContext {
+/**
+ * Utility class for building up Binding mapping information. This class is NOT thread-safe.
+ */
+public final class ModuleContext implements Mutable {
     private static final Logger LOG = LoggerFactory.getLogger(ModuleContext.class);
 
     private final BiMap<Type, AugmentationSchemaNode> typeToAugmentation = HashBiMap.create();

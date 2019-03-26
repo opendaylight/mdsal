@@ -20,17 +20,15 @@ import javassist.CtClass;
 import javassist.LoaderClassPath;
 import javassist.NotFoundException;
 import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Users of this utility class are expected to synchronize on this instance
- * it they need to ensure atomic operations on it.
+ * Users of this utility class are expected to synchronize on this instance it they need to ensure atomic operations
+ * on it. Individual operations are synchronized and therefore are thread-safe.
  */
 @NonNullByDefault
-@ThreadSafe
 public final class JavassistUtils {
     private static final Logger LOG = LoggerFactory.getLogger(JavassistUtils.class);
     private static final Map<ClassPool, JavassistUtils> INSTANCES = new WeakHashMap<>();

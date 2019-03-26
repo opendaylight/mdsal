@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.spi;
 import com.google.common.annotations.Beta;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.concurrent.NotThreadSafe;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -19,13 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Prefix table indexed by {@link DOMDataTreeIdentifier}.
- * Stores values in tree and provides lookup of closest ancestor
+ * Prefix table indexed by {@link DOMDataTreeIdentifier}. Stores values in tree and provides lookup of closest ancestor.
+ * This class is not thread-safe.
  *
  * @param <V> Value type
  */
 @Beta
-@NotThreadSafe
 public final class DOMDataTreePrefixTable<V> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DOMDataTreePrefixTable.class);
