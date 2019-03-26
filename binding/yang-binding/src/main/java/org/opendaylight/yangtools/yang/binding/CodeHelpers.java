@@ -68,6 +68,17 @@ public final class CodeHelpers {
     }
 
     /**
+     * A shortcut for {@code Objects.requireNonNull(value, "Supplied value may not be null")}.
+     *
+     * @param value Value itself
+     * @return non-null value
+     * @throws NullPointerException if value is null
+     */
+    public static <T> @NonNull T requireNonNullValue(@Nullable final T value) {
+        return requireNonNull(value, "Supplied value may not be null");
+    }
+
+    /**
      * Append a named value to a ToStringHelper. If the value is null, this method does nothing.
      *
      * @param helper Helper to append to
