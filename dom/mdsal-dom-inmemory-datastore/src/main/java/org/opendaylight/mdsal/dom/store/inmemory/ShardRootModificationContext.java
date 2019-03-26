@@ -45,7 +45,7 @@ class ShardRootModificationContext implements Identifiable<DOMDataTreeIdentifier
             }
 
             // FIXME: Should there be non-root path?
-            DataTreeModificationCursor dataTreeCursor = modification.createCursor(YangInstanceIdentifier.EMPTY);
+            DataTreeModificationCursor dataTreeCursor = modification.openCursor(YangInstanceIdentifier.EMPTY).get();
             cursor = DataTreeModificationCursorAdaptor.of(dataTreeCursor);
         }
         return cursor;

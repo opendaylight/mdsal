@@ -17,6 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_IDENTIFIER;
 
+import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeModification;
@@ -33,8 +34,8 @@ public class ShardRootModificationContextTest {
         final DataTreeModificationCursor dataTreeModificationCursor = mock(DataTreeModificationCursor.class);
         doReturn(cursorAwareDataTreeModification).when(cursorAwareDataTreeSnapshot).newModification();
         doNothing().when(cursorAwareDataTreeModification).ready();
-        doReturn(dataTreeModificationCursor)
-                .when(cursorAwareDataTreeModification).createCursor(YangInstanceIdentifier.EMPTY);
+        doReturn(Optional.of(dataTreeModificationCursor))
+                .when(cursorAwareDataTreeModification).openCursor(YangInstanceIdentifier.EMPTY);
         doNothing().when(dataTreeModificationCursor).close();
 
         final ShardRootModificationContext shardRootModificationContext =
@@ -47,7 +48,7 @@ public class ShardRootModificationContextTest {
         assertNotNull(dataTreeModificationCursorAdaptor);
         assertTrue(shardRootModificationContext.isModified());
         verify(cursorAwareDataTreeSnapshot).newModification();
-        verify(cursorAwareDataTreeModification).createCursor(YangInstanceIdentifier.EMPTY);
+        verify(cursorAwareDataTreeModification).openCursor(YangInstanceIdentifier.EMPTY);
 
         shardRootModificationContext.ready();
         verify(cursorAwareDataTreeModification).ready();
