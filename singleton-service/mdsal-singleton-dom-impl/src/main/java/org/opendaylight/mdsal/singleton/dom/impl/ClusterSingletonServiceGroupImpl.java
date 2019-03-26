@@ -32,7 +32,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
@@ -69,7 +68,6 @@ import org.slf4j.LoggerFactory;
  * @param <G> the GenericEntityOwnershipListener type
  * @param <S> the GenericEntityOwnershipService type
  */
-@ThreadSafe
 final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends GenericEntity<P>,
         C extends GenericEntityOwnershipChange<P, E>,  G extends GenericEntityOwnershipListener<P, C>,
         S extends GenericEntityOwnershipService<P, E, G>> extends ClusterSingletonServiceGroup<P, E, C> {
