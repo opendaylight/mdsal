@@ -10,7 +10,8 @@ package org.opendaylight.mdsal.dom.api;
 import java.time.Instant;
 
 /**
- * Generic event interface.
+ * Generic event interface. This interface is mixed in into implementations of other DOM-level constructs, such as
+ * {@link DOMNotification} to add the time when the event occurred when appropriate.
  */
 public interface DOMEvent {
     /**
