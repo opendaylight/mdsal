@@ -12,7 +12,10 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
- * A single YANG notification.
+ * A single YANG notification. This interface captures the data portion of a notification. Implementations may choose
+ * to additionally implement {@link DOMEvent}, in which case {@link DOMEvent#getEventInstant()} returns the time when
+ * this notification was generated -- and corresponds to <a href="https://tools.ietf.org/html/rfc5277#section-2.2.1">
+ * RFC5277</a> NETCONF notification's {@code eventTime} parameter.
  */
 public interface DOMNotification {
     /**
