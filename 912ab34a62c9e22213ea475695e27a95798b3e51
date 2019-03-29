@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "261a658c_9f7385c9",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/spi/AdapterFactoryWiring.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-03-29T16:00:02Z",
+      "side": 1,
+      "message": "why is this ommitted?",
+      "range": {
+        "startLine": 72,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 5
+      },
+      "revId": "912ab34a62c9e22213ea475695e27a95798b3e51",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b3cc52c_6ee20510",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/spi/AdapterFactoryWiring.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-03-29T16:00:02Z",
+      "side": 1,
+      "message": "Pardon my ignorance, but these (and pairwise RPC and Action) are consumer/provider facades that must be connected, in current case we ensure that via exposing the two aspects from a single implementation.\n\nWhat is the semantic meaning of this class? I mean, how does it relate to DOMBrokerWiring, service-wise?\n\nWe have only one broker here, but we have two brokers over there... how would one go about choosing the mapping between them?",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 82,
+        "endChar": 5
+      },
+      "revId": "912ab34a62c9e22213ea475695e27a95798b3e51",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
