@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a617580d_5a52f038",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/spi/AdapterFactoryWiring.java",
+        "patchSetId": 27
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-03-29T15:45:40Z",
+      "side": 1,
+      "message": "I don\u0027t quite get this. I think both BindingWiring and this class are badly named:\n\nshouldn\u0027t BindingWiring really be something like ... BindingDOMAdapter and this class called BindingAdapterServices?\n\nThis with the expansion of the methods in a follow-up patch, this becomes only when the full set of DOM services is available.",
+      "range": {
+        "startLine": 17,
+        "startChar": 2,
+        "endLine": 17,
+        "endChar": 40
+      },
+      "revId": "79b524ed3963a2642dcfbebf55880a24db195705",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
