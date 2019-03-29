@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f66fae65_1c8b168d",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/schema/ScanningSchemaServiceProvider.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-03-29T16:03:15Z",
+      "side": 1,
+      "message": "I don\u0027t quite get this comment. Why would this indirection be beeded at all?",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 103
+      },
+      "revId": "3807f95cb65d49ad0133d30fbfdb467540f0cc10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
