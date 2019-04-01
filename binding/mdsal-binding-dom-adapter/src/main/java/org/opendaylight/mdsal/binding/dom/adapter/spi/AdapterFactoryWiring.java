@@ -12,6 +12,7 @@ import javax.inject.Singleton;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeService;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
@@ -38,7 +39,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 public class AdapterFactoryWiring {
 
     private final DataBroker dataBroker;
-    // private final DataTreeService dataTreeService;
+    private final DataTreeService dataTreeService;
     private final NotificationService notificationService;
     private final NotificationPublishService notificationPublishService;
     private final MountPointService mountPointService;
@@ -55,7 +56,7 @@ public class AdapterFactoryWiring {
             DOMActionProviderService domActionProviderService) {
         AdapterFactory adapterFactory = bindingWiring.getAdapterFactory();
         dataBroker = adapterFactory.createDataBroker(domDataBroker);
-        // dataTreeService = adapterFactory.createDataTreeService(domDataTreeService);
+        dataTreeService = adapterFactory.createDataTreeService(domDataTreeService);
         notificationService = adapterFactory.createNotificationService(domNotificationService);
         notificationPublishService = adapterFactory.createNotificationPublishService(domNotificationPublishService);
         mountPointService = adapterFactory.createMountPointService(domMountPointService);
@@ -69,9 +70,9 @@ public class AdapterFactoryWiring {
         return dataBroker;
     }
 
-//  public DataTreeService getDataTreeService() {
-//      return dataTreeService;
-//  }
+    public DataTreeService getDataTreeService() {
+        return dataTreeService;
+    }
 
     public NotificationService getNotificationService() {
         return notificationService;
