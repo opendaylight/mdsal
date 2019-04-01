@@ -22,6 +22,30 @@
       "revId": "3807f95cb65d49ad0133d30fbfdb467540f0cc10",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "41deef78_d001dc15",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/schema/ScanningSchemaServiceProvider.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-04-01T12:58:51Z",
+      "side": 1,
+      "message": "I can\u0027t remember two months later why I added this extra in-line comment into this already existing as-is code, so to help to wrap this up, I\u0027ve just removed it again - no harm done.  From a quick look, it seems like it was related to the HybridDOMSchemaService extends ScanningSchemaServiceProvider (with @Override internalGetSchemaContextToNotify()) also introduced in this change.",
+      "parentUuid": "f66fae65_1c8b168d",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 103
+      },
+      "revId": "3807f95cb65d49ad0133d30fbfdb467540f0cc10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
