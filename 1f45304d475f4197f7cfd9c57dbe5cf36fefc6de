@@ -113,6 +113,30 @@
     },
     {
       "key": {
+        "uuid": "cf074b96_4fbe43cf",
+        "filename": "wiring/src/main/java/org/opendaylight/mdsal/wiring/MdsalWiring.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-04-01T13:15:51Z",
+      "side": 1,
+      "message": "On further thought, I actually think I will rename this MdsalDomWiring and split it up from a MdsalBindingWiring..",
+      "parentUuid": "41035e50_bba405c9",
+      "range": {
+        "startLine": 22,
+        "startChar": 13,
+        "endLine": 22,
+        "endChar": 24
+      },
+      "revId": "1f45304d475f4197f7cfd9c57dbe5cf36fefc6de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e0fff0df_6900e14d",
         "filename": "wiring/src/main/java/org/opendaylight/mdsal/wiring/guice/InMemoryModule.java",
         "patchSetId": 6
