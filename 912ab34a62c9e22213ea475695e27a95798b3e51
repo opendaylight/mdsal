@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e27fdfb1_34be3886",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/spi/AdapterFactoryWiring.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-04-01T13:47:14Z",
+      "side": 1,
+      "message": "That is a very good and fair question, and the truth is that I can\u0027t quite remember after 2 months... I have a (very) vague recollection that adapterFactory.createDataTreeService() didn\u0027t actually work.  In order not to make this change fail, can I try to re-enable it in a follow-up change, and we\u0027ll see what happens?  See https://git.opendaylight.org/gerrit/#/c/81338.",
+      "parentUuid": "261a658c_9f7385c9",
+      "range": {
+        "startLine": 72,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 5
+      },
+      "revId": "912ab34a62c9e22213ea475695e27a95798b3e51",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7b3cc52c_6ee20510",
         "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/spi/AdapterFactoryWiring.java",
         "patchSetId": 6
@@ -36,6 +60,30 @@
       "writtenOn": "2019-03-29T16:00:02Z",
       "side": 1,
       "message": "Pardon my ignorance, but these (and pairwise RPC and Action) are consumer/provider facades that must be connected, in current case we ensure that via exposing the two aspects from a single implementation.\n\nWhat is the semantic meaning of this class? I mean, how does it relate to DOMBrokerWiring, service-wise?\n\nWe have only one broker here, but we have two brokers over there... how would one go about choosing the mapping between them?",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 82,
+        "endChar": 5
+      },
+      "revId": "912ab34a62c9e22213ea475695e27a95798b3e51",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "97c59c8e_fa3ce803",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/spi/AdapterFactoryWiring.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-04-01T13:47:14Z",
+      "side": 1,
+      "message": "\u003e Pardon my ignorance, but these (and pairwise RPC and Action) are consumer/provider facades that must be connected, in current case we ensure that via exposing the two aspects from a single implementation.\n\nNot sure I understand this Q... by creating both the NotificationService and the NotificationPublishService from the (same) AdapterFactory, it\u0027s all good, no?\n\n\u003e What is the semantic meaning of this class? I mean, how does it relate to DOMBrokerWiring, service-wise?\n\nThe DOMBrokerWiring exposes DOM*Service whereas this one exposes binding services.\n\n\u003e We have only one broker here, but we have two brokers over there... how would one go about choosing the mapping between them?\n\nNot sure I understand this Q... but if you mean that DOMBrokerWiring has a getPingPongDOMDataBroker() method (and @Inject DOMDataBroker) whereas this AdapterFactoryWiring has only a getDataBroker() but no getPingPongDOMDataBroker(), then that seems a fair point, in hindsight.  When that\u0027s the only thing holding up the merge of this entire series of proposed changes, I could look into adding that.",
+      "parentUuid": "7b3cc52c_6ee20510",
       "range": {
         "startLine": 76,
         "startChar": 0,
