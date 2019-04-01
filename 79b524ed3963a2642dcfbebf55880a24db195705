@@ -22,6 +22,30 @@
       "revId": "79b524ed3963a2642dcfbebf55880a24db195705",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a3cbf2a0_523f39e3",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/spi/AdapterFactoryWiring.java",
+        "patchSetId": 27
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-04-01T13:15:51Z",
+      "side": 1,
+      "message": "The idea of naming classes like this one *Wiring is more general, and follows the pattern used in a few other existing ODL classes already. I had outlined the \u0027pattern\u0027 e.g. on https://github.com/vorburger/opendaylight-simple: \n\n\"We simply re-use declarative DI by javax.inject standard @Singleton \u0026 @Inject annotations, which work for both Blueprint (with the blueprint-maven-plugin) as well as Guice. ODL projects are encouraged to migrate their use of \u003cbean\u003e, \u003creference\u003e and \u003cservice\u003e elements in BP XML to annotations to ease this integration. When we exceptionally need to \u0027stitch together\u0027 objects in a non-trivial fashion (e.g. custom object factories \u0026 external configuration), we migrate BP XML logic into simple *Wiring classes. Wiring classes are not Guice specific, but pure plain old simple Java. We then write small *Module classes, which are Guice specific, to tie everything together.\"\n\nDoes this explanation help to clarify why I named this *Wiring?  If renaming this class is what it takes to get this merged, then I could try to find the time to do that (although I don\u0027t really have it, anymore).  \n\nBTW NB that there already is a BindingDOMAdapterBuilder (in org.opendaylight.mdsal.binding.dom.adapter), so renaming BindingWiring to BindingDOMAdapter could be confusing given that (unrelated) other existing class.",
+      "parentUuid": "a617580d_5a52f038",
+      "range": {
+        "startLine": 17,
+        "startChar": 2,
+        "endLine": 17,
+        "endChar": 40
+      },
+      "revId": "79b524ed3963a2642dcfbebf55880a24db195705",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
