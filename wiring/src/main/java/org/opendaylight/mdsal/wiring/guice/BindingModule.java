@@ -14,6 +14,7 @@ import javax.inject.Singleton;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeService;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
@@ -73,10 +74,10 @@ public class BindingModule implements Module {
         return adapterFactoryWiring.getDataBroker();
     }
 
-//  @Provides
-//  @Singleton DataTreeService getDataTreeService(AdapterFactoryWiring adapterFactoryWiring) {
-//      return adapterFactoryWiring.getDataTreeService();
-//  }
+    @Provides
+    @Singleton DataTreeService getDataTreeService(AdapterFactoryWiring adapterFactoryWiring) {
+       return adapterFactoryWiring.getDataTreeService();
+    }
 
     @Provides
     @Singleton NotificationService getNotificationService(AdapterFactoryWiring adapterFactoryWiring) {
