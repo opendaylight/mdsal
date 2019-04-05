@@ -24,7 +24,6 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * Utility {@link DataBroker} implementation which forwards all interface method invocation to a delegate instance.
  */
 public abstract class ForwardingDataBroker extends ForwardingObject implements DataBroker {
-
     @Override
     protected abstract @NonNull DataBroker delegate();
 
@@ -52,5 +51,10 @@ public abstract class ForwardingDataBroker extends ForwardingObject implements D
     @Override
     public TransactionChain createTransactionChain(final TransactionChainListener listener) {
         return delegate().createTransactionChain(listener);
+    }
+
+    @Override
+    public TransactionChain createMergingTransactionChain(final TransactionChainListener listener) {
+        return delegate().createMergingTransactionChain(listener);
     }
 }

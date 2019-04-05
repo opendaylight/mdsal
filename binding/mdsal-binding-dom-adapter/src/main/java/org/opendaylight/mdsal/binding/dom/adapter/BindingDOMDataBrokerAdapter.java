@@ -26,20 +26,17 @@ import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
-
 /**
- * The DataBrokerImpl simply defers to the DOMDataBroker for all its operations.
- * All transactions and listener registrations are wrapped by the DataBrokerImpl
- * to allow binding aware components to use the DataBroker transparently.
+ * The DataBrokerImpl simply defers to the DOMDataBroker for all its operations. All transactions and listener
+ * registrations are wrapped by the DataBrokerImpl to allow binding aware components to use the DataBroker
+ * transparently.
  *
  * <p>
- * Besides this the DataBrokerImpl and it's collaborators also cache data that
- * is already transformed from the binding independent to binding aware format
- *
+ * Besides this the DataBrokerImpl and it's collaborators also cache data that is already transformed from the binding
+ * independent to binding aware format.
  */
-public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker implements
-        DataBroker, DataTreeChangeService {
-
+public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker implements DataBroker,
+        DataTreeChangeService {
 
     static final Factory<DataBroker> BUILDER_FACTORY = Builder::new;
     private final DataTreeChangeService treeChangeService;
@@ -72,11 +69,16 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
 
     @Override
     public TransactionChain createTransactionChain(final TransactionChainListener listener) {
-        return new BindingDOMTransactionChainAdapter(getDelegate(), getCodec(), listener);
+        return new BindingDOMTransactionChainAdapter(getDelegate()::createTransactionChain, getCodec(), listener);
+    }
+
+    @Override
+    public TransactionChain createMergingTransactionChain(final TransactionChainListener listener) {
+        return new BindingDOMTransactionChainAdapter(getDelegate()::createMergingTransactionChain, getCodec(),
+            listener);
     }
 
     private static class Builder extends BindingDOMAdapterBuilder<DataBroker> {
-
         @Override
         public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
             return ImmutableSet.of(DOMDataBroker.class);
@@ -88,7 +90,6 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
             final DOMDataBroker domDataBroker = delegates.getInstance(DOMDataBroker.class);
             return new BindingDOMDataBrokerAdapter(domDataBroker, codec);
         }
-
     }
 
     @Override

@@ -311,6 +311,12 @@ public class TracingBroker implements TracingDOMDataBroker {
     }
 
     @Override
+    public DOMTransactionChain createMergingTransactionChain(DOMTransactionChainListener transactionChainListener) {
+        return new TracingTransactionChain(delegate.createMergingTransactionChain(transactionChainListener), this,
+            transactionChainsRegistry);
+    }
+
+    @Override
     public DOMDataTreeReadTransaction newReadOnlyTransaction() {
         return new TracingReadOnlyTransaction(delegate.newReadOnlyTransaction(), readOnlyTransactionsRegistry);
     }
