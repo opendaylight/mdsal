@@ -39,23 +39,4 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </interfaces>
   </service>
 
-  <!-- Tracing Binding PingPong DataBroker -->
-
-  <reference id="realPingPongDOMDataBroker"
-      interface="org.opendaylight.mdsal.dom.api.DOMDataBroker"
-      odl:type="pingpong"/>
-
-  <bean id="tracingPingPongDOMBroker" class="org.opendaylight.mdsal.trace.impl.TracingBroker">
-      <argument value="pingpong" />
-      <argument ref="realPingPongDOMDataBroker" />
-      <argument ref="mdsalConfig" />
-      <argument ref="codec" />
-  </bean>
-
-  <service id="tracingPingPongDOMBrokerSvc" ref="tracingPingPongDOMBroker" ranking="10" odl:type="pingpong">
-    <interfaces>
-      <value>org.opendaylight.mdsal.dom.api.DOMDataBroker</value>
-      <value>org.opendaylight.mdsal.trace.api.TracingDOMDataBroker</value>
-    </interfaces>
-  </service>
 </blueprint>
