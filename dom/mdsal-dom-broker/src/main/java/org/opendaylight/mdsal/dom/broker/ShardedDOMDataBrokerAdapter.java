@@ -18,6 +18,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
+import org.opendaylight.mdsal.dom.spi.PingPongTransactionChain;
 
 public class ShardedDOMDataBrokerAdapter implements DOMDataBroker {
 
@@ -52,6 +53,11 @@ public class ShardedDOMDataBrokerAdapter implements DOMDataBroker {
     @Override
     public DOMTransactionChain createTransactionChain(final DOMTransactionChainListener listener) {
         return new ShardedDOMTransactionChainAdapter(newChainIdentifier(), service, listener);
+    }
+
+    @Override
+    public DOMTransactionChain createMergingTransactionChain(final DOMTransactionChainListener listener) {
+        return new PingPongTransactionChain(this::createTransactionChain, listener);
     }
 
     private Object newTransactionIdentifier() {

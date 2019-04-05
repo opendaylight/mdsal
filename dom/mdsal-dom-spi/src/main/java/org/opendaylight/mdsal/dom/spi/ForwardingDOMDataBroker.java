@@ -48,6 +48,11 @@ public abstract class ForwardingDOMDataBroker extends ForwardingObject implement
     }
 
     @Override
+    public DOMTransactionChain createMergingTransactionChain(final DOMTransactionChainListener listener) {
+        return delegate().createMergingTransactionChain(listener);
+    }
+
+    @Override
     public ClassToInstanceMap<DOMDataBrokerExtension> getExtensions() {
         return delegate().getExtensions();
     }

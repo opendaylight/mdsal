@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
@@ -49,5 +50,24 @@ public interface DOMDataBroker extends DOMTransactionFactory,
      * @param listener Transaction chain event listener
      * @return A new transaction chain.
      */
-    DOMTransactionChain createTransactionChain(DOMTransactionChainListener listener);
+    @NonNull DOMTransactionChain createTransactionChain(DOMTransactionChainListener listener);
+
+    /**
+     * Create a new transaction chain. The chain will be initialized to read from its backing datastore, with
+     * no outstanding transaction. Listener will be registered to handle chain-level events.
+     *
+     * <p>
+     * Unlike {@link #createTransactionChain(DOMTransactionChainListener)}, the transaction chain returned by this
+     * method is allowed to merge individual transactions into larger chunks. When transactions are merged, the results
+     * must be indistinguishable from the result of all operations having been performed on a single transaction.
+     *
+     * <p>
+     * When transactions are merged, {@link DOMTransactionChain#newReadOnlyTransaction()} may actually be backed by
+     * a read-write transaction, hence an additional restriction on API use is that multiple read-only transactions
+     * may not be open at the same time.
+     *
+     * @param listener Transaction chain event listener
+     * @return A new transaction chain.
+     */
+    @NonNull DOMTransactionChain createMergingTransactionChain(DOMTransactionChainListener listener);
 }
