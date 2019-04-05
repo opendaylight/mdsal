@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
@@ -24,7 +25,6 @@ import org.opendaylight.mdsal.binding.api.TransactionChainClosedException;
 import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
-import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -44,12 +44,12 @@ final class BindingDOMTransactionChainAdapter implements TransactionChain, Deleg
     private final DelegateChainListener domListener;
     private final TransactionChainListener bindingListener;
 
-    BindingDOMTransactionChainAdapter(final DOMDataBroker chainFactory,
+    BindingDOMTransactionChainAdapter(final Function<DOMTransactionChainListener, DOMTransactionChain> chainFactory,
             final BindingToNormalizedNodeCodec codec, final TransactionChainListener listener) {
         requireNonNull(chainFactory, "DOM Transaction chain factory must not be null");
         this.domListener = new DelegateChainListener();
         this.bindingListener = listener;
-        this.delegate = chainFactory.createTransactionChain(domListener);
+        this.delegate = chainFactory.apply(domListener);
         this.codec = codec;
     }
 
