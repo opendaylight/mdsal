@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.pingpong;
+package org.opendaylight.mdsal.dom.spi;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
@@ -19,18 +19,17 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import java.util.function.Function;
 import javax.annotation.concurrent.GuardedBy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
-import org.opendaylight.mdsal.dom.spi.ForwardingDOMDataReadWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
@@ -89,9 +88,10 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
                 "inflightTx");
     private volatile PingPongTransaction inflightTx;
 
-    PingPongTransactionChain(final DOMDataBroker broker, final DOMTransactionChainListener listener) {
+    public PingPongTransactionChain(final Function<DOMTransactionChainListener, DOMTransactionChain> delegateFactory,
+            final DOMTransactionChainListener listener) {
         this.listener = requireNonNull(listener);
-        this.delegate = broker.createTransactionChain(new DOMTransactionChainListener() {
+        this.delegate = delegateFactory.apply(new DOMTransactionChainListener() {
             @Override
             public void onTransactionChainFailed(final DOMTransactionChain chain,
                     final DOMDataTreeTransaction transaction, final Throwable cause) {
