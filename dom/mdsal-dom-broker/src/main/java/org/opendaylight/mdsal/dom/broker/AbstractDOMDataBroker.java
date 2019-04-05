@@ -22,6 +22,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
+import org.opendaylight.mdsal.dom.spi.PingPongTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
@@ -111,5 +112,10 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
         LOG.debug("Transactoin chain {} created with listener {}, backing store chains {}", chainId, listener,
                 backingChains);
         return new DOMDataBrokerTransactionChainImpl(chainId, backingChains, this, listener);
+    }
+
+    @Override
+    public DOMTransactionChain createMergingTransactionChain(final DOMTransactionChainListener listener) {
+        return new PingPongTransactionChain(this::createTransactionChain, listener);
     }
 }
