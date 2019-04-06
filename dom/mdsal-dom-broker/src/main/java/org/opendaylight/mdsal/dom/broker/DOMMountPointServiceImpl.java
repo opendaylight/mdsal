@@ -68,13 +68,20 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         return doRegisterMountPoint((SimpleDOMMountPoint) mountPoint);
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private ObjectRegistration<DOMMountPoint> doRegisterMountPoint(final SimpleDOMMountPoint mountPoint) {
         final YangInstanceIdentifier mountPointId = mountPoint.getIdentifier();
         synchronized (mountPoints) {
             final DOMMountPoint prev = mountPoints.putIfAbsent(mountPointId, mountPoint);
             checkState(prev == null, "Mount point %s already exists as %s", mountPointId, prev);
         }
-        listeners.forEach(listener -> listener.getInstance().onMountPointCreated(mountPointId));
+        listeners.forEach(listener -> {
+            try {
+                listener.getInstance().onMountPointCreated(mountPointId);
+            } catch (final Exception ex) {
+                LOG.error("Listener {} failed on mount point {} created event", listener, mountPoint, ex);
+            }
+        });
 
         return new AbstractObjectRegistration<DOMMountPoint>(mountPoint) {
             @Override
@@ -98,6 +105,7 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         doUnregisterMountPoint(mountPointId);
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private void doUnregisterMountPoint(final YangInstanceIdentifier mountPointId) {
         synchronized (mountPoints) {
             if (mountPoints.remove(mountPointId) == null) {
@@ -106,7 +114,13 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
             }
         }
 
-        listeners.forEach(listener -> listener.getInstance().onMountPointRemoved(mountPointId));
+        listeners.forEach(listener -> {
+            try {
+                listener.getInstance().onMountPointRemoved(mountPointId);
+            } catch (final Exception ex) {
+                LOG.error("Listener {} failed on mount point {} removed event", listener, mountPointId, ex);
+            }
+        });
     }
 
     final class DOMMountPointBuilderImpl implements DOMMountPointBuilder {
