@@ -146,7 +146,7 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         @Override
         public ObjectRegistration<DOMMountPoint> register() {
             checkState(mountPoint == null, "Mount point is already built.");
-            mountPoint = SimpleDOMMountPoint.create(path, services,schemaContext);
+            mountPoint = SimpleDOMMountPoint.create(path, services, schemaContext);
             return doRegisterMountPoint(mountPoint);
         }
     }
