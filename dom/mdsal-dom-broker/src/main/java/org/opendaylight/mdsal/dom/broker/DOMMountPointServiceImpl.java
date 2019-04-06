@@ -64,26 +64,12 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         return new AbstractObjectRegistration<DOMMountPoint>(mountPoint) {
             @Override
             protected void removeRegistration() {
-                doUnregisterMountPoint(getInstance().getIdentifier());
+                unregisterMountPoint(getInstance().getIdentifier());
             }
         };
     }
 
-    /**
-     * Unregisters mountpoint.
-     *
-     * @param mountPointId Mountpoint identifier.
-     *
-     * @deprecated this method should never have been exposed publicly - mountpoint should be unregistered by simply
-     *             closing its registration.
-     *
-     */
-    @Deprecated
-    public void unregisterMountPoint(final YangInstanceIdentifier mountPointId) {
-        doUnregisterMountPoint(mountPointId);
-    }
-
-    private void doUnregisterMountPoint(final YangInstanceIdentifier mountPointId) {
+    private void unregisterMountPoint(final YangInstanceIdentifier mountPointId) {
         synchronized (mountPoints) {
             if (mountPoints.remove(mountPointId) == null) {
                 LOG.warn("Removing non-existent mount point {} at", mountPointId, new Throwable());
