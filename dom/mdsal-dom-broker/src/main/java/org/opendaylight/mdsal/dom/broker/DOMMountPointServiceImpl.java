@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.dom.broker;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.MutableClassToInstanceMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,7 +93,7 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         });
     }
 
-    final class DOMMountPointBuilderImpl implements DOMMountPointBuilder {
+    private final class DOMMountPointBuilderImpl implements DOMMountPointBuilder {
 
         private final MutableClassToInstanceMap<DOMService> services = MutableClassToInstanceMap.create();
         private final YangInstanceIdentifier path;
@@ -104,16 +103,6 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
 
         DOMMountPointBuilderImpl(final YangInstanceIdentifier path) {
             this.path = requireNonNull(path);
-        }
-
-        @VisibleForTesting
-        SchemaContext getSchemaContext() {
-            return schemaContext;
-        }
-
-        @VisibleForTesting
-        Map<Class<? extends DOMService>, DOMService> getServices() {
-            return services;
         }
 
         @Override
