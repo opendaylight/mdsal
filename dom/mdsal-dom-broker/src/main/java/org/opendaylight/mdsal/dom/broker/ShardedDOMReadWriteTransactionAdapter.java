@@ -15,8 +15,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-// FIXME: 4.0.0: make this class package-protected and final
-public class ShardedDOMReadWriteTransactionAdapter extends ShardedDOMWriteTransactionAdapter
+final class ShardedDOMReadWriteTransactionAdapter extends ShardedDOMWriteTransactionAdapter
         implements DOMDataTreeReadWriteTransaction {
 
     private final ShardedDOMReadTransactionAdapter readAdapter;
