@@ -62,8 +62,14 @@ public interface WriteOperations {
      *             instead.
      */
     @Deprecated
-    <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
-            @NonNull T data, boolean createMissingParents);
+    default <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
+            @NonNull T data, boolean createMissingParents) {
+        if (createMissingParents) {
+            mergeParentStructurePut(store, path, data);
+        } else {
+            put(store, path, data);
+        }
+    }
 
     /**
      * Stores a piece of data at the specified path. This acts as an add / replace operation, which is to say that whole
@@ -87,13 +93,10 @@ public interface WriteOperations {
      * @throws IllegalStateException if the transaction has already been submitted
      * @throws NullPointerException if any of the arguments is null
      */
-    // FIXME: 4.0.0: make this method non-default
     // TODO: can we come up with a better name?
     @Beta
-    default <T extends DataObject> void mergeParentStructurePut(@NonNull final LogicalDatastoreType store,
-            @NonNull final InstanceIdentifier<T> path, @NonNull final T data) {
-        put(store, path, data, CREATE_MISSING_PARENTS);
-    }
+    <T extends DataObject> void mergeParentStructurePut(@NonNull LogicalDatastoreType store,
+            @NonNull InstanceIdentifier<T> path, @NonNull T data);
 
     /**
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
@@ -132,8 +135,14 @@ public interface WriteOperations {
      *             instead.
      */
     @Deprecated
-    <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
-            @NonNull T data, boolean createMissingParents);
+    default <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
+            @NonNull T data, boolean createMissingParents) {
+        if (createMissingParents) {
+            mergeParentStructureMerge(store, path, data);
+        } else {
+            merge(store, path, data);
+        }
+    }
 
     /**
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
@@ -156,13 +165,10 @@ public interface WriteOperations {
      * @throws IllegalStateException if the transaction has already been submitted
      * @throws NullPointerException if any of the arguments is null
      */
-    // FIXME: 4.0.0: make this method non-default
     // TODO: can we come up with a better name?
     @Beta
-    default <T extends DataObject> void mergeParentStructureMerge(@NonNull final LogicalDatastoreType store,
-            @NonNull final InstanceIdentifier<T> path, @NonNull final T data) {
-        merge(store, path, data, CREATE_MISSING_PARENTS);
-    }
+    <T extends DataObject> void mergeParentStructureMerge(@NonNull LogicalDatastoreType store,
+            @NonNull InstanceIdentifier<T> path, @NonNull T data);
 
     /**
      * Removes a piece of data from specified path. This operation does not fail if the specified path does not exist.
