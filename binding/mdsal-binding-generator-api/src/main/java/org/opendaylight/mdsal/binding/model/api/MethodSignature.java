@@ -37,10 +37,7 @@ public interface MethodSignature extends TypeMember {
      *
      * @return <code>true</code> if the method signature is defined as default.
      */
-    // FIXME: 4.0.0: make this method non-default
-    default boolean isDefault() {
-        return false;
-    }
+    boolean isDefault();
 
     /**
      * Returns the List of parameters that method declare. If the method does not contain any parameters, the method
