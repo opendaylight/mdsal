@@ -47,7 +47,14 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
      *             {@link #mergeParentStructurePut(InstanceIdentifier, DataObject)} instead.
      */
     @Deprecated
-    <T extends DataObject> void put(InstanceIdentifier<T> path, T data, boolean createMissingParents);
+    default <T extends DataObject> void put(final InstanceIdentifier<T> path, final T data,
+            final boolean createMissingParents) {
+        if (createMissingParents) {
+            mergeParentStructurePut(path, data);
+        } else {
+            put(path, data);
+        }
+    }
 
     /**
      * Writes an object to the given path, creating significant parents, like presence containers and list entries,
@@ -61,10 +68,7 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
      */
     // TODO: can we come up with a better name?
     @Beta
-    @SuppressWarnings("deprecation")
-    default <T extends DataObject> void mergeParentStructurePut(final InstanceIdentifier<T> path, final T data) {
-        put(path, data, WriteOperations.CREATE_MISSING_PARENTS);
-    }
+    <T extends DataObject> void mergeParentStructurePut(InstanceIdentifier<T> path, T data);
 
     /**
      * Merges an object with the data already present at the given path.
@@ -92,7 +96,14 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
      *             {@link #mergeParentStructureMerge(InstanceIdentifier, DataObject)} instead.
      */
     @Deprecated
-    <T extends DataObject> void merge(InstanceIdentifier<T> path, T data, boolean createMissingParents);
+    default <T extends DataObject> void merge(final InstanceIdentifier<T> path, final T data,
+            final boolean createMissingParents) {
+        if (createMissingParents) {
+            mergeParentStructureMerge(path, data);
+        } else {
+            merge(path, data);
+        }
+    }
 
     /**
      * Merges an object with the data already present at the given path, creating missing parents if requested.
@@ -103,14 +114,9 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
      * @param data The object to merge.
      * @param <T> The type of the provided object.
      */
-    // FIXME: 4.0.0: make this method non-default
     // TODO: can we come up with a better name?
     @Beta
-    @SuppressWarnings("deprecation")
-    default <T extends DataObject> void mergeParentStructureMerge(final InstanceIdentifier<T> path,
-            final T data) {
-        merge(path, data, WriteOperations.CREATE_MISSING_PARENTS);
-    }
+    <T extends DataObject> void mergeParentStructureMerge(InstanceIdentifier<T> path, T data);
 
     /**
      * Deletes the object present at the given path.
