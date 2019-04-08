@@ -40,10 +40,7 @@ public interface MethodSignatureBuilder extends TypeMemberBuilder<MethodSignatur
      * @param isDefault true if this signature is to represent a default method.
      * @return this builder
      */
-    // FIXME: 4.0.0: make this method non-default
-    default MethodSignatureBuilder setDefault(final boolean isDefault) {
-        throw new UnsupportedOperationException(getClass() + " does not override setDefault");
-    }
+    MethodSignatureBuilder setDefault(boolean isDefault);
 
     /**
      * Adds Parameter into the List of method parameters. Neither the Name or Type of parameter can be {@code null}.
