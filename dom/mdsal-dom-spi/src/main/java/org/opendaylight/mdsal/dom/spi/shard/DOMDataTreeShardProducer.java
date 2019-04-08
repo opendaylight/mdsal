@@ -33,12 +33,8 @@ public interface DOMDataTreeShardProducer extends Registration {
     @NonNull DOMDataTreeShardWriteTransaction createTransaction();
 
     /**
-     * Close this producer, releasing all resources. Default implementation does nothing, implementations should provide
-     * an implementation.
+     * Close this producer, releasing all resources.
      */
-    // FIXME: 4.0.0: make this method non-default
     @Override
-    default void close() {
-
-    }
+    void close();
 }
