@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.model.util;
 
+import static java.util.Objects.requireNonNull;
+
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
@@ -17,12 +20,7 @@ public class AbstractBaseType implements Type {
     /**
      * Name of this <code>Type</code>.
      */
-    private final JavaTypeName identifier;
-
-    @Override
-    public final JavaTypeName getIdentifier() {
-        return this.identifier;
-    }
+    private final @NonNull JavaTypeName identifier;
 
     /**
      * Constructs the instance of this class with a JavaTypeName.
@@ -30,10 +28,12 @@ public class AbstractBaseType implements Type {
      * @param identifier for this <code>Type</code>
      */
     protected AbstractBaseType(final JavaTypeName identifier) {
-        if (identifier == null) {
-            throw new IllegalArgumentException("Identifier for Generated Type cannot be null!");
-        }
-        this.identifier = identifier;
+        this.identifier = requireNonNull(identifier);
+    }
+
+    @Override
+    public final JavaTypeName getIdentifier() {
+        return this.identifier;
     }
 
     @Override
