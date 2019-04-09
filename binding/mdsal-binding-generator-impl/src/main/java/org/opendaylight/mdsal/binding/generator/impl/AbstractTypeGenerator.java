@@ -511,9 +511,7 @@ abstract class AbstractTypeGenerator {
                 final MethodSignatureBuilder method = interfaceBuilder.addMethod(rpcMethodName);
 
                 // Do not refer to annotation class, as it may not be available at runtime
-                // FIXME: migrate this to some other annotation type and re-enable
-                //
-                // method.addAnnotation("javax.annotation", "CheckReturnValue");
+                method.addAnnotation("edu.umd.cs.findbugs.annotations", "CheckReturnValue");
                 addComment(method, rpc);
                 method.addParameter(
                     createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getInput()), RPC_INPUT), "input");
