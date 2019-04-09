@@ -58,7 +58,7 @@ public class EnumerationBuilderImplTest {
         enumeration = enumerationBuilder.toInstance(enumerationBuilder);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testAddNullAnnotation() {
         assertNull(enumerationBuilder.addAnnotation(null));
     }
