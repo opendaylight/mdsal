@@ -129,14 +129,12 @@ public class TypeProviderTest {
     private static LeafSchemaNode provideLeafNodeFromTopLevelContainer(final Module module, final String containerName,
             final String leafNodeName) {
         final QName containerNode = QName.create(module.getQNameModule(), containerName);
-        final DataSchemaNode rootNode = module.getDataChildByName(containerNode);
-        assertNotNull("Container foo is not present in root of module " + module.getName(), rootNode);
+        final DataSchemaNode rootNode = module.findDataChildByName(containerNode).get();
         assertTrue(rootNode instanceof DataNodeContainer);
 
         final QName leafNode = QName.create(module.getQNameModule(), leafNodeName);
         final DataNodeContainer rootContainer = (DataNodeContainer) rootNode;
-        final DataSchemaNode node = rootContainer.getDataChildByName(leafNode);
-        assertNotNull(node);
+        final DataSchemaNode node = rootContainer.findDataChildByName(leafNode).get();
         assertTrue(node instanceof LeafSchemaNode);
         return (LeafSchemaNode) node;
     }
@@ -144,14 +142,12 @@ public class TypeProviderTest {
     private static LeafListSchemaNode provideLeafListNodeFromTopLevelContainer(final Module module,
             final String containerName, final String leafListNodeName) {
         final QName containerNode = QName.create(module.getQNameModule(), containerName);
-        final DataSchemaNode rootNode = module.getDataChildByName(containerNode);
-        assertNotNull("Container foo is not present in root of module " + module.getName(), rootNode);
+        final DataSchemaNode rootNode = module.findDataChildByName(containerNode).get();
         assertTrue(rootNode instanceof DataNodeContainer);
 
         final DataNodeContainer rootContainer = (DataNodeContainer) rootNode;
         final QName leafListNode = QName.create(module.getQNameModule(), leafListNodeName);
-        final DataSchemaNode node = rootContainer.getDataChildByName(leafListNode);
-        assertNotNull(node);
+        final DataSchemaNode node = rootContainer.findDataChildByName(leafListNode).get();
         assertTrue(node instanceof LeafListSchemaNode);
         return (LeafListSchemaNode) node;
     }
@@ -286,7 +282,7 @@ public class TypeProviderTest {
 
         final Module module = resolveModule("test-type-provider-b");
         final QName leafNode = QName.create(module.getQNameModule(), "id");
-        final DataSchemaNode rootNode = module.getDataChildByName(leafNode);
+        final DataSchemaNode rootNode = module.findDataChildByName(leafNode).get();
         assertNotNull("leaf id is not present in root of module " + module.getName(), rootNode);
         assertTrue(rootNode instanceof LeafSchemaNode);
         leaf = (LeafSchemaNode) rootNode;
@@ -306,8 +302,7 @@ public class TypeProviderTest {
         final Module module = resolveModule("test-type-provider-b");
 
         final QName leafNode = QName.create(module.getQNameModule(), "enum");
-        final DataSchemaNode enumNode = module.getDataChildByName(leafNode);
-        assertNotNull("leaf enum is not present in root of module " + module.getName(), enumNode);
+        final DataSchemaNode enumNode = module.findDataChildByName(leafNode).get();
         assertTrue(enumNode instanceof LeafSchemaNode);
         final LeafSchemaNode leaf = (LeafSchemaNode) enumNode;
         final TypeDefinition<?> leafType = leaf.getType();
@@ -317,8 +312,7 @@ public class TypeProviderTest {
         assertTrue(leafrefResolvedType1 instanceof ReferencedTypeImpl);
 
         final QName leafListNode = QName.create(module.getQNameModule(), "enums");
-        final DataSchemaNode enumListNode = module.getDataChildByName(leafListNode);
-        assertNotNull("leaf-list enums is not present in root of module " + module.getName(), enumNode);
+        final DataSchemaNode enumListNode = module.findDataChildByName(leafListNode).get();
         assertTrue(enumListNode instanceof LeafListSchemaNode);
         final LeafListSchemaNode leafList = (LeafListSchemaNode) enumListNode;
         final TypeDefinition<?> leafListType = leafList.getType();
@@ -352,8 +346,7 @@ public class TypeProviderTest {
         final Module module = resolveModule("test-type-provider-b");
 
         final QName leafrefNode = QName.create(module.getQNameModule(), "conditional-leafref");
-        final DataSchemaNode condLeaf = module.getDataChildByName(leafrefNode);
-        assertNotNull("leaf conditional-leafref is not present in root of module " + module.getName(), condLeaf);
+        final DataSchemaNode condLeaf = module.findDataChildByName(leafrefNode).get();
         assertTrue(condLeaf instanceof LeafSchemaNode);
         final LeafSchemaNode leaf = (LeafSchemaNode) condLeaf;
         final TypeDefinition<?> leafType = leaf.getType();
@@ -371,8 +364,7 @@ public class TypeProviderTest {
         final Module module = resolveModule("test-type-provider-b");
 
         final QName leafrefNode = QName.create(module.getQNameModule(), "unreslovable-leafref");
-        final DataSchemaNode condLeaf = module.getDataChildByName(leafrefNode);
-        assertNotNull("leaf unreslovable-leafref is not present in root of module " + module.getName(), condLeaf);
+        final DataSchemaNode condLeaf = module.findDataChildByName(leafrefNode).get();
         assertTrue(condLeaf instanceof LeafSchemaNode);
         final LeafSchemaNode leaf = (LeafSchemaNode) condLeaf;
         final TypeDefinition<?> leafType = leaf.getType();
@@ -867,8 +859,7 @@ public class TypeProviderTest {
 
         final Module module = resolveModule("test-type-provider");
         final QName leafUnionNode = QName.create(module.getQNameModule(), "root-union-leaf");
-        DataSchemaNode rootNode = module.getDataChildByName(leafUnionNode);
-        assertNotNull("leaf root-union-leaf is not present in root of module " + module.getName(), rootNode);
+        DataSchemaNode rootNode = module.findDataChildByName(leafUnionNode).get();
         assertTrue(rootNode instanceof LeafSchemaNode);
         leaf = (LeafSchemaNode) rootNode;
         result = provider.getTypeDefaultConstruction(leaf);
@@ -885,8 +876,7 @@ public class TypeProviderTest {
                 + "YangBinary(new byte[] {-45, 23, -33, 125, -9, -33})", result);
 
         final QName leafBitsNode = QName.create(module.getQNameModule(), "root-bits-leaf");
-        rootNode = module.getDataChildByName(leafBitsNode);
-        assertNotNull("leaf bits-leaf is not present in root of module " + module.getName(), rootNode);
+        rootNode = module.findDataChildByName(leafBitsNode).get();
         assertTrue(rootNode instanceof LeafSchemaNode);
         leaf = (LeafSchemaNode) rootNode;
         result = provider.getTypeDefaultConstruction(leaf);
