@@ -30,6 +30,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyedListAction;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
+import org.opendaylight.yangtools.yang.binding.OpaqueObject;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
@@ -68,6 +69,7 @@ public final class BindingTypes {
     private static final ConcreteType CHILD_OF = typeForClass(ChildOf.class);
     private static final ConcreteType CHOICE_IN = typeForClass(ChoiceIn.class);
     private static final ConcreteType KEYED_LIST_ACTION = typeForClass(KeyedListAction.class);
+    private static final ConcreteType OPAQUE_OBJECT = typeForClass(OpaqueObject.class);
     private static final ConcreteType RPC_RESULT = typeForClass(RpcResult.class);
 
     private BindingTypes() {
@@ -166,6 +168,17 @@ public final class BindingTypes {
      */
     public static ParameterizedType instanceIdentifier(final Type type) {
         return parameterizedTypeFor(INSTANCE_IDENTIFIER, type);
+    }
+
+    /**
+     * Type specializing {@link OpaqueObject} for a particular type.
+     *
+     * @param type Type for which to specialize
+     * @return A parameterized type corresponding to {@code OpaqueObject<Type>}
+     * @throws NullPointerException if {@code type} is null
+     */
+    public static ParameterizedType opaqueObject(final Type type) {
+        return parameterizedTypeFor(OPAQUE_OBJECT, type);
     }
 
     /**
