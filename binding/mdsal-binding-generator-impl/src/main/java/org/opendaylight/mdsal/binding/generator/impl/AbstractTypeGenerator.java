@@ -30,6 +30,7 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.choiceIn;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifiable;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifier;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.keyedListAction;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.opaqueObject;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.rpcResult;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
@@ -88,6 +89,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
+import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
@@ -1050,8 +1052,10 @@ abstract class AbstractTypeGenerator {
                 listToGenType(context, typeBuilder, baseInterface, (ListSchemaNode) node, inGrouping);
             } else if (node instanceof ChoiceSchemaNode) {
                 choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) node, inGrouping);
+            } else if (node instanceof AnyXmlSchemaNode) {
+                // FIXME: MDSAL-438: also cover AnyDataSchemaNode
+                opaqueToGeneratedType(context, typeBuilder, (AnyXmlSchemaNode) node);
             } else {
-                // TODO: anyxml not yet supported
                 LOG.debug("Unable to add schema node {} as method in {}: unsupported type of node.", node.getClass(),
                         typeBuilder.getFullyQualifiedName());
             }
@@ -1076,8 +1080,6 @@ abstract class AbstractTypeGenerator {
      */
     private void choiceToGeneratedType(final ModuleContext context, final GeneratedTypeBuilder parent,
             final ChoiceSchemaNode choiceNode, final boolean inGrouping) {
-        checkArgument(choiceNode != null, "Choice Schema Node cannot be NULL.");
-
         if (!choiceNode.isAddedByUses()) {
             final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(
                 JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), choiceNode.getPath()),
@@ -1090,6 +1092,21 @@ abstract class AbstractTypeGenerator {
             generateTypesFromChoiceCases(context, choiceType, choiceNode, inGrouping);
 
             constructGetter(parent, choiceType, choiceNode);
+        }
+    }
+
+    private void opaqueToGeneratedType(final ModuleContext context, final GeneratedTypeBuilder parent,
+            final AnyXmlSchemaNode anyxmlNode) {
+        if (!anyxmlNode.isAddedByUses()) {
+            final GeneratedTypeBuilder anyxmlTypeBuilder = addRawInterfaceDefinition(
+                JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), anyxmlNode.getPath()),
+                BindingMapping.getClassName(anyxmlNode.getQName())), anyxmlNode);
+            anyxmlTypeBuilder.addImplementsType(opaqueObject(anyxmlTypeBuilder)).addImplementsType(childOf(parent));
+            defaultImplementedInterace(anyxmlTypeBuilder);
+            annotateDeprecatedIfNecessary(anyxmlNode.getStatus(), anyxmlTypeBuilder);
+            context.addChildNodeType(anyxmlNode, anyxmlTypeBuilder);
+
+            constructGetter(parent, anyxmlTypeBuilder.build(), anyxmlNode);
         }
     }
 
