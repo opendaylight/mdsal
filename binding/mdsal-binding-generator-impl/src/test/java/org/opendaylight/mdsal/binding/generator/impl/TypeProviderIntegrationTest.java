@@ -54,12 +54,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionBinary() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-binary");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new byte[] {77, 97, 110}", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-binary");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyBinary(new byte[] {77, 97, 110})", actual);
     }
@@ -67,12 +67,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionBits() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-bits");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "TestData.LeafBits(false, false, true)", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-bits");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyBits(false, false, true)", actual);
     }
@@ -80,12 +80,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionBoolean() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-boolean");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("java.lang.Boolean.TRUE", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-boolean");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyBoolean(java.lang.Boolean.TRUE)", actual);
     }
@@ -93,12 +93,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionDecimal() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-decimal64");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.math.BigDecimal(\"3.14\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-decimal64");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyDecimal64(new java.math.BigDecimal(\"3.14\"))", actual);
     }
@@ -106,12 +106,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionEmpty() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-empty");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("java.lang.Boolean.FALSE", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-empty");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyEmpty(java.lang.Boolean.FALSE)", actual);
     }
@@ -119,12 +119,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionEnumeration() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-enumeration");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.LeafEnumeration.Seven", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-enumeration");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals(PKG + "MyEnumeration.Seven", actual);
     }
@@ -132,12 +132,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionInt8() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-int8");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("java.lang.Byte.valueOf(\"11\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-int8");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyInt8(java.lang.Byte.valueOf(\"11\"))", actual);
     }
@@ -145,12 +145,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionInt16() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-int16");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("java.lang.Short.valueOf(\"111\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-int16");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyInt16(java.lang.Short.valueOf(\"111\"))", actual);
     }
@@ -158,12 +158,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionInt32() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-int32");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("java.lang.Integer.valueOf(\"1111\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-int32");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyInt32(java.lang.Integer.valueOf(\"1111\"))", actual);
     }
@@ -171,12 +171,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionInt64() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-int64");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("java.lang.Long.valueOf(\"11111\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-int64");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyInt64(java.lang.Long.valueOf(\"11111\"))", actual);
     }
@@ -184,12 +184,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionLeafref1() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-leafref");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.math.BigDecimal(\"1.234\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-leafref");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.math.BigDecimal(\"1.234\")", actual);
     }
@@ -197,12 +197,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionLeafref2() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-leafref1");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyBinary(new byte[] {77, 97, 110})", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-leafref1");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyBinary(new byte[] {77, 97, 110})", actual);
     }
@@ -210,12 +210,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionString() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-string");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("\"name\"", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-string");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyString(\"name\")", actual);
     }
@@ -223,12 +223,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionUint8() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-uint8");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("java.lang.Short.valueOf(\"11\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-uint8");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyUint8(java.lang.Short.valueOf(\"11\"))", actual);
     }
@@ -236,12 +236,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionUint16() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-uint16");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("java.lang.Integer.valueOf(\"111\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-uint16");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyUint16(java.lang.Integer.valueOf(\"111\"))", actual);
     }
@@ -249,12 +249,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionUint32() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-uint32");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("java.lang.Long.valueOf(\"1111\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-uint32");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyUint32(java.lang.Long.valueOf(\"1111\"))", actual);
     }
@@ -262,12 +262,12 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionUint64() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-uint64");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.math.BigInteger(\"11111\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-uint64");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyUint64(new java.math.BigInteger(\"11111\"))", actual);
     }
@@ -275,7 +275,7 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstruction() {
         final QName leafNode = QName.create(module.getQNameModule(), "ip-leaf");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         String exp = "new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924."
                 + "Ipv4Address(\"0.0.0.1\")";
@@ -285,13 +285,13 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionUnion() {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-union");
-        LeafSchemaNode leaf = (LeafSchemaNode) module.getDataChildByName(leafNode1);
+        LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
         String expected = "new " + PKG + "TestData.LeafUnion(\"111\".toCharArray())";
         assertEquals(expected, actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-union");
-        leaf = (LeafSchemaNode) module.getDataChildByName(leafNode2);
+        leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
         expected = "new " + PKG + "MyUnion(\"111\".toCharArray())";
         assertEquals(expected, actual);
@@ -300,13 +300,13 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetTypeDefaultConstructionUnionNested()  {
         final QName containerNode1 = QName.create(module.getQNameModule(), "c1");
-        ContainerSchemaNode c1 = (ContainerSchemaNode) module.getDataChildByName(containerNode1);
+        ContainerSchemaNode c1 = (ContainerSchemaNode) module.findDataChildByName(containerNode1).get();
         final QName containerNode2 = QName.create(module.getQNameModule(), "c2");
-        ContainerSchemaNode c2 = (ContainerSchemaNode) c1.getDataChildByName(containerNode2);
+        ContainerSchemaNode c2 = (ContainerSchemaNode) c1.findDataChildByName(containerNode2).get();
         final QName containerNode3 = QName.create(module.getQNameModule(), "c3");
-        ContainerSchemaNode c3 = (ContainerSchemaNode) c2.getDataChildByName(containerNode3);
+        ContainerSchemaNode c3 = (ContainerSchemaNode) c2.findDataChildByName(containerNode3).get();
         final QName leafNode = QName.create(module.getQNameModule(), "id");
-        LeafSchemaNode leaf = (LeafSchemaNode) c3.getDataChildByName(leafNode);
+        LeafSchemaNode leaf = (LeafSchemaNode) c3.findDataChildByName(leafNode).get();
 
         String actual = provider.getTypeDefaultConstruction(leaf);
         String expected = "new " + PKG + "NestedUnion(\"111\".toCharArray())";
