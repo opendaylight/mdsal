@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "43ebdd26_488886b3",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/api/BindingCodecTreeNode.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-04-10T14:57:01Z",
+      "side": 1,
+      "message": "Okay, so the problem is the marriage of NodeCodecContext to BindingCodecTreeNode as well as insufficient decomposition of BindingCodecTreeNode.\n\nSome aspects, like getBindingClass() are inherent to BindingObject. Others, like the ability to have children are a DataObject concern.\n\nThe LeafNodeCodecContext class should really not have those methods in the first place and for TypedObjects we really should specialize it, so that it has direct implementation of getBindingClass().",
+      "parentUuid": "515d9ef3_4b3b3363",
+      "range": {
+        "startLine": 28,
+        "startChar": 48,
+        "endLine": 28,
+        "endChar": 61
+      },
+      "revId": "cdef52eba8bf9f7293699cb8ff89cc2856ffe7d1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fab3ff3a_2a4d9591",
         "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/api/BindingCodecTreeNode.java",
         "patchSetId": 8
