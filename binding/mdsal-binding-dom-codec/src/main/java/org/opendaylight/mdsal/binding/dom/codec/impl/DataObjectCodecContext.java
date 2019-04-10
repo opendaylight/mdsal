@@ -329,9 +329,8 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         return context;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public NodeCodecContext<D> yangPathArgumentChild(final YangInstanceIdentifier.PathArgument arg) {
+    public NodeCodecContext yangPathArgumentChild(final YangInstanceIdentifier.PathArgument arg) {
         final NodeContextSupplier childSupplier;
         if (arg instanceof NodeIdentifierWithPredicates) {
             childSupplier = byYang.get(new NodeIdentifier(arg.getNodeType()));
@@ -341,8 +340,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
             childSupplier = byYang.get(arg);
         }
 
-        return (NodeCodecContext<D>) childNonNull(childSupplier, arg,
-            "Argument %s is not valid child of %s", arg, getSchema()).get();
+        return childNonNull(childSupplier, arg, "Argument %s is not valid child of %s", arg, getSchema()).get();
     }
 
     protected final LeafNodeCodecContext<?> getLeafChild(final String name) {
@@ -521,7 +519,7 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
 
     @SuppressWarnings("rawtypes")
     @Nullable Object getBindingChildValue(final String method, final NormalizedNodeContainer domData) {
-        final NodeCodecContext<?> childContext = verifyNotNull(byMethod.get(method),
+        final NodeCodecContext childContext = verifyNotNull(byMethod.get(method),
             "Cannot find data handler for method %s", method).get();
 
         @SuppressWarnings("unchecked")

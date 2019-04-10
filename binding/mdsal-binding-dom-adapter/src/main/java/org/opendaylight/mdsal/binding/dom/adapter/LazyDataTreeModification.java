@@ -18,7 +18,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -44,7 +44,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     @SuppressWarnings({"unchecked", "rawtypes"})
     static <T extends DataObject> DataTreeModification<T> create(final BindingToNormalizedNodeCodec codec,
             final DataTreeCandidate domChange, final LogicalDatastoreType datastoreType) {
-        final Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> codecCtx = codec.getSubtreeCodec(
+        final Entry<InstanceIdentifier<?>, BindingDataObjectCodecTreeNode<?>> codecCtx = codec.getSubtreeCodec(
             domChange.getRootPath());
         final DataTreeIdentifier<?> path = DataTreeIdentifier.create(datastoreType, codecCtx.getKey());
         final DataObjectModification<?> modification = LazyDataObjectModification.create(codecCtx.getValue(),
@@ -55,7 +55,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     @SuppressWarnings({"unchecked", "rawtypes"})
     static <T extends DataObject> DataTreeModification<T> create(final BindingToNormalizedNodeCodec codec,
             final DOMDataTreeCandidate candidate) {
-        final Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> codecCtx = codec.getSubtreeCodec(
+        final Entry<InstanceIdentifier<?>, BindingDataObjectCodecTreeNode<?>> codecCtx = codec.getSubtreeCodec(
             candidate.getRootPath().getRootIdentifier());
         final DataTreeIdentifier<?> path = DataTreeIdentifier.create(candidate.getRootPath().getDatastoreType(),
             codecCtx.getKey());

@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ImmutableMap;
@@ -28,6 +29,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.dom.codec.util.BindingSchemaMapping;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
@@ -144,16 +146,16 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
      *         binding representation (choice, case, leaf).
      *
      */
-    @Nullable NodeCodecContext<?> getCodecContextNode(final @NonNull YangInstanceIdentifier dom,
+    @Nullable BindingDataObjectCodecTreeNode<?> getCodecContextNode(final @NonNull YangInstanceIdentifier dom,
             final @Nullable Collection<InstanceIdentifier.PathArgument> bindingArguments) {
-        NodeCodecContext<?> currentNode = root;
+        NodeCodecContext currentNode = root;
         ListNodeCodecContext<?> currentList = null;
 
         for (final YangInstanceIdentifier.PathArgument domArg : dom.getPathArguments()) {
             checkArgument(currentNode instanceof DataContainerCodecContext,
                 "Unexpected child of non-container node %s", currentNode);
             final DataContainerCodecContext<?,?> previous = (DataContainerCodecContext<?, ?>) currentNode;
-            final NodeCodecContext<?> nextNode = previous.yangPathArgumentChild(domArg);
+            final NodeCodecContext nextNode = previous.yangPathArgumentChild(domArg);
 
             /*
              * List representation in YANG Instance Identifier consists of two
@@ -210,7 +212,12 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
             }
             return currentList;
         }
-        return currentNode;
+        if (currentNode != null) {
+            verify(currentNode instanceof BindingDataObjectCodecTreeNode, "Illegal return node %s for identifier %s",
+                currentNode, dom);
+            return (BindingDataObjectCodecTreeNode<?>) currentNode;
+        }
+        return null;
     }
 
     NotificationCodecContext<?> getNotificationContext(final SchemaPath notification) {
@@ -243,6 +250,11 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         for (final Method method : parentClass.getMethods()) {
             if (method.getParameterCount() == 0) {
                 final DataSchemaNode schema = getterToLeafSchema.get(method.getName());
+                if (!(schema instanceof TypedDataSchemaNode)) {
+                    // We do not have schema for leaf, so we will ignore it (e.g. getClass).
+                    continue;
+                }
+                final TypedDataSchemaNode typedSchema = (TypedDataSchemaNode) schema;
                 final Class<?> valueType;
                 if (schema instanceof LeafSchemaNode) {
                     valueType = method.getReturnType();
@@ -260,21 +272,16 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
                         throw new IllegalStateException("Unexpected return type " + genericType);
                     }
                 } else {
-                    // We do not have schema for leaf, so we will ignore it (e.g. getClass).
-                    continue;
+                    throw new IllegalStateException("Unhandled typed schema " + typedSchema);
                 }
-                final Codec<Object, Object> codec = getCodec(valueType, schema);
+
+                final Codec<Object, Object> codec = getCodec(valueType, typedSchema.getType());
                 final LeafNodeCodecContext<?> leafNode = new LeafNodeCodecContext<>(schema, codec, method,
                         context.getSchemaContext());
                 leaves.put(schema.getQName().getLocalName(), leafNode);
             }
         }
         return ImmutableMap.copyOf(leaves);
-    }
-
-    private Codec<Object, Object> getCodec(final Class<?> valueType, final DataSchemaNode schema) {
-        checkArgument(schema instanceof TypedDataSchemaNode, "Unsupported leaf node type %s", schema);
-        return getCodec(valueType, ((TypedDataSchemaNode)schema).getType());
     }
 
     Codec<Object, Object> getCodec(final Class<?> valueType, final TypeDefinition<?> instantiatedType) {
@@ -332,18 +339,18 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends DataObject> BindingCodecTreeNode<T> getSubtreeCodec(final InstanceIdentifier<T> path) {
+    public <T extends DataObject> BindingDataObjectCodecTreeNode<T> getSubtreeCodec(final InstanceIdentifier<T> path) {
         // TODO Do we need defensive check here?
-        return (BindingCodecTreeNode<T>) getCodecContextNode(path, null);
+        return (BindingDataObjectCodecTreeNode<T>) getCodecContextNode(path, null);
     }
 
     @Override
-    public BindingCodecTreeNode<?> getSubtreeCodec(final YangInstanceIdentifier path) {
+    public BindingCodecTreeNode getSubtreeCodec(final YangInstanceIdentifier path) {
         return getCodecContextNode(path, null);
     }
 
     @Override
-    public BindingCodecTreeNode<?> getSubtreeCodec(final SchemaPath path) {
+    public BindingCodecTreeNode getSubtreeCodec(final SchemaPath path) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 }
