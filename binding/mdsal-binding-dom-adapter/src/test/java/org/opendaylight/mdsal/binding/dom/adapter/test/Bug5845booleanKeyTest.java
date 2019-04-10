@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
 import static org.junit.Assert.assertNotNull;
@@ -15,7 +14,7 @@ import javassist.ClassPool;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
@@ -58,7 +57,7 @@ public class Bug5845booleanKeyTest extends AbstractDataBrokerTest {
                 .build();
 
         final BindingCodecTree codecContext = mappingService.getCodecFactory().getCodecContext();
-        final BindingCodecTreeNode<BooleanContainer> subtreeCodec = codecContext.getSubtreeCodec(
+        final BindingDataObjectCodecTreeNode<BooleanContainer> subtreeCodec = codecContext.getSubtreeCodec(
                 InstanceIdentifier.create(BooleanContainer.class));
         final NormalizedNode<?, ?> serializedInt = subtreeCodec.serialize(booleanContainerInt);
         assertNotNull(serializedInt);
