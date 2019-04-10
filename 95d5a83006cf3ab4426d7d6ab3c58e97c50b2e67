@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bc75de2e_02553213",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/LeafNodeCodecContext.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-04-10T13:36:58Z",
+      "side": 1,
+      "message": "This feels like we should have two implementations right here:\n- one for TypeObjects, allowing caching to be specified\n- one for other objects, retaining the other aspects of this class\n\nI will dig around the structure of this, as the UOEs below are indicative of ... something :)",
+      "range": {
+        "startLine": 159,
+        "startChar": 0,
+        "endLine": 172,
+        "endChar": 5
+      },
+      "revId": "95d5a83006cf3ab4426d7d6ab3c58e97c50b2e67",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
