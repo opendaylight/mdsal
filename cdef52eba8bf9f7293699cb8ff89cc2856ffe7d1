@@ -186,6 +186,30 @@
       "revId": "cdef52eba8bf9f7293699cb8ff89cc2856ffe7d1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a487a7b2_2566c2c3",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/BindingSerializer.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-04-10T12:43:44Z",
+      "side": 1,
+      "message": "Alright, I finally wrapped my mind around the context of this. I think we can make this work without this change and without involving DataObjectSerializerSource at all.\n\nThe thing is:\n- BindingSerializer is just an aspect of BindingStreamEventWriter implementation\n- leaves are atomic objects\n\nThat means that the generated serializer can just forward them via BindingStreamEventWriter.leafNode():\n- BindingToNormalizedStreamWriter will work as usual\n- CachingNormalizedNodeSerializer will pick them from the forwarding stream, examine and either forward or directly add to the DOM result.\n\nI\u0027ll update this patch to reflect this.",
+      "parentUuid": "a7ea9401_d4ff5c14",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 13,
+        "endChar": 38
+      },
+      "revId": "cdef52eba8bf9f7293699cb8ff89cc2856ffe7d1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
