@@ -33,6 +33,7 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
@@ -400,7 +401,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
         return codecRegistry.create(context, bindingClasses);
     }
 
-    protected @NonNull Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> getSubtreeCodec(
+    protected @NonNull Entry<InstanceIdentifier<?>, BindingDataObjectCodecTreeNode<?>> getSubtreeCodec(
             final YangInstanceIdentifier domIdentifier) {
 
         final BindingCodecTree currentCodecTree = codecRegistry.getCodecContext();
@@ -410,7 +411,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
          * If we are able to deserialize YANG instance identifier, getSubtreeCodec must
          * return non-null value.
          */
-        final BindingCodecTreeNode<?> codecContext = currentCodecTree.getSubtreeCodec(bindingPath);
+        final BindingDataObjectCodecTreeNode<?> codecContext = currentCodecTree.getSubtreeCodec(bindingPath);
         return new SimpleEntry<>(bindingPath, codecContext);
     }
 
@@ -458,7 +459,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
      */
     @Deprecated
     public NormalizedNode<?, ?> getDefaultNodeFor(final YangInstanceIdentifier parentMapPath) {
-        final BindingCodecTreeNode<?> mapCodec = requireNonNull(
+        final BindingCodecTreeNode mapCodec = requireNonNull(
                 codecRegistry.getCodecContext().getSubtreeCodec(parentMapPath),
                 "Codec not found for yang instance identifier: " + parentMapPath);
         final WithStatus schema = mapCodec.getSchema();

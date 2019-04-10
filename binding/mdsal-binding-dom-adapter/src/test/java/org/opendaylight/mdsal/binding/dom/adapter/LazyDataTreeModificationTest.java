@@ -14,7 +14,7 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -37,7 +37,7 @@ public class LazyDataTreeModificationTest {
                 new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
         doReturn(InstanceIdentifier.create(DataObject.class)).when(registry).fromYangInstanceIdentifier(any());
         final BindingCodecTree bindingCodecTree = mock(BindingCodecTree.class);
-        final BindingCodecTreeNode bindingCodecTreeNode = mock(BindingCodecTreeNode.class);
+        final BindingDataObjectCodecTreeNode<?> bindingCodecTreeNode = mock(BindingDataObjectCodecTreeNode.class);
         doReturn(bindingCodecTreeNode).when(bindingCodecTree).getSubtreeCodec(any(InstanceIdentifier.class));
         doReturn(bindingCodecTree).when(registry).getCodecContext();
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
