@@ -18,6 +18,7 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 import java.lang.reflect.Method;
+import java.time.Instant;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashSet;
@@ -192,6 +193,12 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     @Override
     public final Notification fromNormalizedNodeNotification(final SchemaPath path, final ContainerNode data) {
         return codecRegistry.fromNormalizedNodeNotification(path, data);
+    }
+
+    @Override
+    public final Notification fromNormalizedNodeNotification(final SchemaPath path, final ContainerNode data,
+            final Instant eventInstant) {
+        return codecRegistry.fromNormalizedNodeNotification(path, data, eventInstant);
     }
 
     @Override
