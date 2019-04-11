@@ -30,12 +30,11 @@ import org.opendaylight.yangtools.yang.binding.Notification;
  * notification has or has not been seen.
  */
 public interface NotificationPublishService extends BindingService {
-
     /**
      * Well-known value indicating that the binding-aware implementation is currently not
      * able to accept a notification.
      */
-    ListenableFuture<Object> REJECTED = FluentFutures.immediateFailedFluentFuture(
+    @NonNull ListenableFuture<Object> REJECTED = FluentFutures.immediateFailedFluentFuture(
             new NotificationRejectedException("Rejected due to resource constraints."));
 
     /**
