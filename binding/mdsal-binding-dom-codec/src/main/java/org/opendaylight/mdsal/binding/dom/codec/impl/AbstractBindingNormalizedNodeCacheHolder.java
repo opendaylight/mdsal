@@ -13,6 +13,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
+import org.opendaylight.mdsal.binding.dom.codec.impl.LeafNodeCodecContext.OfTypeObject;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 
 /**
@@ -27,6 +28,16 @@ abstract class AbstractBindingNormalizedNodeCacheHolder {
                     return new DataObjectNormalizedNodeCache(AbstractBindingNormalizedNodeCacheHolder.this, key);
                 }
             });
+    private final LoadingCache<OfTypeObject<?>, TypeObjectNormalizedNodeCache<?>> typedCaches =
+            CacheBuilder.newBuilder().build(new CacheLoader<OfTypeObject<?>, TypeObjectNormalizedNodeCache<?>>() {
+                @Override
+                public TypeObjectNormalizedNodeCache<?> load(final OfTypeObject<?> key) {
+                    @SuppressWarnings("rawtypes")
+                    final OfTypeObject cast = key;
+                    return new TypeObjectNormalizedNodeCache<>(cast);
+                }
+            });
+
     private final ImmutableSet<Class<? extends BindingObject>> cacheSpec;
 
     AbstractBindingNormalizedNodeCacheHolder(final ImmutableSet<Class<? extends BindingObject>> cacheSpec) {
@@ -34,10 +45,11 @@ abstract class AbstractBindingNormalizedNodeCacheHolder {
     }
 
     DataObjectNormalizedNodeCache getCachingSerializer(final DataContainerCodecContext<?, ?> childCtx) {
-        if (isCached(childCtx.getBindingClass())) {
-            return caches.getUnchecked(childCtx);
-        }
-        return null;
+        return isCached(childCtx.getBindingClass()) ? caches.getUnchecked(childCtx) : null;
+    }
+
+    TypeObjectNormalizedNodeCache<?> getCachingSerializer(final OfTypeObject<?> childCtx) {
+        return isCached(childCtx.getBindingClass()) ? typedCaches.getUnchecked(childCtx) : null;
     }
 
     final boolean isCached(final Class<? extends BindingObject> type) {

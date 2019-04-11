@@ -8,11 +8,15 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import java.io.IOException;
+import org.opendaylight.mdsal.binding.dom.codec.impl.LeafNodeCodecContext.OfTypeObject;
 import org.opendaylight.yangtools.yang.binding.BindingSerializer;
 import org.opendaylight.yangtools.yang.binding.BindingStreamEventWriter;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Serializer of Binding objects to Normalized Node which uses {@link DataObjectNormalizedNodeCache} to
@@ -26,8 +30,9 @@ import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
  * {@link org.opendaylight.yangtools.yang.binding.DataObjectSerializer} to provide Binding object
  * for inspection and to prevent streaming of already serialized object.
  */
-final class CachingNormalizedNodeSerializer extends ForwardingBindingStreamEventWriter implements
-        BindingSerializer<Object, DataObject> {
+final class CachingNormalizedNodeSerializer extends ForwardingBindingStreamEventWriter
+        implements BindingSerializer<Object, DataObject> {
+    private static final Logger LOG = LoggerFactory.getLogger(CachingNormalizedNodeSerializer.class);
 
     private final NormalizedNodeResult domResult;
     private final NormalizedNodeWriterWithAddChild domWriter;
@@ -49,6 +54,34 @@ final class CachingNormalizedNodeSerializer extends ForwardingBindingStreamEvent
 
     NormalizedNode<?, ?> build() {
         return domResult.getResult();
+    }
+
+    @Override
+    public void leafNode(final String localName, final Object value) throws IOException {
+        if (value instanceof TypeObject) {
+            // TypeObject is a tagging interface used for generated classes which wrap derived and restricted types.
+            // They are immutable and hence we can safely wrap them in LeafNodes and reuse them, if directed to do so.
+            final TypeObject typed = (TypeObject) value;
+            final Class<? extends TypeObject> type = typed.getClass();
+            if (cacheHolder.isCached(type)) {
+                final ValueNodeCodecContext context = ((DataObjectCodecContext<?, ?>) delegate.current())
+                        .getLeafChild(localName);
+                if (context instanceof OfTypeObject) {
+                    final TypeObjectNormalizedNodeCache<?> cache = cacheHolder.getCachingSerializer(
+                        (OfTypeObject<?>)context);
+                    if (cache != null) {
+                        // We have a cache hit and are thus done
+                        domWriter.addChild(cache.get(typed));
+                        return;
+                    } else {
+                        LOG.debug("Unexpected failure to acquire cache for context {}, skipping caching", context);
+                    }
+                } else {
+                    LOG.debug("Context {} does not match expected TypeObject {}, skipping caching", context, typed);
+                }
+            }
+        }
+        super.leafNode(localName, value);
     }
 
     /**
