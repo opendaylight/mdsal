@@ -262,7 +262,8 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
 
                     final Class<?> valueType = method.getReturnType();
                     final Codec<Object, Object> codec = getCodec(valueType, leafSchema.getType());
-                    valueNode = new LeafNodeCodecContext(leafSchema, codec, method, context.getSchemaContext());
+                    valueNode = LeafNodeCodecContext.of(leafSchema, codec, method, valueType,
+                        context.getSchemaContext());
                 } else if (schema instanceof LeafListSchemaNode) {
                     final Optional<Type> optType = ClassLoaderUtils.getFirstGenericParameter(
                         method.getGenericReturnType());
