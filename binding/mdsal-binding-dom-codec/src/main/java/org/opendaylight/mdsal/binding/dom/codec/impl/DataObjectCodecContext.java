@@ -179,11 +179,14 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         }
         reloadAllAugmentations();
 
-        final Class<?> proxyClass = Proxy.getProxyClass(bindingClass.getClassLoader(), bindingClass,
-            AugmentationHolder.class);
+        proxyConstructor = createProxyConstructor(bindingClass, bindingClass, AugmentationHolder.class);
+    }
+
+    static final MethodHandle createProxyConstructor(final Class<? extends DataObject> bindingClass,
+            final Class<?>... interfaces) {
+        final Class<?> proxyClass = Proxy.getProxyClass(bindingClass.getClassLoader(), interfaces);
         try {
-            proxyConstructor = MethodHandles.publicLookup().findConstructor(proxyClass, CONSTRUCTOR_TYPE)
-                    .asType(DATAOBJECT_TYPE);
+            return MethodHandles.publicLookup().findConstructor(proxyClass, CONSTRUCTOR_TYPE).asType(DATAOBJECT_TYPE);
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new IllegalStateException("Failed to find contructor for class " + proxyClass, e);
         }
@@ -530,10 +533,15 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         return domChild.isPresent() ? childContext.deserializeObject(domChild.get()) : childContext.defaultObject();
     }
 
+    protected final @NonNull D createBindingProxy(final NormalizedNodeContainer<?, ?, ?> node) {
+        return createBindingProxy(proxyConstructor, new LazyDataObject<>(this, node));
+    }
+
     @SuppressWarnings("checkstyle:illegalCatch")
-    protected final D createBindingProxy(final NormalizedNodeContainer<?, ?, ?> node) {
+    static final <D extends DataObject> @NonNull D createBindingProxy(final MethodHandle ctor,
+            final InvocationHandler handler) {
         try {
-            return (D) proxyConstructor.invokeExact((InvocationHandler)new LazyDataObject<>(this, node));
+            return (@NonNull D) ctor.invokeExact(handler);
         } catch (final Throwable e) {
             Throwables.throwIfUnchecked(e);
             throw new IllegalStateException(e);
