@@ -12,6 +12,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+import java.time.Instant;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
@@ -24,7 +25,7 @@ public class LazySerializedDOMNotificationTest {
     public void basicTest() throws Exception {
         BindingNormalizedNodeSerializer codec = mock(BindingNormalizedNodeSerializer.class);
         final DOMNotification lazySerializedDOMNotification =
-                LazySerializedDOMNotification.create(codec, new TwoLevelListChangedBuilder().build());
+                LazySerializedDOMNotification.create(codec, new TwoLevelListChangedBuilder().build(), Instant.now());
         ContainerNode containerNode = mock(ContainerNode.class);
         doReturn(containerNode).when(codec).toNormalizedNodeNotification(any());
         assertEquals(containerNode, lazySerializedDOMNotification.getBody());

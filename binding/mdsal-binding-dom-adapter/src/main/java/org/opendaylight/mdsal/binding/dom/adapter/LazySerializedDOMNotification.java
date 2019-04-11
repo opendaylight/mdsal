@@ -7,8 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static java.util.Objects.requireNonNull;
+
+import java.time.Instant;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.dom.api.DOMEvent;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -18,28 +23,33 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
  * Lazy serialized implementation of DOM Notification.
  *
  * <p>
- * This implementation performs serialization of data, only if receiver
- * of notification actually accessed data from notification.
- *
+ * This implementation performs serialization of data, only if receiver of notification actually accessed data from
+ * notification.
  */
-public final class LazySerializedDOMNotification implements DOMNotification {
+public final class LazySerializedDOMNotification implements DOMNotification, DOMEvent {
+    private final @NonNull BindingNormalizedNodeSerializer codec;
+    private final @NonNull Notification data;
+    private final @NonNull SchemaPath type;
+    private final @NonNull Instant eventInstant;
 
-    private final BindingNormalizedNodeSerializer codec;
-    private final Notification data;
-    private final SchemaPath type;
+    private volatile ContainerNode domBody;
 
-    private ContainerNode domBody;
-
-    private LazySerializedDOMNotification(final BindingNormalizedNodeSerializer codec,
-            final Notification data, final SchemaPath type) {
-        this.codec = codec;
-        this.data = data;
-        this.type = type;
+    LazySerializedDOMNotification(final BindingNormalizedNodeSerializer codec, final Notification data,
+            final SchemaPath type, final Instant eventInstant) {
+        this.codec = requireNonNull(codec);
+        this.data = requireNonNull(data);
+        this.type = requireNonNull(type);
+        this.eventInstant = requireNonNull(eventInstant);
     }
 
-    static DOMNotification create(final BindingNormalizedNodeSerializer codec, final Notification data) {
-        final SchemaPath type = SchemaPath.create(true, BindingReflections.findQName(data.getImplementedInterface()));
-        return new LazySerializedDOMNotification(codec, data, type);
+    static @NonNull DOMNotification create(final BindingNormalizedNodeSerializer codec, final Notification data,
+            final Instant eventInstant) {
+        // TODO: for nested (YANG 1.1) notifications we will need the SchemaPath where the notification is being invoked
+        //       and use that instead of ROOT. How Binding users will refer to it is TBD (but probably
+        //       InstanceIdentifier, which means we will need to do some lifting to find the SchemaPath)
+        final SchemaPath type = SchemaPath.ROOT.createChild(BindingReflections.findQName(
+                    data.getImplementedInterface()));
+        return new LazySerializedDOMNotification(codec, data, type, eventInstant);
     }
 
     @Override
@@ -49,13 +59,19 @@ public final class LazySerializedDOMNotification implements DOMNotification {
 
     @Override
     public ContainerNode getBody() {
-        if (domBody == null) {
-            domBody = codec.toNormalizedNodeNotification(data);
+        ContainerNode local = domBody;
+        if (local == null) {
+            domBody = local = codec.toNormalizedNodeNotification(data);
         }
-        return domBody;
+        return local;
     }
 
-    public Notification getBindingData() {
+    @Override
+    public Instant getEventInstant() {
+        return eventInstant;
+    }
+
+    public @NonNull Notification getBindingData() {
         return data;
     }
 }
