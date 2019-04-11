@@ -17,6 +17,7 @@ import java.util.Set;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.NotificationListenerInvoker;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.dom.api.DOMEvent;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.yangtools.yang.binding.Notification;
@@ -46,9 +47,13 @@ class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
 
     private Notification deserialize(final DOMNotification notification) {
         if (notification instanceof LazySerializedDOMNotification) {
+            // TODO: This is a routed-back notification, for which we may end up losing event time here, but that is
+            //       okay, for now at least.
             return ((LazySerializedDOMNotification) notification).getBindingData();
         }
-        return codec.fromNormalizedNodeNotification(notification.getType(), notification.getBody());
+        return notification instanceof DOMEvent ? codec.fromNormalizedNodeNotification(notification.getType(),
+            notification.getBody(), ((DOMEvent) notification).getEventInstant())
+                : codec.fromNormalizedNodeNotification(notification.getType(), notification.getBody());
     }
 
     private NotificationListenerInvoker getInvoker(final SchemaPath type) {

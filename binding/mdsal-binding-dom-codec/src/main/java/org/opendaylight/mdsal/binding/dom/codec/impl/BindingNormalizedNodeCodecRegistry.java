@@ -14,6 +14,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
@@ -228,6 +229,17 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
     public Notification fromNormalizedNodeNotification(final SchemaPath path, final ContainerNode data) {
         final NotificationCodecContext<?> codec = codecContext.getNotificationContext(path);
         return codec.deserialize(data);
+    }
+
+    @Override
+    public Notification fromNormalizedNodeNotification(final SchemaPath path, final ContainerNode data,
+            final Instant eventInstant) {
+        if (eventInstant == null) {
+            return fromNormalizedNodeNotification(path, data);
+        }
+
+        final NotificationCodecContext<?> codec = codecContext.getNotificationContext(path);
+        return codec.deserialize(data, eventInstant);
     }
 
     @Override
