@@ -10,13 +10,16 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.time.Instant;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.yangtools.yang.binding.EventInstantAware;
 import org.opendaylight.yangtools.yang.binding.Notification;
 
 public class BindingDOMNotificationPublishServiceAdapter extends AbstractBindingAdapter<DOMNotificationPublishService>
@@ -66,12 +69,13 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
                 : offerResult;
     }
 
-    private DOMNotification toDomNotification(final Notification notification) {
-        return LazySerializedDOMNotification.create(getCodec(), notification);
+    private @NonNull DOMNotification toDomNotification(final Notification notification) {
+        final Instant instant = notification instanceof EventInstantAware
+                ? ((EventInstantAware) notification).eventInstant() : Instant.now();
+        return LazySerializedDOMNotification.create(getCodec(), notification, instant);
     }
 
     protected static class Builder extends BindingDOMAdapterBuilder<NotificationPublishService> {
-
         @Override
         public Set<Class<? extends DOMService>> getRequiredDelegates() {
             return ImmutableSet.of(DOMNotificationPublishService.class);
@@ -83,6 +87,5 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
             final DOMNotificationPublishService domPublish = delegates.getInstance(DOMNotificationPublishService.class);
             return new BindingDOMNotificationPublishServiceAdapter(codec, domPublish);
         }
-
     }
 }
