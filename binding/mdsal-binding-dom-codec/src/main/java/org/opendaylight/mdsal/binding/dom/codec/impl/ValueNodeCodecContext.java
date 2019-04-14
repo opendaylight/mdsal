@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Codec;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 
 /**
  * Abstract base class for atomic nodes. These are nodes which are not decomposed in the Binding Specification, such
@@ -23,10 +23,10 @@ abstract class ValueNodeCodecContext extends NodeCodecContext implements NodeCon
     private final @NonNull NodeIdentifier yangIdentifier;
     private final @NonNull Codec<Object, Object> valueCodec;
     private final @NonNull Method getter;
-    private final @NonNull TypedDataSchemaNode schema;
+    private final @NonNull DataSchemaNode schema;
     private final Object defaultObject;
 
-    ValueNodeCodecContext(final TypedDataSchemaNode schema, final Codec<Object, Object> codec,
+    ValueNodeCodecContext(final DataSchemaNode schema, final Codec<Object, Object> codec,
             final Method getter, final Object defaultObject) {
         this.yangIdentifier = NodeIdentifier.create(schema.getQName());
         this.valueCodec = requireNonNull(codec);
@@ -54,7 +54,7 @@ abstract class ValueNodeCodecContext extends NodeCodecContext implements NodeCon
     }
 
     @Override
-    public final TypedDataSchemaNode getSchema() {
+    public final DataSchemaNode getSchema() {
         return schema;
     }
 
