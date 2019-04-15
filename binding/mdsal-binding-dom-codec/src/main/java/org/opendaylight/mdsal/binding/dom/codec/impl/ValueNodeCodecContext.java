@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
 import org.opendaylight.yangtools.concepts.Codec;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -53,7 +54,7 @@ abstract class ValueNodeCodecContext extends NodeCodecContext implements NodeCon
     }
 
     @Override
-    public final NodeCodecContext get() {
+    public final NodeCodecContext apply(final CodecClassLoader loader) {
         return this;
     }
 

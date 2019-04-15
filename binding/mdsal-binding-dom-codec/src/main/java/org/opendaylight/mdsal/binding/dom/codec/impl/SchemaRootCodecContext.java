@@ -21,6 +21,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
@@ -134,8 +135,9 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
                 }
             });
 
-    private SchemaRootCodecContext(final DataContainerCodecPrototype<SchemaContext> dataPrototype) {
-        super(dataPrototype);
+    private SchemaRootCodecContext(final DataContainerCodecPrototype<SchemaContext> dataPrototype,
+            final CodecClassLoader loader) {
+        super(dataPrototype, loader);
     }
 
     /**
@@ -145,11 +147,10 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
      *            CodecContextFactory
      * @return A new root node
      */
-    static SchemaRootCodecContext<?> create(final CodecContextFactory factory) {
+    static SchemaRootCodecContext<?> create(final CodecContextFactory factory, final CodecClassLoader loader) {
         final DataContainerCodecPrototype<SchemaContext> prototype = DataContainerCodecPrototype.rootPrototype(factory);
-        return new SchemaRootCodecContext<>(prototype);
+        return new SchemaRootCodecContext<>(prototype, loader);
     }
-
 
     @SuppressWarnings("unchecked")
     @Override
@@ -205,7 +206,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         final QName qname = BindingReflections.findQName(key);
         final DataSchemaNode childSchema = childNonNull(getSchema().getDataChildByName(qname), key,
             "%s is not top-level item.", key);
-        return DataContainerCodecPrototype.from(key, childSchema, factory()).get();
+        return DataContainerCodecPrototype.from(key, childSchema, factory()).apply(loader());
     }
 
     ActionCodecContext createActionContext(final Class<? extends Action<?, ?, ?>> action) {
@@ -228,9 +229,9 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         final ActionDefinition schema = factory().getRuntimeContext().getActionDefinition(action);
         return new ActionCodecContext(
                 DataContainerCodecPrototype.from(asClass(args[inputOffset], RpcInput.class), schema.getInput(),
-                        factory()).get(),
+                        factory()).apply(loader()),
                 DataContainerCodecPrototype.from(asClass(args[outputOffset], RpcOutput.class), schema.getOutput(),
-                        factory()).get());
+                        factory()).apply(loader()));
     }
 
     private static <T extends DataObject> Class<? extends T> asClass(final Type type, final Class<T> target) {
@@ -257,7 +258,8 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
             if (key.getSimpleName().equals(BindingMapping.getClassName(potentialQName) + className)) {
                 final ContainerSchemaNode schema = SchemaNodeUtils.getRpcDataSchema(potential, qname);
                 checkArgument(schema != null, "Schema for %s does not define input / output.", potential.getQName());
-                return (ContainerNodeCodecContext<?>) DataContainerCodecPrototype.from(key, schema, factory()).get();
+                return (ContainerNodeCodecContext<?>) DataContainerCodecPrototype.from(key, schema, factory())
+                        .apply(loader());
             }
         }
 
@@ -276,7 +278,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
                 SchemaPath.create(true, qname));
         checkArgument(schema != null, "Supplied %s is not valid notification", notificationType);
 
-        return new NotificationCodecContext<>(notificationType, schema, factory());
+        return new NotificationCodecContext<>(loader(), notificationType, schema, factory());
     }
 
     ChoiceNodeCodecContext<?> createChoiceDataContext(final Class<? extends DataObject> caseType) {
@@ -286,7 +288,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         checkArgument(schema instanceof ChoiceSchemaNode, "Class %s does not refer to a choice", caseType);
 
         final DataContainerCodecContext<?, ChoiceSchemaNode> choice = DataContainerCodecPrototype.from(choiceClass,
-            (ChoiceSchemaNode)schema, factory()).get();
+            (ChoiceSchemaNode)schema, factory()).apply(loader());
         Verify.verify(choice instanceof ChoiceNodeCodecContext);
         return (ChoiceNodeCodecContext<?>) choice;
     }
