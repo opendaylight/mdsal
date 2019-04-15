@@ -7,7 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkState;
+
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -16,13 +18,14 @@ import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 final class ContainerNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<D, ContainerSchemaNode>
         implements RpcInputCodec<D> {
 
-    ContainerNodeCodecContext(final DataContainerCodecPrototype<ContainerSchemaNode> prototype) {
-        super(prototype);
+    ContainerNodeCodecContext(final DataContainerCodecPrototype<ContainerSchemaNode> prototype,
+            final CodecClassLoader loader) {
+        super(prototype, loader);
     }
 
     @Override
     public D deserialize(final NormalizedNode<?, ?> data) {
-        Preconditions.checkState(data instanceof ContainerNode);
+        checkState(data instanceof ContainerNode);
         return createBindingProxy((ContainerNode) data);
     }
 
