@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.dom.codec.gen.spi.CodecClassLoader;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
@@ -99,8 +100,9 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
     private final ImmutableListMultimap<Class<?>, DataContainerCodecPrototype<?>> ambiguousByCaseChildClass;
     private final Set<Class<?>> ambiguousByCaseChildWarnings;
 
-    ChoiceNodeCodecContext(final DataContainerCodecPrototype<ChoiceSchemaNode> prototype) {
-        super(prototype);
+    ChoiceNodeCodecContext(final DataContainerCodecPrototype<ChoiceSchemaNode> prototype,
+            final CodecClassLoader loader) {
+        super(prototype, loader);
         final Map<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> byYangCaseChildBuilder =
                 new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byClassBuilder = new HashMap<>();
@@ -192,7 +194,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
     public <C extends DataObject> DataContainerCodecContext<C, ?> streamChild(final Class<C> childClass) {
         final DataContainerCodecPrototype<?> child = byClass.get(childClass);
         return (DataContainerCodecContext<C, ?>) childNonNull(child, childClass,
-            "Supplied class %s is not valid case in %s", childClass, bindingArg()).get();
+            "Supplied class %s is not valid case in %s", childClass, bindingArg()).apply(loader());
     }
 
     @SuppressWarnings("unchecked")
@@ -201,7 +203,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             final Class<C> childClass) {
         final DataContainerCodecPrototype<?> child = byClass.get(childClass);
         if (child != null) {
-            return Optional.of((DataContainerCodecContext<C, ?>) child.get());
+            return Optional.of((DataContainerCodecContext<C, ?>) child.apply(loader()));
         }
         return Optional.empty();
     }
@@ -230,7 +232,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             cazeProto = byYangCaseChild.get(arg);
         }
 
-        return childNonNull(cazeProto, arg, "Argument %s is not valid child of %s", arg, getSchema()).get()
+        return childNonNull(cazeProto, arg, "Argument %s is not valid child of %s", arg, getSchema()).apply(loader())
                 .yangPathArgumentChild(arg);
     }
 
@@ -246,7 +248,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             return null;
         }
         final DataContainerCodecPrototype<?> caze = byYangCaseChild.get(first.getIdentifier());
-        return (D) caze.get().deserialize(data);
+        return (D) caze.apply(loader()).deserialize(data);
     }
 
     @Override
@@ -284,6 +286,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             }
         }
 
-        return childNonNull(result, type, "Class %s is not child of any cases for %s", type, bindingArg()).get();
+        return childNonNull(result, type, "Class %s is not child of any cases for %s", type, bindingArg())
+                .apply(loader());
     }
 }

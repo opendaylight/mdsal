@@ -81,7 +81,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
 
     BindingCodecContext(final BindingRuntimeContext context, final BindingNormalizedNodeCodecRegistry registry) {
         this.context = requireNonNull(context, "Binding Runtime Context is required.");
-        this.root = SchemaRootCodecContext.create(this);
+        this.root = SchemaRootCodecContext.create(this, loader);
         this.identityCodec = new IdentityCodec(context);
         this.instanceIdentifierCodec = new InstanceIdentifierCodec(this);
         this.registry = requireNonNull(registry);
