@@ -31,6 +31,8 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
+import org.opendaylight.mdsal.binding.dom.codec.loader.StaticClassPool;
 import org.opendaylight.mdsal.binding.dom.codec.util.BindingSchemaMapping;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -71,6 +73,7 @@ import org.slf4j.LoggerFactory;
 final class BindingCodecContext implements CodecContextFactory, BindingCodecTree, Immutable {
     private static final Logger LOG = LoggerFactory.getLogger(BindingCodecContext.class);
 
+    private final CodecClassLoader loader = StaticClassPool.createLoader();
     private final InstanceIdentifierCodec instanceIdentifierCodec;
     private final IdentityCodec identityCodec;
     private final BindingNormalizedNodeCodecRegistry registry;
@@ -284,7 +287,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
                     final Class<?> valueType = method.getReturnType();
                     verify(OpaqueObject.class.isAssignableFrom(valueType), "Illegal value type %s", valueType);
                     valueNode = new OpaqueNodeCodecContext.AnyXml<>((AnyXmlSchemaNode) schema, method,
-                            valueType.asSubclass(OpaqueObject.class));
+                            valueType.asSubclass(OpaqueObject.class), loader);
                 } else {
                     verify(schema == null, "Unhandled schema %s for method %s", schema, method);
                     // We do not have schema for leaf, so we will ignore it (e.g. getClass).
