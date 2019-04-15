@@ -18,6 +18,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import javax.xml.transform.dom.DOMSource;
@@ -130,7 +131,7 @@ abstract class OpaqueNodeCodecContext<T extends OpaqueObject<T>> extends ValueNo
         final Class<?> proxyClass;
         try {
             proxyClass = rootLoader.generateSubclass(AbstractForeignOpaqueObject.class, bindingClass, "codecImpl",
-                generated -> { });
+                (pool, generated) -> generated.setModifiers(Modifier.FINAL | Modifier.PUBLIC));
         } catch (CannotCompileException | IOException | NotFoundException e) {
             throw new LinkageError("Failed to instantiate prototype for " + bindingClass, e);
         }

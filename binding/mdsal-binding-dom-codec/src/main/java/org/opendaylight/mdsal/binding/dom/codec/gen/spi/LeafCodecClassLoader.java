@@ -40,7 +40,7 @@ final class LeafCodecClassLoader extends CodecClassLoader {
     }
 
     @Override
-    CtClass getRootFrozen(final String name) throws NotFoundException {
-        return root.getLocalFrozen(name);
+    public CtClass findCodecClass(final Class<?> codecClass) throws NotFoundException {
+        return root.getLocalFrozen(codecClass.getName());
     }
 }

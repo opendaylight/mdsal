@@ -77,8 +77,8 @@ final class RootCodecClassLoader extends CodecClassLoader {
     }
 
     @Override
-    CtClass getRootFrozen(final String name) throws NotFoundException {
-        return getLocalFrozen(name);
+    public CtClass findCodecClass(final Class<?> codecClass) throws NotFoundException {
+        return getLocalFrozen(codecClass.getName());
     }
 
     private boolean isOurClass(final Class<?> bindingClass) {

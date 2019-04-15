@@ -12,7 +12,6 @@ import static com.google.common.base.Verify.verify;
 
 import com.google.common.base.Strings;
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -45,7 +44,7 @@ import org.eclipse.jdt.annotation.NonNull;
 public abstract class CodecClassLoader extends ClassLoader {
     @FunctionalInterface
     public interface SubclassCustomizer {
-        void customize(CtClass generated) throws NotFoundException;
+        void customize(CodecClassLoader loader, CtClass generated) throws CannotCompileException, NotFoundException;
     }
 
     static {
@@ -71,6 +70,12 @@ public abstract class CodecClassLoader extends ClassLoader {
         return new RootCodecClassLoader();
     }
 
+    public abstract @NonNull CtClass findCodecClass(final Class<?> codecClass) throws NotFoundException;
+
+    public final CtClass findBindingClass(final Class<?> bindingClass) throws NotFoundException {
+        return findClassLoader(bindingClass).getLocalFrozen(bindingClass.getName());
+    }
+
     public final Class<?> generateSubclass(final Class<?> superClass, final Class<?> bindingInterface,
             final String suffix, final SubclassCustomizer customizer) throws CannotCompileException, IOException,
                 NotFoundException {
@@ -78,8 +83,6 @@ public abstract class CodecClassLoader extends ClassLoader {
     }
 
     abstract @NonNull CodecClassLoader findClassLoader(Class<?> bindingClass);
-
-    abstract @NonNull CtClass getRootFrozen(String name) throws NotFoundException;
 
     final @NonNull CtClass getLocalFrozen(final String name) throws NotFoundException {
         synchronized (getClassLoadingLock(name)) {
@@ -99,7 +102,7 @@ public abstract class CodecClassLoader extends ClassLoader {
         final String fqn = bindingName + "$$$" + suffix;
         synchronized (getClassLoadingLock(fqn)) {
             // Get the superclass
-            final CtClass superCt = getRootFrozen(superClass.getName());
+            final CtClass superCt = findCodecClass(superClass);
 
             // Get the interface
             final CtClass bindingCt = getLocalFrozen(bindingName);
@@ -107,9 +110,8 @@ public abstract class CodecClassLoader extends ClassLoader {
                 final byte[] byteCode;
                 final CtClass generated = classPool.makeClass(fqn, superCt);
                 try {
-                    generated.setModifiers(Modifier.FINAL | Modifier.PUBLIC);
                     generated.addInterface(bindingCt);
-                    customizer.customize(generated);
+                    customizer.customize(this, generated);
 
                     final String ctName = generated.getName();
                     verify(fqn.equals(ctName), "Target class is %s returned result is %s", fqn, ctName);
