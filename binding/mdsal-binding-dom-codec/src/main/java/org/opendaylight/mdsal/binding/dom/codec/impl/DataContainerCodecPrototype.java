@@ -11,6 +11,7 @@ import com.google.common.collect.Iterables;
 import org.checkerframework.checker.lock.qual.Holding;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode.ChildAddressabilitySummary;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
@@ -202,13 +203,13 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
     }
 
     @Override
-    public DataContainerCodecContext<?, T> get() {
+    public DataContainerCodecContext<?, T> apply(final CodecClassLoader loader) {
         DataContainerCodecContext<?, T> tmp = instance;
         if (tmp == null) {
             synchronized (this) {
                 tmp = instance;
                 if (tmp == null) {
-                    tmp = createInstance();
+                    tmp = createInstance(loader);
                     instance = tmp;
                 }
             }
@@ -219,19 +220,19 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
 
     @Holding("this")
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private DataContainerCodecContext<?,T> createInstance() {
+    private DataContainerCodecContext<?, T> createInstance(final CodecClassLoader loader) {
         // FIXME: make protected abstract
         if (schema instanceof ContainerSchemaNode) {
-            return new ContainerNodeCodecContext(this);
+            return new ContainerNodeCodecContext(this, loader);
         } else if (schema instanceof ListSchemaNode) {
-            return Identifiable.class.isAssignableFrom(getBindingClass()) ? new KeyedListNodeCodecContext(this)
-                    : new ListNodeCodecContext(this);
+            return Identifiable.class.isAssignableFrom(getBindingClass()) ? new KeyedListNodeCodecContext(this, loader)
+                    : new ListNodeCodecContext(this, loader);
         } else if (schema instanceof ChoiceSchemaNode) {
-            return new ChoiceNodeCodecContext(this);
+            return new ChoiceNodeCodecContext(this, loader);
         } else if (schema instanceof AugmentationSchemaNode) {
-            return new AugmentationNodeContext(this);
+            return new AugmentationNodeContext(this, loader);
         } else if (schema instanceof CaseSchemaNode) {
-            return new CaseNodeCodecContext(this);
+            return new CaseNodeCodecContext(this, loader);
         }
         throw new IllegalArgumentException("Unsupported type " + getBindingClass() + " " + schema);
     }
