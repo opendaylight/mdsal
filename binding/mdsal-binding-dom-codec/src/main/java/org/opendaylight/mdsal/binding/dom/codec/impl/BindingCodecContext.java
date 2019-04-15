@@ -81,7 +81,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
 
     BindingCodecContext(final BindingRuntimeContext context, final BindingNormalizedNodeCodecRegistry registry) {
         this.context = requireNonNull(context, "Binding Runtime Context is required.");
-        this.root = SchemaRootCodecContext.create(this);
+        this.root = SchemaRootCodecContext.create(this, loader);
         this.identityCodec = new IdentityCodec(context);
         this.instanceIdentifierCodec = new InstanceIdentifierCodec(this);
         this.registry = requireNonNull(registry);
@@ -321,10 +321,10 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         } else if (typeDef instanceof InstanceIdentifierTypeDefinition) {
             return ValueTypeCodec.encapsulatedValueCodecFor(valueType, typeDef, instanceIdentifierCodec);
         } else if (typeDef instanceof UnionTypeDefinition) {
-            final Callable<UnionTypeCodec> loader = UnionTypeCodec.loader(valueType, (UnionTypeDefinition) typeDef,
+            final Callable<UnionTypeCodec> unionLoader = UnionTypeCodec.loader(valueType, (UnionTypeDefinition) typeDef,
                 this);
             try {
-                return loader.call();
+                return unionLoader.call();
             } catch (final Exception e) {
                 throw new IllegalStateException("Unable to load codec for " + valueType, e);
             }

@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
+import org.opendaylight.mdsal.binding.dom.codec.gen.spi.CodecClassLoader;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.BindingStreamEventWriter;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -34,10 +37,17 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends WithSta
         implements BindingDataObjectCodecTreeNode<D>  {
 
     private final DataContainerCodecPrototype<T> prototype;
+    private final CodecClassLoader loader;
+
     private volatile DataObjectSerializer eventStreamSerializer;
 
-    protected DataContainerCodecContext(final DataContainerCodecPrototype<T> prototype) {
-        this.prototype = prototype;
+    protected DataContainerCodecContext(final DataContainerCodecPrototype<T> prototype, final CodecClassLoader loader) {
+        this.prototype = requireNonNull(prototype);
+        this.loader = requireNonNull(loader);
+    }
+
+    protected final CodecClassLoader loader() {
+        return loader;
     }
 
     @Override
