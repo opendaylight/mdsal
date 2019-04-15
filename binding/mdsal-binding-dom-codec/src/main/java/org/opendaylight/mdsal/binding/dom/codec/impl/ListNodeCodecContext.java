@@ -7,8 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
@@ -18,8 +20,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 
 class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<D,ListSchemaNode> {
-    protected ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
-        super(prototype);
+    protected ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype,
+            final CodecClassLoader loader, final Method... additionalMethods) {
+        super(prototype, loader, additionalMethods);
     }
 
     @Override
