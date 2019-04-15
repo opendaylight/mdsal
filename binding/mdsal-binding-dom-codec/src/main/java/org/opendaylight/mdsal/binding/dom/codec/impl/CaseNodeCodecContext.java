@@ -7,8 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.base.Preconditions;
 import java.util.List;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
@@ -19,8 +22,8 @@ import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 
 final class CaseNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<D, CaseSchemaNode> {
-    CaseNodeCodecContext(final DataContainerCodecPrototype<CaseSchemaNode> prototype) {
-        super(prototype);
+    CaseNodeCodecContext(final DataContainerCodecPrototype<CaseSchemaNode> prototype, final CodecClassLoader loader) {
+        super(prototype, loader);
     }
 
     @Override
@@ -38,7 +41,7 @@ final class CaseNodeCodecContext<D extends DataObject> extends DataObjectCodecCo
 
     @Override
     public D deserialize(final NormalizedNode<?, ?> normalizedNode) {
-        Preconditions.checkState(normalizedNode instanceof ChoiceNode);
+        checkState(normalizedNode instanceof ChoiceNode);
         return createBindingProxy((ChoiceNode) normalizedNode);
     }
 

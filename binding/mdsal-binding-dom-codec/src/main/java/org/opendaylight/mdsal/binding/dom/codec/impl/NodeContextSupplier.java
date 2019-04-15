@@ -7,13 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
 
 /**
  * Type capture of an entity producing NodeCodecContexts.
  */
-interface NodeContextSupplier extends Supplier<NodeCodecContext> {
+interface NodeContextSupplier extends Function<CodecClassLoader, NodeCodecContext> {
     @Override
-    @NonNull NodeCodecContext get();
+    @NonNull NodeCodecContext apply(CodecClassLoader loader);
 }
