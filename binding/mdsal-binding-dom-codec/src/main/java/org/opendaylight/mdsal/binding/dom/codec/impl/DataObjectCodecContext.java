@@ -180,12 +180,22 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         }
         nonnullToGetter = ImmutableMap.copyOf(nonnullToGetterBuilder);
 
+        @SuppressWarnings("rawtypes")
+        final Class<? extends AbstractDataObject> superClass;
         if (Augmentable.class.isAssignableFrom(bindingClass)) {
             this.possibleAugmentations = factory().getRuntimeContext().getAvailableAugmentationTypes(getSchema());
+            superClass = AbstractAugmentableDataObject.class;
         } else {
             this.possibleAugmentations = ImmutableMap.of();
+            superClass = AbstractDataObject.class;
         }
         reloadAllAugmentations();
+
+
+
+
+
+
 
         final Class<?> proxyClass = Proxy.getProxyClass(bindingClass.getClassLoader(), bindingClass,
             AugmentationHolder.class);

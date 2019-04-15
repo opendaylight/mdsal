@@ -12,7 +12,6 @@ import static com.google.common.base.Verify.verify;
 
 import com.google.common.base.Strings;
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -45,7 +44,7 @@ import org.eclipse.jdt.annotation.NonNull;
 public abstract class CodecClassLoader extends ClassLoader {
     @FunctionalInterface
     public interface SubclassCustomizer {
-        void customize(CtClass generated) throws NotFoundException;
+        void customize(ClassPool pool, CtClass generated) throws CannotCompileException, NotFoundException;
     }
 
     static {
@@ -107,9 +106,8 @@ public abstract class CodecClassLoader extends ClassLoader {
                 final byte[] byteCode;
                 final CtClass generated = classPool.makeClass(fqn, superCt);
                 try {
-                    generated.setModifiers(Modifier.FINAL | Modifier.PUBLIC);
                     generated.addInterface(bindingCt);
-                    customizer.customize(generated);
+                    customizer.customize(classPool, generated);
 
                     final String ctName = generated.getName();
                     verify(fqn.equals(ctName), "Target class is %s returned result is %s", fqn, ctName);
