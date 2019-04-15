@@ -7,7 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkArgument;
+
+import org.opendaylight.mdsal.binding.dom.codec.gen.spi.CodecClassLoader;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
@@ -17,13 +19,14 @@ import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 final class AugmentationNodeContext<D extends DataObject & Augmentation<?>>
         extends DataObjectCodecContext<D, AugmentationSchemaNode> {
 
-    AugmentationNodeContext(final DataContainerCodecPrototype<AugmentationSchemaNode> prototype) {
-        super(prototype);
+    AugmentationNodeContext(final DataContainerCodecPrototype<AugmentationSchemaNode> prototype,
+        final CodecClassLoader loader) {
+        super(prototype, loader);
     }
 
     @Override
     public D deserialize(final NormalizedNode<?, ?> normalizedNode) {
-        Preconditions.checkArgument(normalizedNode instanceof AugmentationNode);
+        checkArgument(normalizedNode instanceof AugmentationNode);
         return createBindingProxy((AugmentationNode)normalizedNode);
     }
 
