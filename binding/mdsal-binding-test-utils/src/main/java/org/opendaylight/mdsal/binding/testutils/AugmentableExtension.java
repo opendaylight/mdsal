@@ -15,6 +15,7 @@ import org.eclipse.xtext.xbase.lib.util.ReflectExtensions;
 import org.opendaylight.mdsal.binding.dom.codec.util.AugmentationReader;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.yang.binding.AugmentationHolder;
 
 /**
  * Adds an {@link #getAugmentations(Augmentable)} method to {@link Augmentable}.
@@ -28,14 +29,18 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
  * @author Michael Vorburger
  */
 // package-local: no need to expose this, consider it an implementation detail; public API is the AssertDataObjects
+// FIXME: 5.0.0: this is a duplication of BindingReflections.getAugmentations() ... but why?
 class AugmentableExtension {
 
     private static final ReflectExtensions REFLECT_EXTENSIONS = new ReflectExtensions();
 
-    public ClassToInstanceMap<Augmentation<?>> getAugmentations(Augmentable<?> augmentable) {
+    public ClassToInstanceMap<Augmentation<?>> getAugmentations(final Augmentable<?> augmentable) {
         if (augmentable instanceof AugmentationReader) {
             AugmentationReader augmentationReader = (AugmentationReader) augmentable;
             return ImmutableClassToInstanceMap.copyOf(augmentationReader.getAugmentations(augmentable));
+        } else if (augmentable instanceof AugmentationHolder) {
+            AugmentationHolder<?> augmentationHolder = (AugmentationHolder<?>) augmentable;
+            return ImmutableClassToInstanceMap.copyOf(augmentationHolder.augmentations());
         } else if (Proxy.isProxyClass(augmentable.getClass())) {
             InvocationHandler invocationHandler = Proxy.getInvocationHandler(augmentable);
             // class LazyDataObject implements InvocationHandler, AugmentationReader
