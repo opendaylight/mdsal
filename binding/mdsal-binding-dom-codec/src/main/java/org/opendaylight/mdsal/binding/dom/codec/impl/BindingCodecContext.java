@@ -12,7 +12,12 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -25,6 +30,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
@@ -73,6 +80,7 @@ import org.slf4j.LoggerFactory;
 final class BindingCodecContext implements CodecContextFactory, BindingCodecTree, Immutable {
     private static final Logger LOG = LoggerFactory.getLogger(BindingCodecContext.class);
 
+    private final LoadingCache<Class<?>, DataObjectStreamer<?>> streamers;
     private final @NonNull CodecClassLoader loader = StaticClassPool.createLoader();
     private final InstanceIdentifierCodec instanceIdentifierCodec;
     private final IdentityCodec identityCodec;
@@ -86,6 +94,19 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         this.identityCodec = new IdentityCodec(context);
         this.instanceIdentifierCodec = new InstanceIdentifierCodec(this);
         this.registry = requireNonNull(registry);
+
+        streamers = CacheBuilder.newBuilder().build(
+            new CacheLoader<Class<?>, DataObjectStreamer<?>>() {
+                @Override
+                public DataObjectStreamer<?> load(final Class<?> key) throws CannotCompileException, IOException,
+                        NotFoundException, ReflectiveOperationException {
+                    final Class<?> streamer = loader.generateSubclass(DataObjectStreamerCustomizer.CT_DOS, key,
+                        "streamer", DataObjectStreamerCustomizer.create(BindingCodecContext.this, key));
+
+                    final Field instance = streamer.getDeclaredField(DataObjectStreamerCustomizer.INSTANCE_FIELD);
+                    return (DataObjectStreamer<?>) instance.get(null);
+                }
+        });
     }
 
     @Override
@@ -110,6 +131,11 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
     @Override
     public DataObjectSerializer getEventStreamSerializer(final Class<?> type) {
         return registry.getSerializer((Class) type);
+    }
+
+    @Override
+    public DataObjectStreamer<?> getDataObjectSerializer(final Class<?> type) {
+        return streamers.getUnchecked(type);
     }
 
     public Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriter(final InstanceIdentifier<?> path,
