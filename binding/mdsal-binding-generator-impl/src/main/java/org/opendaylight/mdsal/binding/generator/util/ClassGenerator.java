@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.generator.util;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 
+@Deprecated
 public interface ClassGenerator {
     void process(CtClass cls) throws CannotCompileException;
 }
