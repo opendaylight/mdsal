@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.cache.CacheBuilder;
@@ -21,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
@@ -71,6 +73,7 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
 
     private final DataObjectSerializerGenerator generator;
     private final LoadingCache<Class<? extends DataObject>, DataObjectSerializer> serializers;
+
     private volatile BindingCodecContext codecContext;
 
     public BindingNormalizedNodeCodecRegistry(final DataObjectSerializerGenerator generator) {
@@ -88,8 +91,15 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
     }
 
     public void onBindingRuntimeContextUpdated(final BindingRuntimeContext context) {
-        codecContext = new BindingCodecContext(context, this);
+        synchronized (this) {
+            codecContext = new BindingCodecContext(context, this);
+            serializers.invalidateAll();
+        }
         generator.onBindingRuntimeContextUpdated(context);
+    }
+
+    synchronized BindingCodecContext codecContext() {
+        return codecContext;
     }
 
     @Override
@@ -331,17 +341,18 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
     private final class GeneratorLoader extends CacheLoader<Class<? extends DataContainer>, DataObjectSerializer> {
         @Override
         public DataObjectSerializer load(final Class<? extends DataContainer> key) {
-            final DataObjectSerializerImplementation prototype = generator.getSerializer(key);
-            return new DataObjectSerializerProxy(prototype);
+            final BindingCodecContext context = codecContext();
+            checkState(context != null, "No context loaded yet");
+            return new DataObjectSerializerProxy(context.getDataObjectSerializer(key));
         }
     }
 
     private final class DataObjectSerializerProxy
             implements DataObjectSerializer, Delegator<DataObjectSerializerImplementation> {
-        private final DataObjectSerializerImplementation delegate;
+        private final @NonNull DataObjectSerializerImplementation delegate;
 
         DataObjectSerializerProxy(final DataObjectSerializerImplementation delegate) {
-            this.delegate = delegate;
+            this.delegate = requireNonNull(delegate);
         }
 
         @Override
