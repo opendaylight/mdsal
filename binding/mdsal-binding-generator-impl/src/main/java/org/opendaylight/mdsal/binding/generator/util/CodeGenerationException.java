@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.util;
 
+@Deprecated
 public class CodeGenerationException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 

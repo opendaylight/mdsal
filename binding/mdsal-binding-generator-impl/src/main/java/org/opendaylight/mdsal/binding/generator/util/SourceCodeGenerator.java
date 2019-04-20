@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.generator.util;
 
 import javassist.CtClass;
@@ -18,7 +17,10 @@ import javassist.CtMethod;
  * is called, the entire class source code is generated and outputted.
  *
  * @author Thomas Pantelis
+ * @deprecated Code generation is a concert separate from type mapping and is an implementation detail. Most notably
+ *             there may actually not be intermediate source code.
  */
+@Deprecated
 public interface SourceCodeGenerator {
 
     /**

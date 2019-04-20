@@ -18,6 +18,7 @@ import javassist.ClassPool;
 import javassist.NotFoundException;
 import org.junit.Test;
 
+@Deprecated
 public class JavassistUtilsTest {
 
     @Test

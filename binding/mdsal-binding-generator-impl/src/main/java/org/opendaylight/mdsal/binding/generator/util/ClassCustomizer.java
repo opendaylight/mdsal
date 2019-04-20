@@ -14,8 +14,11 @@ import javassist.NotFoundException;
 
 /**
  * Interface allowing customization of classes after loading.
+ *
+ * @deprecated Code generation is a concert separate from type mapping and is an implementation detail.
  */
 @Beta
+@Deprecated
 @FunctionalInterface
 public interface ClassCustomizer {
     /**

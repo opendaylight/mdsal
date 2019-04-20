@@ -27,6 +27,7 @@ import javassist.bytecode.AccessFlag;
 import javassist.bytecode.ClassFile;
 import org.junit.Test;
 
+@Deprecated
 public class SourceCodeGeneratorFactoryTest {
 
     private static final SourceCodeGeneratorFactory FACTORY = new SourceCodeGeneratorFactory();
