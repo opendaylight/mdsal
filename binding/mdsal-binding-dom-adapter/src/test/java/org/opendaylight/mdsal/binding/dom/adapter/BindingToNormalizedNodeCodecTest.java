@@ -16,14 +16,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import javassist.ClassPool;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.codec.gen.impl.DataObjectSerializerGenerator;
-import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
-import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -117,14 +113,10 @@ public class BindingToNormalizedNodeCodecTest {
 
     private static Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final NormalizedNode<?, ?> data,
             final SchemaContext schemaCtx) {
-        final DataObjectSerializerGenerator serializerGenerator =
-                StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()));
-        final BindingNormalizedNodeCodecRegistry codecRegistry =
-                new BindingNormalizedNodeCodecRegistry(serializerGenerator);
         final GeneratedClassLoadingStrategy classLoadingStrategy =
                 GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
         final BindingRuntimeContext ctx = BindingRuntimeContext.create(classLoadingStrategy, schemaCtx);
-        codecRegistry.onBindingRuntimeContextUpdated(ctx);
+        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry(ctx);
         final BindingToNormalizedNodeCodec codec =
                 new BindingToNormalizedNodeCodec(classLoadingStrategy, codecRegistry);
         final List<PathArgument> pathArgs = new ArrayList<>();
