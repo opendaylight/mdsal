@@ -10,16 +10,13 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
-import javassist.ClassPool;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
-import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainerBuilder;
@@ -35,8 +32,7 @@ public class Bug5845booleanKeyTest extends AbstractDataBrokerTest {
     @Test
     public void testBug5845() throws Exception {
         final BindingToNormalizedNodeCodec mappingService = new BindingToNormalizedNodeCodec(
-                GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry(
-                        StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()))));
+                GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry());
         final ModuleInfoBackedContext moduleInfoBackedContext = ModuleInfoBackedContext.create();
         moduleInfoBackedContext.registerModuleInfo(BindingReflections.getModuleInfo(BooleanContainer.class));
         mappingService.onGlobalContextUpdated(moduleInfoBackedContext.tryToCreateSchemaContext().get());

@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javassist.ClassPool;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
@@ -36,12 +35,10 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.dom.codec.impl.MissingSchemaException;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
-import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -115,8 +112,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
 
     public static BindingToNormalizedNodeCodec newInstance(final ClassLoadingStrategy classLoadingStrategy,
             final DOMSchemaService schemaService) {
-        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry(
-                StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault())));
+        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry();
         BindingToNormalizedNodeCodec instance = new BindingToNormalizedNodeCodec(
                 classLoadingStrategy, codecRegistry, true);
         instance.listenerRegistration = schemaService.registerSchemaContextListener(instance);

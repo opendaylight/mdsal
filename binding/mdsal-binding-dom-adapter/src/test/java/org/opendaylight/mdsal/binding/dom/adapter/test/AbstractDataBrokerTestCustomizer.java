@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import javassist.ClassPool;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
@@ -19,11 +18,8 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishS
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.MockSchemaService;
-import org.opendaylight.mdsal.binding.dom.codec.gen.impl.DataObjectSerializerGenerator;
-import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
@@ -50,9 +46,7 @@ public abstract class AbstractDataBrokerTestCustomizer {
 
     public AbstractDataBrokerTestCustomizer() {
         this.schemaService = new MockSchemaService();
-        final ClassPool pool = ClassPool.getDefault();
-        final DataObjectSerializerGenerator generator = StreamWriterGenerator.create(JavassistUtils.forClassPool(pool));
-        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry(generator);
+        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry();
         final GeneratedClassLoadingStrategy loading = GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
         this.bindingToNormalized = new BindingToNormalizedNodeCodec(loading, codecRegistry);
         this.schemaService.registerSchemaContextListener(this.bindingToNormalized);
