@@ -29,12 +29,9 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceA
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcProviderServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
-import org.opendaylight.mdsal.binding.dom.codec.gen.impl.DataObjectSerializerGenerator;
-import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
-import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -148,9 +145,7 @@ public class BindingTestContext implements AutoCloseable {
     public void startBindingToDomMappingService() {
         checkState(classPool != null, "ClassPool needs to be present");
 
-        final DataObjectSerializerGenerator generator
-                = StreamWriterGenerator.create(JavassistUtils.forClassPool(classPool));
-        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry(generator);
+        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry();
         final GeneratedClassLoadingStrategy loading = GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
         codec = new BindingToNormalizedNodeCodec(loading,  codecRegistry);
         mockSchemaService.registerSchemaContextListener(codec);
@@ -243,7 +238,7 @@ public class BindingTestContext implements AutoCloseable {
         return dataBroker;
     }
 
-    public void setSchemaModuleInfos(Set<YangModuleInfo> moduleInfos) {
+    public void setSchemaModuleInfos(final Set<YangModuleInfo> moduleInfos) {
         this.schemaModuleInfos = moduleInfos;
     }
 }

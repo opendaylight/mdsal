@@ -27,7 +27,11 @@ import org.slf4j.LoggerFactory;
 /**
  * Users of this utility class are expected to synchronize on this instance it they need to ensure atomic operations
  * on it. Individual operations are synchronized and therefore are thread-safe.
+ *
+ * @deprecated This class has been deprecated due to not being quite able to work in multi-classloader environments
+ *             without holding strong central references.
  */
+@Deprecated
 @NonNullByDefault
 public final class JavassistUtils {
     private static final Logger LOG = LoggerFactory.getLogger(JavassistUtils.class);
