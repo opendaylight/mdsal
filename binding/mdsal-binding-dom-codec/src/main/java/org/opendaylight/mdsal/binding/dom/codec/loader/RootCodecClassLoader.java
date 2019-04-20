@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,11 @@ final class RootCodecClassLoader extends CodecClassLoader {
                 return recheck;
             }
         }
+    }
+
+    @Override
+    void appendLoaders(final Set<CodecClassLoader> loaders) {
+        throw new IllegalStateException("Attempted to extend root loader with " + loaders);
     }
 
     private boolean isOurClass(final Class<?> bindingClass) {

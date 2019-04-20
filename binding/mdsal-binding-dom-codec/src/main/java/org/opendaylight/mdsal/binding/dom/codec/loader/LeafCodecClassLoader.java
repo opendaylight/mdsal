@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.codec.loader;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
+import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 
 // A leaf class loader, binding together a root class loader and some other class loader
@@ -36,5 +37,11 @@ final class LeafCodecClassLoader extends CodecClassLoader {
     CodecClassLoader findClassLoader(final Class<?> bindingClass) {
         final ClassLoader bindingTarget = bindingClass.getClassLoader();
         return target.equals(bindingTarget) ? this : root.findClassLoader(bindingClass);
+    }
+
+    @Override
+    void appendLoaders(final Set<CodecClassLoader> loaders) {
+        // FIXME: implement this
+        throw new UnsupportedOperationException("Leaf loader to be extended with " + loaders);
     }
 }

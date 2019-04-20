@@ -14,6 +14,9 @@ import static com.google.common.base.Verify.verifyNotNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Strings;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -21,6 +24,8 @@ import javassist.LoaderClassPath;
 import javassist.NotFoundException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A ClassLoader hosting types generated for a particular type. A root instance is attached to a
@@ -56,17 +61,20 @@ public abstract class CodecClassLoader extends ClassLoader {
          * @param loader CodecClassLoader which will hold the class. It can be used to lookup/instantiate other classes
          * @param bindingClass Binding class for which the customized class is being generated
          * @param generated The class being generated
+         * @return A set of generated classes the generated class depends on
          * @throws CannotCompileException if the customizer cannot perform partial compilation
          * @throws NotFoundException if the customizer cannot find a required class
          * @throws IOException if the customizer cannot perform partial loading
          */
-        void customize(@NonNull CodecClassLoader loader, @NonNull CtClass bindingClass, @NonNull CtClass generated)
-                throws CannotCompileException, NotFoundException, IOException;
+        @NonNull List<Class<?>> customize(@NonNull CodecClassLoader loader, @NonNull CtClass bindingClass,
+                @NonNull CtClass generated) throws CannotCompileException, NotFoundException, IOException;
     }
 
     static {
         verify(ClassLoader.registerAsParallelCapable());
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(CodecClassLoader.class);
 
     private final ClassPool classPool;
 
@@ -127,6 +135,8 @@ public abstract class CodecClassLoader extends ClassLoader {
         }
     }
 
+    abstract void appendLoaders(final Set<CodecClassLoader> loaders);
+
     abstract @NonNull CodecClassLoader findClassLoader(Class<?> bindingClass);
 
     private Class<?> doGenerateSubclass(final CtClass superClass, final Class<?> bindingInterface, final String suffix,
@@ -150,9 +160,11 @@ public abstract class CodecClassLoader extends ClassLoader {
                 final byte[] byteCode;
                 final CtClass generated = verifyNotNull(classPool.makeClass(fqn, superClass));
                 try {
-                    customizer.customize(this, bindingCt, generated);
+                    final List<Class<?>> deps = customizer.customize(this, bindingCt, generated);
                     final String ctName = generated.getName();
                     verify(fqn.equals(ctName), "Target class is %s returned result is %s", fqn, ctName);
+                    processDependencies(deps);
+
                     byteCode = generated.toBytecode();
                 } finally {
                     // Always detach the result, as we will never use it again
@@ -168,6 +180,29 @@ public abstract class CodecClassLoader extends ClassLoader {
                 // TODO: this hinders caching, hence we should re-think this
                 bindingCt.detach();
             }
+        }
+    }
+
+    private void processDependencies(final List<Class<?>> deps) {
+        final Set<CodecClassLoader> depLoaders = new HashSet<>();
+        for (Class<?> dep : deps) {
+            final ClassLoader depLoader = dep.getClassLoader();
+            verify(depLoader instanceof CodecClassLoader, "Dependency %s is not a generated class", dep);
+            if (this.equals(depLoader)) {
+                // Same loader, skip
+                continue;
+            }
+
+            try {
+                loadClass(dep.getName());
+            } catch (ClassNotFoundException e) {
+                LOG.debug("Cannot find {} in local loader, attempting to compensate", dep, e);
+                depLoaders.add((CodecClassLoader) depLoader);
+            }
+        }
+
+        if (!depLoaders.isEmpty()) {
+            appendLoaders(depLoaders);
         }
     }
 }
