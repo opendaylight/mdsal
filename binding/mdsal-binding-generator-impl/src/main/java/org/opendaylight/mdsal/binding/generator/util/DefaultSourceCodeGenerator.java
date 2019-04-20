@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.generator.util;
 
 import com.google.common.io.Files;
@@ -29,7 +28,10 @@ import org.slf4j.LoggerFactory;
  * written to a file under a specified directory.
  *
  * @author Thomas Pantelis
+ *
+ * @deprecated Code generation is a concert separate from type mapping and is an implementation detail.
  */
+@Deprecated
 public class DefaultSourceCodeGenerator implements SourceCodeGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultSourceCodeGenerator.class);
 

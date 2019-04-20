@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.util;
 
 import javassist.CtField;
 
+@Deprecated
 public interface FieldGenerator {
     void process(CtField field);
 }

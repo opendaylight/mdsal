@@ -18,10 +18,10 @@ import javassist.ClassPool;
 public class BindingBrokerTestFactory {
 
     private static final ClassPool CLASS_POOL = ClassPool.getDefault();
+
     private boolean startWithParsedSchema = true;
     private ExecutorService executor;
     private ClassPool classPool;
-
 
     public boolean isStartWithParsedSchema() {
         return startWithParsedSchema;
@@ -39,13 +39,13 @@ public class BindingBrokerTestFactory {
         this.executor = executor;
     }
 
-
     public BindingTestContext getTestContext() {
         Preconditions.checkState(executor != null, "Executor is not set.");
         ListeningExecutorService listenableExecutor = MoreExecutors.listeningDecorator(executor);
-        return new BindingTestContext(listenableExecutor, getClassPool(),startWithParsedSchema);
+        return new BindingTestContext(listenableExecutor, startWithParsedSchema);
     }
 
+    @Deprecated
     public ClassPool getClassPool() {
         if (classPool == null) {
             return CLASS_POOL;
@@ -54,8 +54,8 @@ public class BindingBrokerTestFactory {
         return classPool;
     }
 
+    @Deprecated
     public void setClassPool(final ClassPool classPool) {
         this.classPool = classPool;
     }
-
 }
