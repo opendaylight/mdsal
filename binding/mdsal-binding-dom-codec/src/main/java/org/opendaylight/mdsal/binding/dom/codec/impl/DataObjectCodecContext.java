@@ -21,7 +21,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -89,13 +88,14 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     private static final CtClass SUPERCLASS = StaticClassPool.findClass(CodecDataObject.class);
     private static final CtClass AUGMENTABLE_SUPERCLASS = StaticClassPool.findClass(
         AugmentableCodecDataObject.class);
+    private static final NodeContextSupplier[] EMPTY_METHODS = new NodeContextSupplier[0];
 
     private final ImmutableMap<String, ValueNodeCodecContext> leafChild;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
-    private final ImmutableMap<String, NodeContextSupplier> byMethod;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStreamClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClass;
     private final ImmutableMap<AugmentationIdentifier, Type> possibleAugmentations;
+    private final NodeContextSupplier[] byMethod;
     private final MethodHandle proxyConstructor;
 
     @SuppressWarnings("rawtypes")
@@ -106,8 +106,12 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
 
     private volatile ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> mismatchedAugmented = ImmutableMap.of();
 
+    DataObjectCodecContext(final DataContainerCodecPrototype<T> prototype, final CodecClassLoader loader) {
+        this(prototype, loader, null);
+    }
+
     DataObjectCodecContext(final DataContainerCodecPrototype<T> prototype, final CodecClassLoader loader,
-        final Method... additionalMethods) {
+        final Method keyMethod) {
         super(prototype, loader);
 
         final Class<D> bindingClass = getBindingClass();
@@ -149,20 +153,23 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         }
 
         final int methodCount = tmpMethodToSupplier.size();
-        final Builder<String, NodeContextSupplier> byMethodBuilder = ImmutableMap.builderWithExpectedSize(methodCount);
-
-
         final List<Method> properties = new ArrayList<>(methodCount);
         for (Entry<Method, NodeContextSupplier> entry : tmpMethodToSupplier.entrySet()) {
-            final Method method = entry.getKey();
-            properties.add(method);
-            byMethodBuilder.put(method.getName(), entry.getValue());
+            properties.add(entry.getKey());
         }
 
         // Make sure properties are alpha-sorted
         properties.sort(METHOD_BY_ALPHABET);
+        if (!properties.isEmpty()) {
+            byMethod = new NodeContextSupplier[properties.size()];
+            int offset = 0;
+            for (Method prop : properties) {
+                byMethod[offset++] = verifyNotNull(tmpMethodToSupplier.get(prop));
+            }
+        } else {
+            byMethod = EMPTY_METHODS;
+        }
 
-        this.byMethod = byMethodBuilder.build();
         this.byYang = ImmutableMap.copyOf(byYangBuilder);
         this.byStreamClass = ImmutableMap.copyOf(byStreamClassBuilder);
         byBindingArgClassBuilder.putAll(byStreamClass);
@@ -178,19 +185,10 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         }
         reloadAllAugmentations();
 
-        final List<Method> methods;
-        if (additionalMethods.length != 0) {
-            methods = new ArrayList<>(properties.size() + 1);
-            methods.addAll(properties);
-            methods.addAll(Arrays.asList(additionalMethods));
-        } else {
-            methods = properties;
-        }
-
         final Class<?> generatedClass;
         try {
             generatedClass = loader.generateSubclass(superClass, bindingClass, "codecImpl",
-                new CodecDataObjectCustomizer(properties, methods));
+                new CodecDataObjectCustomizer(properties, keyMethod));
         } catch (CannotCompileException | IOException | NotFoundException e) {
             throw new LinkageError("Failed to generated class for " + bindingClass, e);
         }
@@ -527,9 +525,8 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
     }
 
     @SuppressWarnings("rawtypes")
-    @Nullable Object getBindingChildValue(final String method, final NormalizedNodeContainer domData) {
-        final NodeCodecContext childContext = verifyNotNull(byMethod.get(method),
-            "Cannot find data handler for method %s", method).apply(loader());
+    @Nullable Object getBindingChildValue(final NormalizedNodeContainer domData, final int offset) {
+        final NodeCodecContext childContext = byMethod[offset].apply(loader());
 
         @SuppressWarnings("unchecked")
         final Optional<NormalizedNode<?, ?>> domChild = domData.getChild(childContext.getDomPathArgument());

@@ -20,9 +20,14 @@ import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 
 class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<D,ListSchemaNode> {
-    protected ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype,
-            final CodecClassLoader loader, final Method... additionalMethods) {
-        super(prototype, loader, additionalMethods);
+    ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype,
+            final CodecClassLoader loader) {
+        super(prototype, loader);
+    }
+
+    ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype,
+            final CodecClassLoader loader, final Method keyMethod) {
+        super(prototype, loader, keyMethod);
     }
 
     @Override
