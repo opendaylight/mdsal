@@ -12,22 +12,17 @@ import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableList;
-import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import javassist.CannotCompileException;
-import javassist.CtClass;
-import javassist.Modifier;
-import javassist.NotFoundException;
+import java.lang.reflect.Modifier;
 import javax.xml.transform.dom.DOMSource;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingOpaqueObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
-import org.opendaylight.mdsal.binding.dom.codec.loader.StaticClassPool;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.ByteBuddyResult;
 import org.opendaylight.yangtools.concepts.Codec;
 import org.opendaylight.yangtools.yang.binding.OpaqueData;
 import org.opendaylight.yangtools.yang.binding.OpaqueObject;
@@ -55,7 +50,6 @@ abstract class OpaqueNodeCodecContext<T extends OpaqueObject<T>> extends ValueNo
         }
     }
 
-    private static final CtClass SUPERCLASS = StaticClassPool.findClass(CodecOpaqueObject.class);
     private static final MethodType CONSTRUCTOR_TYPE = MethodType.methodType(OpaqueObject.class,
         OpaqueData.class);
 
@@ -132,17 +126,12 @@ abstract class OpaqueNodeCodecContext<T extends OpaqueObject<T>> extends ValueNo
     }
 
     private static MethodHandle createImpl(final CodecClassLoader rootLoader, final Class<?> bindingClass) {
-        final Class<?> proxyClass;
-        try {
-            proxyClass = rootLoader.generateSubclass(SUPERCLASS, bindingClass, "codecImpl",
-                (pool, binding, generated) -> {
-                    generated.addInterface(binding);
-                    generated.setModifiers(Modifier.PUBLIC | Modifier.FINAL);
-                    return ImmutableList.of();
-                });
-        } catch (CannotCompileException | IOException | NotFoundException e) {
-            throw new LinkageError("Failed to instantiate prototype for " + bindingClass, e);
-        }
+        final Class<?> proxyClass = rootLoader.generateSublass(CodecOpaqueObject.class, bindingClass, "codecImpl",
+            (loader, binding, builder) -> {
+                return ByteBuddyResult.of(builder.implement(bindingClass)
+                        .modifiers(Modifier.PUBLIC | Modifier.FINAL)
+                        .make());
+            });
 
         Constructor<?> ctor;
         try {
