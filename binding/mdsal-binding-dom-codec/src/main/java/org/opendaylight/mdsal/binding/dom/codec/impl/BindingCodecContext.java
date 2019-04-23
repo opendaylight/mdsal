@@ -40,7 +40,6 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
-import org.opendaylight.mdsal.binding.dom.codec.loader.StaticClassPool;
 import org.opendaylight.mdsal.binding.dom.codec.util.BindingSchemaMapping;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -107,7 +106,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
             @Override
             public DataObjectStreamer<?> load(final Class<?> key) throws CannotCompileException, IOException,
                     NotFoundException, ReflectiveOperationException {
-                final Class<?> streamer = loader.generateSubclass(DataObjectStreamerCustomizer.CT_DOS, key, "streamer",
+                final Class<?> streamer = loader.generateSubclass(DataObjectStreamer.class, key, "streamer",
                     DataObjectStreamerCustomizer.create(BindingCodecContext.this, key));
 
                 final Field instance = streamer.getDeclaredField(DataObjectStreamerCustomizer.INSTANCE_FIELD);
@@ -122,7 +121,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
             }
         });
 
-    private final @NonNull CodecClassLoader loader = StaticClassPool.createLoader();
+    private final @NonNull CodecClassLoader loader = CodecClassLoader.create();
     private final InstanceIdentifierCodec instanceIdentifierCodec;
     private final IdentityCodec identityCodec;
     private final BindingNormalizedNodeCodecRegistry registry;
