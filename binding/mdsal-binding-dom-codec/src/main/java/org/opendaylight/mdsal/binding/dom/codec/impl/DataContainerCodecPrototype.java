@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import com.google.common.collect.Iterables;
 import org.checkerframework.checker.lock.qual.Holding;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode.ChildAddressabilitySummary;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
@@ -46,7 +47,7 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
     private final PathArgument yangArg;
     private final ChildAddressabilitySummary childAddressabilitySummary;
 
-    private volatile DataContainerCodecContext<?, T> instance = null;
+    private DataContainerCodecContext<?, T> instance;
 
     @SuppressWarnings("unchecked")
     private DataContainerCodecPrototype(final Class<?> cls, final PathArgument arg, final T nodeSchema,
@@ -209,8 +210,7 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
             synchronized (this) {
                 tmp = instance;
                 if (tmp == null) {
-                    tmp = createInstance(loader);
-                    instance = tmp;
+                    instance = tmp = createInstance(loader);
                 }
             }
         }
@@ -220,7 +220,7 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
 
     @Holding("this")
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private DataContainerCodecContext<?, T> createInstance(final CodecClassLoader loader) {
+    private @NonNull DataContainerCodecContext<?, T> createInstance(final CodecClassLoader loader) {
         // FIXME: make protected abstract
         if (schema instanceof ContainerSchemaNode) {
             return new ContainerNodeCodecContext(this, loader);
