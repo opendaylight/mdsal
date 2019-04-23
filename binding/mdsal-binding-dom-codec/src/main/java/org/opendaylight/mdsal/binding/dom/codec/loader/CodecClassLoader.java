@@ -15,7 +15,9 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +26,10 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.LoaderClassPath;
 import javassist.NotFoundException;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.DynamicType.Builder;
+import net.bytebuddy.dynamic.DynamicType.Unloaded;
+import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.slf4j.Logger;
@@ -52,11 +58,24 @@ import org.slf4j.LoggerFactory;
  */
 @Beta
 public abstract class CodecClassLoader extends ClassLoader {
+    public interface LoadingCustomizer {
+        /**
+         * Run the specified loader in a customized environment. The environment customizations must be cleaned up by
+         * the time this method returns. The default implementation performs no customization.
+         *
+         * @param loader Class loader to execute
+         * @return Class returned by the loader
+         */
+        default Class<?> customizeLoading(final @NonNull Supplier<Class<?>> loader) {
+            return loader.get();
+        }
+    }
+
     /**
      * A customizer allowing a generated class to be modified before it is loader.
      */
     @FunctionalInterface
-    public interface Customizer {
+    public interface Customizer extends LoadingCustomizer {
         /**
          * Customize a generated class before it is instantiated in the loader.
          *
@@ -70,16 +89,47 @@ public abstract class CodecClassLoader extends ClassLoader {
          */
         @NonNull List<Class<?>> customize(@NonNull CodecClassLoader loader, @NonNull CtClass bindingClass,
                 @NonNull CtClass generated) throws CannotCompileException, NotFoundException, IOException;
+    }
 
+    @FunctionalInterface
+    public interface ByteBuddyCustomizer extends LoadingCustomizer {
         /**
-         * Run the specified loader in a customized environment. The environment customizations must be cleaned up by
-         * the time this method returns. The default implementation performs no customization.
+         * Customize a generated class before it is instantiated in the loader.
          *
-         * @param loader Class loader to execute
-         * @return Class returned by the loader
+         * @param loader CodecClassLoader which will hold the class. It can be used to lookup/instantiate other classes
+         * @param bindingInterface Binding class for which the customized class is being generated
+         * @param builder ByteBuddy builder
+         * @return A set of generated classes the generated class depends on
          */
-        default Class<?> customizeLoading(final @NonNull Supplier<Class<?>> loader) {
-            return loader.get();
+        <T> @NonNull ByteBuddyResult<T> customize(@NonNull CodecClassLoader loader, @NonNull Class<?> bindingInterface,
+                @NonNull String fqn, @NonNull Builder<T> builder);
+    }
+
+    public static final class ByteBuddyResult<T> {
+        private final @NonNull ImmutableSet<Class<?>> dependecies;
+        private final @NonNull Unloaded<T> result;
+
+        ByteBuddyResult(final Unloaded<T> result, final ImmutableSet<Class<?>> dependecies) {
+            this.result = requireNonNull(result);
+            this.dependecies = requireNonNull(dependecies);
+        }
+
+        public static <T> @NonNull ByteBuddyResult<T> of(final Unloaded<T> result) {
+            return new ByteBuddyResult<>(result, ImmutableSet.of());
+        }
+
+        public static <T> @NonNull ByteBuddyResult<T> of(final Unloaded<T> result,
+                final Collection<Class<?>> dependencies) {
+            return dependencies.isEmpty() ? of(result) : new ByteBuddyResult<>(result,
+                    ImmutableSet.copyOf(dependencies));
+        }
+
+        @NonNull Unloaded<T> getResult() {
+            return result;
+        }
+
+        @NonNull ImmutableSet<Class<?>> getDependencies() {
+            return dependecies;
         }
     }
 
@@ -137,6 +187,13 @@ public abstract class CodecClassLoader extends ClassLoader {
     public final Class<?> generateSubclass(final CtClass superClass, final Class<?> bindingInterface,
             final String suffix, final Customizer customizer) throws CannotCompileException, IOException,
                 NotFoundException {
+        return findClassLoader(requireNonNull(bindingInterface))
+                .doGenerateSubclass(superClass, bindingInterface, suffix, customizer);
+    }
+
+    public final <T> Class<T> generateSubclass(final Class<? extends T> superClass, final Class<?> bindingInterface,
+            final String suffix, final ByteBuddyCustomizer customizer)  {
+
         return findClassLoader(requireNonNull(bindingInterface))
                 .doGenerateSubclass(superClass, bindingInterface, suffix, customizer);
     }
@@ -214,7 +271,33 @@ public abstract class CodecClassLoader extends ClassLoader {
         }
     }
 
-    private void processDependencies(final List<Class<?>> deps) {
+    private <T> Class<T> doGenerateSubclass(final Class<? extends T> superClass,
+            final Class<?> bindingInterface, final String suffix, final ByteBuddyCustomizer customizer)  {
+        final String bindingName = bindingInterface.getName();
+        final String fqn = bindingName + "$$$" + suffix;
+
+        synchronized (getClassLoadingLock(fqn)) {
+            // Attempt to find a loaded class
+            final Class<?> loaded = findLoadedClass(fqn);
+            if (loaded != null) {
+                return (Class<T>) loaded;
+            }
+
+            final ByteBuddyResult<? extends T> result = customizer.customize(this, bindingInterface, fqn,
+                new ByteBuddy().with(TypeValidation.DISABLED).subclass(superClass).name(fqn));
+            processDependencies(result.getDependencies());
+
+            final byte[] byteCode = result.getResult().getBytes();
+
+            return (Class<T>) customizer.customizeLoading(() -> {
+                final Class<?> newClass = defineClass(fqn, byteCode, 0, byteCode.length);
+                resolveClass(newClass);
+                return newClass;
+            });
+        }
+    }
+
+    private void processDependencies(final Collection<Class<?>> deps) {
         final Set<LeafCodecClassLoader> depLoaders = new HashSet<>();
         for (Class<?> dep : deps) {
             final ClassLoader depLoader = dep.getClassLoader();
