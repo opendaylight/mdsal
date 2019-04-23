@@ -7,25 +7,21 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.loader;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
-import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
-import java.io.IOException;
+import com.google.common.collect.ImmutableSet;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.LoaderClassPath;
-import javassist.NotFoundException;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.DynamicType.Builder;
+import net.bytebuddy.dynamic.DynamicType.Unloaded;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,10 +40,6 @@ import org.slf4j.LoggerFactory;
  * <p>In single-classloader environments, obviously, the root loader can load all binding classes, and hence no leaf
  * loader is created.
  *
- * <p>
- * Each {@link CodecClassLoader} has a {@link ClassPool} attached to it and can perform operations on it. Leaf loaders
- * specify the root loader's ClassPool as their parent, but are configured to lookup classes first in themselves.
- *
  * @author Robert Varga
  */
 @Beta
@@ -55,21 +47,18 @@ public abstract class CodecClassLoader extends ClassLoader {
     /**
      * A customizer allowing a generated class to be modified before it is loader.
      */
-    @FunctionalInterface
-    public interface Customizer {
+    public interface ByteBuddyCustomizer {
         /**
          * Customize a generated class before it is instantiated in the loader.
          *
          * @param loader CodecClassLoader which will hold the class. It can be used to lookup/instantiate other classes
-         * @param bindingClass Binding class for which the customized class is being generated
-         * @param generated The class being generated
+         * @param bindingInterface Binding class for which the customized class is being generated
+         * @param fqn Fully-qualified Class Name of generated class
+         * @param builder ByteBuddy builder
          * @return A set of generated classes the generated class depends on
-         * @throws CannotCompileException if the customizer cannot perform partial compilation
-         * @throws NotFoundException if the customizer cannot find a required class
-         * @throws IOException if the customizer cannot perform partial loading
          */
-        @NonNull List<Class<?>> customize(@NonNull CodecClassLoader loader, @NonNull CtClass bindingClass,
-                @NonNull CtClass generated) throws CannotCompileException, NotFoundException, IOException;
+        <T> @NonNull ByteBuddyResult<T> customize(@NonNull CodecClassLoader loader, @NonNull Class<?> bindingInterface,
+                @NonNull String fqn, @NonNull Builder<T> builder);
 
         /**
          * Run the specified loader in a customized environment. The environment customizations must be cleaned up by
@@ -83,41 +72,51 @@ public abstract class CodecClassLoader extends ClassLoader {
         }
     }
 
+    public static final class ByteBuddyResult<T> {
+        private final @NonNull ImmutableSet<Class<?>> dependecies;
+        private final @NonNull Unloaded<T> result;
+
+        ByteBuddyResult(final Unloaded<T> result, final ImmutableSet<Class<?>> dependecies) {
+            this.result = requireNonNull(result);
+            this.dependecies = requireNonNull(dependecies);
+        }
+
+        public static <T> @NonNull ByteBuddyResult<T> of(final Unloaded<T> result) {
+            return new ByteBuddyResult<>(result, ImmutableSet.of());
+        }
+
+        public static <T> @NonNull ByteBuddyResult<T> of(final Unloaded<T> result,
+                final Collection<Class<?>> dependencies) {
+            return dependencies.isEmpty() ? of(result) : new ByteBuddyResult<>(result,
+                    ImmutableSet.copyOf(dependencies));
+        }
+
+        @NonNull Unloaded<T> getResult() {
+            return result;
+        }
+
+        @NonNull ImmutableSet<Class<?>> getDependencies() {
+            return dependecies;
+        }
+    }
+
     static {
         verify(ClassLoader.registerAsParallelCapable());
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(CodecClassLoader.class);
 
-    private final ClassPool classPool;
-
-    private CodecClassLoader(final ClassLoader parentLoader, final ClassPool parentPool) {
+    CodecClassLoader(final ClassLoader parentLoader) {
         super(parentLoader);
-        this.classPool = new ClassPool(parentPool);
-        this.classPool.childFirstLookup = true;
-        this.classPool.appendClassPath(new LoaderClassPath(this));
-    }
-
-    CodecClassLoader() {
-        this(StaticClassPool.LOADER, StaticClassPool.POOL);
-    }
-
-    CodecClassLoader(final CodecClassLoader parent) {
-        this(parent, parent.classPool);
     }
 
     /**
-     * Turn a Class instance into a CtClass for referencing it in code generation. This method supports both
-     * generated- and non-generated classes.
+     * Instantiate a new CodecClassLoader, which serves as the root of generated code loading.
      *
-     * @param clazz Class to be looked up.
-     * @return A CtClass instance
-     * @throws NotFoundException if the class cannot be found
-     * @throws NullPointerException if {@code clazz} is null
+     * @return A new CodecClassLoader.
      */
-    public final @NonNull CtClass findClass(final @NonNull Class<?> clazz) throws NotFoundException {
-        return BindingReflections.isBindingClass(clazz) ? findClassLoader(clazz).getLocalFrozen(clazz.getName())
-                : StaticClassPool.findClass(clazz);
+    public static @NonNull CodecClassLoader create() {
+        return AccessController.doPrivileged((PrivilegedAction<CodecClassLoader>)() -> new RootCodecClassLoader());
     }
 
     /**
@@ -129,24 +128,12 @@ public abstract class CodecClassLoader extends ClassLoader {
      * @param suffix Suffix to use
      * @param customizer Customizer to use to process the class
      * @return A generated class object
-     * @throws CannotCompileException if the resulting generated class cannot be compiled or customized
-     * @throws NotFoundException if the binding interface cannot be found or the generated class cannot be customized
-     * @throws IOException if the generated class cannot be turned into bytecode or the generator fails with IOException
      * @throws NullPointerException if any argument is null
      */
-    public final Class<?> generateSubclass(final CtClass superClass, final Class<?> bindingInterface,
-            final String suffix, final Customizer customizer) throws CannotCompileException, IOException,
-                NotFoundException {
+    public final <T> Class<T> generateSubclass(final Class<? extends T> superClass, final Class<?> bindingInterface,
+            final String suffix, final ByteBuddyCustomizer customizer)  {
         return findClassLoader(requireNonNull(bindingInterface))
                 .doGenerateSubclass(superClass, bindingInterface, suffix, customizer);
-    }
-
-    final @NonNull CtClass getLocalFrozen(final String name) throws NotFoundException {
-        synchronized (getClassLoadingLock(name)) {
-            final CtClass result = classPool.get(name);
-            result.freeze();
-            return result;
-        }
     }
 
     /**
@@ -168,53 +155,33 @@ public abstract class CodecClassLoader extends ClassLoader {
      */
     abstract @NonNull CodecClassLoader findClassLoader(@NonNull Class<?> bindingClass);
 
-    private Class<?> doGenerateSubclass(final CtClass superClass, final Class<?> bindingInterface, final String suffix,
-            final Customizer customizer) throws CannotCompileException, IOException, NotFoundException {
-        checkArgument(!superClass.isInterface(), "%s must not be an interface", superClass);
-        checkArgument(bindingInterface.isInterface(), "%s is not an interface", bindingInterface);
-        checkArgument(!Strings.isNullOrEmpty(suffix));
-
+    private <T> Class<T> doGenerateSubclass(final Class<? extends T> superClass,
+            final Class<?> bindingInterface, final String suffix, final ByteBuddyCustomizer customizer)  {
         final String bindingName = bindingInterface.getName();
         final String fqn = bindingName + "$$$" + suffix;
+
         synchronized (getClassLoadingLock(fqn)) {
             // Attempt to find a loaded class
             final Class<?> loaded = findLoadedClass(fqn);
             if (loaded != null) {
-                return loaded;
+                return (Class<T>) loaded;
             }
 
-            // Get the interface
-            final CtClass bindingCt = getLocalFrozen(bindingName);
-            try {
-                final byte[] byteCode;
-                final CtClass generated = verifyNotNull(classPool.makeClass(fqn, superClass));
-                try {
-                    final List<Class<?>> deps = customizer.customize(this, bindingCt, generated);
-                    final String ctName = generated.getName();
-                    verify(fqn.equals(ctName), "Target class is %s returned result is %s", fqn, ctName);
-                    processDependencies(deps);
+            final ByteBuddyResult<? extends T> result = customizer.customize(this, bindingInterface, fqn,
+                new ByteBuddy().subclass(superClass).name(fqn));
+            processDependencies(result.getDependencies());
 
-                    byteCode = generated.toBytecode();
-                } finally {
-                    // Always detach the result, as we will never use it again
-                    generated.detach();
-                }
+            final byte[] byteCode = result.getResult().getBytes();
 
-                return customizer.customizeLoading(() -> {
-                    final Class<?> newClass = defineClass(fqn, byteCode, 0, byteCode.length);
-                    resolveClass(newClass);
-                    return newClass;
-                });
-            } finally {
-                // Binding interfaces are used only a few times, hence it does not make sense to cache them in the class
-                // pool.
-                // TODO: this hinders caching, hence we should re-think this
-                bindingCt.detach();
-            }
+            return (Class<T>) customizer.customizeLoading(() -> {
+                final Class<?> newClass = defineClass(fqn, byteCode, 0, byteCode.length);
+                resolveClass(newClass);
+                return newClass;
+            });
         }
     }
 
-    private void processDependencies(final List<Class<?>> deps) {
+    private void processDependencies(final Collection<Class<?>> deps) {
         final Set<LeafCodecClassLoader> depLoaders = new HashSet<>();
         for (Class<?> dep : deps) {
             final ClassLoader depLoader = dep.getClassLoader();
