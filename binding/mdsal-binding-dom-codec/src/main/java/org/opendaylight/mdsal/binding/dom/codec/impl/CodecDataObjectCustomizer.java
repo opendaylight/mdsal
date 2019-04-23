@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.collect.ImmutableList;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -53,7 +54,7 @@ final class CodecDataObjectCustomizer implements Customizer {
     }
 
     @Override
-    public void customize(final CodecClassLoader loader, final CtClass bindingClass, final CtClass generated)
+    public List<Class<?>> customize(final CodecClassLoader loader, final CtClass bindingClass, final CtClass generated)
             throws NotFoundException, CannotCompileException {
         // Generate members for all methods ...
         LOG.trace("Generating class {}", generated.getName());
@@ -86,6 +87,7 @@ final class CodecDataObjectCustomizer implements Customizer {
         generated.addMethod(codecFillToString);
 
         generated.setModifiers(Modifier.FINAL | Modifier.PUBLIC);
+        return ImmutableList.of();
     }
 
     private String codecHashCodeBody() {
