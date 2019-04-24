@@ -7,30 +7,62 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
-import javassist.CannotCompileException;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import net.bytebuddy.asm.AsmVisitorWrapper;
+import net.bytebuddy.description.field.FieldDescription;
+import net.bytebuddy.description.field.FieldDescription.InDefinedShape;
+import net.bytebuddy.description.field.FieldList;
+import net.bytebuddy.description.method.MethodDescription;
+import net.bytebuddy.description.method.MethodDescription.ForLoadedMethod;
+import net.bytebuddy.description.method.MethodList;
+import net.bytebuddy.description.type.TypeDefinition;
+import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.description.type.TypeDescription.Generic;
+import net.bytebuddy.dynamic.DynamicType.Builder;
+import net.bytebuddy.dynamic.scaffold.InstrumentedType;
+import net.bytebuddy.implementation.Implementation;
+import net.bytebuddy.implementation.Implementation.Context;
+import net.bytebuddy.implementation.bytecode.Addition;
+import net.bytebuddy.implementation.bytecode.ByteCodeAppender;
+import net.bytebuddy.implementation.bytecode.Multiplication;
+import net.bytebuddy.implementation.bytecode.StackManipulation;
+import net.bytebuddy.implementation.bytecode.assign.TypeCasting;
+import net.bytebuddy.implementation.bytecode.constant.ClassConstant;
+import net.bytebuddy.implementation.bytecode.constant.IntegerConstant;
+import net.bytebuddy.implementation.bytecode.constant.TextConstant;
+import net.bytebuddy.implementation.bytecode.member.FieldAccess;
+import net.bytebuddy.implementation.bytecode.member.FieldAccess.Defined;
+import net.bytebuddy.implementation.bytecode.member.MethodInvocation;
+import net.bytebuddy.implementation.bytecode.member.MethodReturn;
+import net.bytebuddy.implementation.bytecode.member.MethodVariableAccess;
+import net.bytebuddy.jar.asm.ClassVisitor;
+import net.bytebuddy.jar.asm.ClassWriter;
+import net.bytebuddy.jar.asm.Label;
+import net.bytebuddy.jar.asm.MethodVisitor;
+import net.bytebuddy.jar.asm.Opcodes;
+import net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.pool.TypePool;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
-import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.Customizer;
-import org.opendaylight.mdsal.binding.dom.codec.loader.StaticClassPool;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.ByteBuddyCustomizer;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.ByteBuddyResult;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,19 +70,441 @@ import org.slf4j.LoggerFactory;
 /**
  * Private support for generating AbstractDataObject specializations.
  */
-final class CodecDataObjectCustomizer implements Customizer {
+final class CodecDataObjectCustomizer<T extends CodecDataObject<?>> implements ByteBuddyCustomizer<T> {
+    enum EnableFramesComputing implements AsmVisitorWrapper {
+        INSTANCE;
+
+        @Override
+        public int mergeWriter(final int flags) {
+            return flags | ClassWriter.COMPUTE_FRAMES;
+        }
+
+        @Override
+        public int mergeReader(final int flags) {
+            return flags | ClassWriter.COMPUTE_FRAMES;
+        }
+
+        @Override
+        public ClassVisitor wrap(final TypeDescription td, final ClassVisitor cv, final Implementation.Context ctx,
+                final TypePool tp, final FieldList<FieldDescription.InDefinedShape> fields, final MethodList<?> methods,
+                final int wflags, final int rflags) {
+            return cv;
+        }
+    }
+
+    private static final class IfEq implements StackManipulation {
+        private static final StackManipulation.Size SIZE = new StackManipulation.Size(-1, 0);
+
+        private final Label label;
+
+        IfEq(final Label label) {
+            this.label = requireNonNull(label);
+        }
+
+        @Override
+        public boolean isValid() {
+            return true;
+        }
+
+        @Override
+        public StackManipulation.Size apply(final MethodVisitor mv, final Implementation.Context ctx) {
+            mv.visitJumpInsn(Opcodes.IFEQ, label);
+            return SIZE;
+        }
+    }
+
+    private static final class Mark implements StackManipulation {
+        private static final StackManipulation.Size SIZE = new StackManipulation.Size(0, 0);
+
+        private final Label label;
+
+        Mark(final Label label) {
+            this.label = requireNonNull(label);
+        }
+
+        @Override
+        public boolean isValid() {
+            return true;
+        }
+
+        @Override
+        public StackManipulation.Size apply(final MethodVisitor mv, final Implementation.Context ctx) {
+            mv.visitLabel(label);
+            return SIZE;
+        }
+    }
+
+    private abstract static class AbstractFieldInitializer implements ByteCodeAppender {
+        private final String methodName;
+        private final String fieldName;
+
+        AbstractFieldInitializer(final String methodName, final String fieldName) {
+            this.methodName = requireNonNull(methodName);
+            this.fieldName = requireNonNull(fieldName);
+        }
+
+        final Defined fieldAccess(final Context implementationContext) {
+            return FieldAccess.forField(implementationContext.getInstrumentedType().getDeclaredFields()
+                .filter(ElementMatchers.named(fieldName)).getOnly());
+        }
+
+        final TextConstant methodNameText() {
+            return new TextConstant(methodName);
+        }
+    }
+
+    private static final class ArfuInitializer extends AbstractFieldInitializer {
+        private static final StackManipulation OBJECT_CLASS = ClassConstant.of(TypeDescription.OBJECT);
+        private static final StackManipulation ARFU_NEWUPDATER =  MethodInvocation.invoke(
+            findMethod(AtomicReferenceFieldUpdater.class, "newUpdater", Class.class, Class.class, String.class));
+
+        ArfuInitializer(final String methodName, final String fieldName) {
+            super(methodName, fieldName);
+        }
+
+        @Override
+        public Size apply(final MethodVisitor methodVisitor, final Context implementationContext,
+                final MethodDescription instrumentedMethod) {
+
+            StackManipulation.Size operandStackSize = new StackManipulation.Compound(
+                ClassConstant.of(implementationContext.getInstrumentedType()),
+                OBJECT_CLASS,
+                methodNameText(),
+                ARFU_NEWUPDATER,
+                fieldAccess(implementationContext).write())
+                    .apply(methodVisitor, implementationContext);
+
+            return new Size(operandStackSize.getMaximalSize(), instrumentedMethod.getStackSize());
+        }
+    }
+
+    private static final class NcsInitializer extends AbstractFieldInitializer {
+        private static final StackManipulation BRIDGE_RESOLVE = MethodInvocation.invoke(
+            findMethod(CodecDataObjectBridge.class, "resolve", String.class));
+
+        NcsInitializer(final String methodName, final String fieldName) {
+            super(methodName, fieldName);
+        }
+
+        @Override
+        public Size apply(final MethodVisitor methodVisitor, final Context implementationContext,
+                final MethodDescription instrumentedMethod) {
+            StackManipulation.Size operandStackSize = new StackManipulation.Compound(
+                methodNameText(),
+                BRIDGE_RESOLVE,
+                fieldAccess(implementationContext).write())
+                    .apply(methodVisitor, implementationContext);
+            return new Size(operandStackSize.getMaximalSize(), instrumentedMethod.getStackSize());
+        }
+    }
+
+    private static final class IicInitializer extends AbstractFieldInitializer {
+        private static final StackManipulation BRIDGE_RESOLVE = MethodInvocation.invoke(
+            findMethod(CodecDataObjectBridge.class, "resolveKey", String.class));
+
+        IicInitializer(final String methodName, final String fieldName) {
+            super(methodName, fieldName);
+        }
+
+        @Override
+        public Size apply(final MethodVisitor methodVisitor, final Context implementationContext,
+                final MethodDescription instrumentedMethod) {
+            StackManipulation.Size operandStackSize = new StackManipulation.Compound(
+                methodNameText(),
+                BRIDGE_RESOLVE,
+                fieldAccess(implementationContext).write())
+                    .apply(methodVisitor, implementationContext);
+            return new Size(operandStackSize.getMaximalSize(), instrumentedMethod.getStackSize());
+        }
+    }
+
+    private abstract static class AbstractAppender implements ByteCodeAppender {
+        static final StackManipulation THIS = MethodVariableAccess.loadThis();
+
+    }
+
+    private abstract static class AbstractMethod extends AbstractAppender {
+        private final String arfuName;
+        private final String ctxName;
+
+        AbstractMethod(final String arfuName, final String ctxName) {
+            this.arfuName = requireNonNull(arfuName);
+            this.ctxName = requireNonNull(ctxName);
+        }
+
+        @Override
+        public final Size apply(final MethodVisitor methodVisitor, final Context implementationContext,
+                final MethodDescription instrumentedMethod) {
+            final TypeDescription retType = instrumentedMethod.getReturnType().asErasure();
+            checkArgument(!retType.isPrimitive(), "%s must return a non-primitive", instrumentedMethod);
+
+            final FieldList<InDefinedShape> fields = implementationContext.getInstrumentedType().getDeclaredFields();
+
+            StackManipulation.Size operandStackSize = new StackManipulation.Compound(
+                THIS,
+                getField(fields, arfuName),
+                getField(fields, ctxName),
+                codecMember(),
+                TypeCasting.to(retType),
+                MethodReturn.REFERENCE)
+                    .apply(methodVisitor, implementationContext);
+
+            return new Size(operandStackSize.getMaximalSize(), instrumentedMethod.getStackSize());
+        }
+
+        abstract StackManipulation codecMember();
+
+        private static StackManipulation getField(final FieldList<InDefinedShape> fields, final String name) {
+            return FieldAccess.forField(fields.filter(ElementMatchers.named(name)).getOnly()).read();
+        }
+    }
+
+    private static final class GetMethod extends AbstractMethod {
+        private static final StackManipulation CODEC_MEMBER = MethodInvocation.invoke(findMethod(CodecDataObject.class,
+            "codecMember", AtomicReferenceFieldUpdater.class, NodeContextSupplier.class));
+
+        GetMethod(final String arfuName, final String ctxName) {
+            super(arfuName, ctxName);
+        }
+
+        @Override
+        StackManipulation codecMember() {
+            return CODEC_MEMBER;
+        }
+    }
+
+    private abstract static class AbstractMethodImplementation implements Implementation {
+        private static final Generic BB_ARFU = TypeDefinition.Sort.describe(AtomicReferenceFieldUpdater.class);
+        private static final Generic BB_OBJECT = TypeDefinition.Sort.describe(Object.class);
+        private static final int PRIV_VOLATILE = Opcodes.ACC_PRIVATE | Opcodes.ACC_VOLATILE | Opcodes.ACC_SYNTHETIC;
+
+        static final int PRIV_CONST = Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL
+                | Opcodes.ACC_SYNTHETIC;
+
+        final String methodName;
+
+        AbstractMethodImplementation(final String methodName) {
+            this.methodName = requireNonNull(methodName);
+        }
+
+        @Override
+        public final InstrumentedType prepare(final InstrumentedType instrumentedType) {
+            final String arfuName = arfuName(methodName);
+
+            return prepare(instrumentedType
+                // AtomicReferenceFieldUpdater ...
+                .withField(new FieldDescription.Token(arfuName, PRIV_CONST, BB_ARFU))
+                .withInitializer(new ArfuInitializer(methodName, arfuName))
+                // ... corresponding volatile field ...
+                .withField(new FieldDescription.Token(methodName, PRIV_VOLATILE, BB_OBJECT)), ctxName(methodName));
+        }
+
+        @Override
+        public final ByteCodeAppender appender(final Target implementationTarget) {
+            return appender(implementationTarget, arfuName(methodName), ctxName(methodName));
+        }
+
+        abstract InstrumentedType prepare(InstrumentedType instrumentedType, String ctxName);
+
+        abstract ByteCodeAppender appender(Target implementationTarget, String arfuName, String ctxName);
+
+        private static String arfuName(final String methodName) {
+            return methodName + "$$$ARFU";
+        }
+
+        private static String ctxName(final String methodName) {
+            return methodName + "$$$CTX";
+        }
+    }
+
+    private static final class GetMethodImplementation extends AbstractMethodImplementation {
+        private static final Generic BB_NCS = TypeDefinition.Sort.describe(NodeContextSupplier.class);
+
+        GetMethodImplementation(final String methodName) {
+            super(methodName);
+        }
+
+        @Override
+        InstrumentedType prepare(final InstrumentedType instrumentedType, final String ctxName) {
+            return instrumentedType
+                    // NodeContextSupplier ...
+                    .withField(new FieldDescription.Token(ctxName, PRIV_CONST, BB_NCS))
+                    .withInitializer(new NcsInitializer(methodName, ctxName));
+        }
+
+        @Override
+        ByteCodeAppender appender(final Target implementationTarget, final String arfuName, final String ctxName) {
+            return new GetMethod(arfuName, ctxName);
+        }
+    }
+
+    private static final class KeyMethod extends AbstractMethod {
+        private static final StackManipulation CODEC_MEMBER = MethodInvocation.invoke(findMethod(CodecDataObject.class,
+            "codecMember", AtomicReferenceFieldUpdater.class, IdentifiableItemCodec.class));
+
+        KeyMethod(final String arfuName, final String ctxName) {
+            super(arfuName, ctxName);
+        }
+
+        @Override
+        StackManipulation codecMember() {
+            return CODEC_MEMBER;
+        }
+    }
+
+    private static final class KeyMethodImplementation extends AbstractMethodImplementation {
+        private static final Generic BB_IIC = TypeDefinition.Sort.describe(IdentifiableItemCodec.class);
+
+        KeyMethodImplementation(final String methodName) {
+            super(methodName);
+        }
+
+        @Override
+        InstrumentedType prepare(final InstrumentedType instrumentedType, final String ctxName) {
+            return instrumentedType
+                    // IdentifiableItemCodec ...
+                    .withField(new FieldDescription.Token(ctxName, PRIV_CONST, BB_IIC))
+                    .withInitializer(new IicInitializer(methodName, ctxName));
+        }
+
+        @Override
+        ByteCodeAppender appender(final Target implementationTarget, final String arfuName, final String ctxName) {
+            return new KeyMethod(arfuName, ctxName);
+        }
+    }
+
+    private abstract static class AbstractAllPropertiesAppender extends AbstractAppender {
+        final ImmutableMap<StackManipulation, Method> properties;
+
+        AbstractAllPropertiesAppender(final ImmutableMap<StackManipulation, Method> properties) {
+            this.properties = requireNonNull(properties);
+        }
+    }
+
+    private static final class Equals extends AbstractAllPropertiesAppender {
+        private static final StackManipulation ARRAYS_EQUALS = MethodInvocation.invoke(findMethod(Arrays.class,
+            "equals", byte[].class, byte[].class));
+        private static final StackManipulation OBJECTS_EQUALS = MethodInvocation.invoke(findMethod(Objects.class,
+            "equals", Object.class, Object.class));
+        private static final StackManipulation OBJ = MethodVariableAccess.REFERENCE.loadFrom(1);
+
+        Equals(final ImmutableMap<StackManipulation, Method> properties) {
+            super(properties);
+        }
+
+        @Override
+        public Size apply(final MethodVisitor methodVisitor, final Context implementationContext,
+                final MethodDescription instrumentedMethod) {
+            final Label falseLabel = new Label();
+            final IfEq ifFalse = new IfEq(falseLabel);
+
+            final List<StackManipulation> manipulations = new ArrayList<>(properties.size() * 6 + 5);
+            for (Entry<StackManipulation, Method> entry : properties.entrySet()) {
+                manipulations.add(THIS);
+                manipulations.add(entry.getKey());
+                manipulations.add(OBJ);
+                manipulations.add(entry.getKey());
+                manipulations.add(entry.getValue().getReturnType().isArray() ? ARRAYS_EQUALS : OBJECTS_EQUALS);
+                manipulations.add(ifFalse);
+            }
+
+            manipulations.add(IntegerConstant.ONE);
+            manipulations.add(MethodReturn.INTEGER);
+            manipulations.add(new Mark(falseLabel));
+            manipulations.add(IntegerConstant.ZERO);
+            manipulations.add(MethodReturn.INTEGER);
+
+            StackManipulation.Size operandStackSize = new StackManipulation.Compound(manipulations)
+                    .apply(methodVisitor, implementationContext);
+            return new Size(operandStackSize.getMaximalSize(), instrumentedMethod.getStackSize());
+        }
+    }
+
+    private static final class HashCode extends AbstractAllPropertiesAppender {
+        private static final int RESULT = 1;
+        private static final StackManipulation THIRTY_ONE = IntegerConstant.forValue(31);
+        private static final StackManipulation LOAD_RESULT = MethodVariableAccess.INTEGER.loadFrom(RESULT);
+        private static final StackManipulation STORE_RESULT = MethodVariableAccess.INTEGER.storeAt(RESULT);
+
+        private static final StackManipulation ARRAYS_HASHCODE = MethodInvocation.invoke(findMethod(Arrays.class,
+            "hashCode", byte[].class));
+        private static final StackManipulation OBJECTS_HASHCODE = MethodInvocation.invoke(findMethod(Objects.class,
+            "hashCode", Object.class));
+
+        HashCode(final ImmutableMap<StackManipulation, Method> properties) {
+            super(properties);
+        }
+
+        @Override
+        public Size apply(final MethodVisitor methodVisitor, final Context implementationContext,
+                final MethodDescription instrumentedMethod) {
+
+            final List<StackManipulation> manipulations = new ArrayList<>(properties.size() * 8 + 4);
+            manipulations.add(IntegerConstant.ONE);
+            manipulations.add(STORE_RESULT);
+
+            for (Entry<StackManipulation, Method> entry : properties.entrySet()) {
+                manipulations.add(THIRTY_ONE);
+                manipulations.add(LOAD_RESULT);
+                manipulations.add(Multiplication.INTEGER);
+                manipulations.add(THIS);
+                manipulations.add(entry.getKey());
+                manipulations.add(entry.getValue().getReturnType().isArray() ? ARRAYS_HASHCODE : OBJECTS_HASHCODE);
+                manipulations.add(Addition.INTEGER);
+                manipulations.add(STORE_RESULT);
+            }
+            manipulations.add(LOAD_RESULT);
+            manipulations.add(MethodReturn.INTEGER);
+
+            StackManipulation.Size operandStackSize = new StackManipulation.Compound(manipulations)
+                    .apply(methodVisitor, implementationContext);
+            return new Size(operandStackSize.getMaximalSize(), instrumentedMethod.getStackSize() + 1);
+        }
+    }
+
+    private static final class ToString extends AbstractAllPropertiesAppender {
+        private static final StackManipulation HELPER = MethodVariableAccess.REFERENCE.loadFrom(1);
+        private static final StackManipulation HELPER_ADD = MethodInvocation.invoke(findMethod(ToStringHelper.class,
+            "add", String.class, Object.class));
+
+        ToString(final ImmutableMap<StackManipulation, Method> properties) {
+            super(properties);
+        }
+
+        @Override
+        public Size apply(final MethodVisitor methodVisitor, final Context implementationContext,
+                final MethodDescription instrumentedMethod) {
+
+            final List<StackManipulation> manipulations = new ArrayList<>(properties.size() * 4 + 2);
+            manipulations.add(HELPER);
+            for (Entry<StackManipulation, Method> entry : properties.entrySet()) {
+                manipulations.add(new TextConstant(entry.getValue().getName()));
+                manipulations.add(THIS);
+                manipulations.add(entry.getKey());
+                manipulations.add(HELPER_ADD);
+            }
+            manipulations.add(MethodReturn.REFERENCE);
+
+            StackManipulation.Size operandStackSize = new StackManipulation.Compound(manipulations)
+                    .apply(methodVisitor, implementationContext);
+            return new Size(operandStackSize.getMaximalSize(), instrumentedMethod.getStackSize());        }
+
+    }
+
+    private abstract static class AbstractImplementation implements Implementation {
+        @Override
+        public final InstrumentedType prepare(final InstrumentedType instrumentedType) {
+            return instrumentedType;
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(CodecDataObjectCustomizer.class);
-    private static final CtClass CT_ARFU = StaticClassPool.findClass(AtomicReferenceFieldUpdater.class);
-    private static final CtClass CT_BOOLEAN = StaticClassPool.findClass(boolean.class);
-    private static final CtClass CT_DATAOBJECT = StaticClassPool.findClass(DataObject.class);
-    private static final CtClass CT_HELPER = StaticClassPool.findClass(ToStringHelper.class);
-    private static final CtClass CT_IIC = StaticClassPool.findClass(IdentifiableItemCodec.class);
-    private static final CtClass CT_INT = StaticClassPool.findClass(int.class);
-    private static final CtClass CT_NCS = StaticClassPool.findClass(NodeContextSupplier.class);
-    private static final CtClass CT_OBJECT = StaticClassPool.findClass(Object.class);
-    private static final CtClass[] EMPTY_ARGS = new CtClass[0];
-    private static final CtClass[] EQUALS_ARGS = new CtClass[] { CT_DATAOBJECT };
-    private static final CtClass[] TOSTRING_ARGS = new CtClass[] { CT_HELPER };
+    private static final Generic BB_BOOLEAN = TypeDefinition.Sort.describe(boolean.class);
+    private static final Generic BB_DATAOBJECT = TypeDefinition.Sort.describe(DataObject.class);
+    private static final Generic BB_HELPER = TypeDefinition.Sort.describe(ToStringHelper.class);
+    private static final Generic BB_INT = TypeDefinition.Sort.describe(int.class);
+    private static final int PROT_FINAL = Opcodes.ACC_PROTECTED | Opcodes.ACC_FINAL | Opcodes.ACC_SYNTHETIC;
+    private static final int PUB_FINAL = Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL | Opcodes.ACC_SYNTHETIC;
 
     private final ImmutableMap<Method, NodeContextSupplier> properties;
     private final Entry<Method, IdentifiableItemCodec> keyMethod;
@@ -62,39 +516,60 @@ final class CodecDataObjectCustomizer implements Customizer {
     }
 
     @Override
-    public List<Class<?>> customize(final CodecClassLoader loader, final CtClass bindingClass, final CtClass generated)
-            throws NotFoundException, CannotCompileException {
-        // Generate members for all methods ...
-        LOG.trace("Generating class {}", generated.getName());
-        generated.addInterface(bindingClass);
+    public ByteBuddyResult<? extends T> customize(final CodecClassLoader loader,
+            final Class<?> bindingInterface, final String fqn, final Builder<? extends T> builder) {
+        LOG.trace("Generating class {}", fqn);
+
+        Builder<? extends T> tmp = builder.visit(EnableFramesComputing.INSTANCE).implement(bindingInterface);
 
         for (Method method : properties.keySet()) {
-            generateMethod(loader, generated, method, CT_NCS, "resolve");
+            LOG.trace("Generating for method {}", method);
+            final String methodName = method.getName();
+            tmp = tmp.defineMethod(methodName, method.getReturnType(), PUB_FINAL)
+                    .intercept(new GetMethodImplementation(methodName));
         }
+
         if (keyMethod != null) {
-            generateMethod(loader, generated, keyMethod.getKey(), CT_IIC, "resolveKey");
+            final Method method = keyMethod.getKey();
+            final String methodName = method.getName();
+
+            tmp = tmp.defineMethod(methodName, method.getReturnType(), PUB_FINAL)
+                    .intercept(new KeyMethodImplementation(methodName));
         }
 
-        // Final bits: codecHashCode() ...
-        final CtMethod codecHashCode = new CtMethod(CT_INT, "codecHashCode", EMPTY_ARGS, generated);
-        codecHashCode.setModifiers(Modifier.PROTECTED | Modifier.FINAL);
-        codecHashCode.setBody(codecHashCodeBody());
-        generated.addMethod(codecHashCode);
+        final ImmutableMap<StackManipulation, Method> methods = Maps.uniqueIndex(properties.keySet(),
+            method -> MethodInvocation.invoke(new ForLoadedMethod(method)));
 
-        // ... equals
-        final CtMethod codecEquals = new CtMethod(CT_BOOLEAN, "codecEquals", EQUALS_ARGS, generated);
-        codecEquals.setModifiers(Modifier.PROTECTED | Modifier.FINAL);
-        codecEquals.setBody(codecEqualsBody(bindingClass.getName()));
-        generated.addMethod(codecEquals);
-
-        // ... and codecFillToString()
-        final CtMethod codecFillToString = new CtMethod(CT_HELPER, "codecFillToString", TOSTRING_ARGS, generated);
-        codecFillToString.setModifiers(Modifier.PROTECTED | Modifier.FINAL);
-        codecFillToString.setBody(codecFillToStringBody());
-        generated.addMethod(codecFillToString);
-
-        generated.setModifiers(Modifier.FINAL | Modifier.PUBLIC);
-        return ImmutableList.of();
+        // Final bits:
+        return ByteBuddyResult.of(tmp
+                // codecHashCode() ...
+                .defineMethod("codecHashCode", BB_INT, PROT_FINAL)
+                .intercept(new AbstractImplementation() {
+                    @Override
+                    public ByteCodeAppender appender(final Target implementationTarget) {
+                        return new HashCode(methods);
+                    }
+                })
+                // ... codecEquals() ...
+                .defineMethod("codecEquals", BB_BOOLEAN, PROT_FINAL).withParameter(BB_DATAOBJECT)
+                .intercept(new AbstractImplementation() {
+                    @Override
+                    public ByteCodeAppender appender(final Target implementationTarget) {
+                        return new Equals(methods);
+                    }
+                })
+                // ... and codecFillToString() ...
+                .defineMethod("codecFillToString", BB_HELPER, PROT_FINAL).withParameter(BB_HELPER)
+                .intercept(new AbstractImplementation() {
+                    @Override
+                    public ByteCodeAppender appender(final Target implementationTarget) {
+                        return new ToString(methods);
+                    }
+                })
+                // ... set class as final ...
+                .modifiers(PUB_FINAL)
+                // ... and build it
+                .make());
     }
 
     @Override
@@ -136,91 +611,11 @@ final class CodecDataObjectCustomizer implements Customizer {
             .getValue());
     }
 
-    private String codecHashCodeBody() {
-        final StringBuilder sb = new StringBuilder()
-                .append("{\n")
-                .append("final int prime = 31;\n")
-                .append("int result = 1;\n");
-
-        for (Method method : properties.keySet()) {
-            sb.append("result = prime * result + java.util.").append(utilClass(method)).append(".hashCode(")
-            .append(method.getName()).append("());\n");
+    static ForLoadedMethod findMethod(final Class<?> clazz, final String name, final Class<?>... args) {
+        try {
+            return new ForLoadedMethod(clazz.getDeclaredMethod(name, args));
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(e);
         }
-
-        return sb.append("return result;\n")
-                .append('}').toString();
-    }
-
-    private String codecEqualsBody(final String ifaceName) {
-        final StringBuilder sb = new StringBuilder()
-                .append("{\n")
-                .append("final ").append(ifaceName).append(" other = $1;")
-                .append("return true");
-
-        for (Method method : properties.keySet()) {
-            final String methodName = method.getName();
-            sb.append("\n&& java.util.").append(utilClass(method)).append(".equals(").append(methodName)
-            .append("(), other.").append(methodName).append("())");
-        }
-
-        return sb.append(";\n")
-                .append('}').toString();
-    }
-
-    private String codecFillToStringBody() {
-        final StringBuilder sb = new StringBuilder()
-                .append("{\n")
-                .append("return $1");
-        for (Method method : properties.keySet()) {
-            final String methodName = method.getName();
-            sb.append("\n.add(\"").append(methodName).append("\", ").append(methodName).append("())");
-        }
-
-        return sb.append(";\n")
-                .append('}').toString();
-    }
-
-    private static void generateMethod(final CodecClassLoader loader, final CtClass generated, final Method method,
-            final CtClass contextType, final String resolveMethod) throws CannotCompileException, NotFoundException {
-        LOG.trace("Generating for method {}", method);
-        final String methodName = method.getName();
-        final String methodArfu = methodName + "$$$ARFU";
-        final String methodNcs = methodName + "$$$NCS";
-
-        // NodeContextSupplier ...
-        final CtField ncsField = new CtField(contextType, methodNcs, generated);
-        ncsField.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
-        generated.addField(ncsField, new StringBuilder().append(CodecDataObjectBridge.class.getName())
-            .append('.').append(resolveMethod).append("(\"").append(methodName).append("\")").toString());
-
-        // ... AtomicReferenceFieldUpdater ...
-        final CtField arfuField = new CtField(CT_ARFU, methodArfu, generated);
-        arfuField.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
-        generated.addField(arfuField, new StringBuilder().append(CT_ARFU.getName()).append(".newUpdater(")
-            .append(generated.getName()).append(".class, java.lang.Object.class, \"").append(methodName)
-            .append("\")").toString());
-
-        // ... corresponding volatile field ...
-        final CtField field = new CtField(CT_OBJECT, methodName, generated);
-        field.setModifiers(Modifier.PRIVATE | Modifier.VOLATILE);
-        generated.addField(field);
-
-        // ... and the getter
-        final Class<?> retType = method.getReturnType();
-        final CtMethod getter = new CtMethod(loader.findClass(retType), methodName, EMPTY_ARGS, generated);
-        final String retName = retType.isArray() ? retType.getSimpleName() : retType.getName();
-
-        getter.setBody(new StringBuilder()
-            .append("{\n")
-            .append("return (").append(retName).append(") codecMember(").append(methodArfu).append(", ")
-                .append(methodNcs).append(");\n")
-            .append('}').toString());
-        getter.setModifiers(Modifier.PUBLIC | Modifier.FINAL);
-        generated.addMethod(getter);
-    }
-
-    private static String utilClass(final Method method) {
-        // We can either have objects or byte[], we cannot have Object[]
-        return method.getReturnType().isArray() ? "Arrays" : "Objects";
     }
 }
