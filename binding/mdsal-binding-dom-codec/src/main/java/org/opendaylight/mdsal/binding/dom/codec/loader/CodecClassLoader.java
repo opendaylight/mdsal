@@ -29,6 +29,7 @@ import javassist.NotFoundException;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType.Builder;
 import net.bytebuddy.dynamic.DynamicType.Unloaded;
+import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.slf4j.Logger;
@@ -100,8 +101,8 @@ public abstract class CodecClassLoader extends ClassLoader {
          * @param builder ByteBuddy builder
          * @return A set of generated classes the generated class depends on
          */
-        @NonNull ByteBuddyResult<T> customize(@NonNull CodecClassLoader loader, Class<?> bindingInterface,
-                @NonNull Builder<T> builder);
+        @NonNull ByteBuddyResult<? extends T> customize(@NonNull CodecClassLoader loader,
+                @NonNull Class<?> bindingInterface, @NonNull String fqn, @NonNull Builder<? extends T> builder);
     }
 
     public static final class ByteBuddyResult<T> {
@@ -190,7 +191,7 @@ public abstract class CodecClassLoader extends ClassLoader {
                 .doGenerateSubclass(superClass, bindingInterface, suffix, customizer);
     }
 
-    public final <T> Class<T> generateSublass(final Class<T> superClass, final Class<?> bindingInterface,
+    public final <T> Class<T> generateSubclass(final Class<? extends T> superClass, final Class<?> bindingInterface,
             final String suffix, final ByteBuddyCustomizer<T> customizer)  {
 
         return findClassLoader(requireNonNull(bindingInterface))
@@ -270,22 +271,30 @@ public abstract class CodecClassLoader extends ClassLoader {
         }
     }
 
-    private <T extends Object> Class<T> doGenerateSubclass(final Class<T> superClass, final Class<?> bindingInterface,
-            final String suffix, final ByteBuddyCustomizer<T> customizer)  {
+    private <T> Class<T> doGenerateSubclass(final Class<? extends T> superClass,
+            final Class<?> bindingInterface, final String suffix, final ByteBuddyCustomizer<T> customizer)  {
         final String bindingName = bindingInterface.getName();
         final String fqn = bindingName + "$$$" + suffix;
 
-        final ByteBuddyResult<T> result = customizer.customize(this, bindingInterface, new ByteBuddy()
-            .subclass(superClass).name(fqn));
-        processDependencies(result.getDependencies());
+        synchronized (getClassLoadingLock(fqn)) {
+            // Attempt to find a loaded class
+            final Class<?> loaded = findLoadedClass(fqn);
+            if (loaded != null) {
+                return (Class<T>) loaded;
+            }
 
-        final byte[] byteCode = result.getResult().getBytes();
+            final ByteBuddyResult<? extends T> result = customizer.customize(this, bindingInterface, fqn,
+                new ByteBuddy().with(TypeValidation.DISABLED).subclass(superClass).name(fqn));
+            processDependencies(result.getDependencies());
 
-        return (Class<T>) customizer.customizeLoading(() -> {
-            final Class<?> newClass = defineClass(fqn, byteCode, 0, byteCode.length);
-            resolveClass(newClass);
-            return newClass;
-        });
+            final byte[] byteCode = result.getResult().getBytes();
+
+            return (Class<T>) customizer.customizeLoading(() -> {
+                final Class<?> newClass = defineClass(fqn, byteCode, 0, byteCode.length);
+                resolveClass(newClass);
+                return newClass;
+            });
+        }
     }
 
     private void processDependencies(final Collection<Class<?>> deps) {

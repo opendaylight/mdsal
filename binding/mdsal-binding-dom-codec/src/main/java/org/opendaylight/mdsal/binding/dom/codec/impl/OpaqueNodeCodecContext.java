@@ -126,8 +126,8 @@ abstract class OpaqueNodeCodecContext<T extends OpaqueObject<T>> extends ValueNo
     }
 
     private static MethodHandle createImpl(final CodecClassLoader rootLoader, final Class<?> bindingClass) {
-        final Class<?> proxyClass = rootLoader.generateSublass(CodecOpaqueObject.class, bindingClass, "codecImpl",
-            (loader, binding, builder) -> {
+        final Class<?> proxyClass = rootLoader.generateSubclass(CodecOpaqueObject.class, bindingClass, "codecImpl",
+            (loader, binding, fqn, builder) -> {
                 return ByteBuddyResult.of(builder.implement(bindingClass)
                         .modifiers(Modifier.PUBLIC | Modifier.FINAL)
                         .make());
