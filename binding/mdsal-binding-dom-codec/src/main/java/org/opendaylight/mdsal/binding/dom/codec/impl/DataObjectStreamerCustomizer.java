@@ -8,13 +8,10 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Verify.verify;
-import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,12 +23,12 @@ import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
-import javassist.NotFoundException;
-import org.eclipse.jdt.annotation.NonNull;
+import net.bytebuddy.dynamic.DynamicType.Builder;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
-import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.Customizer;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.ByteBuddyCustomizer;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.ByteBuddyResult;
 import org.opendaylight.mdsal.binding.dom.codec.loader.StaticClassPool;
 import org.opendaylight.mdsal.binding.dom.codec.util.BindingSchemaMapping;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -59,7 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Beta
-public final class DataObjectStreamerCustomizer implements Customizer {
+public final class DataObjectStreamerCustomizer<T extends DataObjectStreamer<?>> implements ByteBuddyCustomizer<T> {
     static final CtClass CT_DOS = StaticClassPool.findClass(DataObjectStreamer.class);
     static final String INSTANCE_FIELD = "INSTANCE";
 
@@ -115,10 +112,13 @@ public final class DataObjectStreamerCustomizer implements Customizer {
             startEvent);
     }
 
+
     @Override
-    public List<Class<?>> customize(final CodecClassLoader loader, final CtClass bindingClass, final CtClass generated)
-            throws CannotCompileException, NotFoundException, IOException {
+    public ByteBuddyResult<? extends T> customize(final CodecClassLoader loader, final Class<?> bindingInterface,
+            final String fqn, final Builder<? extends T> builder) {
         LOG.trace("Definining streamer {}", generated.getName());
+
+
 
         final CtField instanceField = new CtField(generated, INSTANCE_FIELD, generated);
         instanceField.setModifiers(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL);
@@ -148,42 +148,6 @@ public final class DataObjectStreamerCustomizer implements Customizer {
         LOG.trace("Definition of {} done", generated.getName());
 
         return dependencies;
-    }
-
-    @Override
-    public Class<?> customizeLoading(final @NonNull Supplier<Class<?>> loader) {
-        if (constants.isEmpty()) {
-            return loader.get();
-        }
-
-        final DataObjectStreamerCustomizer prev = DataObjectStreamerBridge.setup(this);
-        try {
-            final Class<?> result = loader.get();
-
-            /*
-             * This a bit of magic to support DataObjectStreamer constants. These constants need to be resolved while
-             * we have the information needed to find them -- that information is being held in this instance and we
-             * leak it to a thread-local variable held by DataObjectStreamerBridge.
-             *
-             * By default the JVM will defer class initialization to first use, which unfortunately is too late for
-             * us, and hence we need to force class to initialize.
-             */
-            try {
-                Class.forName(result.getName(), true, result.getClassLoader());
-            } catch (ClassNotFoundException e) {
-                throw new LinkageError("Failed to find newly-defined " + result, e);
-            }
-
-            return result;
-        } finally {
-            DataObjectStreamerBridge.tearDown(prev);
-        }
-    }
-
-    @NonNull DataObjectStreamer<?> resolve(final @NonNull String methodName) {
-        final Class<? extends DataObject> target = verifyNotNull(constants.get(methodName), "Cannot resolve type of %s",
-            methodName);
-        return verifyNotNull(registry.getDataObjectSerializer(target), "Cannot find serializer for %s", target);
     }
 
     private List<Class<?>> emitChildren(final StringBuilder sb, final CodecClassLoader loader,
@@ -281,31 +245,6 @@ public final class DataObjectStreamerCustomizer implements Customizer {
 
         LOG.debug("Ignoring {} due to unhandled schema {}", getterName, child);
         return null;
-    }
-
-    /*
-     * Javassist not quite helpful in our environment. We really want to output plain bytecode so that it links
-     * using normal ClassLoader mechanics (supported via CodecClassLoader), but Javassist's compiler really gets in
-     * the way of keeping things simple by requiring CtClass references to dependencies at the the time we set the
-     * implementation body. In order to side-step those requirements, we rely on defining references to our dependencies
-     * as constants and fill them up via customizeLoading().
-     *
-     * This method defines the constants for later use. Should we migrate to a more byte-code oriented framework
-     * (like ByteBuddy), we will pay some cost in assembling the method bodies, we can ditch the constants, as we
-     * provide INSTANCE_FIELD which can readily be reused and CodecClassLoader will resolve the dependencies without
-     * any problems.
-     */
-    private String declareDependency(final CtClass generated, final String getterName,
-            final Class<? extends DataObject> bindingClass) throws CannotCompileException {
-        final String fieldName = getterName + "_STREAMER";
-
-        final CtField instanceField = new CtField(CT_DOS, fieldName, generated);
-        instanceField.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
-        generated.addField(instanceField,
-            DataObjectStreamerBridge.class.getName() + ".resolve(\"" + getterName + "\")");
-
-        verify(constants.put(getterName, bindingClass) == null, "Duplicate dependency for %s", getterName);
-        return fieldName;
     }
 
     private static ImmutableMap<String, Type> collectAllProperties(final GeneratedType type) {
