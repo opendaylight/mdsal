@@ -8,11 +8,9 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Verify.verify;
-import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -23,15 +21,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javassist.CannotCompileException;
 import javassist.CtClass;
-import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
-import javassist.NotFoundException;
-import org.eclipse.jdt.annotation.NonNull;
+import net.bytebuddy.description.field.FieldDescription;
+import net.bytebuddy.description.type.TypeDefinition;
+import net.bytebuddy.description.type.TypeDescription.Generic;
+import net.bytebuddy.dynamic.DynamicType.Builder;
+import net.bytebuddy.dynamic.scaffold.InstrumentedType;
+import net.bytebuddy.implementation.Implementation;
+import net.bytebuddy.implementation.bytecode.ByteCodeAppender;
+import net.bytebuddy.jar.asm.Opcodes;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
-import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.Customizer;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.ByteBuddyCustomizer;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.ByteBuddyResult;
 import org.opendaylight.mdsal.binding.dom.codec.loader.StaticClassPool;
 import org.opendaylight.mdsal.binding.dom.codec.util.BindingSchemaMapping;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -59,8 +63,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Beta
-public final class DataObjectStreamerCustomizer implements Customizer {
-    static final CtClass CT_DOS = StaticClassPool.findClass(DataObjectStreamer.class);
+public final class DataObjectStreamerCustomizer implements ByteBuddyCustomizer {
+    private static final class SerializeImplementation implements Implementation {
+        @Override
+        public InstrumentedType prepare(final InstrumentedType instrumentedType) {
+            return instrumentedType
+                    // private static final This INSTANCE = new This();
+                    .withField(new FieldDescription.Token(INSTANCE_FIELD, PUB_CONST, instrumentedType.asGenericType()))
+                    .withInitializer(ByteBuddyUtils.invokeDefaultConstructor());
+        }
+
+        @Override
+        public ByteCodeAppender appender(final Target implementationTarget) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }
+
     static final String INSTANCE_FIELD = "INSTANCE";
 
     private static final Logger LOG = LoggerFactory.getLogger(DataObjectStreamerCustomizer.class);
@@ -115,17 +134,29 @@ public final class DataObjectStreamerCustomizer implements Customizer {
             startEvent);
     }
 
-    @Override
-    public List<Class<?>> customize(final CodecClassLoader loader, final CtClass bindingClass, final CtClass generated)
-            throws CannotCompileException, NotFoundException, IOException {
-        LOG.trace("Definining streamer {}", generated.getName());
+    private static final Generic BB_VOID = TypeDefinition.Sort.describe(void.class);
+    private static final Generic BB_DATAOBJECT = TypeDefinition.Sort.describe(DataObject.class);
+    private static final Generic BB_DOSR = TypeDefinition.Sort.describe(DataObjectSerializerRegistry.class);
+    private static final Generic BB_BESV = TypeDefinition.Sort.describe(BindingStreamEventWriter.class);
+    private static final Generic BB_IOX = TypeDefinition.Sort.describe(IOException.class);
+    private static final int PUB_FINAL = Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL | Opcodes.ACC_SYNTHETIC;
+    private static final int PUB_CONST = Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL
+            | Opcodes.ACC_SYNTHETIC;
 
-        final CtField instanceField = new CtField(generated, INSTANCE_FIELD, generated);
-        instanceField.setModifiers(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL);
-        generated.addField(instanceField, "new " + generated.getName() + "()");
+    @Override
+    public <T> ByteBuddyResult<T> customize(final CodecClassLoader loader, final Class<?> bindingInterface,
+            final String fqn, final Builder<T> builder) {
+        LOG.trace("Definining streamer {}", fqn);
+
+
+        Builder<T> tmp = builder.defineMethod("serialize", BB_VOID, PUB_FINAL)
+                .withParameters(BB_DOSR, BB_DATAOBJECT, BB_BESV)
+                .throwing(BB_IOX).intercept(new SerializeImplementation());
+
+
 
         // This results in a body
-        final String objType = bindingClass.getName();
+        final String objType = bindingInterface.getName();
         final StringBuilder sb = new StringBuilder()
                 .append("{\n")
                 .append("final ").append(objType).append(" obj = (").append(objType).append(") $2;\n")
@@ -148,42 +179,6 @@ public final class DataObjectStreamerCustomizer implements Customizer {
         LOG.trace("Definition of {} done", generated.getName());
 
         return dependencies;
-    }
-
-    @Override
-    public Class<?> customizeLoading(final @NonNull Supplier<Class<?>> loader) {
-        if (constants.isEmpty()) {
-            return loader.get();
-        }
-
-        final DataObjectStreamerCustomizer prev = DataObjectStreamerBridge.setup(this);
-        try {
-            final Class<?> result = loader.get();
-
-            /*
-             * This a bit of magic to support DataObjectStreamer constants. These constants need to be resolved while
-             * we have the information needed to find them -- that information is being held in this instance and we
-             * leak it to a thread-local variable held by DataObjectStreamerBridge.
-             *
-             * By default the JVM will defer class initialization to first use, which unfortunately is too late for
-             * us, and hence we need to force class to initialize.
-             */
-            try {
-                Class.forName(result.getName(), true, result.getClassLoader());
-            } catch (ClassNotFoundException e) {
-                throw new LinkageError("Failed to find newly-defined " + result, e);
-            }
-
-            return result;
-        } finally {
-            DataObjectStreamerBridge.tearDown(prev);
-        }
-    }
-
-    @NonNull DataObjectStreamer<?> resolve(final @NonNull String methodName) {
-        final Class<? extends DataObject> target = verifyNotNull(constants.get(methodName), "Cannot resolve type of %s",
-            methodName);
-        return verifyNotNull(registry.getDataObjectSerializer(target), "Cannot find serializer for %s", target);
     }
 
     private List<Class<?>> emitChildren(final StringBuilder sb, final CodecClassLoader loader,
@@ -281,31 +276,6 @@ public final class DataObjectStreamerCustomizer implements Customizer {
 
         LOG.debug("Ignoring {} due to unhandled schema {}", getterName, child);
         return null;
-    }
-
-    /*
-     * Javassist not quite helpful in our environment. We really want to output plain bytecode so that it links
-     * using normal ClassLoader mechanics (supported via CodecClassLoader), but Javassist's compiler really gets in
-     * the way of keeping things simple by requiring CtClass references to dependencies at the the time we set the
-     * implementation body. In order to side-step those requirements, we rely on defining references to our dependencies
-     * as constants and fill them up via customizeLoading().
-     *
-     * This method defines the constants for later use. Should we migrate to a more byte-code oriented framework
-     * (like ByteBuddy), we will pay some cost in assembling the method bodies, we can ditch the constants, as we
-     * provide INSTANCE_FIELD which can readily be reused and CodecClassLoader will resolve the dependencies without
-     * any problems.
-     */
-    private String declareDependency(final CtClass generated, final String getterName,
-            final Class<? extends DataObject> bindingClass) throws CannotCompileException {
-        final String fieldName = getterName + "_STREAMER";
-
-        final CtField instanceField = new CtField(CT_DOS, fieldName, generated);
-        instanceField.setModifiers(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL);
-        generated.addField(instanceField,
-            DataObjectStreamerBridge.class.getName() + ".resolve(\"" + getterName + "\")");
-
-        verify(constants.put(getterName, bindingClass) == null, "Duplicate dependency for %s", getterName);
-        return fieldName;
     }
 
     private static ImmutableMap<String, Type> collectAllProperties(final GeneratedType type) {

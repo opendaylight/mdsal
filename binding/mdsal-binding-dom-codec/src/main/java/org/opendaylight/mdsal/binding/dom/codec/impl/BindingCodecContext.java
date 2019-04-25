@@ -107,7 +107,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
             @Override
             public DataObjectStreamer<?> load(final Class<?> key) throws CannotCompileException, IOException,
                     NotFoundException, ReflectiveOperationException {
-                final Class<?> streamer = loader.generateSubclass(DataObjectStreamerCustomizer.CT_DOS, key, "streamer",
+                final Class<?> streamer = loader.generateSubclass(DataObjectStreamer.class, key, "streamer",
                     DataObjectStreamerCustomizer.create(BindingCodecContext.this, key));
 
                 final Field instance = streamer.getDeclaredField(DataObjectStreamerCustomizer.INSTANCE_FIELD);
