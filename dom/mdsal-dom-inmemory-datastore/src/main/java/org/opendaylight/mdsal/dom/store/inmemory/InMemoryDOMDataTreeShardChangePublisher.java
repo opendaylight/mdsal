@@ -34,8 +34,9 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
                                             final Map<DOMDataTreeIdentifier, ChildShardContext> childShards) {
         super(dataTree, rootPath, childShards);
         notificationManager = QueuedNotificationManager.create(executor, (listener, notifications) -> {
-            // FIXME: we are not checking for listener being closed
-            listener.getInstance().onDataTreeChanged(notifications);
+            if (!listener.isClosed()) {
+                listener.getInstance().onDataTreeChanged(notifications);
+            }
         }, maxQueueSize, "DataTreeChangeListenerQueueMgr");
     }
 
