@@ -11,12 +11,10 @@ import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.mdsal.dom.spi.shard.ChildShardContext;
 import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
-import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager.BatchedInvoker;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
@@ -27,14 +25,6 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
 
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataTreeShardChangePublisher.class);
 
-    private static final BatchedInvoker<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
-        MANAGER_INVOKER = (listener, notifications) -> {
-            final DOMDataTreeChangeListener inst = listener.getInstance();
-            if (inst != null) {
-                inst.onDataTreeChanged(ImmutableList.copyOf(notifications));
-            }
-        };
-
     private final QueuedNotificationManager<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
         notificationManager;
 
@@ -44,8 +34,11 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
                                             final YangInstanceIdentifier rootPath,
                                             final Map<DOMDataTreeIdentifier, ChildShardContext> childShards) {
         super(dataTree, rootPath, childShards);
-        notificationManager = QueuedNotificationManager.create(executor, MANAGER_INVOKER, maxQueueSize,
-            "DataTreeChangeListenerQueueMgr");
+        notificationManager = QueuedNotificationManager.create(executor, (listener, notifications) -> {
+            if (!listener.isClosed()) {
+                listener.getInstance().onDataTreeChanged(ImmutableList.copyOf(notifications));
+            }
+        }, maxQueueSize, "DataTreeChangeListenerQueueMgr");
     }
 
     @Override
