@@ -82,8 +82,6 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
     private static final MethodType AUGMENTABLE_CONSTRUCTOR_TYPE = MethodType.methodType(void.class,
         DataObjectCodecContext.class, NormalizedNodeContainer.class);
     private static final MethodType DATAOBJECT_TYPE = MethodType.methodType(DataObject.class,
-        NormalizedNodeContainer.class);
-    private static final MethodType AUGMENTABLE_DATAOBJECT_TYPE = MethodType.methodType(DataObject.class,
         DataObjectCodecContext.class, NormalizedNodeContainer.class);
     private static final Comparator<Method> METHOD_BY_ALPHABET = Comparator.comparing(Method::getName);
     private static final Augmentations EMPTY_AUGMENTATIONS = new Augmentations(ImmutableMap.of(), ImmutableMap.of());
@@ -187,11 +185,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
             throw new LinkageError("Failed to find contructor for class " + generatedClass, e);
         }
 
-        if (Augmentable.class.isAssignableFrom(bindingClass)) {
-            proxyConstructor = ctor.asType(AUGMENTABLE_DATAOBJECT_TYPE).bindTo(this);
-        } else {
-            proxyConstructor = ctor.asType(DATAOBJECT_TYPE);
-        }
+        proxyConstructor = ctor.asType(DATAOBJECT_TYPE);
     }
 
     // This method could be synchronized, but that would mean that concurrent attempts to load an invalid augmentation
@@ -519,7 +513,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
     @SuppressWarnings("checkstyle:illegalCatch")
     protected final D createBindingProxy(final NormalizedNodeContainer<?, ?, ?> node) {
         try {
-            return (D) proxyConstructor.invokeExact(node);
+            return (D) proxyConstructor.invokeExact(this, node);
         } catch (final Throwable e) {
             Throwables.throwIfUnchecked(e);
             throw new IllegalStateException(e);
