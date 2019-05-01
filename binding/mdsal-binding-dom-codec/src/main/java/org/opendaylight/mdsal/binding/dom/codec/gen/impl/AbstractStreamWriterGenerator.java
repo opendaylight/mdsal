@@ -13,6 +13,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
@@ -184,6 +185,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
         }
     }
 
+    @SuppressFBWarnings("UPM_UNCALLED_PRIVATE_METHOD")
     private DataObjectSerializerSource generateEmitterSource(final Class<?> type, final String serializerName) {
         Types.typeForClass(type);
         javassist.appendClassLoaderIfMissing(type.getClassLoader());
@@ -213,6 +215,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
         return source;
     }
 
+    @SuppressFBWarnings("UPM_UNCALLED_PRIVATE_METHOD")
     private CtClass generateEmitter0(final Class<?> type, final DataObjectSerializerSource source,
             final String serializerName) {
         final CtClass product;
