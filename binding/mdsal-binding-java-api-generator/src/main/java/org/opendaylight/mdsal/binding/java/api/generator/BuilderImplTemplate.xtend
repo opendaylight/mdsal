@@ -11,7 +11,6 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTA
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
-import com.google.common.collect.ImmutableMap
 import java.util.List
 import java.util.Map
 import java.util.Objects
@@ -19,6 +18,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping
+import org.opendaylight.yangtools.yang.binding.AbstractAugmentable
 import org.opendaylight.yangtools.yang.binding.DataObject
 
 class BuilderImplTemplate extends AbstractBuilderTemplate {
@@ -31,13 +31,14 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
     }
 
     override body() '''
-        private static final class «type.name» implements «targetType.importedName» {
+        private static final class «type.name»
+            «val impIface = targetType.importedName»
+            «IF augmentType !== null»
+                extends «AbstractAugmentable.importedName»<«impIface»>
+            «ENDIF»
+            implements «impIface» {
 
             «generateFields(true)»
-
-            «IF augmentType !== null»
-                private «generateAugmentField()»
-            «ENDIF»
 
             «generateCopyConstructor(builderType, type)»
 
@@ -69,7 +70,7 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
 
                 «hashCodeResult(properties)»
                 «IF augmentType !== null»
-                    result = prime * result + «Objects.importedName».hashCode(«AUGMENTATION_FIELD»);
+                    result = prime * result + «Objects.importedName».hashCode(augmentations());
                 «ENDIF»
 
                 hash = result;
@@ -108,12 +109,12 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
                     if (getClass() == obj.getClass()) {
                         // Simple case: we are comparing against self
                         «type.name» otherImpl = («type.name») obj;
-                        if (!«Objects.importedName».equals(«AUGMENTATION_FIELD», otherImpl.«AUGMENTATION_FIELD»)) {
+                        if (!«Objects.importedName».equals(augmentations(), otherImpl.augmentations())) {
                             return false;
                         }
                     } else {
                         // Hard case: compare our augments with presence there...
-                        for («Map.importedName».Entry<«Class.importedName»<? extends «augmentType.importedName»>, «augmentType.importedName»> e : «AUGMENTATION_FIELD».entrySet()) {
+                        for («Map.importedName».Entry<«Class.importedName»<? extends «augmentType.importedName»>, «augmentType.importedName»> e : augmentations().entrySet()) {
                             if (!e.getValue().equals(other.«AUGMENTABLE_AUGMENTATION_NAME»(e.getKey()))) {
                                 return false;
                             }
@@ -129,6 +130,11 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
         «ENDIF»
     '''
 
+    override protected generateAugmentation() {
+        // Inherited from AbstractAugmentable
+        return ""
+    }
+
     override protected generateCopyKeys(List<GeneratedProperty> keyProps) '''
         if (base.«BindingMapping.IDENTIFIABLE_KEY_NAME»() != null) {
             this.key = base.«BindingMapping.IDENTIFIABLE_KEY_NAME»();
@@ -141,6 +147,6 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
     '''
 
     override protected generateCopyAugmentation(Type implType) '''
-        this.«AUGMENTATION_FIELD» = «ImmutableMap.importedName».copyOf(base.«AUGMENTATION_FIELD»);
+        super(base.«AUGMENTATION_FIELD»);
     '''
 }
