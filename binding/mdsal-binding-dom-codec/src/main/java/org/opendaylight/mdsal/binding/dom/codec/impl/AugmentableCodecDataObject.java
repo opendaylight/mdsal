@@ -11,9 +11,10 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableClassToInstanceMap;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.util.AugmentationReader;
@@ -36,11 +37,19 @@ public abstract class AugmentableCodecDataObject<T extends DataObject & Augmenta
         extends CodecDataObject<T> implements Augmentable<T>, AugmentationHolder<T> {
     private final @NonNull DataObjectCodecContext<T, ?> context;
 
-    @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<AugmentableCodecDataObject, ImmutableClassToInstanceMap>
-            CACHED_AUGMENTATIONS_UPDATER = AtomicReferenceFieldUpdater.newUpdater(AugmentableCodecDataObject.class,
-                ImmutableClassToInstanceMap.class, "cachedAugmentations");
-    private volatile ImmutableClassToInstanceMap<Augmentation<T>> cachedAugmentations;
+    private static final VarHandle CACHED_AUGMENTATIONS;
+
+    static {
+        try {
+            CACHED_AUGMENTATIONS = MethodHandles.lookup().findVarHandle(AugmentableCodecDataObject.class,
+                "cachedAugmentations", ImmutableClassToInstanceMap.class);
+        } catch (ReflectiveOperationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private ImmutableClassToInstanceMap<Augmentation<T>> cachedAugmentations;
 
     protected AugmentableCodecDataObject(final DataObjectCodecContext<T, ?> context,
             final NormalizedNodeContainer<?, ?, ?> data) {
@@ -52,7 +61,7 @@ public abstract class AugmentableCodecDataObject<T extends DataObject & Augmenta
     public final <A extends Augmentation<T>> @Nullable A augmentation(final Class<A> augmentationType) {
         requireNonNull(augmentationType, "Supplied augmentation must not be null.");
 
-        final ImmutableClassToInstanceMap<Augmentation<T>> aug = cachedAugmentations;
+        final ImmutableClassToInstanceMap<Augmentation<T>> aug = acquireAugmentations();
         if (aug != null) {
             return aug.getInstance(augmentationType);
         }
@@ -79,13 +88,14 @@ public abstract class AugmentableCodecDataObject<T extends DataObject & Augmenta
 
     @Override
     public final Map<Class<? extends Augmentation<T>>, Augmentation<T>> augmentations() {
-        ImmutableClassToInstanceMap<Augmentation<T>> local = cachedAugmentations;
+        ImmutableClassToInstanceMap<Augmentation<T>> local = acquireAugmentations();
         if (local != null) {
             return local;
         }
 
         local = ImmutableClassToInstanceMap.copyOf(context.getAllAugmentationsFrom(codecData()));
-        return CACHED_AUGMENTATIONS_UPDATER.compareAndSet(this, null, local) ? local : cachedAugmentations;
+        final Object witness = CACHED_AUGMENTATIONS.compareAndExchangeRelease(this, null, local);
+        return witness == null ? local : (ImmutableClassToInstanceMap<Augmentation<T>>) witness;
     }
 
     @Override
@@ -101,6 +111,10 @@ public abstract class AugmentableCodecDataObject<T extends DataObject & Augmenta
     @Override
     final ToStringHelper codecAugmentedFillToString(final ToStringHelper helper) {
         return super.codecAugmentedFillToString(helper).add("augmentations", augmentations());
+    }
+
+    private ImmutableClassToInstanceMap<Augmentation<T>> acquireAugmentations() {
+        return (ImmutableClassToInstanceMap<Augmentation<T>>) CACHED_AUGMENTATIONS.getAcquire(this);
     }
 
     private static Map<Class<? extends Augmentation<?>>, Augmentation<?>> getAllAugmentations(

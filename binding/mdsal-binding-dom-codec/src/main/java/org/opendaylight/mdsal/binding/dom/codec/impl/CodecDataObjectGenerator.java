@@ -19,6 +19,9 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +29,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.field.FieldDescription;
 import net.bytebuddy.description.method.MethodDescription;
@@ -85,16 +87,16 @@ import org.slf4j.LoggerFactory;
  * we end up generating a class with the following layout:
  * <pre>
  *     public final class Foo$$$codecImpl extends CodecDataObject implements Foo {
- *         private static final AtomicRefereceFieldUpdater&lt;Foo$$$codecImpl, Object&gt; getBar$$$A;
+ *         private static final VarHandle getBar$$$V;
  *         private static final NodeContextSupplier getBar$$$C;
- *         private volatile Object getBar;
+ *         private Object getBar;
  *
  *         public Foo$$$codecImpl(NormalizedNodeContainer data) {
  *             super(data);
  *         }
  *
  *         public Bar getBar() {
- *             return (Bar) codecMember(getBar$$$A, getBar$$$C);
+ *             return (Bar) codecMember(getBar$$$V, getBar$$$C);
  *         }
  *     }
  * </pre>
@@ -104,14 +106,14 @@ import org.slf4j.LoggerFactory;
  * single place in a maintainable form. The glue code is extremely light (~6 instructions), which is beneficial on both
  * sides of invocation:
  * - generated method can readily be inlined into the caller
- * - it forms a call site into which codeMember() can be inlined with both AtomicReferenceFieldUpdater and
- *   NodeContextSupplier being constant
+ * - it forms a call site into which codeMember() can be inlined with both VarHandle and NodeContextSupplier being
+ *   constant
  *
  * <p>
- * The second point is important here, as it allows the invocation logic around AtomicRefereceFieldUpdater to completely
- * disappear, becoming synonymous with operations of a volatile field. NodeContextSupplier being constant also means
- * it will resolve to one of its two implementations, allowing NodeContextSupplier.get() to be resolved to a constant
- * (pointing to the supplier itself) or to a simple volatile read (which will be non-null after first access).
+ * The second point is important here, as it allows the invocation logic around VarHandle to completely disappear,
+ * becoming synonymous with acquire/release operations on a field. NodeContextSupplier being constant also means it will
+ * resolve to one of its two implementations, allowing NodeContextSupplier.get() to be resolved to a constant (pointing
+ * to the supplier itself) or to a simple volatile read (which will be non-null after first access).
  *
  * <p>
  * The sticky point here is the NodeContextSupplier, as it is a heap object which cannot normally be looked up from the
@@ -161,9 +163,9 @@ final class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements Cl
     private static final StackManipulation BRIDGE_RESOLVE_KEY = invokeMethod(CodecDataObjectBridge.class,
         "resolveKey", String.class);
     private static final StackManipulation CODEC_MEMBER = invokeMethod(CodecDataObject.class,
-        "codecMember", AtomicReferenceFieldUpdater.class, NodeContextSupplier.class);
+        "codecMember", VarHandle.class, NodeContextSupplier.class);
     private static final StackManipulation CODEC_MEMBER_KEY = invokeMethod(CodecDataObject.class,
-        "codecMember",  AtomicReferenceFieldUpdater.class, IdentifiableItemCodec.class);
+        "codecMember",  VarHandle.class, IdentifiableItemCodec.class);
 
     private static final StackManipulation ARRAYS_EQUALS = invokeMethod(Arrays.class, "equals",
         byte[].class, byte[].class);
@@ -346,15 +348,16 @@ final class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements Cl
     }
 
     private static final class MethodImplementation implements Implementation {
-        private static final Generic BB_ARFU = TypeDefinition.Sort.describe(AtomicReferenceFieldUpdater.class);
+        private static final Generic BB_VARHANDLE = TypeDefinition.Sort.describe(VarHandle.class);
         private static final Generic BB_OBJECT = TypeDefinition.Sort.describe(Object.class);
         private static final StackManipulation OBJECT_CLASS = ClassConstant.of(TypeDescription.OBJECT);
-        private static final StackManipulation ARFU_NEWUPDATER = invokeMethod(AtomicReferenceFieldUpdater.class,
-            "newUpdater", Class.class, Class.class, String.class);
+        private static final StackManipulation LOOKUP = invokeMethod(MethodHandles.class, "lookup");
+        private static final StackManipulation FIND_VAR_HANDLE = invokeMethod(Lookup.class,
+            "findVarHandle", Class.class, String.class, Class.class);
 
         private static final int PRIV_CONST = Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL
                 | Opcodes.ACC_SYNTHETIC;
-        private static final int PRIV_VOLATILE = Opcodes.ACC_PRIVATE | Opcodes.ACC_VOLATILE | Opcodes.ACC_SYNTHETIC;
+        private static final int PRIV_NORMAL = Opcodes.ACC_PRIVATE | Opcodes.ACC_SYNTHETIC;
 
         private final Generic contextType;
         private final StackManipulation resolveMethod;
@@ -363,8 +366,8 @@ final class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements Cl
 
         // getFoo
         private final String methodName;
-        // getFoo$$$A
-        private final String arfuName;
+        // getFoo$$$V
+        private final String handleName;
         // getFoo$$$C
         private final String contextName;
 
@@ -375,31 +378,33 @@ final class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements Cl
             this.codecMember = requireNonNull(codecMember);
             this.methodName = requireNonNull(methodName);
             this.retType = requireNonNull(retType);
-            this.arfuName = methodName + "$$$A";
+            this.handleName = methodName + "$$$V";
             this.contextName = methodName + "$$$C";
         }
 
         @Override
         public InstrumentedType prepare(final InstrumentedType instrumentedType) {
             final InstrumentedType tmp = instrumentedType
-                    // private static final AtomicReferenceFieldUpdater<This, Object> getFoo$$$A;
-                    .withField(new FieldDescription.Token(arfuName, PRIV_CONST, BB_ARFU))
+                    // private static final VarHandle getFoo$$$V;
+                    .withField(new FieldDescription.Token(handleName, PRIV_CONST, BB_VARHANDLE))
                     // private static final <CONTEXT_TYPE> getFoo$$$C;
                     .withField(new FieldDescription.Token(contextName, PRIV_CONST, contextType))
-                    // private volatile Object getFoo;
-                    .withField(new FieldDescription.Token(methodName, PRIV_VOLATILE, BB_OBJECT));
+                    // private Object getFoo;
+                    .withField(new FieldDescription.Token(methodName, PRIV_NORMAL, BB_OBJECT));
 
             // "getFoo"
             final TextConstant methodNameText = new TextConstant(methodName);
 
             return tmp
                 .withInitializer(new ByteCodeAppender.Simple(
-                    // getFoo$$$A = AtomicReferenceFieldUpdater.newUpdater(This.class, Object.class, "getFoo");
+                    // TODO: acquiring lookup is expensive, we should share it across all initialization
+                    // getFoo$$$V = MethodHandles.lookup().findVarHandle(This.class, "getFoo", Object.class);
+                    LOOKUP,
                     ClassConstant.of(tmp),
-                    OBJECT_CLASS,
                     methodNameText,
-                    ARFU_NEWUPDATER,
-                    putField(tmp, arfuName),
+                    OBJECT_CLASS,
+                    FIND_VAR_HANDLE,
+                    putField(tmp, handleName),
                     // getFoo$$$C = CodecDataObjectBridge.<RESOLVE_METHOD>("getFoo");
                     methodNameText,
                     resolveMethod,
@@ -410,9 +415,9 @@ final class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements Cl
         public ByteCodeAppender appender(final Target implementationTarget) {
             final TypeDescription instrumentedType = implementationTarget.getInstrumentedType();
             return new ByteCodeAppender.Simple(
-                // return (FooType) codecMember(getFoo$$$A, getFoo$$$C);
+                // return (FooType) codecMember(getFoo$$$V, getFoo$$$C);
                 THIS,
-                getField(instrumentedType, arfuName),
+                getField(instrumentedType, handleName),
                 getField(instrumentedType, contextName),
                 codecMember,
                 TypeCasting.to(retType),
