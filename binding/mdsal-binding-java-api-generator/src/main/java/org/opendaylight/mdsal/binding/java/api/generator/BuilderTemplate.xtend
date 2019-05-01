@@ -363,18 +363,12 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     '''
 
     override protected generateCopyAugmentation(Type implType) {
-        val implTypeRef = implType.importedName
         val augmentationHolderRef = AugmentationHolder.importedName
         val typeRef = targetType.importedName
         val hashMapRef = HashMap.importedName
         val augmentTypeRef = augmentType.importedName
         return '''
-            if (base instanceof «implTypeRef») {
-                «implTypeRef» impl = («implTypeRef») base;
-                if (!impl.«AUGMENTATION_FIELD».isEmpty()) {
-                    this.«AUGMENTATION_FIELD» = new «hashMapRef»<>(impl.«AUGMENTATION_FIELD»);
-                }
-            } else if (base instanceof «augmentationHolderRef») {
+            if (base instanceof «augmentationHolderRef») {
                 @SuppressWarnings("unchecked")
                 «Map.importedName»<«Class.importedName»<? extends «augmentTypeRef»>, «augmentTypeRef»> aug =((«augmentationHolderRef»<«typeRef»>) base).augmentations();
                 if (!aug.isEmpty()) {
