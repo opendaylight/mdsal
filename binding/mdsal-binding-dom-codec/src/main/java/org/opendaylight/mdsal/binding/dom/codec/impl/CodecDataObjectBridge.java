@@ -29,10 +29,6 @@ public final class CodecDataObjectBridge {
         return current().resolve(methodName);
     }
 
-    public static @NonNull IdentifiableItemCodec resolveKey(final @NonNull String methodName) {
-        return current().resolveKey(methodName);
-    }
-
     static @Nullable CodecDataObjectGenerator<?> setup(final @NonNull CodecDataObjectGenerator<?> next) {
         final CodecDataObjectGenerator<?> prev = CURRENT_CUSTOMIZER.get();
         CURRENT_CUSTOMIZER.set(verifyNotNull(next));
