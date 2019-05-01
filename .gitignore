@@ -25,6 +25,7 @@ META-INF
 .fbExcludeFilterFile
 .cache-main
 .cache-tests
+dependency-reduced-pom.xml
 
 # Sphinx documentation
 .tox/
