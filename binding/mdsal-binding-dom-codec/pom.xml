@@ -22,6 +22,7 @@
     <properties>
         <shade.source>net.bytebuddy</shade.source>
         <shade.target>org.opendaylight.mdsal.binding.dom.codec.jar.bytebuddy</shade.target>
+        <maven.compiler.release>11</maven.compiler.release>
     </properties>
 
     <dependencies>
