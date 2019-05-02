@@ -7,9 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
-import java.util.ArrayList;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import java.util.Collection;
-import java.util.List;
 import org.opendaylight.yangtools.concepts.Codec;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
@@ -28,11 +28,11 @@ final class LeafSetNodeCodecContext extends ValueNodeCodecContext.WithCodec {
         if (normalizedNode instanceof LeafSetNode<?>) {
             @SuppressWarnings("unchecked")
             final Collection<LeafSetEntryNode<Object>> domValues = ((LeafSetNode<Object>) normalizedNode).getValue();
-            final List<Object> result = new ArrayList<>(domValues.size());
+            final Builder<Object> builder = ImmutableList.builderWithExpectedSize(domValues.size());
             for (final LeafSetEntryNode<Object> valueNode : domValues) {
-                result.add(getValueCodec().deserialize(valueNode.getValue()));
+                builder.add(getValueCodec().deserialize(valueNode.getValue()));
             }
-            return result;
+            return builder.build();
         }
         return null;
     }
