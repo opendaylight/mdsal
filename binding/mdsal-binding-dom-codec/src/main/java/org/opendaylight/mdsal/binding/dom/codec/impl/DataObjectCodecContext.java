@@ -151,8 +151,13 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
         this.byMethod = byMethodBuilder.build();
         this.byYang = ImmutableMap.copyOf(byYangBuilder);
         this.byStreamClass = ImmutableMap.copyOf(byStreamClassBuilder);
-        byBindingArgClassBuilder.putAll(byStreamClass);
-        this.byBindingArgClass = ImmutableMap.copyOf(byBindingArgClassBuilder);
+
+        // Slight footprint optimization: we do not want to copy byStreamClass, as that would force its entrySet view
+        // to be instantiated. Furthermore the two maps can easily end up being equal -- hence we can reuse
+        // byStreamClass for the purposes of both.
+        byBindingArgClassBuilder.putAll(byStreamClassBuilder);
+        this.byBindingArgClass = byStreamClassBuilder.equals(byBindingArgClassBuilder) ? this.byStreamClass
+                : ImmutableMap.copyOf(byBindingArgClassBuilder);
 
         final Map<Class<?>, Method> clsToNonnull = BindingReflections.getChildrenClassToNonnullMethod(bindingClass);
         final Map<String, String> nonnullToGetterBuilder = new HashMap<>();
