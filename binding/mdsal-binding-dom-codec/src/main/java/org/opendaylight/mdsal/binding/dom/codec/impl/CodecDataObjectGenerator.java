@@ -182,32 +182,6 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
             return new ArrayList<>(properties.keySet());
         }
 
-        @Override
-        public Class<T> customizeLoading(final @NonNull Supplier<Class<T>> loader) {
-            final Fixed<?> prev = CodecDataObjectBridge.setup(this);
-            try {
-                final Class<T> result = loader.get();
-
-                /*
-                 * This a bit of magic to support NodeContextSupplier constants. These constants need to be resolved
-                 * while we have the information needed to find them -- that information is being held in this instance
-                 * and we leak it to a thread-local variable held by CodecDataObjectBridge.
-                 *
-                 * By default the JVM will defer class initialization to first use, which unfortunately is too late for
-                 * us, and hence we need to force class to initialize.
-                 */
-                try {
-                    Class.forName(result.getName(), true, result.getClassLoader());
-                } catch (ClassNotFoundException e) {
-                    throw new LinkageError("Failed to find newly-defined " + result, e);
-                }
-
-                return result;
-            } finally {
-                CodecDataObjectBridge.tearDown(prev);
-            }
-        }
-
         @NonNull NodeContextSupplier resolve(final @NonNull String methodName) {
             final Optional<Entry<Method, NodeContextSupplier>> found = properties.entrySet().stream()
                     .filter(entry -> methodName.equals(entry.getKey().getName())).findAny();
@@ -217,7 +191,7 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
     }
 
     // Reusable definition: we have to rely on context lookups
-    private static final class Reusable<T extends CodecDataObject<?>> extends CodecDataObjectGenerator<T> {
+    static final class Reusable<T extends CodecDataObject<?>> extends CodecDataObjectGenerator<T> {
         private final ImmutableMap<Method, ValueNodeCodecContext> simpleProperties;
         private final Map<Method, Class<?>> daoProperties;
 
@@ -232,14 +206,12 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
         @Override
         Builder<T> generateGetters(final Builder<T> builder) {
             Builder<T> tmp = builder;
-            for (Entry<Method, ValueNodeCodecContext> entry : simpleProperties.entrySet()) {
-                final Method method = entry.getKey();
+            for (Method method : simpleProperties.keySet()) {
                 LOG.trace("Generating for simple method {}", method);
                 final String methodName = method.getName();
                 final TypeDescription retType = TypeDescription.ForLoadedType.of(method.getReturnType());
                 tmp = tmp.defineMethod(methodName, retType, PUB_FINAL).intercept(
-                    new SimpleGetterMethodImplementation(methodName, retType,
-                        entry.getValue().getSchema().getQName().getLocalName()));
+                    new SimpleGetterMethodImplementation(methodName, retType));
             }
             for (Entry<Method, Class<?>> entry : daoProperties.entrySet()) {
                 final Method method = entry.getKey();
@@ -259,6 +231,13 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
             ret.addAll(simpleProperties.keySet());
             ret.addAll(daoProperties.keySet());
             return ret;
+        }
+
+        @NonNull String resolveLocalName(@NonNull final String methodName) {
+            final Optional<Entry<Method, ValueNodeCodecContext>> found = simpleProperties.entrySet().stream()
+                    .filter(entry -> methodName.equals(entry.getKey().getName())).findAny();
+            verify(found.isPresent(), "Failed to find property for %s in %s", methodName, this);
+            return found.get().getValue().getSchema().getQName().getLocalName();
         }
     }
 
@@ -353,6 +332,33 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
                 .intercept(codecFillToString(methods))
                 // ... and build it
                 .make());
+    }
+
+
+    @Override
+    public Class<T> customizeLoading(final @NonNull Supplier<Class<T>> loader) {
+        final CodecDataObjectGenerator<?> prev = CodecDataObjectBridge.setup(this);
+        try {
+            final Class<T> result = loader.get();
+
+            /*
+             * This a bit of magic to support NodeContextSupplier constants. These constants need to be resolved
+             * while we have the information needed to find them -- that information is being held in this instance
+             * and we leak it to a thread-local variable held by CodecDataObjectBridge.
+             *
+             * By default the JVM will defer class initialization to first use, which unfortunately is too late for
+             * us, and hence we need to force class to initialize.
+             */
+            try {
+                Class.forName(result.getName(), true, result.getClassLoader());
+            } catch (ClassNotFoundException e) {
+                throw new LinkageError("Failed to find newly-defined " + result, e);
+            }
+
+            return result;
+        } finally {
+            CodecDataObjectBridge.tearDown(prev);
+        }
     }
 
     abstract Builder<T> generateGetters(Builder<T> builder);
@@ -468,26 +474,49 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
         }
     }
 
+    /*
+     * A simple leaf method, which looks up child by a String constant. This is slightly more complicated because we
+     * want to make sure we are using the same String instance as the one stored in associated DataObjectCodecContext,
+     * so that during lookup we perform an identity check instead of comparing content -- speeding things up as well
+     * as minimizing footprint. Since that string is not guaranteed to be interned in the String Pool, we cannot rely
+     * on the constant pool entry to resolve to the same object.
+     */
     private static final class SimpleGetterMethodImplementation extends AbstractMethodImplementation {
         private static final StackManipulation CODEC_MEMBER = invokeMethod(CodecDataObject.class,
             "codecMember", AtomicReferenceFieldUpdater.class, String.class);
+        private static final StackManipulation BRIDGE_RESOLVE = invokeMethod(CodecDataObjectBridge.class,
+            "resolveLocalName", String.class);
+        private static final Generic BB_STRING = TypeDefinition.Sort.describe(String.class);
 
-        private final String localName;
+        // getFoo$$$S
+        private final String stringName;
 
-        SimpleGetterMethodImplementation(final String methodName, final TypeDescription retType,
-                final String localName) {
+        SimpleGetterMethodImplementation(final String methodName, final TypeDescription retType) {
             super(methodName, retType);
-            this.localName = requireNonNull(localName);
+            this.stringName = methodName + "$$$S";
+        }
+
+        @Override
+        public InstrumentedType prepare(final InstrumentedType instrumentedType) {
+            final InstrumentedType tmp = super.prepare(instrumentedType)
+                    // private static final String getFoo$$$S;
+                    .withField(new FieldDescription.Token(stringName, PRIV_CONST, BB_STRING));
+
+            return tmp.withInitializer(new ByteCodeAppender.Simple(
+                // getFoo$$$S = CodecDataObjectBridge.resolveString("getFoo");
+                new TextConstant(methodName),
+                BRIDGE_RESOLVE,
+                putField(tmp, stringName)));
         }
 
         @Override
         public ByteCodeAppender appender(final Target implementationTarget) {
             final TypeDescription instrumentedType = implementationTarget.getInstrumentedType();
             return new ByteCodeAppender.Simple(
-                // return (FooType) codecMember(getFoo$$$A, "foo");
+                // return (FooType) codecMember(getFoo$$$A, getFoo$$$S);
                 THIS,
                 getField(instrumentedType, arfuName),
-                new TextConstant(localName),
+                getField(instrumentedType, stringName),
                 CODEC_MEMBER,
                 TypeCasting.to(retType),
                 MethodReturn.REFERENCE);

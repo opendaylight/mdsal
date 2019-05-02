@@ -13,6 +13,7 @@ import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.impl.CodecDataObjectGenerator.Fixed;
+import org.opendaylight.mdsal.binding.dom.codec.impl.CodecDataObjectGenerator.Reusable;
 
 /**
  * Bridge for initializing {@link CodecDataObject} instance constants during class loading time. This class is public
@@ -20,23 +21,27 @@ import org.opendaylight.mdsal.binding.dom.codec.impl.CodecDataObjectGenerator.Fi
  */
 @Beta
 public final class CodecDataObjectBridge {
-    private static final ThreadLocal<Fixed<?>> CURRENT_CUSTOMIZER = new ThreadLocal<>();
+    private static final ThreadLocal<CodecDataObjectGenerator<?>> CURRENT_CUSTOMIZER = new ThreadLocal<>();
 
     private CodecDataObjectBridge() {
 
     }
 
     public static @NonNull NodeContextSupplier resolve(final @NonNull String methodName) {
-        return current().resolve(methodName);
+        return current(Fixed.class).resolve(methodName);
     }
 
-    static @Nullable Fixed<?> setup(final @NonNull Fixed<?> next) {
-        final Fixed<?> prev = CURRENT_CUSTOMIZER.get();
+    public static @NonNull String resolveLocalName(final @NonNull String methodName) {
+        return current(Reusable.class).resolveLocalName(methodName);
+    }
+
+    static @Nullable CodecDataObjectGenerator<?> setup(final @NonNull CodecDataObjectGenerator<?> next) {
+        final CodecDataObjectGenerator<?> prev = CURRENT_CUSTOMIZER.get();
         CURRENT_CUSTOMIZER.set(verifyNotNull(next));
         return prev;
     }
 
-    static void tearDown(final @Nullable Fixed<?> prev) {
+    static void tearDown(final @Nullable CodecDataObjectGenerator<?> prev) {
         if (prev == null) {
             CURRENT_CUSTOMIZER.remove();
         } else {
@@ -44,7 +49,8 @@ public final class CodecDataObjectBridge {
         }
     }
 
-    private static @NonNull Fixed<?> current() {
-        return verifyNotNull(CURRENT_CUSTOMIZER.get(), "No customizer attached");
+    private static <T extends CodecDataObjectGenerator<?>> @NonNull T current(final Class<T> requested) {
+        final CodecDataObjectGenerator<?> ret = verifyNotNull(CURRENT_CUSTOMIZER.get(), "No customizer attached");
+        return requested.cast(ret);
     }
 }
