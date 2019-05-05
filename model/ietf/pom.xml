@@ -84,6 +84,11 @@
         <module>rfc8519-ietf-ethertypes</module>
         <module>rfc8519-ietf-packet-fields</module>
 
+        <!-- RFC8520 Manufacturer Usage Description -->
+        <module>rfc8520</module>
+        <module>rfc8520-ietf-acldns</module>
+        <module>rfc8520-ietf-mud</module>
+
         <!-- RFC8528 YANG Schema Mount -->
         <module>rfc8528</module>
 

@@ -555,6 +555,23 @@
                 <version>2.0.1-SNAPSHOT</version>
             </dependency>
 
+            <!-- RFC8520 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8520</artifactId>
+                <version>1.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8520-ietf-acldns</artifactId>
+                <version>1.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8520-ietf-mud</artifactId>
+                <version>1.0.1-SNAPSHOT</version>
+            </dependency>
+
             <!-- RFC8528 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
@@ -752,6 +769,13 @@
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8519</artifactId>
                 <version>2.0.1-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc8520</artifactId>
+                <version>1.0.1-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
