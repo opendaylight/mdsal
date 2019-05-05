@@ -14,12 +14,13 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 
 @NonNullByDefault
 abstract class AbstractBindingLoadingAdapter<D, K, V> extends AbstractBindingAdapter<D> {
-    private final LoadingCache<K, V> proxies = CacheBuilder.newBuilder().weakKeys().build(new CacheLoader<K, V>() {
-        @Override
-        public V load(final K key) {
-            return loadAdapter(key);
-        }
-    });
+    private final LoadingCache<K, V> proxies = CacheBuilder.newBuilder().weakKeys().weakValues().build(
+        new CacheLoader<K, V>() {
+            @Override
+            public V load(final K key) {
+                return loadAdapter(key);
+            }
+        });
 
     AbstractBindingLoadingAdapter(final BindingToNormalizedNodeCodec codec, final D delegate) {
         super(codec, delegate);
