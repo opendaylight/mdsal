@@ -35,9 +35,8 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
 
     InMemoryDOMStoreTreeChangePublisher(final ExecutorService listenerExecutor, final int maxQueueSize) {
         notificationManager = QueuedNotificationManager.create(listenerExecutor, (listener, notifications) -> {
-            if (!listener.isClosed()) {
-                listener.getInstance().onDataTreeChanged(notifications);
-            }
+            // FIXME: we are not checking for listener being closed
+            listener.getInstance().onDataTreeChanged(notifications);
         }, maxQueueSize, "DataTreeChangeListenerQueueMgr");
     }
 
