@@ -67,9 +67,8 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
         }
         @SuppressWarnings("unchecked")
         final T other = (T) iface.cast(obj);
-        if (other instanceof CodecDataObject) {
-            return data.equals(((CodecDataObject<?>) obj).data);
-        }
+        // Note: we do not want to compare NormalizedNode data here, as we may be looking at different instantiations
+        //       of the same grouping -- in which case normalized node will not compare as equal.
         return codecAugmentedEquals(other);
     }
 
