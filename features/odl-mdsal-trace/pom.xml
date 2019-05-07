@@ -28,6 +28,15 @@
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-trace-impl</artifactId>
+             <exclusions>
+                 <exclusion>
+                    <!-- This dependency is shaded in mdsal-binding-dom-codec, but
+                         the build reactor still sees it, hence we need to explicitly
+					     exclude it -->
+                     <groupId>net.bytebuddy</groupId>
+                     <artifactId>byte-buddy</artifactId>
+                 </exclusion>
+             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
