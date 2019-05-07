@@ -29,8 +29,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 public class SnapshotBackedReadTransactionTest {
 
     private static final DataTreeSnapshot DATA_TREE_SNAPSHOT = mock(DataTreeSnapshot.class);
-    private static SnapshotBackedReadTransaction<Object> snapshotBackedReadTransaction =
-            new SnapshotBackedReadTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT);
+
+    private SnapshotBackedReadTransaction<Object> snapshotBackedReadTransaction =
+            new SnapshotBackedReadTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT, null);
 
     @Test
     public void basicTest() throws Exception {
@@ -67,7 +68,8 @@ public class SnapshotBackedReadTransactionTest {
     @Test(expected = ReadFailedException.class)
     public void readNodeTestWithException() throws Throwable {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_SNAPSHOT).readNode(any());
-        snapshotBackedReadTransaction = new SnapshotBackedReadTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT);
+        snapshotBackedReadTransaction = new SnapshotBackedReadTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT,
+                null);
         try {
             snapshotBackedReadTransaction.read(YangInstanceIdentifier.EMPTY).get();
             fail("Expected ReadFailedException");
