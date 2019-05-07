@@ -14,6 +14,7 @@ import com.google.common.annotations.Beta;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction.TransactionClosePrototype;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 @Beta
 public abstract class AbstractSnapshotBackedTransactionChain<T>
-        extends TransactionReadyPrototype<T> implements DOMStoreTransactionChain {
+        extends TransactionReadyPrototype<T> implements DOMStoreTransactionChain, TransactionClosePrototype<T> {
     private abstract static class State {
         /**
          * Allocate a new snapshot.
@@ -131,7 +132,12 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
     protected DOMStoreReadTransaction newReadOnlyTransaction(final T transactionId) {
         final Entry<State, DataTreeSnapshot> entry = getSnapshot();
         return SnapshotBackedTransactions.newReadTransaction(transactionId,
-                getDebugTransactions(), entry.getValue());
+                getDebugTransactions(), entry.getValue(), this);
+    }
+
+    @Override
+    public void transactionClosed(final SnapshotBackedReadTransaction<T> tx) {
+        // Defaults to no-op
     }
 
     @Override
@@ -178,9 +184,8 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
             if (allocated.getTransaction().equals(tx)) {
                 final boolean success = STATE_UPDATER.compareAndSet(this, localState, idleState);
                 if (!success) {
-                    LOG.warn("Transaction {} aborted, but chain {} s"
-                            + "tate already transitioned from {} to {}, very strange",
-                        tx, this, localState, state);
+                    LOG.warn("Transaction {} aborted, but chain {} state already transitioned from {} to {}, "
+                        + "very strange", tx, this, localState, state);
                 }
             }
         }

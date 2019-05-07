@@ -13,6 +13,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -30,8 +31,14 @@ import org.slf4j.LoggerFactory;
 @Beta
 public final class SnapshotBackedReadTransaction<T> extends
         AbstractDOMStoreTransaction<T> implements DOMStoreReadTransaction, SnapshotBackedTransaction {
-
     private static final Logger LOG = LoggerFactory.getLogger(SnapshotBackedReadTransaction.class);
+
+    @SuppressWarnings("rawtypes")
+    private static final AtomicReferenceFieldUpdater<SnapshotBackedReadTransaction, DataTreeSnapshot> SNAPSHOT_UPDATER =
+            AtomicReferenceFieldUpdater.newUpdater(SnapshotBackedReadTransaction.class, DataTreeSnapshot.class,
+                "stableSnapshot");
+
+    private TransactionClosePrototype<T> closeImpl;
     private volatile DataTreeSnapshot stableSnapshot;
 
     /**
@@ -41,16 +48,27 @@ public final class SnapshotBackedReadTransaction<T> extends
      * @param debug Enable transaction debugging
      * @param snapshot Snapshot which will be modified.
      */
-    SnapshotBackedReadTransaction(final T identifier, final boolean debug, final DataTreeSnapshot snapshot) {
+    SnapshotBackedReadTransaction(final T identifier, final boolean debug, final DataTreeSnapshot snapshot,
+            final TransactionClosePrototype<T> closeImpl) {
         super(identifier, debug);
         this.stableSnapshot = requireNonNull(snapshot);
+        this.closeImpl = closeImpl;
         LOG.debug("ReadOnly Tx: {} allocated with snapshot {}", identifier, snapshot);
     }
 
     @Override
     public void close() {
+        final DataTreeSnapshot prev = SNAPSHOT_UPDATER.getAndSet(this, null);
+        if (prev == null) {
+            LOG.debug("Store transaction: {} : previously closed", getIdentifier());
+            return;
+        }
+
         LOG.debug("Store transaction: {} : Closed", getIdentifier());
-        stableSnapshot = null;
+        if (closeImpl != null) {
+            closeImpl.transactionClosed(this);
+            closeImpl = null;
+        }
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
@@ -83,5 +101,24 @@ public final class SnapshotBackedReadTransaction<T> extends
     @Override
     public Optional<DataTreeSnapshot> getSnapshot() {
         return Optional.ofNullable(stableSnapshot);
+    }
+
+    /**
+     * Prototype implementation of {@link SnapshotBackedReadTransaction#close()}.
+     *
+     * <p>
+     * This class is intended to be implemented by Transaction factories responsible for allocation
+     * of {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} and
+     * providing underlying logic for applying implementation.
+     *
+     * @param <T> identifier type
+     */
+    public interface TransactionClosePrototype<T> {
+        /**
+         * Called when a transaction is closed. This is not invoked at most once for every transaction.
+         *
+         * @param tx Transaction which got closed.
+         */
+        void transactionClosed(SnapshotBackedReadTransaction<T> tx);
     }
 }
