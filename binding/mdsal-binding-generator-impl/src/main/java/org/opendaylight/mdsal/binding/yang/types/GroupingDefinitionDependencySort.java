@@ -16,12 +16,16 @@ import java.util.Map;
 import java.util.Set;
 import org.opendaylight.yangtools.util.TopologicalSort;
 import org.opendaylight.yangtools.util.TopologicalSort.Node;
+import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
+import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
+import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
+import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
 
@@ -127,6 +131,18 @@ public class GroupingDefinitionDependencySort {
                 }
             }
         }
+        if (container instanceof ActionNodeContainer) {
+            for (ActionDefinition action : ((ActionNodeContainer) container).getActions()) {
+                ret.addAll(getAllUsesNodes(action.getInput()));
+                ret.addAll(getAllUsesNodes(action.getOutput()));
+            }
+        }
+        if (container instanceof NotificationNodeContainer) {
+            for (NotificationDefinition notification : ((NotificationNodeContainer) container).getNotifications()) {
+                ret.addAll(getAllUsesNodes(notification));
+            }
+        }
+
         return ret;
     }
 }
