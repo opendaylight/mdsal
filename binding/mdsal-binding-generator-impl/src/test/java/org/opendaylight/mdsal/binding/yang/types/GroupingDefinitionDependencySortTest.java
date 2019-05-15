@@ -26,46 +26,59 @@ public class GroupingDefinitionDependencySortTest {
     @Rule
     public ExpectedException expException = ExpectedException.none();
 
+    private final GroupingDefinitionDependencySort groupingDefinitionDependencySort =
+            new GroupingDefinitionDependencySort();
+
     @Test
     public void testSortMethod() {
-        GroupingDefinitionDependencySort groupingDefinitionDependencySort = new GroupingDefinitionDependencySort();
-        List<GroupingDefinition> unsortedGroupingDefs = new ArrayList<>();
+
+        final List<GroupingDefinition> unsortedGroupingDefs = new ArrayList<>();
 
         GroupingDefinition grp1 = mock(GroupingDefinition.class);
         doReturn(SchemaPath.create(false, QName.create("", "Cont1"), QName.create("", "Cont2"))).when(grp1).getPath();
         doReturn(QName.create("", "leaf1")).when(grp1).getQName();
-        doReturn(Collections.EMPTY_SET).when(grp1).getUses();
-        doReturn(Collections.EMPTY_SET).when(grp1).getGroupings();
-        doReturn(Collections.EMPTY_SET).when(grp1).getChildNodes();
+        doReturn(Collections.emptySet()).when(grp1).getUses();
+        doReturn(Collections.emptySet()).when(grp1).getGroupings();
+        doReturn(Collections.emptySet()).when(grp1).getChildNodes();
+        doReturn(Collections.emptySet()).when(grp1).getActions();
+        doReturn(Collections.emptySet()).when(grp1).getNotifications();
 
         GroupingDefinition grp2 = mock(GroupingDefinition.class);
         doReturn(SchemaPath.create(false, QName.create("", "Cont1"))).when(grp2).getPath();
         doReturn(QName.create("", "leaf2")).when(grp2).getQName();
-        doReturn(Collections.EMPTY_SET).when(grp2).getUses();
-        doReturn(Collections.EMPTY_SET).when(grp2).getGroupings();
-        doReturn(Collections.EMPTY_SET).when(grp2).getChildNodes();
+        doReturn(Collections.emptySet()).when(grp2).getUses();
+        doReturn(Collections.emptySet()).when(grp2).getGroupings();
+        doReturn(Collections.emptySet()).when(grp2).getChildNodes();
+        doReturn(Collections.emptySet()).when(grp2).getActions();
+        doReturn(Collections.emptySet()).when(grp2).getNotifications();
 
         GroupingDefinition grp3 = mock(GroupingDefinition.class);
         doReturn(SchemaPath.create(false, QName.create("", "Cont1"), QName.create("", "Cont2"))).when(grp3).getPath();
         doReturn(QName.create("", "leaf3")).when(grp3).getQName();
-        doReturn(Collections.EMPTY_SET).when(grp3).getUses();
-        doReturn(Collections.EMPTY_SET).when(grp3).getGroupings();
-        doReturn(Collections.EMPTY_SET).when(grp3).getChildNodes();
+        doReturn(Collections.emptySet()).when(grp3).getUses();
+        doReturn(Collections.emptySet()).when(grp3).getGroupings();
+        doReturn(Collections.emptySet()).when(grp3).getChildNodes();
+        doReturn(Collections.emptySet()).when(grp3).getActions();
+        doReturn(Collections.emptySet()).when(grp3).getNotifications();
 
         GroupingDefinition grp4 = mock(GroupingDefinition.class);
         doReturn(SchemaPath.create(false, QName.create("", "Cont1"), QName.create("", "Cont2"),
             QName.create("", "List1"))).when(grp4).getPath();
         doReturn(QName.create("", "leaf4")).when(grp4).getQName();
-        doReturn(Collections.EMPTY_SET).when(grp4).getUses();
-        doReturn(Collections.EMPTY_SET).when(grp4).getGroupings();
-        doReturn(Collections.EMPTY_SET).when(grp4).getChildNodes();
+        doReturn(Collections.emptySet()).when(grp4).getUses();
+        doReturn(Collections.emptySet()).when(grp4).getGroupings();
+        doReturn(Collections.emptySet()).when(grp4).getChildNodes();
+        doReturn(Collections.emptySet()).when(grp4).getActions();
+        doReturn(Collections.emptySet()).when(grp4).getNotifications();
 
         GroupingDefinition grp5 = mock(GroupingDefinition.class);
         doReturn(SchemaPath.create(false, QName.create("", "Cont1"))).when(grp5).getPath();
         doReturn(QName.create("", "leaf5")).when(grp5).getQName();
-        doReturn(Collections.EMPTY_SET).when(grp5).getUses();
-        doReturn(Collections.EMPTY_SET).when(grp5).getGroupings();
-        doReturn(Collections.EMPTY_SET).when(grp5).getChildNodes();
+        doReturn(Collections.emptySet()).when(grp5).getUses();
+        doReturn(Collections.emptySet()).when(grp5).getGroupings();
+        doReturn(Collections.emptySet()).when(grp5).getChildNodes();
+        doReturn(Collections.emptySet()).when(grp5).getActions();
+        doReturn(Collections.emptySet()).when(grp5).getNotifications();
 
         unsortedGroupingDefs.add(grp1);
         unsortedGroupingDefs.add(grp1);
@@ -76,7 +89,10 @@ public class GroupingDefinitionDependencySortTest {
 
         List<GroupingDefinition> sortedGroupingDefs = groupingDefinitionDependencySort.sort(unsortedGroupingDefs);
         assertNotNull(sortedGroupingDefs);
+    }
 
+    @Test
+    public void testNullSort() {
         expException.expect(IllegalArgumentException.class);
         expException.expectMessage("Set of Type Definitions cannot be NULL!");
         groupingDefinitionDependencySort.sort(null);
