@@ -1854,13 +1854,13 @@ abstract class AbstractTypeGenerator {
     private GeneratedTypeBuilder addImplementedInterfaceFromUses(final DataNodeContainer dataNodeContainer,
             final GeneratedTypeBuilder builder) {
         for (final UsesNode usesNode : dataNodeContainer.getUses()) {
-            final GeneratedType genType = findGroupingByPath(usesNode.getGroupingPath()).build();
+            final GeneratedTypeBuilder genType = findGroupingByPath(usesNode.getGroupingPath());
             if (genType == null) {
                 throw new IllegalStateException("Grouping " + usesNode.getGroupingPath() + "is not resolved for "
                         + builder.getName());
             }
 
-            builder.addImplementsType(genType);
+            builder.addImplementsType(genType.build());
         }
         return builder;
     }
