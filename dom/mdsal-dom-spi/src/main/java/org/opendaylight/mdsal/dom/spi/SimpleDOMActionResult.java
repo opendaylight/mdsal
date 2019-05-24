@@ -34,6 +34,11 @@ public final class SimpleDOMActionResult implements DOMActionResult, Immutable {
         this.output = output;
     }
 
+    public SimpleDOMActionResult(final ContainerNode output) {
+        this.errors = ImmutableList.of();
+        this.output = requireNonNull(output);
+    }
+
     @SuppressFBWarnings("NP_NULL_PARAM_DEREF_NONVIRTUAL")
     public SimpleDOMActionResult(final Collection<RpcError> errors) {
         this(errors, null);
