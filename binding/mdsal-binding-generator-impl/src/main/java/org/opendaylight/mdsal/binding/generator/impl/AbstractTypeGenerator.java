@@ -89,6 +89,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
+import org.opendaylight.yangtools.yang.model.api.AnyDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
@@ -1052,9 +1053,8 @@ abstract class AbstractTypeGenerator {
                 listToGenType(context, typeBuilder, baseInterface, (ListSchemaNode) node, inGrouping);
             } else if (node instanceof ChoiceSchemaNode) {
                 choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) node, inGrouping);
-            } else if (node instanceof AnyXmlSchemaNode) {
-                // FIXME: MDSAL-438: also cover AnyDataSchemaNode
-                opaqueToGeneratedType(context, typeBuilder, (AnyXmlSchemaNode) node);
+            } else if (node instanceof AnyXmlSchemaNode || node instanceof AnyDataSchemaNode) {
+                opaqueToGeneratedType(context, typeBuilder, node);
             } else {
                 LOG.debug("Unable to add schema node {} as method in {}: unsupported type of node.", node.getClass(),
                         typeBuilder.getFullyQualifiedName());
@@ -1096,17 +1096,17 @@ abstract class AbstractTypeGenerator {
     }
 
     private void opaqueToGeneratedType(final ModuleContext context, final GeneratedTypeBuilder parent,
-            final AnyXmlSchemaNode anyxmlNode) {
-        if (!anyxmlNode.isAddedByUses()) {
+            final DataSchemaNode anyNode) {
+        if (!anyNode.isAddedByUses()) {
             final GeneratedTypeBuilder anyxmlTypeBuilder = addRawInterfaceDefinition(
-                JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), anyxmlNode.getPath()),
-                BindingMapping.getClassName(anyxmlNode.getQName())), anyxmlNode);
+                JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), anyNode.getPath()),
+                BindingMapping.getClassName(anyNode.getQName())), anyNode);
             anyxmlTypeBuilder.addImplementsType(opaqueObject(anyxmlTypeBuilder)).addImplementsType(childOf(parent));
             defaultImplementedInterace(anyxmlTypeBuilder);
-            annotateDeprecatedIfNecessary(anyxmlNode.getStatus(), anyxmlTypeBuilder);
-            context.addChildNodeType(anyxmlNode, anyxmlTypeBuilder);
+            annotateDeprecatedIfNecessary(anyNode.getStatus(), anyxmlTypeBuilder);
+            context.addChildNodeType(anyNode, anyxmlTypeBuilder);
 
-            constructGetter(parent, anyxmlTypeBuilder.build(), anyxmlNode);
+            constructGetter(parent, anyxmlTypeBuilder.build(), anyNode);
         }
     }
 
