@@ -16,18 +16,18 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
-public class Mdsal437Test extends AbstractOpaqueTest {
+public class Mdsal438Test extends AbstractOpaqueTest {
 
     @Test
-    public void generateAnyxmlTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal437.yang");
+    public void generateAnydataTest() {
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal438.yang");
 
         final List<Type> types = new BindingGeneratorImpl().generateTypes(context);
         assertNotNull(types);
         assertEquals(7, types.size());
 
-        assertOpaqueNode(types, "mdsal437", "", "Any");
-        assertOpaqueNode(types, "mdsal437", ".cont", "Cont");
-        assertOpaqueNode(types, "mdsal437", ".grp", "Grp");
+        assertOpaqueNode(types, "mdsal438", "", "Any");
+        assertOpaqueNode(types, "mdsal438", ".cont", "Cont");
+        assertOpaqueNode(types, "mdsal438", ".grp", "Grp");
     }
 }
