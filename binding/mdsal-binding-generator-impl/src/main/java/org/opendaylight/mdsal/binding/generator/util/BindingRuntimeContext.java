@@ -18,6 +18,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -83,6 +84,17 @@ public final class BindingRuntimeContext implements Immutable {
 
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeContext.class);
     private static final char DOT = '.';
+
+    // FIXME: Remove this once DataSchemaContextNode has a cache
+    private static final LoadingCache<AugmentationSchemaNode, AugmentationIdentifier> AUGMENTATION_IDENTIFIERS =
+            CacheBuilder.newBuilder().weakKeys().weakValues().build(
+                new CacheLoader<AugmentationSchemaNode, AugmentationIdentifier>() {
+                    @Override
+                    public AugmentationIdentifier load(final AugmentationSchemaNode key) {
+                        return AugmentationIdentifier.create(key.getChildNodes().stream().map(DataSchemaNode::getQName)
+                            .collect(ImmutableSet.toImmutableSet()));
+                    }
+                });
 
     private final BindingRuntimeTypes runtimeTypes;
     private final ClassLoadingStrategy strategy;
@@ -428,21 +440,13 @@ public final class BindingRuntimeContext implements Immutable {
                 if (!augment.getChildNodes().isEmpty()) {
                     final Optional<Type> augType = runtimeTypes.findType(augOrig);
                     if (augType.isPresent()) {
-                        identifierToType.put(getAugmentationIdentifier(augment), augType.get());
+                        identifierToType.put(AUGMENTATION_IDENTIFIERS.getUnchecked(augment), augType.get());
                     }
                 }
             }
         }
 
         return ImmutableMap.copyOf(identifierToType);
-    }
-
-    private static AugmentationIdentifier getAugmentationIdentifier(final AugmentationSchemaNode augment) {
-        final Set<QName> childNames = new HashSet<>();
-        for (final DataSchemaNode child : augment.getChildNodes()) {
-            childNames.add(child.getQName());
-        }
-        return new AugmentationIdentifier(childNames);
     }
 
     private static Type referencedType(final Class<?> type) {
