@@ -223,7 +223,7 @@ public final class BindingRuntimeContext implements Immutable {
             }
         }
 
-        final AugmentationIdentifier identifier = new AugmentationIdentifier(childNames);
+        final AugmentationIdentifier identifier = AugmentationIdentifier.create(childNames);
         final AugmentationSchemaNode proxy = new EffectiveAugmentationSchema(origSchema, realChilds);
         return new SimpleEntry<>(identifier, proxy);
     }
