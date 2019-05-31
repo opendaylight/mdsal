@@ -18,6 +18,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -438,11 +439,9 @@ public final class BindingRuntimeContext implements Immutable {
     }
 
     private static AugmentationIdentifier getAugmentationIdentifier(final AugmentationSchemaNode augment) {
-        final Set<QName> childNames = new HashSet<>();
-        for (final DataSchemaNode child : augment.getChildNodes()) {
-            childNames.add(child.getQName());
-        }
-        return new AugmentationIdentifier(childNames);
+        // FIXME: use DataSchemaContextNode.augmentationIdentifierFrom() once it does caching
+        return AugmentationIdentifier.create(augment.getChildNodes().stream().map(DataSchemaNode::getQName)
+            .collect(ImmutableSet.toImmutableSet()));
     }
 
     private static Type referencedType(final Class<?> type) {
