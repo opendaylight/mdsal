@@ -16,7 +16,6 @@ import static org.mockito.Mockito.verify;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -96,11 +95,11 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             Builders.orderedMapBuilder()
             .withNodeIdentifier(new NodeIdentifier(Keyed.QNAME))
             .addChild(Builders.mapEntryBuilder()
-                .withNodeIdentifier(new NodeIdentifierWithPredicates(Keyed.QNAME, ImmutableMap.of(FOO_QNAME, "foo")))
+                .withNodeIdentifier(NodeIdentifierWithPredicates.of(Keyed.QNAME, FOO_QNAME, "foo"))
                 .addChild(ImmutableNodes.leafNode(FOO_QNAME, "foo"))
                 .build())
             .addChild(Builders.mapEntryBuilder()
-                .withNodeIdentifier(new NodeIdentifierWithPredicates(Keyed.QNAME, ImmutableMap.of(FOO_QNAME, "bar")))
+                .withNodeIdentifier(NodeIdentifierWithPredicates.of(Keyed.QNAME, FOO_QNAME, "bar"))
                 .addChild(ImmutableNodes.leafNode(FOO_QNAME, "bar"))
                 .build())
             .build());

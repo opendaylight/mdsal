@@ -42,6 +42,7 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExecutorService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
@@ -334,15 +335,12 @@ public class DOMDataTreeListenerTest {
         final ListenerRegistration<TestDataTreeListener> listenerReg =
                 dataTreeChangeService.registerDataTreeChangeListener(OUTER_LIST_DATA_TREE_ID, listener);
 
-        final YangInstanceIdentifier.NodeIdentifierWithPredicates outerListEntryId1 =
-                new YangInstanceIdentifier.NodeIdentifierWithPredicates(
-                        TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1);
-        final YangInstanceIdentifier.NodeIdentifierWithPredicates outerListEntryId2 =
-                new YangInstanceIdentifier.NodeIdentifierWithPredicates(
-                        TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2);
-        final YangInstanceIdentifier.NodeIdentifierWithPredicates outerListEntryId3 =
-                new YangInstanceIdentifier.NodeIdentifierWithPredicates(
-                        TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 3);
+        final NodeIdentifierWithPredicates outerListEntryId1 =
+                NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1);
+        final NodeIdentifierWithPredicates outerListEntryId2 =
+                NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2);
+        final NodeIdentifierWithPredicates outerListEntryId3 =
+                NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 3);
 
         final MapEntryNode outerListEntry1 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1);
         final MapEntryNode outerListEntry2 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2);

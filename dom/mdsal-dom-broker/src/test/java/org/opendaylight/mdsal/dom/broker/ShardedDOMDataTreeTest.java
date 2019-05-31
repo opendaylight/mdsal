@@ -72,7 +72,7 @@ public class ShardedDOMDataTreeTest {
             new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, TestModel.INNER_CONTAINER_PATH);
 
     private static final YangInstanceIdentifier OUTER_LIST_YID = TestModel.OUTER_LIST_PATH.node(
-            new NodeIdentifierWithPredicates(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1));
+            NodeIdentifierWithPredicates.of(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1));
     private static final DOMDataTreeIdentifier OUTER_LIST_ID =
             new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, OUTER_LIST_YID);
 
@@ -253,7 +253,7 @@ public class ShardedDOMDataTreeTest {
     @Test
     public void testMultipleWritesIntoSingleMapEntry() throws Exception {
 
-        final YangInstanceIdentifier oid1 = TestModel.OUTER_LIST_PATH.node(new NodeIdentifierWithPredicates(
+        final YangInstanceIdentifier oid1 = TestModel.OUTER_LIST_PATH.node(NodeIdentifierWithPredicates.of(
                 TestModel.OUTER_LIST_QNAME, QName.create(TestModel.OUTER_LIST_QNAME, "id"), 0));
         final DOMDataTreeIdentifier outerListPath = new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, oid1);
 
@@ -301,7 +301,7 @@ public class ShardedDOMDataTreeTest {
         final Collection<MapEntryNode> ret = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             ret.add(ImmutableNodes.mapEntryBuilder()
-                    .withNodeIdentifier(new NodeIdentifierWithPredicates(TestModel.INNER_LIST_QNAME,
+                    .withNodeIdentifier(NodeIdentifierWithPredicates.of(TestModel.INNER_LIST_QNAME,
                             QName.create(TestModel.OUTER_LIST_QNAME, "name"), Integer.toString(i)))
                     .withChild(ImmutableNodes
                             .leafNode(QName.create(TestModel.INNER_LIST_QNAME, "name"), Integer.toString(i)))

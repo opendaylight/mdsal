@@ -1178,7 +1178,7 @@ class GeneratorImpl {
             }
         }
 
-        return identifier.node(new NodeIdentifierWithPredicates(node.QName, keyValues));
+        return identifier.node(NodeIdentifierWithPredicates.of(node.QName, keyValues));
     }
 
 
