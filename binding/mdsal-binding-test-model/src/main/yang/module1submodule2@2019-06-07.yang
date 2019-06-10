@@ -1,0 +1,15 @@
+submodule module1submodule2 {
+    yang-version "1.1";
+    belongs-to "module1" {
+        prefix "module1";
+    }
+
+    revision "2019-06-07" {
+    }
+
+    grouping submodule2-grouping {
+        leaf leaf2 {
+            type string;
+        }
+    }
+}
