@@ -74,7 +74,6 @@ public class AugmentationSubstitutionTest extends AbstractBindingCodecTest {
                 .setContainerWithUses(new ContainerWithUsesBuilder()
                     .setLeafFromGrouping("foo")
                     .build())
-                .setListViaUses(Collections.emptyList())
                 .build();
     }
 }
