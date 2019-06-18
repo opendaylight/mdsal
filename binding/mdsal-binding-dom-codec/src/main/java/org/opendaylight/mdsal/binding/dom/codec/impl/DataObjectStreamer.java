@@ -138,7 +138,7 @@ public abstract class DataObjectStreamer<T extends DataObject> implements DataOb
     protected static final <E extends DataObject> void streamList(final Class<E> childClass,
             final DataObjectStreamer<E> childStreamer, final DataObjectSerializerRegistry registry,
             final BindingStreamEventWriter writer, final List<? extends E> value) throws IOException {
-        if (value != null) {
+        if (value != null && !value.isEmpty()) {
             writer.startUnkeyedList(childClass, value.size());
             commonStreamList(registry, writer, childStreamer, value);
         }
@@ -147,7 +147,7 @@ public abstract class DataObjectStreamer<T extends DataObject> implements DataOb
     protected static final <E extends DataObject & Identifiable<?>> void streamMap(final Class<E> childClass,
             final DataObjectStreamer<E> childStreamer, final DataObjectSerializerRegistry registry,
             final BindingStreamEventWriter writer, final List<? extends E> value) throws IOException {
-        if (value != null) {
+        if (value != null && !value.isEmpty()) {
             writer.startMapNode(childClass, value.size());
             commonStreamList(registry, writer, childStreamer, value);
         }
@@ -156,7 +156,7 @@ public abstract class DataObjectStreamer<T extends DataObject> implements DataOb
     protected static final <E extends DataObject & Identifiable<?>> void streamOrderedMap(final Class<E> childClass,
             final DataObjectStreamer<E> childStreamer, final DataObjectSerializerRegistry registry,
             final BindingStreamEventWriter writer, final List<? extends E> value) throws IOException {
-        if (value != null) {
+        if (value != null && !value.isEmpty()) {
             writer.startOrderedMapNode(childClass, value.size());
             commonStreamList(registry, writer, childStreamer, value);
         }
