@@ -19,13 +19,6 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public abstract class AbstractSchemaAwareTest {
-    private static final LoadingCache<ClassLoader, Set<YangModuleInfo>> MODULE_INFO_CACHE = CacheBuilder.newBuilder()
-            .weakKeys().weakValues().build(new CacheLoader<ClassLoader, Set<YangModuleInfo>>() {
-                @Override
-                public Set<YangModuleInfo> load(final ClassLoader key) {
-                    return BindingReflections.loadModuleInfos(key);
-                }
-            });
     private static final LoadingCache<Set<YangModuleInfo>, SchemaContext> SCHEMA_CONTEXT_CACHE =
             CacheBuilder.newBuilder().weakValues().build(new CacheLoader<Set<YangModuleInfo>, SchemaContext>() {
                 @Override
@@ -42,7 +35,7 @@ public abstract class AbstractSchemaAwareTest {
     }
 
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return MODULE_INFO_CACHE.getUnchecked(Thread.currentThread().getContextClassLoader());
+        return BindingReflections.cacheModuleInfos(Thread.currentThread().getContextClassLoader());
     }
 
     protected SchemaContext getSchemaContext() throws Exception {
