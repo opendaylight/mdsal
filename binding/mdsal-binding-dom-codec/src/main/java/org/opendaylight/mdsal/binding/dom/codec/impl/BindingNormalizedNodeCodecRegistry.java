@@ -60,9 +60,13 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeS
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerRegistry,
         BindingCodecTreeFactory, BindingNormalizedNodeWriterFactory, BindingNormalizedNodeSerializer {
     private static final Logger LOG = LoggerFactory.getLogger(BindingNormalizedNodeCodecRegistry.class);
@@ -78,7 +82,8 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         this.generator = null;
     }
 
-    public BindingNormalizedNodeCodecRegistry(final BindingRuntimeContext codecContext) {
+    @Activate
+    public BindingNormalizedNodeCodecRegistry(@Reference final BindingRuntimeContext codecContext) {
         this();
         onBindingRuntimeContextUpdated(codecContext);
     }
