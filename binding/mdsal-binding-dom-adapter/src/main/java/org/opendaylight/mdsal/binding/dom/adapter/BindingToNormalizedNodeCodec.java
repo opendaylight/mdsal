@@ -74,6 +74,11 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ServiceScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +89,10 @@ import org.slf4j.LoggerFactory;
  * <p>
  * NOTE: this class is non-final to allow controller adapter migration without duplicated code.
  */
+@Component(
+    scope = ServiceScope.SINGLETON,
+    service = { BindingCodecTreeFactory.class, BindingNormalizedNodeSerializer.class}
+        )
 @Singleton
 public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
         BindingNormalizedNodeSerializer, SchemaContextListener, AutoCloseable {
@@ -104,8 +113,9 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     private ListenerRegistration<?> listenerRegistration;
 
     @Inject
-    public BindingToNormalizedNodeCodec(final ClassLoadingStrategy classLoadingStrategy,
-            final BindingNormalizedNodeCodecRegistry codecRegistry) {
+    @Activate
+    public BindingToNormalizedNodeCodec(@Reference final ClassLoadingStrategy classLoadingStrategy,
+            @Reference final BindingNormalizedNodeCodecRegistry codecRegistry) {
         this(classLoadingStrategy, codecRegistry, false);
     }
 
@@ -326,6 +336,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
 
     @Override
     @PreDestroy
+    @Deactivate
     public void close() {
         if (listenerRegistration != null) {
             listenerRegistration.close();

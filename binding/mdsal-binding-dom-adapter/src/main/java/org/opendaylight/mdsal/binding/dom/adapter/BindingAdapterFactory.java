@@ -33,6 +33,9 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.concepts.Immutable;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * Implementation of AdapterFactory.
@@ -42,11 +45,15 @@ import org.opendaylight.yangtools.concepts.Immutable;
 @Beta
 @NonNullByDefault
 @Singleton
+@Component(
+    service = { AdapterFactory.class }
+    )
 public final class BindingAdapterFactory implements AdapterFactory, Immutable {
     private final BindingToNormalizedNodeCodec codec;
 
     @Inject
-    public BindingAdapterFactory(final BindingToNormalizedNodeCodec codec) {
+    @Activate
+    public BindingAdapterFactory(@Reference final BindingToNormalizedNodeCodec codec) {
         this.codec = requireNonNull(codec);
     }
 
