@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Anna Bencurova <anna.bencurova@pantheon.tech>
+Code-Review+2: Robert Varga <nite@hq.sk>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Sun, 23 Jun 2019 19:20:40 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/82470
+Project: mdsal
+Branch: refs/heads/master
