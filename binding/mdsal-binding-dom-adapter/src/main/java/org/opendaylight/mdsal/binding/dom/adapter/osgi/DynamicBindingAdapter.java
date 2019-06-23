@@ -32,6 +32,10 @@ import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,13 +46,19 @@ import org.slf4j.LoggerFactory;
  *
  * @author Robert Varga
  */
+@Component(
+    immediate = true,
+    service = { }
+    )
+// FIXME: this really should be broken down to individual factory components
 public final class DynamicBindingAdapter implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(DynamicBindingAdapter.class);
 
     @GuardedBy("this")
     private List<AdaptingTracker<?, ?>> trackers;
 
-    public DynamicBindingAdapter(final AdapterFactory factory, final BundleContext ctx) {
+    @Activate
+    public DynamicBindingAdapter(@Reference final AdapterFactory factory, final BundleContext ctx) {
         trackers = ImmutableList.of(
             new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker),
             new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, factory::createDataTreeService),
@@ -72,6 +82,7 @@ public final class DynamicBindingAdapter implements AutoCloseable {
     }
 
     @Override
+    @Deactivate
     public void close() {
         final List<AdaptingTracker<?, ?>> toClose;
         synchronized (this) {
