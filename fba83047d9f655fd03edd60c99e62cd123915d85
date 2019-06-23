@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "debcffa5_ec477e6a",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingWiring.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-06-23T19:33:30Z",
+      "side": 1,
+      "message": "This actually is CDI wiring. An alternative exists in OSGi DS. I think they should be able to exist in same shape or form.",
+      "range": {
+        "startLine": 20,
+        "startChar": 3,
+        "endLine": 20,
+        "endChar": 40
+      },
+      "revId": "fba83047d9f655fd03edd60c99e62cd123915d85",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c43b55b2_c1bfb072",
         "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingWiring.java",
         "patchSetId": 16
