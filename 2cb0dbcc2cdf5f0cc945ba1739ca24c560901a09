@@ -22,6 +22,52 @@
       "revId": "2cb0dbcc2cdf5f0cc945ba1739ca24c560901a09",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "16d498ef_8d117974",
+        "filename": "binding/mdsal-binding-test-model/src/test/java/org/opendaylight/mdsal/binding/test/model/FixedModuleInfoSchemaContextProviderTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-06-23T20:03:54Z",
+      "side": 1,
+      "message": "this should actually be in the same artefact and using mocks",
+      "range": {
+        "startLine": 30,
+        "startChar": 13,
+        "endLine": 30,
+        "endChar": 53
+      },
+      "revId": "2cb0dbcc2cdf5f0cc945ba1739ca24c560901a09",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5e1a1492_2cfad929",
+        "filename": "binding/mdsal-binding-test-model/src/test/java/org/opendaylight/mdsal/binding/test/model/FixedModuleInfoSchemaContextProviderTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-06-23T20:03:54Z",
+      "side": 1,
+      "message": "ugh, this is just arbitrary and will break if we refactor our test modules",
+      "range": {
+        "startLine": 32,
+        "startChar": 10,
+        "endLine": 32,
+        "endChar": 42
+      },
+      "revId": "2cb0dbcc2cdf5f0cc945ba1739ca24c560901a09",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
