@@ -50,7 +50,7 @@ public class ForeignShardThreePhaseCommitCohort implements DOMStoreThreePhaseCom
     public ListenableFuture<Void> abort() {
         LOG.debug("Aborting transaction of foreign shard {}", prefix);
         shard.closeForeignTransaction();
-        return Futures.immediateFuture(null);
+        return SUCCESS_FUTURE;
     }
 
     @Override
