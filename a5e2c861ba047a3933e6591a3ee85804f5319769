@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7840564_a176722b",
+        "filename": "wiring/src/main/java/org/opendaylight/mdsal/wiring/CheckingDOMDataBroker.java",
+        "patchSetId": 42
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 7867
+      },
+      "writtenOn": "2019-06-24T06:12:08Z",
+      "side": 1,
+      "message": "sounds like those improvements should be part of existing DOMDataBroker implementations. adding more implementations will make situation in ODL service ecosystem even worse in my opinion.",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 78
+      },
+      "revId": "a5e2c861ba047a3933e6591a3ee85804f5319769",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bdcf93a9_d5809d5f",
+        "filename": "wiring/src/main/java/org/opendaylight/mdsal/wiring/CheckingDOMDataBroker.java",
+        "patchSetId": 42
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 7867
+      },
+      "writtenOn": "2019-06-24T06:12:08Z",
+      "side": 1,
+      "message": "This check will be executed always when transaction is created. Maybe better design would be perform this check when global schema context is created (only once) or updated.",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 5
+      },
+      "revId": "a5e2c861ba047a3933e6591a3ee85804f5319769",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
