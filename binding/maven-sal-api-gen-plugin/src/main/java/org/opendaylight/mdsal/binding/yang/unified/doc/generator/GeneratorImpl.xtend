@@ -1196,7 +1196,7 @@ class GeneratorImpl {
             append(arg.nodeType.localName);
             previous = true;
             if(arg instanceof NodeIdentifierWithPredicates) {
-                for(qname : arg.getKeyValues.keySet) {
+                for(qname : arg.keySet) {
                     append("/{");
                     append(qname.localName)
                     append('}')

@@ -8,7 +8,9 @@
 package org.opendaylight.mdsal.eos.dom.api;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.opendaylight.mdsal.eos.dom.api.DOMEntity.ENTITY;
 
 import java.util.List;
@@ -44,12 +46,12 @@ public class DOMEntityTest {
     public void testEquals() {
         DOMEntity entity1 = new DOMEntity(ENTITY_TYPE1, ID1);
 
-        assertEquals("Same", true, entity1.equals(entity1));
-        assertEquals("Same", true, entity1.equals(new DOMEntity(ENTITY_TYPE1, ID1)));
-        assertEquals("Different entity type", false, entity1.equals(new DOMEntity(ENTITY_TYPE2, ID1)));
-        assertEquals("Different entity ID", false, entity1.equals(new DOMEntity(ENTITY_TYPE1, ID2)));
-        assertEquals("Different Object", false, entity1.equals(new Object()));
-        assertEquals("Equals null", false, entity1.equals(null));
+        assertTrue("Same", entity1.equals(entity1));
+        assertTrue("Same", entity1.equals(new DOMEntity(ENTITY_TYPE1, ID1)));
+        assertFalse("Different entity type", entity1.equals(new DOMEntity(ENTITY_TYPE2, ID1)));
+        assertFalse("Different entity ID", entity1.equals(new DOMEntity(ENTITY_TYPE1, ID2)));
+        assertFalse("Different Object", entity1.equals(new Object()));
+        assertFalse("Equals null", entity1.equals(null));
     }
 
     @Test
@@ -60,8 +62,7 @@ public class DOMEntityTest {
         assertEquals("pathArgs size", 2, pathArgs.size());
         assertEquals("First PathArgument node type", ENTITY, pathArgs.get(0).getNodeType());
         assertEquals("Second PathArgument node type", ENTITY, pathArgs.get(1).getNodeType());
-        Entry<QName, Object> key = ((NodeIdentifierWithPredicates) pathArgs.get(1)).getKeyValues().entrySet()
-                .iterator().next();
+        Entry<QName, Object> key = ((NodeIdentifierWithPredicates) pathArgs.get(1)).entrySet().iterator().next();
         assertEquals("Key node type", QName.create(ENTITY, "name"), key.getKey());
         assertEquals("Key value", "foo", key.getValue());
     }

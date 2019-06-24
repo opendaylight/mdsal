@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.singleton.dom.impl;
 
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
@@ -52,6 +51,6 @@ public final class DOMClusterSingletonServiceProviderImpl extends
     protected String getServiceIdentifierFromEntity(final DOMEntity entity) {
         final YangInstanceIdentifier yii = entity.getIdentifier();
         final NodeIdentifierWithPredicates niiwp = (NodeIdentifierWithPredicates) yii.getLastPathArgument();
-        return niiwp.getKeyValues().values().iterator().next().toString();
+        return niiwp.values().iterator().next().toString();
     }
 }
