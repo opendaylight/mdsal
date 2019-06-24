@@ -7,11 +7,17 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import com.google.common.annotations.Beta;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.ref.WeakReference;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
@@ -36,10 +42,35 @@ import org.slf4j.LoggerFactory;
 public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         implements ModuleInfoRegistry, SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
 
+    private static final LoadingCache<ClassLoadingStrategy,
+        LoadingCache<ImmutableSet<YangModuleInfo>, ModuleInfoBackedContext>> CONTEXT_CACHES = CacheBuilder.newBuilder()
+            .weakKeys().build(new CacheLoader<ClassLoadingStrategy,
+                LoadingCache<ImmutableSet<YangModuleInfo>, ModuleInfoBackedContext>>() {
+                    @Override
+                    public LoadingCache<ImmutableSet<YangModuleInfo>, ModuleInfoBackedContext> load(
+                            final ClassLoadingStrategy strategy) {
+                        return CacheBuilder.newBuilder().weakValues().build(
+                            new CacheLoader<Set<YangModuleInfo>, ModuleInfoBackedContext>() {
+                                @Override
+                                public ModuleInfoBackedContext load(final Set<YangModuleInfo> key) {
+                                    final ModuleInfoBackedContext context = ModuleInfoBackedContext.create(strategy);
+                                    context.addModuleInfos(key);
+                                    return context;
+                                }
+                            });
+                    }
+            });
+
     private final YangTextSchemaContextResolver ctxResolver = YangTextSchemaContextResolver.create("binding-context");
 
     private ModuleInfoBackedContext(final ClassLoadingStrategy loadingStrategy) {
         this.backingLoadingStrategy = loadingStrategy;
+    }
+
+    @Beta
+    public static ModuleInfoBackedContext cacheContext(final ClassLoadingStrategy loadingStrategy,
+            final ImmutableSet<YangModuleInfo> infos) {
+        return CONTEXT_CACHES.getUnchecked(loadingStrategy).getUnchecked(infos);
     }
 
     public static ModuleInfoBackedContext create() {
