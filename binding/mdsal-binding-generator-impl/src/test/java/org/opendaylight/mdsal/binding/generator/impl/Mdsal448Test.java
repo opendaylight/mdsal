@@ -46,7 +46,7 @@ public class Mdsal448Test {
         assertEquals(9, types.size());
     }
 
-    private static List<GroupingDefinition> sortGroupings(GroupingDefinition... groupings) {
+    private static List<GroupingDefinition> sortGroupings(final GroupingDefinition... groupings) {
         return new GroupingDefinitionDependencySort().sort(Arrays.asList(groupings));
     }
 }
