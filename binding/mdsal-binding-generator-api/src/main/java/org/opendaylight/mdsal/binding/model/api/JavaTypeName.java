@@ -20,6 +20,8 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.Identifier;
 import org.opendaylight.yangtools.concepts.Immutable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A type name. This class encloses Java type naming rules laid down in
@@ -219,6 +221,7 @@ public abstract class JavaTypeName implements Identifier, Immutable {
         }
     }
 
+    private static final Logger LOG = LoggerFactory.getLogger(JavaTypeName.class);
     private static final long serialVersionUID = 1L;
 
     private final String simpleName;
@@ -277,6 +280,30 @@ public abstract class JavaTypeName implements Identifier, Immutable {
      * @throws UnsupportedOperationException if this type name does not support nested type
      */
     public abstract JavaTypeName createEnclosed(String simpleName);
+
+    /**
+     * Create a TypeName for a class immediately enclosed by this class, potentially falling back to appending it with
+     * a suffix if a JLS hiding conflict occurs.
+     *
+     * @param simpleName Simple name of the enclosed class
+     * @param fallbackSuffix Suffix to append if the {@code simpleName} is cannot be created due to JLS
+     * @return A new TypeName.
+     * @throws NullPointerException if any argument is null
+     * @throws IllegalArgumentException if simpleName is empty or if both simpleName and fallback both hide any of the
+     *                                  enclosing types
+     * @throws UnsupportedOperationException if this type name does not support nested type
+     */
+    @SuppressWarnings("checkstyle:hiddenField")
+    public final JavaTypeName createEnclosed(final String simpleName, final String fallbackSuffix) {
+        checkArgument(!simpleName.isEmpty());
+        try {
+            return createEnclosed(simpleName);
+        } catch (IllegalArgumentException e) {
+            final String fallback = simpleName + fallbackSuffix;
+            LOG.debug("Failed to create enclosed type '{}', falling back to '{}'", simpleName, fallback, e);
+            return createEnclosed(fallback);
+        }
+    }
 
     /**
      * Create a TypeName for a class that is a sibling of this class. A sibling has the same package name, and the same

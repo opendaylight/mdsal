@@ -1800,8 +1800,7 @@ abstract class AbstractTypeGenerator {
     private Type addTOToTypeBuilder(final UnionTypeDefinition typeDef,
             final GeneratedTypeBuilder typeBuilder, final DataSchemaNode leaf, final Module parentModule) {
         final List<GeneratedTOBuilder> types = typeProvider.provideGeneratedTOBuildersForUnionTypeDef(
-            typeBuilder.getIdentifier().createEnclosed(BindingMapping.getClassName(leaf.getQName())),
-            typeDef, leaf);
+            allocateNestedType(typeBuilder.getIdentifier(), leaf.getQName()), typeDef, leaf);
 
         checkState(!types.isEmpty(), "No GeneratedTOBuilder objects generated from union %s", typeDef);
         final List<GeneratedTOBuilder> genTOBuilders = new ArrayList<>(types);
@@ -1834,11 +1833,9 @@ abstract class AbstractTypeGenerator {
     private GeneratedTOBuilder addTOToTypeBuilder(final BitsTypeDefinition typeDef,
             final GeneratedTypeBuilder typeBuilder, final DataSchemaNode leaf, final Module parentModule) {
         final GeneratedTOBuilder genTOBuilder = typeProvider.provideGeneratedTOBuilderForBitsTypeDefinition(
-            typeBuilder.getIdentifier().createEnclosed(BindingMapping.getClassName(leaf.getQName())),
-            typeDef, parentModule.getName());
+            allocateNestedType(typeBuilder.getIdentifier(), leaf.getQName()), typeDef, parentModule.getName());
         typeBuilder.addEnclosingTransferObject(genTOBuilder);
         return genTOBuilder;
-
     }
 
     /**
@@ -1893,6 +1890,11 @@ abstract class AbstractTypeGenerator {
             }
         }
         return null;
+    }
+
+    private static JavaTypeName allocateNestedType(final JavaTypeName parent, final QName child) {
+        // Single '$' suffix cannot come from user, this mirrors AbstractGeneratedTypeBuilder.addEnumeration()
+        return parent.createEnclosed(BindingMapping.getClassName(child), "$");
     }
 
     private static void annotateDeprecatedIfNecessary(final Status status, final AnnotableTypeBuilder builder) {
