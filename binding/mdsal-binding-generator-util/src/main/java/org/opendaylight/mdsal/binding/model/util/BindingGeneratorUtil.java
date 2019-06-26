@@ -62,7 +62,6 @@ public final class BindingGeneratorUtil {
     /**
      * Pre-compiled replacement pattern.
      */
-    private static final CharMatcher DOT_MATCHER = CharMatcher.is('.');
     private static final CharMatcher DASH_COLON_MATCHER = CharMatcher.anyOf("-:");
     private static final CharMatcher GT_MATCHER = CharMatcher.is('>');
     private static final CharMatcher LT_MATCHER = CharMatcher.is('<');
