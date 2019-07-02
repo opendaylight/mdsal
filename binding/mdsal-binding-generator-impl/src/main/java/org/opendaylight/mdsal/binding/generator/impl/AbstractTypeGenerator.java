@@ -416,6 +416,10 @@ abstract class AbstractTypeGenerator {
     private <T extends DataNodeContainer & ActionNodeContainer> void actionsToGenType(final ModuleContext context,
             final Type parent, final T parentSchema, final Type keyType, final boolean inGrouping) {
         for (final ActionDefinition action : parentSchema.getActions()) {
+            if (action.isAugmenting()) {
+                continue;
+            }
+
             final GeneratedType input;
             final GeneratedType output;
             if (action.isAddedByUses()) {
@@ -920,12 +924,13 @@ abstract class AbstractTypeGenerator {
         addImplementedInterfaceFromUses(augSchema, augTypeBuilder);
 
         augSchemaNodeToMethods(context, augTypeBuilder, augSchema.getChildNodes(), inGrouping);
+        actionsToGenType(context, augTypeBuilder, augSchema, null, inGrouping);
         augmentBuilders.put(augTypeName, augTypeBuilder);
 
         if (!augSchema.getChildNodes().isEmpty()) {
             context.addTypeToAugmentation(augTypeBuilder, augSchema);
-
         }
+
         context.addAugmentType(augTypeBuilder);
         return augTypeBuilder;
     }
