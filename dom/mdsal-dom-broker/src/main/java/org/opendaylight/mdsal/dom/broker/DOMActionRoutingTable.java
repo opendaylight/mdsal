@@ -70,11 +70,7 @@ final class DOMActionRoutingTable extends AbstractDOMRoutingTable<DOMActionInsta
     private static ActionDefinition findActionDefinition(final SchemaContext context, final SchemaPath path) {
         final SchemaNode node = SchemaContextUtil.findDataSchemaNode(context, path.getParent());
         if (node instanceof ActionNodeContainer) {
-            for (ActionDefinition action : ((ActionNodeContainer) node).getActions()) {
-                if (action.getQName().equals(path.getLastComponent())) {
-                    return action;
-                }
-            }
+            return ((ActionNodeContainer) node).findAction(path.getLastComponent()).orElse(null);
         }
         return null;
     }
