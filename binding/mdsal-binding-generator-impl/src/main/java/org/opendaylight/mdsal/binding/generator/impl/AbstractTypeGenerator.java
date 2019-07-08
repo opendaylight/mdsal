@@ -463,8 +463,7 @@ abstract class AbstractTypeGenerator {
     private Optional<ActionDefinition> findOrigAction(final DataNodeContainer parent, final ActionDefinition action) {
         for (UsesNode uses : parent.getUses()) {
             final GroupingDefinition grp = findUsedGrouping(uses);
-            final Optional<ActionDefinition> found = grp.getActions().stream()
-                    .filter(act -> action.getQName().equals(act.getQName())).findFirst();
+            final Optional<ActionDefinition> found = grp.findAction(action.getQName());
             if (found.isPresent()) {
                 final ActionDefinition result = found.get();
                 return result.isAddedByUses() ? findOrigAction(grp, result) : found;
