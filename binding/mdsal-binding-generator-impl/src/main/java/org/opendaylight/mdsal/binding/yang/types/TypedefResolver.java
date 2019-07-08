@@ -33,13 +33,11 @@ final class TypedefResolver {
 
         fillRecursively(ret, module);
 
-        final Set<NotificationDefinition> notifications = module.getNotifications();
-        for (NotificationDefinition notificationDefinition : notifications) {
+        for (NotificationDefinition notificationDefinition : module.getNotifications()) {
             fillRecursively(ret, notificationDefinition);
         }
 
-        final Set<RpcDefinition> rpcs = module.getRpcs();
-        for (RpcDefinition rpcDefinition : rpcs) {
+        for (RpcDefinition rpcDefinition : module.getRpcs()) {
             ret.addAll(rpcDefinition.getTypeDefinitions());
             fillRecursively(ret, rpcDefinition.getInput());
             fillRecursively(ret, rpcDefinition.getOutput());
