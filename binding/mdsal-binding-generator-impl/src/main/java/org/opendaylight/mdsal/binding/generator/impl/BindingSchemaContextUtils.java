@@ -27,7 +27,6 @@ import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -52,7 +51,7 @@ public final class BindingSchemaContextUtils {
 
         Optional<DataNodeContainer> currentContainer = Optional.empty();
         if (BindingReflections.isNotification(currentArg.getType())) {
-            currentContainer = findNotification(ctx, currentQName);
+            currentContainer = ctx.findNotification(currentQName);
         } else if (BindingReflections.isRpcType(currentArg.getType())) {
             currentContainer = findFirstDataNodeContainerInRpc(ctx, currentArg.getType());
             if (currentQName == null && currentContainer.isPresent()) {
@@ -105,16 +104,6 @@ public final class BindingSchemaContextUtils {
                 }
             }
 
-        }
-        return Optional.empty();
-    }
-
-    private static Optional<DataNodeContainer> findNotification(final SchemaContext ctx,
-            final QName notificationQName) {
-        for (NotificationDefinition notification : ctx.getNotifications()) {
-            if (notification.getQName().equals(notificationQName)) {
-                return Optional.of(notification);
-            }
         }
         return Optional.empty();
     }
