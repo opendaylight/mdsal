@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -36,6 +38,7 @@ import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver;
+import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaSourceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +89,8 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     private final ConcurrentMap<String, WeakReference<ClassLoader>> packageNameToClassLoader =
             new ConcurrentHashMap<>();
     private final ConcurrentMap<SourceIdentifier, YangModuleInfo> sourceIdentifierToModuleInfo =
+            new ConcurrentHashMap<>();
+    private final ConcurrentMap<SourceIdentifier, YangTextSchemaSourceRegistration> sourceIdentifierToSchemaSource =
             new ConcurrentHashMap<>();
 
     private final ClassLoadingStrategy backingLoadingStrategy;
@@ -143,7 +148,8 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         try {
             String modulePackageName = moduleInfo.getClass().getPackage().getName();
             packageNameToClassLoader.putIfAbsent(modulePackageName, new WeakReference<>(moduleClassLoader));
-            ctxResolver.registerSource(toYangTextSource(identifier, moduleInfo));
+            sourceIdentifierToSchemaSource.putIfAbsent(identifier,
+                    ctxResolver.registerSource(toYangTextSource(identifier, moduleInfo)));
             for (YangModuleInfo importedInfo : moduleInfo.getImportedModules()) {
                 resolveModuleInfo(importedInfo);
             }
@@ -151,6 +157,17 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
             LOG.error("Not including {} in YANG sources because of error.", moduleInfo, e);
         }
         return true;
+    }
+
+    private void removeModuleInfo(final YangModuleInfo moduleInfo) {
+        final SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
+        sourceIdentifierToModuleInfo.remove(identifier);
+        requireNonNull(sourceIdentifierToSchemaSource.remove(identifier)).close();
+        String modulePackageName = moduleInfo.getClass().getPackage().getName();
+        packageNameToClassLoader.remove(modulePackageName);
+        for (YangModuleInfo importedInfo : moduleInfo.getImportedModules()) {
+            removeModuleInfo(importedInfo);
+        }
     }
 
     private static YangTextSchemaSource toYangTextSource(final SourceIdentifier identifier,
@@ -203,13 +220,9 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
         @Override
         protected void removeRegistration() {
-            context.remove(this);
+            context.removeModuleInfo(this.getInstance());
         }
 
-    }
-
-    private void remove(final YangModuleInfoRegistration registration) {
-        // FIXME implement
     }
 
     @Override
