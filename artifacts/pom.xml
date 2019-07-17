@@ -401,6 +401,7 @@
             </dependency>
 
             <!-- RFC7895 -->
+            <!-- FIXME: upgrade this to RFC8525 (2019-01-04, NMDA) -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc7895</artifactId>
@@ -569,6 +570,13 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8520-ietf-mud</artifactId>
+                <version>1.0.3-SNAPSHOT</version>
+            </dependency>
+
+            <!-- RFC8525 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8525</artifactId>
                 <version>1.0.3-SNAPSHOT</version>
             </dependency>
 
@@ -775,6 +783,13 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8520</artifactId>
+                <version>1.0.3-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc8525</artifactId>
                 <version>1.0.3-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>

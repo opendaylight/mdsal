@@ -20,5 +20,4 @@ public final class CommonLeafsRevisionBuilder {
         return defaultValue.isEmpty() ? RevisionUtils.emptyRevision()
                 : new Revision(new RevisionIdentifier(defaultValue));
     }
-
 }
