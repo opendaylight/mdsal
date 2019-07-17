@@ -7,12 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.ref.WeakReference;
@@ -31,11 +32,11 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver;
+import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaSourceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,7 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     private final YangTextSchemaContextResolver ctxResolver = YangTextSchemaContextResolver.create("binding-context");
     private final ConcurrentMap<String, WeakReference<ClassLoader>> packageNameToClassLoader =
             new ConcurrentHashMap<>();
-    private final ConcurrentMap<SourceIdentifier, YangModuleInfo> sourceIdentifierToModuleInfo =
+    private final ConcurrentMap<SourceIdentifier, YangTextSchemaSourceRegistration> sourceIdentifierToSchemaSource =
             new ConcurrentHashMap<>();
     private final ClassLoadingStrategy backingLoadingStrategy;
 
@@ -92,7 +93,6 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         final Optional<SchemaContext> contextOptional = tryToCreateSchemaContext();
         if (contextOptional.isPresent()) {
             return contextOptional.get();
-
         }
         throw new IllegalStateException("Unable to recreate SchemaContext, error while parsing");
     }
@@ -128,19 +128,8 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     }
 
     @Override
-    public ListenableFuture<? extends YangTextSchemaSource> getSource(
-        final SourceIdentifier sourceIdentifier) {
-        final YangModuleInfo yangModuleInfo = sourceIdentifierToModuleInfo.get(sourceIdentifier);
-
-        if (yangModuleInfo == null) {
-            LOG.debug("Unknown schema source requested: {}, available sources: {}", sourceIdentifier,
-                sourceIdentifierToModuleInfo.keySet());
-            return Futures.immediateFailedFuture(new SchemaSourceException(
-                "Unknown schema source: " + sourceIdentifier));
-        }
-
-        return Futures.immediateFuture(YangTextSchemaSource.delegateForByteSource(sourceIdentifier,
-            yangModuleInfo.getYangTextByteSource()));
+    public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
+        return ctxResolver.getSource(sourceIdentifier);
     }
 
     public void addModuleInfos(final Iterable<? extends YangModuleInfo> moduleInfos) {
@@ -169,17 +158,27 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     @SuppressWarnings("checkstyle:illegalCatch")
     @SuppressFBWarnings("REC_CATCH_EXCEPTION")
     private boolean resolveModuleInfo(final YangModuleInfo moduleInfo) {
-        final SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
-        final YangModuleInfo previous = sourceIdentifierToModuleInfo.putIfAbsent(identifier, moduleInfo);
-        if (previous != null) {
+        final Class<?> infoClass = moduleInfo.getClass();
+        final ClassLoader moduleClassLoader = infoClass.getClassLoader();
+        final String modulePackageName = infoClass.getPackage().getName();
+        final WeakReference<ClassLoader> reference = packageNameToClassLoader.get(modulePackageName);
+        if (reference != null && moduleClassLoader == reference.get()) {
             return false;
         }
 
-        ClassLoader moduleClassLoader = moduleInfo.getClass().getClassLoader();
         try {
-            String modulePackageName = moduleInfo.getClass().getPackage().getName();
+            final SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
             packageNameToClassLoader.putIfAbsent(modulePackageName, new WeakReference<>(moduleClassLoader));
-            ctxResolver.registerSource(toYangTextSource(identifier, moduleInfo));
+            YangTextSchemaSourceRegistration reg = sourceIdentifierToSchemaSource.putIfAbsent(identifier,
+                    ctxResolver.registerSource(toYangTextSource(identifier, moduleInfo)));
+            // If the classloader for an identifier is updated then just remove old registration, so that
+            // GC can take effect for the old classloader&classes.
+            // here it just keeps the latest module info, further to introduce multiple maps to maintain multiple
+            // module infos for the same identifier.
+            if (reg != null) {
+                reg.close();
+            }
+
             for (YangModuleInfo importedInfo : moduleInfo.getImportedModules()) {
                 resolveModuleInfo(importedInfo);
             }
@@ -190,7 +189,18 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     }
 
     private void remove(final YangModuleInfoRegistration registration) {
-        // FIXME implement
+        final YangModuleInfo moduleInfo = registration.getInstance();
+        final Class<?> infoClass = moduleInfo.getClass();
+        final String modulePackageName = infoClass.getPackage().getName();
+        final WeakReference<ClassLoader> reference = packageNameToClassLoader.get(modulePackageName);
+        if (reference != null && infoClass.getClassLoader() != reference.get()) {
+            return;
+        }
+
+        final SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
+        requireNonNull(sourceIdentifierToSchemaSource.remove(identifier)).close();
+        packageNameToClassLoader.remove(modulePackageName);
+        // FIXME: Do not remove imported module info in case they may be depended by other modules.
     }
 
     private static YangTextSchemaSource toYangTextSource(final SourceIdentifier identifier,
