@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6b1a7f00_281228e6",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-07-17T15:09:18Z",
+      "side": 1,
+      "message": "this does not look quite right:\n\nthis method can be called via resolveModuleInfo(Class), at which point it will trigger registration. That registration will be stuck in this map without ever being cleared.",
+      "range": {
+        "startLine": 151,
+        "startChar": 12,
+        "endLine": 152,
+        "endChar": 90
+      },
+      "revId": "723e619346f23e8f32bf6264f7218457db03e096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "31f10416_f0d5b907",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-07-17T15:09:18Z",
+      "side": 1,
+      "message": "this does not look right either: if we register the same ModuleInfo twice, the second unregistration will explode here because there is only one registration present.",
+      "range": {
+        "startLine": 165,
+        "startChar": 8,
+        "endLine": 165,
+        "endChar": 82
+      },
+      "revId": "723e619346f23e8f32bf6264f7218457db03e096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
