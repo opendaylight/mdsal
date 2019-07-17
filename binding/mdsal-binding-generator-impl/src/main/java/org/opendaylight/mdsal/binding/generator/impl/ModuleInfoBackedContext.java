@@ -7,19 +7,22 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.ref.WeakReference;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.api.ModuleInfoRegistry;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -31,11 +34,11 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver;
+import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaSourceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +88,7 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
     private final ConcurrentMap<String, WeakReference<ClassLoader>> packageNameToClassLoader =
             new ConcurrentHashMap<>();
-    private final ConcurrentMap<SourceIdentifier, YangModuleInfo> sourceIdentifierToModuleInfo =
+    private final ConcurrentMap<SourceIdentifier, YangTextSchemaSourceRegistration> sourceIdentifierToSchemaSource =
             new ConcurrentHashMap<>();
 
     private final ClassLoadingStrategy backingLoadingStrategy;
@@ -133,17 +136,28 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     @SuppressWarnings("checkstyle:illegalCatch")
     @SuppressFBWarnings("REC_CATCH_EXCEPTION")
     private boolean resolveModuleInfo(final YangModuleInfo moduleInfo) {
-        final SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
-        final YangModuleInfo previous = sourceIdentifierToModuleInfo.putIfAbsent(identifier, moduleInfo);
-        if (previous != null) {
-            return false;
+        ClassLoader moduleClassLoader = moduleInfo.getClass().getClassLoader();
+        String modulePackageName = moduleInfo.getClass().getPackage().getName();
+        final WeakReference<ClassLoader> reference = packageNameToClassLoader.get(modulePackageName);
+        if (reference != null) {
+            if (moduleClassLoader == reference.get()) {
+                return false;
+            }
         }
 
-        ClassLoader moduleClassLoader = moduleInfo.getClass().getClassLoader();
         try {
-            String modulePackageName = moduleInfo.getClass().getPackage().getName();
+            final SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
             packageNameToClassLoader.putIfAbsent(modulePackageName, new WeakReference<>(moduleClassLoader));
-            ctxResolver.registerSource(toYangTextSource(identifier, moduleInfo));
+            YangTextSchemaSourceRegistration reg = sourceIdentifierToSchemaSource.putIfAbsent(identifier,
+                    ctxResolver.registerSource(toYangTextSource(identifier, moduleInfo)));
+            // If the classloader for an identifier is updated then just remove old registration, so that
+            // GC can take effect for the old classloader&classes.
+            // here it just keeps the latest module info, further to introduce multiple maps to maintain multiple
+            // module infos for the same identifier.
+            if (reg != null) {
+                reg.close();
+            }
+
             for (YangModuleInfo importedInfo : moduleInfo.getImportedModules()) {
                 resolveModuleInfo(importedInfo);
             }
@@ -151,6 +165,22 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
             LOG.error("Not including {} in YANG sources because of error.", moduleInfo, e);
         }
         return true;
+    }
+
+    private void removeModuleInfo(final YangModuleInfo moduleInfo) {
+        ClassLoader moduleClassLoader = moduleInfo.getClass().getClassLoader();
+        String modulePackageName = moduleInfo.getClass().getPackage().getName();
+        final WeakReference<ClassLoader> reference = packageNameToClassLoader.get(modulePackageName);
+        if (reference != null) {
+            if (moduleClassLoader != reference.get()) {
+                return;
+            }
+        }
+
+        final SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
+        requireNonNull(sourceIdentifierToSchemaSource.remove(identifier)).close();
+        packageNameToClassLoader.remove(modulePackageName);
+        // FIXME: Do not remove imported module info in case they may be depended by other modules.
     }
 
     private static YangTextSchemaSource toYangTextSource(final SourceIdentifier identifier,
@@ -178,18 +208,8 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
     @Override
     public ListenableFuture<? extends YangTextSchemaSource> getSource(
-        final SourceIdentifier sourceIdentifier) {
-        final YangModuleInfo yangModuleInfo = sourceIdentifierToModuleInfo.get(sourceIdentifier);
-
-        if (yangModuleInfo == null) {
-            LOG.debug("Unknown schema source requested: {}, available sources: {}", sourceIdentifier,
-                sourceIdentifierToModuleInfo.keySet());
-            return Futures.immediateFailedFuture(new SchemaSourceException(
-                "Unknown schema source: " + sourceIdentifier));
-        }
-
-        return Futures.immediateFuture(YangTextSchemaSource.delegateForByteSource(sourceIdentifier,
-            yangModuleInfo.getYangTextByteSource()));
+            final SourceIdentifier sourceIdentifier) {
+        return ctxResolver.getSource(sourceIdentifier);
     }
 
     private static class YangModuleInfoRegistration extends AbstractObjectRegistration<YangModuleInfo> {
@@ -203,13 +223,9 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
         @Override
         protected void removeRegistration() {
-            context.remove(this);
+            context.removeModuleInfo(this.getInstance());
         }
 
-    }
-
-    private void remove(final YangModuleInfoRegistration registration) {
-        // FIXME implement
     }
 
     @Override
