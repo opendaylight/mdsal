@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "ee1ab8d9_b9ca3292",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2019-07-18T09:56:16Z",
+      "side": 1,
+      "message": "Confused that, as for 2), would not the loaded class also be registered by bundle scanning since the binding class always belongs to a bundle which would trigger 1) but it would return because the implicit registration has already done that? then it fianlly would be removed by removing bundle?",
+      "parentUuid": "3ff57b64_f854aaf6",
+      "range": {
+        "startLine": 151,
+        "startChar": 12,
+        "endLine": 152,
+        "endChar": 90
+      },
+      "revId": "723e619346f23e8f32bf6264f7218457db03e096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31f10416_f0d5b907",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
         "patchSetId": 1
