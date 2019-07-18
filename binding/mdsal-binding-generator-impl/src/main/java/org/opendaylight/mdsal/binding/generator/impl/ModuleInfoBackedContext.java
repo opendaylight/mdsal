@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         implements ModuleInfoRegistry, SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
+    private static final Logger LOG = LoggerFactory.getLogger(ModuleInfoBackedContext.class);
 
     private static final LoadingCache<ClassLoadingStrategy,
         LoadingCache<ImmutableSet<YangModuleInfo>, ModuleInfoBackedContext>> CONTEXT_CACHES = CacheBuilder.newBuilder()
@@ -62,6 +63,11 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
             });
 
     private final YangTextSchemaContextResolver ctxResolver = YangTextSchemaContextResolver.create("binding-context");
+    private final ConcurrentMap<String, WeakReference<ClassLoader>> packageNameToClassLoader =
+            new ConcurrentHashMap<>();
+    private final ConcurrentMap<SourceIdentifier, YangModuleInfo> sourceIdentifierToModuleInfo =
+            new ConcurrentHashMap<>();
+    private final ClassLoadingStrategy backingLoadingStrategy;
 
     private ModuleInfoBackedContext(final ClassLoadingStrategy loadingStrategy) {
         this.backingLoadingStrategy = loadingStrategy;
@@ -81,14 +87,15 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         return new ModuleInfoBackedContext(loadingStrategy);
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(ModuleInfoBackedContext.class);
+    @Override
+    public SchemaContext getSchemaContext() {
+        final Optional<SchemaContext> contextOptional = tryToCreateSchemaContext();
+        if (contextOptional.isPresent()) {
+            return contextOptional.get();
 
-    private final ConcurrentMap<String, WeakReference<ClassLoader>> packageNameToClassLoader =
-            new ConcurrentHashMap<>();
-    private final ConcurrentMap<SourceIdentifier, YangModuleInfo> sourceIdentifierToModuleInfo =
-            new ConcurrentHashMap<>();
-
-    private final ClassLoadingStrategy backingLoadingStrategy;
+        }
+        throw new IllegalStateException("Unable to recreate SchemaContext, error while parsing");
+    }
 
     @Override
     public Class<?> loadClass(final String fullyQualifiedName) throws ClassNotFoundException {
@@ -111,6 +118,35 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         }
 
         return cls;
+    }
+
+    @Override
+    public ObjectRegistration<YangModuleInfo> registerModuleInfo(final YangModuleInfo yangModuleInfo) {
+        YangModuleInfoRegistration registration = new YangModuleInfoRegistration(yangModuleInfo, this);
+        resolveModuleInfo(yangModuleInfo);
+        return registration;
+    }
+
+    @Override
+    public ListenableFuture<? extends YangTextSchemaSource> getSource(
+        final SourceIdentifier sourceIdentifier) {
+        final YangModuleInfo yangModuleInfo = sourceIdentifierToModuleInfo.get(sourceIdentifier);
+
+        if (yangModuleInfo == null) {
+            LOG.debug("Unknown schema source requested: {}, available sources: {}", sourceIdentifier,
+                sourceIdentifierToModuleInfo.keySet());
+            return Futures.immediateFailedFuture(new SchemaSourceException(
+                "Unknown schema source: " + sourceIdentifier));
+        }
+
+        return Futures.immediateFuture(YangTextSchemaSource.delegateForByteSource(sourceIdentifier,
+            yangModuleInfo.getYangTextByteSource()));
+    }
+
+    public void addModuleInfos(final Iterable<? extends YangModuleInfo> moduleInfos) {
+        for (YangModuleInfo yangModuleInfo : moduleInfos) {
+            registerModuleInfo(yangModuleInfo);
+        }
     }
 
     // TODO finish schema parsing and expose as SchemaService
@@ -153,6 +189,10 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         return true;
     }
 
+    private void remove(final YangModuleInfoRegistration registration) {
+        // FIXME implement
+    }
+
     private static YangTextSchemaSource toYangTextSource(final SourceIdentifier identifier,
             final YangModuleInfo moduleInfo) {
         return YangTextSchemaSource.delegateForByteSource(identifier, moduleInfo.getYangTextByteSource());
@@ -163,37 +203,7 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         return RevisionSourceIdentifier.create(name.getLocalName(), name.getRevision());
     }
 
-    public void addModuleInfos(final Iterable<? extends YangModuleInfo> moduleInfos) {
-        for (YangModuleInfo yangModuleInfo : moduleInfos) {
-            registerModuleInfo(yangModuleInfo);
-        }
-    }
-
-    @Override
-    public ObjectRegistration<YangModuleInfo> registerModuleInfo(final YangModuleInfo yangModuleInfo) {
-        YangModuleInfoRegistration registration = new YangModuleInfoRegistration(yangModuleInfo, this);
-        resolveModuleInfo(yangModuleInfo);
-        return registration;
-    }
-
-    @Override
-    public ListenableFuture<? extends YangTextSchemaSource> getSource(
-        final SourceIdentifier sourceIdentifier) {
-        final YangModuleInfo yangModuleInfo = sourceIdentifierToModuleInfo.get(sourceIdentifier);
-
-        if (yangModuleInfo == null) {
-            LOG.debug("Unknown schema source requested: {}, available sources: {}", sourceIdentifier,
-                sourceIdentifierToModuleInfo.keySet());
-            return Futures.immediateFailedFuture(new SchemaSourceException(
-                "Unknown schema source: " + sourceIdentifier));
-        }
-
-        return Futures.immediateFuture(YangTextSchemaSource.delegateForByteSource(sourceIdentifier,
-            yangModuleInfo.getYangTextByteSource()));
-    }
-
     private static class YangModuleInfoRegistration extends AbstractObjectRegistration<YangModuleInfo> {
-
         private final ModuleInfoBackedContext context;
 
         YangModuleInfoRegistration(final YangModuleInfo instance, final ModuleInfoBackedContext context) {
@@ -205,20 +215,5 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         protected void removeRegistration() {
             context.remove(this);
         }
-
-    }
-
-    private void remove(final YangModuleInfoRegistration registration) {
-        // FIXME implement
-    }
-
-    @Override
-    public SchemaContext getSchemaContext() {
-        final Optional<SchemaContext> contextOptional = tryToCreateSchemaContext();
-        if (contextOptional.isPresent()) {
-            return contextOptional.get();
-
-        }
-        throw new IllegalStateException("Unable to recreate SchemaContext, error while parsing");
     }
 }
