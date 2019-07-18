@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ebd34f27_b11958ff",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2019-07-18T08:18:43Z",
+      "side": 1,
+      "message": "resolveModuleInfo will only be triggered by bundle adding event ,otherwise we can/should not call it twice at this moment, and see line 143 above, if there\u0027re more triggering it will do registration only once.",
+      "parentUuid": "6b1a7f00_281228e6",
+      "range": {
+        "startLine": 151,
+        "startChar": 12,
+        "endLine": 152,
+        "endChar": 90
+      },
+      "revId": "723e619346f23e8f32bf6264f7218457db03e096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31f10416_f0d5b907",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-07-17T15:09:18Z",
       "side": 1,
       "message": "this does not look right either: if we register the same ModuleInfo twice, the second unregistration will explode here because there is only one registration present.",
+      "range": {
+        "startLine": 165,
+        "startChar": 8,
+        "endLine": 165,
+        "endChar": 82
+      },
+      "revId": "723e619346f23e8f32bf6264f7218457db03e096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b8251ca8_a5ee69f1",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2019-07-18T08:18:43Z",
+      "side": 1,
+      "message": "removeModuleInfo here also would be triggered by bundle stopping event, since there is always one entry of the same source identifier according to method removeModuleInfo, properly we could remove requieNonNull first in case there\u0027re more triggering from \"same bundles\".",
+      "parentUuid": "31f10416_f0d5b907",
       "range": {
         "startLine": 165,
         "startChar": 8,
