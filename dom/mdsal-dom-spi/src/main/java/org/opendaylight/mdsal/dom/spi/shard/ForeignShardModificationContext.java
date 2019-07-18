@@ -14,7 +14,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
-import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.concepts.AbstractIdentifiable;
 import org.opendaylight.yangtools.concepts.Mutable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +23,10 @@ import org.slf4j.LoggerFactory;
  * A handle for a transaction being done on a different shard. This class is not thread-safe.
  */
 @Beta
-public final class ForeignShardModificationContext implements Identifiable<DOMDataTreeIdentifier>, Mutable {
+public final class ForeignShardModificationContext extends AbstractIdentifiable<DOMDataTreeIdentifier>
+        implements Mutable {
     private static final Logger LOG = LoggerFactory.getLogger(ForeignShardModificationContext.class);
 
-    private final DOMDataTreeIdentifier identifier;
     private final DOMDataTreeShardProducer producer;
 
     private DOMDataTreeShardWriteTransaction tx;
@@ -36,7 +36,7 @@ public final class ForeignShardModificationContext implements Identifiable<DOMDa
 
     public ForeignShardModificationContext(final DOMDataTreeIdentifier identifier,
                                            final DOMDataTreeShardProducer producer) {
-        this.identifier = requireNonNull(identifier);
+        super(identifier);
         this.producer = requireNonNull(producer);
     }
 
@@ -73,11 +73,6 @@ public final class ForeignShardModificationContext implements Identifiable<DOMDa
             // TODO: it would be nice if we could clear this reference
             // tx = null;
         }
-    }
-
-    @Override
-    public DOMDataTreeIdentifier getIdentifier() {
-        return identifier;
     }
 
     public DOMDataTreeShardProducer getProducer() {

@@ -23,7 +23,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
-import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.concepts.AbstractIdentifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -32,7 +32,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteTransaction, Identifiable<String> {
+class InmemoryDOMDataTreeShardWriteTransaction extends AbstractIdentifiable<String>
+        implements DOMDataTreeShardWriteTransaction {
 
     private static final Logger LOG = LoggerFactory.getLogger(InmemoryDOMDataTreeShardWriteTransaction.class);
 
@@ -91,7 +92,6 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     private final ShardDataModification modification;
     private final ListeningExecutorService executor;
     private final DataTree rootShardDataTree;
-    private final String identifier;
 
     private DataTreeModification rootModification = null;
     private DOMDataTreeWriteCursor cursor;
@@ -102,18 +102,13 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
                                              final DataTree rootShardDataTree,
                                              final InMemoryDOMDataTreeShardChangePublisher changePublisher,
                                              final ListeningExecutorService executor) {
+        super("INMEMORY-SHARD-TX-" + COUNTER.getAndIncrement());
         this.producer = producer;
         this.modification = requireNonNull(root);
         this.rootShardDataTree = requireNonNull(rootShardDataTree);
         this.changePublisher = requireNonNull(changePublisher);
-        this.identifier = "INMEMORY-SHARD-TX-" + COUNTER.getAndIncrement();
-        LOG.debug("Shard transaction{} created", identifier);
-        this.executor = executor;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return identifier;
+        this.executor = requireNonNull(executor);
+        LOG.debug("Shard transaction{} created", getIdentifier());
     }
 
     private DOMDataTreeWriteCursor getCursor() {

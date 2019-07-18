@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.spi;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.concepts.AbstractIdentifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
@@ -35,23 +35,17 @@ import org.slf4j.LoggerFactory;
  * @param <T> registration type
  * @author Robert Varga
  */
-public final class RegistrationTreeNode<T> implements Identifiable<PathArgument> {
+public final class RegistrationTreeNode<T> extends AbstractIdentifiable<PathArgument> {
     private static final Logger LOG = LoggerFactory.getLogger(RegistrationTreeNode.class);
 
     private final Map<PathArgument, RegistrationTreeNode<T>> children = new HashMap<>();
     private final Collection<T> registrations = new ArrayList<>(2);
     private final Collection<T> publicRegistrations = Collections.unmodifiableCollection(registrations);
     private final Reference<RegistrationTreeNode<T>> parent;
-    private final PathArgument identifier;
 
     RegistrationTreeNode(final RegistrationTreeNode<T> parent, final PathArgument identifier) {
+        super(identifier);
         this.parent = new WeakReference<>(parent);
-        this.identifier = identifier;
-    }
-
-    @Override
-    public PathArgument getIdentifier() {
-        return identifier;
     }
 
     /**
@@ -120,7 +114,7 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
     private void removeThisIfUnused() {
         final RegistrationTreeNode<T> p = parent.get();
         if (p != null && registrations.isEmpty() && children.isEmpty()) {
-            p.removeChild(identifier);
+            p.removeChild(getIdentifier());
         }
     }
 
@@ -130,10 +124,9 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
     }
 
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("identifier", identifier)
+    protected ToStringHelper addToStringAttributes(final ToStringHelper toStringHelper) {
+        return super.addToStringAttributes(toStringHelper)
                 .add("registrations", registrations.size())
-                .add("children", children.size()).toString();
+                .add("children", children.size());
     }
 }
