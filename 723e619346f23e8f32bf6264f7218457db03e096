@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "3ff57b64_f854aaf6",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-07-18T09:32:42Z",
+      "side": 1,
+      "message": "right, but there really are two distinct paths:\n1) the one triggered through bundle scanning, i.e. normal discovery\n2) the one triggered through loadClass(), which can trigger as soon as the bundle is resolved (by user code starting)\n\nnote the second one is kind of implicit registration, which will never be cleaned up by itself, as there is no callout which would remove it. We cannot rely on GC to do that, because we have registered a class loader resource, hence the class loader will not be GC\u0027d, hence the class itself will not be GC\u0027d.\n\nI think we need to track implicit registrations and turn them into explicit ones when the corresponding YangModuleInfo is registered.",
+      "parentUuid": "ebd34f27_b11958ff",
+      "range": {
+        "startLine": 151,
+        "startChar": 12,
+        "endLine": 152,
+        "endChar": 90
+      },
+      "revId": "723e619346f23e8f32bf6264f7218457db03e096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31f10416_f0d5b907",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
         "patchSetId": 1
@@ -89,6 +113,29 @@
         "startChar": 8,
         "endLine": 165,
         "endChar": 82
+      },
+      "revId": "723e619346f23e8f32bf6264f7218457db03e096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9b39c2b9_bf3f7874",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-07-18T09:32:42Z",
+      "side": 1,
+      "message": "Now here\u0027s is another problem: note that this unregisters all dependencies, so if we have:\n\nbundle1: foo.yang\nbundle2: bar.yang, depends on foo.yang\n\nand we uninstall bundle2, we will also remove foo.yang -- hence our model view will be borked. It *may* get restored by implicit loading, but that is not guaranteed.",
+      "range": {
+        "startLine": 168,
+        "startChar": 0,
+        "endLine": 170,
+        "endChar": 9
       },
       "revId": "723e619346f23e8f32bf6264f7218457db03e096",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
