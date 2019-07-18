@@ -10,20 +10,19 @@ package org.opendaylight.mdsal.dom.spi;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
-import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.concepts.AbstractIdentifiable;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 
-public abstract class RpcRoutingStrategy implements Identifiable<QName> {
+public abstract class RpcRoutingStrategy extends AbstractIdentifiable<QName> {
     // FIXME: deprecate context-reference
     private static final QName CONTEXT_REFERENCE = QName.create("urn:opendaylight:yang:extension:yang-ext",
             "2013-07-09", "context-reference").intern();
-    private final QName identifier;
 
     private RpcRoutingStrategy(final QName identifier) {
-        this.identifier = requireNonNull(identifier);
+        super(identifier);
     }
 
     /**
@@ -41,11 +40,6 @@ public abstract class RpcRoutingStrategy implements Identifiable<QName> {
      *      ({@link #isContextBasedRouted()} returned <code>false</code>)
      */
     public abstract QName getContext();
-
-    @Override
-    public final QName getIdentifier() {
-        return identifier;
-    }
 
     /**
      * Returns true if RPC is routed by context.
@@ -100,7 +94,6 @@ public abstract class RpcRoutingStrategy implements Identifiable<QName> {
     }
 
     private static final class GlobalRpcStrategy extends RpcRoutingStrategy {
-
         GlobalRpcStrategy(final QName identifier) {
             super(identifier);
         }

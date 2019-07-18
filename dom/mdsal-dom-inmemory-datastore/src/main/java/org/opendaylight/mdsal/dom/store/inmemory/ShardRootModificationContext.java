@@ -5,13 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import static java.util.Objects.requireNonNull;
 
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.concepts.AbstractIdentifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
@@ -19,23 +18,15 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModificationCursor;
 
 // Non-final for mocking
-class ShardRootModificationContext implements Identifiable<DOMDataTreeIdentifier> {
-
-    private final DOMDataTreeIdentifier identifier;
+class ShardRootModificationContext extends AbstractIdentifiable<DOMDataTreeIdentifier> {
     private final CursorAwareDataTreeSnapshot snapshot;
 
     private CursorAwareDataTreeModification modification = null;
     private DataTreeModificationCursorAdaptor cursor = null;
 
-    ShardRootModificationContext(final DOMDataTreeIdentifier identifier,
-            final CursorAwareDataTreeSnapshot snapshot) {
-        this.identifier = requireNonNull(identifier);
+    ShardRootModificationContext(final DOMDataTreeIdentifier identifier, final CursorAwareDataTreeSnapshot snapshot) {
+        super(identifier);
         this.snapshot = requireNonNull(snapshot);
-    }
-
-    @Override
-    public DOMDataTreeIdentifier getIdentifier() {
-        return identifier;
     }
 
     DataTreeModificationCursorAdaptor cursor() {
