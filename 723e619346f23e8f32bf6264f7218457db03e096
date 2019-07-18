@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "2af58c25_0b4224ee",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-07-18T10:13:33Z",
+      "side": 1,
+      "message": "Hmm, I am not sure. I think packageNameToClassLoader guards against some of the issues, i.e. it would hold on to the old class in case a refresh race were to to trigger.\n\nThere seems to be some shenanigans with packageNameToClassLoader, too -- note how it never removes WeakReferences, hence once populated, it will never update reference to the class loader -- it will just always fall back to backingLoadingStrategy -- which is probably TCCL.\n\nThe more I look at this class, the stranger it feels:\n- YangTextSchemaContextResolver already provides access to schema sources, so sourceIdentifierToModuleInfo is not needed for that functionality\n- YangTextSchemaContextResolver deals with multiple sources of the same SourceIdentifier just fine, so there really is no need for the \u0027must register at most once\u0027 dance",
+      "parentUuid": "ee1ab8d9_b9ca3292",
+      "range": {
+        "startLine": 151,
+        "startChar": 12,
+        "endLine": 152,
+        "endChar": 90
+      },
+      "revId": "723e619346f23e8f32bf6264f7218457db03e096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31f10416_f0d5b907",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
         "patchSetId": 1
