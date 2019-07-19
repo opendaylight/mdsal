@@ -121,6 +121,30 @@
     },
     {
       "key": {
+        "uuid": "14dfad6d_5e6e3894",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2019-07-19T03:31:58Z",
+      "side": 1,
+      "message": "For this issue (path 1)), actually \u0027loadClass\u0027 finded the old classloader and will not fall back to TCCL that cause the ClassCastException, so we have to update this when co. bundle\u0027s been refreshed? this way, all referenced resource by it would also be updated which then would make GC take effect to the old class\u0026classloader.\nFor path 2) above, the instance of ModuleInfoBackedContext is an internal object of instance of BindingNormalizedNodeCodecRegistry, although there\u0027s no callout to remove the registration, but it will/should do some kind of re-registration after the corresponding bundle is refreshed, and the the update process would also remove resource references of old class/classloader ending up to be GC\u0027d finally.",
+      "parentUuid": "2af58c25_0b4224ee",
+      "range": {
+        "startLine": 151,
+        "startChar": 12,
+        "endLine": 152,
+        "endChar": 90
+      },
+      "revId": "723e619346f23e8f32bf6264f7218457db03e096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31f10416_f0d5b907",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
         "patchSetId": 1
