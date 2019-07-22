@@ -11,6 +11,7 @@ import static java.util.Collections.singletonList;
 
 import java.net.URI;
 import java.util.List;
+import javax.annotation.concurrent.ThreadSafe;
 import org.opendaylight.yangtools.concepts.Registration;
 
 /**
@@ -22,6 +23,7 @@ import org.opendaylight.yangtools.concepts.Registration;
  *
  * @author Michael Vorburger.ch
  */
+@ThreadSafe // Implementations must be thread safe
 public interface YangRegisterer {
 
     List<Registration> registerYANGs(List<URI> yangs);

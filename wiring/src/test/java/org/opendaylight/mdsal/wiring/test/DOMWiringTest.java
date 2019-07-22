@@ -25,8 +25,8 @@ import org.opendaylight.mdsal.wiring.guice.DOMModule;
 import org.opendaylight.mdsal.wiring.guice.InMemoryDOMDataBrokerModule;
 import org.opendaylight.mdsal.wiring.schema.PurelyDynamicSchemaWiring;
 import org.opendaylight.mdsal.wiring.schema.YangRegisterer;
-import org.opendaylight.yang.gen.v1.urn.test.rev170101.Cont;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
@@ -39,6 +39,8 @@ import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
  *
  * <p>Note how this test, contrary to the {@link BindingWiringTest}, does
  * not use the {@link BindingModule}, only the {@link DOMModule}.
+ *
+ * <p>See also {@link HybridWiringTest} for an alternative wiring.
  *
  * @author Michael Vorburger.ch
  */
@@ -77,11 +79,19 @@ public class DOMWiringTest {
 
         assertEquals(true, Scopes.isSingleton(injector.getBinding(DOMDataBroker.class)));
 
-        try (Registration registration = yangRegisterer
-                .registerYANG(getClass().getResource("/META-INF/yang/test@2017-01-01.yang").toURI())) {
-            DOMDataTreeReadWriteTransaction tx = domDataBroker.newReadWriteTransaction();
-            YangInstanceIdentifier contYIID = YangInstanceIdentifier.of(Cont.QNAME);
-            NodeIdentifier nodeIdentifier = NodeIdentifier.create(Cont.QNAME);
+        testDOMDataBroker(yangRegisterer, domDataBroker);
+    }
+
+    static void testDOMDataBroker(YangRegisterer registerer, DOMDataBroker db) throws Exception {
+        try (Registration registration = registerer
+                .registerYANG(DOMWiringTest.class.getResource("/another-test.yang").toURI())) {
+
+            QName moduleName = QName.create("urn:another-test", "2019-01-29", "another-test").intern();
+            QName containerName = QName.create(moduleName, "cont").intern();
+            YangInstanceIdentifier contYIID = YangInstanceIdentifier.of(containerName);
+            NodeIdentifier nodeIdentifier = NodeIdentifier.create(containerName);
+
+            DOMDataTreeReadWriteTransaction tx = db.newReadWriteTransaction();
             tx.put(CONFIGURATION, contYIID,
                     ImmutableContainerNodeBuilder.create().withNodeIdentifier(nodeIdentifier).build());
             tx.commit().get();
