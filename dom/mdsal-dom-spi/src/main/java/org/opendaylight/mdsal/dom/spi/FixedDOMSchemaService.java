@@ -61,11 +61,11 @@ public class FixedDOMSchemaService extends AbstractDOMSchemaService {
         this.schemaContextProvider = requireNonNull(schemaContextProvider);
     }
 
-    public static @NonNull DOMSchemaService of(final SchemaContextProvider schemaContextProvider) {
+    public static @NonNull FixedDOMSchemaService of(final SchemaContextProvider schemaContextProvider) {
         return new FixedDOMSchemaService(schemaContextProvider);
     }
 
-    public static @NonNull DOMSchemaService of(final SchemaContextProvider schemaContextProvider,
+    public static @NonNull FixedDOMSchemaService of(final SchemaContextProvider schemaContextProvider,
             final SchemaSourceProvider<YangTextSchemaSource> yangTextSourceProvider) {
         return new WithYangTextSources(schemaContextProvider, requireNonNull(yangTextSourceProvider));
     }
