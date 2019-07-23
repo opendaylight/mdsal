@@ -22,6 +22,30 @@
       "revId": "397b081d2ff274050b37b94c5dcf2331722d5e3c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "abeb8a79_ec444d5e",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2019-07-23T10:38:27Z",
+      "side": 1,
+      "message": "\" we will end up removing it\" - I\u0027m not clear how this could happen, as for any soure identifier, it will only be one entry, or it will return (line 142)",
+      "parentUuid": "40c14977_ec246ba2",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 159,
+        "endChar": 13
+      },
+      "revId": "397b081d2ff274050b37b94c5dcf2331722d5e3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
