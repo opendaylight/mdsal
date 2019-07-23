@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.annotations.Beta;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -90,11 +92,8 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     @Override
     public SchemaContext getSchemaContext() {
         final Optional<SchemaContext> contextOptional = tryToCreateSchemaContext();
-        if (contextOptional.isPresent()) {
-            return contextOptional.get();
-
-        }
-        throw new IllegalStateException("Unable to recreate SchemaContext, error while parsing");
+        checkState(contextOptional.isPresent(), "Unable to recreate SchemaContext, error while parsing");
+        return contextOptional.get();
     }
 
     @Override
