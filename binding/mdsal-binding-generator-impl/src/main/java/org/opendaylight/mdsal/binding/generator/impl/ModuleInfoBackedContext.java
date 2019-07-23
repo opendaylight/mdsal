@@ -158,12 +158,15 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    private boolean resolveModuleInfo(final Class<?> cls) {
+    private void resolveModuleInfo(final Class<?> cls) {
+        final YangModuleInfo moduleInfo;
         try {
-            return resolveModuleInfo(BindingReflections.getModuleInfo(cls));
+            moduleInfo = BindingReflections.getModuleInfo(cls);
         } catch (Exception e) {
-            throw new IllegalStateException(String.format("Failed to resolve module information for class %s", cls), e);
+            throw new IllegalStateException("Failed to resolve module information for class " + cls, e);
         }
+
+        resolveModuleInfo(moduleInfo);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
