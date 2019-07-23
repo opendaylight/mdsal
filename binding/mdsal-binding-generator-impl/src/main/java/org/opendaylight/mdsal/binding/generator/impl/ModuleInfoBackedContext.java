@@ -8,20 +8,28 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.Futures;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.lang.ref.WeakReference;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import org.checkerframework.checker.lock.qual.GuardedBy;
+import org.checkerframework.checker.lock.qual.Holding;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.api.ModuleInfoRegistry;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -32,17 +40,34 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver;
+import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaSourceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         implements ModuleInfoRegistry, SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
+    private static final class RegisteredModuleInfo {
+        final YangTextSchemaSourceRegistration reg;
+        final YangModuleInfo info;
+        final ClassLoader loader;
+        final boolean implicit;
+
+        RegisteredModuleInfo(final YangModuleInfo info, final YangTextSchemaSourceRegistration reg,
+                final ClassLoader loader, final boolean implicit) {
+            this.info = requireNonNull(info);
+            this.reg = requireNonNull(reg);
+            this.loader = requireNonNull(loader);
+            this.implicit = implicit;
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(ModuleInfoBackedContext.class);
 
     private static final LoadingCache<ClassLoadingStrategy,
@@ -65,10 +90,14 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
             });
 
     private final YangTextSchemaContextResolver ctxResolver = YangTextSchemaContextResolver.create("binding-context");
-    private final ConcurrentMap<String, WeakReference<ClassLoader>> packageNameToClassLoader =
-            new ConcurrentHashMap<>();
-    private final ConcurrentMap<SourceIdentifier, YangModuleInfo> sourceIdentifierToModuleInfo =
-            new ConcurrentHashMap<>();
+
+    @GuardedBy("this")
+    private final ListMultimap<String, RegisteredModuleInfo> packageToInfoReg =
+            MultimapBuilder.hashKeys().arrayListValues().build();
+    @GuardedBy("this")
+    private final ListMultimap<SourceIdentifier, RegisteredModuleInfo> sourceToInfoReg =
+            MultimapBuilder.hashKeys().arrayListValues().build();
+
     private final ClassLoadingStrategy backingLoadingStrategy;
 
     private ModuleInfoBackedContext(final ClassLoadingStrategy loadingStrategy) {
@@ -97,105 +126,166 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     }
 
     @Override
+    @SuppressWarnings("checkstyle:illegalCatch")
     public Class<?> loadClass(final String fullyQualifiedName) throws ClassNotFoundException {
+        // This performs an explicit check for binding classes
         final String modulePackageName = BindingReflections.getModelRootPackageName(fullyQualifiedName);
-        final WeakReference<ClassLoader> classLoaderRef = packageNameToClassLoader.get(modulePackageName);
-        if (classLoaderRef != null) {
-            final ClassLoader classLoader = classLoaderRef.get();
-            if (classLoader != null) {
-                return ClassLoaderUtils.loadClass(classLoader, fullyQualifiedName);
+
+        synchronized (this) {
+            // Try to find a loaded class loader
+            // FIXME: two-step process, try explicit registrations first
+            for (RegisteredModuleInfo reg : packageToInfoReg.get(modulePackageName)) {
+                return ClassLoaderUtils.loadClass(reg.loader, fullyQualifiedName);
             }
-        }
 
-        if (backingLoadingStrategy == null) {
-            throw new ClassNotFoundException(fullyQualifiedName);
-        }
+            // We have not found a matching registration, consult the backing strategy
+            if (backingLoadingStrategy == null) {
+                throw new ClassNotFoundException(fullyQualifiedName);
+            }
 
-        final Class<?> cls = backingLoadingStrategy.loadClass(fullyQualifiedName);
-        if (BindingReflections.isBindingClass(cls)) {
-            resolveModuleInfo(cls);
-        }
+            final Class<?> cls = backingLoadingStrategy.loadClass(fullyQualifiedName);
+            final YangModuleInfo moduleInfo;
+            try {
+                moduleInfo = BindingReflections.getModuleInfo(cls);
+            } catch (Exception e) {
+                throw new IllegalStateException("Failed to resolve module information for class " + cls, e);
+            }
 
-        return cls;
+            registerImplicitModuleInfo(requireNonNull(moduleInfo));
+            return cls;
+        }
     }
 
     @Override
-    public ObjectRegistration<YangModuleInfo> registerModuleInfo(final YangModuleInfo yangModuleInfo) {
-        YangModuleInfoRegistration registration = new YangModuleInfoRegistration(yangModuleInfo, this);
-        resolveModuleInfo(yangModuleInfo);
-        return registration;
+    public synchronized ObjectRegistration<YangModuleInfo> registerModuleInfo(final YangModuleInfo yangModuleInfo) {
+        return register(requireNonNull(yangModuleInfo));
     }
 
     @Override
-    public ListenableFuture<? extends YangTextSchemaSource> getSource(
-        final SourceIdentifier sourceIdentifier) {
-        final YangModuleInfo yangModuleInfo = sourceIdentifierToModuleInfo.get(sourceIdentifier);
-
-        if (yangModuleInfo == null) {
-            LOG.debug("Unknown schema source requested: {}, available sources: {}", sourceIdentifier,
-                sourceIdentifierToModuleInfo.keySet());
-            return Futures.immediateFailedFuture(new SchemaSourceException(
-                "Unknown schema source: " + sourceIdentifier));
-        }
-
-        return Futures.immediateFuture(YangTextSchemaSource.delegateForByteSource(sourceIdentifier,
-            yangModuleInfo.getYangTextByteSource()));
+    public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
+        return ctxResolver.getSource(sourceIdentifier);
     }
 
-    public void addModuleInfos(final Iterable<? extends YangModuleInfo> moduleInfos) {
+    public synchronized void addModuleInfos(final Iterable<? extends YangModuleInfo> moduleInfos) {
         for (YangModuleInfo yangModuleInfo : moduleInfos) {
-            registerModuleInfo(yangModuleInfo);
+            register(requireNonNull(yangModuleInfo));
         }
     }
 
     // TODO finish schema parsing and expose as SchemaService
     // Unite with current SchemaService
-    // Implement remove ModuleInfo to update SchemaContext
 
     public Optional<SchemaContext> tryToCreateSchemaContext() {
         return ctxResolver.getSchemaContext();
     }
 
-    @SuppressWarnings("checkstyle:illegalCatch")
-    private void resolveModuleInfo(final Class<?> cls) {
-        final YangModuleInfo moduleInfo;
-        try {
-            moduleInfo = BindingReflections.getModuleInfo(cls);
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to resolve module information for class " + cls, e);
+    @Holding("this")
+    private ObjectRegistration<YangModuleInfo> register(final @NonNull YangModuleInfo moduleInfo) {
+        final Builder<RegisteredModuleInfo> regBuilder = ImmutableList.builder();
+        for (YangModuleInfo info : flatDependencies(moduleInfo)) {
+            regBuilder.add(registerExplicitModuleInfo(info));
         }
+        final ImmutableList<RegisteredModuleInfo> regInfos = regBuilder.build();
 
-        resolveModuleInfo(moduleInfo);
-    }
-
-    @SuppressWarnings("checkstyle:illegalCatch")
-    @SuppressFBWarnings("REC_CATCH_EXCEPTION")
-    private boolean resolveModuleInfo(final YangModuleInfo moduleInfo) {
-        final SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
-        final YangModuleInfo previous = sourceIdentifierToModuleInfo.putIfAbsent(identifier, moduleInfo);
-        if (previous != null) {
-            return false;
-        }
-
-        ClassLoader moduleClassLoader = moduleInfo.getClass().getClassLoader();
-        try {
-            String modulePackageName = moduleInfo.getClass().getPackage().getName();
-            packageNameToClassLoader.putIfAbsent(modulePackageName, new WeakReference<>(moduleClassLoader));
-            ctxResolver.registerSource(toYangTextSource(identifier, moduleInfo));
-            for (YangModuleInfo importedInfo : moduleInfo.getImportedModules()) {
-                resolveModuleInfo(importedInfo);
+        return new AbstractObjectRegistration<YangModuleInfo>(moduleInfo) {
+            @Override
+            protected void removeRegistration() {
+                unregister(regInfos);
             }
-        } catch (Exception e) {
-            LOG.error("Not including {} in YANG sources because of error.", moduleInfo, e);
+        };
+    }
+
+    /*
+     * Perform implicit registration of a YangModuleInfo and any of its dependencies. If there is a registration for
+     * a particular source, we do not create a duplicate registration.
+     */
+    @Holding("this")
+    private void registerImplicitModuleInfo(final @NonNull YangModuleInfo moduleInfo) {
+        for (YangModuleInfo info : flatDependencies(moduleInfo)) {
+            final Class<?> infoClass = info.getClass();
+            final SourceIdentifier sourceId = sourceIdentifierFrom(info);
+            if (sourceToInfoReg.containsKey(sourceId)) {
+                LOG.debug("Skipping implicit registration of {} as source {} is already registered", info, sourceId);
+                continue;
+            }
+
+            final YangTextSchemaSourceRegistration reg;
+            try {
+                reg = ctxResolver.registerSource(toYangTextSource(sourceId, info));
+            } catch (YangSyntaxErrorException | SchemaSourceException | IOException e) {
+                LOG.warn("Failed to register info {} source {}, ignoring it", info, sourceId, e);
+                continue;
+            }
+
+            final RegisteredModuleInfo regInfo = new RegisteredModuleInfo(info, reg, infoClass.getClassLoader(), true);
+            sourceToInfoReg.put(sourceId, regInfo);
+            packageToInfoReg.put(BindingReflections.getModelRootPackageName(infoClass.getPackage()), regInfo);
         }
-        return true;
     }
 
-    private void remove(final YangModuleInfoRegistration registration) {
-        // FIXME implement
+    /*
+     * Perform explicit registration of a YangModuleInfo. This always results in a new explicit registration. In case
+     * there is a pre-existing implicit registration, it is removed just after the explicit registration is made.
+     */
+    @Holding("this")
+    private RegisteredModuleInfo registerExplicitModuleInfo(final @NonNull YangModuleInfo info) {
+        // Create an explicit registration
+        final SourceIdentifier sourceId = sourceIdentifierFrom(info);
+        final YangTextSchemaSourceRegistration reg;
+        try {
+            reg = ctxResolver.registerSource(toYangTextSource(sourceId, info));
+        } catch (YangSyntaxErrorException | SchemaSourceException | IOException e) {
+            throw new IllegalStateException("Failed to register info " + info, e);
+        }
+
+        final Class<?> infoClass = info.getClass();
+        final String packageName = BindingReflections.getModelRootPackageName(infoClass.getPackage());
+        final RegisteredModuleInfo regInfo = new RegisteredModuleInfo(info, reg, infoClass.getClassLoader(), false);
+
+        sourceToInfoReg.put(sourceId, regInfo);
+        removeImplicit(sourceToInfoReg.get(sourceId));
+        packageToInfoReg.put(packageName, regInfo);
+        removeImplicit(packageToInfoReg.get(packageName));
+
+        return regInfo;
     }
 
-    private static YangTextSchemaSource toYangTextSource(final SourceIdentifier identifier,
+    synchronized void unregister(final ImmutableList<RegisteredModuleInfo> regInfos) {
+        for (RegisteredModuleInfo regInfo : regInfos) {
+            final SourceIdentifier sourceId = sourceIdentifierFrom(regInfo.info);
+            if (!sourceToInfoReg.remove(sourceId, regInfo)) {
+                LOG.warn("Failed to find {} registered under {}", regInfo, sourceId);
+            }
+
+            final String packageName = BindingReflections.getModelRootPackageName(regInfo.info.getClass().getPackage());
+            if (!packageToInfoReg.remove(packageName, regInfo)) {
+                LOG.warn("Failed to find {} registered under {}", regInfo, packageName);
+            }
+
+            regInfo.reg.close();
+        }
+    }
+
+    @Holding("this")
+    private static void removeImplicit(final List<RegisteredModuleInfo> regs) {
+        /*
+         * Search for implicit registration for a sourceId/packageName.
+         *
+         * Since we are called while an explicit registration is being created (and has already been inserted, we know
+         * there is at least one entry in the maps. We also know registrations retain the order in which they were
+         * created and that implicit registrations are not created if there already is a registration.
+         *
+         * This means that if an implicit registration exists, it will be the first entry in the list.
+         */
+        final RegisteredModuleInfo reg = regs.get(0);
+        if (reg.implicit) {
+            LOG.debug("Removing implicit registration {}", reg);
+            regs.remove(0);
+            reg.reg.close();
+        }
+    }
+
+    private static @NonNull YangTextSchemaSource toYangTextSource(final SourceIdentifier identifier,
             final YangModuleInfo moduleInfo) {
         return YangTextSchemaSource.delegateForByteSource(identifier, moduleInfo.getYangTextByteSource());
     }
@@ -205,17 +295,23 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         return RevisionSourceIdentifier.create(name.getLocalName(), name.getRevision());
     }
 
-    private static class YangModuleInfoRegistration extends AbstractObjectRegistration<YangModuleInfo> {
-        private final ModuleInfoBackedContext context;
+    private static List<YangModuleInfo> flatDependencies(final YangModuleInfo moduleInfo) {
+        // Flatten the modules being registered, with the triggering module being first...
+        final Set<YangModuleInfo> requiredInfos = new LinkedHashSet<>();
+        flatDependencies(requiredInfos, moduleInfo);
 
-        YangModuleInfoRegistration(final YangModuleInfo instance, final ModuleInfoBackedContext context) {
-            super(instance);
-            this.context = context;
-        }
+        // ... now reverse the order in an effort to register dependencies first (triggering module last)
+        final List<YangModuleInfo> intendedOrder = new ArrayList<>(requiredInfos);
+        Collections.reverse(intendedOrder);
 
-        @Override
-        protected void removeRegistration() {
-            context.remove(this);
+        return intendedOrder;
+    }
+
+    private static void flatDependencies(final Set<YangModuleInfo> set, final YangModuleInfo moduleInfo) {
+        if (set.add(moduleInfo)) {
+            for (YangModuleInfo dep : moduleInfo.getImportedModules()) {
+                flatDependencies(set, dep);
+            }
         }
     }
 }
