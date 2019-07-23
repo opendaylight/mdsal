@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "40c14977_ec246ba2",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-07-23T10:26:40Z",
+      "side": 1,
+      "message": "Sorry, this won\u0027t work correctly either. If we have had a previous direct registration and are pulling in a dependency (below), we will end up removing it, resulting in it being stale. If we then remove the dependent module, we will end up i a place, where the module will not be removed at all.",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 159,
+        "endChar": 13
+      },
+      "revId": "397b081d2ff274050b37b94c5dcf2331722d5e3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
