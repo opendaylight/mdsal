@@ -46,6 +46,30 @@
       "revId": "397b081d2ff274050b37b94c5dcf2331722d5e3c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "62b0113c_972a9d15",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-07-23T12:17:07Z",
+      "side": 1,
+      "message": "The return above will be effective only if the class loader is the same. if the class loader entry is not present or has expired, we will get here. Note there is no atomic statement of intent to populate the cache, hence this method can be running concurrently in multiple threads (and multiple times in a thread due to recursive invocation on line 162) -- get on 141 and putIfAbsent() on line 151 do nothing to give us any sort of atomicity/ordering guarantees.\n\nputIfAbsent() will return the previous registration, not overwrite it. That means at line 158 we will invalidate the old registration to ctxResolver and retain it -- i.e. we have lost the result of registerSource().\n\nSo now when we try to remove the registration in removeModuleInfo() we will pick up the *old* registration and invoke close() on it, which is a no-op, hence the source will be retained in ctxResolver with now way to clean it up.",
+      "parentUuid": "abeb8a79_ec444d5e",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 159,
+        "endChar": 13
+      },
+      "revId": "397b081d2ff274050b37b94c5dcf2331722d5e3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
