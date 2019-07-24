@@ -94,6 +94,30 @@
       "revId": "397b081d2ff274050b37b94c5dcf2331722d5e3c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2aab6089_4a0bc0cd",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2019-07-24T02:07:52Z",
+      "side": 1,
+      "message": "Sorry. above is only for bundle scanning, as for user code callout, it still need to do \u0027flatten\u0027, or there\u0027s no way to register dependent modules.",
+      "parentUuid": "c42a8625_c5643a1b",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 159,
+        "endChar": 13
+      },
+      "revId": "397b081d2ff274050b37b94c5dcf2331722d5e3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
