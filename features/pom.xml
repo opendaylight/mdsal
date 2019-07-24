@@ -54,6 +54,10 @@
         <!-- Trace -->
         <module>odl-mdsal-trace</module>
 
+        <!-- YANG (Module) Library -->
+        <module>odl-mdsal-exp-yanglib-api</module>
+        <module>odl-mdsal-exp-yanglib-rfc7895</module>
+
         <!-- Models -->
         <!-- Standards -->
         <module>odl-mdsal-model-rfc6991</module>
