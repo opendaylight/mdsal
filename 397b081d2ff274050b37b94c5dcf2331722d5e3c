@@ -70,6 +70,30 @@
       "revId": "397b081d2ff274050b37b94c5dcf2331722d5e3c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c42a8625_c5643a1b",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2019-07-24T01:53:41Z",
+      "side": 1,
+      "message": "I made a mistake of putIfAbsent, I thought it would overwrite it and return the old value.\n For atomicity/concurrency, no matter registerModuleInfo is triggered by the callout of user code or by bundle scanning, first of all, the corresponding bundle must be resolved/classloader be created at first, only such others can load binding classes through import or reflection/TCCL.\nAnd OSGI would keep the order of registrations as per dependency order of bundles/modules, so is it neccessary to register imported moudles in one call? as imported moudles normally must be there previously, even if it crashes at the moment , the refresh progress will again triger a new round of registration, as long as we \u0027keep one entry for one source identifier \u0027? it finally will be correct.",
+      "parentUuid": "62b0113c_972a9d15",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 159,
+        "endChar": 13
+      },
+      "revId": "397b081d2ff274050b37b94c5dcf2331722d5e3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
