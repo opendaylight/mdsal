@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ce66eb08_d2c8c567",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2019-07-24T03:32:43Z",
+      "side": 1,
+      "message": "As mentioned before, this would remove all dependent modules, then what if other moudles depend on them? by implicit registration? and then the \u0027implicit\u0027(Line 63) will always be true because these bundles will not trigger again.",
+      "range": {
+        "startLine": 267,
+        "startChar": 75,
+        "endLine": 267,
+        "endChar": 83
+      },
+      "revId": "6d3c303f29a7880e45da2f8444f3de347fe8ba24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
