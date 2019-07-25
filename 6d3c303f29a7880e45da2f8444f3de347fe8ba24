@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "b1d75ea5_9be3630a",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-07-25T08:18:15Z",
+      "side": 1,
+      "message": "I am not sure I follow the line of reasoning. Let me try to break it down:\n\n0) Each bundle has a single model (for simplicity\u0027s sake)\n1) C does not import anything\n2) Bundle A imports Bundle C\n3) Bundle B imports Bundle C\n\nThis means that bundle resolution order will be C, then A and B. Once all bundles are scanned, model C will have *three* explicit registrations. Models A and B will have exactly one explicit registration each.\n\nIf Bundle B is removed, the registration for model B and one registration of model C will be removed. There will be one explicit registration for model A and two explicit registrations for model C. If \u0027loadClass A\u0027 or \u0027loadClass C\u0027 occurs at this point, it will not perform an implicit registration as it will see the explicit registration.",
+      "parentUuid": "dceaf7e8_23adeafd",
+      "range": {
+        "startLine": 267,
+        "startChar": 75,
+        "endLine": 267,
+        "endChar": 83
+      },
+      "revId": "6d3c303f29a7880e45da2f8444f3de347fe8ba24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f16420be_d058b4ea",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
         "patchSetId": 9
