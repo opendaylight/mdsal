@@ -47,6 +47,7 @@ import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Datastore;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
@@ -58,6 +59,7 @@ import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.data.api.DatastoreIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -96,6 +98,20 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
                 @Override
                 public YangInstanceIdentifier load(final InstanceIdentifier<?> key) {
                     return toYangInstanceIdentifierBlocking(key);
+                }
+            });
+    private final LoadingCache<DatastoreIdentifier, Class<? extends Datastore>> dsToBinding = CacheBuilder.newBuilder()
+            .build(new CacheLoader<DatastoreIdentifier, Class<? extends Datastore>>() {
+                @Override
+                public Class<? extends Datastore> load(final DatastoreIdentifier key) {
+                    return identityCodec.toBinding(key.getValue()).asSubclass(Datastore.class);
+                }
+            });
+    private final LoadingCache<Class<? extends Datastore>, DatastoreIdentifier> bindingToDs = CacheBuilder.newBuilder()
+            .build(new CacheLoader<Class<? extends Datastore>, DatastoreIdentifier>() {
+                @Override
+                public DatastoreIdentifier load(final Class<? extends Datastore> key) {
+                    return DatastoreIdentifier.create(identityCodec.fromBinding(key));
                 }
             });
     private final BindingNormalizedNodeCodecRegistry codecRegistry;
