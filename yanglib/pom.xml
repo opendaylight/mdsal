@@ -27,6 +27,7 @@
     <modules>
         <module>mdsal-yanglib-api</module>
         <module>mdsal-yanglib-rfc7895</module>
+        <module>mdsal-yanglib-rfc8525</module>
     </modules>
 
     <properties>
