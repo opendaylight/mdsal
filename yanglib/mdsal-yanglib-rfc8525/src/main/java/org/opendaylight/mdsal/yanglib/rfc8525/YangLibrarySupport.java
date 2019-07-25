@@ -18,6 +18,7 @@ import org.apache.aries.blueprint.annotation.service.Reference;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingIdentityCodec;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
@@ -45,6 +46,7 @@ public final class YangLibrarySupport implements YangLibSupport {
     private final BindingDataObjectCodecTreeNode<YangLibrary> codec;
     @SuppressWarnings("deprecation")
     private final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec;
+    private final BindingIdentityCodec identityCodec;
     private final EffectiveModelContext context;
 
     @Inject
@@ -61,6 +63,7 @@ public final class YangLibrarySupport implements YangLibSupport {
         final BindingCodecTree codecTree = new BindingNormalizedNodeCodecRegistry(BindingRuntimeContext.create(
             SimpleStrategy.INSTANCE, context)).getCodecContext();
 
+        this.identityCodec = codecTree.getIdentityCodec();
         this.codec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(YangLibrary.class)));
         this.legacyCodec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
     }
@@ -68,7 +71,7 @@ public final class YangLibrarySupport implements YangLibSupport {
     @Override
     public MountPointContextFactory createMountPointContextFactory(final MountPointIdentifier mountId,
             final SchemaContextResolver resolver) {
-        return new MountPointContextFactoryImpl(mountId, resolver, context, codec, legacyCodec);
+        return new MountPointContextFactoryImpl(mountId, resolver, context, identityCodec, codec, legacyCodec);
     }
 
     private static YangTextSchemaSource createSource(final YangModuleInfo info) {
