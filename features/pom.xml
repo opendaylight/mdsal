@@ -57,6 +57,7 @@
         <!-- YANG (Module) Library -->
         <module>odl-mdsal-exp-yanglib-api</module>
         <module>odl-mdsal-exp-yanglib-rfc7895</module>
+        <module>odl-mdsal-exp-yanglib-rfc8525</module>
 
         <!-- Models -->
         <!-- Standards -->
