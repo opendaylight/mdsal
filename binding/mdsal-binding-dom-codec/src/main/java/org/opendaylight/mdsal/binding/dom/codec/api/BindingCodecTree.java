@@ -7,9 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.api;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Datastore;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.DatastoreIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -26,4 +29,12 @@ public interface BindingCodecTree {
     @Nullable BindingCodecTreeNode getSubtreeCodec(YangInstanceIdentifier path);
 
     @Nullable BindingCodecTreeNode getSubtreeCodec(SchemaPath path);
+
+    default @NonNull DatastoreIdentifier serializeDatastore(final Class<? extends Datastore> datastore) {
+        throw new UnsupportedOperationException("Not implemented by " + getClass());
+    }
+
+    default @NonNull Class<? extends Datastore> deserializeDatastore(final DatastoreIdentifier datastore) {
+        throw new UnsupportedOperationException("Not implemented by " + getClass());
+    }
 }

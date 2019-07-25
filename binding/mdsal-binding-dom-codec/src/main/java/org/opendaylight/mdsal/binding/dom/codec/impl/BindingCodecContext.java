@@ -42,6 +42,7 @@ import org.opendaylight.mdsal.binding.dom.codec.util.BindingSchemaMapping;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Datastore;
 import org.opendaylight.yangtools.concepts.Codec;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Immutable;
@@ -58,6 +59,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.OpaqueObject;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.data.api.DatastoreIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.model.api.AnyDataSchemaNode;
@@ -118,6 +120,20 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
             }
         });
 
+    private final LoadingCache<DatastoreIdentifier, Class<? extends Datastore>> dsToBinding = CacheBuilder.newBuilder()
+            .build(new CacheLoader<DatastoreIdentifier, Class<? extends Datastore>>() {
+                @Override
+                public Class<? extends Datastore> load(final DatastoreIdentifier key) {
+                    return identityCodec.deserialize(key.getValue()).asSubclass(Datastore.class);
+                }
+            });
+    private final LoadingCache<Class<? extends Datastore>, DatastoreIdentifier> bindingToDs = CacheBuilder.newBuilder()
+            .build(new CacheLoader<Class<? extends Datastore>, DatastoreIdentifier>() {
+                @Override
+                public DatastoreIdentifier load(final Class<? extends Datastore> key) {
+                    return DatastoreIdentifier.create(identityCodec.serialize(key));
+                }
+            });
     private final @NonNull CodecClassLoader loader = CodecClassLoader.create();
     private final InstanceIdentifierCodec instanceIdentifierCodec;
     private final IdentityCodec identityCodec;
@@ -165,6 +181,16 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
     @Override
     public DataObjectSerializer getSerializer(final Class<? extends DataObject> type) {
         return serializers.getUnchecked(type);
+    }
+
+    @Override
+    public DatastoreIdentifier serializeDatastore(final Class<? extends Datastore> datastore) {
+        return bindingToDs.getUnchecked(datastore);
+    }
+
+    @Override
+    public Class<? extends Datastore> deserializeDatastore(final DatastoreIdentifier datastore) {
+        return dsToBinding.getUnchecked(datastore);
     }
 
     public Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriter(final InstanceIdentifier<?> path,
