@@ -353,6 +353,11 @@
                 <version>0.9.3-SNAPSHOT</version>
             </dependency>
             <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-yanglib-rfc8525</artifactId>
+                <version>0.9.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-exp-yanglib-api</artifactId>
                 <version>0.9.3-SNAPSHOT</version>
@@ -362,6 +367,13 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>odl-mdsal-exp-yanglib-rfc7895</artifactId>
+                <version>0.9.3-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>odl-mdsal-exp-yanglib-rfc8525</artifactId>
                 <version>0.9.3-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
