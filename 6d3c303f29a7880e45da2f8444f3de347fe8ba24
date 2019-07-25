@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "dceaf7e8_23adeafd",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2019-07-25T01:34:34Z",
+      "side": 1,
+      "message": "Look at these scenarios:\n- Suppose A and B both depend on C and they all have exlicit registrations, when remove B, C is also removed, then \u0027loadClass A\u0027, it will trigger an implicit registration of C again, but it\u0027s implicit and not consistant with current state of C which has done explicit registration previously;\n- If we do not remove C when remove B, it just can not be called as a leak for C since C is active right now, and it also will be removed when C is removed.",
+      "parentUuid": "0b6a52e5_5f214178",
+      "range": {
+        "startLine": 267,
+        "startChar": 75,
+        "endLine": 267,
+        "endChar": 83
+      },
+      "revId": "6d3c303f29a7880e45da2f8444f3de347fe8ba24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f16420be_d058b4ea",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
         "patchSetId": 9
