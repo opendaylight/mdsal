@@ -22,7 +22,7 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingIdentityCodec;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.SourceReference;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Operational;
@@ -61,15 +61,18 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     @SuppressWarnings("deprecation")
     private final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec;
     private final BindingDataObjectCodecTreeNode<YangLibrary> codec;
+    private final BindingIdentityCodec identityCodec;
     private final EffectiveModelContext yangLibContext;
     private final SchemaContextResolver resolver;
 
     MountPointContextFactoryImpl(final MountPointIdentifier mountId, final SchemaContextResolver resolver,
             final EffectiveModelContext yangLibContext,
+            final BindingIdentityCodec identityCodec,
             final BindingDataObjectCodecTreeNode<YangLibrary> codec,
             final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec) {
         super(mountId);
         this.resolver = requireNonNull(resolver);
+        this.identityCodec = requireNonNull(identityCodec);
         this.yangLibContext = requireNonNull(yangLibContext);
         this.codec = requireNonNull(codec);
         this.legacyCodec = requireNonNull(legacyCodec);
@@ -77,8 +80,8 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
 
     @Override
     protected MountPointContextFactory createContextFactory(final MountPointDefinition mountPoint) {
-        return new MountPointContextFactoryImpl(mountPoint.getIdentifier(), resolver, yangLibContext, codec,
-            legacyCodec);
+        return new MountPointContextFactoryImpl(mountPoint.getIdentifier(), resolver, yangLibContext, identityCodec,
+            codec, legacyCodec);
     }
 
     @Override
@@ -150,16 +153,16 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
         return resolver.resolveSchemaContext(librarySources, requiredSources);
     }
 
-    private static String findSchemaName(final List<Datastore> datastores, final QName qname) {
+    private String findSchemaName(final List<Datastore> datastores, final QName qname) {
         final Iterator<Datastore> it = datastores.iterator();
         final Datastore ds = it.next();
 
         // FIXME: This is ugly, but it is the most compatible thing we can do without knowing the exact requested
         //        datastore
-        if (it.hasNext() && !qname.equals(BindingReflections.getQName(ds.getName()))) {
+        if (it.hasNext() && !qname.equals(identityCodec.fromBinding(ds.getName()))) {
             do {
                 final Datastore next = it.next();
-                if (qname.equals(BindingReflections.getQName(ds.getName()))) {
+                if (qname.equals(identityCodec.fromBinding(ds.getName()))) {
                     return next.getSchema();
                 }
             } while (it.hasNext());
