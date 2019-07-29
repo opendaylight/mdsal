@@ -53,18 +53,44 @@ import org.slf4j.LoggerFactory;
 
 public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         implements ModuleInfoRegistry, SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
-    private static final class RegisteredModuleInfo {
+    private abstract static class AbstractRegisteredModuleInfo {
         final YangTextSchemaSourceRegistration reg;
         final YangModuleInfo info;
         final ClassLoader loader;
-        final boolean implicit;
 
-        RegisteredModuleInfo(final YangModuleInfo info, final YangTextSchemaSourceRegistration reg,
-                final ClassLoader loader, final boolean implicit) {
+        AbstractRegisteredModuleInfo(final YangModuleInfo info, final YangTextSchemaSourceRegistration reg,
+            final ClassLoader loader) {
             this.info = requireNonNull(info);
             this.reg = requireNonNull(reg);
             this.loader = requireNonNull(loader);
-            this.implicit = implicit;
+        }
+    }
+
+    private static final class ExplicitRegisteredModuleInfo extends AbstractRegisteredModuleInfo {
+        private int refcount = 1;
+
+        ExplicitRegisteredModuleInfo(final YangModuleInfo info, final YangTextSchemaSourceRegistration reg,
+                final ClassLoader loader) {
+            super(info, reg, loader);
+        }
+
+        void incRef() {
+            ++refcount;
+        }
+
+        boolean decRef() {
+            if (--refcount == 0) {
+                reg.close();
+                return true;
+            }
+            return false;
+        }
+    }
+
+    private static final class ImplicitRegisteredModuleInfo extends AbstractRegisteredModuleInfo {
+        ImplicitRegisteredModuleInfo(final YangModuleInfo info, final YangTextSchemaSourceRegistration reg,
+                final ClassLoader loader) {
+            super(info, reg, loader);
         }
     }
 
@@ -92,10 +118,10 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     private final YangTextSchemaContextResolver ctxResolver = YangTextSchemaContextResolver.create("binding-context");
 
     @GuardedBy("this")
-    private final ListMultimap<String, RegisteredModuleInfo> packageToInfoReg =
+    private final ListMultimap<String, AbstractRegisteredModuleInfo> packageToInfoReg =
             MultimapBuilder.hashKeys().arrayListValues().build();
     @GuardedBy("this")
-    private final ListMultimap<SourceIdentifier, RegisteredModuleInfo> sourceToInfoReg =
+    private final ListMultimap<SourceIdentifier, AbstractRegisteredModuleInfo> sourceToInfoReg =
             MultimapBuilder.hashKeys().arrayListValues().build();
 
     private final ClassLoadingStrategy backingLoadingStrategy;
@@ -134,7 +160,7 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         synchronized (this) {
             // Try to find a loaded class loader
             // FIXME: two-step process, try explicit registrations first
-            for (RegisteredModuleInfo reg : packageToInfoReg.get(modulePackageName)) {
+            for (AbstractRegisteredModuleInfo reg : packageToInfoReg.get(modulePackageName)) {
                 return ClassLoaderUtils.loadClass(reg.loader, fullyQualifiedName);
             }
 
@@ -181,11 +207,11 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
     @Holding("this")
     private ObjectRegistration<YangModuleInfo> register(final @NonNull YangModuleInfo moduleInfo) {
-        final Builder<RegisteredModuleInfo> regBuilder = ImmutableList.builder();
+        final Builder<ExplicitRegisteredModuleInfo> regBuilder = ImmutableList.builder();
         for (YangModuleInfo info : flatDependencies(moduleInfo)) {
             regBuilder.add(registerExplicitModuleInfo(info));
         }
-        final ImmutableList<RegisteredModuleInfo> regInfos = regBuilder.build();
+        final ImmutableList<ExplicitRegisteredModuleInfo> regInfos = regBuilder.build();
 
         return new AbstractObjectRegistration<YangModuleInfo>(moduleInfo) {
             @Override
@@ -217,7 +243,8 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
                 continue;
             }
 
-            final RegisteredModuleInfo regInfo = new RegisteredModuleInfo(info, reg, infoClass.getClassLoader(), true);
+            final ImplicitRegisteredModuleInfo regInfo = new ImplicitRegisteredModuleInfo(info, reg,
+                infoClass.getClassLoader());
             sourceToInfoReg.put(sourceId, regInfo);
             packageToInfoReg.put(BindingReflections.getModelRootPackageName(infoClass.getPackage()), regInfo);
         }
@@ -228,9 +255,12 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
      * there is a pre-existing implicit registration, it is removed just after the explicit registration is made.
      */
     @Holding("this")
-    private RegisteredModuleInfo registerExplicitModuleInfo(final @NonNull YangModuleInfo info) {
+    private ExplicitRegisteredModuleInfo registerExplicitModuleInfo(final @NonNull YangModuleInfo info) {
         // Create an explicit registration
         final SourceIdentifier sourceId = sourceIdentifierFrom(info);
+
+        // FIXME: search for a pre-existing registration and incref it
+
         final YangTextSchemaSourceRegistration reg;
         try {
             reg = ctxResolver.registerSource(toYangTextSource(sourceId, info));
@@ -240,7 +270,8 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
         final Class<?> infoClass = info.getClass();
         final String packageName = BindingReflections.getModelRootPackageName(infoClass.getPackage());
-        final RegisteredModuleInfo regInfo = new RegisteredModuleInfo(info, reg, infoClass.getClassLoader(), false);
+        final ExplicitRegisteredModuleInfo regInfo = new ExplicitRegisteredModuleInfo(info, reg,
+            infoClass.getClassLoader());
 
         sourceToInfoReg.put(sourceId, regInfo);
         removeImplicit(sourceToInfoReg.get(sourceId));
@@ -250,9 +281,12 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         return regInfo;
     }
 
-    synchronized void unregister(final ImmutableList<RegisteredModuleInfo> regInfos) {
-        for (RegisteredModuleInfo regInfo : regInfos) {
+    synchronized void unregister(final ImmutableList<ExplicitRegisteredModuleInfo> regInfos) {
+        for (ExplicitRegisteredModuleInfo regInfo : regInfos) {
             final SourceIdentifier sourceId = sourceIdentifierFrom(regInfo.info);
+
+            // FIXME: use decref
+
             if (!sourceToInfoReg.remove(sourceId, regInfo)) {
                 LOG.warn("Failed to find {} registered under {}", regInfo, sourceId);
             }
@@ -267,7 +301,7 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     }
 
     @Holding("this")
-    private static void removeImplicit(final List<RegisteredModuleInfo> regs) {
+    private static void removeImplicit(final List<AbstractRegisteredModuleInfo> regs) {
         /*
          * Search for implicit registration for a sourceId/packageName.
          *
@@ -277,8 +311,8 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
          *
          * This means that if an implicit registration exists, it will be the first entry in the list.
          */
-        final RegisteredModuleInfo reg = regs.get(0);
-        if (reg.implicit) {
+        final AbstractRegisteredModuleInfo reg = regs.get(0);
+        if (reg instanceof ImplicitRegisteredModuleInfo) {
             LOG.debug("Removing implicit registration {}", reg);
             regs.remove(0);
             reg.reg.close();
