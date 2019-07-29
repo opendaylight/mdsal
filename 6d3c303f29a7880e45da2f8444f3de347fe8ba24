@@ -121,6 +121,30 @@
     },
     {
       "key": {
+        "uuid": "b46211c9_b95460a3",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-07-29T08:10:09Z",
+      "side": 1,
+      "message": "Right, we can improve that using explicit refcounting if it really is a problem.",
+      "parentUuid": "abddac28_17380d5a",
+      "range": {
+        "startLine": 267,
+        "startChar": 75,
+        "endLine": 267,
+        "endChar": 83
+      },
+      "revId": "6d3c303f29a7880e45da2f8444f3de347fe8ba24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f16420be_d058b4ea",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/ModuleInfoBackedContext.java",
         "patchSetId": 9
