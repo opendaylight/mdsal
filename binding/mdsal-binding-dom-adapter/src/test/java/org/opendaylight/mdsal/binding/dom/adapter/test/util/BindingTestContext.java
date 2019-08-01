@@ -15,7 +15,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Set;
-import javassist.ClassPool;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
@@ -90,12 +89,6 @@ public class BindingTestContext implements AutoCloseable {
 
     public BindingToNormalizedNodeCodec getCodec() {
         return codec;
-    }
-
-    @Deprecated
-    protected BindingTestContext(final ListeningExecutorService executor,
-            final ClassPool classPool, final boolean startWithSchema) {
-        this(executor, startWithSchema);
     }
 
     protected BindingTestContext(final ListeningExecutorService executor, final boolean startWithSchema) {
