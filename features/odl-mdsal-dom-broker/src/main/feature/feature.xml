@@ -2,7 +2,7 @@
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="odl-mdsal-dom-broker">
     <feature name="odl-mdsal-dom-broker">
         <feature version="[6,7)">odl-lmax-3</feature>
-        <feature version="[3,4)">odl-yangtools-data</feature>
-        <feature version="[3,4)">odl-yangtools-parser</feature>
+        <feature version="[4,5)">odl-yangtools-data</feature>
+        <feature version="[4,5)">odl-yangtools-parser</feature>
     </feature>
 </features>
