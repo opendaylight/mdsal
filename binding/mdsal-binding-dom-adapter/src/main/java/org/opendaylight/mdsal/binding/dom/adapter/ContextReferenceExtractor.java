@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -90,6 +91,8 @@ abstract class ContextReferenceExtractor {
      */
     abstract @Nullable InstanceIdentifier<?> extract(DataObject obj);
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private static @Nullable Method findGetValueMethod(final Class<?> type, final Class<?> returnType) {
         try {
             final Method method = type.getMethod(GET_VALUE_NAME);

@@ -19,6 +19,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
@@ -115,6 +116,8 @@ public final class SimpleDOMEntityOwnershipService implements DOMEntityOwnership
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void removeEntity(final DOMEntity entity) {
         synchronized (entities) {
             entities.remove(entity.getType(), entity.getIdentifier());

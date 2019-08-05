@@ -12,6 +12,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.MutableClassToInstanceMap;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -52,6 +53,8 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         return listeners.register(listener);
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     @SuppressWarnings("checkstyle:IllegalCatch")
     private ObjectRegistration<DOMMountPoint> registerMountPoint(final SimpleDOMMountPoint mountPoint) {
         final YangInstanceIdentifier mountPointId = mountPoint.getIdentifier();
@@ -75,6 +78,8 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         };
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     @SuppressWarnings("checkstyle:IllegalCatch")
     private void unregisterMountPoint(final YangInstanceIdentifier mountPointId) {
         synchronized (mountPoints) {

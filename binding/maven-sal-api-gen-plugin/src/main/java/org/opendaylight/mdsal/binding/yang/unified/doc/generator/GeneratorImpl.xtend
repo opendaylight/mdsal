@@ -23,6 +23,7 @@ import java.util.List
 import java.util.Map
 import java.util.Optional
 import java.util.Set
+import org.gaul.modernizer_maven_annotations.SuppressModernizer
 import org.opendaylight.yangtools.yang.common.QName
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates
@@ -63,6 +64,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.sonatype.plexus.build.incremental.BuildContext
 
+@SuppressModernizer
 class GeneratorImpl {
 
     static val Logger LOG = LoggerFactory.getLogger(GeneratorImpl)
