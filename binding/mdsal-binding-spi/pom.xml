@@ -20,6 +20,11 @@
     <artifactId>mdsal-binding-spi</artifactId>
     <packaging>bundle</packaging>
 
+    <properties>
+        <!-- FIXME: this works around a javadoc bug, where it throws an internal exception -->
+        <maven.compiler.release>8</maven.compiler.release>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
