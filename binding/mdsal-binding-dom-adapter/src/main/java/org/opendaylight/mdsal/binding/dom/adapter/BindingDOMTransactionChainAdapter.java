@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
@@ -85,6 +86,8 @@ final class BindingDOMTransactionChainAdapter implements TransactionChain, Deleg
         };
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private <T, F extends ListenableFuture<T>> F listenForFailure(final WriteTransaction tx, final F future) {
         Futures.addCallback(future, new FutureCallback<T>() {
             @Override
@@ -101,7 +104,8 @@ final class BindingDOMTransactionChainAdapter implements TransactionChain, Deleg
         return future;
     }
 
-
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void failTransactionChain(final WriteTransaction tx, final Throwable throwable) {
         /*
          *  We asume correct state change for underlaying transaction
