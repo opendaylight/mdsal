@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2016 Red Hat, Inc. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -42,5 +42,4 @@ public final class XtendBuilderExtensions {
         block.apply(object);
         return object.build();
     }
-
 }
