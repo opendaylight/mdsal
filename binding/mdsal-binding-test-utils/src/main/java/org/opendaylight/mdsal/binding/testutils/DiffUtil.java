@@ -46,6 +46,7 @@ final class DiffUtil {
         return header + JOINER.join(diff);
     }
 
-    private DiffUtil() { }
+    private DiffUtil() {
 
+    }
 }
