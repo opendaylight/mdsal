@@ -34,7 +34,9 @@ import org.opendaylight.yangtools.concepts.Builder;
  */
 public final class XtendBuilderExtensions {
 
-    private XtendBuilderExtensions() { }
+    private XtendBuilderExtensions() {
+
+    }
 
     public static <P extends Object, T extends Builder<P>> P operator_doubleGreaterThan(
             final T object, final Procedure1<? super T> block) {
