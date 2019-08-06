@@ -43,15 +43,19 @@ final class ModuleInfoBundleTracker implements BundleTrackerCustomizer<Collectio
 
     private final OsgiModuleInfoRegistry moduleInfoRegistry;
 
-    private volatile boolean starting = true;
+    private volatile boolean deferUpdates = true;
 
     ModuleInfoBundleTracker(final OsgiModuleInfoRegistry moduleInfoRegistry) {
         this.moduleInfoRegistry = requireNonNull(moduleInfoRegistry);
     }
 
     void finishStart() {
-        starting = false;
+        deferUpdates = false;
         moduleInfoRegistry.updateService();
+    }
+
+    void initiateStop() {
+        deferUpdates = true;
     }
 
     @Override
@@ -91,7 +95,7 @@ final class ModuleInfoBundleTracker implements BundleTrackerCustomizer<Collectio
             registrations.add(moduleInfoRegistry.registerModuleInfo(moduleInfo));
         }
 
-        if (!starting) {
+        if (!deferUpdates) {
             moduleInfoRegistry.updateService();
         }
 
