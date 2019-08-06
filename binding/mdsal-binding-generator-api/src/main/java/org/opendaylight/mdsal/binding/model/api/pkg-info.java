@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 /**
- * Some information on naming:
+ * Model of Java classes generated from YANG. Some information on naming:
  *
  * <ul>
  * <li>
