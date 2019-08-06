@@ -36,7 +36,6 @@ public interface RpcConsumerRegistry extends BindingService {
      * <li>Prior to invoking the actual implementation, the method arguments are are validated. If
      * any are invalid, an {@link IllegalArgumentException} is thrown.
      * </ul>
-     *
      * The returned proxy is automatically updated with the most recent registered implementation.
      *
      * <p>
