@@ -1,0 +1,13 @@
+module odl-mdsal-eos {
+    namespace "urn:opendaylight:mdsal:eos";
+    prefix "eos";
+
+    identity entity-type;
+
+    typedef entity-type-ref {
+        type identityref {
+            base entity-type;
+        }
+    }
+}
+
