@@ -47,11 +47,11 @@ import org.opendaylight.yangtools.yang.model.export.DeclaredStatementFormatter
 
 abstract class BaseTemplate extends JavaFileTemplate {
     static final char NEW_LINE = '\n'
+    static final char SPACE = ' '
     static val AMP_MATCHER = CharMatcher.is('&')
-    static val NL_MATCHER = CharMatcher.is(NEW_LINE)
-    static val TAB_MATCHER = CharMatcher.is('\t')
+    static val WS_MATCHER = CharMatcher.anyOf("\n\t")
     static val SPACES_PATTERN = Pattern.compile(" +")
-    static val NL_SPLITTER = Splitter.on(NL_MATCHER)
+    static val NL_SPLITTER = Splitter.on(NEW_LINE)
     static val TAIL_COMMENT_PATTERN = Pattern.compile("*/", Pattern.LITERAL);
     static val YANG_FORMATTER = DeclaredStatementFormatter.builder()
         .addIgnoredStatement(YangStmtMapping.CONTACT)
@@ -182,8 +182,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
         for (String t : NL_SPLITTER.split(text)) {
             sb.append(" *")
             if (!t.isEmpty()) {
-                sb.append(' ');
-                sb.append(t)
+                sb.append(SPACE).append(t)
             }
             sb.append(NEW_LINE)
         }
@@ -333,7 +332,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
     def asLink(String text) {
         val StringBuilder sb = new StringBuilder()
         var tempText = text
-        var char lastChar = ' '
+        var char lastChar = SPACE
         var boolean badEnding = false
 
         if (text.endsWith('.') || text.endsWith(':') || text.endsWith(',')) {
@@ -363,8 +362,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
         var boolean isFirstElementOnNewLineEmptyChar = false;
 
         formattedText = encodeJavadocSymbols(formattedText)
-        formattedText = NL_MATCHER.replaceFrom(formattedText, ' ')
-        formattedText = TAB_MATCHER.replaceFrom(formattedText, ' ')
+        formattedText = WS_MATCHER.replaceFrom(formattedText, SPACE)
         formattedText = SPACES_PATTERN.matcher(formattedText).replaceAll(" ")
 
         val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
@@ -373,11 +371,11 @@ abstract class BaseTemplate extends JavaFileTemplate {
             val nextElement = tokenizer.nextElement.toString
 
             if (lineBuilder.length != 0 && lineBuilder.length + nextElement.length > 80) {
-                if (lineBuilder.charAt(lineBuilder.length - 1) == ' ') {
+                if (lineBuilder.charAt(lineBuilder.length - 1) == SPACE) {
                     lineBuilder.setLength(0)
                     lineBuilder.append(lineBuilder.substring(0, lineBuilder.length - 1))
                 }
-                if (lineBuilder.charAt(0) == ' ') {
+                if (lineBuilder.charAt(0) == SPACE) {
                     lineBuilder.setLength(0)
                     lineBuilder.append(lineBuilder.substring(1))
                 }
@@ -386,7 +384,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
                 lineBuilder.setLength(0)
                 sb.append(NEW_LINE)
 
-                if(nextElement.toString == ' ') {
+                if (nextElement.toString == ' ') {
                     isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar;
                 }
             }
