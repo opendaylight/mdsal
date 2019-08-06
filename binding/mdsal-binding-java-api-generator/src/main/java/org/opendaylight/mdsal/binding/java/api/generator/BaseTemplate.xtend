@@ -48,10 +48,9 @@ import org.opendaylight.yangtools.yang.model.export.DeclaredStatementFormatter
 abstract class BaseTemplate extends JavaFileTemplate {
     static final char NEW_LINE = '\n'
     static val AMP_MATCHER = CharMatcher.is('&')
-    static val NL_MATCHER = CharMatcher.is(NEW_LINE)
-    static val TAB_MATCHER = CharMatcher.is('\t')
+    static val WS_MATCHER = CharMatcher.anyOf("\n\t")
     static val SPACES_PATTERN = Pattern.compile(" +")
-    static val NL_SPLITTER = Splitter.on(NL_MATCHER)
+    static val NL_SPLITTER = Splitter.on('\n')
     static val TAIL_COMMENT_PATTERN = Pattern.compile("*/", Pattern.LITERAL);
     static val YANG_FORMATTER = DeclaredStatementFormatter.builder()
         .addIgnoredStatement(YangStmtMapping.CONTACT)
@@ -363,8 +362,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
         var boolean isFirstElementOnNewLineEmptyChar = false;
 
         formattedText = encodeJavadocSymbols(formattedText)
-        formattedText = NL_MATCHER.replaceFrom(formattedText, ' ')
-        formattedText = TAB_MATCHER.replaceFrom(formattedText, ' ')
+        formattedText = WS_MATCHER.replaceFrom(formattedText, ' ')
         formattedText = SPACES_PATTERN.matcher(formattedText).replaceAll(" ")
 
         val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
