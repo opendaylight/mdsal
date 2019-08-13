@@ -429,6 +429,12 @@
             <artifactId>junit</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.9.14</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
