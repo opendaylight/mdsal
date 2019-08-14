@@ -536,6 +536,10 @@
                                     <includes>
                                         <include>**/$YangModelBindingProvider.java</include>
                                         <include>**/$YangModuleInfoImpl.java</include>
+
+                                        <!-- These have invalid sun.reflect references -->
+                                        <include>org/opendaylight/mdsal/binding/dom/codec/jar/bytebuddy/implementation/auxiliary/TypeProxy.java</include>
+                                        <include>org/opendaylight/mdsal/binding/dom/codec/jar/bytebuddy/implementation/bind/annotation/Super.java</include>
                                     </includes>
                                 </fileset>
                             </filesets>
