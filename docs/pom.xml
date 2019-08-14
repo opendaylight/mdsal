@@ -429,6 +429,11 @@
             <artifactId>junit</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -536,6 +541,9 @@
                                     <includes>
                                         <include>**/$YangModelBindingProvider.java</include>
                                         <include>**/$YangModuleInfoImpl.java</include>
+
+                                        <!-- JDK reference -->
+                                        <include>**/org/opendaylight/mdsal/binding/dom/codec/jar/bytebuddy/implementation/auxiliary/TypeProxy.java</include>
                                     </includes>
                                 </fileset>
                             </filesets>
