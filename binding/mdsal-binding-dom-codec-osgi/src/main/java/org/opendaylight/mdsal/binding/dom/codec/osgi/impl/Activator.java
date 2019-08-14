@@ -15,12 +15,11 @@ import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.util.tracker.BundleTracker;
 
 public final class Activator implements BundleActivator {
     private final List<ServiceRegistration<?>> registrations = new ArrayList<>(2);
 
-    private BundleTracker<?> moduleInfoResolvedBundleTracker = null;
+    private ModuleInfoBundleTracker bundleTracker = null;
     private SimpleBindingRuntimeContextService service = null;
 
     @Override
@@ -33,8 +32,8 @@ public final class Activator implements BundleActivator {
         final OsgiModuleInfoRegistry registry = new OsgiModuleInfoRegistry(moduleInfoBackedContext,
                 moduleInfoBackedContext, service);
 
-        moduleInfoResolvedBundleTracker = new ModuleInfoBundleTracker(context, registry);
-        moduleInfoResolvedBundleTracker.open();
+        bundleTracker = new ModuleInfoBundleTracker(context, registry);
+        bundleTracker.open();
 
         service.open();
         registrations.add(context.registerService(BindingRuntimeContextService.class, service, null));
@@ -43,7 +42,7 @@ public final class Activator implements BundleActivator {
 
     @Override
     public void stop(final BundleContext context) {
-        moduleInfoResolvedBundleTracker.close();
+        bundleTracker.close();
         service.close();
         registrations.forEach(ServiceRegistration::unregister);
         registrations.clear();
