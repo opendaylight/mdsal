@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4acfdcce_7b4a2314",
+        "filename": "yanglib/mdsal-yanglib-rfc7895/src/test/resources/schemamount/ietf-inet-types@2013-07-15.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-08-15T13:00:54Z",
+      "side": 1,
+      "message": "These should not be needed -- just pull them from appropriate model dependencies with scope\u003dtest.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 24
+      },
+      "revId": "27dff48fc357c78d95caf5c0a1a17b5e494bcab8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
