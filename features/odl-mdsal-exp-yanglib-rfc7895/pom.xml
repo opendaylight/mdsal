@@ -11,12 +11,12 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>4.0.4-SNAPSHOT</version>
+        <version>4.0.5-SNAPSHOT</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <artifactId>odl-mdsal-exp-yanglib-rfc7895</artifactId>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>0.9.5-SNAPSHOT</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: RFC7895 YANG Module Library</name>
     <description>MD-SAL YANG Module Library (RFC7895)</description>
