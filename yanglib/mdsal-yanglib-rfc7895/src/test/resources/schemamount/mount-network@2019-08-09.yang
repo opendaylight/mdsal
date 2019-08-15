@@ -1,0 +1,33 @@
+module mount-network {
+
+    yang-version 1.1;
+
+    namespace "urn:example:mount-network";
+    prefix "mntnet";
+
+    import ietf-yang-schema-mount {
+        prefix "yangmnt";
+    }
+
+    revision "2019-08-09" {
+        description "Intial revision";
+    }
+
+    container networks {
+        list network {
+            key "network-id";
+            leaf network-id {
+                type string;
+            }
+
+            list node {
+                key "node-id";
+                leaf node-id {
+                    type string;
+                }
+                yangmnt:mount-point interfaces;
+            }
+        }
+    }
+
+}
