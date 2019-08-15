@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<modules-state xmlns="urn:ietf:params:xml:ns:yang:ietf-yang-library">
+    <module-set-id>e595da11ace92c0d881995fa7e56bbe86f1f48e9</module-set-id>
+    <module>
+        <name>ietf-inet-types</name>
+        <revision>2013-07-15</revision>
+        <namespace>urn:ietf:params:xml:ns:yang:ietf-inet-types</namespace>
+        <conformance-type>implement</conformance-type>
+    </module>
+    <module>
+        <name>ietf-yang-library</name>
+        <revision>2016-06-21</revision>
+        <namespace>urn:ietf:params:xml:ns:yang:ietf-yang-library</namespace>
+        <conformance-type>implement</conformance-type>
+    </module>
+    <module>
+        <name>ietf-yang-schema-mount</name>
+        <revision>2019-01-14</revision>
+        <namespace>urn:ietf:params:xml:ns:yang:ietf-yang-schema-mount</namespace>
+        <conformance-type>implement</conformance-type>
+    </module>
+    <module>
+        <name>ietf-yang-types</name>
+        <revision>2013-07-15</revision>
+        <namespace>urn:ietf:params:xml:ns:yang:ietf-yang-types</namespace>
+        <conformance-type>implement</conformance-type>
+    </module>
+    <module>
+        <name>mount-network</name>
+        <revision>2019-08-09</revision>
+        <namespace>urn:example:mount-network</namespace>
+        <conformance-type>implement</conformance-type>
+    </module>
+    <module>
+        <name>mounted</name>
+        <revision>2019-08-09</revision>
+        <namespace>urn:example:mounted</namespace>
+        <conformance-type>implement</conformance-type>
+    </module>
+</modules-state>

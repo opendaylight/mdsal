@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<networks xmlns="urn:example:mount-network">
+    <network>
+        <network-id>network1</network-id>
+        <node>
+            <node-id>node1</node-id>
+            <interfaces xmlns="urn:example:mounted">
+                <interface>
+                    <name>int1</name>
+                </interface>
+            </interfaces>
+        </node>
+    </network>
+</networks>
