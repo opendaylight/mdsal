@@ -60,17 +60,17 @@ public final class RuntimeEnumerationBuilder extends AbstractEnumerationBuilder 
 
         @Override
         public Optional<String> getDescription() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
 
         @Override
         public Optional<String> getReference() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
 
         @Override
         public Status getStatus() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
     }
 
@@ -81,32 +81,36 @@ public final class RuntimeEnumerationBuilder extends AbstractEnumerationBuilder 
 
         @Override
         public TypeComment getComment() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
 
         @Override
         public String getDescription() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
 
         @Override
         public String getReference() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
 
         @Override
         public Iterable<QName> getSchemaPath() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
 
         @Override
         public String getModuleName() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
 
         @Override
         public Optional<YangSourceDefinition> getYangSourceDefinition() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
+    }
+
+    static UnsupportedOperationException unsupported() {
+        return new UnsupportedOperationException("Not available at runtime");
     }
 }

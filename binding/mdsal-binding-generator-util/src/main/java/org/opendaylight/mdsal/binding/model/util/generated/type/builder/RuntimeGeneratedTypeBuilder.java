@@ -94,22 +94,26 @@ public final class RuntimeGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
 
         @Override
         public String getDescription() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
 
         @Override
         public String getReference() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
 
         @Override
         public Iterable<QName> getSchemaPath() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
         }
 
         @Override
         public String getModuleName() {
-            throw new UnsupportedOperationException("Not available at runtime");
+            throw unsupported();
+        }
+
+        private static UnsupportedOperationException unsupported() {
+            return new UnsupportedOperationException("Not available at runtime");
         }
     }
 }
