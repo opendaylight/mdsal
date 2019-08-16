@@ -131,10 +131,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final AbstractTypeMemberBuilder<?> other = (AbstractTypeMemberBuilder<?>) obj;
@@ -143,20 +140,12 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("GeneratedPropertyImpl [name=");
-        builder.append(getName());
-        builder.append(", annotations=");
-        builder.append(getAnnotationBuilders());
-        builder.append(", comment=");
-        builder.append(getComment());
-        builder.append(", returnType=");
-        builder.append(getReturnType());
-        builder.append(", isFinal=");
-        builder.append(isFinal());
-        builder.append(", modifier=");
-        builder.append(getAccessModifier());
-        builder.append("]");
-        return builder.toString();
+        return new StringBuilder().append("GeneratedPropertyImpl [name=").append(getName())
+                .append(", annotations=").append(getAnnotationBuilders())
+                .append(", comment=").append(getComment())
+                .append(", returnType=").append(getReturnType())
+                .append(", isFinal=").append(isFinal())
+                .append(", modifier=").append(getAccessModifier())
+                .append(']').toString();
     }
 }

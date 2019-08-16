@@ -74,39 +74,22 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final MethodSignatureBuilderImpl other = (MethodSignatureBuilderImpl) obj;
-        if (!Objects.equals(getName(), other.getName())) {
-            return false;
-        }
-        if (!Objects.equals(this.parameters, other.parameters)) {
-            return false;
-        }
-        if (!Objects.equals(getReturnType(), other.getReturnType())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(getName(), other.getName())
+                && Objects.equals(this.parameters, other.parameters)
+                && Objects.equals(getReturnType(), other.getReturnType());
     }
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("MethodSignatureBuilderImpl [name=");
-        builder.append(getName());
-        builder.append(", returnType=");
-        builder.append(getReturnType());
-        builder.append(", parameters=");
-        builder.append(this.parameters);
-        builder.append(", annotationBuilders=");
-        builder.append(getAnnotationBuilders());
-        builder.append(", comment=");
-        builder.append(getComment());
-        builder.append("]");
-        return builder.toString();
+        return new StringBuilder().append("MethodSignatureBuilderImpl [name=").append(getName())
+                .append(", returnType=").append(getReturnType())
+                .append(", parameters=").append(this.parameters)
+                .append(", annotationBuilders=").append(getAnnotationBuilders())
+                .append(", comment=").append(getComment())
+                .append(']').toString();
     }
 }
