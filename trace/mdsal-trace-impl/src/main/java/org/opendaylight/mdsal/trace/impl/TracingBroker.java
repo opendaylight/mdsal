@@ -102,7 +102,8 @@ public class TracingBroker implements TracingDOMDataBroker {
 
     private static final int STACK_TRACE_FIRST_RELEVANT_FRAME = 2;
 
-    private final String type; // "default" VS "pingpong"
+    // "default" VS "pingpong"
+    private final String type;
     private final BindingNormalizedNodeSerializer codec;
     private final DOMDataBroker delegate;
     private final List<Watch> registrationWatches = new ArrayList<>();
