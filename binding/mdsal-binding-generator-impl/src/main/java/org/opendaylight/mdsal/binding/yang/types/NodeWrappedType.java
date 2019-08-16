@@ -42,10 +42,7 @@ public final class NodeWrappedType extends NodeImpl {
             return false;
         }
         NodeWrappedType nodeWrappedType = (NodeWrappedType) obj;
-        if (!wrappedType.equals(nodeWrappedType.wrappedType)) {
-            return false;
-        }
-        return true;
+        return wrappedType.equals(nodeWrappedType.wrappedType);
     }
 
     @Override
