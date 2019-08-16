@@ -25,7 +25,8 @@ final class DiffUtil {
 
     // Configuration which we could tune as we use this more
     private static final int MAX_DIFFS = 1;
-    private static final int CONTEXT_LINES = 3; // number of lines of context output around each difference
+    // number of lines of context output around each difference
+    private static final int CONTEXT_LINES = 3;
 
     private static final Splitter SPLITTER = Splitter.on(System.getProperty("line.separator"));
     private static final Joiner JOINER = Joiner.on(System.getProperty("line.separator"));
