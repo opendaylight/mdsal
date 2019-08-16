@@ -15,7 +15,6 @@ import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
 class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature {
-
     private final List<Parameter> params;
     private final boolean isAbstract;
     private final boolean isDefault;
@@ -67,47 +66,31 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final MethodSignatureImpl other = (MethodSignatureImpl) obj;
-        if (!Objects.equals(getName(), other.getName())) {
-            return false;
-        }
-        if (!Objects.equals(this.params, other.params)) {
-            return false;
-        }
-        if (!Objects.equals(getReturnType(), other.getReturnType())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(getName(), other.getName())
+                && Objects.equals(this.params, other.params)
+                && Objects.equals(getReturnType(), other.getReturnType());
     }
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("MethodSignatureImpl [name=");
-        builder.append(getName());
-        builder.append(", comment=");
-        builder.append(getComment());
-        if (getDefiningType() != null) {
-            builder.append(", definingType=");
-            builder.append(getDefiningType().getPackageName());
-            builder.append(".");
-            builder.append(getDefiningType().getName());
+        final StringBuilder builder = new StringBuilder().append("MethodSignatureImpl [name=").append(getName())
+                .append(", comment=").append(getComment())
+                .append(", definingType=");
+
+        final Type defType = getDefiningType();
+        if (defType != null) {
+            builder.append(defType.getPackageName()).append('.').append(defType.getName());
         } else {
-            builder.append(", definingType= null");
+            builder.append(" null");
         }
-        builder.append(", returnType=");
-        builder.append(getReturnType());
-        builder.append(", params=");
-        builder.append(this.params);
-        builder.append(", annotations=");
-        builder.append(getAnnotations());
-        builder.append("]");
-        return builder.toString();
+
+        return builder.append(", returnType=").append(getReturnType())
+                .append(", params=").append(this.params)
+                .append(", annotations=").append(getAnnotations())
+                .append(']').toString();
     }
 }

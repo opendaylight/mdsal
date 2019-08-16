@@ -69,28 +69,16 @@ public class GenericEntity<T extends Path<T>> implements Serializable, Identifia
         return type;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
-
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-
-        GenericEntity<T> entity = (GenericEntity<T>) obj;
-
-        if (!id.equals(entity.id)) {
-            return false;
-        }
-
-        if (!type.equals(entity.type)) {
-            return false;
-        }
-
-        return true;
+        final GenericEntity<?> entity = (GenericEntity<?>) obj;
+        return id.equals(entity.id) && type.equals(entity.type);
     }
 
     @Override
