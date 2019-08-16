@@ -97,11 +97,12 @@ public final class BindingSchemaContextUtils {
                 if (potential != null) {
                     return Optional.of(potential);
                 }
-            } else if (child instanceof DataNodeContainer && child.getQName().equals(targetQName)) {
-                return Optional.of((DataNodeContainer) child);
-            } else if (child instanceof DataNodeContainer && child.isAddedByUses()
-                    && child.getQName().getLocalName().equals(targetQName.getLocalName())) {
-                return Optional.of((DataNodeContainer) child);
+            } else if (child instanceof DataNodeContainer) {
+                final QName qname = child.getQName();
+                if (qname.equals(targetQName)
+                        || child.isAddedByUses() && qname.getLocalName().equals(targetQName.getLocalName())) {
+                    return Optional.of((DataNodeContainer) child);
+                }
             }
 
         }
