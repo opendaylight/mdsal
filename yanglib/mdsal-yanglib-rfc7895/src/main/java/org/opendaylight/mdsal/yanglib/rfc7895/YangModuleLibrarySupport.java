@@ -32,7 +32,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.StatementParserMode;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
@@ -46,7 +45,7 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
 
     @Inject
     public YangModuleLibrarySupport(final @Reference YangParserFactory parserFactory)
-            throws YangSyntaxErrorException, YangParserException, IOException {
+            throws YangParserException, IOException {
         final YangModuleInfo yangLibModule = $YangModuleInfoImpl.getInstance();
 
         // FIXME: DEFAULT_MODE should not be necessary, but it seems blueprint is still b0rked
