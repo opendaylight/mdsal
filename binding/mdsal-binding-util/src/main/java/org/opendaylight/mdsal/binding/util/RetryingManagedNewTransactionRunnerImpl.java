@@ -31,7 +31,8 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
 
     // NB: The RetryingManagedNewTransactionRunnerTest is in mdsalutil-testutils's src/test, not this project's
 
-    private static final int DEFAULT_RETRIES = 3; // duplicated in SingleTransactionDataBroker
+    // duplicated in SingleTransactionDataBroker
+    private static final int DEFAULT_RETRIES = 3;
 
     private final int maxRetries;
 
