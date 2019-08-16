@@ -12,7 +12,6 @@ import java.io.IOException;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 
 /**
  * Main entrypoint for instantiating YangLibSupport implementations.
@@ -21,6 +20,5 @@ import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException
 @NonNullByDefault
 public interface YangLibSupportFactory {
 
-    YangLibSupport createYangLibSupport(YangParserFactory parserFactory) throws YangSyntaxErrorException,
-        YangParserException, IOException;
+    YangLibSupport createYangLibSupport(YangParserFactory parserFactory) throws YangParserException, IOException;
 }
