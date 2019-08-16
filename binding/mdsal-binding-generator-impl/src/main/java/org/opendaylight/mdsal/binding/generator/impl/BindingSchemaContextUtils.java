@@ -42,7 +42,7 @@ public final class BindingSchemaContextUtils {
         throw new UnsupportedOperationException("Utility class should not be instantiated");
     }
 
-    // FIXME: THis method does not search in case augmentations.
+    // FIXME: This method does not search in case augmentations.
     public static Optional<DataNodeContainer> findDataNodeContainer(final SchemaContext ctx,
             final InstanceIdentifier<?> path) {
         Iterator<PathArgument> pathArguments = path.getPathArguments().iterator();
@@ -99,8 +99,7 @@ public final class BindingSchemaContextUtils {
                 }
             } else if (child instanceof DataNodeContainer && child.getQName().equals(targetQName)) {
                 return Optional.of((DataNodeContainer) child);
-            } else if (child instanceof DataNodeContainer //
-                    && child.isAddedByUses() //
+            } else if (child instanceof DataNodeContainer && child.isAddedByUses()
                     && child.getQName().getLocalName().equals(targetQName.getLocalName())) {
                 return Optional.of((DataNodeContainer) child);
             }
