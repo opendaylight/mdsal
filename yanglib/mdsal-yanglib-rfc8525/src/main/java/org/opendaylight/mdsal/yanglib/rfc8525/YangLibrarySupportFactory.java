@@ -14,14 +14,13 @@ import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupportFactory;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 
 @MetaInfServices
 @NonNullByDefault
 public final class YangLibrarySupportFactory implements YangLibSupportFactory {
     @Override
     public YangLibSupport createYangLibSupport(final YangParserFactory parserFactory)
-            throws YangSyntaxErrorException, YangParserException, IOException {
+            throws YangParserException, IOException {
         return new YangLibrarySupport(parserFactory);
     }
 }
