@@ -118,17 +118,21 @@ final class Ipv6Utils {
         }
 
         if (haveVal) {
-            verify(j + INT16SZ <= INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
+            verifySize(j + INT16SZ <= INADDR6SZ, str);
             bytes[j++] = (byte) (val >> 8 & 0xff);
             bytes[j++] = (byte) (val & 0xff);
         }
 
         if (colonp != -1) {
-            verify(j != INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
+            verifySize(j != INADDR6SZ, str);
             expandZeros(bytes, colonp, j);
         } else {
-            verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
+            verifySize(j == INADDR6SZ, str);
         }
+    }
+
+    private static void verifySize(final boolean expression, final String str) {
+        verify(expression, "Overrun in parsing of '%s', should not occur", str);
     }
 
     private static void expandZeros(final byte[] bytes, final int where, final int filledBytes) {
