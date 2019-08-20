@@ -102,6 +102,11 @@
         <!-- RFC8530 Logical Network Elements -->
         <module>rfc8530</module>
 
+        <!-- RFC8542 Fabric Topology in Data-Center Networks -->
+        <module>rfc8542</module>
+        <module>rfc8542-ietf-dc-fabric-topology</module>
+        <module>rfc8542-ietf-dc-fabric-types</module>
+
         <!-- Legacy Network Access Control Lists -->
         <module>ietf-packet-fields</module>
         <module>ietf-access-control-list</module>
