@@ -13,16 +13,10 @@ import java.io.IOException;
  * SPI-level contract for implementations of {@link DataObjectSerializer}.
  * The contract is kept between implementation of {@link DataObjectSerializerRegistry},
  * which maintains the lookup context required for recursive serialization.
+ *
+ * @deprecated This interface is deprecated because it is an implementation leak.
  */
-/*
- * FIXME: this interface needs to be moved into .spi, but due to classpath funkyness
- *        of OSGi, that change has to be carefully orchestrated to ensure proper imports
- *        exist in all generated packages. One avenue how to achieve that is to move
- *        {@link YangModuleInfo} and modify code generator to add a static field
- *        to all generated classes which will point to the per-model YangModuleInfo
- *        (currently all users of it have to walk the package hierarchy, so that
- *        is an improvement in and of itself).
- */
+@Deprecated
 public interface DataObjectSerializerImplementation {
     /**
      * Writes stream events for supplied data object to provided stream.

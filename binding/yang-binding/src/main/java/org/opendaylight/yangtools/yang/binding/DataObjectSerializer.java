@@ -11,7 +11,10 @@ import java.io.IOException;
 
 /**
  * A serializer which writes DataObject to supplied stream event writer.
+ *
+ * @deprecated This interface is deprecated because it is an implementation leak.
  */
+@Deprecated
 public interface DataObjectSerializer {
     /**
      * Writes stream events representing object to supplied stream.

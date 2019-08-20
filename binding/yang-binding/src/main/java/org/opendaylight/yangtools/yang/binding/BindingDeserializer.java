@@ -11,7 +11,7 @@ package org.opendaylight.yangtools.yang.binding;
  * A serializer capable of encoding an input into some other form (typically DataObject). This interface is present in
  * this package only due to constraints imposed by current implementation.
  */
-// FIXME: MDSAL-401: deprecate this interface once we no longer to have in a public place
+// FIXME: 5.0.0: move this interface into mdsal.binding.dom.codec.api
 public interface BindingDeserializer<P, I> {
 
     P deserialize(I input);

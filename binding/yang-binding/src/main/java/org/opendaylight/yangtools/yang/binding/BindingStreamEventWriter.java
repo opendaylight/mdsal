@@ -73,8 +73,8 @@ import java.io.IOException;
  * interface in OSGI and OSGI-like environment, since this package is only package which is imported by all generated
  * Binding DTOs and wired in OSGI.
  */
+// FIXME: 5.0.0: move this interface into mdsal.binding.dom.codec.api
 public interface BindingStreamEventWriter extends Closeable, Flushable {
-
     /**
      * Methods in this interface allow users to hint the underlying implementation about the sizing of container-like
      * constructors (leafLists, containers, etc.). These hints may be taken into account by a particular implementation
