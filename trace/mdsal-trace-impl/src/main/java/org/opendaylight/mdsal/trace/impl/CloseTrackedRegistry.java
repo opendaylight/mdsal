@@ -50,8 +50,7 @@ class CloseTrackedRegistry<T extends CloseTracked<T>> {
      *            course) an expensive operation, and should only be used during
      *            troubleshooting
      */
-    public CloseTrackedRegistry(final Object anchor, final String createDescription,
-            final boolean isDebugContextEnabled) {
+    CloseTrackedRegistry(final Object anchor, final String createDescription, final boolean isDebugContextEnabled) {
         this.anchor = anchor;
         this.createDescription = createDescription;
         this.isDebugContextEnabled = isDebugContextEnabled;
