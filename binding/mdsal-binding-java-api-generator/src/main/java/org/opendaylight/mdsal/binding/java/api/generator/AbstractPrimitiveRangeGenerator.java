@@ -21,18 +21,16 @@ import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>> extends AbstractRangeGenerator<T> {
+abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>>
+        extends AbstractBoundedRangeGenerator<T> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractPrimitiveRangeGenerator.class);
-    private final String primitiveName;
-    private final T minValue;
-    private final T maxValue;
+
+    private final @NonNull String primitiveName;
 
     protected AbstractPrimitiveRangeGenerator(final Class<T> typeClass, final String primitiveName, final T minValue,
             final T maxValue) {
-        super(typeClass);
+        super(typeClass, minValue, maxValue);
         this.primitiveName = requireNonNull(primitiveName);
-        this.minValue = requireNonNull(minValue);
-        this.maxValue = requireNonNull(maxValue);
     }
 
     /**
@@ -42,14 +40,6 @@ abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>>
      */
     protected final @NonNull String getPrimitiveName() {
         return primitiveName;
-    }
-
-    private boolean needsMaximumEnforcement(final T maxToEnforce) {
-        return maxValue.compareTo(maxToEnforce) > 0;
-    }
-
-    private boolean needsMinimumEnforcement(final T minToEnforce) {
-        return minValue.compareTo(minToEnforce) < 0;
     }
 
     private Collection<String> createExpressions(final RangeConstraint<?> constraint) {
