@@ -5,9 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.binding;
+package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import org.opendaylight.yangtools.concepts.Codec;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Combination of {@link BindingSerializer} and {@link BindingDeserializer}. This interface is present in this package

@@ -5,7 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.binding;
+package org.opendaylight.mdsal.binding.dom.codec.impl;
+
+import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * SPI-level contract for registry of {@link DataObjectSerializer}. The contract is kept between implementation
