@@ -45,6 +45,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.concepts.Codec;
 import org.opendaylight.yangtools.concepts.Delegator;
+import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.Action;
@@ -360,14 +361,15 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         return ImmutableMap.copyOf(leaves);
     }
 
-    Codec<Object, Object> getCodec(final Class<?> valueType, final TypeDefinition<?> instantiatedType) {
+    // FIXME: this is probably not right w.r.t. nulls
+    IllegalArgumentCodec<Object, Object> getCodec(final Class<?> valueType, final TypeDefinition<?> instantiatedType) {
         if (Class.class.equals(valueType)) {
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            final Codec<Object, Object> casted = (Codec) identityCodec;
+            final IllegalArgumentCodec<Object, Object> casted = (IllegalArgumentCodec) identityCodec;
             return casted;
         } else if (InstanceIdentifier.class.equals(valueType)) {
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            final Codec<Object, Object> casted = (Codec) instanceIdentifierCodec;
+            final IllegalArgumentCodec<Object, Object> casted = (IllegalArgumentCodec) instanceIdentifierCodec;
             return casted;
         } else if (BindingReflections.isBindingClass(valueType)) {
             return getCodecForBindingClass(valueType, instantiatedType);
@@ -376,7 +378,9 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    private Codec<Object, Object> getCodecForBindingClass(final Class<?> valueType, final TypeDefinition<?> typeDef) {
+    // FIXME: this is probably not right w.r.t. nulls
+    private IllegalArgumentCodec<Object, Object> getCodecForBindingClass(final Class<?> valueType,
+            final TypeDefinition<?> typeDef) {
         if (typeDef instanceof IdentityrefTypeDefinition) {
             return ValueTypeCodec.encapsulatedValueCodecFor(valueType, typeDef, identityCodec);
         } else if (typeDef instanceof InstanceIdentifierTypeDefinition) {

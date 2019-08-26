@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.concepts.Codec;
+import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
@@ -20,8 +21,8 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 /**
  * Value codec, which serializes / deserializes values from DOM simple values.
  */
-abstract class ValueTypeCodec implements Codec<Object, Object> {
-
+// FIXME: IllegalArgumentCodec is perhaps not appropriate here due to null behavior
+abstract class ValueTypeCodec implements IllegalArgumentCodec<Object, Object> {
     private static final Cache<Class<?>, SchemaUnawareCodec> STATIC_CODECS = CacheBuilder.newBuilder().weakKeys()
             .build();
 
@@ -29,7 +30,8 @@ abstract class ValueTypeCodec implements Codec<Object, Object> {
      * Marker interface for codecs, which functionality will not be affected by schema change (introduction of new YANG
      * modules) they may have one static instance generated when first time needed.
      */
-    interface SchemaUnawareCodec extends Codec<Object,Object> {
+    // FIXME: IllegalArgumentCodec is perhaps not appropriate here due to null behavior
+    interface SchemaUnawareCodec extends IllegalArgumentCodec<Object, Object> {
 
     }
 
