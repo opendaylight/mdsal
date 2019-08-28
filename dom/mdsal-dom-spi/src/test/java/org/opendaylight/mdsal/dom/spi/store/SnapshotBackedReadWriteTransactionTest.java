@@ -46,17 +46,17 @@ public class SnapshotBackedReadWriteTransactionTest {
         final NormalizedNode<?, ?> testNode = mock(NormalizedNode.class);
         final Optional<NormalizedNode<?, ?>> optional = Optional.of(testNode);
         doReturn("testNode").when(testNode).toString();
-        doReturn(Optional.of(testNode)).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.EMPTY);
-        assertTrue(snapshotBackedReadWriteTransaction.exists(YangInstanceIdentifier.EMPTY).get());
-        assertEquals(optional, snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.EMPTY).get());
+        doReturn(Optional.of(testNode)).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.empty());
+        assertTrue(snapshotBackedReadWriteTransaction.exists(YangInstanceIdentifier.empty()).get());
+        assertEquals(optional, snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.empty()).get());
     }
 
     @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     @Test(expected = ReadFailedException.class)
     public void readTestWithNullException() throws Throwable {
-        doReturn(null).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.EMPTY);
+        doReturn(null).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.empty());
         try {
-            snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.EMPTY).get();
+            snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.empty()).get();
             fail("Expected ReadFailedException");
         } catch (ExecutionException e) {
             throw e.getCause();
@@ -68,7 +68,7 @@ public class SnapshotBackedReadWriteTransactionTest {
     public void readNodeTestWithException() throws Throwable {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_MODIFICATION).readNode(any());
         try {
-            snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.EMPTY).get();
+            snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.empty()).get();
             fail("Expected ReadFailedException");
         } catch (ExecutionException e) {
             throw e.getCause();
@@ -80,7 +80,7 @@ public class SnapshotBackedReadWriteTransactionTest {
     public void existsTestWithException() throws Throwable {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_MODIFICATION).readNode(any());
         try {
-            snapshotBackedReadWriteTransaction.exists(YangInstanceIdentifier.EMPTY).get();
+            snapshotBackedReadWriteTransaction.exists(YangInstanceIdentifier.empty()).get();
             fail("Expected ReadFailedException");
         } catch (ExecutionException e) {
             throw e.getCause();

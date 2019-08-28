@@ -41,7 +41,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
 
 
     private static final DOMDataTreeIdentifier ROOT_ID = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-            YangInstanceIdentifier.EMPTY);
+            YangInstanceIdentifier.empty());
     private static final DOMDataTreeIdentifier TEST_ID = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
             TestModel.TEST_PATH);
 

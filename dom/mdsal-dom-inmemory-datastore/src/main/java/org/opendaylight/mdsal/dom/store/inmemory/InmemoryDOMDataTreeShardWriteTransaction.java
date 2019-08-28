@@ -5,12 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import java.util.ArrayList;
@@ -125,8 +125,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     void delete(final YangInstanceIdentifier path) {
         final YangInstanceIdentifier relativePath = toRelative(path);
-        Preconditions.checkArgument(!YangInstanceIdentifier.EMPTY.equals(relativePath),
-                "Deletion of shard root is not allowed");
+        checkArgument(!relativePath.isEmpty(), "Deletion of shard root is not allowed");
         SimpleCursorOperation.DELETE.apply(getCursor(), relativePath, null);
     }
 
@@ -141,13 +140,13 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     private YangInstanceIdentifier toRelative(final YangInstanceIdentifier path) {
         final Optional<YangInstanceIdentifier> relative =
                 path.relativeTo(modification.getPrefix().getRootIdentifier());
-        Preconditions.checkArgument(relative.isPresent());
+        checkArgument(relative.isPresent());
         return relative.get();
     }
 
     @Override
     public void close() {
-        Preconditions.checkState(!finished, "Attempting to close an already finished transaction.");
+        checkState(!finished, "Attempting to close an already finished transaction.");
         modification.closeTransactions();
         if (cursor != null) {
             cursor.close();
@@ -168,8 +167,8 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     @Override
     public void ready() {
-        Preconditions.checkState(!finished, "Attempting to ready an already finished transaction.");
-        Preconditions.checkState(cursor == null, "Attempting to ready a transaction that has an open cursor.");
+        checkState(!finished, "Attempting to ready an already finished transaction.");
+        checkState(cursor == null, "Attempting to ready a transaction that has an open cursor.");
         requireNonNull(modification, "Attempting to ready an empty transaction.");
 
         LOG.debug("Readying open transaction on shard {}", modification.getPrefix());
@@ -190,7 +189,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         LOG.debug("Submitting open transaction on shard {}", modification.getPrefix());
 
         requireNonNull(cohorts);
-        Preconditions.checkState(!cohorts.isEmpty(), "Transaction was not readied yet.");
+        checkState(!cohorts.isEmpty(), "Transaction was not readied yet.");
 
         return executor.submit(new ShardSubmitCoordinationTask(modification.getPrefix(), cohorts, this));
     }
@@ -224,8 +223,8 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     @Override
     public DOMDataTreeWriteCursor createCursor(final DOMDataTreeIdentifier prefix) {
-        Preconditions.checkState(!finished, "Transaction is finished/closed already.");
-        Preconditions.checkState(cursor == null, "Previous cursor wasn't closed");
+        checkState(!finished, "Transaction is finished/closed already.");
+        checkState(cursor == null, "Previous cursor wasn't closed");
         final YangInstanceIdentifier relativePath = toRelative(prefix.getRootIdentifier());
         final DOMDataTreeWriteCursor ret = getCursor();
         ret.enter(relativePath.getPathArguments());
