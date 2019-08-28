@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 final class TestUtils {
 
     static final DOMDataTreeIdentifier DOM_DATA_TREE_IDENTIFIER =
-            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
+            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
 
     static final PathArgument PATH_ARGUMENT = mock(PathArgument.class);
 

@@ -402,7 +402,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                 listenerNotifier.execute(() -> notifyActionChanged(newTable, implementation));
             }
 
-            return new AbstractObjectRegistration<T>(implementation) {
+            return new AbstractObjectRegistration<>(implementation) {
                 @Override
                 protected void removeRegistration() {
                     removeActionImplementation(getInstance(), instances);
@@ -458,7 +458,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                 listenerNotifier.execute(() -> notifyAdded(newTable, implementation));
             }
 
-            return new AbstractDOMRpcImplementationRegistration<T>(implementation) {
+            return new AbstractDOMRpcImplementationRegistration<>(implementation) {
                 @Override
                 protected void removeRegistration() {
                     removeRpcImplementation(getInstance(), rpcs);
@@ -515,7 +515,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                     // Find a DOMRpcImplementation for a wild card. Usually remote-rpc-connector would register an
                     // implementation this way
                     final List<DOMRpcImplementation> mayBeRemoteImpls =
-                        entry.getImplementations(YangInstanceIdentifier.EMPTY);
+                        entry.getImplementations(YangInstanceIdentifier.empty());
 
                     if (mayBeRemoteImpls != null) {
                         return mayBeRemoteImpls.get(0)
@@ -539,7 +539,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
 
         private static ListenableFuture<DOMRpcResult> invokeGlobalRpc(final GlobalDOMRpcRoutingTableEntry entry,
                 final NormalizedNode<?, ?> input) {
-            return entry.getImplementations(YangInstanceIdentifier.EMPTY).get(0).invokeRpc(entry.getRpcId(), input);
+            return entry.getImplementations(YangInstanceIdentifier.empty()).get(0).invokeRpc(entry.getRpcId(), input);
         }
     }
 }

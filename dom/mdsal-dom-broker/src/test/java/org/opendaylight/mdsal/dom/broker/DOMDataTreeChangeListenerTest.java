@@ -50,7 +50,7 @@ public class DOMDataTreeChangeListenerTest {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
         doNothing().when(listener).onInitialData();
 
-        domStore.registerTreeChangeListener(YangInstanceIdentifier.EMPTY, listener);
+        domStore.registerTreeChangeListener(YangInstanceIdentifier.empty(), listener);
         verify(listener, timeout(1000)).onInitialData();
     }
 

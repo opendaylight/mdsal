@@ -45,7 +45,7 @@ public class ShardedDOMDataWriteTransactionTest {
     private static final Map<YangInstanceIdentifier, List<NormalizedNode<?, ?>>> TEST_MAP = new HashMap<>();
 
     private static final DOMDataTreeIdentifier ROOT_ID =
-            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
+            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
 
     @Mock
     private WriteableDOMDataTreeShard rootShard;
@@ -95,7 +95,7 @@ public class ShardedDOMDataWriteTransactionTest {
         cursor.close();
         try {
             transaction.createCursor(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
-                    YangInstanceIdentifier.EMPTY));
+                    YangInstanceIdentifier.empty()));
             fail("Should have failed, config ds not available to this tx");
         } catch (final IllegalArgumentException e) {
             assertTrue(e.getMessage().contains("not accessible"));
