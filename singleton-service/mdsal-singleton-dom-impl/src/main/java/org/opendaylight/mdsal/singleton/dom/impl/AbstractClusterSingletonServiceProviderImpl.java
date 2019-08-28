@@ -93,7 +93,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
             final ClusterSingletonService service) {
         LOG.debug("Call registrationService {} method for ClusterSingletonService Provider {}", service, this);
 
-        final String serviceIdentifier = service.getIdentifier().getValue();
+        final String serviceIdentifier = service.getIdentifier().getName();
         checkArgument(!Strings.isNullOrEmpty(serviceIdentifier),
             "ClusterSingletonService identifier may not be null nor empty");
 
@@ -157,7 +157,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
             LOG.debug("Closing service group {}", serviceIdentifier);
             placeHolder = new PlaceholderGroup<>(lookup, future);
 
-            final String identifier = reg.getInstance().getIdentifier().getValue();
+            final String identifier = reg.getInstance().getIdentifier().getName();
             verify(serviceGroupMap.replace(identifier, lookup, placeHolder));
             LOG.debug("Replaced group {} with {}", serviceIdentifier, placeHolder);
 

@@ -260,8 +260,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
 
     @Override
     void registerService(final ClusterSingletonServiceRegistration reg) {
-        final ClusterSingletonService service = reg.getInstance();
-        verify(identifier.equals(service.getIdentifier().getValue()));
+        final ClusterSingletonService service = verifyRegistration(reg);
         checkNotClosed();
 
         checkState(initialized, "Service group %s is not initialized yet", identifier);
@@ -281,8 +280,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
 
     @Override
     ListenableFuture<?> unregisterService(final ClusterSingletonServiceRegistration reg) {
-        final ClusterSingletonService service = reg.getInstance();
-        verify(identifier.equals(service.getIdentifier().getValue()));
+        verifyRegistration(reg);
         checkNotClosed();
 
         verify(members.remove(reg));
@@ -301,6 +299,12 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             LOG.debug("Service group {} delayed unregister of {}", identifier, reg);
         }
         return null;
+    }
+
+    private ClusterSingletonService verifyRegistration(final ClusterSingletonServiceRegistration reg) {
+        final ClusterSingletonService service = reg.getInstance();
+        verify(identifier.equals(service.getIdentifier().getName()));
+        return service;
     }
 
     private synchronized @NonNull ListenableFuture<?> destroyGroup() {
