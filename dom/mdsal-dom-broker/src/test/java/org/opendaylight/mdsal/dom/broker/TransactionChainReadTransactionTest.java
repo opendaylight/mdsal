@@ -46,19 +46,19 @@ public class TransactionChainReadTransactionTest {
 
         doReturn(FluentFutures.immediateNullFluentFuture()).when(readTransaction).read(any(), any());
         assertNotNull(transactionChainReadTransaction.exists(
-                LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY));
-        transactionChainReadTransaction.read(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
-        verify(readTransaction, atLeastOnce()).read(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
+                LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty()));
+        transactionChainReadTransaction.read(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
+        verify(readTransaction, atLeastOnce()).read(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
 
         doReturn(FluentFutures.immediateFailedFluentFuture(
                 new NullPointerException())).when(readTransaction).read(any(), any());
         doNothing().when(chainAdapter).transactionFailed(any(), any());
         assertNotNull(transactionChainReadTransaction.read(
-                LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY));
+                LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty()));
         previousWriteTxFuture = FluentFutures.immediateFailedFluentFuture(new NullPointerException());
         transactionChainReadTransaction =
                 new TransactionChainReadTransaction(identifier, readTransaction, previousWriteTxFuture, chainAdapter);
         assertNotNull(transactionChainReadTransaction.read(
-                LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY));
+                LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty()));
     }
 }

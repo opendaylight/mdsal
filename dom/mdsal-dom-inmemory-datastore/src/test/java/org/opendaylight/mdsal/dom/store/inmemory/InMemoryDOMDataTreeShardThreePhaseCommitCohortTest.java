@@ -49,7 +49,7 @@ public class InMemoryDOMDataTreeShardThreePhaseCommitCohortTest {
 
     @Before
     public void setUp() throws Exception {
-        doReturn(YangInstanceIdentifier.EMPTY).when(DATA_TREE_CANDIDATE).getRootPath();
+        doReturn(YangInstanceIdentifier.empty()).when(DATA_TREE_CANDIDATE).getRootPath();
         doReturn("testDataTreeCandidate").when(DATA_TREE_CANDIDATE).toString();
         doReturn(DATA_TREE_CANDIDATE_NODE).when(DATA_TREE_CANDIDATE).getRootNode();
         doReturn(DATA_TREE_CANDIDATE).when(DATA_TREE).prepare(any());
@@ -93,7 +93,7 @@ public class InMemoryDOMDataTreeShardThreePhaseCommitCohortTest {
 
     @Test
     public void canCommitWithDataValidationFailedExceptionTest() throws Exception {
-        doThrow(new DataValidationFailedException(YangInstanceIdentifier.EMPTY, "testException"))
+        doThrow(new DataValidationFailedException(YangInstanceIdentifier.empty(), "testException"))
                 .when(DATA_TREE).validate(any());
         try {
             IN_MEMORY_DOM_DATA_TREE_SHARD_THREE_PHASE_COMMIT_COHORT.canCommit().get();

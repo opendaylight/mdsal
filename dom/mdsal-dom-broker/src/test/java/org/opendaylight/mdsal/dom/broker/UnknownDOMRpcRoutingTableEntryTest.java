@@ -34,17 +34,17 @@ public class UnknownDOMRpcRoutingTableEntryTest extends TestUtils {
         final UnknownDOMRpcRoutingTableEntry test = new UnknownDOMRpcRoutingTableEntry(SchemaPath.ROOT, emptyImpls);
 
         TEST_LIST.add(testClass);
-        emptyImpls.put(YangInstanceIdentifier.EMPTY, TEST_LIST);
+        emptyImpls.put(YangInstanceIdentifier.empty(), TEST_LIST);
 
         assertNotNull(test);
         assertNotNull(test.newInstance(emptyImpls));
         assertNotNull(OperationInvocation.invoke(test, TEST_CONTAINER));
         assertNotNull(test.getImplementations());
-        assertEquals(test.getImplementations(YangInstanceIdentifier.EMPTY), TEST_LIST);
-        assertTrue(test.containsContext(YangInstanceIdentifier.EMPTY));
-        assertTrue(test.registeredIdentifiers().contains(YangInstanceIdentifier.EMPTY));
+        assertEquals(test.getImplementations(YangInstanceIdentifier.empty()), TEST_LIST);
+        assertTrue(test.containsContext(YangInstanceIdentifier.empty()));
+        assertTrue(test.registeredIdentifiers().contains(YangInstanceIdentifier.empty()));
 
-        addList1.add(YangInstanceIdentifier.EMPTY);
+        addList1.add(YangInstanceIdentifier.empty());
         addList1.add(YangInstanceIdentifier.of(TestModel.TEST_QNAME));
         addList2.add(YangInstanceIdentifier.of(TestModel.TEST2_QNAME));
 

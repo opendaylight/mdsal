@@ -94,7 +94,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
     @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     @Test(expected = OptimisticLockFailedException.class)
     public void canCommitTestWithOptimisticLockFailedException() throws Throwable {
-        doThrow(new ConflictingModificationAppliedException(YangInstanceIdentifier.EMPTY, "testException"))
+        doThrow(new ConflictingModificationAppliedException(YangInstanceIdentifier.empty(), "testException"))
                 .when(IN_MEMORY_DOM_DATA_STORE).validate(any());
         try {
             inMemoryDOMStoreThreePhaseCommitCohort.canCommit().get();
@@ -108,7 +108,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
     @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     @Test(expected = TransactionCommitFailedException.class)
     public void canCommitTestWithTransactionCommitFailedException() throws Throwable {
-        doThrow(new DataValidationFailedException(YangInstanceIdentifier.EMPTY, "testException"))
+        doThrow(new DataValidationFailedException(YangInstanceIdentifier.empty(), "testException"))
                 .when(IN_MEMORY_DOM_DATA_STORE).validate(any());
         try {
             inMemoryDOMStoreThreePhaseCommitCohort.canCommit().get();

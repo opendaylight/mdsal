@@ -42,7 +42,7 @@ public class InMemoryDOMDataStoreFactoryTest {
         doNothing().when(domDataTreeChangeListener).onDataTreeChanged(any());
         doNothing().when(domDataTreeChangeListener).onInitialData();
         inMemoryDOMDataStore.onGlobalContextUpdated(TestModel.createTestContext());
-        inMemoryDOMDataStore.registerTreeChangeListener(YangInstanceIdentifier.EMPTY, domDataTreeChangeListener);
+        inMemoryDOMDataStore.registerTreeChangeListener(YangInstanceIdentifier.empty(), domDataTreeChangeListener);
 
         final AutoCloseable autoCloseable = mock(AutoCloseable.class);
         doNothing().when(autoCloseable).close();

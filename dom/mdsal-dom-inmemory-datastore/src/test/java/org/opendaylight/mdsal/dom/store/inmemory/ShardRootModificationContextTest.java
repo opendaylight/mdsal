@@ -35,7 +35,7 @@ public class ShardRootModificationContextTest {
         doReturn(cursorAwareDataTreeModification).when(cursorAwareDataTreeSnapshot).newModification();
         doNothing().when(cursorAwareDataTreeModification).ready();
         doReturn(Optional.of(dataTreeModificationCursor))
-                .when(cursorAwareDataTreeModification).openCursor(YangInstanceIdentifier.EMPTY);
+                .when(cursorAwareDataTreeModification).openCursor(YangInstanceIdentifier.empty());
         doNothing().when(dataTreeModificationCursor).close();
 
         final ShardRootModificationContext shardRootModificationContext =
@@ -48,7 +48,7 @@ public class ShardRootModificationContextTest {
         assertNotNull(dataTreeModificationCursorAdaptor);
         assertTrue(shardRootModificationContext.isModified());
         verify(cursorAwareDataTreeSnapshot).newModification();
-        verify(cursorAwareDataTreeModification).openCursor(YangInstanceIdentifier.EMPTY);
+        verify(cursorAwareDataTreeModification).openCursor(YangInstanceIdentifier.empty());
 
         shardRootModificationContext.ready();
         verify(cursorAwareDataTreeModification).ready();
