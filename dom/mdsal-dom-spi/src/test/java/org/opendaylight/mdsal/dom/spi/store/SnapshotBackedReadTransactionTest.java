@@ -38,10 +38,10 @@ public class SnapshotBackedReadTransactionTest {
         final NormalizedNode<?, ?> testNode = mock(NormalizedNode.class);
         final Optional<NormalizedNode<?, ?>> optional = Optional.of(testNode);
         doReturn("testNode").when(testNode).toString();
-        doReturn(Optional.of(testNode)).when(DATA_TREE_SNAPSHOT).readNode(YangInstanceIdentifier.EMPTY);
-        assertTrue(snapshotBackedReadTransaction.exists(YangInstanceIdentifier.EMPTY).get());
+        doReturn(Optional.of(testNode)).when(DATA_TREE_SNAPSHOT).readNode(YangInstanceIdentifier.empty());
+        assertTrue(snapshotBackedReadTransaction.exists(YangInstanceIdentifier.empty()).get());
 
-        assertEquals(optional, snapshotBackedReadTransaction.read(YangInstanceIdentifier.EMPTY).get());
+        assertEquals(optional, snapshotBackedReadTransaction.read(YangInstanceIdentifier.empty()).get());
         final Field stableSnapshotField = SnapshotBackedReadTransaction.class.getDeclaredField("stableSnapshot");
         stableSnapshotField.setAccessible(true);
 
@@ -57,7 +57,7 @@ public class SnapshotBackedReadTransactionTest {
     public void readTestWithException() throws Throwable {
         snapshotBackedReadTransaction.close();
         try {
-            snapshotBackedReadTransaction.read(YangInstanceIdentifier.EMPTY).get();
+            snapshotBackedReadTransaction.read(YangInstanceIdentifier.empty()).get();
             fail("Expected ReadFailedException");
         } catch (Exception e) {
             throw e.getCause();
@@ -71,7 +71,7 @@ public class SnapshotBackedReadTransactionTest {
         snapshotBackedReadTransaction = new SnapshotBackedReadTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT,
                 null);
         try {
-            snapshotBackedReadTransaction.read(YangInstanceIdentifier.EMPTY).get();
+            snapshotBackedReadTransaction.read(YangInstanceIdentifier.empty()).get();
             fail("Expected ReadFailedException");
         } catch (Exception e) {
             throw e.getCause();
@@ -84,7 +84,7 @@ public class SnapshotBackedReadTransactionTest {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_SNAPSHOT).readNode(any());
 
         try {
-            snapshotBackedReadTransaction.exists(YangInstanceIdentifier.EMPTY).get();
+            snapshotBackedReadTransaction.exists(YangInstanceIdentifier.empty()).get();
             fail("Expected ReadFailedException");
         } catch (Exception e) {
             throw e.getCause();
