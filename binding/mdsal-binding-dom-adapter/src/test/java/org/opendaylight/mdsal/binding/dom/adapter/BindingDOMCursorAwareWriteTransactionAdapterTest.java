@@ -33,7 +33,7 @@ public class BindingDOMCursorAwareWriteTransactionAdapterTest {
         final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
         final BindingToNormalizedNodeCodec codec =
                 new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), registry);
-        final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.EMPTY;
+        final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.empty();
         doReturn(yangInstanceIdentifier).when(registry).toYangInstanceIdentifier(any());
         doReturn(mock(DOMDataTreeWriteCursor.class)).when(delegate).createCursor(any());
 

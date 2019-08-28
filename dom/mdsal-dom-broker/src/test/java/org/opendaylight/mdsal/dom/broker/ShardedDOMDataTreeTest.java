@@ -64,7 +64,7 @@ public class ShardedDOMDataTreeTest {
     private static final SchemaContext SCHEMA_CONTEXT = TestModel.createTestContext();
 
     private static final DOMDataTreeIdentifier ROOT_ID =
-            new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.EMPTY);
+            new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty());
     private static final DOMDataTreeIdentifier TEST_ID =
             new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
 
@@ -426,7 +426,7 @@ public class ShardedDOMDataTreeTest {
         doNothing().when(listener).onDataTreeChanged(any(), any());
         dataTreeService.registerListener(listener,
                 Collections.singletonList(
-                        new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.EMPTY)),
+                        new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty())),
                 false, Collections.emptyList());
 
         verify(listener, times(2)).onDataTreeChanged(any(), any());

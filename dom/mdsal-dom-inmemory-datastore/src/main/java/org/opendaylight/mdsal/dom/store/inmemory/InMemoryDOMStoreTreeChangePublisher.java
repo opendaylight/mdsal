@@ -68,7 +68,7 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
     <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(
             final YangInstanceIdentifier treeId, final L listener, final DataTreeSnapshot snapshot) {
         final AbstractDOMDataTreeChangeListenerRegistration<L> reg = registerTreeChangeListener(treeId, listener);
-        final Optional<NormalizedNode<?, ?>> preExistingData = snapshot.readNode(YangInstanceIdentifier.EMPTY);
+        final Optional<NormalizedNode<?, ?>> preExistingData = snapshot.readNode(YangInstanceIdentifier.empty());
         if (!preExistingData.isPresent()) {
             listener.onInitialData();
             return reg;
@@ -87,7 +87,7 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
             }
         }
 
-        final DataTreeCandidate candidate = DataTreeCandidates.fromNormalizedNode(YangInstanceIdentifier.EMPTY, data);
+        final DataTreeCandidate candidate = DataTreeCandidates.fromNormalizedNode(YangInstanceIdentifier.empty(), data);
         final InMemoryDOMStoreTreeChangePublisher publisher = new InMemoryDOMStoreTreeChangePublisher(
             notificationManager);
         publisher.registerTreeChangeListener(treeId, listener);

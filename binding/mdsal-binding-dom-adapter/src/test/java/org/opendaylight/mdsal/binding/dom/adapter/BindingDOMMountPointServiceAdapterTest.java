@@ -32,7 +32,7 @@ public class BindingDOMMountPointServiceAdapterTest {
         final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
         final BindingToNormalizedNodeCodec codec =
                 new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), registry);
-        doReturn(YangInstanceIdentifier.EMPTY).when(registry).toYangInstanceIdentifier(any());
+        doReturn(YangInstanceIdentifier.empty()).when(registry).toYangInstanceIdentifier(any());
         final DOMMountPointService mountPointService = mock(DOMMountPointService.class);
 
         final BindingDOMMountPointServiceAdapter adapter =
