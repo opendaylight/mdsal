@@ -106,7 +106,7 @@ public class AbstractDOMShardTreeChangePublisherTest extends AbstractDOMShardTre
         doReturn(listenerRegistration)
                 .when(READABLE_WRITEABLE_DOM_DATA_TREE_SHARD).registerTreeChangeListener(any(), any());
         final DOMDataTreeIdentifier domDataTreeIdentifier =
-                new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
+                new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
         final ChildShardContext childShardContext =
                 new ChildShardContext(domDataTreeIdentifier, READABLE_WRITEABLE_DOM_DATA_TREE_SHARD);
         final Map<DOMDataTreeIdentifier, ChildShardContext> childShardContextMap =
