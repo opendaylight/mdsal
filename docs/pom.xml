@@ -366,10 +366,6 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-restconf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-ted</artifactId>
         </dependency>
         <dependency>
@@ -717,10 +713,6 @@
                         <group>
                             <title>Java Bindings for ietf-routing.yang</title>
                             <packages>org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.routing.rev*</packages>
-                        </group>
-                        <group>
-                            <title>Java Bindings for ietf-restconf.yang</title>
-                            <packages>org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf*</packages>
                         </group>
                         <group>
                             <title>Java Bindings for ietf-routing-types.yang</title>
