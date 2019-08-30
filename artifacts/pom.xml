@@ -656,14 +656,6 @@
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
 
-            <!-- draft-bierman-netconf-restconf-02 -->
-            <!-- FIXME: upgrade to RFC8040 -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-restconf</artifactId>
-                <version>2013.10.19.17.0-SNAPSHOT</version>
-            </dependency>
-
             <!-- draft-clemm-netmod-yang-network-topo-01 -->
             <!-- FIXME: figure out migration path towads:
                         RFC8345
@@ -878,13 +870,6 @@
                 <type>xml</type>
             </dependency>
 
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>odl-mdsal-model-draft-bierman-netconf-restconf-02</artifactId>
-                <version>3.0.0-SNAPSHOT</version>
-                <classifier>features</classifier>
-                <type>xml</type>
-            </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01</artifactId>

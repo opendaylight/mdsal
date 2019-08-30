@@ -119,10 +119,6 @@
         <module>ietf-topology-isis</module>
         <module>ietf-topology-l3-unicast-igp</module>
         <module>ietf-topology-ospf</module>
-
-        <!-- Legacy RESTCONF -->
-        <!-- FIXME: move this to the netconf project -->
-        <module>ietf-restconf</module>
     </modules>
 
     <properties>
