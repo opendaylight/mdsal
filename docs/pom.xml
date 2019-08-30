@@ -503,28 +503,6 @@
             </plugin>
 
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <!-- For JDK11 builds we want to remove references to sun.reflect -->
-                        <id>remove-sun.reflect-links</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <replace file="${project.build.directory}/src/org/opendaylight/mdsal/binding/dom/codec/jar/bytebuddy/implementation/bind/annotation/Super.java"
-                                    token="{@link sun.reflect" value="{@code sun.reflect" failOnNoReplacements="true"/>
-                                <replace file="${project.build.directory}/src/org/opendaylight/mdsal/binding/dom/codec/jar/bytebuddy/implementation/auxiliary/TypeProxy.java"
-                                    token="{@link sun.reflect" value="{@code sun.reflect" failOnNoReplacements="true"/>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>
