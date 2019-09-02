@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,7 @@ public final class MplsLabelBuilder {
             }
         }
 
-        return new MplsLabel(new MplsLabelGeneralUse(Long.valueOf(defaultValue)));
+        return new MplsLabel(new MplsLabelGeneralUse(Uint32.valueOf(defaultValue)));
     }
 
     static Optional<MplsLabel> loadClass(final ClassLoader loader, final String key) {
