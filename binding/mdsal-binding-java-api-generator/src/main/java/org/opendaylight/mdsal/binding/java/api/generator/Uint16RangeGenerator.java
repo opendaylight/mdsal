@@ -10,11 +10,9 @@ package org.opendaylight.mdsal.binding.java.api.generator;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint8;
 
-// FIXME: this generator is less than optimal, we should be able to do better by specializing it via
-//        AbstractPrimitiveRangeGenerator, extracting an int on which to operate
-final class Uint16RangeGenerator extends AbstractBigRangeGenerator<Uint16> {
+final class Uint16RangeGenerator extends AbstractUnsignedRangeGenerator<Uint16> {
     Uint16RangeGenerator() {
-        super(Uint16.class);
+        super(Uint16.class, int.class.getName(), Uint16.MIN_VALUE, Uint16.MAX_VALUE);
     }
 
     @Override
@@ -28,6 +26,6 @@ final class Uint16RangeGenerator extends AbstractBigRangeGenerator<Uint16> {
 
     @Override
     protected String format(final Uint16 value) {
-        return "org.opendaylight.yangtools.yang.common.Uint16.valueOf(" + value.intValue() + ")";
+        return value.toCanonicalString();
     }
 }

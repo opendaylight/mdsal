@@ -11,11 +11,9 @@ import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint8;
 
-// FIXME: this generator is less than optimal, we should be able to do better by specializing it via
-//        AbstractPrimitiveRangeGenerator, extracting a long on which to operate
-final class Uint32RangeGenerator extends AbstractBigRangeGenerator<Uint32> {
+final class Uint32RangeGenerator extends AbstractUnsignedRangeGenerator<Uint32> {
     Uint32RangeGenerator() {
-        super(Uint32.class);
+        super(Uint32.class, long.class.getName(), Uint32.MIN_VALUE, Uint32.MAX_VALUE);
     }
 
     @Override
@@ -30,6 +28,6 @@ final class Uint32RangeGenerator extends AbstractBigRangeGenerator<Uint32> {
 
     @Override
     protected String format(final Uint32 value) {
-        return "org.opendaylight.yangtools.yang.common.Uint32.valueOf(" + value.longValue() + "L)";
+        return value.toCanonicalString() + 'L';
     }
 }
