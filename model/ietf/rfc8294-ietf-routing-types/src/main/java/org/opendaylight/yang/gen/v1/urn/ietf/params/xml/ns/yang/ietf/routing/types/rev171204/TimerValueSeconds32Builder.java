@@ -17,6 +17,7 @@ import com.google.common.collect.Maps;
 import java.util.Arrays;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.routing.types.rev171204.TimerValueSeconds32.Enumeration;
+import org.opendaylight.yangtools.yang.common.Uint32;
 
 /**
  * Builder for {@link TimerValueSeconds32} instances.
@@ -35,7 +36,7 @@ public final class TimerValueSeconds32Builder {
 
     public static TimerValueSeconds32 getDefaultInstance(final String defaultValue) {
         return Enumeration.forName(defaultValue).map(ENUMERATED::get)
-                .orElse(new TimerValueSeconds32(Long.valueOf(defaultValue)));
+                .orElse(new TimerValueSeconds32(Uint32.valueOf(defaultValue)));
     }
 
     public static TimerValueSeconds32 forEnumeration(final Enumeration enumeration) {
