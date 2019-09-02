@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Map;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
@@ -102,7 +101,7 @@ public final class BaseYangTypes {
      * mapping of basic built-in YANG types (keys) to JAVA {@link org.opendaylight.mdsal.binding.model.api.Type Type}.
      * This map is filled with mapping data in static initialization block.
      */
-    private static final Map<String, Type> TYPE_MAP = ImmutableMap.<String, Type>builder()
+    private static final ImmutableMap<String, Type> TYPE_MAP = ImmutableMap.<String, Type>builder()
             .put("boolean", BOOLEAN_TYPE)
             .put("empty", EMPTY_TYPE)
             .put("enumeration", ENUM_TYPE)
