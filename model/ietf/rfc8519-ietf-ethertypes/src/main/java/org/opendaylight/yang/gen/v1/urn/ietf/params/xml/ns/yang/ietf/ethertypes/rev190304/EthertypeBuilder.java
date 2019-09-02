@@ -17,6 +17,7 @@ import java.util.EnumMap;
 import java.util.Objects;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.ethertypes.rev190304.Ethertype.Enumeration;
 
 public final class EthertypeBuilder {
@@ -42,7 +43,7 @@ public final class EthertypeBuilder {
         if (length > 0 && length < 6 && DIGITS.matchesAllOf(defaultValue)) {
             final int value = Integer.parseInt(defaultValue);
             if (value < 65536) {
-                return new Ethertype(value);
+                return new Ethertype(Uint16.valueOf(value));
             }
 
             // Fall through and interpret as a string
@@ -95,6 +96,6 @@ public final class EthertypeBuilder {
 
     private static int extractValue(final Ethertype type) {
         final Enumeration known = type.getEnumeration();
-        return known != null ? known.getIntValue() : verifyNotNull(type.getUint16());
+        return known != null ? known.getIntValue() : verifyNotNull(type.getUint16()).intValue();
     }
 }

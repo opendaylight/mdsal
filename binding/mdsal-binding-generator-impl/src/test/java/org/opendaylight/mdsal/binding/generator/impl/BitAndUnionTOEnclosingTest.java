@@ -90,7 +90,7 @@ public class BitAndUnionTOEnclosingTest {
                 lf1Leaf.getIdentifier().immediatelyEnclosingClass().get().toString());
 
         assertEquals("Lf generated TO has incorrect number of properties", 4, lf1Leaf.getProperties().size());
-        containsAttributes(lf1Leaf, true, true, true, new NameTypePattern("uint32", "Long"));
+        containsAttributes(lf1Leaf, true, true, true, new NameTypePattern("uint32", "Uint32"));
         containsAttributes(lf1Leaf, true, true, true, new NameTypePattern("int8", "Byte"));
         containsAttributes(lf1Leaf, true, true, true, new NameTypePattern("string", "String"));
         containsAttributes(lf1Leaf, true, false, true, new NameTypePattern("lf$2", "Lf$2"));
@@ -104,7 +104,7 @@ public class BitAndUnionTOEnclosingTest {
 
         assertEquals("Lf generated TO has incorrect number of properties", 2, lf2Leaf.getProperties().size());
         containsAttributes(lf2Leaf, true, true, true, new NameTypePattern("string", "String"));
-        containsAttributes(lf2Leaf, true, true, true, new NameTypePattern("uint64", "BigInteger"));
+        containsAttributes(lf2Leaf, true, true, true, new NameTypePattern("uint64", "Uint64"));
     }
 
     @Test
@@ -164,7 +164,7 @@ public class BitAndUnionTOEnclosingTest {
         assertEquals("TypeUnion1 generated TO has incorrect number of properties", 4,
             typeUnion1.getProperties().size());
 
-        containsAttributes(typeUnion1, true, true, true, new NameTypePattern("uint32", "Long"));
+        containsAttributes(typeUnion1, true, true, true, new NameTypePattern("uint32", "Uint32"));
         containsAttributes(typeUnion1, true, true, true, new NameTypePattern("int8", "Byte"));
         containsAttributes(typeUnion1, true, true, true, new NameTypePattern("string", "String"));
         containsAttributes(typeUnion1, true, false, true, new NameTypePattern("typeUnion$2", "TypeUnion$2"));
@@ -178,7 +178,7 @@ public class BitAndUnionTOEnclosingTest {
         assertEquals("TypeUnion2 generated TO has incorrect number of properties", 2,
             typeUnion2.getProperties().size());
         containsAttributes(typeUnion2, true, true, true, new NameTypePattern("string", "String"));
-        containsAttributes(typeUnion2, true, true, true, new NameTypePattern("uint64", "BigInteger"));
+        containsAttributes(typeUnion2, true, true, true, new NameTypePattern("uint64", "Uint64"));
 
     }
 
@@ -254,7 +254,7 @@ public class BitAndUnionTOEnclosingTest {
 
         assertEquals("uint32 property has incorrect type", "Integer", uint32Property.getReturnType().getName());
         assertEquals("string property has incorrect type", "String", stringProperty.getReturnType().getName());
-        assertEquals("uint8 property has incorrect type", "Short", uint8Property.getReturnType().getName());
+        assertEquals("uint8 property has incorrect type", "Uint8", uint8Property.getReturnType().getName());
 
     }
 

@@ -18,7 +18,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
@@ -56,6 +55,10 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.Generate
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.common.Uint64;
+import org.opendaylight.yangtools.yang.common.Uint8;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
@@ -1423,25 +1426,13 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         } else if (base instanceof StringTypeDefinition) {
             result = "\"" + defaultValue + "\"";
         } else if (BaseTypes.isUint8(base)) {
-            result = typeToValueOfDef(Short.class, defaultValue);
+            result = typeToValueOfDef(Uint8.class, defaultValue);
         } else if (BaseTypes.isUint16(base)) {
-            result = typeToValueOfDef(Integer.class, defaultValue);
+            result = typeToValueOfDef(Uint16.class, defaultValue);
         } else if (BaseTypes.isUint32(base)) {
-            result = typeToValueOfDef(Long.class, defaultValue);
+            result = typeToValueOfDef(Uint32.class, defaultValue);
         } else if (BaseTypes.isUint64(base)) {
-            switch (defaultValue) {
-                case "0":
-                    result = "java.math.BigInteger.ZERO";
-                    break;
-                case "1":
-                    result = "java.math.BigInteger.ONE";
-                    break;
-                case "10":
-                    result = "java.math.BigInteger.TEN";
-                    break;
-                default:
-                    result = typeToDef(BigInteger.class, defaultValue);
-            }
+            result = typeToValueOfDef(Uint64.class, defaultValue);
         } else if (base instanceof UnionTypeDefinition) {
             result = unionToDef(node);
         } else {
