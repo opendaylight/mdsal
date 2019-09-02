@@ -803,28 +803,29 @@ public class TypeProviderTest {
         assertNotNull(result);
         assertTrue(!result.isEmpty());
         assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914."
-                + "YangUint8(java.lang.Short.valueOf(\"128\"))", result);
+                + "YangUint8(org.opendaylight.yangtools.yang.common.Uint8.valueOf(\"128\"))", result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-uint16");
         result = provider.getTypeDefaultConstruction(leaf, "1048576");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
         assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914."
-                + "YangUint16(java.lang.Integer.valueOf(\"1048576\"))", result);
+                + "YangUint16(org.opendaylight.yangtools.yang.common.Uint16.valueOf(\"1048576\"))", result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-uint32");
         result = provider.getTypeDefaultConstruction(leaf, "1099511627776");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
         assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914."
-                + "YangUint32(java.lang.Long.valueOf(\"1099511627776\"))", result);
+                + "YangUint32(org.opendaylight.yangtools.yang.common.Uint32.valueOf(\"1099511627776\"))", result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-uint64");
         result = provider.getTypeDefaultConstruction(leaf, "1208925819614629174706176");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
         assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914."
-                + "YangUint64(new java.math.BigInteger(\"1208925819614629174706176\"))", result);
+                + "YangUint64(org.opendaylight.yangtools.yang.common.Uint64.valueOf(\"1208925819614629174706176\"))",
+                result);
 
         //FIXME: Is this correct scenario and correct result?
         leaf = provideLeafForGetDefaultConstructionTestCase("complex-union");
