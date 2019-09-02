@@ -45,7 +45,9 @@ public final class BindingMapping {
         // https://docs.oracle.com/javase/specs/jls/se9/html/jls-3.html#jls-3.10.3
         "false", "true",
         // https://docs.oracle.com/javase/specs/jls/se9/html/jls-3.html#jls-3.10.7
-        "null");
+        "null",
+        // https://docs.oracle.com/javase/specs/jls/se10/html/jls-3.html#jls-3.9
+        "var");
 
     public static final @NonNull String DATA_ROOT_SUFFIX = "Data";
     public static final @NonNull String RPC_SERVICE_SUFFIX = "Service";
