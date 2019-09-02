@@ -9,11 +9,9 @@ package org.opendaylight.mdsal.binding.java.api.generator;
 
 import org.opendaylight.yangtools.yang.common.Uint8;
 
-// FIXME: this generator is less than optimal, we should be able to do better by specializing it via
-//        AbstractPrimitiveRangeGenerator, extracting a short on which to operate
-final class Uint8RangeGenerator extends AbstractBigRangeGenerator<Uint8> {
+final class Uint8RangeGenerator extends AbstractUnsignedRangeGenerator<Uint8> {
     Uint8RangeGenerator() {
-        super(Uint8.class);
+        super(Uint8.class, short.class.getName(), Uint8.MIN_VALUE, Uint8.MAX_VALUE);
     }
 
     @Override
@@ -27,6 +25,6 @@ final class Uint8RangeGenerator extends AbstractBigRangeGenerator<Uint8> {
 
     @Override
     protected String format(final Uint8 value) {
-        return "org.opendaylight.yangtools.yang.common.Uint8.valueOf(" + value.intValue() + ")";
+        return "(short)" + value.toCanonicalString();
     }
 }
