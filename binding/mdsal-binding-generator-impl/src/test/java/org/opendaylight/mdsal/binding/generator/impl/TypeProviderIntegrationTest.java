@@ -225,12 +225,12 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-uint8");
         LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("java.lang.Short.valueOf(\"11\")", actual);
+        assertEquals("org.opendaylight.yangtools.yang.common.Uint8.valueOf(\"11\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-uint8");
         leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyUint8(java.lang.Short.valueOf(\"11\"))", actual);
+        assertEquals("new " + PKG + "MyUint8(org.opendaylight.yangtools.yang.common.Uint8.valueOf(\"11\"))", actual);
     }
 
     @Test
@@ -238,12 +238,12 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-uint16");
         LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("java.lang.Integer.valueOf(\"111\")", actual);
+        assertEquals("org.opendaylight.yangtools.yang.common.Uint16.valueOf(\"111\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-uint16");
         leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyUint16(java.lang.Integer.valueOf(\"111\"))", actual);
+        assertEquals("new " + PKG + "MyUint16(org.opendaylight.yangtools.yang.common.Uint16.valueOf(\"111\"))", actual);
     }
 
     @Test
@@ -251,12 +251,13 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-uint32");
         LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("java.lang.Long.valueOf(\"1111\")", actual);
+        assertEquals("org.opendaylight.yangtools.yang.common.Uint32.valueOf(\"1111\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-uint32");
         leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyUint32(java.lang.Long.valueOf(\"1111\"))", actual);
+        assertEquals("new " + PKG + "MyUint32(org.opendaylight.yangtools.yang.common.Uint32.valueOf(\"1111\"))",
+            actual);
     }
 
     @Test
@@ -264,12 +265,13 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(module.getQNameModule(), "leaf-uint64");
         LeafSchemaNode leaf = (LeafSchemaNode) module.findDataChildByName(leafNode1).get();
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new java.math.BigInteger(\"11111\")", actual);
+        assertEquals("org.opendaylight.yangtools.yang.common.Uint64.valueOf(\"11111\")", actual);
 
         final QName leafNode2 = QName.create(module.getQNameModule(), "ext-uint64");
         leaf = (LeafSchemaNode) module.findDataChildByName(leafNode2).get();
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyUint64(new java.math.BigInteger(\"11111\"))", actual);
+        assertEquals("new " + PKG + "MyUint64(org.opendaylight.yangtools.yang.common.Uint64.valueOf(\"11111\"))",
+                actual);
     }
 
     @Test

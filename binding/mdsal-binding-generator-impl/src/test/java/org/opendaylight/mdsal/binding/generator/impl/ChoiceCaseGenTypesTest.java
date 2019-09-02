@@ -121,7 +121,7 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
 
         genType = checkGeneratedType(genTypes, "AnonymousLock", pcgPref
                 + ".netconf.state.datastores.datastore.locks.lock.type"); // choice
-        containsMethods(genType, new NameTypePattern("getLockTime", "Long"));
+        containsMethods(genType, new NameTypePattern("getLockTime", "Uint32"));
         containsInterface("LockType", genType);
 
         genType = checkGeneratedType(genTypes, "LeafAugCase", pcgPref
