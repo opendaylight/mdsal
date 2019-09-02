@@ -23,6 +23,7 @@ import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -50,7 +51,7 @@ public class BindingToNormalizedNodeCodecTest {
     @Test
     public void fromNormalizedNodeTest() throws Exception {
         final SchemaContext schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
-        final NormalizedNode<?, ?> data = prepareData(schemaCtx, 42);
+        final NormalizedNode<?, ?> data = prepareData(schemaCtx, Uint16.valueOf(42));
         final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
 
         final DataObject value = fromNormalizedNode.getValue();
@@ -64,7 +65,7 @@ public class BindingToNormalizedNodeCodecTest {
         final Object id = declaredField.get(invoked);
         final Field val = id.getClass().getDeclaredField("_value");
         val.setAccessible(true);
-        assertEquals(42, val.get(id));
+        assertEquals(Uint16.valueOf(42), val.get(id));
     }
 
     /**
