@@ -134,6 +134,10 @@ abstract class AbstractRangeGenerator<T extends Number & Comparable<T>> {
     }
 
     String generateRangeCheckerCall(final @NonNull String member, final @NonNull String valueReference) {
-        return rangeCheckerName(member) + '(' + valueReference + ");\n";
+        return rangeCheckerName(member) + '(' + valueReference + primitiveRef() + ");\n";
+    }
+
+    String primitiveRef() {
+        return "";
     }
 }
