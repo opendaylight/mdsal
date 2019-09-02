@@ -20,6 +20,10 @@ import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.common.Uint64;
+import org.opendaylight.yangtools.yang.common.Uint8;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
@@ -166,19 +170,19 @@ public class BaseYangTypesTest {
 
         javaType = typeProvider.javaTypeForSchemaDefinitionType(uint8, uint8);
         assertNotNull(javaType);
-        assertEquals(Short.class.getCanonicalName(), javaType.getFullyQualifiedName());
+        assertEquals(Uint8.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
         javaType = typeProvider.javaTypeForSchemaDefinitionType(uint16, uint16);
         assertNotNull(javaType);
-        assertEquals(Integer.class.getCanonicalName(), javaType.getFullyQualifiedName());
+        assertEquals(Uint16.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
         javaType = typeProvider.javaTypeForSchemaDefinitionType(uint32, uint32);
         assertNotNull(javaType);
-        assertEquals(Long.class.getCanonicalName(), javaType.getFullyQualifiedName());
+        assertEquals(Uint32.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
         javaType = typeProvider.javaTypeForSchemaDefinitionType(uint64, uint64);
         assertNotNull(javaType);
-        assertEquals(BigInteger.class.getCanonicalName(), javaType.getFullyQualifiedName());
+        assertEquals(Uint64.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
         javaType = typeProvider.javaTypeForSchemaDefinitionType(union, union);
         assertNotNull(javaType);

@@ -20,6 +20,10 @@ import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.common.Uint64;
+import org.opendaylight.yangtools.yang.common.Uint8;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -70,24 +74,22 @@ public final class BaseYangTypes {
     /**
      * <code>Type</code> representation of <code>uint8</code> YANG type.
      */
-    public static final Type UINT8_TYPE = Types.typeForClass(Short.class, singleRangeRestrictions((short)0,
-        (short)255));
+    public static final Type UINT8_TYPE = Types.typeForClass(Uint8.class);
 
     /**
      * <code>Type</code> representation of <code>uint16</code> YANG type.
      */
-    public static final Type UINT16_TYPE = Types.typeForClass(Integer.class, singleRangeRestrictions(0, 65535));
+    public static final Type UINT16_TYPE = Types.typeForClass(Uint16.class);
 
     /**
      * <code>Type</code> representation of <code>uint32</code> YANG type.
      */
-    public static final Type UINT32_TYPE = Types.typeForClass(Long.class, singleRangeRestrictions(0L, 4294967295L));
+    public static final Type UINT32_TYPE = Types.typeForClass(Uint32.class);
 
     /**
      * <code>Type</code> representation of <code>uint64</code> YANG type.
      */
-    public static final Type UINT64_TYPE = Types.typeForClass(BigInteger.class,
-            singleRangeRestrictions(BigInteger.ZERO, new BigInteger("18446744073709551615")));
+    public static final Type UINT64_TYPE = Types.typeForClass(Uint64.class);
 
     public static final Type UNION_TYPE = new UnionType();
 
@@ -213,10 +215,6 @@ public final class BaseYangTypes {
             return "_" + BindingMapping.getPropertyName(type.getQName().getLocalName());
         }
     };
-
-    private static <T extends Number & Comparable<T>> Restrictions singleRangeRestrictions(final T min, final T max) {
-        return Types.getDefaultRestrictions(min, max);
-    }
 
     // FIXME: 5.0.0: remove this class
     @Deprecated
