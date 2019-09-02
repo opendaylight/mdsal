@@ -171,7 +171,7 @@ public class UsesTest {
 
         containsMethods(groupingContainerTest.getMethodDefinitions(), new NameTypePattern(
                 "getLeafGroupingContainerTest1", "String"), new NameTypePattern("getLeafGroupingContainerTest2",
-                "Short"));
+                "Uint8"));
 
         containsMethods(containerTest.getMethodDefinitions(), new NameTypePattern("getContainerLeafTest", "String"));
     }
@@ -302,7 +302,7 @@ public class UsesTest {
                         "getListGroupingListTest", "List<ListGroupingListTest>"));
         containsMethods(listTest.getMethodDefinitions(), new NameTypePattern("getListLeafTest", "String"));
         containsMethods(containerGroupingListTest.getMethodDefinitions(), new NameTypePattern(
-                "getLeafContainerGroupingListTest", "Short"));
+                "getLeafContainerGroupingListTest", "Uint8"));
         containsMethods(listGroupingListTest.getMethodDefinitions(), new NameTypePattern("getLeafListGroupingListTest",
                 "Integer"));
     }
@@ -354,7 +354,7 @@ public class UsesTest {
                 .size());
 
         containsMethods(groupingModulTest.getMethodDefinitions(), new NameTypePattern("getLeafGroupingModulTest",
-                "String"), new NameTypePattern("getLeafGroupingModulTest2", "Short"));
+                "String"), new NameTypePattern("getLeafGroupingModulTest2", "Uint8"));
     }
 
     @Test
@@ -442,7 +442,7 @@ public class UsesTest {
 
         containsMethods(groupingRpcInputTest.getMethodDefinitions(), new NameTypePattern(
                 "getContainerGroupingRpcInputTest", "ContainerGroupingRpcInputTest"), new NameTypePattern(
-                "getLeaflistGroupingRpcInputTest", "List<Short>"));
+                "getLeaflistGroupingRpcInputTest", "List<Uint8>"));
         containsMethods(groupingRpcOutputTest.getMethodDefinitions(), new NameTypePattern(
                 "getLeafGroupingRpcOutputTest", "Byte"));
         containsMethods(containerGroupingRpcInputTest.getMethodDefinitions(), new NameTypePattern(
@@ -569,7 +569,7 @@ public class UsesTest {
                 "getContainerGroupingNotificationTest", "ContainerGroupingNotificationTest"), new NameTypePattern(
                 "getLeaffllistGroupingNotificationTest", "List<String>"));
         containsMethods(containerGroupingNotificationTest.getMethodDefinitions(), new NameTypePattern(
-                "getLeafContainerGroupingNotificationTest", "Long"));
+                "getLeafContainerGroupingNotificationTest", "Uint32"));
     }
 
 }
