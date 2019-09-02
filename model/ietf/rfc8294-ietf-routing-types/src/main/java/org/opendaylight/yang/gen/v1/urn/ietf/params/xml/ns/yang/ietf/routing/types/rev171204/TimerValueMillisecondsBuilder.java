@@ -12,9 +12,9 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Verify;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.Arrays;
-import java.util.Map;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.routing.types.rev171204.TimerValueMilliseconds.Enumeration;
 
@@ -26,7 +26,8 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.routing.typ
 @Beta
 @NonNullByDefault
 public final class TimerValueMillisecondsBuilder {
-    private static final Map<Enumeration, TimerValueMilliseconds> ENUMERATED = Arrays.stream(Enumeration.values())
+    private static final ImmutableMap<Enumeration, TimerValueMilliseconds> ENUMERATED =
+            Arrays.stream(Enumeration.values())
             .collect(Maps.toImmutableEnumMap(Verify::verifyNotNull, TimerValueMilliseconds::new));
 
     private TimerValueMillisecondsBuilder() {
