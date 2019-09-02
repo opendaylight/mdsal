@@ -236,6 +236,18 @@ public final class CodeHelpers {
     }
 
     /**
+     * Throw an IllegalArgument exception describing a range violation of an Uint64 type.
+     *
+     * @param expected String describing expected ranges
+     * @param actual Actual observed value
+     * @throws IllegalArgumentException always
+     */
+    public static void throwInvalidRangeUnsigned(final String expected, final long actual) {
+        throw new IllegalArgumentException("Invalid range: " + Long.toUnsignedString(actual) + ", expected: " + expected
+            + ".");
+    }
+
+    /**
      * Check whether specified List is null and if so return an immutable list instead. This method supports
      * non-null default getter methods.
      *

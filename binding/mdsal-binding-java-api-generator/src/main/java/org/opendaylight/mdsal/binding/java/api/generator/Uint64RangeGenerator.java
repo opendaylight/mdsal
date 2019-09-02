@@ -7,18 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator;
 
+import java.util.function.Function;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.opendaylight.yangtools.yang.common.Uint8;
 
-// FIXME: this generator is less than optimal, we should be able to do better:
-//        - we should extract raw bits from the data type
-//        - then we should use Long.compareUnsigned(), probably through CodeHelpers
-//        - finally we we should pass Long.toUnsignedString() to throws
-final class Uint64RangeGenerator extends AbstractBigRangeGenerator<Uint64> {
+final class Uint64RangeGenerator extends AbstractUnsignedRangeGenerator<Uint64> {
     Uint64RangeGenerator() {
-        super(Uint64.class);
+        super(Uint64.class, long.class.getName(), Uint64.MIN_VALUE, Uint64.MAX_VALUE);
     }
 
     @Override
@@ -33,6 +30,27 @@ final class Uint64RangeGenerator extends AbstractBigRangeGenerator<Uint64> {
 
     @Override
     protected String format(final Uint64 value) {
-        return "org.opendaylight.yangtools.yang.common.Uint64.fromLongBits(" + value.longValue() + "L)";
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    String codeHelpersThrow() {
+        return "throwInvalidRangeUnsigned";
+    }
+
+    @Override
+    void appendMaxCheck(final StringBuilder sb, final Uint64 max, final Function<Class<?>, String> classImporter) {
+        appendCompare(sb, classImporter, max, "<=");
+    }
+
+    @Override
+    void appendMinCheck(final StringBuilder sb, final Uint64 min, final Function<Class<?>, String> classImporter) {
+        appendCompare(sb, classImporter, min, ">=");
+    }
+
+    private static StringBuilder appendCompare(final StringBuilder sb, final Function<Class<?>, String> classImporter,
+            final Uint64 val, final String operator) {
+        return sb.append(classImporter.apply(Long.class)).append(".compareUnsigned(value, ").append(val.longValue())
+                .append("L) ").append(operator).append(" 0");
     }
 }
