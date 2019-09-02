@@ -102,7 +102,7 @@ public class GenerateInnerClassForBitsAndUnionInLeavesTest {
                                         }
                                     } else if (unionLeafProperty.getName().equals("uint8")) {
                                         uint8UnionPropertyFound = true;
-                                        if (unionLeafPropertyType.equals("Short")) {
+                                        if (unionLeafPropertyType.equals("Uint8")) {
                                             uint8UnionPropertyTypeOK = true;
                                         }
                                     }
