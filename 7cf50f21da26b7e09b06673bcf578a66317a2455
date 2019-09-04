@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f345958f_a603e7ee",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-09-04T18:45:03Z",
+      "side": 1,
+      "message": "this should be static with a different signature",
+      "range": {
+        "startLine": 240,
+        "startChar": 12,
+        "endLine": 240,
+        "endChar": 23
+      },
+      "revId": "7cf50f21da26b7e09b06673bcf578a66317a2455",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "923a97aa_19bcc359",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-09-04T18:45:03Z",
+      "side": 1,
+      "message": "This should not be necessary",
+      "range": {
+        "startLine": 345,
+        "startChar": 0,
+        "endLine": 355,
+        "endChar": 5
+      },
+      "revId": "7cf50f21da26b7e09b06673bcf578a66317a2455",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
