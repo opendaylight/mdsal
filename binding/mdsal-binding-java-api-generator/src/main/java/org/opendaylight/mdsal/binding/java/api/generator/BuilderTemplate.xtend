@@ -43,6 +43,8 @@ class BuilderTemplate extends AbstractBuilderTemplate {
      */
     public static val BUILDER = "Builder";
 
+    static val AUGMENTATION_FIELD_UPPER = AUGMENTATION_FIELD.toFirstUpper
+
     /**
      * Constructs new instance of this class.
      * @throws IllegalArgumentException if <code>genType</code> equals <code>null</code>
@@ -320,9 +322,10 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «ENDFOR»
 
         «IF augmentType !== null»
-            public «type.name» add«AUGMENTATION_FIELD.toFirstUpper»(«Class.importedName»<? extends «augmentType.importedName»> augmentationType, «augmentType.importedName» augmentationValue) {
+            «val augmentTypeRef = augmentType.importedName»
+            public «type.name» add«AUGMENTATION_FIELD_UPPER»(«Class.importedName»<? extends «augmentTypeRef»> augmentationType, «augmentTypeRef» augmentationValue) {
                 if (augmentationValue == null) {
-                    return remove«AUGMENTATION_FIELD.toFirstUpper»(augmentationType);
+                    return remove«AUGMENTATION_FIELD_UPPER»(augmentationType);
                 }
 
                 if (!(this.«AUGMENTATION_FIELD» instanceof «HashMap.importedName»)) {
@@ -333,7 +336,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
                 return this;
             }
 
-            public «type.name» remove«AUGMENTATION_FIELD.toFirstUpper»(«Class.importedName»<? extends «augmentType.importedName»> augmentationType) {
+            public «type.name» remove«AUGMENTATION_FIELD_UPPER»(«Class.importedName»<? extends «augmentTypeRef»> augmentationType) {
                 if (this.«AUGMENTATION_FIELD» instanceof «HashMap.importedName») {
                     this.«AUGMENTATION_FIELD».remove(augmentationType);
                 }
