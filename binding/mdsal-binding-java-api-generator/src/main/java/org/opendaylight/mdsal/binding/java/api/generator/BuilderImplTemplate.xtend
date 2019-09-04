@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.java.api.generator
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_OBJECT
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_HASHCODE_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
 import java.util.Collection
@@ -75,11 +76,7 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
                     return hash;
                 }
 
-                «hashCodeResult(properties)»
-                «IF augmentType !== null»
-                    result = prime * result + «JU_OBJECTS.importedName».hashCode(augmentations());
-                «ENDIF»
-
+                final int result = «targetType.importedName».«BINDING_HASHCODE_NAME»(this);
                 hash = result;
                 hashValid = true;
                 return result;
