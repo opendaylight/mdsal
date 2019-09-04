@@ -51,9 +51,9 @@ public class GeneratedTypesTest {
         assertNotNull(simpleContainer);
         assertNotNull(nestedContainer);
         // FIXME: split this into getter/default/static asserts
-        assertEquals(5, simpleContainer.getMethodDefinitions().size());
+        assertEquals(6, simpleContainer.getMethodDefinitions().size());
         // FIXME: split this into getter/default/static asserts
-        assertEquals(4, nestedContainer.getMethodDefinitions().size());
+        assertEquals(5, nestedContainer.getMethodDefinitions().size());
 
         int getFooMethodCounter = 0;
         int getBarMethodCounter = 0;
@@ -134,9 +134,9 @@ public class GeneratedTypesTest {
         assertNotNull(simpleContainer);
         assertNotNull(nestedContainer);
         // FIXME: split this into getter/default/static asserts
-        assertEquals(5, simpleContainer.getMethodDefinitions().size());
+        assertEquals(6, simpleContainer.getMethodDefinitions().size());
         // FIXME: split this into getter/default/static asserts
-        assertEquals(4, nestedContainer.getMethodDefinitions().size());
+        assertEquals(5, nestedContainer.getMethodDefinitions().size());
 
         int getFooMethodCounter = 0;
         int getBarMethodCounter = 0;
@@ -299,9 +299,9 @@ public class GeneratedTypesTest {
         }
 
         // FIXME: split this into getter/default/static asserts
-        assertEquals(4, listParentContainerMethodsCount);
+        assertEquals(5, listParentContainerMethodsCount);
         // FIXME: split this into getter/default/static asserts
-        assertEquals(3, listChildContainerMethodsCount);
+        assertEquals(4, listChildContainerMethodsCount);
         assertEquals(1, getSimpleListKeyMethodCount);
         assertEquals(1, listKeyClassCount);
 
@@ -327,7 +327,7 @@ public class GeneratedTypesTest {
         assertEquals(1, getBarMethodCount);
 
         // FIXME: split this into getter/default/static asserts
-        assertEquals(8, simpleListMethodsCount);
+        assertEquals(9, simpleListMethodsCount);
     }
 
     @Test
