@@ -91,11 +91,6 @@ public abstract class AugmentableCodecDataObject<T extends DataObject & Augmenta
     }
 
     @Override
-    final int codecAugmentedHashCode() {
-        return 31 * super.codecAugmentedHashCode() + augmentations().hashCode();
-    }
-
-    @Override
     final boolean codecAugmentedEquals(final T other) {
         return super.codecAugmentedEquals(other) && augmentations().equals(getAllAugmentations(other));
     }
