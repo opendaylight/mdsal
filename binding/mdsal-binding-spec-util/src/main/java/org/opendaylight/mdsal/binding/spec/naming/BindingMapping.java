@@ -79,6 +79,8 @@ public final class BindingMapping {
      */
     public static final @NonNull String DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME = "implementedInterface";
 
+    public static final @NonNull String BINDING_HASHCODE_NAME = "bindingHashCode";
+
     /**
      * Prefix for getter methods working on top of boolean.
      */
