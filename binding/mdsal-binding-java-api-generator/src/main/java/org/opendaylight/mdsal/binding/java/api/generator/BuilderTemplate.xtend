@@ -13,6 +13,7 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTA
 
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
+import com.google.common.collect.Iterables
 import java.math.BigInteger
 import java.util.ArrayList
 import java.util.Collection
@@ -456,10 +457,10 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     }
 
     private static def hasNonDefaultMethods(GeneratedType type) {
-        !type.methodDefinitions.isEmpty && type.methodDefinitions.exists([def | !def.isDefault])
+        !type.methodDefinitions.isEmpty && Iterables.any(type.methodDefinitions, [def | !def.isDefault])
     }
 
     private static def nonDefaultMethods(GeneratedType type) {
-        type.methodDefinitions.filter([def | !def.isDefault])
+        Iterables.filter(type.methodDefinitions, [def | !def.isDefault])
     }
 }
