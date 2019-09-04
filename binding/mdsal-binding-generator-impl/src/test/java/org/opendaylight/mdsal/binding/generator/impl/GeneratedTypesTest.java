@@ -60,8 +60,10 @@ public class GeneratedTypesTest {
         }
         assertNotNull(simpleContainer);
         assertNotNull(nestedContainer);
-        assertEquals(4, simpleContainer.getMethodDefinitions().size());
-        assertEquals(3, nestedContainer.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(5, simpleContainer.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(4, nestedContainer.getMethodDefinitions().size());
 
         int getFooMethodCounter = 0;
         int getBarMethodCounter = 0;
@@ -144,8 +146,10 @@ public class GeneratedTypesTest {
         }
         assertNotNull(simpleContainer);
         assertNotNull(nestedContainer);
-        assertEquals(4, simpleContainer.getMethodDefinitions().size());
-        assertEquals(3, nestedContainer.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(5, simpleContainer.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(4, nestedContainer.getMethodDefinitions().size());
 
         int getFooMethodCounter = 0;
         int getBarMethodCounter = 0;
@@ -310,8 +314,10 @@ public class GeneratedTypesTest {
             }
         }
 
-        assertEquals(3, listParentContainerMethodsCount);
-        assertEquals(2, listChildContainerMethodsCount);
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(4, listParentContainerMethodsCount);
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(3, listChildContainerMethodsCount);
         assertEquals(1, getSimpleListKeyMethodCount);
         assertEquals(1, listKeyClassCount);
 
@@ -336,7 +342,8 @@ public class GeneratedTypesTest {
         assertEquals(0, setSimpleLeafListMethodCount);
         assertEquals(1, getBarMethodCount);
 
-        assertEquals(7, simpleListMethodsCount);
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(8, simpleListMethodsCount);
     }
 
     @Test

@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
@@ -65,6 +66,9 @@ public class Mdsal320Test {
         assertEquals("implementedInterface", getImplIface.getName());
         assertTrue(getImplIface.isDefault());
         assertTrue(it.hasNext());
+
+        final MethodSignature bindingHashCode = it.next();
+        assertEquals(BindingMapping.BINDING_HASHCODE_NAME, bindingHashCode.getName());
 
         final MethodSignature getBar = it.next();
         assertFalse(it.hasNext());

@@ -116,7 +116,8 @@ public class UsesTest {
                 "org.opendaylight.yang.gen.v1.urn.grouping.uses._case.rev130718", groupingCaseTest.getPackageName());
 
         containsInterface("GroupingCaseTest", caseC);
-        assertEquals("Case C shouldn't contain any method.", 1, caseC.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(2, caseC.getMethodDefinitions().size());
 
         assertEquals("Number of method in GroupingCaseTest is incorrect", 2, groupingCaseTest.getMethodDefinitions()
                 .size());
@@ -167,7 +168,8 @@ public class UsesTest {
 
         assertEquals("Number of method in GroupingContainerTestis incorrect", 3, groupingContainerTest
                 .getMethodDefinitions().size());
-        assertEquals("Number of method in ContainerTest is incorrect", 2, containerTest.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(3, containerTest.getMethodDefinitions().size());
 
         containsMethods(groupingContainerTest.getMethodDefinitions(), new NameTypePattern(
                 "getLeafGroupingContainerTest1", "String"), new NameTypePattern("getLeafGroupingContainerTest2",
@@ -290,11 +292,12 @@ public class UsesTest {
 
         assertEquals("Number of method in GroupingListTest is incorrect", 6, groupingListTest.getMethodDefinitions()
                 .size());
-        assertEquals("Number of method in ListTest is incorrect", 2, listTest.getMethodDefinitions().size());
-        assertEquals("Number of method in ContainerGroupingListTest is incorrect", 2, containerGroupingListTest
-                .getMethodDefinitions().size());
-        assertEquals("Number of method in ListGroupingListTest is incorrect", 2, listGroupingListTest
-                .getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(3, listTest.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(3, containerGroupingListTest.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(3, listGroupingListTest.getMethodDefinitions().size());
 
         containsMethods(groupingListTest.getMethodDefinitions(), new NameTypePattern("getContainerGroupingListTest",
                 "ContainerGroupingListTest"), new NameTypePattern("getLeafGroupingListTest", "String"),
@@ -431,14 +434,16 @@ public class UsesTest {
         containsInterface("GroupingRpcInputTest", rpcTestInput);
         containsInterface("GroupingRpcOutputTest", rpcTestOutput);
 
-        assertEquals("Number of method in RpcTestInput is incorrect", 1, rpcTestInput.getMethodDefinitions().size());
-        assertEquals("Number of method in RpcTestOutput is incorrect", 1, rpcTestOutput.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(2, rpcTestInput.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(2, rpcTestOutput.getMethodDefinitions().size());
         assertEquals("Number of method in GroupingRpcInputTest is incorrect", 3, groupingRpcInputTest
                 .getMethodDefinitions().size());
         assertEquals("Number of method in GroupingRpcOutputTest is incorrect", 2, groupingRpcOutputTest
                 .getMethodDefinitions().size());
-        assertEquals("Number of method in ContainerGroupingRpcInputTest is incorrect", 2, containerGroupingRpcInputTest
-                .getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(3, containerGroupingRpcInputTest.getMethodDefinitions().size());
 
         containsMethods(groupingRpcInputTest.getMethodDefinitions(), new NameTypePattern(
                 "getContainerGroupingRpcInputTest", "ContainerGroupingRpcInputTest"), new NameTypePattern(
@@ -489,11 +494,10 @@ public class UsesTest {
 
         containsInterface("GroupingAugmentTest", containerAugment1);
 
-        assertEquals("Number of method in GroupingCaseTest is incorrect", 1, containerAugment1.getMethodDefinitions()
-                .size());
-
-        assertEquals("Number of method in ContainerAugment1 is incorrect", 1, containerAugment1.getMethodDefinitions()
-                .size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(2, containerAugment1.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(2, containerAugment1.getMethodDefinitions().size());
         assertEquals("Number of method in GroupingCaseTest is incorrect", 2, groupingAugmentTest.getMethodDefinitions()
                 .size());
 
@@ -556,12 +560,12 @@ public class UsesTest {
 
         containsInterface("GroupingNotificationTest", notificationTest);
 
-        assertEquals("Number of method in NotificationTest is incorrect", 2, notificationTest.getMethodDefinitions()
-                .size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(3, notificationTest.getMethodDefinitions().size());
         assertEquals("Number of method in GroupingNotificationTest is incorrect", 3, groupingNotificationTest
                 .getMethodDefinitions().size());
-        assertEquals("Number of method in ContainerGroupingNotificationTest is incorrect", 2,
-                containerGroupingNotificationTest.getMethodDefinitions().size());
+        // FIXME: split this into getter/default/static asserts
+        assertEquals(3, containerGroupingNotificationTest.getMethodDefinitions().size());
 
         containsMethods(notificationTest.getMethodDefinitions(), new NameTypePattern("getLeafNotificationTest",
                 "String"));

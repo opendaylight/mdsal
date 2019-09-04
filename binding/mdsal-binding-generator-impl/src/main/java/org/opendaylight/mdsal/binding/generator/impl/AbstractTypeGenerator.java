@@ -38,6 +38,7 @@ import static org.opendaylight.mdsal.binding.model.util.Types.augmentationTypeFo
 import static org.opendaylight.mdsal.binding.model.util.Types.classType;
 import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.listenableFutureTypeFor;
+import static org.opendaylight.mdsal.binding.model.util.Types.primitiveIntType;
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveVoidType;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 import static org.opendaylight.mdsal.binding.model.util.Types.wildcardTypeFor;
@@ -279,7 +280,7 @@ abstract class AbstractTypeGenerator {
             return null;
         }
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(context, node, baseInterface);
-        defaultImplementedInterace(genType);
+        addConcreteInterfaceMethods(genType);
         annotateDeprecatedIfNecessary(node, genType);
 
         final Module module = context.module();
@@ -538,7 +539,7 @@ abstract class AbstractTypeGenerator {
         addImplementedInterfaceFromUses(schema, outType);
         outType.addImplementsType(type);
         outType.addImplementsType(augmentable(outType));
-        defaultImplementedInterace(outType);
+        addConcreteInterfaceMethods(outType);
         annotateDeprecatedIfNecessary(rpc, outType);
         resolveDataSchemaNodes(context, outType, outType, schema.getChildNodes(), false);
         context.addChildNodeType(schema, outType);
@@ -578,7 +579,7 @@ abstract class AbstractTypeGenerator {
 
                 final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition(
                     context.modulePackageName(), notification, DATA_OBJECT, context);
-                defaultImplementedInterace(notificationInterface);
+                addConcreteInterfaceMethods(notificationInterface);
                 annotateDeprecatedIfNecessary(notification, notificationInterface);
                 notificationInterface.addImplementsType(NOTIFICATION);
                 context.addChildNodeType(notification, notificationInterface);
@@ -927,7 +928,7 @@ abstract class AbstractTypeGenerator {
             JavaTypeName.create(augmentPackageName, augTypeName));
 
         augTypeBuilder.addImplementsType(DATA_OBJECT);
-        defaultImplementedInterace(augTypeBuilder);
+        addConcreteInterfaceMethods(augTypeBuilder);
 
         augTypeBuilder.addImplementsType(augmentationTypeFor(targetTypeRef));
         annotateDeprecatedIfNecessary(augSchema, augTypeBuilder);
@@ -1138,7 +1139,7 @@ abstract class AbstractTypeGenerator {
             if (caseNode != null && !caseNode.isAddedByUses() && !caseNode.isAugmenting()) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(context, caseNode);
                 caseTypeBuilder.addImplementsType(refChoiceType);
-                defaultImplementedInterace(caseTypeBuilder);
+                addConcreteInterfaceMethods(caseTypeBuilder);
                 annotateDeprecatedIfNecessary(caseNode, caseTypeBuilder);
                 context.addCaseType(caseNode.getPath(), caseTypeBuilder);
                 context.addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
@@ -1215,7 +1216,7 @@ abstract class AbstractTypeGenerator {
             if (caseNode != null) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(context, caseNode);
                 caseTypeBuilder.addImplementsType(targetType);
-                defaultImplementedInterace(caseTypeBuilder);
+                addConcreteInterfaceMethods(caseTypeBuilder);
 
                 CaseSchemaNode node = null;
                 final String caseLocalName = caseNode.getQName().getLocalName();
@@ -1942,6 +1943,15 @@ abstract class AbstractTypeGenerator {
             default:
                 throw new IllegalStateException("Unhandled status in " + node);
         }
+    }
+
+    private static void addConcreteInterfaceMethods(final GeneratedTypeBuilder typeBuilder) {
+        defaultImplementedInterace(typeBuilder);
+
+        typeBuilder.addMethod(BindingMapping.BINDING_HASHCODE_NAME)
+            .setAccessModifier(AccessModifier.PUBLIC)
+            .setStatic(true)
+            .setReturnType(primitiveIntType()).setDefault(true);
     }
 
     private static void narrowImplementedInterface(final GeneratedTypeBuilder typeBuilder) {
