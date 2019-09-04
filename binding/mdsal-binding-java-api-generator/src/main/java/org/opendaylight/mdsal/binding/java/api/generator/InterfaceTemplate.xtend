@@ -7,20 +7,25 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
-import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.getGetterMethodForNonnull
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isGetterMethodName
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isNonnullMethodName
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_HASHCODE_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
 import java.util.List
+import java.util.Map.Entry
+import java.util.Set
 import org.gaul.modernizer_maven_annotations.SuppressModernizer
 import org.opendaylight.mdsal.binding.model.api.AnnotationType
 import org.opendaylight.mdsal.binding.model.api.Constant
 import org.opendaylight.mdsal.binding.model.api.Enumeration
+import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
+import org.opendaylight.yangtools.yang.binding.AugmentationHolder
 import org.opendaylight.yangtools.yang.binding.CodeHelpers
 
 /**
@@ -47,6 +52,8 @@ class InterfaceTemplate extends BaseTemplate {
      * List of generated types which are enclosed inside <code>genType</code>
      */
     val List<GeneratedType> enclosedGeneratedTypes
+
+	var Entry<Type, Set<GeneratedProperty>> typeAnalysis
 
     /**
      * Creates the instance of this class which is used for generating the interface file source
@@ -184,6 +191,7 @@ class InterfaceTemplate extends BaseTemplate {
         } else {
             switch method.name {
                 case DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME : generateDefaultImplementedInterface
+                case BINDING_HASHCODE_NAME : generateBindingHashCode
             }
         }
     }
@@ -208,13 +216,48 @@ class InterfaceTemplate extends BaseTemplate {
         }
     '''
 
+    def private generateBindingHashCode() {
+        analyzeType
+        val augmentable = typeAnalysis.key !== null
+        return '''
+            /**
+             * Default implementation of {@link «Object.importedName»#hashCode()} contract for this interface.
+             * Implementations of this interface are encouraged to defer to this method to get consistent hashing
+             * results across all implementation.
+            «IF augmentable»
+             *
+             * <p>
+             * Note that in order for an implementation to take advantage of this method, it must also implement
+             * the «AugmentationHolder.importedName» interface contract.
+            «ENDIF»
+             *
+             * @return Hash code value of data modeled by this interface.
+            «IF augmentable»
+             * @throws VerifyException if this method is invoked on a an implementation which does not implement
+             *                         AugmentationHolder interface.
+            «ENDIF»
+             */
+            default int «BINDING_HASHCODE_NAME»() {
+                final int prime = 31;
+                int result = 1;
+                «FOR property : typeAnalysis.value»
+                    result = prime * result + «property.importedUtilClass».hashCode(«property.getterMethodName»());
+                «ENDFOR»
+                «IF augmentable»
+                    result = prime * result + «CodeHelpers.importedName».hashAugmentations(this);
+                «ENDIF»
+                return result;
+            }
+        '''
+    }
+
     def private generateNonnullMethod(MethodSignature method) '''
         «val ret = method.returnType»
         «val name = method.name»
         «formatDataForJavaDoc(method, "@return " + asCode(ret.fullyQualifiedName) + " " + asCode(propertyNameFromGetter(method)) + ", or an empty list if it is not present")»
         «method.annotations.generateAnnotations»
         default «ret.importedNonNull» «name»() {
-            return «CodeHelpers.importedName».nonnull(«getGetterMethodForNonnull(name)»());
+            return «CodeHelpers.importedName».nonnull(«name.getGetterMethodForNonnull»());
         }
     '''
 
@@ -228,5 +271,11 @@ class InterfaceTemplate extends BaseTemplate {
     def private static boolean isObject(Type type) {
         // The return type has a package, so it's not a primitive type
         return !type.getPackageName().isEmpty()
+    }
+
+    def private analyzeType() {
+        if (typeAnalysis === null) {
+            typeAnalysis = analyzeTypeHierarchy(type)
+        }
     }
 }
