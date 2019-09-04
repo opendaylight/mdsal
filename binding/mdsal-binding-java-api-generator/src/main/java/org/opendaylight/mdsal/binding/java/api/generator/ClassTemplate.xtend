@@ -201,9 +201,12 @@ class ClassTemplate extends BaseTemplate {
     def protected constructors() '''
         «IF genTO.unionType»
             «genUnionConstructor»
+        «ELSEIF genTO.typedef && allProperties.size == 1 && allProperties.get(0).name.equals("value")»
+            «typedefConstructor»
         «ELSE»
             «allValuesConstructor»
         «ENDIF»
+
         «IF !allProperties.empty»
             «copyConstructor»
         «ENDIF»
@@ -212,11 +215,28 @@ class ClassTemplate extends BaseTemplate {
         «ENDIF»
     '''
 
-    def protected allValuesConstructor() '''
-    «IF genTO.typedef && allProperties.size == 1 && allProperties.get(0).name.equals("value")»
-        @«ConstructorParameters.importedName»("value")
-        @«ConstructorProperties.importedName»("value")
-    «ENDIF»
+    def private allValuesConstructor() '''
+    public «type.name»(«allProperties.asArgumentsDeclaration») {
+        «IF false == parentProperties.empty»
+            super(«parentProperties.asArguments»);
+        «ENDIF»
+        «FOR p : allProperties»
+            «generateRestrictions(type, p.fieldName.toString, p.returnType)»
+        «ENDFOR»
+
+        «FOR p : properties»
+            «IF p.returnType.importedName.contains("[]")»
+                this.«p.fieldName» = «p.fieldName» == null ? null : «p.fieldName».clone();
+            «ELSE»
+                this.«p.fieldName» = «p.fieldName»;
+            «ENDIF»
+        «ENDFOR»
+    }
+    '''
+
+    def private typedefConstructor() '''
+    @«ConstructorParameters.importedName»("value")
+    @«ConstructorProperties.importedName»("value")
     public «type.name»(«allProperties.asArgumentsDeclaration») {
         «IF false == parentProperties.empty»
             super(«parentProperties.asArguments»);
@@ -228,26 +248,18 @@ class ClassTemplate extends BaseTemplate {
         «/*
          * If we have patterns, we need to apply them to the value field. This is a sad
          * consequence of how this code is structured.
-         */
-        IF genTO.typedef && allProperties.size == 1 && allProperties.get(0).name.equals("value")»
-            «CodeHelpers.importedName».requireValue(_value);
-            «genPatternEnforcer("_value")»
-        «ENDIF»
+         */»
+        «CodeHelpers.importedName».requireValue(_value);
+        «genPatternEnforcer("_value")»
 
         «FOR p : properties»
             «IF p.returnType.importedName.contains("[]")»
-                «IF genTO.typedef && allProperties.size == 1 && allProperties.get(0).name
-                .equals("value")»
                 this.«p.fieldName» = «p.fieldName».clone();
-                «ELSE»
-                this.«p.fieldName» = «p.fieldName» == null ? null : «p.fieldName».clone();
-                «ENDIF»
             «ELSE»
-            this.«p.fieldName» = «p.fieldName»;
+                this.«p.fieldName» = «p.fieldName»;
             «ENDIF»
         «ENDFOR»
     }
-
     '''
 
     def protected genUnionConstructor() '''
@@ -257,7 +269,6 @@ class ClassTemplate extends BaseTemplate {
             «genConstructor(p, other)»
         «ENDIF»
     «ENDFOR»
-
     '''
 
     def protected genConstructor(GeneratedProperty property, Iterable<GeneratedProperty> other) '''
