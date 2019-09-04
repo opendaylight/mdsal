@@ -61,6 +61,7 @@ public final class Types {
     private static final @NonNull ConcreteType LISTENABLE_FUTURE = typeForClass(ListenableFuture.class);
     private static final @NonNull ConcreteType MAP_TYPE = typeForClass(Map.class);
     private static final @NonNull ConcreteType OBJECT = typeForClass(Object.class);
+    private static final @NonNull ConcreteType PRIMITIVE_INT = typeForClass(int.class);
     private static final @NonNull ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
     private static final @NonNull ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
     private static final @NonNull ConcreteType SET_TYPE = typeForClass(Set.class);
@@ -99,6 +100,15 @@ public final class Types {
      */
     public static @NonNull ConcreteType objectType() {
         return OBJECT;
+    }
+
+    /**
+     * Returns an instance of {@link ConcreteType} which represents JAVA <code>int</code> type.
+     *
+     * @return <code>ConcreteType</code> instance which represents JAVA <code>int</code>
+     */
+    public static @NonNull ConcreteType primitiveIntType() {
+        return PRIMITIVE_INT;
     }
 
     /**
