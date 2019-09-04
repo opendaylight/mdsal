@@ -49,9 +49,8 @@ class BuilderTemplate extends AbstractBuilderTemplate {
      * Constructs new instance of this class.
      * @throws IllegalArgumentException if <code>genType</code> equals <code>null</code>
      */
-    new(GeneratedType genType, GeneratedType targetType, Set<GeneratedProperty> properties, Type augmentType,
-            Type keyType) {
-        super(genType, targetType, properties, augmentType, keyType)
+    new(GeneratedType genType, GeneratedType targetType, Type keyType) {
+        super(genType, targetType, keyType)
     }
 
     override isLocalInnerClass(JavaTypeName name) {

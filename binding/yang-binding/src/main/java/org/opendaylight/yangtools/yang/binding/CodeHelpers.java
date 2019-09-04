@@ -343,6 +343,18 @@ public final class CodeHelpers {
     }
 
     /**
+     * Utility for extracting augmentations from an implementation of an {@link Augmentable} interface.
+     *
+     * @param obj Implementation object
+     * @return hash code of augmentations
+     * @throws VerifyException if obj is null or it does not implement the AugmentationHolder contract
+     */
+    public static int hashAugmentations(final @NonNull Augmentable<?> obj) {
+        verify(obj instanceof AugmentationHolder, "Cannot extract augmentations from %s", obj);
+        return Objects.hashCode(((AugmentationHolder<?>) obj).augmentations());
+    }
+
+    /**
      * The constant '31' is the result of folding this code:
      * <pre>
      *     final int prime = 31;

@@ -40,7 +40,7 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 
 public final class Types {
-    private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER = new CacheLoader<Class<?>, ConcreteType>() {
+    private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER = new CacheLoader<>() {
         @Override
         public ConcreteType load(final Class<?> key) {
             return new ConcreteTypeImpl(JavaTypeName.create(key), null);
@@ -61,6 +61,7 @@ public final class Types {
     private static final ConcreteType LISTENABLE_FUTURE = typeForClass(ListenableFuture.class);
     private static final ConcreteType MAP_TYPE = typeForClass(Map.class);
     private static final ConcreteType OBJECT = typeForClass(Object.class);
+    private static final ConcreteType PRIMITIVE_INT = typeForClass(int.class);
     private static final ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
     private static final ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
     private static final ConcreteType SET_TYPE = typeForClass(Set.class);
@@ -99,6 +100,15 @@ public final class Types {
      */
     public static ConcreteType objectType() {
         return OBJECT;
+    }
+
+    /**
+     * Returns an instance of {@link ConcreteType} which represents JAVA <code>int</code> type.
+     *
+     * @return <code>ConcreteType</code> instance which represents JAVA <code>int</code>
+     */
+    public static ConcreteType primitiveIntType() {
+        return PRIMITIVE_INT;
     }
 
     /**
