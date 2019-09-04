@@ -11,7 +11,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSortedSet;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
@@ -99,11 +98,6 @@ public final class BuilderGenerator implements CodeGenerator {
         final GeneratedType genType = type;
         final JavaTypeName origName = genType.getIdentifier();
 
-        final Set<MethodSignature> methods = new LinkedHashSet<>();
-        final Type augmentType = createMethods(genType, methods);
-        final Set<MethodSignature> sortedMethods = ImmutableSortedSet.orderedBy(METHOD_COMPARATOR)
-                .addAll(methods).build();
-
         final GeneratedTypeBuilder builderTypeBuilder = new CodegenGeneratedTypeBuilder(
             origName.createSibling(origName.simpleName() + BuilderTemplate.BUILDER_STR));
 
@@ -111,8 +105,7 @@ public final class BuilderGenerator implements CodeGenerator {
             origName.simpleName() + "Impl");
         implTypeBuilder.addImplementsType(genType);
 
-        return new BuilderTemplate(builderTypeBuilder.build(), genType, propertiesFromMethods(sortedMethods),
-            augmentType, getKey(genType));
+        return new BuilderTemplate(builderTypeBuilder.build(), genType, getKey(genType));
     }
 
     private static Type getKey(final GeneratedType type) {
@@ -169,7 +162,7 @@ public final class BuilderGenerator implements CodeGenerator {
     /**
      * Creates set of generated property instances from getter <code>methods</code>.
      *
-     * @param set of method signature instances which should be transformed to list of properties
+     * @param methods set of method signature instances which should be transformed to list of properties
      * @return set of generated property instances which represents the getter <code>methods</code>
      */
     private static Set<BuilderGeneratedProperty> propertiesFromMethods(final Collection<MethodSignature> methods) {
