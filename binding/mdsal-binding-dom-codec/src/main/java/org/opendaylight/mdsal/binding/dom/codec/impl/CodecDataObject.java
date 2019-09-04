@@ -51,7 +51,7 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
             return cached;
         }
 
-        final int result = codecAugmentedHashCode();
+        final int result = codecHashCode();
         cachedHashcode = result;
         return result;
     }
@@ -112,11 +112,6 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
     @SuppressWarnings("rawtypes")
     final @NonNull NormalizedNodeContainer codecData() {
         return data;
-    }
-
-    // Non-final to allow specialization in AugmentableCodecDataObject
-    int codecAugmentedHashCode() {
-        return codecHashCode();
     }
 
     // Non-final to allow specialization in AugmentableCodecDataObject
