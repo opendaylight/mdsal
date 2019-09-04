@@ -7,10 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
-import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.getGetterMethodForNonnull
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isGetterMethodName
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isNonnullMethodName
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_HASHCODE_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
 import java.util.List
 import java.util.Map.Entry
@@ -19,10 +20,12 @@ import org.gaul.modernizer_maven_annotations.SuppressModernizer
 import org.opendaylight.mdsal.binding.model.api.AnnotationType
 import org.opendaylight.mdsal.binding.model.api.Constant
 import org.opendaylight.mdsal.binding.model.api.Enumeration
+import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
+import org.opendaylight.yangtools.yang.binding.AugmentationHolder
 
 /**
  * Template for generating JAVA interfaces.
@@ -179,6 +182,7 @@ class InterfaceTemplate extends BaseTemplate {
         } else {
             switch method.name {
                 case DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME : generateDefaultImplementedInterface
+                case BINDING_HASHCODE_NAME : generateBindingHashCode
             }
         }
     }
@@ -202,6 +206,41 @@ class InterfaceTemplate extends BaseTemplate {
             return «type.fullyQualifiedName».class;
         }
     '''
+
+    def private generateBindingHashCode() {
+        analyzeType
+        val augmentable = typeAnalysis.key !== null
+        return '''
+            /**
+             * Default implementation of {@link «Object.importedName»#hashCode()} contract for this interface.
+             * Implementations of this interface are encouraged to defer to this method to get consistent hashing
+             * results across all implementation.
+            «IF augmentable»
+             *
+             * <p>
+             * Note that in order for an implementation to take advantage of this method, it must also implement
+             * the «AugmentationHolder.importedName» interface contract.
+            «ENDIF»
+             *
+             * @return Hash code value of data modeled by this interface.
+             */
+            «IF augmentable»
+            static <T$$ extends «type.fullyQualifiedName» & «AugmentationHolder.importedName»<?>> int «BINDING_HASHCODE_NAME»(final @«NONNULL.importedName» T$$ obj) {
+            «ELSE»
+            static int «BINDING_HASHCODE_NAME»(final «type.fullyQualifiedName» obj) {
+            «ENDIF»
+                final int prime = 31;
+                int result = 1;
+                «FOR property : typeAnalysis.value»
+                    result = prime * result + «property.importedUtilClass».hashCode(obj.«property.getterMethodName»());
+                «ENDFOR»
+                «IF augmentable»
+                    result = prime * result + «CODEHELPERS.importedName».hashAugmentations(obj);
+                «ENDIF»
+                return result;
+            }
+        '''
+    }
 
     def private generateNonnullMethod(MethodSignature method) '''
         «val ret = method.returnType»
