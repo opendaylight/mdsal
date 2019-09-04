@@ -81,10 +81,10 @@ public final class BindingMapping {
     public static final @NonNull String DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME = "implementedInterface";
 
     /**
-     * Name of default {@link Object#toString()} implementation for instantiated DataObjects. Each such generated
+     * Name of default {@link Object#hashCode()} implementation for instantiated DataObjects. Each such generated
      * interface contains this static method.
      */
-    public static final @NonNull String BINDING_TO_STRING_NAME = "bindingToString";
+    public static final @NonNull String BINDING_HASHCODE_NAME = "bindingHashCode";
 
     /**
      * Name of {@link ScalarTypeObject#getValue()}.

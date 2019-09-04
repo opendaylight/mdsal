@@ -64,8 +64,8 @@ public class Mdsal320Test {
         assertTrue(getImplIface.isDefault());
         assertTrue(it.hasNext());
 
-        final MethodSignature bindingToString = it.next();
-        assertEquals(BindingMapping.BINDING_TO_STRING_NAME, bindingToString.getName());
+        final MethodSignature bindingHashCode = it.next();
+        assertEquals(BindingMapping.BINDING_HASHCODE_NAME, bindingHashCode.getName());
 
         final MethodSignature getBar = it.next();
         assertFalse(it.hasNext());

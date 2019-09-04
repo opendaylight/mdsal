@@ -42,6 +42,7 @@ import static org.opendaylight.mdsal.binding.model.util.Types.classType;
 import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.listenableFutureTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.mapTypeFor;
+import static org.opendaylight.mdsal.binding.model.util.Types.primitiveIntType;
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveVoidType;
 import static org.opendaylight.mdsal.binding.model.util.Types.wildcardTypeFor;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
@@ -2059,10 +2060,10 @@ abstract class AbstractTypeGenerator {
     private static void addConcreteInterfaceMethods(final GeneratedTypeBuilder typeBuilder) {
         defaultImplementedInterace(typeBuilder);
 
-        typeBuilder.addMethod(BindingMapping.BINDING_TO_STRING_NAME)
+        typeBuilder.addMethod(BindingMapping.BINDING_HASHCODE_NAME)
             .setAccessModifier(AccessModifier.PUBLIC)
             .setStatic(true)
-            .setReturnType(STRING);
+            .setReturnType(primitiveIntType());
     }
 
     private static void narrowImplementedInterface(final GeneratedTypeBuilder typeBuilder) {
