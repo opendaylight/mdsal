@@ -19,6 +19,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +32,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFac
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -97,10 +99,12 @@ public class Mdsal500Test {
             throws InterruptedException, ExecutionException, TimeoutException {
         SwitchOutput baSwitchOutput = new SwitchOutputBuilder().build();
 
-        biRpcProviderService.registerRpcImplementation((rpc, input) ->
-            FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec().currentSerializer()
-                    .toNormalizedNodeRpcData(baSwitchOutput))),
-            DOMRpcIdentifier.create(SWITCH_QNAME));
+        Map<DOMRpcIdentifier, DOMRpcImplementation> implementationMap =
+                Map.of(DOMRpcIdentifier.create(SWITCH_QNAME), (rpc, input) ->
+                        FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec()
+                                .currentSerializer().toNormalizedNodeRpcData(baSwitchOutput))));
+
+        biRpcProviderService.registerRpcImplementations(implementationMap);
 
         final Mdsal500Service baSwitchService =
                 baRpcConsumerService.getRpcService(Mdsal500Service.class);

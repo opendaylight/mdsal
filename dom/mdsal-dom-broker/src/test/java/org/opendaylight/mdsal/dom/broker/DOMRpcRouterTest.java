@@ -82,7 +82,6 @@ public class DOMRpcRouterTest extends TestUtils {
     public void close() {
         final DOMRpcRouter rpcRouter = new DOMRpcRouter();
         rpcRouter.close();
-
         final DOMRpcProviderService svc = rpcRouter.getRpcProviderService();
         assertThrows(RejectedExecutionException.class, () -> svc.registerRpcImplementation(getTestRpcImplementation(),
             DOMRpcIdentifier.create(TestModel.TEST_QNAME, null)));
