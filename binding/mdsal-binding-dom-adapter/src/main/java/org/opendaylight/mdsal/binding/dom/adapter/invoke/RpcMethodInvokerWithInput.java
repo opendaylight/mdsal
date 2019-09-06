@@ -15,7 +15,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
-class RpcMethodInvokerWithInput extends RpcMethodInvoker {
+final class RpcMethodInvokerWithInput extends RpcMethodInvoker {
     private static final MethodType INVOCATION_SIGNATURE = MethodType.methodType(ListenableFuture.class,
         RpcService.class, DataObject.class);
 
@@ -27,7 +27,7 @@ class RpcMethodInvokerWithInput extends RpcMethodInvoker {
 
     @Override
     @SuppressWarnings("checkstyle:illegalCatch")
-    ListenableFuture<RpcResult<?>> invokeOn(final RpcService impl, final DataObject input) {
+    public ListenableFuture<RpcResult<?>> invokeOn(final RpcService impl, final DataObject input) {
         try {
             return (ListenableFuture<RpcResult<?>>) handle.invokeExact(impl,input);
         } catch (Throwable e) {
