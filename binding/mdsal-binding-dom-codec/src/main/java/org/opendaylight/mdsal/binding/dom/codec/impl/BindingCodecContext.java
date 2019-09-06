@@ -334,7 +334,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         return root.getNotification(notification);
     }
 
-    RpcInputCodec<?> getRpcInputCodec(final Absolute containerPath) {
+    public RpcInputCodec<?> getRpcInputCodec(final Absolute containerPath) {
         return root.getRpc(containerPath);
     }
 
@@ -477,6 +477,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final Absolute path) {
+        // FIXME: MDSAL-86: we need this for RPC/notification lookups
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 

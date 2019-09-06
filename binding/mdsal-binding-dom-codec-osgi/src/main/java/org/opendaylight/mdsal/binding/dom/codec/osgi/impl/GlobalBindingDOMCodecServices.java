@@ -13,6 +13,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.primitives.UnsignedLong;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.osgi.OSGiBindingDOMCodecServices;
@@ -24,6 +25,7 @@ import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -61,6 +63,11 @@ public final class GlobalBindingDOMCodecServices extends ForwardingBindingDOMCod
     public BindingLazyContainerNode<RpcOutput> toLazyNormalizedNodeActionOutput(
             final Class<? extends Action<?, ?, ?>> action, final NodeIdentifier identifier, final RpcOutput output) {
         return new LazyActionOutputContainerNode(identifier, output, this, action);
+    }
+
+    @Override
+    public BindingNormalizedNodeCodec<?> getRpcInputCodec(SchemaNodeIdentifier.Absolute path) {
+        return delegate().getRpcInputCodec(path);
     }
 
     @Override
