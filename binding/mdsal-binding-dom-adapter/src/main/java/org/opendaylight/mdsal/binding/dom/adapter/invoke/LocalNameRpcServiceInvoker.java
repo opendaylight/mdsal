@@ -35,10 +35,6 @@ final class LocalNameRpcServiceInvoker extends AbstractMappedRpcInvoker<String> 
 
     @Override
     protected String qnameToKey(final QName qname) {
-        if (module.equals(qname.getModule())) {
-            return qname.getLocalName();
-        } else {
-            return null;
-        }
+        return module.equals(qname.getModule()) ? qname.getLocalName() : null;
     }
 }
