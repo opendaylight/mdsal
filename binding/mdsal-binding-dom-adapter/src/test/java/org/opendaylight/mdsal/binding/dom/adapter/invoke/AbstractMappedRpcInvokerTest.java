@@ -39,10 +39,9 @@ public class AbstractMappedRpcInvokerTest {
 
         final RpcService rpcService = new TestRpcService();
 
-        final TestRpcInvokerImpl testRpcInvoker =
-                new TestRpcInvokerImpl(ImmutableMap.of(
-                        "(test)tstWithoutInput", methodWithoutInput,
-                        "(test)tstWithInput", methodWithInput));
+        final TestRpcInvokerImpl testRpcInvoker = new TestRpcInvokerImpl(ImmutableMap.of(
+            "(test)tstWithoutInput", methodWithoutInput,
+            "(test)tstWithInput", methodWithInput));
 
         assertTrue(testRpcInvoker.map.get("(test)tstWithInput") instanceof RpcMethodInvokerWithInput);
         assertTrue(testRpcInvoker.map.get("(test)tstWithoutInput") instanceof RpcMethodInvokerWithoutInput);
@@ -63,7 +62,6 @@ public class AbstractMappedRpcInvokerTest {
     }
 
     private class TestRpcInvokerImpl extends AbstractMappedRpcInvoker<String> {
-
         TestRpcInvokerImpl(final Map<String, Method> map) {
             super(map);
         }
