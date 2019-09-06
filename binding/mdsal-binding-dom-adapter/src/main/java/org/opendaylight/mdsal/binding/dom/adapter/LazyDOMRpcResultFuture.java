@@ -16,13 +16,14 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCodec;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DefaultDOMRpcException;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
+import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -37,16 +38,16 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
     };
 
     private final ListenableFuture<RpcResult<?>> bindingFuture;
-    private final BindingNormalizedNodeSerializer codec;
+    private final BindingNormalizedNodeCodec<RpcOutput> codec;
     private volatile DOMRpcResult result;
 
     private LazyDOMRpcResultFuture(final ListenableFuture<RpcResult<?>> delegate,
-            final BindingNormalizedNodeSerializer codec) {
+            final BindingNormalizedNodeCodec<RpcOutput> codec) {
         this.bindingFuture = requireNonNull(delegate, "delegate");
         this.codec = requireNonNull(codec, "codec");
     }
 
-    static @NonNull LazyDOMRpcResultFuture create(final BindingNormalizedNodeSerializer codec,
+    static @NonNull LazyDOMRpcResultFuture create(final BindingNormalizedNodeCodec<RpcOutput> codec,
             final ListenableFuture<RpcResult<?>> bindingResult) {
         return new LazyDOMRpcResultFuture(bindingResult, codec);
     }
@@ -114,7 +115,7 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
         if (input.isSuccessful()) {
             final Object inputData = input.getResult();
             if (inputData instanceof DataContainer) {
-                return new DefaultDOMRpcResult(codec.toNormalizedNodeRpcData((DataContainer) inputData));
+                return new DefaultDOMRpcResult(codec.serialize((RpcOutput) inputData));
             }
 
             return new DefaultDOMRpcResult((NormalizedNode<?, ?>) null);
