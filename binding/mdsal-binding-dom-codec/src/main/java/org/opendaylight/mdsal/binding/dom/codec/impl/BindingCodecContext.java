@@ -430,6 +430,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final SchemaPath path) {
+        // FIXME: MDSAL-86: we need this for RPC/notification lookups
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 

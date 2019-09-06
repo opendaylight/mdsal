@@ -12,12 +12,8 @@ import java.util.Map;
 import org.opendaylight.yangtools.yang.common.QName;
 
 final class QNameRpcServiceInvoker extends AbstractMappedRpcInvoker<QName> {
-    private QNameRpcServiceInvoker(final Map<QName, Method> qnameToMethod) {
+    QNameRpcServiceInvoker(final Map<QName, Method> qnameToMethod) {
         super(qnameToMethod);
-    }
-
-    static RpcServiceInvoker instanceFor(final Map<QName, Method> qnameToMethod) {
-        return new QNameRpcServiceInvoker(qnameToMethod);
     }
 
     @Override
