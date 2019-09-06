@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Method;
@@ -68,6 +69,8 @@ public abstract class RpcServiceInvoker {
         return LocalNameRpcServiceInvoker.instanceFor(module, qnameToMethod);
     }
 
+    public abstract @Nullable RpcMethodInvoker getMethodInvoker(final @NonNull QName rpcName);
+
     /**
      * Invokes supplied RPC on provided implementation of RPC Service.
      *
@@ -76,6 +79,10 @@ public abstract class RpcServiceInvoker {
      * @param input Input data for RPC.
      * @return Future which will complete once rpc procesing is finished.
      */
-    public abstract ListenableFuture<RpcResult<?>> invokeRpc(@NonNull RpcService impl, @NonNull QName rpcName,
-            @Nullable DataObject input);
+    public final ListenableFuture<RpcResult<?>> invokeRpc(final @NonNull RpcService impl, final @NonNull QName rpcName,
+            final @Nullable DataObject input) {
+        final RpcMethodInvoker invoker = getMethodInvoker(rpcName);
+        checkArgument(invoker != null, "Supplied RPC is not valid for implementation %s", impl);
+        return invoker.invokeOn(requireNonNull(impl, "Implementation must be supplied"), input);
+    }
 }
