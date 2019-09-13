@@ -57,6 +57,7 @@ public interface BindingTreeNodeCodec<T extends TreeNode> extends BindingNormali
      * {@link BindingStreamEventWriter}. This means that to enter case, one must
      * issue getChild(ChoiceClass).getChild(CaseClass).
      *
+     * <p>
      * This method differs from {@link #streamChild(Class)}, that is less
      * stricter for interfaces representing augmentation and cases, that may
      * return {@link BindingTreeNodeCodec} even if augmentation interface

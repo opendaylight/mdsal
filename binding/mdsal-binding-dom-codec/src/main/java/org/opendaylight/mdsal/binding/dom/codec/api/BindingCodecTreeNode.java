@@ -54,7 +54,7 @@ public interface BindingCodecTreeNode<T extends DataObject> extends BindingNorma
      * augmentation and cases, that may return {@link BindingCodecTreeNode} even if augmentation interface containing
      * same data was supplied and does not represent augmentation of this node.
      *
-     * @param childClass
+     * @param childClass Child class by Biding Stream navigation
      * @return Context of child or Optional.empty is supplied class is not
      *         applicable in context.
      */
