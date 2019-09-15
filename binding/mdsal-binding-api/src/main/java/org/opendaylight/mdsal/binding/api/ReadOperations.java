@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -67,8 +66,5 @@ public interface ReadOperations {
      * @throws IllegalArgumentException if the path is {@link InstanceIdentifier#isWildcarded()} and the implementation
      *                                  does not support evaluating wildcards.
      */
-    default @NonNull FluentFuture<Boolean> exists(final @NonNull LogicalDatastoreType store,
-            final @NonNull InstanceIdentifier<?> path) {
-        return read(store, path).transform(Optional::isPresent, MoreExecutors.directExecutor());
-    }
+    @NonNull FluentFuture<Boolean> exists(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path);
 }
