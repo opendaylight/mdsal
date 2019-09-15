@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
+import org.opendaylight.yangtools.yang.common.Uint8;
 
 /**
  * A set of utility methods to efficiently instantiate various ietf-inet-types DTOs.
@@ -169,6 +170,10 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         } else {
             throw new IllegalArgumentException("Unhandled address " + addr);
         }
+    }
+
+    public final @NonNull P ipPrefixFor(final @NonNull InetAddress addr, final Uint8 mask) {
+        return ipPrefixFor(addr, mask.toJava());
     }
 
     public final @NonNull InetAddress inetAddressFor(final @NonNull A addr) {
