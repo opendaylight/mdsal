@@ -89,8 +89,8 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
-import org.opendaylight.yangtools.yang.model.api.AnyDataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.AnydataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.AnyxmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
@@ -1057,7 +1057,7 @@ abstract class AbstractTypeGenerator {
                 listToGenType(context, typeBuilder, baseInterface, (ListSchemaNode) node, inGrouping);
             } else if (node instanceof ChoiceSchemaNode) {
                 choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) node, inGrouping);
-            } else if (node instanceof AnyXmlSchemaNode || node instanceof AnyDataSchemaNode) {
+            } else if (node instanceof AnyxmlSchemaNode || node instanceof AnydataSchemaNode) {
                 opaqueToGeneratedType(context, typeBuilder, node);
             } else {
                 LOG.debug("Unable to add schema node {} as method in {}: unsupported type of node.", node.getClass(),

@@ -27,7 +27,7 @@ import org.gaul.modernizer_maven_annotations.SuppressModernizer
 import org.opendaylight.yangtools.yang.common.QName
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates
-import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode
+import org.opendaylight.yangtools.yang.model.api.AnyxmlSchemaNode
 import org.opendaylight.yangtools.yang.model.api.AugmentationTarget
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode
@@ -416,7 +416,7 @@ class GeneratorImpl {
         «IF child instanceof ContainerSchemaNode»
             «printContainerNode(child)»
         «ENDIF»
-        «IF child instanceof AnyXmlSchemaNode»
+        «IF child instanceof AnyxmlSchemaNode»
             «printAnyXmlNode(child)»
         «ENDIF»
         «IF child instanceof LeafSchemaNode»
@@ -474,7 +474,7 @@ class GeneratorImpl {
         '''
     }
 
-    private def printAnyXmlNode(AnyXmlSchemaNode anyXmlNode) {
+    private def printAnyXmlNode(AnyxmlSchemaNode anyXmlNode) {
         return
         '''
             &lt;«anyXmlNode.QName.localName»&gt;. . .&lt;/«anyXmlNode.QName.localName»&gt;
@@ -894,7 +894,7 @@ class GeneratorImpl {
                 «printInfo(node, "container")»
                 </ul>
             '''
-        } else if(node instanceof AnyXmlSchemaNode) {
+        } else if(node instanceof AnyxmlSchemaNode) {
             return '''
                 «printInfo(node, "anyxml")»
                 </ul>
@@ -958,7 +958,7 @@ class GeneratorImpl {
     }
 
     def CharSequence printChildren(Iterable<DataSchemaNode> nodes, int level, YangInstanceIdentifier path) {
-        val anyxmlNodes = nodes.filter(AnyXmlSchemaNode)
+        val anyxmlNodes = nodes.filter(AnyxmlSchemaNode)
         val leafNodes = nodes.filter(LeafSchemaNode)
         val leafListNodes = nodes.filter(LeafListSchemaNode)
         val choices = nodes.filter(ChoiceSchemaNode)
@@ -1125,7 +1125,7 @@ class GeneratorImpl {
         '''
     }
 
-    def CharSequence printShortInfo(AnyXmlSchemaNode node, int level, YangInstanceIdentifier path) {
+    def CharSequence printShortInfo(AnyxmlSchemaNode node, int level, YangInstanceIdentifier path) {
         return '''
             <li>«strong((node.QName.localName))» (anyxml)
             <ul>
