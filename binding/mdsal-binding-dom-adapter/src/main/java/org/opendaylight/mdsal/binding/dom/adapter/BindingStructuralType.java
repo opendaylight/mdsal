@@ -13,7 +13,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.Augmentat
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
-import org.opendaylight.yangtools.yang.data.api.schema.AnyXmlNode;
+import org.opendaylight.yangtools.yang.data.api.schema.AnyxmlNode;
 import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -141,7 +141,7 @@ public enum BindingStructuralType {
 
     private static boolean isNotAddressable(final NormalizedNode<?, ?> normalizedNode) {
         return normalizedNode instanceof LeafNode
-                || normalizedNode instanceof AnyXmlNode
+                || normalizedNode instanceof AnyxmlNode
                 || normalizedNode instanceof LeafSetNode
                 || normalizedNode instanceof LeafSetEntryNode
                 || normalizedNode instanceof UnkeyedListNode
