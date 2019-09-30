@@ -42,6 +42,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 
+@Deprecated(forRemoval = true)
 public class YangSchemaUtilsTest {
 
     private static final AugmentationSchemaNode AUGMENTATION_SCHEMA = mock(AugmentationSchemaNode.class);

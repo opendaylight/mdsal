@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 
-// FIXME: 5.0.0: this class seems to be unused, consider removing it
+@Deprecated(forRemoval = true)
 public final class YangSchemaUtils {
     public static final String AUGMENT_IDENTIFIER = "augment-identifier";
 
