@@ -183,10 +183,6 @@ public class BaseYangTypesTest {
         assertNotNull(javaType);
         assertEquals(Uint64.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(union, union);
-        assertNotNull(javaType);
-        assertEquals("Union", javaType.getFullyQualifiedName());
-
         javaType = typeProvider.javaTypeForSchemaDefinitionType(empty, empty);
         assertNotNull(javaType);
         assertEquals(Empty.class.getCanonicalName(), javaType.getFullyQualifiedName());
@@ -258,11 +254,6 @@ public class BaseYangTypesTest {
             BindingGeneratorUtil.getRestrictions(uint64));
         assertNotNull(javaType);
         assertEquals(Uint64.class.getCanonicalName(), javaType.getFullyQualifiedName());
-
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(union, union,
-            BindingGeneratorUtil.getRestrictions(union));
-        assertNotNull(javaType);
-        assertEquals("Union", javaType.getFullyQualifiedName());
 
         javaType = typeProvider.javaTypeForSchemaDefinitionType(empty, empty,
             BindingGeneratorUtil.getRestrictions(empty));
