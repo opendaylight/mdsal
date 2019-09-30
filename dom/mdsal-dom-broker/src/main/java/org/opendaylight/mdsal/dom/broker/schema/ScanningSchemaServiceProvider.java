@@ -41,13 +41,13 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
 
     public void tryToUpdateSchemaContext() {
         synchronized (lock) {
-            final Optional<SchemaContext> schema = contextResolver.getSchemaContext();
-            if (schema.isPresent()) {
+            final Optional<? extends SchemaContext> optSchema = contextResolver.getSchemaContext();
+            optSchema.ifPresent(schema -> {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Got new SchemaContext: # of modules {}", schema.get().getModules().size());
+                    LOG.debug("Got new SchemaContext: # of modules {}", schema.getModules().size());
                 }
-                notifyListeners(schema.get());
-            }
+                notifyListeners(schema);
+            });
         }
     }
 

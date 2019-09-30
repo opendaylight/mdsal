@@ -158,7 +158,7 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
     @Override
     public SchemaContext getSchemaContext() {
-        final Optional<SchemaContext> contextOptional = tryToCreateSchemaContext();
+        final Optional<? extends SchemaContext> contextOptional = tryToCreateSchemaContext();
         checkState(contextOptional.isPresent(), "Unable to recreate SchemaContext, error while parsing");
         return contextOptional.get();
     }
@@ -213,7 +213,7 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     // TODO finish schema parsing and expose as SchemaService
     // Unite with current SchemaService
 
-    public Optional<SchemaContext> tryToCreateSchemaContext() {
+    public Optional<? extends SchemaContext> tryToCreateSchemaContext() {
         return ctxResolver.getSchemaContext();
     }
 
@@ -225,7 +225,7 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         }
         final ImmutableList<ExplicitRegisteredModuleInfo> regInfos = regBuilder.build();
 
-        return new AbstractObjectRegistration<YangModuleInfo>(moduleInfo) {
+        return new AbstractObjectRegistration<>(moduleInfo) {
             @Override
             protected void removeRegistration() {
                 unregister(regInfos);
