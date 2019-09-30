@@ -19,8 +19,9 @@ import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.NoOpListenerRegistration;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
@@ -38,7 +39,7 @@ public class FixedDOMSchemaService extends AbstractDOMSchemaService {
     private static final class WithYangTextSources extends FixedDOMSchemaService implements DOMYangTextSourceProvider {
         private final @NonNull SchemaSourceProvider<YangTextSchemaSource> schemaSourceProvider;
 
-        WithYangTextSources(final SchemaContextProvider schemaContextProvider,
+        WithYangTextSources(final EffectiveModelContextProvider schemaContextProvider,
                 final SchemaSourceProvider<YangTextSchemaSource> schemaSourceProvider) {
             super(schemaContextProvider);
             this.schemaSourceProvider = requireNonNull(schemaSourceProvider);
@@ -55,30 +56,30 @@ public class FixedDOMSchemaService extends AbstractDOMSchemaService {
         }
     }
 
-    private final @NonNull SchemaContextProvider schemaContextProvider;
+    private final @NonNull EffectiveModelContextProvider schemaContextProvider;
 
-    private FixedDOMSchemaService(final SchemaContextProvider schemaContextProvider) {
+    private FixedDOMSchemaService(final EffectiveModelContextProvider schemaContextProvider) {
         this.schemaContextProvider = requireNonNull(schemaContextProvider);
     }
 
-    public static @NonNull DOMSchemaService of(final SchemaContextProvider schemaContextProvider) {
+    public static @NonNull DOMSchemaService of(final EffectiveModelContextProvider schemaContextProvider) {
         return new FixedDOMSchemaService(schemaContextProvider);
     }
 
-    public static @NonNull DOMSchemaService of(final SchemaContextProvider schemaContextProvider,
+    public static @NonNull DOMSchemaService of(final EffectiveModelContextProvider schemaContextProvider,
             final SchemaSourceProvider<YangTextSchemaSource> yangTextSourceProvider) {
         return new WithYangTextSources(schemaContextProvider, requireNonNull(yangTextSourceProvider));
     }
 
     @Override
-    public final SchemaContext getGlobalContext() {
-        return schemaContextProvider.getSchemaContext();
+    public final EffectiveModelContext getGlobalContext() {
+        return schemaContextProvider.getEffectiveModelContext();
     }
 
     @Override
-    public final @NonNull ListenerRegistration<SchemaContextListener> registerSchemaContextListener(
-            final SchemaContextListener listener) {
-        listener.onGlobalContextUpdated(getGlobalContext());
+    public final @NonNull ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener(
+            final EffectiveModelContextListener listener) {
+        listener.onModelContextUpdated(getGlobalContext());
         return NoOpListenerRegistration.of(listener);
     }
 }

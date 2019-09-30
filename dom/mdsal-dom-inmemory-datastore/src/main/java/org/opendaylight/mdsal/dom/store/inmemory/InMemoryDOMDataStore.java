@@ -36,23 +36,18 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataValidationFailedException;
 import org.opendaylight.yangtools.yang.data.impl.schema.tree.InMemoryDataTreeFactory;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * In-memory DOM Data Store.
- *
- *<p>
- * Implementation of {@link DOMStore} which uses {@link DataTree} and other
- * classes such as {@link SnapshotBackedWriteTransaction}.
- * {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} to implement {@link DOMStore}
- * contract.
- *
+ * In-memory DOM Data Store. Implementation of {@link DOMStore} which uses {@link DataTree} and other classes such as
+ * {@link SnapshotBackedWriteTransaction}.
+ * {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} to implement {@link DOMStore} contract.
  */
 public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> implements DOMStore,
-        Identifiable<String>, SchemaContextListener, AutoCloseable, DOMStoreTreeChangePublisher {
+        Identifiable<String>, EffectiveModelContextListener, AutoCloseable, DOMStoreTreeChangePublisher {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataStore.class);
 
     private final AtomicLong txCounter = new AtomicLong(0);
@@ -130,8 +125,8 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     }
 
     @Override
-    public synchronized void onGlobalContextUpdated(final SchemaContext ctx) {
-        dataTree.setSchemaContext(ctx);
+    public synchronized void onModelContextUpdated(final EffectiveModelContext ctx) {
+        dataTree.setEffectiveModelContext(ctx);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
