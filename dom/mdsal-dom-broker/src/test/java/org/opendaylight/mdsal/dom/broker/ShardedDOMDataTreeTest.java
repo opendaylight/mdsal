@@ -57,11 +57,8 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
-public class ShardedDOMDataTreeTest {
-
-    private static final SchemaContext SCHEMA_CONTEXT = TestModel.createTestContext();
+public class ShardedDOMDataTreeTest extends AbstractDatastoreTest {
 
     private static final DOMDataTreeIdentifier ROOT_ID =
             new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty());

@@ -34,11 +34,9 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
-public class DOMTransactionChainTest {
+public class DOMTransactionChainTest extends AbstractDatastoreTest {
 
-    private SchemaContext schemaContext;
     private AbstractDOMDataBroker domBroker;
 
     @Before
@@ -47,10 +45,9 @@ public class DOMTransactionChainTest {
                 MoreExecutors.newDirectExecutorService());
         final InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
                 MoreExecutors.newDirectExecutorService());
-        schemaContext = TestModel.createTestContext();
 
-        operStore.onGlobalContextUpdated(schemaContext);
-        configStore.onGlobalContextUpdated(schemaContext);
+        operStore.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        configStore.onGlobalContextUpdated(SCHEMA_CONTEXT);
 
         final ImmutableMap<LogicalDatastoreType, DOMStore> stores =
                 ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
