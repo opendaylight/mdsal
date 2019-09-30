@@ -23,6 +23,7 @@ import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.broker.schema.ScanningSchemaServiceProvider;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -36,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class OsgiBundleScanningSchemaService extends ScanningSchemaServiceProvider
-        implements ServiceTrackerCustomizer<SchemaContextListener, SchemaContextListener> {
+        implements ServiceTrackerCustomizer<SchemaContextListener, EffectiveModelContextListener> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OsgiBundleScanningSchemaService.class);
     private static final AtomicReference<OsgiBundleScanningSchemaService> GLOBAL_INSTANCE = new AtomicReference<>();
@@ -49,7 +50,7 @@ public final class OsgiBundleScanningSchemaService extends ScanningSchemaService
     private BundleTracker<Iterable<Registration>> bundleTracker;
     private final Object lock = new Object();
 
-    private ServiceTracker<SchemaContextListener, SchemaContextListener> listenerTracker;
+    private ServiceTracker<SchemaContextListener, EffectiveModelContextListener> listenerTracker;
     private boolean starting = true;
 
     private volatile boolean stopping;
@@ -196,21 +197,21 @@ public final class OsgiBundleScanningSchemaService extends ScanningSchemaService
     }
 
     @Override
-    public SchemaContextListener addingService(final ServiceReference<SchemaContextListener> reference) {
-        final SchemaContextListener listener = context.getService(reference);
+    public EffectiveModelContextListener addingService(final ServiceReference<SchemaContextListener> reference) {
+        final EffectiveModelContextListener listener = context.getService(reference)::onGlobalContextUpdated;
         registerSchemaContextListener(listener);
         return listener;
     }
 
     @Override
     public void modifiedService(final ServiceReference<SchemaContextListener> reference,
-            final SchemaContextListener service) {
+            final EffectiveModelContextListener service) {
         // NOOP
     }
 
     @Override
     public void removedService(final ServiceReference<SchemaContextListener> reference,
-            final SchemaContextListener service) {
+            final EffectiveModelContextListener service) {
         context.ungetService(reference);
         removeListener(service);
     }

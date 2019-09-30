@@ -66,7 +66,7 @@ public class InMemoryDOMDataTreeShardTest {
         doReturn(inMemoryDOMDataTreeShard.createModificationFactory(prefixes))
                 .when(mockProducer).getModificationFactory();
 
-        inMemoryDOMDataTreeShard.onGlobalContextUpdated(createTestContext());
+        inMemoryDOMDataTreeShard.onModelContextUpdated(createTestContext());
         inMemoryDOMDataTreeShard.createTransaction("", mockProducer, mock(CursorAwareDataTreeSnapshot.class));
 
         final DOMDataTreeChangeListener domDataTreeChangeListener = mock(DOMDataTreeChangeListener.class);

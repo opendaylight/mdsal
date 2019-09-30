@@ -70,7 +70,7 @@ public class DOMRpcRouterTest extends TestUtils {
 
             final DOMRpcRoutingTable routingTableOriginal = rpcRouter.routingTable();
 
-            rpcRouter.onGlobalContextUpdated(TestModel.createTestContext());
+            rpcRouter.onModelContextUpdated(TestModel.createTestContext());
 
             final DOMRpcRoutingTable routingTableChanged = rpcRouter.routingTable();
             assertNotEquals(routingTableOriginal, routingTableChanged);

@@ -42,13 +42,13 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.impl.schema.tree.InMemoryDataTreeFactory;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Beta
-public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeShard, SchemaContextListener {
+public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeShard, EffectiveModelContextListener {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataTreeShard.class);
     private static final int DEFAULT_SUBMIT_QUEUE_SIZE = 1000;
 
@@ -98,8 +98,8 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     }
 
     @Override
-    public void onGlobalContextUpdated(final SchemaContext context) {
-        dataTree.setSchemaContext(context);
+    public void onModelContextUpdated(final EffectiveModelContext context) {
+        dataTree.setEffectiveModelContext(context);
     }
 
     @Override

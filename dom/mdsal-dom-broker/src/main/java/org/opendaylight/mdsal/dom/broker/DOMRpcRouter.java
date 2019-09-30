@@ -69,13 +69,13 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class DOMRpcRouter extends AbstractRegistration implements SchemaContextListener {
+public final class DOMRpcRouter extends AbstractRegistration implements EffectiveModelContextListener {
     private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat(
             "DOMRpcRouter-listener-%s").setDaemon(true).build();
 
@@ -175,7 +175,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
     }
 
     @Override
-    public synchronized void onGlobalContextUpdated(final SchemaContext context) {
+    public synchronized void onModelContextUpdated(final EffectiveModelContext context) {
         final DOMRpcRoutingTable oldTable = routingTable;
         final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.setSchemaContext(context);
         routingTable = newTable;

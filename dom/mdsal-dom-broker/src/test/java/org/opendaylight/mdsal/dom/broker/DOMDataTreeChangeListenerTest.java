@@ -42,7 +42,7 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
     @Before
     public void setUp() {
         domStore = new InMemoryDOMDataStore("Mdsal217", MoreExecutors.newDirectExecutorService());
-        domStore.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        domStore.onModelContextUpdated(SCHEMA_CONTEXT);
     }
 
     @Test

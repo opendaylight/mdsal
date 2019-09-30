@@ -14,8 +14,8 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
 
 /**
  * Base class to implement DOMSchemaService more easily while providing a bridge between MD-SAL DOM Schema services
@@ -25,7 +25,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
  */
 @Beta
 @NonNullByDefault
-public abstract class AbstractDOMSchemaService implements DOMSchemaService, SchemaContextProvider {
+public abstract class AbstractDOMSchemaService implements DOMSchemaService, EffectiveModelContextProvider {
     public abstract static class WithYangTextSources extends AbstractDOMSchemaService
             implements DOMYangTextSourceProvider {
         @Override
@@ -35,13 +35,13 @@ public abstract class AbstractDOMSchemaService implements DOMSchemaService, Sche
     }
 
     @Override
-    public final SchemaContext getSchemaContext() {
+    public final EffectiveModelContext getEffectiveModelContext() {
         // Always route context queries to a single method
         return getGlobalContext();
     }
 
     @Override
-    public final SchemaContext getSessionContext() {
+    public final EffectiveModelContext getSessionContext() {
         // This method should not be implemented
         throw new UnsupportedOperationException();
     }

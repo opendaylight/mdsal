@@ -16,8 +16,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -38,18 +40,27 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class InMemoryDataStoreTest {
+    private static EffectiveModelContext SCHEMA_CONTEXT;
 
-    private SchemaContext schemaContext;
     private InMemoryDOMDataStore domStore;
+
+    @BeforeClass
+    public static void beforeClass() {
+        SCHEMA_CONTEXT = TestModel.createTestContext();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        SCHEMA_CONTEXT = null;
+    }
 
     @Before
     public void setupStore() {
         domStore = new InMemoryDOMDataStore("TEST", MoreExecutors.newDirectExecutorService());
-        schemaContext = TestModel.createTestContext();
-        domStore.onGlobalContextUpdated(schemaContext);
+        domStore.onModelContextUpdated(SCHEMA_CONTEXT);
     }
 
     @Test

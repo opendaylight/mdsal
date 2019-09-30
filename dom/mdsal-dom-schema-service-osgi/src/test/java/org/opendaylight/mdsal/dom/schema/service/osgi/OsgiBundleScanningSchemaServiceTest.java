@@ -20,10 +20,9 @@ import static org.mockito.Mockito.verify;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.schema.service.osgi.util.TestModel;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -63,12 +62,10 @@ public class OsgiBundleScanningSchemaServiceTest {
 
     @Test
     public void basicTest() {
-        assertTrue(osgiService instanceof DOMSchemaService);
+        final EffectiveModelContext schemaContext = TestModel.createTestContext();
 
-        final SchemaContext schemaContext = TestModel.createTestContext();
-
-        final SchemaContextListener schemaContextListener = mock(SchemaContextListener.class);
-        doNothing().when(schemaContextListener).onGlobalContextUpdated(schemaContext);
+        final EffectiveModelContextListener schemaContextListener = mock(EffectiveModelContextListener.class);
+        doNothing().when(schemaContextListener).onModelContextUpdated(schemaContext);
         osgiService.registerSchemaContextListener(schemaContextListener);
 
         osgiService.notifyListeners(schemaContext);
