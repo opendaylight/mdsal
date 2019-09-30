@@ -11,7 +11,7 @@ import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class AbstractNotificationBrokerTest extends AbstractSchemaAwareTest {
     private BindingToNormalizedNodeCodec bindingToNormalizedNodeCodec;
@@ -21,7 +21,7 @@ public class AbstractNotificationBrokerTest extends AbstractSchemaAwareTest {
 
 
     @Override
-    protected void setupWithSchema(final SchemaContext context) {
+    protected void setupWithSchema(final EffectiveModelContext context) {
         final DataBrokerTestCustomizer testCustomizer = createDataBrokerTestCustomizer();
         domNotificationRouter = testCustomizer.getDomNotificationRouter();
         notificationService = testCustomizer.createNotificationService();

@@ -92,7 +92,7 @@ public class ShardedDOMDataTreeTest extends AbstractDatastoreTest {
         MockitoAnnotations.initMocks(this);
 
         rootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1);
-        rootShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        rootShard.onModelContextUpdated(SCHEMA_CONTEXT);
 
         final ShardedDOMDataTree dataTree = new ShardedDOMDataTree();
         final DOMDataTreeProducer shardRegProducer = dataTree.createProducer(Collections.singletonList(ROOT_ID));
@@ -119,7 +119,7 @@ public class ShardedDOMDataTreeTest extends AbstractDatastoreTest {
         rootShardReg.close();
 
         final InMemoryDOMDataTreeShard newRootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1);
-        newRootShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        newRootShard.onModelContextUpdated(SCHEMA_CONTEXT);
         final DOMDataTreeProducer shardRegProducer = dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
 
         final ListenerRegistration<InMemoryDOMDataTreeShard> newRootShardReg =
@@ -127,7 +127,7 @@ public class ShardedDOMDataTreeTest extends AbstractDatastoreTest {
         shardRegProducer.close();
 
         final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
-        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        innerShard.onModelContextUpdated(SCHEMA_CONTEXT);
         final DOMDataTreeProducer shardRegProducer2 =
                 dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
         ListenerRegistration<InMemoryDOMDataTreeShard> innerShardReg =
@@ -210,7 +210,7 @@ public class ShardedDOMDataTreeTest extends AbstractDatastoreTest {
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
         InMemoryDOMDataTreeShard testShard = InMemoryDOMDataTreeShard.create(TEST_ID, executor, 1);
-        testShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        testShard.onModelContextUpdated(SCHEMA_CONTEXT);
 
         final DOMDataTreeProducer regProducer = dataTreeService.createProducer(Collections.singleton(TEST_ID));
         dataTreeService.registerDataTreeShard(TEST_ID, testShard, regProducer);
@@ -257,7 +257,7 @@ public class ShardedDOMDataTreeTest extends AbstractDatastoreTest {
         final DOMDataTreeProducer shardProducer = dataTreeService.createProducer(
                 Collections.singletonList(outerListPath));
         final InMemoryDOMDataTreeShard outerListShard = InMemoryDOMDataTreeShard.create(outerListPath, executor, 1000);
-        outerListShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        outerListShard.onModelContextUpdated(SCHEMA_CONTEXT);
 
         final ListenerRegistration<InMemoryDOMDataTreeShard> oid1ShardRegistration =
                 dataTreeService.registerDataTreeShard(outerListPath, outerListShard, shardProducer);
@@ -402,7 +402,7 @@ public class ShardedDOMDataTreeTest extends AbstractDatastoreTest {
     public void testLargerSubshardSpace() throws Exception {
 
         final InMemoryDOMDataTreeShard outerListShard = InMemoryDOMDataTreeShard.create(OUTER_LIST_ID, executor, 1, 1);
-        outerListShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        outerListShard.onModelContextUpdated(SCHEMA_CONTEXT);
 
         try (DOMDataTreeProducer producer =
                      dataTreeService.createProducer(Collections.singletonList(OUTER_LIST_ID))) {

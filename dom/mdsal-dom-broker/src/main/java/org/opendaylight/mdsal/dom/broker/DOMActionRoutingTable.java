@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -35,13 +36,13 @@ final class DOMActionRoutingTable extends AbstractDOMRoutingTable<DOMActionInsta
     static final DOMActionRoutingTable EMPTY = new DOMActionRoutingTable(ImmutableMap.of(), null);
 
     private DOMActionRoutingTable(final Map<SchemaPath, DOMActionRoutingTableEntry> actions,
-            final SchemaContext schemaContext) {
+            final EffectiveModelContext schemaContext) {
         super(actions, schemaContext);
     }
 
     @Override
     protected DOMActionRoutingTable newInstance(final Map<SchemaPath, DOMActionRoutingTableEntry> operations,
-            final SchemaContext schemaContext) {
+            final EffectiveModelContext schemaContext) {
         return new DOMActionRoutingTable(operations, schemaContext);
     }
 
@@ -56,8 +57,8 @@ final class DOMActionRoutingTable extends AbstractDOMRoutingTable<DOMActionInsta
     }
 
     @Override
-    protected DOMActionRoutingTableEntry createOperationEntry(final SchemaContext context, final SchemaPath type,
-            final Map<DOMDataTreeIdentifier, List<DOMActionImplementation>> implementations) {
+    protected DOMActionRoutingTableEntry createOperationEntry(final EffectiveModelContext context,
+            final SchemaPath type, final Map<DOMDataTreeIdentifier, List<DOMActionImplementation>> implementations) {
         final ActionDefinition actionDef = findActionDefinition(context, type);
         if (actionDef == null) {
             //FIXME: return null directly instead of providing kind of unknown entry.

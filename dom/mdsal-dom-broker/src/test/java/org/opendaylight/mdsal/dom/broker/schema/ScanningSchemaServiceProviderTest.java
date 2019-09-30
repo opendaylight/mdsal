@@ -24,8 +24,9 @@ import org.mockito.internal.util.io.IOUtil;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
@@ -66,8 +67,8 @@ public class ScanningSchemaServiceProviderTest {
         assertFalse(schemaService.hasListeners());
 
         final SchemaContextHolder actualSchemaCtx = new SchemaContextHolder();
-        final SchemaContextListener listener = actualSchemaCtx::setSchemaContext;
-        final ListenerRegistration<SchemaContextListener> registerSchemaContextListener =
+        final EffectiveModelContextListener listener = actualSchemaCtx::setSchemaContext;
+        final ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener =
                 schemaService.registerSchemaContextListener(listener);
         assertEquals(registerSchemaContextListener.getInstance(), listener);
         assertEquals(schemaService.getSchemaContext(), actualSchemaCtx.getSchemaContext());
@@ -75,14 +76,14 @@ public class ScanningSchemaServiceProviderTest {
 
     @Test
     public void notifyListenersTest() {
-        final SchemaContext baseSchemaCtx = schemaService.getGlobalContext();
+        final EffectiveModelContext baseSchemaCtx = schemaService.getGlobalContext();
         assertNotNull(baseSchemaCtx);
         assertTrue(baseSchemaCtx.getModules().size() == 1);
 
         final SchemaContextHolder actualSchemaCtx = new SchemaContextHolder();
 
-        final SchemaContextListener schemaCtxListener = actualSchemaCtx::setSchemaContext;
-        final ListenerRegistration<SchemaContextListener> registerSchemaContextListener =
+        final EffectiveModelContextListener schemaCtxListener = actualSchemaCtx::setSchemaContext;
+        final ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener =
                 schemaService.registerSchemaContextListener(schemaCtxListener);
         assertEquals(registerSchemaContextListener.getInstance(), schemaCtxListener);
         assertNotNull(actualSchemaCtx.getSchemaContext());
@@ -91,7 +92,7 @@ public class ScanningSchemaServiceProviderTest {
         addYang("/empty-test1.yang");
         addYangs(schemaService);
 
-        final SchemaContext nextSchemaCtx = schemaService.getGlobalContext();
+        final EffectiveModelContext nextSchemaCtx = schemaService.getGlobalContext();
         assertNotNull(nextSchemaCtx);
         assertTrue(nextSchemaCtx.getModules().size() == 2);
 
@@ -103,7 +104,7 @@ public class ScanningSchemaServiceProviderTest {
         addYang("/empty-test2.yang");
         addYangs(schemaService);
 
-        final SchemaContext unregistredListenerSchemaCtx = schemaService.getGlobalContext();
+        final EffectiveModelContext unregistredListenerSchemaCtx = schemaService.getGlobalContext();
         assertNotNull(unregistredListenerSchemaCtx);
         assertTrue(unregistredListenerSchemaCtx.getModules().size() == 3);
 
@@ -170,13 +171,13 @@ public class ScanningSchemaServiceProviderTest {
 
     private class SchemaContextHolder {
 
-        private SchemaContext schemaCtx;
+        private EffectiveModelContext schemaCtx;
 
-        public void setSchemaContext(final SchemaContext ctx) {
+        public void setSchemaContext(final EffectiveModelContext ctx) {
             schemaCtx = ctx;
         }
 
-        public SchemaContext getSchemaContext() {
+        public EffectiveModelContext getSchemaContext() {
             return schemaCtx;
         }
     }

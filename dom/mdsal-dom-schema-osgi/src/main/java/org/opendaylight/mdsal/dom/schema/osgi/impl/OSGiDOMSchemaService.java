@@ -18,8 +18,7 @@ import org.opendaylight.mdsal.dom.schema.osgi.OSGiModuleInfoSnapshot;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMSchemaService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -40,10 +39,10 @@ import org.slf4j.LoggerFactory;
 public final class OSGiDOMSchemaService extends AbstractDOMSchemaService {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiDOMSchemaService.class);
 
-    @Reference(target = "(component.factory=" + SchemaSchemaContextListenerImpl.FACTORY_NAME + ")")
+    @Reference(target = "(component.factory=" + EffectiveModelContextImpl.FACTORY_NAME + ")")
     ComponentFactory listenerFactory = null;
 
-    private final List<SchemaContextListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<EffectiveModelContextListener> listeners = new CopyOnWriteArrayList<>();
 
     private volatile ModuleInfoSnapshot currentSnapshot;
 
@@ -53,8 +52,8 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService {
     }
 
     @Override
-    public ListenerRegistration<SchemaContextListener> registerSchemaContextListener(
-            final SchemaContextListener listener) {
+    public ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener(
+            final EffectiveModelContextListener listener) {
         return registerListener(requireNonNull(listener));
     }
 
@@ -69,13 +68,13 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService {
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
             policyOption = ReferencePolicyOption.GREEDY)
-    void addListener(final SchemaContextListener listener) {
+    void addListener(final EffectiveModelContextListener listener) {
         LOG.trace("Adding listener {}", listener);
         listeners.add(listener);
-        listener.onGlobalContextUpdated(getGlobalContext());
+        listener.onModelContextUpdated(getGlobalContext());
     }
 
-    void removeListener(final SchemaContextListener listener) {
+    void removeListener(final EffectiveModelContextListener listener) {
         LOG.trace("Removing listener {}", listener);
         listeners.remove(listener);
     }
@@ -92,12 +91,12 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService {
         LOG.info("DOM Schema services deactivated");
     }
 
-    private @NonNull ListenerRegistration<SchemaContextListener> registerListener(
-            final @NonNull SchemaContextListener listener) {
-        final ComponentInstance reg = listenerFactory.newInstance(SchemaSchemaContextListenerImpl.props(listener));
+    private @NonNull ListenerRegistration<EffectiveModelContextListener> registerListener(
+            final @NonNull EffectiveModelContextListener listener) {
+        final ComponentInstance reg = listenerFactory.newInstance(EffectiveModelContextImpl.props(listener));
         return new ListenerRegistration<>() {
             @Override
-            public SchemaContextListener getInstance() {
+            public EffectiveModelContextListener getInstance() {
                 return listener;
             }
 
@@ -109,9 +108,10 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService {
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    private static void notifyListener(final SchemaContext context, final SchemaContextListener listener) {
+    private static void notifyListener(final EffectiveModelContext context,
+            final EffectiveModelContextListener listener) {
         try {
-            listener.onGlobalContextUpdated(context);
+            listener.onModelContextUpdated(context);
         } catch (RuntimeException e) {
             LOG.warn("Failed to notify listener {}", listener, e);
         }

@@ -41,9 +41,10 @@ import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.AbstractSchemaContext;
 
 public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
@@ -61,10 +62,10 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
         .node(TopLevelList.QNAME).nodeWithKey(TopLevelList.QNAME, NAME_QNAME, TOP_FOO_KEY.getName()).build();
 
     private BindingToNormalizedNodeCodec codec;
-    private SchemaContext context;
+    private EffectiveModelContext context;
 
     @Override
-    protected void setupWithSchema(final SchemaContext schemaContext) {
+    protected void setupWithSchema(final EffectiveModelContext schemaContext) {
         this.context = schemaContext;
         this.codec = new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(),
             GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry(),
@@ -73,7 +74,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
 
     @Test
     public void testComplexAugmentationSerialization() {
-        this.codec.onGlobalContextUpdated(this.context);
+        this.codec.onModelContextUpdated(this.context);
         final PathArgument lastArg = this.codec.toYangInstanceIdentifier(BA_TREE_COMPLEX_USES).getLastPathArgument();
         assertTrue(lastArg instanceof AugmentationIdentifier);
     }
@@ -81,7 +82,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
 
     @Test
     public void testLeafOnlyAugmentationSerialization() {
-        this.codec.onGlobalContextUpdated(this.context);
+        this.codec.onModelContextUpdated(this.context);
         final PathArgument leafOnlyLastArg = this.codec.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY)
             .getLastPathArgument();
         assertTrue(leafOnlyLastArg instanceof AugmentationIdentifier);
@@ -91,7 +92,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
     @Test
     @SuppressWarnings("checkstyle:illegalCatch")
     public void testToYangInstanceIdentifierBlocking() {
-        this.codec.onGlobalContextUpdated(new EmptySchemaContext());
+        this.codec.onModelContextUpdated(new EmptyEffectiveModelContext());
 
         final CountDownLatch done = new CountDownLatch(1);
         final AtomicReference<YangInstanceIdentifier> yangId = new AtomicReference<>();
@@ -107,7 +108,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
         }).start();
 
         Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-        this.codec.onGlobalContextUpdated(this.context);
+        this.codec.onModelContextUpdated(this.context);
 
         assertTrue("toYangInstanceIdentifierBlocking completed",
                 Uninterruptibles.awaitUninterruptibly(done, 3, TimeUnit.SECONDS));
@@ -125,7 +126,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
 
     @Test
     public void testGetRpcMethodToSchemaPathBlocking() {
-        this.codec.onGlobalContextUpdated(new EmptySchemaContext());
+        this.codec.onModelContextUpdated(new EmptyEffectiveModelContext());
         testGetRpcMethodToSchemaPath();
     }
 
@@ -146,7 +147,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
         }).start();
 
         Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-        this.codec.onGlobalContextUpdated(this.context);
+        this.codec.onModelContextUpdated(this.context);
 
         assertTrue("getRpcMethodToSchemaPath completed",
                 Uninterruptibles.awaitUninterruptibly(done, 3, TimeUnit.SECONDS));
@@ -163,7 +164,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
         fail("rockTheHouse RPC method not found");
     }
 
-    static class EmptySchemaContext extends AbstractSchemaContext {
+    static class EmptyEffectiveModelContext extends AbstractSchemaContext implements EffectiveModelContext {
         @Override
         public Set<Module> getModules() {
             return ImmutableSet.of();
@@ -182,6 +183,11 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
         @Override
         protected SetMultimap<String, Module> getNameToModules() {
             return ImmutableSetMultimap.of();
+        }
+
+        @Override
+        public Map<QNameModule, ModuleEffectiveStatement> getModuleStatements() {
+            return ImmutableMap.of();
         }
     }
 }

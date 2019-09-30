@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.spi.RpcRoutingStrategy;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -29,7 +30,7 @@ final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier,
     static final DOMRpcRoutingTable EMPTY = new DOMRpcRoutingTable(ImmutableMap.of(), null);
 
     private DOMRpcRoutingTable(final Map<SchemaPath, AbstractDOMRpcRoutingTableEntry> rpcs,
-            final SchemaContext schemaContext) {
+            final EffectiveModelContext schemaContext) {
         super(rpcs, schemaContext);
     }
 
@@ -40,7 +41,7 @@ final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier,
 
     @Override
     protected DOMRpcRoutingTable newInstance(final Map<SchemaPath, AbstractDOMRpcRoutingTableEntry> operations,
-            final SchemaContext schemaContext) {
+            final EffectiveModelContext schemaContext) {
         return new DOMRpcRoutingTable(operations, schemaContext);
     }
 
@@ -55,7 +56,7 @@ final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier,
     }
 
     @Override
-    AbstractDOMRpcRoutingTableEntry createOperationEntry(final SchemaContext context, final SchemaPath key,
+    AbstractDOMRpcRoutingTableEntry createOperationEntry(final EffectiveModelContext context, final SchemaPath key,
             final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> implementations) {
         final RpcDefinition rpcDef = findRpcDefinition(context, key);
         if (rpcDef == null) {

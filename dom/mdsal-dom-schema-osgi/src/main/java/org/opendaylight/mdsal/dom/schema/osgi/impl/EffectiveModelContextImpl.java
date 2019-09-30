@@ -15,33 +15,33 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 import org.gaul.modernizer_maven_annotations.SuppressModernizer;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
 /**
- * A Factory Component which implements {@link SchemaContextListener}. Instances of this component are created through
- * by {@link OSGiDOMSchemaService} each time a listener is registered.
+ * A Factory Component which implements {@link EffectiveModelContextListener}. Instances of this component are created
+ * through by {@link OSGiDOMSchemaService} each time a listener is registered.
  */
-@Component(factory = SchemaSchemaContextListenerImpl.FACTORY_NAME, service = SchemaContextListener.class)
-public final class SchemaSchemaContextListenerImpl implements SchemaContextListener {
+@Component(factory = EffectiveModelContextImpl.FACTORY_NAME, service = EffectiveModelContextListener.class)
+public final class EffectiveModelContextImpl implements EffectiveModelContextListener {
     static final String FACTORY_NAME = "org.opendaylight.mdsal.dom.schema.osgi.impl.SchemaSchemaContextListener";
 
     @VisibleForTesting
     static final String DELEGATE = "org.opendaylight.mdsal.dom.schema.osgi.SchemaSchemaContextListener";
 
-    private SchemaContextListener delegate = null;
+    private EffectiveModelContextListener delegate = null;
 
     @Override
-    public void onGlobalContextUpdated(final SchemaContext context) {
-        delegate.onGlobalContextUpdated(context);
+    public void onModelContextUpdated(final EffectiveModelContext newModelContext) {
+        delegate.onModelContextUpdated(newModelContext);
     }
 
     @Activate
     void activate(final Map<String, ?> properties) {
-        delegate = (SchemaContextListener) verifyNotNull(properties.get(DELEGATE));
+        delegate = (EffectiveModelContextListener) verifyNotNull(properties.get(DELEGATE));
     }
 
     @Deactivate
@@ -50,7 +50,7 @@ public final class SchemaSchemaContextListenerImpl implements SchemaContextListe
     }
 
     @SuppressModernizer
-    static Dictionary<String, ?> props(final SchemaContextListener delegate) {
+    static Dictionary<String, ?> props(final EffectiveModelContextListener delegate) {
         final Dictionary<String, Object> ret = new Hashtable<>(2);
         ret.put(DELEGATE, requireNonNull(delegate));
         return ret;

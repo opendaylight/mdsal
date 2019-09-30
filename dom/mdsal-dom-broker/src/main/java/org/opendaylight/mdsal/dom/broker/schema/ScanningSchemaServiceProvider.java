@@ -19,8 +19,8 @@ import org.opendaylight.mdsal.dom.spi.AbstractDOMSchemaService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
@@ -36,12 +36,12 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
 
     private final YangTextSchemaContextResolver contextResolver = YangTextSchemaContextResolver.create("global-bundle");
     @GuardedBy("lock")
-    private final ListenerRegistry<SchemaContextListener> listeners = ListenerRegistry.create();
+    private final ListenerRegistry<EffectiveModelContextListener> listeners = ListenerRegistry.create();
     private final Object lock = new Object();
 
     public void tryToUpdateSchemaContext() {
         synchronized (lock) {
-            final Optional<? extends SchemaContext> optSchema = contextResolver.getSchemaContext();
+            final Optional<? extends EffectiveModelContext> optSchema = contextResolver.getEffectiveModelContext();
             optSchema.ifPresent(schema -> {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Got new SchemaContext: # of modules {}", schema.getModules().size());
@@ -53,11 +53,11 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
 
     @VisibleForTesting
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public void notifyListeners(final SchemaContext schemaContext) {
+    public void notifyListeners(final EffectiveModelContext schemaContext) {
         synchronized (lock) {
             listeners.streamListeners().forEach(listener -> {
                 try {
-                    listener.onGlobalContextUpdated(schemaContext);
+                    listener.onModelContextUpdated(schemaContext);
                 } catch (final Exception e) {
                     LOG.error("Exception occured during invoking listener {}", listener, e);
                 }
@@ -84,15 +84,15 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
     }
 
     @Override
-    public SchemaContext getGlobalContext() {
-        return contextResolver.getSchemaContext().orElse(null);
+    public EffectiveModelContext getGlobalContext() {
+        return contextResolver.getEffectiveModelContext().orElse(null);
     }
 
     @Override
-    public ListenerRegistration<SchemaContextListener> registerSchemaContextListener(
-            final SchemaContextListener listener) {
+    public ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener(
+            final EffectiveModelContextListener listener) {
         synchronized (lock) {
-            contextResolver.getSchemaContext().ifPresent(listener::onGlobalContextUpdated);
+            contextResolver.getEffectiveModelContext().ifPresent(listener::onModelContextUpdated);
             return listeners.register(listener);
         }
     }

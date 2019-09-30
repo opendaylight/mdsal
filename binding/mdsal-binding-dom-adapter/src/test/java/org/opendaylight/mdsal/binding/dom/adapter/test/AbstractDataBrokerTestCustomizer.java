@@ -28,7 +28,7 @@ import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractDataBrokerTestCustomizer {
 
@@ -110,7 +110,7 @@ public abstract class AbstractDataBrokerTestCustomizer {
         return this.datastores;
     }
 
-    public void updateSchema(final SchemaContext ctx) {
+    public void updateSchema(final EffectiveModelContext ctx) {
         this.schemaService.changeSchema(ctx);
     }
 

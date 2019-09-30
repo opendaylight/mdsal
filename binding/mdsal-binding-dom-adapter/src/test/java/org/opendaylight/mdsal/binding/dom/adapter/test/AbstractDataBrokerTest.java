@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 /**
  * Abstract base for DataBroker tests. Note that it performs synchronous commits via a direct executor which can cause
@@ -21,7 +21,7 @@ public class AbstractDataBrokerTest extends AbstractBaseDataBrokerTest {
     }
 
     @Override
-    protected void setupWithSchema(SchemaContext context) {
+    protected void setupWithSchema(final EffectiveModelContext context) {
         super.setupWithSchema(context);
         setupWithDataBroker(getDataBroker());
     }

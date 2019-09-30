@@ -17,18 +17,19 @@ import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractSchemaAwareTest {
-    private static final LoadingCache<Set<YangModuleInfo>, SchemaContext> SCHEMA_CONTEXT_CACHE =
-            CacheBuilder.newBuilder().weakValues().build(new CacheLoader<Set<YangModuleInfo>, SchemaContext>() {
-                @Override
-                public SchemaContext load(final Set<YangModuleInfo> key) {
-                    return ModuleInfoBackedContext.cacheContext(
-                        GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), ImmutableSet.copyOf(key))
-                            .tryToCreateModelContext().get();
-                }
-            });
+    private static final LoadingCache<Set<YangModuleInfo>, EffectiveModelContext> SCHEMA_CONTEXT_CACHE =
+            CacheBuilder.newBuilder().weakValues().build(
+                new CacheLoader<Set<YangModuleInfo>, EffectiveModelContext>() {
+                    @Override
+                    public EffectiveModelContext load(final Set<YangModuleInfo> key) {
+                        return ModuleInfoBackedContext.cacheContext(
+                            GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), ImmutableSet.copyOf(key))
+                                .tryToCreateModelContext().get();
+                    }
+                });
 
     @Before
     public final void setup() throws Exception {
@@ -39,7 +40,7 @@ public abstract class AbstractSchemaAwareTest {
         return BindingReflections.cacheModuleInfos(Thread.currentThread().getContextClassLoader());
     }
 
-    protected SchemaContext getSchemaContext() throws Exception {
+    protected EffectiveModelContext getSchemaContext() throws Exception {
         return SCHEMA_CONTEXT_CACHE.getUnchecked(getModuleInfos());
     }
 
@@ -48,5 +49,5 @@ public abstract class AbstractSchemaAwareTest {
      *
      * @param context schema context
      */
-    protected abstract void setupWithSchema(SchemaContext context);
+    protected abstract void setupWithSchema(EffectiveModelContext context);
 }

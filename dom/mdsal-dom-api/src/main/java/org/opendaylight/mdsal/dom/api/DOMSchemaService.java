@@ -8,23 +8,27 @@
 package org.opendaylight.mdsal.dom.api;
 
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 
 public interface DOMSchemaService extends DOMExtensibleService<DOMSchemaService, DOMSchemaServiceExtension> {
     /**
      * Returns session specific YANG schema context.
      *
      * @return schemaContext
+     * @deprecated This method never fully materialized, use {@link #getGlobalContext()} instead.
      */
-    SchemaContext getSessionContext();
+    @Deprecated
+    default EffectiveModelContext getSessionContext() {
+        throw new UnsupportedOperationException("getSessionContext() is not specified nor implemented");
+    }
 
     /**
      * Returns global schema context.
      *
      * @return schemaContext
      */
-    SchemaContext getGlobalContext();
+    EffectiveModelContext getGlobalContext();
 
     /**
      * Register a listener for changes in schema context.
@@ -32,5 +36,6 @@ public interface DOMSchemaService extends DOMExtensibleService<DOMSchemaService,
      * @param listener Listener which should be registered
      * @return Listener registration handle
      */
-    ListenerRegistration<SchemaContextListener> registerSchemaContextListener(SchemaContextListener listener);
+    ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener(
+            EffectiveModelContextListener listener);
 }

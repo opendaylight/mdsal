@@ -66,11 +66,12 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +84,7 @@ import org.slf4j.LoggerFactory;
  * NOTE: this class is non-final to allow controller adapter migration without duplicated code.
  */
 @Singleton
-public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerializer, SchemaContextListener,
+public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerializer, EffectiveModelContextListener,
         AutoCloseable {
 
     private static final long WAIT_DURATION_SEC = 5;
@@ -317,9 +318,9 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
     }
 
     @Override
-    public void onGlobalContextUpdated(final SchemaContext context) {
+    public void onModelContextUpdated(final EffectiveModelContext newModelContext) {
         final BindingRuntimeContext runtimeContext = DefaultBindingRuntimeContext.create(
-            generator.generateTypeMapping(context), classLoadingStrategy);
+            generator.generateTypeMapping(newModelContext), classLoadingStrategy);
         codecRegistry.onBindingRuntimeContextUpdated(runtimeContext);
         futureSchema.onRuntimeContextUpdated(runtimeContext);
     }

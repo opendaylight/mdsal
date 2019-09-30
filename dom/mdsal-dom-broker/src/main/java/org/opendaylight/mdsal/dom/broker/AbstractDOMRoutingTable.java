@@ -26,7 +26,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
@@ -41,15 +41,14 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
         E extends AbstractDOMRoutingTableEntry<D, M, L>> {
     private final Map<SchemaPath, E> operations;
-    private final SchemaContext schemaContext;
+    private final EffectiveModelContext schemaContext;
 
-    AbstractDOMRoutingTable(final Map<SchemaPath, E> operations,
-            final SchemaContext schemaContext) {
+    AbstractDOMRoutingTable(final Map<SchemaPath, E> operations, final EffectiveModelContext schemaContext) {
         this.operations = requireNonNull(operations);
         this.schemaContext = schemaContext;
     }
 
-    AbstractDOMRoutingTable<I, D, M, L, E> setSchemaContext(final SchemaContext context) {
+    AbstractDOMRoutingTable<I, D, M, L, E> setSchemaContext(final EffectiveModelContext context) {
         final Builder<SchemaPath, E> b = ImmutableMap.builder();
 
         for (Entry<SchemaPath, E> e : operations.entrySet()) {
@@ -149,9 +148,9 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
     }
 
     protected abstract AbstractDOMRoutingTable<I, D, M, L, E> newInstance(Map<SchemaPath, E> operations,
-            SchemaContext schemaContext);
+            EffectiveModelContext schemaContext);
 
     abstract ListMultimap<SchemaPath, D> decomposeIdentifiers(Set<I> instances);
 
-    abstract E createOperationEntry(SchemaContext context, SchemaPath key, Map<D, List<M>> implementations);
+    abstract E createOperationEntry(EffectiveModelContext context, SchemaPath key, Map<D, List<M>> implementations);
 }

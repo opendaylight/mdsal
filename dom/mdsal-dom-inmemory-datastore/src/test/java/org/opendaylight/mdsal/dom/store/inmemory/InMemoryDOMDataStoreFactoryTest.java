@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 
 public class InMemoryDOMDataStoreFactoryTest {
 
@@ -29,7 +29,7 @@ public class InMemoryDOMDataStoreFactoryTest {
     public void basicTest() throws Exception {
         final String testStoreName = "TestStore";
         final DOMSchemaService domSchemaService = mock(DOMSchemaService.class);
-        doReturn(null).when(domSchemaService).registerSchemaContextListener(any(SchemaContextListener.class));
+        doReturn(null).when(domSchemaService).registerSchemaContextListener(any(EffectiveModelContextListener.class));
 
         final InMemoryDOMDataStore inMemoryDOMDataStore =
                 InMemoryDOMDataStoreFactory.create(testStoreName, domSchemaService);
@@ -40,7 +40,7 @@ public class InMemoryDOMDataStoreFactoryTest {
         doReturn("testListener").when(domDataTreeChangeListener).toString();
         doNothing().when(domDataTreeChangeListener).onDataTreeChanged(any());
         doNothing().when(domDataTreeChangeListener).onInitialData();
-        inMemoryDOMDataStore.onGlobalContextUpdated(TestModel.createTestContext());
+        inMemoryDOMDataStore.onModelContextUpdated(TestModel.createTestContext());
         inMemoryDOMDataStore.registerTreeChangeListener(YangInstanceIdentifier.empty(), domDataTreeChangeListener);
 
         final AutoCloseable autoCloseable = mock(AutoCloseable.class);

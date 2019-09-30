@@ -62,8 +62,8 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
         final InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
                 MoreExecutors.newDirectExecutorService());
 
-        operStore.onGlobalContextUpdated(SCHEMA_CONTEXT);
-        configStore.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        operStore.onModelContextUpdated(SCHEMA_CONTEXT);
+        configStore.onModelContextUpdated(SCHEMA_CONTEXT);
 
         final ImmutableMap<LogicalDatastoreType, DOMStore> stores =
                 ImmutableMap.<LogicalDatastoreType, DOMStore>builder()

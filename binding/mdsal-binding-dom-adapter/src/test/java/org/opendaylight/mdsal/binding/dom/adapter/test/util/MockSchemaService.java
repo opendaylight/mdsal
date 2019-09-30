@@ -13,34 +13,29 @@ import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
 
-public final class MockSchemaService implements DOMSchemaService, SchemaContextProvider {
+public final class MockSchemaService implements DOMSchemaService, EffectiveModelContextProvider {
 
-    private SchemaContext schemaContext;
+    private EffectiveModelContext schemaContext;
 
-    final ListenerRegistry<SchemaContextListener> listeners = ListenerRegistry.create();
+    final ListenerRegistry<EffectiveModelContextListener> listeners = ListenerRegistry.create();
 
     @Override
-    public synchronized SchemaContext getGlobalContext() {
+    public synchronized EffectiveModelContext getGlobalContext() {
         return schemaContext;
     }
 
     @Override
-    public synchronized SchemaContext getSessionContext() {
-        return schemaContext;
-    }
-
-    @Override
-    public ListenerRegistration<SchemaContextListener> registerSchemaContextListener(
-            final SchemaContextListener listener) {
+    public ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener(
+            final EffectiveModelContextListener listener) {
         return listeners.register(listener);
     }
 
     @Override
-    public synchronized SchemaContext getSchemaContext() {
+    public synchronized EffectiveModelContext getEffectiveModelContext() {
         return schemaContext;
     }
 
@@ -49,8 +44,8 @@ public final class MockSchemaService implements DOMSchemaService, SchemaContextP
         return ImmutableClassToInstanceMap.of();
     }
 
-    public synchronized void changeSchema(final SchemaContext newContext) {
+    public synchronized void changeSchema(final EffectiveModelContext newContext) {
         schemaContext = newContext;
-        listeners.streamListeners().forEach(listener -> listener.onGlobalContextUpdated(schemaContext));
+        listeners.streamListeners().forEach(listener -> listener.onModelContextUpdated(schemaContext));
     }
 }

@@ -92,7 +92,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest extends AbstractDatastoreT
         MockitoAnnotations.initMocks(this);
 
         rootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1);
-        rootShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        rootShard.onModelContextUpdated(SCHEMA_CONTEXT);
 
         final ShardedDOMDataTree dataTree = new ShardedDOMDataTree();
         final DOMDataTreeProducer shardRegProducer = dataTree.createProducer(Collections.singletonList(ROOT_ID));
@@ -213,7 +213,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest extends AbstractDatastoreT
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
         final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
-        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        innerShard.onModelContextUpdated(SCHEMA_CONTEXT);
         final DOMDataTreeProducer shardRegProducer =
                 dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
         innerShardReg = dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, shardRegProducer);
@@ -253,7 +253,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest extends AbstractDatastoreT
     @Test
     public void testMultipleShardsProducerClose() throws Exception {
         final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
-        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        innerShard.onModelContextUpdated(SCHEMA_CONTEXT);
 
         assertTrue(rootShard.getProducers().isEmpty());
 
@@ -296,7 +296,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest extends AbstractDatastoreT
     @Test
     public void testMultipleShardsChildProducerClose() throws Exception {
         final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
-        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        innerShard.onModelContextUpdated(SCHEMA_CONTEXT);
 
         final DOMDataTreeProducer innerShardRegProducer =
                 dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
@@ -336,7 +336,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest extends AbstractDatastoreT
     @Test
     public void testMultipleShardsProducerCloseForSubshardAttached() throws Exception {
         final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
-        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        innerShard.onModelContextUpdated(SCHEMA_CONTEXT);
 
         final DOMDataTreeProducer innerShardRegProducer =
                 dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
@@ -359,7 +359,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest extends AbstractDatastoreT
                 Collections.singletonList(INNER_CONTAINER_ID).toString());
 
         final InMemoryDOMDataTreeShard test2Shard = InMemoryDOMDataTreeShard.create(TEST2_ID, executor, 1);
-        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
+        innerShard.onModelContextUpdated(SCHEMA_CONTEXT);
 
         final DOMDataTreeProducer test2ShardRegProducer =
                 dataTreeService.createProducer(Collections.singletonList(TEST2_ID));
