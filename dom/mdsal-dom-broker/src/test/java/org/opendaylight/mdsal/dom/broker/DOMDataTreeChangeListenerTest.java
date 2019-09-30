@@ -35,14 +35,14 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 
-public class DOMDataTreeChangeListenerTest {
+public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
 
     private InMemoryDOMDataStore domStore;
 
     @Before
     public void setUp() {
         domStore = new InMemoryDOMDataStore("Mdsal217", MoreExecutors.newDirectExecutorService());
-        domStore.onGlobalContextUpdated(TestModel.createTestContext());
+        domStore.onGlobalContextUpdated(SCHEMA_CONTEXT);
     }
 
     @Test

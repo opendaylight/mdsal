@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.broker.util;
 
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public final class TestModel {
@@ -49,7 +49,7 @@ public final class TestModel {
         throw new UnsupportedOperationException();
     }
 
-    public static SchemaContext createTestContext() {
+    public static EffectiveModelContext createTestContext() {
         return YangParserTestUtils.parseYangResource("/odl-datastore-test.yang");
     }
 }
