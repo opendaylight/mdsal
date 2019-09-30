@@ -186,7 +186,7 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
         dataTree.validate(modification);
     }
 
-    DataTreeCandidate prepare(final DataTreeModification modification) {
+    DataTreeCandidate prepare(final DataTreeModification modification) throws DataValidationFailedException {
         return dataTree.prepare(modification);
     }
 

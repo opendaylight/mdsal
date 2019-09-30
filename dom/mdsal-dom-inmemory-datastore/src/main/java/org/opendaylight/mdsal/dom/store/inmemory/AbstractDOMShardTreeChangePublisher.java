@@ -159,7 +159,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
                 findNodeFor(listenerPath.getPathArguments());
         @SuppressWarnings("unchecked")
         final AbstractDOMDataTreeChangeListenerRegistration<L> registration =
-                new AbstractDOMDataTreeChangeListenerRegistration<L>((L) listener) {
+                new AbstractDOMDataTreeChangeListenerRegistration<>((L) listener) {
             @Override
             protected void removeRegistration() {
                 listener.close();
@@ -246,15 +246,16 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
             }
 
             modification.ready();
+            DataTreeCandidateNode modifiedChild;
             try {
                 dataTree.validate(modification);
+                modifiedChild = dataTree.prepare(modification).getRootNode();
             } catch (final DataValidationFailedException e) {
                 LOG.error("Validation failed for built modification", e);
                 throw new IllegalStateException("Notification validation failed", e);
             }
 
             // strip nodes we do not need since this listener doesn't have to be registered at the root of the DataTree
-            DataTreeCandidateNode modifiedChild = dataTree.prepare(modification).getRootNode();
             for (final PathArgument pathArgument : listenerPath.getPathArguments()) {
                 modifiedChild = modifiedChild.getModifiedChild(pathArgument).orElse(null);
             }
