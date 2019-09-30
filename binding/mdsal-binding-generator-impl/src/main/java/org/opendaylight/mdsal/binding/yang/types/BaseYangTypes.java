@@ -89,8 +89,6 @@ public final class BaseYangTypes {
      */
     public static final Type UINT64_TYPE = Types.typeForClass(Uint64.class);
 
-    public static final Type UNION_TYPE = new UnionType();
-
     /**
      * <code>Type</code> representation of <code>binary</code> YANG type.
      */
@@ -117,7 +115,6 @@ public final class BaseYangTypes {
             .put("uint16", UINT16_TYPE)
             .put("uint32", UINT32_TYPE)
             .put("uint64", UINT64_TYPE)
-            .put("union", UNION_TYPE)
             .put("binary", BINARY_TYPE)
             .put("instance-identifier", INSTANCE_IDENTIFIER)
             .build();
@@ -191,8 +188,6 @@ public final class BaseYangTypes {
                     return Types.typeForClass(Uint32.class, restrictions);
                 case "uint64":
                     return Types.typeForClass(Uint64.class, restrictions);
-                case "union" :
-                    return UNION_TYPE;
                 default:
                     return javaTypeForSchemaDefinitionType(type, parentNode, lenientRelativeLeafrefs);
             }
@@ -213,29 +208,4 @@ public final class BaseYangTypes {
             return "_" + BindingMapping.getPropertyName(type.getQName().getLocalName());
         }
     };
-
-    // FIXME: 5.0.0: remove this class
-    @Deprecated
-    public static final class UnionType implements Type {
-        @Override
-        public String getPackageName() {
-            return null;
-        }
-
-        @Override
-        public String getName() {
-            return "Union";
-        }
-
-        @Override
-        public String getFullyQualifiedName() {
-            return "Union";
-        }
-
-        @Override
-        @SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
-        public JavaTypeName getIdentifier() {
-            return null;
-        }
-    }
 }
