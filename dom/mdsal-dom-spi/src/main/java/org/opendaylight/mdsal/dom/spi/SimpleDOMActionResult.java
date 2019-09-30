@@ -21,6 +21,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.RpcError;
+import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
+import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 @Beta
@@ -46,6 +48,12 @@ public final class SimpleDOMActionResult implements DOMActionResult, Immutable {
 
     public SimpleDOMActionResult(final ContainerNode output, final Collection<RpcError> errors) {
         this(errors, requireNonNull(output));
+    }
+
+    // As per RFC7950 page 80 (top)
+    public static SimpleDOMActionResult ofMalformedMessage(final Exception cause) {
+        return new SimpleDOMActionResult(ImmutableList.of(RpcResultBuilder.newError(ErrorType.RPC, "malformed-message",
+            cause.getMessage(), null, null, requireNonNull(cause))), null);
     }
 
     @Override
