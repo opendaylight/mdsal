@@ -16,8 +16,8 @@ import org.opendaylight.yangtools.concepts.WritableObject;
 /**
  * The concept of a logical data store, similar to RFC8342.
  */
-// FIXME: 3.0.0: turn this into an interface so it can be externally-defined?
-// FIXME: 3.0.0: note that mount points can have different types and policies, which can potentially be mapped
+// FIXME: 6.0.0: turn this into an interface so it can be externally-defined?
+// FIXME: 6.0.0: note that mount points can have different types and policies, which can potentially be mapped
 public enum LogicalDatastoreType implements WritableObject {
     /**
      * Logical datastore representing operational state of the system and it's components. This datastore is used
