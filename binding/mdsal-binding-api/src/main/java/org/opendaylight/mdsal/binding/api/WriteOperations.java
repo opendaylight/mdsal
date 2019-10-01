@@ -61,7 +61,7 @@ public interface WriteOperations {
      *             {@link #mergeParentStructurePut(LogicalDatastoreType, InstanceIdentifier, DataObject)}
      *             instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     default <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
             @NonNull T data, boolean createMissingParents) {
         if (createMissingParents) {
@@ -134,7 +134,7 @@ public interface WriteOperations {
      *             {@link #mergeParentStructureMerge(LogicalDatastoreType, InstanceIdentifier, DataObject)}
      *             instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     default <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
             @NonNull T data, boolean createMissingParents) {
         if (createMissingParents) {
@@ -190,7 +190,7 @@ public interface WriteOperations {
      * @deprecated To be removed with {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)}
      *             and {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)}.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     boolean CREATE_MISSING_PARENTS = true;
 
     /**
@@ -199,6 +199,6 @@ public interface WriteOperations {
      * @deprecated To be removed with {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)}
      *             and {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)}.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     boolean FAIL_ON_MISSING_PARENTS = false;
 }
