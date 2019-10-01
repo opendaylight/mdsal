@@ -87,7 +87,7 @@ public final class TransactionAdapter {
         }
 
         @Override
-        @Deprecated
+        @Deprecated(forRemoval = true)
         public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
                 final T data, final boolean createMissingParents) {
             checkStore(store);
@@ -109,7 +109,7 @@ public final class TransactionAdapter {
         }
 
         @Override
-        @Deprecated
+        @Deprecated(forRemoval = true)
         public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
                 final T data, final boolean createMissingParents) {
             checkStore(store);
