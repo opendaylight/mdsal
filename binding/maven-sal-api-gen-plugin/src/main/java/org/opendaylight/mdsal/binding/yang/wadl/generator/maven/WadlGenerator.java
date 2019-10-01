@@ -18,8 +18,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import org.opendaylight.mdsal.binding.yang.wadl.generator.WadlRestconfGenerator;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
 import org.opendaylight.yangtools.yang2sources.spi.BuildContextAware;
 import org.sonatype.plexus.build.incremental.BuildContext;
@@ -43,7 +43,7 @@ public class WadlGenerator implements BasicCodeGenerator, BuildContextAware {
     }
 
     @Override
-    public Collection<File> generateSources(final SchemaContext context, final File outputBaseDir,
+    public Collection<File> generateSources(final EffectiveModelContext context, final File outputBaseDir,
             final Set<Module> currentModules, final Function<Module, Optional<String>> moduleResourcePathResolver)
             throws IOException {
         final File outputDir;

@@ -38,6 +38,7 @@ import org.opendaylight.mdsal.binding.java.api.generator.YangModuleInfoTemplate;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
@@ -60,7 +61,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     private File resourceBaseDir;
 
     @Override
-    public Collection<File> generateSources(final SchemaContext context, final File outputDir,
+    public Collection<File> generateSources(final EffectiveModelContext context, final File outputDir,
             final Set<Module> yangModules, final Function<Module, Optional<String>> moduleResourcePathResolver)
                     throws IOException {
         final File outputBaseDir;
