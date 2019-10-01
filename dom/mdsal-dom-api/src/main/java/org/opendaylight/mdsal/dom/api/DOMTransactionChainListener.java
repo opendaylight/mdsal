@@ -12,7 +12,7 @@ import java.util.EventListener;
 /**
  * Listener for transaction chain events.
  */
-// FIXME: 5.0.0: remove this in favor of a TransactionChain destiny, available as a FluentFuture from
+// FIXME: 6.0.0: remove this in favor of a TransactionChain destiny, available as a FluentFuture from
 //               DOMTransactionChain
 public interface DOMTransactionChainListener extends EventListener {
     /**
