@@ -46,7 +46,7 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
      * @deprecated Use {@link #put(InstanceIdentifier, DataObject)} or
      *             {@link #mergeParentStructurePut(InstanceIdentifier, DataObject)} instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     default <T extends DataObject> void put(final InstanceIdentifier<T> path, final T data,
             final boolean createMissingParents) {
         if (createMissingParents) {
@@ -95,7 +95,7 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
      * @deprecated Use {@link #merge(InstanceIdentifier, DataObject)} or
      *             {@link #mergeParentStructureMerge(InstanceIdentifier, DataObject)} instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     default <T extends DataObject> void merge(final InstanceIdentifier<T> path, final T data,
             final boolean createMissingParents) {
         if (createMissingParents) {

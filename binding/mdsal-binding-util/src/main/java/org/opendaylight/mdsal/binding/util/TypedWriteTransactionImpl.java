@@ -30,7 +30,7 @@ class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction>
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public final <T extends DataObject> void put(final InstanceIdentifier<T> path, final T data,
             final boolean createMissingParents) {
         delegate().put(getDatastoreType(), path, data, createMissingParents);
@@ -51,7 +51,7 @@ class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction>
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public final <T extends DataObject> void merge(final InstanceIdentifier<T> path, final T data,
             final boolean createMissingParents) {
         delegate().merge(getDatastoreType(), path, data, createMissingParents);

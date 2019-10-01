@@ -34,7 +34,7 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data, final boolean createMissingParents) {
         super.put(store, path, data, createMissingParents);
@@ -56,7 +56,7 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data, final boolean createMissingParents) {
         super.merge(store, path, data, createMissingParents);
