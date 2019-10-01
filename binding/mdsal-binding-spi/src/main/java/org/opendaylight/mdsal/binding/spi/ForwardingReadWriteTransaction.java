@@ -40,7 +40,7 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data, final boolean createMissingParents) {
         delegate.put(store, path, data, createMissingParents);
@@ -75,7 +75,7 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data, final boolean createMissingParents) {
         delegate.merge(store, path, data, createMissingParents);
