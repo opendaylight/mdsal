@@ -16,7 +16,6 @@ import com.google.common.collect.ImmutableList;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.Optional;
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
@@ -52,7 +51,7 @@ public final class SimpleDOMActionResult implements DOMActionResult, Immutable {
     }
 
     // As per RFC7950 page 80 (top)
-    public static @NonNull SimpleDOMActionResult ofMalformedMessage(final Exception cause) {
+    public static SimpleDOMActionResult ofMalformedMessage(final Exception cause) {
         return new SimpleDOMActionResult(ImmutableList.of(RpcResultBuilder.newError(ErrorType.RPC, "malformed-message",
             cause.getMessage(), null, null, requireNonNull(cause))), null);
     }
