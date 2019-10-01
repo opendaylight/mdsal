@@ -25,7 +25,7 @@ public interface DOMDataTreeShardWriteTransaction extends DOMDataTreeCursorProvi
      * @throws NullPointerException if prefix is null.
      */
     @Override
-    // FIXME: 5.0.0: reconcile @NonNull vs. super @Nullable
+    // FIXME: 6.0.0: reconcile @NonNull vs. super @Nullable
     @NonNull DOMDataTreeWriteCursor createCursor(@NonNull DOMDataTreeIdentifier prefix);
 
     /**

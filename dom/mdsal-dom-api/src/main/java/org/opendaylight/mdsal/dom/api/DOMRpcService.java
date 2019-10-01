@@ -30,7 +30,7 @@ public interface DOMRpcService extends DOMService {
      * @return A {@link ListenableFuture} which will return either a result structure, or report a subclass
      *         of {@link DOMRpcException} reporting a transport error.
      */
-    // FIXME: 5.0.0: do not allow null input
+    // FIXME: 6.0.0: do not allow null input
     @NonNull ListenableFuture<DOMRpcResult> invokeRpc(@NonNull SchemaPath type, @Nullable NormalizedNode<?, ?> input);
 
     /**

@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Listener for transaction chain events.
  */
-// FIXME: 5.0.0: remove this in favor of a TransactionChain destiny, available as a FluentFuture from TransactionChain
+// FIXME: 6.0.0: remove this in favor of a TransactionChain destiny, available as a FluentFuture from TransactionChain
 public interface TransactionChainListener extends EventListener {
     /**
      * Invoked if when a transaction in the chain fails. All transactions submitted after the failed transaction, in the

@@ -27,7 +27,7 @@ public interface DOMRpcImplementation {
      *         or report a subclass of {@link DOMRpcException} reporting a transport
      *         error.
      */
-    // FIXME: 5.0.0: do not allow null input
+    // FIXME: 6.0.0: do not allow null input
     @NonNull ListenableFuture<DOMRpcResult> invokeRpc(@NonNull DOMRpcIdentifier rpc,
             @Nullable NormalizedNode<?, ?> input);
 
