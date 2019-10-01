@@ -40,6 +40,7 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
@@ -213,8 +214,13 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     // TODO finish schema parsing and expose as SchemaService
     // Unite with current SchemaService
 
+    @Deprecated
     public Optional<? extends SchemaContext> tryToCreateSchemaContext() {
         return ctxResolver.getSchemaContext();
+    }
+
+    public Optional<? extends EffectiveModelContext> tryToCreateModelContext() {
+        return ctxResolver.getEffectiveModelContext();
     }
 
     @Holding("this")
