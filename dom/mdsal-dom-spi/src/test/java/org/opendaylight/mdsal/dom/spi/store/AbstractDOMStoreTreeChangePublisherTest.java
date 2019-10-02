@@ -13,13 +13,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableList;
-import java.lang.reflect.Field;
 import java.util.Collection;
-import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
-import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
@@ -61,11 +58,7 @@ public class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTre
         assertTrue(removeInvoked);
         assertTrue(notifyInvoked);
 
-        final Field closedField = AbstractRegistration.class.getDeclaredField("closed");
-        closedField.setAccessible(true);
-
-        final int closed = (int) closedField.get(abstractDOMDataTreeChangeListenerRegistration);
-        Assert.assertEquals(1, closed);
+        assertTrue(abstractDOMDataTreeChangeListenerRegistration.isClosed());
     }
 
     @Override
