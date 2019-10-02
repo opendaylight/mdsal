@@ -64,7 +64,7 @@ public class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTre
         final Field closedField = AbstractRegistration.class.getDeclaredField("closed");
         closedField.setAccessible(true);
 
-        final int closed = (int) closedField.get(abstractDOMDataTreeChangeListenerRegistration);
+        final byte closed = (byte) closedField.get(abstractDOMDataTreeChangeListenerRegistration);
         Assert.assertEquals(1, closed);
     }
 
