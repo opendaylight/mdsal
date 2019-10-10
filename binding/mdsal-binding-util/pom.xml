@@ -19,11 +19,6 @@
     <artifactId>mdsal-binding-util</artifactId>
     <packaging>bundle</packaging>
 
-    <properties>
-        <!-- FIXME: this works around an unknown reference bug -->
-        <maven.compiler.release>8</maven.compiler.release>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
