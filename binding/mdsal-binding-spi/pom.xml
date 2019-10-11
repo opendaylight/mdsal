@@ -20,6 +20,11 @@
     <artifactId>mdsal-binding-spi</artifactId>
     <packaging>bundle</packaging>
 
+    <properties>
+        <!-- FIXME: Workaround for https://issues.apache.org/jira/browse/ARIES-1923 -->
+        <maven.compiler.release>10</maven.compiler.release>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
