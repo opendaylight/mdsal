@@ -19,6 +19,7 @@ import java.util.Locale
 import java.util.Map.Entry
 import java.util.StringTokenizer
 import java.util.regex.Pattern
+import org.opendaylight.mdsal.binding.model.api.AnnotationType
 import org.opendaylight.mdsal.binding.model.api.ConcreteType
 import org.opendaylight.mdsal.binding.model.api.Constant
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
@@ -474,5 +475,16 @@ abstract class BaseTemplate extends JavaFileTemplate {
         «FOR property : properties»
             result = prime * result + «property.importedUtilClass».hashCode(«property.fieldName»);
         «ENDFOR»
+    '''
+
+    def protected final generateAnnotation(AnnotationType annotation) '''
+        @«annotation.importedName»
+        «IF annotation.parameters !== null && !annotation.parameters.empty»
+        (
+        «FOR param : annotation.parameters SEPARATOR ","»
+            «param.name»=«param.value»
+        «ENDFOR»
+        )
+        «ENDIF»
     '''
 }
