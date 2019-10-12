@@ -1930,6 +1930,8 @@ abstract class AbstractTypeGenerator {
     private static void annotateDeprecatedIfNecessary(final Status status, final AnnotableTypeBuilder builder) {
         if (status == Status.DEPRECATED) {
             builder.addAnnotation(DEPRECATED_ANNOTATION);
+        } else if (status == Status.OBSOLETE) {
+            builder.addAnnotation(DEPRECATED_ANNOTATION).addParameter("forRemoval", "true");
         }
     }
 
