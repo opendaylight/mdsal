@@ -99,6 +99,7 @@ import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DerivableSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
+import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
@@ -111,7 +112,6 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
-import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
@@ -280,7 +280,7 @@ abstract class AbstractTypeGenerator {
         }
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(context, node, baseInterface);
         defaultImplementedInterace(genType);
-        annotateDeprecatedIfNecessary(node.getStatus(), genType);
+        annotateDeprecatedIfNecessary(node, genType);
 
         final Module module = context.module();
         genType.setModuleName(module.getName());
@@ -450,7 +450,7 @@ abstract class AbstractTypeGenerator {
                 qnameConstant(builder, JavaTypeName.create(context.modulePackageName(),
                     BindingMapping.MODULE_INFO_CLASS_NAME), qname.getLocalName());
 
-                annotateDeprecatedIfNecessary(action.getStatus(), builder);
+                annotateDeprecatedIfNecessary(action, builder);
                 builder.addImplementsType(keyType != null ? keyedListAction(parent, keyType, input, output)
                         : action(parent, input, output));
 
@@ -539,7 +539,7 @@ abstract class AbstractTypeGenerator {
         outType.addImplementsType(type);
         outType.addImplementsType(augmentable(outType));
         defaultImplementedInterace(outType);
-        annotateDeprecatedIfNecessary(rpc.getStatus(), outType);
+        annotateDeprecatedIfNecessary(rpc, outType);
         resolveDataSchemaNodes(context, outType, outType, schema.getChildNodes(), false);
         context.addChildNodeType(schema, outType);
         return outType.build();
@@ -579,7 +579,7 @@ abstract class AbstractTypeGenerator {
                 final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition(
                     context.modulePackageName(), notification, DATA_OBJECT, context);
                 defaultImplementedInterace(notificationInterface);
-                annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
+                annotateDeprecatedIfNecessary(notification, notificationInterface);
                 notificationInterface.addImplementsType(NOTIFICATION);
                 context.addChildNodeType(notification, notificationInterface);
 
@@ -699,7 +699,7 @@ abstract class AbstractTypeGenerator {
             // node of grouping is resolved to the method.
             final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(context, grouping);
             narrowImplementedInterface(genType);
-            annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
+            annotateDeprecatedIfNecessary(grouping, genType);
             context.addGroupingType(grouping, genType);
             resolveDataSchemaNodes(context, genType, genType, grouping.getChildNodes(), true);
             groupingsToGenTypes(context, grouping.getGroupings());
@@ -930,7 +930,7 @@ abstract class AbstractTypeGenerator {
         defaultImplementedInterace(augTypeBuilder);
 
         augTypeBuilder.addImplementsType(augmentationTypeFor(targetTypeRef));
-        annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
+        annotateDeprecatedIfNecessary(augSchema, augTypeBuilder);
         addImplementedInterfaceFromUses(augSchema, augTypeBuilder);
 
         augSchemaNodeToMethods(context, augTypeBuilder, augSchema.getChildNodes(), inGrouping);
@@ -1089,7 +1089,7 @@ abstract class AbstractTypeGenerator {
                 JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), choiceNode.getPath()),
                 BindingMapping.getClassName(choiceNode.getQName())), choiceNode);
             choiceTypeBuilder.addImplementsType(choiceIn(parent));
-            annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
+            annotateDeprecatedIfNecessary(choiceNode, choiceTypeBuilder);
             context.addChildNodeType(choiceNode, choiceTypeBuilder);
 
             final GeneratedType choiceType = choiceTypeBuilder.build();
@@ -1107,7 +1107,7 @@ abstract class AbstractTypeGenerator {
                 BindingMapping.getClassName(anyNode.getQName())), anyNode);
             anyxmlTypeBuilder.addImplementsType(opaqueObject(anyxmlTypeBuilder)).addImplementsType(childOf(parent));
             defaultImplementedInterace(anyxmlTypeBuilder);
-            annotateDeprecatedIfNecessary(anyNode.getStatus(), anyxmlTypeBuilder);
+            annotateDeprecatedIfNecessary(anyNode, anyxmlTypeBuilder);
             context.addChildNodeType(anyNode, anyxmlTypeBuilder);
 
             constructGetter(parent, anyxmlTypeBuilder.build(), anyNode);
@@ -1139,7 +1139,7 @@ abstract class AbstractTypeGenerator {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(context, caseNode);
                 caseTypeBuilder.addImplementsType(refChoiceType);
                 defaultImplementedInterace(caseTypeBuilder);
-                annotateDeprecatedIfNecessary(caseNode.getStatus(), caseTypeBuilder);
+                annotateDeprecatedIfNecessary(caseNode, caseTypeBuilder);
                 context.addCaseType(caseNode.getPath(), caseTypeBuilder);
                 context.addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
                 final Iterable<DataSchemaNode> caseChildNodes = caseNode.getChildNodes();
@@ -1705,7 +1705,7 @@ abstract class AbstractTypeGenerator {
             getterMethodName(node.getQName().getLocalName(), returnType));
         getMethod.setReturnType(returnType);
 
-        annotateDeprecatedIfNecessary(node.getStatus(), getMethod);
+        annotateDeprecatedIfNecessary(node, getMethod);
         addComment(getMethod, node);
 
         return getMethod;
@@ -1716,7 +1716,7 @@ abstract class AbstractTypeGenerator {
         final MethodSignatureBuilder getMethod = interfaceBuilder.addMethod(
             BindingMapping.getNonnullMethodName(node.getQName().getLocalName()));
         getMethod.setReturnType(returnType).setDefault(true);
-        annotateDeprecatedIfNecessary(node.getStatus(), getMethod);
+        annotateDeprecatedIfNecessary(node, getMethod);
     }
 
     /**
@@ -1927,9 +1927,18 @@ abstract class AbstractTypeGenerator {
         return parent.createEnclosed(BindingMapping.getClassName(child), "$");
     }
 
-    private static void annotateDeprecatedIfNecessary(final Status status, final AnnotableTypeBuilder builder) {
-        if (status == Status.DEPRECATED) {
-            builder.addAnnotation(DEPRECATED_ANNOTATION);
+    private static void annotateDeprecatedIfNecessary(final WithStatus node, final AnnotableTypeBuilder builder) {
+        switch (node.getStatus()) {
+            case DEPRECATED:
+            case OBSOLETE:
+                // FIXME: we really want to use a pre-made annotation
+                builder.addAnnotation(DEPRECATED_ANNOTATION);
+                break;
+            case CURRENT:
+                // No-op
+                break;
+            default:
+                throw new IllegalStateException("Unhandled status in " + node);
         }
     }
 
