@@ -97,19 +97,16 @@ class YangModuleInfoTemplate {
         '''.toString
     }
 
-    def String generateModelProvider() {
-        '''
-            package «packageName»;
+    def String generateModelProvider() '''
+        package «packageName»;
 
-            public final class «MODEL_BINDING_PROVIDER_CLASS_NAME» implements «YangModelBindingProvider.name» {
-                @«Override.importedName»
-                public «YangModuleInfo.name» getModuleInfo() {
-                    return «MODULE_INFO_CLASS_NAME».getInstance();
-                }
+        public final class «MODEL_BINDING_PROVIDER_CLASS_NAME» implements «YangModelBindingProvider.name» {
+            @«Override.importedName»
+            public «YangModuleInfo.name» getModuleInfo() {
+                return «MODULE_INFO_CLASS_NAME».getInstance();
             }
-        '''
-
-    }
+        }
+    '''
 
     private static def void collectSubmodules(Set<Module> dest, Module module) {
         for (Module submodule : module.submodules) {
@@ -197,9 +194,7 @@ class YangModuleInfoTemplate {
         if (typePackageName.startsWith("java.lang") || typePackageName.empty) {
             return
         }
-        if (!importMap.containsKey(typeName)) {
-            importMap.put(typeName, typePackageName)
-        }
+        importMap.putIfAbsent(typeName, typePackageName)
         if (type instanceof ParameterizedType) {
             val Type[] params = type.actualTypeArguments
             if (params !== null) {
