@@ -25,7 +25,8 @@ import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
 public abstract class AbstractIetfYangUtil<M, P> {
     private static final int MAC_BYTE_LENGTH = 6;
     private static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
-    private static final byte[] HEX_VALUES;
+    private static final byte @NonNull[] EMPTY_BYTES = new byte[0];
+    private static final byte @NonNull[] HEX_VALUES;
 
     static {
         final byte[] b = new byte['f' + 1];
@@ -51,7 +52,6 @@ public abstract class AbstractIetfYangUtil<M, P> {
         this.macFactory = StringValueObjectFactory.create(macClass, "00:00:00:00:00:00");
         this.physFactory = StringValueObjectFactory.create(physClass, "00:00");
     }
-
 
     /**
      * Convert the value of a MacAddress into the canonical representation.
@@ -79,6 +79,10 @@ public abstract class AbstractIetfYangUtil<M, P> {
         return macFactory.newInstance(bytesToString(bytes, 17));
     }
 
+    public final byte @NonNull[] macAddressBytes(final @NonNull M macAddress) {
+        return stringToBytes(getValue(macAddress), MAC_BYTE_LENGTH);
+    }
+
     /**
      * Convert the value of a PhysAddress into the canonical representation.
      *
@@ -101,18 +105,17 @@ public abstract class AbstractIetfYangUtil<M, P> {
      */
     public final @NonNull P physAddressFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length > 0, "Physical address should have at least one byte");
-        return physFactory.newInstance(bytesToString(bytes, (bytes.length + 1) / 3));
+        return physFactory.newInstance(bytesToString(bytes, bytes.length * 3 + 1));
     }
 
+    public final byte @NonNull[] physAddressBytes(final @NonNull P physAddress) {
+        final String str = getPhysValue(physAddress);
+        return str.isEmpty() ? EMPTY_BYTES : stringToBytes(str, str.length() / 3 + 1);
+    }
+
+    @Deprecated
     public final byte @NonNull[] bytesFor(final @NonNull M macAddress) {
-        final String mac = getValue(macAddress);
-        final byte[] ret = new byte[MAC_BYTE_LENGTH];
-
-        for (int i = 0, base = 0; i < MAC_BYTE_LENGTH; ++i, base += 3) {
-            ret[i] = (byte) (hexValue(mac.charAt(base)) << 4 | hexValue(mac.charAt(base + 1)));
-        }
-
-        return ret;
+        return macAddressBytes(macAddress);
     }
 
     protected abstract String getValue(M macAddress);
@@ -182,5 +185,13 @@ public abstract class AbstractIetfYangUtil<M, P> {
     private static void appendHexByte(final StringBuilder sb, final byte byteVal) {
         final int intVal = Byte.toUnsignedInt(byteVal);
         sb.append(HEX_CHARS[intVal >>> 4]).append(HEX_CHARS[intVal & 15]);
+    }
+
+    private static byte @NonNull[] stringToBytes(final String str, final int length) {
+        final byte[] ret = new byte[length];
+        for (int i = 0, base = 0; i < length; ++i, base += 3) {
+            ret[i] = (byte) (hexValue(str.charAt(base)) << 4 | hexValue(str.charAt(base + 1)));
+        }
+        return ret;
     }
 }
