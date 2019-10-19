@@ -5,14 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.model.ietf.util;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
 import org.junit.Test;
 
 public class AbstractIetfYangUtilTest {
@@ -28,11 +26,24 @@ public class AbstractIetfYangUtilTest {
 
     @Test
     public void testMacToBytes() throws Exception {
-        final byte[] bytes1 = UTIL.bytesFor(new MacClass(CANON));
-        assertTrue(Arrays.equals(BYTES, bytes1));
+        final byte[] bytes1 = UTIL.macAddressBytes(new MacClass(CANON));
+        assertArrayEquals(BYTES, bytes1);
 
-        final byte[] bytes2 = UTIL.bytesFor(new MacClass("01:02:1E:5a:Fb:88"));
-        assertTrue(Arrays.equals(BYTES, bytes2));
+        final byte[] bytes2 = UTIL.macAddressBytes(new MacClass("01:02:1E:5a:Fb:88"));
+        assertArrayEquals(BYTES, bytes2);
+    }
+
+    @Test
+    public void testPhysToBytes() throws Exception {
+        final byte[] bytes1 = UTIL.physAddressBytes(new PhysClass(CANON));
+        assertArrayEquals(BYTES, bytes1);
+
+        final byte[] bytes2 = UTIL.physAddressBytes(new PhysClass("01:02:1E:5a:Fb:88"));
+        assertArrayEquals(BYTES, bytes2);
+
+        assertArrayEquals(new byte[0], UTIL.physAddressBytes(new PhysClass("")));
+        assertArrayEquals(new byte[] { (byte) 0xaa }, UTIL.physAddressBytes(new PhysClass("aa")));
+        assertArrayEquals(new byte[] { (byte) 0xaa, (byte) 0xbb }, UTIL.physAddressBytes(new PhysClass("aa:bb")));
     }
 
     @Test
