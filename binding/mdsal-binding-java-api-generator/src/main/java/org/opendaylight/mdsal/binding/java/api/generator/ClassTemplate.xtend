@@ -22,7 +22,6 @@ import java.util.Base64;
 import java.util.Comparator
 import java.util.List
 import java.util.Map
-import java.util.regex.Pattern
 import javax.management.ConstructorParameters
 import org.gaul.modernizer_maven_annotations.SuppressModernizer
 import org.opendaylight.mdsal.binding.model.api.ConcreteType
@@ -415,7 +414,7 @@ class ClassTemplate extends BaseTemplate {
     '''
 
     def protected bitsArgs() '''
-        «List.importedName»<«String.importedName»> properties = «Lists.importedName».newArrayList(«allProperties.propsAsArgs»);
+        «List.importedName»<«STRING.importedName»> properties = «Lists.importedName».newArrayList(«allProperties.propsAsArgs»);
         if (!properties.contains(defaultValue)) {
             throw new «IllegalArgumentException.importedName»("invalid default parameter");
         }
@@ -496,13 +495,14 @@ class ClassTemplate extends BaseTemplate {
             «FOR c : consts»
                 «IF c.name == TypeConstants.PATTERN_CONSTANT_NAME»
                     «val cValue = c.value as Map<String, String>»
+                    «val jurPatternRef = JUR_PATTERN.importedName»
                     public static final «List.importedName»<String> «TypeConstants.PATTERN_CONSTANT_NAME» = «ImmutableList.importedName».of(«
                     FOR v : cValue.keySet SEPARATOR ", "»"«v.escapeJava»"«ENDFOR»);
                     «IF cValue.size == 1»
-                        private static final «Pattern.importedName» «Constants.MEMBER_PATTERN_LIST» = «Pattern.importedName».compile(«TypeConstants.PATTERN_CONSTANT_NAME».get(0));
+                        private static final «jurPatternRef» «Constants.MEMBER_PATTERN_LIST» = «jurPatternRef».compile(«TypeConstants.PATTERN_CONSTANT_NAME».get(0));
                         private static final String «Constants.MEMBER_REGEX_LIST» = "«cValue.values.iterator.next.escapeJava»";
                     «ELSE»
-                        private static final «Pattern.importedName»[] «Constants.MEMBER_PATTERN_LIST» = «CodeHelpers.importedName».compilePatterns(«TypeConstants.PATTERN_CONSTANT_NAME»);
+                        private static final «jurPatternRef»[] «Constants.MEMBER_PATTERN_LIST» = «CodeHelpers.importedName».compilePatterns(«TypeConstants.PATTERN_CONSTANT_NAME»);
                         private static final String[] «Constants.MEMBER_REGEX_LIST» = { «
                         FOR v : cValue.values SEPARATOR ", "»"«v.escapeJava»"«ENDFOR» };
                     «ENDIF»

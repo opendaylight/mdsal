@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.java.api.generator
 
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.encodeAngleBrackets
+import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 
 import com.google.common.base.CharMatcher
 import com.google.common.base.MoreObjects
@@ -416,7 +417,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
     def protected generateToString(Collection<GeneratedProperty> properties) '''
         «IF !properties.empty»
             @«OVERRIDE.importedName»
-            public «String.importedName» toString() {
+            public «STRING.importedName» toString() {
                 final «MoreObjects.importedName».ToStringHelper helper = «MoreObjects.importedName».toStringHelper(«type.importedName».class);
                 «FOR property : properties»
                     «CodeHelpers.importedName».appendValue(helper, "«property.fieldName»", «property.fieldName»);

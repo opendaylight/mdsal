@@ -13,6 +13,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
@@ -28,11 +29,45 @@ import org.opendaylight.mdsal.binding.model.util.Types;
  * Base Java file template. Contains a non-null type and imports which the generated code refers to.
  */
 class JavaFileTemplate {
-    static final JavaTypeName NONNULL = JavaTypeName.create("org.eclipse.jdt.annotation", "NonNull");
-    static final JavaTypeName NULLABLE = JavaTypeName.create("org.eclipse.jdt.annotation", "Nullable");
+    /**
+     * {@code java.lang.Class} as a JavaTypeName
+     */
+    static final JavaTypeName CLASS = JavaTypeName.create(Class.class);
+    /**
+     * {@code java.lang.Deprecated} as a JavaTypeName.
+     */
     static final JavaTypeName DEPRECATED = JavaTypeName.create(Deprecated.class);
+    /**
+     * {@code java.lang.Override} as a JavaTypeName.
+     */
     static final JavaTypeName OVERRIDE = JavaTypeName.create(Override.class);
+
+    /**
+     * {@code java.lang.SuppressWarnings} as a JavaTypeName.
+     */
     static final JavaTypeName SUPPRESS_WARNINGS = JavaTypeName.create(SuppressWarnings.class);
+
+    /**
+     * {@code java.util.Arrays} as a JavaTypeName.
+     */
+    static final JavaTypeName JU_ARRAYS = JavaTypeName.create(Arrays.class);
+    /**
+     * {@code java.util.Objects} as a JavaTypeName.
+     */
+    static final JavaTypeName JU_OBJECTS = JavaTypeName.create(Objects.class);
+    /**
+     * {@code java.util.regex.Pattern} as a JavaTypeName.
+     */
+    static final JavaTypeName JUR_PATTERN = JavaTypeName.create(Pattern.class);
+
+    /**
+     * {@code org.eclipse.jdt.annotation.NonNull} as a JavaTypeName.
+     */
+    static final JavaTypeName NONNULL = JavaTypeName.create("org.eclipse.jdt.annotation", "NonNull");
+    /**
+     * {@code org.eclipse.jdt.annotation.Nullable} as a JavaTypeName.
+     */
+    static final JavaTypeName NULLABLE = JavaTypeName.create("org.eclipse.jdt.annotation", "Nullable");
 
     private final AbstractJavaGeneratedType javaType;
     private final GeneratedType type;
@@ -128,7 +163,7 @@ class JavaFileTemplate {
      * @return Imported class name
      */
     final String importedUtilClass(final GeneratedProperty property) {
-        return importedName(property.getReturnType().getName().indexOf('[') != -1 ? Arrays.class : Objects.class);
+        return importedName(property.getReturnType().getName().indexOf('[') != -1 ? JU_ARRAYS : JU_OBJECTS);
     }
 
     static final Restrictions restrictionsForSetter(final Type actualType) {

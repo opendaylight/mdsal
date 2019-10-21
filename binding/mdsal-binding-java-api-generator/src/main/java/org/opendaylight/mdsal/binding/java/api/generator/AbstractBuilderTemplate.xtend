@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
+import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
 
 import com.google.common.base.MoreObjects
@@ -85,14 +86,14 @@ abstract class AbstractBuilderTemplate extends BaseTemplate {
     def protected final generateAugmentField() {
         val augmentTypeRef = augmentType.importedName
         return '''
-           «Map.importedName»<«Class.importedName»<? extends «augmentTypeRef»>, «augmentTypeRef»> «AUGMENTATION_FIELD» = «Collections.importedName».emptyMap();
+           «Map.importedName»<«CLASS.importedName»<? extends «augmentTypeRef»>, «augmentTypeRef»> «AUGMENTATION_FIELD» = «Collections.importedName».emptyMap();
         '''
     }
 
     override generateToString(Collection<GeneratedProperty> properties) '''
         «IF properties !== null»
             @«OVERRIDE.importedName»
-            public «String.importedName» toString() {
+            public «STRING.importedName» toString() {
                 final «MoreObjects.importedName».ToStringHelper helper = «MoreObjects.importedName».toStringHelper("«targetType.name»");
                 «FOR property : properties»
                     «CodeHelpers.importedName».appendValue(helper, "«property.fieldName»", «property.fieldName»);
