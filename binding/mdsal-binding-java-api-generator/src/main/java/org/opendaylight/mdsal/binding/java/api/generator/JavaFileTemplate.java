@@ -28,7 +28,13 @@ import org.opendaylight.mdsal.binding.model.util.Types;
  * Base Java file template. Contains a non-null type and imports which the generated code refers to.
  */
 class JavaFileTemplate {
+    /**
+     * {@code org.eclipse.jdt.annotation.NonNull} as a JavaTypeName.
+     */
     static final JavaTypeName NONNULL = JavaTypeName.create("org.eclipse.jdt.annotation", "NonNull");
+    /**
+     * {@code org.eclipse.jdt.annotation.Nullable} as a JavaTypeName.
+     */
     static final JavaTypeName NULLABLE = JavaTypeName.create("org.eclipse.jdt.annotation", "Nullable");
     static final JavaTypeName DEPRECATED = JavaTypeName.create(Deprecated.class);
     static final JavaTypeName OVERRIDE = JavaTypeName.create(Override.class);
