@@ -99,7 +99,7 @@ class GeneratorImpl {
             bw.close();
             fw.close();
         } catch (IOException e) {
-            LOG.error(e.getMessage());
+            LOG.error("Failed to emit file {}", destination, e);
         }
         return destination;
     }
