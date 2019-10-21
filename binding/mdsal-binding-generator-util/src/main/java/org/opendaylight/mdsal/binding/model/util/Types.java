@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.BaseTypeWithRestrictions;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
@@ -40,7 +41,7 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 
 public final class Types {
-    private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER = new CacheLoader<Class<?>, ConcreteType>() {
+    private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER = new CacheLoader<>() {
         @Override
         public ConcreteType load(final Class<?> key) {
             return new ConcreteTypeImpl(JavaTypeName.create(key), null);
@@ -49,21 +50,20 @@ public final class Types {
     private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
             CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
 
+    public static final @NonNull ConcreteType BOOLEAN = typeForClass(Boolean.class);
+    public static final @NonNull ConcreteType STRING = typeForClass(String.class);
+    public static final @NonNull ConcreteType VOID = typeForClass(Void.class);
+    public static final @NonNull ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
 
-    public static final ConcreteType BOOLEAN = typeForClass(Boolean.class);
-    public static final ConcreteType STRING = typeForClass(String.class);
-    public static final ConcreteType VOID = typeForClass(Void.class);
-    public static final ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
-
-    private static final ConcreteType BUILDER = typeForClass(Builder.class);
-    private static final ConcreteType CLASS = typeForClass(Class.class);
-    private static final ConcreteType LIST_TYPE = typeForClass(List.class);
-    private static final ConcreteType LISTENABLE_FUTURE = typeForClass(ListenableFuture.class);
-    private static final ConcreteType MAP_TYPE = typeForClass(Map.class);
-    private static final ConcreteType OBJECT = typeForClass(Object.class);
-    private static final ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
-    private static final ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
-    private static final ConcreteType SET_TYPE = typeForClass(Set.class);
+    private static final @NonNull ConcreteType BUILDER = typeForClass(Builder.class);
+    private static final @NonNull ConcreteType CLASS = typeForClass(Class.class);
+    private static final @NonNull ConcreteType LIST_TYPE = typeForClass(List.class);
+    private static final @NonNull ConcreteType LISTENABLE_FUTURE = typeForClass(ListenableFuture.class);
+    private static final @NonNull ConcreteType MAP_TYPE = typeForClass(Map.class);
+    private static final @NonNull ConcreteType OBJECT = typeForClass(Object.class);
+    private static final @NonNull ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
+    private static final @NonNull ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
+    private static final @NonNull ConcreteType SET_TYPE = typeForClass(Set.class);
 
     /**
      * It is not desirable to create instance of this class.
@@ -79,7 +79,7 @@ public final class Types {
      * @return A parameterized type corresponding to {@code Class<Type>}
      * @throws NullPointerException if {@code type} is null
      */
-    public static ParameterizedType classType(final Type type) {
+    public static @NonNull ParameterizedType classType(final Type type) {
         return parameterizedTypeFor(CLASS, type);
     }
 
@@ -88,7 +88,7 @@ public final class Types {
      *
      * @return <code>ConcreteType</code> instance which represents JAVA <code>java.lang.Void</code>
      */
-    public static ConcreteType voidType() {
+    public static @NonNull ConcreteType voidType() {
         return VOID;
     }
 
@@ -97,7 +97,7 @@ public final class Types {
      *
      * @return <code>ConcreteType</code> instance which represents {@link Object}
      */
-    public static ConcreteType objectType() {
+    public static @NonNull ConcreteType objectType() {
         return OBJECT;
     }
 
@@ -106,7 +106,7 @@ public final class Types {
      *
      * @return <code>ConcreteType</code> instance which represents JAVA <code>void</code>
      */
-    public static ConcreteType primitiveVoidType() {
+    public static @NonNull ConcreteType primitiveVoidType() {
         return PRIMITIVE_VOID;
     }
 
@@ -115,7 +115,7 @@ public final class Types {
      *
      * @return <code>ConcreteType</code> instance which represents JAVA <code>{@link Serializable}</code>
      */
-    public static ConcreteType serializableType() {
+    public static @NonNull ConcreteType serializableType() {
         return SERIALIZABLE;
     }
 
@@ -125,11 +125,12 @@ public final class Types {
      * @param cls Class to describe
      * @return Description of class
      */
-    public static ConcreteType typeForClass(final Class<?> cls) {
+    public static @NonNull ConcreteType typeForClass(final @NonNull Class<?> cls) {
         return TYPE_CACHE.getUnchecked(cls);
     }
 
-    public static ConcreteType typeForClass(final Class<?> cls, final Restrictions restrictions) {
+    public static @NonNull ConcreteType typeForClass(final @NonNull Class<?> cls,
+            final @Nullable Restrictions restrictions) {
         if (restrictions == null) {
             return typeForClass(cls);
         }
@@ -148,7 +149,7 @@ public final class Types {
      * @param valueType Value Type
      * @return Description of generic type instance
      */
-    public static ParameterizedType mapTypeFor(final Type keyType, final Type valueType) {
+    public static @NonNull ParameterizedType mapTypeFor(final Type keyType, final Type valueType) {
         return parameterizedTypeFor(MAP_TYPE, keyType, valueType);
     }
 
@@ -159,7 +160,7 @@ public final class Types {
      * @param valueType Value Type
      * @return Description of generic type instance of Set
      */
-    public static ParameterizedType setTypeFor(final Type valueType) {
+    public static @NonNull ParameterizedType setTypeFor(final Type valueType) {
         return parameterizedTypeFor(SET_TYPE, valueType);
     }
 
@@ -170,7 +171,7 @@ public final class Types {
      * @param valueType Value Type
      * @return Description of type instance of List
      */
-    public static ParameterizedType listTypeFor(final Type valueType) {
+    public static @NonNull ParameterizedType listTypeFor(final Type valueType) {
         return parameterizedTypeFor(LIST_TYPE, valueType);
     }
 
@@ -185,7 +186,7 @@ public final class Types {
      * @param valueType Value Type
      * @return Description of type instance of ListenableFuture
      */
-    public static ParameterizedType listenableFutureTypeFor(final Type valueType) {
+    public static @NonNull ParameterizedType listenableFutureTypeFor(final Type valueType) {
         return parameterizedTypeFor(LISTENABLE_FUTURE, valueType);
     }
 
@@ -196,7 +197,7 @@ public final class Types {
      * @param valueType Value Type
      * @return Description of type instance of Builder
      */
-    public static ParameterizedType builderTypeFor(final Type valueType) {
+    public static @NonNull ParameterizedType builderTypeFor(final Type valueType) {
         return parameterizedTypeFor(BUILDER, valueType);
     }
 
@@ -208,7 +209,7 @@ public final class Types {
      * @return <code>ParametrizedType</code> representation of <code>type</code> and its <code>parameters</code>
      * @throws NullPointerException if any argument or any member of {@code parameters} is null
      */
-    public static ParameterizedType parameterizedTypeFor(final Type type, final Type... parameters) {
+    public static @NonNull ParameterizedType parameterizedTypeFor(final Type type, final Type... parameters) {
         return new ParametrizedTypeImpl(type, parameters);
     }
 
@@ -234,7 +235,7 @@ public final class Types {
      *         <code>Augmentable</code> with actual parameter
      *         <code>valueType</code>
      */
-    public static ParameterizedType augmentableTypeFor(final Type valueType) {
+    public static @NonNull ParameterizedType augmentableTypeFor(final Type valueType) {
         final Type augmentable = typeForClass(Augmentable.class);
         return parameterizedTypeFor(augmentable, valueType);
     }
@@ -249,7 +250,7 @@ public final class Types {
      *         <code>Augmentation</code> with actual parameter
      *         <code>valueType</code>
      */
-    public static ParameterizedType augmentationTypeFor(final Type valueType) {
+    public static @NonNull ParameterizedType augmentationTypeFor(final Type valueType) {
         final Type augmentation = typeForClass(Augmentation.class);
         return parameterizedTypeFor(augmentation, valueType);
     }
