@@ -163,7 +163,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         File outputBaseDir;
         outputBaseDir = new File(DEFAULT_OUTPUT_BASE_DIR_PATH);
         setOutputBaseDirAsSourceFolder(outputBaseDir, mavenProject);
-        LOG.debug("Adding " + outputBaseDir.getPath() + " as compile source root");
+        LOG.debug("Adding {} as compile source root", outputBaseDir.getPath());
         return outputBaseDir;
     }
 
@@ -234,10 +234,10 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
                     bw.write(source);
                 }
             } catch (Exception e) {
-                LOG.error("Could not write file: {}",file,e);
+                LOG.error("Could not write file: {}", file, e);
             }
         } catch (Exception e) {
-            LOG.error("Could not create file: {}",file,e);
+            LOG.error("Could not create file: {}", file, e);
         }
         return file;
     }
