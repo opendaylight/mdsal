@@ -75,7 +75,7 @@ class YangModuleInfoTemplate {
             public final class «MODULE_INFO_CLASS_NAME» extends «ResourceYangModuleInfo.importedName» {
                 «val rev = module.revision»
                 private static final «QName.importedName» NAME = «QName.importedName».create("«module.namespace.toString»", «IF rev.present»"«rev.get.toString»", «ENDIF»"«module.name»").intern();
-                private static final «YangModuleInfo.importedName» INSTANCE = new «MODULE_INFO_CLASS_NAME»();
+                private static final @org.eclipse.jdt.annotation.NonNull «YangModuleInfo.importedName» INSTANCE = new «MODULE_INFO_CLASS_NAME»();
 
                 private final «ImmutableSet.importedName»<«YangModuleInfo.importedName»> importedModules;
 
