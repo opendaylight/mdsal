@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
@@ -103,7 +104,7 @@ public class YangModuleInfoCompilationTest {
         Object yangModuleInfo = getInstance.invoke(null);
 
         // Test getImportedModules method
-        Method getImportedModules = assertContainsMethod(yangModuleInfoClass, Set.class, "getImportedModules");
+        Method getImportedModules = assertContainsMethod(yangModuleInfoClass, ImmutableSet.class, "getImportedModules");
         Object importedModules = getImportedModules.invoke(yangModuleInfo);
         assertTrue(importedModules instanceof Set);
 
