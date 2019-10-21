@@ -65,6 +65,9 @@ public final class Types {
     private static final @NonNull ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
     private static final @NonNull ConcreteType SET_TYPE = typeForClass(Set.class);
 
+    private static final @NonNull ConcreteType AUGMENTABLE = typeForClass(Augmentable.class);
+    private static final @NonNull ConcreteType AUGMENTATION = typeForClass(Augmentation.class);
+
     /**
      * It is not desirable to create instance of this class.
      */
@@ -236,8 +239,7 @@ public final class Types {
      *         <code>valueType</code>
      */
     public static @NonNull ParameterizedType augmentableTypeFor(final Type valueType) {
-        final Type augmentable = typeForClass(Augmentable.class);
-        return parameterizedTypeFor(augmentable, valueType);
+        return parameterizedTypeFor(AUGMENTABLE, valueType);
     }
 
     /**
@@ -251,8 +253,7 @@ public final class Types {
      *         <code>valueType</code>
      */
     public static @NonNull ParameterizedType augmentationTypeFor(final Type valueType) {
-        final Type augmentation = typeForClass(Augmentation.class);
-        return parameterizedTypeFor(augmentation, valueType);
+        return parameterizedTypeFor(AUGMENTATION, valueType);
     }
 
     public static @Nullable String getOuterClassName(final Type valueType) {
