@@ -8,10 +8,10 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
@@ -21,6 +21,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 
 class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<D, ListSchemaNode> {
+    private static final int LAZY_MINSIZE = 2;
+
     ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
         super(prototype);
     }
@@ -58,12 +60,9 @@ class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<
 
     private List<D> fromMap(final MapNode nodes) {
         final Collection<MapEntryNode> value = nodes.getValue();
-        final Builder<D> builder = ImmutableList.builderWithExpectedSize(value.size());
-        // FIXME: Could be this lazy transformed list?
-        for (MapEntryNode node : value) {
-            builder.add(fromMapEntry(node));
-        }
-        return builder.build();
+        final int size = value.size();
+        return size < LAZY_MINSIZE ? eagerList(value, size, this::fromMapEntry)
+                : new LazilyTransformedMapNode<>(value,  size, this::fromMapEntry);
     }
 
     private D fromMapEntry(final MapEntryNode node) {
@@ -76,11 +75,12 @@ class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<
 
     private List<D> fromUnkeyedList(final UnkeyedListNode nodes) {
         final Collection<UnkeyedListEntryNode> value = nodes.getValue();
-        // FIXME: Could be this lazy transformed list?
-        final Builder<D> builder = ImmutableList.builderWithExpectedSize(value.size());
-        for (UnkeyedListEntryNode node : value) {
-            builder.add(fromUnkeyedListEntry(node));
-        }
-        return builder.build();
+        final int size = value.size();
+        return size < LAZY_MINSIZE ? eagerList(value, size, this::fromUnkeyedListEntry)
+                : new LazilyTransformedUnkeyedListNode<>(nodes, size, this::fromUnkeyedListEntry);
+    }
+
+    private <T> ImmutableList<D> eagerList(final Collection<T> value, final int size, final Function<T, D> func) {
+        return value.stream().map(func).collect(ImmutableList.toImmutableList());
     }
 }
