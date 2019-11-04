@@ -10,6 +10,8 @@
 # http://www.eclipse.org/legal/epl-v10.html
 ##############################################################################
 
+import xml.etree.ElementTree as ET
+
 from docs_conf.conf import *
 
 extensions.append('sphinx.ext.extlinks')
@@ -18,3 +20,8 @@ extensions.append('sphinxcontrib.plantuml')
 extlinks = {
     'mdsal-apidoc': ('https://github.com/sphinx-doc/sphinx/issues/%s', 'api '),
 }
+
+data = ET.parse('pom.xml')
+mdsal_version = data.getroot().find('*//{http://maven.apache.org/POM/4.0.0}version').text
+version = mdsal_version
+release = mdsal_version
