@@ -18,12 +18,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.RpcServiceInvoker;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -34,8 +36,23 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
-    private static final Cache<Class<?>, RpcServiceInvoker> SERVICE_INVOKERS = CacheBuilder.newBuilder().weakKeys()
-            .build();
+    private static final class ClassContext implements Immutable {
+        final RpcServiceInvoker invoker;
+        final @NonNull QName inputQname;
+
+        ClassContext(final Class<? extends RpcService> type, final Map<SchemaPath, Method> localNameToMethod) {
+            inputQname = YangConstants.operationInputQName(BindingReflections.getQNameModule(type)).intern();
+
+            final Map<QName, Method> map = new HashMap<>();
+            for (Entry<SchemaPath, Method> e : localNameToMethod.entrySet()) {
+                map.put(e.getKey().getLastComponent(), e.getValue());
+            }
+
+            this.invoker = RpcServiceInvoker.from(map);
+        }
+    }
+
+    private static final Cache<Class<?>, ClassContext> CLASS_CONTEXTS = CacheBuilder.newBuilder().weakKeys().build();
 
     // Default implementations are 0, we need to perform some translation, hence we have a slightly higher cost
     private static final int COST = 1;
@@ -47,22 +64,18 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
 
     <T extends RpcService> BindingDOMRpcImplementationAdapter(final BindingNormalizedNodeCodecRegistry codec,
             final Class<T> type, final Map<SchemaPath, Method> localNameToMethod, final T delegate) {
-        try {
-            this.invoker = SERVICE_INVOKERS.get(type, () -> {
-                final Map<QName, Method> map = new HashMap<>();
-                for (Entry<SchemaPath, Method> e : localNameToMethod.entrySet()) {
-                    map.put(e.getKey().getLastComponent(), e.getValue());
-                }
+        this.codec = requireNonNull(codec);
+        this.delegate = requireNonNull(delegate);
 
-                return RpcServiceInvoker.from(map);
-            });
+        final ClassContext context;
+        try {
+            context = CLASS_CONTEXTS.get(type, () -> new ClassContext(type, localNameToMethod));
         } catch (ExecutionException e) {
             throw new IllegalArgumentException("Failed to create invokers for type " + type, e);
         }
 
-        this.codec = requireNonNull(codec);
-        this.delegate = requireNonNull(delegate);
-        inputQname = YangConstants.operationInputQName(BindingReflections.getQNameModule(type)).intern();
+        this.invoker = context.invoker;
+        this.inputQname = context.inputQname;
     }
 
     @Override
