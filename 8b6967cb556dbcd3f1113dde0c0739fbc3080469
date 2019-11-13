@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a682502_feb5f031",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/generator/spi/TypeProviderFactory.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "Is this interface needed then?",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_5e822453",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/AccessModifier.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "Please put enums on separate lines.",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_3e876863",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/AnnotationType.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "please remove trailing ws (below as well)",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_7e81e049",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/Constant.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "please remove trailing ws (below as well)",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_de959489",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/GeneratedTransferIdentityObject.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "This can be part of the previous line.",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_be92589d",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/MethodSignature.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "please remove trailing ws (below as well)",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_1e90ac94",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/Restrictions.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "Please add blank lines in between methods (checkstyle will complain about this).",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_fe8cd081",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/Type.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "please remove trailing ws (below as well)",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_5ee98419",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/WildcardType.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "please remove trailing ws (below as well)",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_3eee4823",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/type/builder/ConstantBuilder.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "Either add javadoc text or remove altogether.",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_9ef31c0a",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/type/builder/TypeMemberBuilder.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "Either add javadoc text or remove altogether.",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
