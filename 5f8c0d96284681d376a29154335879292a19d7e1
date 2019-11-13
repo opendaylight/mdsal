@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_36f8f048",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/YangTemplate.xtend",
+        "patchSetId": 7
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-15T08:37:18Z",
+      "side": 1,
+      "message": "This is something you have to incorporate here. \nFor help, please see YangTemplate.xtend in \"old yangtools\" package:\n\ncommit 535737b1a8c91de648c5215d6430df693dba52bc\nAuthor: Michael Vorburger \u003cvorburger@redhat.com\u003e\nDate:   Mon Oct 17 17:47:38 2016 +0200\n\n    Bug 6236: Introduce \"mdsal.skip.verbose\" property, for build speed\n    \n    This doesn\u0027t \"fix\" Bug 6236, but works around it - and gives us a low\n    hanging fruit build performance improvement.\n    \n    If this change gets accepted, I would make the odlparent -Pq profile set\n    this to true by default.\n    \n    In parallel, I\u0027m trying to get a root cause fix in a future Xtend\n    version. (At which point this could be removed again.)\n    \n    Change-Id: I108f401fa2fbca6f17a8b23cb098910c5a6021fb\n    Signed-off-by: Michael Vorburger \u003cvorburger@redhat.com\u003e",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 20
+      },
+      "revId": "5f8c0d96284681d376a29154335879292a19d7e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
