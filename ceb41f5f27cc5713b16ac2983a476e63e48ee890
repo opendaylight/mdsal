@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_feee6321",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/yang/types/TypeProviderImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-09T15:07:19Z",
+      "side": 1,
+      "message": "I guess this fixme should go away now...",
+      "range": {
+        "startLine": 203,
+        "startChar": 12,
+        "endLine": 203,
+        "endChar": 88
+      },
+      "revId": "ceb41f5f27cc5713b16ac2983a476e63e48ee890",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
