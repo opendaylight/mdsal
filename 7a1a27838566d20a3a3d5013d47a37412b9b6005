@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_9ef92fcb",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/RpcImplementation.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-09T15:48:09Z",
+      "side": 1,
+      "message": "no empty line between groups",
+      "revId": "7a1a27838566d20a3a3d5013d47a37412b9b6005",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7ef6d3d8",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/annotations/QName.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-09T15:48:09Z",
+      "side": 1,
+      "message": "extra empty line",
+      "revId": "7a1a27838566d20a3a3d5013d47a37412b9b6005",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_de03a7b6",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/annotations/RoutingContext.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-09T15:48:09Z",
+      "side": 1,
+      "message": "no empty line between groups",
+      "revId": "7a1a27838566d20a3a3d5013d47a37412b9b6005",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_be006bab",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/util/BindingReflections.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-09T15:48:09Z",
+      "side": 1,
+      "message": "code style - we allow one empty line between static and rest of the imports, please set up your IDE",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 39
+      },
+      "revId": "7a1a27838566d20a3a3d5013d47a37412b9b6005",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5e279764",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/util/DataObjectReadingUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-09T15:48:09Z",
+      "side": 1,
+      "message": "code style - we allow one empty line between static and rest of the imports, please set up your IDE",
+      "revId": "7a1a27838566d20a3a3d5013d47a37412b9b6005",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
