@@ -1,0 +1,227 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_ce95c0e5",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/Augmentable.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:32:38Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 14,
+        "startChar": 2,
+        "endLine": 14,
+        "endChar": 3
+      },
+      "revId": "883d090d0865512c51a029f7bf8315f1cf5f4fdb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_ae9a0412",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/Augmentable.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:32:38Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 18,
+        "startChar": 2,
+        "endLine": 18,
+        "endChar": 3
+      },
+      "revId": "883d090d0865512c51a029f7bf8315f1cf5f4fdb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_0ea05842",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/Augmentable.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:32:38Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 28,
+        "startChar": 6,
+        "endLine": 28,
+        "endChar": 7
+      },
+      "revId": "883d090d0865512c51a029f7bf8315f1cf5f4fdb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_2e86f4b9",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/Augmentation.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:32:38Z",
+      "side": 1,
+      "message": "trailing whitespace at many places",
+      "range": {
+        "startLine": 12,
+        "startChar": 2,
+        "endLine": 12,
+        "endChar": 3
+      },
+      "revId": "883d090d0865512c51a029f7bf8315f1cf5f4fdb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_8e93c8f9",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/BaseIdentity.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:32:38Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "revId": "883d090d0865512c51a029f7bf8315f1cf5f4fdb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_6e90ecec",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/ChildOf.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:32:38Z",
+      "side": 1,
+      "message": "trailing whitespace at many places",
+      "revId": "883d090d0865512c51a029f7bf8315f1cf5f4fdb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_cebca06f",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/DataContainer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:32:38Z",
+      "side": 1,
+      "message": "trailing whitespace at two places",
+      "revId": "883d090d0865512c51a029f7bf8315f1cf5f4fdb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_aec164e6",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/DataObject.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:32:38Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 12,
+        "startChar": 2,
+        "endLine": 12,
+        "endChar": 3
+      },
+      "revId": "883d090d0865512c51a029f7bf8315f1cf5f4fdb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_0eb7b887",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/DataRoot.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:32:38Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "revId": "883d090d0865512c51a029f7bf8315f1cf5f4fdb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_4eb0908b",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/Identifiable.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:32:38Z",
+      "side": 1,
+      "message": "trailing whitespace at many places",
+      "revId": "883d090d0865512c51a029f7bf8315f1cf5f4fdb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_2ead5432",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/mdsal/yang/binding/Identifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:32:38Z",
+      "side": 1,
+      "message": "trailing whitespace at many places",
+      "range": {
+        "startLine": 11,
+        "startChar": 2,
+        "endLine": 11,
+        "endChar": 3
+      },
+      "revId": "883d090d0865512c51a029f7bf8315f1cf5f4fdb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
