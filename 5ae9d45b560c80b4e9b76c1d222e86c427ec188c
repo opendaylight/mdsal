@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_7e6ff392",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/maven/sal/api/gen/plugin/CodeGeneratorImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-09T15:43:11Z",
+      "side": 1,
+      "message": "no empty lines between groups",
+      "revId": "5ae9d45b560c80b4e9b76c1d222e86c427ec188c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_de6c479f",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/maven/sal/api/gen/plugin/CodeGeneratorImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-09T15:43:11Z",
+      "side": 1,
+      "message": "no empty lines between groups",
+      "revId": "5ae9d45b560c80b4e9b76c1d222e86c427ec188c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_be698b8d",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/yang/unified/doc/generator/maven/DocumentationGeneratorImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-09T15:43:11Z",
+      "side": 1,
+      "message": "no empty lines between groups",
+      "revId": "5ae9d45b560c80b4e9b76c1d222e86c427ec188c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1e06bfce",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/yang/wadl/generator/maven/WadlGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-09T15:43:11Z",
+      "side": 1,
+      "message": "no empty lines between groups",
+      "revId": "5ae9d45b560c80b4e9b76c1d222e86c427ec188c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
