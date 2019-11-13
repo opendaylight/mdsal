@@ -254,6 +254,24 @@
       "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_6cd81154",
+        "filename": "binding2/mdsal-binding2-spec/src/test/resources/odl-test-foo-bar.yang",
+        "patchSetId": 6
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 5153
+      },
+      "writtenOn": "2019-11-13T21:42:34Z",
+      "side": 1,
+      "message": "Took me a while to realize that this is a result of Mac\u0027s filesystem which is by default case insensitive. Will fix it.",
+      "parentUuid": "5a682502_7ef8c0e5",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
