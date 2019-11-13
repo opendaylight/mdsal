@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "5a682502_deae34e7",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/generator/api/BindingGenerator.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "please remove trailing ws (below as well)",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_1eb9cc2e",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/generator/spi/TypeProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "Since this is a new interface, it would be nice to not have any deprecated methods. Can we eliminate this?",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a682502_feb5f031",
         "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/generator/spi/TypeProviderFactory.java",
         "patchSetId": 6
@@ -47,6 +81,23 @@
       "writtenOn": "2016-10-25T03:52:14Z",
       "side": 1,
       "message": "please remove trailing ws (below as well)",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_9e7cbc74",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/CodeGenerator.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "\"Transforms data to concrete code in a programming language.\"",
       "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -183,6 +234,23 @@
       "writtenOn": "2016-10-25T03:52:14Z",
       "side": 1,
       "message": "Either add javadoc text or remove altogether.",
+      "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_7ef8c0e5",
+        "filename": "binding2/mdsal-binding2-spec/src/test/resources/odl-test-foo-bar.yang",
+        "patchSetId": 6
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-25T03:52:14Z",
+      "side": 1,
+      "message": "Why was \"bar\" changed to \"Bar\"?",
       "revId": "8b6967cb556dbcd3f1113dde0c0739fbc3080469",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
