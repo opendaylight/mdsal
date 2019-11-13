@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_cec78011",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/yang/unified/doc/generator/GeneratorImpl.xtend",
+        "patchSetId": 6
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:24:44Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 360,
+        "startChar": 0,
+        "endLine": 360,
+        "endChar": 8
+      },
+      "revId": "4f6c7744a72fa7815b08c167ba501aa6bf74c181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_aeccc436",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/yang/unified/doc/generator/GeneratorImpl.xtend",
+        "patchSetId": 6
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:24:44Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 363,
+        "startChar": 0,
+        "endLine": 363,
+        "endChar": 8
+      },
+      "revId": "4f6c7744a72fa7815b08c167ba501aa6bf74c181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_0ed218d2",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/yang/unified/doc/generator/GeneratorImpl.xtend",
+        "patchSetId": 6
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:24:44Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 469,
+        "startChar": 14,
+        "endLine": 469,
+        "endChar": 15
+      },
+      "revId": "4f6c7744a72fa7815b08c167ba501aa6bf74c181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_2ed8b4ee",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/yang/unified/doc/generator/GeneratorImpl.xtend",
+        "patchSetId": 6
+      },
+      "lineNbr": 476,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:24:44Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 476,
+        "startChar": 14,
+        "endLine": 476,
+        "endChar": 15
+      },
+      "revId": "4f6c7744a72fa7815b08c167ba501aa6bf74c181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_ceee608b",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/yang/unified/doc/generator/maven/DocumentationGeneratorImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-08T08:24:44Z",
+      "side": 1,
+      "message": "delete this if method body is complete",
+      "range": {
+        "startLine": 25,
+        "startChar": 7,
+        "endLine": 25,
+        "endChar": 42
+      },
+      "revId": "4f6c7744a72fa7815b08c167ba501aa6bf74c181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
