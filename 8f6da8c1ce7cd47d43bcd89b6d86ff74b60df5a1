@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_6530f49e",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-14T13:37:45Z",
+      "side": 1,
+      "message": "please set up your IDE to allow one empty line between static and rest of imports...",
+      "revId": "8f6da8c1ce7cd47d43bcd89b6d86ff74b60df5a1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_451b381b",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/util/DefaultSourceCodeGenerator.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-14T13:37:45Z",
+      "side": 1,
+      "message": "no empty lines between groups, please set up your IDE",
+      "revId": "8f6da8c1ce7cd47d43bcd89b6d86ff74b60df5a1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_2516fcf1",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/util/DefaultSourceCodeGenerator.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-14T13:37:45Z",
+      "side": 1,
+      "message": "no empty lines between groups, please set up your IDE",
+      "revId": "8f6da8c1ce7cd47d43bcd89b6d86ff74b60df5a1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_65d75424",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/util/XtendHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-14T13:37:45Z",
+      "side": 1,
+      "message": "no empty lines between groups, please set up your IDE",
+      "revId": "8f6da8c1ce7cd47d43bcd89b6d86ff74b60df5a1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_c5de283f",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/util/YangSchemaUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-14T13:37:45Z",
+      "side": 1,
+      "message": "please set up your IDE to allow one empty line between static and rest of imports...",
+      "revId": "8f6da8c1ce7cd47d43bcd89b6d86ff74b60df5a1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_a5e16c00",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/yang/types/TypeProviderImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-14T13:37:45Z",
+      "side": 1,
+      "message": "please set up your IDE to allow one empty line between static and rest of imports...",
+      "revId": "8f6da8c1ce7cd47d43bcd89b6d86ff74b60df5a1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
