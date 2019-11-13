@@ -114,6 +114,30 @@
       "revId": "4f6c7744a72fa7815b08c167ba501aa6bf74c181",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_0d533b18",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/yang/unified/doc/generator/maven/DocumentationGeneratorImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5153
+      },
+      "writtenOn": "2019-11-13T21:42:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_ceee608b",
+      "range": {
+        "startLine": 25,
+        "startChar": 7,
+        "endLine": 25,
+        "endChar": 42
+      },
+      "revId": "4f6c7744a72fa7815b08c167ba501aa6bf74c181",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
