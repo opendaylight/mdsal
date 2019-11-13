@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_3ad760ef",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/generator/api/BindingGenerator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-11T17:03:34Z",
+      "side": 1,
+      "message": "Rashmi, this (and a few other) classes here have trailing whitespace, which we like to avoid. Perhaps you would be interested in adopting Checkstyle enforcement in this project?  That would auto-detect this and other problems, both during Gerrit verification and while you code in the IDE.  If interested, see e.g. https://wiki.opendaylight.org/view/BestPractices/Coding_Guidelines#Enforcement, and feel free to reach out to me if required.",
+      "revId": "2aaa377fc85de584064bbb52187daa4a7b0d41e7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
