@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_e76215ac",
+        "filename": "dom/mdsal-dom-schema-service-osgi/src/main/java/org/opendaylight/mdsal/dom/schema/service/osgi/SchemaServiceActivator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 6295
+      },
+      "writtenOn": "2017-08-23T04:53:46Z",
+      "side": 1,
+      "message": "use blueprint instead of bundle activator if possible",
+      "range": {
+        "startLine": 16,
+        "startChar": 13,
+        "endLine": 16,
+        "endChar": 62
+      },
+      "revId": "62b0d986451209d55c62409d52160fa12e12b370",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
