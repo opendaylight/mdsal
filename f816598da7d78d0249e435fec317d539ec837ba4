@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba068154_25ef5ab2",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/generator/apple-test.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_42e534a7",
+      "revId": "f816598da7d78d0249e435fec317d539ec837ba4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_e27388e5",
         "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/generator/apple-test.yang",
         "patchSetId": 2
@@ -30,6 +48,30 @@
       "writtenOn": "2017-05-04T11:12:25Z",
       "side": 1,
       "message": "how about?\n\ncontainer apple {\n\n    leaf apple {\n\n          .\n          .\n\n           enum apple\n\n           enum apple1",
+      "range": {
+        "startLine": 9,
+        "startChar": 4,
+        "endLine": 19,
+        "endChar": 2
+      },
+      "revId": "f816598da7d78d0249e435fec317d539ec837ba4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_852ba6ea",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/generator/apple-test.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_e27388e5",
       "range": {
         "startLine": 9,
         "startChar": 4,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "ba068154_a53a2a34",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_82eefc89",
+      "range": {
+        "startLine": 254,
+        "startChar": 12,
+        "endLine": 259,
+        "endChar": 50
+      },
+      "revId": "f816598da7d78d0249e435fec317d539ec837ba4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_62f31874",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
         "patchSetId": 2
@@ -76,6 +142,30 @@
       "writtenOn": "2017-05-04T10:48:36Z",
       "side": 1,
       "message": "\u0027.\u0027",
+      "range": {
+        "startLine": 333,
+        "startChar": 34,
+        "endLine": 333,
+        "endChar": 37
+      },
+      "revId": "f816598da7d78d0249e435fec317d539ec837ba4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_65304257",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_62f31874",
       "range": {
         "startLine": 333,
         "startChar": 34,
