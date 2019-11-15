@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_ca210bfe",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 4
+      },
+      "lineNbr": 730,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-03T12:11:08Z",
+      "side": 1,
+      "message": "comment logic of this part",
+      "range": {
+        "startLine": 729,
+        "startChar": 15,
+        "endLine": 730,
+        "endChar": 113
+      },
+      "revId": "97559f3abba108a1a37670fe5af5ea3e9eea757b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
