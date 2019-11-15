@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fa2559ec_909f7c50",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/operation/LazyDOMOperationResultFuture.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "we need this one as return object for overridden methods of DOMRpcImplementation in BindingDOMOperationImplementationAdapter",
+      "parentUuid": "fa2559ec_8dc64548",
+      "revId": "c58629c0ee14782e48ca2a40936d65d91376052c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa2559ec_2db639dd",
         "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/operation/LazyDOMOperationResultFuture.java",
         "patchSetId": 3
