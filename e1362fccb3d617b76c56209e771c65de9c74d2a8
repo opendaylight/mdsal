@@ -1,0 +1,205 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_964bce58",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/ModuleToGenType.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-08T08:37:31Z",
+      "side": 1,
+      "message": "static imports should be separated by a new line",
+      "revId": "e1362fccb3d617b76c56209e771c65de9c74d2a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_7648ea5b",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/util/YangTextTemplate.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-08T08:37:31Z",
+      "side": 1,
+      "message": "\u0027/\u0027",
+      "range": {
+        "startLine": 119,
+        "startChar": 22,
+        "endLine": 119,
+        "endChar": 25
+      },
+      "revId": "e1362fccb3d617b76c56209e771c65de9c74d2a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_d674369e",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/util/YangTextTemplate.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-08T08:37:31Z",
+      "side": 1,
+      "message": "Strings.isNullOrEmpty(description)",
+      "range": {
+        "startLine": 286,
+        "startChar": 12,
+        "endLine": 286,
+        "endChar": 56
+      },
+      "revId": "e1362fccb3d617b76c56209e771c65de9c74d2a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_363e62b9",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleaner.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-08T08:37:31Z",
+      "side": 1,
+      "message": "can we rather use Guava utilities (CharMatcher, Splitter)?",
+      "range": {
+        "startLine": 11,
+        "startChar": 26,
+        "endLine": 11,
+        "endChar": 42
+      },
+      "revId": "e1362fccb3d617b76c56209e771c65de9c74d2a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_76310aec",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleaner.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-08T08:37:31Z",
+      "side": 1,
+      "message": "tag this with @RegEx, rename to NEW_LINE_REGEX\nintroduce Pattern NEW_LINE_PATTERN, which is pre-compiled",
+      "range": {
+        "startLine": 22,
+        "startChar": 32,
+        "endLine": 22,
+        "endChar": 46
+      },
+      "revId": "e1362fccb3d617b76c56209e771c65de9c74d2a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_d64d5674",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleaner.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-08T08:37:31Z",
+      "side": 1,
+      "message": "WS_REGEX, tagged with @RegEx, and add WS_PATTERN",
+      "range": {
+        "startLine": 23,
+        "startChar": 32,
+        "endLine": 23,
+        "endChar": 40
+      },
+      "revId": "e1362fccb3d617b76c56209e771c65de9c74d2a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_96346edf",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleaner.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-08T08:37:31Z",
+      "side": 1,
+      "message": "these should be string literals",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 87
+      },
+      "revId": "e1362fccb3d617b76c56209e771c65de9c74d2a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_b6525211",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleaner.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-08T08:37:31Z",
+      "side": 1,
+      "message": "split using pre-compiled NEW_LINE_PATTERN",
+      "range": {
+        "startLine": 49,
+        "startChar": 34,
+        "endLine": 49,
+        "endChar": 69
+      },
+      "revId": "e1362fccb3d617b76c56209e771c65de9c74d2a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_16587e31",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleaner.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-08T08:37:31Z",
+      "side": 1,
+      "message": "split using pre-compiled pattern",
+      "range": {
+        "startLine": 95,
+        "startChar": 33,
+        "endLine": 95,
+        "endChar": 48
+      },
+      "revId": "e1362fccb3d617b76c56209e771c65de9c74d2a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
