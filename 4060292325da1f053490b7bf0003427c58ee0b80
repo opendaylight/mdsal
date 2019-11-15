@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_e2996b20",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/yangModuleInfoTemplate.scala.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "I think, its better to use normalizer in getRootPackageName",
+      "range": {
+        "startLine": 71,
+        "startChar": 30,
+        "endLine": 71,
+        "endChar": 73
+      },
+      "revId": "4060292325da1f053490b7bf0003427c58ee0b80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
