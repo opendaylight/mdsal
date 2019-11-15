@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_5081738e",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/registration/BindingDOMRpcAdapterRegistration.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T08:15:52Z",
+      "side": 1,
+      "message": "we should have it for Actions too",
+      "range": {
+        "startLine": 22,
+        "startChar": 13,
+        "endLine": 22,
+        "endChar": 45
+      },
+      "revId": "4ce1bdeb5a0109c4a096ac9b1df87dd9a111d828",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
