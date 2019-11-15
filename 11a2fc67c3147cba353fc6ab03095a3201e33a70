@@ -1,0 +1,109 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_0f9d8266",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/schema/ScanningSchemaServiceProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-09-10T16:02:49Z",
+      "side": 1,
+      "message": "Should be annotated with @GuardedBy(\"lock\").  Also this method should be private.",
+      "revId": "11a2fc67c3147cba353fc6ab03095a3201e33a70",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_afd54f1d",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/schema/ScanningSchemaServiceProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-09-12T13:11:17Z",
+      "side": 1,
+      "message": "Why? Wouldn\u0027t any user go thru tryToUpdateSchemaContext? The problem with exposing this publicly is that currently an external caller has to externally lock, which they currently can\u0027t do.  I\u0027d rather see this method not be public, but if it absolutely has to, then it should lock internally and call a private \"notifyListenersLocked\" or \"notifyListenersSafe\" method (also called by tryToUpdateSchemaContext).",
+      "parentUuid": "ba1f61a0_4c8e61d1",
+      "revId": "11a2fc67c3147cba353fc6ab03095a3201e33a70",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_af939659",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/schema/ScanningSchemaServiceProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-09-10T16:02:49Z",
+      "side": 1,
+      "message": "Can we rename this to hasListeners?",
+      "range": {
+        "startLine": 92,
+        "startChar": 19,
+        "endLine": 92,
+        "endChar": 26
+      },
+      "revId": "11a2fc67c3147cba353fc6ab03095a3201e33a70",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ef990e7a",
+        "filename": "dom/mdsal-dom-schema-service-osgi/src/main/java/org/opendaylight/mdsal/dom/schema/service/osgi/OsgiBundleScanningSchemaService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-09-10T16:02:49Z",
+      "side": 1,
+      "message": "In the original code, this block was protected by the \"lock\" - we should keep this behavior.",
+      "range": {
+        "startLine": 72,
+        "startChar": 8,
+        "endLine": 78,
+        "endChar": 9
+      },
+      "revId": "11a2fc67c3147cba353fc6ab03095a3201e33a70",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_efdbc74c",
+        "filename": "dom/mdsal-dom-schema-service-osgi/src/main/java/org/opendaylight/mdsal/dom/schema/service/osgi/OsgiBundleScanningSchemaService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-09-12T13:11:17Z",
+      "side": 1,
+      "message": "All of this code needs to be synchronized, not just tryUpdateSchemaContext , as it was originally.",
+      "parentUuid": "ba1f61a0_8cc339ec",
+      "range": {
+        "startLine": 72,
+        "startChar": 8,
+        "endLine": 78,
+        "endChar": 9
+      },
+      "revId": "11a2fc67c3147cba353fc6ab03095a3201e33a70",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
