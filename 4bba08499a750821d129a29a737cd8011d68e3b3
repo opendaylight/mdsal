@@ -16,6 +16,24 @@
       "revId": "4bba08499a750821d129a29a737cd8011d68e3b3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_991f9c5b",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/BindingToNormalizedNodeCodecTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_e701e007",
+      "revId": "4bba08499a750821d129a29a737cd8011d68e3b3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
