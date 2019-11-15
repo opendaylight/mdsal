@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_20b892c7",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/generated/type/builder/EnumerationBuilderImpl.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-13T11:41:31Z",
+      "side": 1,
+      "message": "As mentioned in [0], the converter can generate identical conversions for different names (\"Foo\" versus \"foo\"), so a conflict aviodance transformation is needed (the transforming class needs to be stateful to remember strings already used within the namespace).\n\n[0] https://git.opendaylight.org/gerrit/#/c/51132/4/binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifierTest.java",
+      "range": {
+        "startLine": 49,
+        "startChar": 27,
+        "endLine": 49,
+        "endChar": 66
+      },
+      "revId": "ce87b5c807f422251313809d892ee7c47df8e946",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
