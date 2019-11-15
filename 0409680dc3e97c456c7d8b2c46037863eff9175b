@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_0779732f",
+        "filename": "model-binding2/yang-ext/pom.xml",
+        "patchSetId": 18
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-26T10:03:24Z",
+      "side": 1,
+      "message": "2017",
+      "range": {
+        "startLine": 4,
+        "startChar": 15,
+        "endLine": 4,
+        "endChar": 19
+      },
+      "revId": "0409680dc3e97c456c7d8b2c46037863eff9175b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
