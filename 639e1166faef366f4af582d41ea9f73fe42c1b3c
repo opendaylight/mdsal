@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_878d6334",
+        "filename": "model-binding2/general-entity/pom.xml",
+        "patchSetId": 13
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-26T10:02:40Z",
+      "side": 1,
+      "message": "2017",
+      "range": {
+        "startLine": 4,
+        "startChar": 15,
+        "endLine": 4,
+        "endChar": 20
+      },
+      "revId": "639e1166faef366f4af582d41ea9f73fe42c1b3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
