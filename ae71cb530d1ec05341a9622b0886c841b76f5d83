@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_0f950c40",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/writer/impl/TreeNodeSerializerPrototype.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-06T06:31:32Z",
+      "side": 1,
+      "message": "I\u0027m wondering - do we want to group this part of code?\n....codec.\u003csomething_reasonable\u003e.writer.....",
+      "range": {
+        "startLine": 8,
+        "startChar": 55,
+        "endLine": 8,
+        "endChar": 56
+      },
+      "revId": "ae71cb530d1ec05341a9622b0886c841b76f5d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
