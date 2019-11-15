@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_2bbb9a0f",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/mount_point/BindingDOMMountPointListenerAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T09:22:31Z",
+      "side": 1,
+      "message": "get rid of it",
+      "range": {
+        "startLine": 8,
+        "startChar": 68,
+        "endLine": 8,
+        "endChar": 69
+      },
+      "revId": "761f5d286661b9f3d75d57011f1b949ee1c4558d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_8b372eb0",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/mount_point/BindingDOMMountPointServiceAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T09:22:31Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "761f5d286661b9f3d75d57011f1b949ee1c4558d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
