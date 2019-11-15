@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa2559ec_8dc64548",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/operation/LazyDOMOperationResultFuture.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-21T08:41:09Z",
+      "side": 1,
+      "message": "+1 if the consensus is that only new interfaces shouldn\u0027t bring up CheckedFuture and structures, dependant on dom API using CheckedFuture, can.",
+      "revId": "c58629c0ee14782e48ca2a40936d65d91376052c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa2559ec_2db639dd",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/operation/LazyDOMOperationResultFuture.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-21T08:41:09Z",
+      "side": 1,
+      "message": "@Nonnull 2x",
+      "range": {
+        "startLine": 59,
+        "startChar": 28,
+        "endLine": 59,
+        "endChar": 76
+      },
+      "revId": "c58629c0ee14782e48ca2a40936d65d91376052c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa2559ec_0dbb75c5",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/operation/LazyDOMOperationResultFuture.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-21T08:41:09Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "c58629c0ee14782e48ca2a40936d65d91376052c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa2559ec_6db031de",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/operation/LazyDOMOperationResultFuture.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-21T08:41:09Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "c58629c0ee14782e48ca2a40936d65d91376052c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa2559ec_4db56dcc",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/spi/loader/BindingDOMAdapterLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-21T08:41:09Z",
+      "side": 1,
+      "message": "any other missing?",
+      "revId": "c58629c0ee14782e48ca2a40936d65d91376052c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
