@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_42e534a7",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/generator/apple-test.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-05-04T10:48:36Z",
+      "side": 1,
+      "message": "tabs",
+      "revId": "f816598da7d78d0249e435fec317d539ec837ba4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_82eefc89",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-05-04T10:48:36Z",
+      "side": 1,
+      "message": "can you comment what\u0027s going on here in short?",
+      "range": {
+        "startLine": 254,
+        "startChar": 12,
+        "endLine": 259,
+        "endChar": 50
+      },
+      "revId": "f816598da7d78d0249e435fec317d539ec837ba4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
