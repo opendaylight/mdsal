@@ -92,6 +92,30 @@
       "revId": "480bb1d1d35701e2183697687776b573abcf6ad3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9d8b8467",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-21T11:40:22Z",
+      "side": 1,
+      "message": "e.g.: we can\u0027t have \u0027a*b\u0027 folder names in Windows, so Jakub will move this functionality to NonJavaCharsConverter and there will be only one utility call doing all this stuff",
+      "parentUuid": "fafc7978_3f5d3048",
+      "range": {
+        "startLine": 60,
+        "startChar": 15,
+        "endLine": 60,
+        "endChar": 29
+      },
+      "revId": "480bb1d1d35701e2183697687776b573abcf6ad3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
