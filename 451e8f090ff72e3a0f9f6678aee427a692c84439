@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_85d4d747",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/generated/type/builder/EnumerationBuilderImplTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-17T07:27:41Z",
+      "side": 1,
+      "message": "that\u0027s solved in Yang parser anyway...",
+      "parentUuid": "fafc7978_54ee27b5",
+      "range": {
+        "startLine": 48,
+        "startChar": 41,
+        "endLine": 48,
+        "endChar": 42
+      },
+      "revId": "451e8f090ff72e3a0f9f6678aee427a692c84439",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3440c3a4",
         "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/generated/type/builder/EnumerationBuilderImplTest.java",
         "patchSetId": 25
