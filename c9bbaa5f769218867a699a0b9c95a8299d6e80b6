@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_e017e34f",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/impl/YangTemplateTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-11T08:29:12Z",
+      "side": 1,
+      "message": "trailing whitespaces",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 8
+      },
+      "revId": "c9bbaa5f769218867a699a0b9c95a8299d6e80b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
