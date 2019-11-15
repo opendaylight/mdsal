@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_3c6f4cc7",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-02T14:21:16Z",
+      "side": 1,
+      "message": "other",
+      "range": {
+        "startLine": 42,
+        "startChar": 29,
+        "endLine": 42,
+        "endChar": 36
+      },
+      "revId": "dec93f2ddb9aa544b0e153cc44ad0be84bda574a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_dc79e094",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
         "patchSetId": 9
@@ -48,6 +71,29 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_1cab68d9",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-02T14:21:16Z",
+      "side": 1,
+      "message": "delete unnecessary chars in converted identifier and apply camel case in appropriate way",
+      "range": {
+        "startLine": 86,
+        "startChar": 7,
+        "endLine": 88,
+        "endChar": 23
+      },
+      "revId": "dec93f2ddb9aa544b0e153cc44ad0be84bda574a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_fc82e450",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
         "patchSetId": 9
@@ -64,6 +110,52 @@
         "startChar": 15,
         "endLine": 92,
         "endChar": 79
+      },
+      "revId": "dec93f2ddb9aa544b0e153cc44ad0be84bda574a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9c3118ef",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-02T14:21:16Z",
+      "side": 1,
+      "message": "..... ? true : false;",
+      "range": {
+        "startLine": 122,
+        "startChar": 6,
+        "endLine": 126,
+        "endChar": 9
+      },
+      "revId": "dec93f2ddb9aa544b0e153cc44ad0be84bda574a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9c8d987e",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/generated/type/builder/EnumerationBuilderImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-02T14:21:16Z",
+      "side": 1,
+      "message": "we don\u0027t need this one anymore",
+      "range": {
+        "startLine": 118,
+        "startChar": 6,
+        "endLine": 118,
+        "endChar": 40
       },
       "revId": "dec93f2ddb9aa544b0e153cc44ad0be84bda574a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
