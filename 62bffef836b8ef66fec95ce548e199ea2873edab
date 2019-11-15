@@ -2,6 +2,57 @@
   "comments": [
     {
       "key": {
+        "uuid": "3afa9182_eaeea78a",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/generator/spi/generator/AbstractStreamWriterGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-07T10:20:38Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "62bffef836b8ef66fec95ce548e199ea2873edab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_4a237b05",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/generator/spi/source/AbstractSource.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-07T10:20:38Z",
+      "side": 1,
+      "message": "package-private",
+      "revId": "62bffef836b8ef66fec95ce548e199ea2873edab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_aae5bfa9",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/generator/spi/source/AbstractSource.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-07T10:20:38Z",
+      "side": 1,
+      "message": "quite a lot of these can be package-private",
+      "revId": "62bffef836b8ef66fec95ce548e199ea2873edab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3afa9182_caf3eb71",
         "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/generator/spi/source/AbstractTreeNodeSerializerSource.java",
         "patchSetId": 8
