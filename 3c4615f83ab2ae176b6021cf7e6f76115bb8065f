@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_ad156841",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-23T16:46:59Z",
+      "side": 1,
+      "message": "Same here, \"underscoreacceptingmarker\" as a valid Yang identifier would be turned into \"_\".",
+      "range": {
+        "startLine": 320,
+        "startChar": 25,
+        "endLine": 320,
+        "endChar": 77
+      },
+      "revId": "3c4615f83ab2ae176b6021cf7e6f76115bb8065f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5a7114df",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-23T16:23:31Z",
+      "side": 1,
+      "message": "Other lines also have the character in the middle.",
+      "range": {
+        "startLine": 266,
+        "startChar": 37,
+        "endLine": 266,
+        "endChar": 38
+      },
+      "revId": "3c4615f83ab2ae176b6021cf7e6f76115bb8065f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
