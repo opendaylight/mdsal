@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_fab666db",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/GeneratorJavaFile.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "missing jdoc",
+      "range": {
+        "startLine": 78,
+        "startChar": 22,
+        "endLine": 78,
+        "endChar": 36
+      },
+      "revId": "d642fd084884fb4d47b7063fc0b4095d1f2d321e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
