@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_95f42df3",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-09T11:43:07Z",
+      "side": 1,
+      "message": "delete this empty line",
+      "revId": "eda81fe3299305cd8a5777ffb520b8d4a598e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
