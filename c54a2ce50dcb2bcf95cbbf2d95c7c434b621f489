@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "1af78d9a_70cc6f36",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/extractor/ContextReferenceExtractor.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T08:01:34Z",
+      "side": 1,
+      "message": "we need this in binding spec v2",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 74
+      },
+      "revId": "c54a2ce50dcb2bcf95cbbf2d95c7c434b621f489",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_10540b53",
         "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/extractor/ContextReferenceExtractor.java",
         "patchSetId": 4
