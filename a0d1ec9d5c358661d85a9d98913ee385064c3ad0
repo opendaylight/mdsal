@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_4d06711e",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-27T11:29:41Z",
+      "side": 1,
+      "message": "There is still the issue of different Yang identifiers leading to the same name parts:\n\n...\n    grouping int {\n        container int {}\n    }\n    grouping iNt {\n        container iNt {}\n    }\n...",
+      "range": {
+        "startLine": 122,
+        "startChar": 11,
+        "endLine": 122,
+        "endChar": 18
+      },
+      "revId": "a0d1ec9d5c358661d85a9d98913ee385064c3ad0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
