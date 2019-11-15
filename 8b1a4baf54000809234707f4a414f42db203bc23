@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_0ab173f8",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/util/ClassCustomizer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-07T09:24:23Z",
+      "side": 1,
+      "message": "we might want to create .javassist. subpackage for related stuff to get better organized",
+      "revId": "8b1a4baf54000809234707f4a414f42db203bc23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
