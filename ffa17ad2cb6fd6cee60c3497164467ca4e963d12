@@ -19,6 +19,29 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_0bce8e5a",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "NonJavaCharsConverter",
+      "range": {
+        "startLine": 10,
+        "startChar": 19,
+        "endLine": 10,
+        "endChar": 54
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_4beff6b0",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
         "patchSetId": 4
