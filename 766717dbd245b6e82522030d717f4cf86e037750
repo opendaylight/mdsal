@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_75719275",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/util/JavaFileCleaner.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-28T07:59:13Z",
+      "side": 1,
+      "message": "pretty-print generated Java code\n\nplease use capital J for Java everywhere",
+      "range": {
+        "startLine": 56,
+        "startChar": 7,
+        "endLine": 56,
+        "endChar": 10
+      },
+      "revId": "766717dbd245b6e82522030d717f4cf86e037750",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_150806d9",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/util/JavaFileCleaner.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-28T07:59:13Z",
+      "side": 1,
+      "message": "set up",
+      "range": {
+        "startLine": 80,
+        "startChar": 7,
+        "endLine": 80,
+        "endChar": 12
+      },
+      "revId": "766717dbd245b6e82522030d717f4cf86e037750",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_352a6a2c",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/util/JavaFileCleaner.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-28T07:59:13Z",
+      "side": 1,
+      "message": "join or split lines if necessary",
+      "range": {
+        "startLine": 120,
+        "startChar": 7,
+        "endLine": 120,
+        "endChar": 46
+      },
+      "revId": "766717dbd245b6e82522030d717f4cf86e037750",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_95c6b698",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/builderTemplate.scala.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-28T07:48:19Z",
+      "side": 1,
+      "message": "yes, this needs fix when parentType is null (elements in root), I will follow with patch for this",
+      "range": {
+        "startLine": 74,
+        "startChar": 8,
+        "endLine": 74,
+        "endChar": 43
+      },
+      "revId": "766717dbd245b6e82522030d717f4cf86e037750",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
