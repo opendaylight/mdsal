@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_1f686f86",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 7
+      },
+      "lineNbr": 725,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-06T08:52:27Z",
+      "side": 1,
+      "message": "«««",
+      "range": {
+        "startLine": 725,
+        "startChar": 16,
+        "endLine": 725,
+        "endChar": 18
+      },
+      "revId": "7784e7ea0d601e5fb46dc42f4fdc7a811ee9cfd4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d021bcfd",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/BuilderTemplate.xtend",
         "patchSetId": 7
