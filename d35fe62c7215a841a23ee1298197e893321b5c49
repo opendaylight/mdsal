@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_b233fc60",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 15
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Bug 2791 is talking about identifiers, not package names.\nCheckstyle works for me with underscore with package name.",
+      "parentUuid": "fafc7978_bc5d9817",
+      "range": {
+        "startLine": 8,
+        "startChar": 53,
+        "endLine": 8,
+        "endChar": 63
+      },
+      "revId": "d35fe62c7215a841a23ee1298197e893321b5c49",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_21085fd9",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
         "patchSetId": 15
@@ -72,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_520bb08d",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_21085fd9",
+      "range": {
+        "startLine": 201,
+        "startChar": 41,
+        "endLine": 201,
+        "endChar": 44
+      },
+      "revId": "d35fe62c7215a841a23ee1298197e893321b5c49",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_c15073d6",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
         "patchSetId": 15
@@ -83,6 +131,30 @@
       "writtenOn": "2017-02-24T15:41:57Z",
       "side": 1,
       "message": "Oh, I have not spotted this is needed. What about line 202 (and 246), does \"iNt\" input require underscore (I think so)?\n\nOn the other hand, \"CON\" would be normalized to \"CON_\", but I think \"con_\" is the correct output.",
+      "range": {
+        "startLine": 203,
+        "startChar": 81,
+        "endLine": 203,
+        "endChar": 95
+      },
+      "revId": "d35fe62c7215a841a23ee1298197e893321b5c49",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b2fc9c73",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_c15073d6",
       "range": {
         "startLine": 203,
         "startChar": 81,
