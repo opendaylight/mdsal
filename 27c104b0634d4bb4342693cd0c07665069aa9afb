@@ -22,6 +22,30 @@
       "revId": "27c104b0634d4bb4342693cd0c07665069aa9afb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_d7b0b9df",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelperTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_b99ff102",
+      "range": {
+        "startLine": 248,
+        "startChar": 61,
+        "endLine": 248,
+        "endChar": 62
+      },
+      "revId": "27c104b0634d4bb4342693cd0c07665069aa9afb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
