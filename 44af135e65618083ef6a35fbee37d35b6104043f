@@ -19,6 +19,29 @@
     },
     {
       "key": {
+        "uuid": "1af78d9a_6e202f9c",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/serializer/BindingToNormalizedStreamWriter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T07:59:11Z",
+      "side": 1,
+      "message": "return (T) next.getDomPathArgument();",
+      "range": {
+        "startLine": 106,
+        "startChar": 7,
+        "endLine": 107,
+        "endChar": 19
+      },
+      "revId": "44af135e65618083ef6a35fbee37d35b6104043f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_8e3d9bbe",
         "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/serializer/BindingToNormalizedStreamWriter.java",
         "patchSetId": 10
