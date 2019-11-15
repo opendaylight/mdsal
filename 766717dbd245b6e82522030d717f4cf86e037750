@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "da01753e_9574f668",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/util/JavaFileCleaner.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-28T07:59:13Z",
+      "side": 1,
+      "message": "pretty-print utility for generated Java code",
+      "range": {
+        "startLine": 16,
+        "startChar": 3,
+        "endLine": 16,
+        "endChar": 56
+      },
+      "revId": "766717dbd245b6e82522030d717f4cf86e037750",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_d5183e20",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/util/JavaFileCleaner.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-28T07:59:13Z",
+      "side": 1,
+      "message": "JavaCodePrettyPrint",
+      "range": {
+        "startLine": 18,
+        "startChar": 19,
+        "endLine": 18,
+        "endChar": 35
+      },
+      "revId": "766717dbd245b6e82522030d717f4cf86e037750",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_75719275",
         "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/util/JavaFileCleaner.java",
         "patchSetId": 6
@@ -18,6 +64,29 @@
         "startChar": 7,
         "endLine": 56,
         "endChar": 10
+      },
+      "revId": "766717dbd245b6e82522030d717f4cf86e037750",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_b515bae6",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/util/JavaFileCleaner.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-28T07:59:13Z",
+      "side": 1,
+      "message": "perform",
+      "range": {
+        "startLine": 62,
+        "startChar": 25,
+        "endLine": 62,
+        "endChar": 30
       },
       "revId": "766717dbd245b6e82522030d717f4cf86e037750",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
@@ -64,6 +133,29 @@
         "startChar": 7,
         "endLine": 120,
         "endChar": 46
+      },
+      "revId": "766717dbd245b6e82522030d717f4cf86e037750",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_751fd208",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/util/JavaFileCleaner.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-28T07:59:13Z",
+      "side": 1,
+      "message": "do you mean \u0027adjacent\u0027?",
+      "range": {
+        "startLine": 225,
+        "startChar": 42,
+        "endLine": 225,
+        "endChar": 49
       },
       "revId": "766717dbd245b6e82522030d717f4cf86e037750",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
