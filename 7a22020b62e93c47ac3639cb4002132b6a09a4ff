@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_663aba35",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/twirl/org/opendaylight/mdsal/binding/javav2/generator/impl/yangTemplateForModule.scala.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-29T14:52:36Z",
+      "side": 1,
+      "message": "unfortunately, not supported yet by twirl (Play-less version we use), please remove this note everywhere",
+      "range": {
+        "startLine": 15,
+        "startChar": 2,
+        "endLine": 15,
+        "endChar": 58
+      },
+      "revId": "7a22020b62e93c47ac3639cb4002132b6a09a4ff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_067acef0",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleaner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-29T14:52:36Z",
+      "side": 1,
+      "message": "any chances of bench-marking this fella?",
+      "range": {
+        "startLine": 42,
+        "startChar": 25,
+        "endLine": 42,
+        "endChar": 30
+      },
+      "revId": "7a22020b62e93c47ac3639cb4002132b6a09a4ff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c620c6f9",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleaner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-29T14:52:36Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 45,
+        "startChar": 23,
+        "endLine": 45,
+        "endChar": 30
+      },
+      "revId": "7a22020b62e93c47ac3639cb4002132b6a09a4ff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e6086adb",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnipperCleanerTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-29T14:52:36Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 17,
+        "startChar": 23,
+        "endLine": 17,
+        "endChar": 24
+      },
+      "revId": "7a22020b62e93c47ac3639cb4002132b6a09a4ff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
