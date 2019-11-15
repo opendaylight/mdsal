@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_3fda50e8",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-21T09:03:41Z",
+      "side": 1,
+      "message": "makes sense, or even normalizePackageFolderName() looks good to me...",
+      "parentUuid": "fafc7978_1759368e",
+      "range": {
+        "startLine": 48,
+        "startChar": 25,
+        "endLine": 48,
+        "endChar": 45
+      },
+      "revId": "480bb1d1d35701e2183697687776b573abcf6ad3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_97e366a3",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
         "patchSetId": 4
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_ffa28849",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-21T09:03:41Z",
+      "side": 1,
+      "message": "Good point, it looks like this is the set to avoid too\n\nhttps://ionicflux.wordpress.com/2006/09/02/windows-reserved-words/",
+      "parentUuid": "fafc7978_97e366a3",
+      "range": {
+        "startLine": 50,
+        "startChar": 27,
+        "endLine": 50,
+        "endChar": 46
+      },
+      "revId": "480bb1d1d35701e2183697687776b573abcf6ad3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9791a6f3",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
         "patchSetId": 4
@@ -59,6 +107,30 @@
       "writtenOn": "2017-02-20T15:32:13Z",
       "side": 1,
       "message": "The result may end up conflicting with a previously generated package name folder.",
+      "range": {
+        "startLine": 60,
+        "startChar": 15,
+        "endLine": 60,
+        "endChar": 29
+      },
+      "revId": "480bb1d1d35701e2183697687776b573abcf6ad3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bf9c8010",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-21T09:03:41Z",
+      "side": 1,
+      "message": "Please evolve your comment, thanks.",
+      "parentUuid": "fafc7978_9791a6f3",
       "range": {
         "startLine": 60,
         "startChar": 15,
