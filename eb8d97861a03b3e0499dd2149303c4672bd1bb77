@@ -26,6 +26,29 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_3b3f27d8",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "In this case, you don\u0027t need to call NonJavaCharsConverter - this happen in GeneratedTypeBuilder. If you want to append postfix to \"Action\", try to connect it via underscore -\u003e new StringBuilder(postfix).append(\u0027_\u0027).append(\"action\") (underscore used as separator for distinction of class parts) and this string use as argument in moduleTypeBuilder() method instead of \u0027postfix + \"Action\"\u0027",
+      "range": {
+        "startLine": 93,
+        "startChar": 20,
+        "endLine": 96,
+        "endChar": 50
+      },
+      "revId": "eb8d97861a03b3e0499dd2149303c4672bd1bb77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_ed632218",
         "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
         "patchSetId": 11
@@ -50,6 +73,29 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_2d0a4a21",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Did you want to use here class name with postfix + \"Action\", didn\u0027t you ?\n+ you don\u0027t need to create basePackageName on line 91; you can easy get it from GeneratedTypeBuilder object interfaceBuilder -\u003e interfaceBuilder.getPackageName() \u0026 use this object for get class name of this object via interfaceBuilder.getName() too..",
+      "range": {
+        "startLine": 98,
+        "startChar": 20,
+        "endLine": 99,
+        "endChar": 124
+      },
+      "revId": "eb8d97861a03b3e0499dd2149303c4672bd1bb77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_cd661e29",
         "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
         "patchSetId": 11
@@ -62,6 +108,29 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "fafc7978_cd9e1eb8",
+      "range": {
+        "startLine": 150,
+        "startChar": 0,
+        "endLine": 155,
+        "endChar": 117
+      },
+      "revId": "eb8d97861a03b3e0499dd2149303c4672bd1bb77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_cd9e1eb8",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "same here",
       "range": {
         "startLine": 150,
         "startChar": 0,
