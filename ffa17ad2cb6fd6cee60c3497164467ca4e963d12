@@ -2,6 +2,287 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_eb3b4ae9",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "General comment: \n1) think again about variable names\n2) comment certain parts of logic/code to make it easier to understand for others\n3) we should do benchmark testing with http://openjdk.java.net/projects/code-tools/jmh/ to see performance and possible optimizations",
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4beff6b0",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "Find and convert non Java chars in identifiers of generated transfer objects, initially derived from corresponding YANG.",
+      "range": {
+        "startLine": 19,
+        "startChar": 7,
+        "endLine": 19,
+        "endChar": 76
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4ba7f64f",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "canonical name - sb\nname of variable after .toString : conversionIdentifier, just comment it before return",
+      "range": {
+        "startLine": 30,
+        "startChar": 28,
+        "endLine": 30,
+        "endChar": 52
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2b7712d6",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "previous 2 booleans are set to TRUE at the beginning, but this one is set to FALSE, even though name looks like a fusion of previous two. Either change name of parameter or logic in method body. I recommend first option.",
+      "range": {
+        "startLine": 53,
+        "startChar": 26,
+        "endLine": 53,
+        "endChar": 49
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0ec7bc46",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T11:20:24Z",
+      "side": 1,
+      "message": "String.valueOf(char) seems to be most efficient method, in terms of both memory and speed, for converting char to String.",
+      "range": {
+        "startLine": 59,
+        "startChar": 73,
+        "endLine": 59,
+        "endChar": 100
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2e13a05d",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "unicodeCharName",
+      "range": {
+        "startLine": 67,
+        "startChar": 21,
+        "endLine": 67,
+        "endChar": 40
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ab182285",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "white space",
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ce0e5434",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "sb",
+      "range": {
+        "startLine": 69,
+        "startChar": 32,
+        "endLine": 69,
+        "endChar": 60
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_cba48659",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "convertFirstCharCase ?",
+      "range": {
+        "startLine": 110,
+        "startChar": 26,
+        "endLine": 110,
+        "endChar": 36
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_cbeda68d",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "white space",
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0bc7ae46",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaTypeOfIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "we might want to shorten it up to \u0027JavaIdentifier\u0027",
+      "range": {
+        "startLine": 10,
+        "startChar": 12,
+        "endLine": 10,
+        "endChar": 32
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4bc1b62d",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaTypeOfIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "visibility?",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 6
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_08ab37d9",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaTypeOfIdentifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "typo?",
+      "range": {
+        "startLine": 12,
+        "startChar": 40,
+        "endLine": 12,
+        "endChar": 47
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_559cb769",
         "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifierTest.java",
         "patchSetId": 4
@@ -19,6 +300,47 @@
         "endLine": 28,
         "endChar": 30
       },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4e31c4eb",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifierTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "it\u0027s different bug/use case, let\u0027s get back to it later on",
+      "parentUuid": "fafc7978_559cb769",
+      "range": {
+        "startLine": 28,
+        "startChar": 20,
+        "endLine": 28,
+        "endChar": 30
+      },
+      "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_aeff9000",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/ConverterOfNonJavaCharsInIdentifierTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-31T10:21:05Z",
+      "side": 1,
+      "message": "enum value:\ns% makes S_PERCENT_SIGN\n% makes PERCENT_SIGN",
       "revId": "ffa17ad2cb6fd6cee60c3497164467ca4e963d12",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
