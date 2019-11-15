@@ -1,0 +1,51 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_bc54c754",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-08-17T21:52:18Z",
+      "side": 1,
+      "message": "I think the stream can be used to find first match as an optional and then decide what to do (i.e. Optional.isPresent()). That will save us for collect()ing the stream, as we do not use it for anything else...",
+      "range": {
+        "startLine": 359,
+        "startChar": 0,
+        "endLine": 362,
+        "endChar": 79
+      },
+      "revId": "ce80080a8f661eb5773240315fda8df9ed00ec65",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_fc4e3fc0",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-08-17T21:56:07Z",
+      "side": 1,
+      "message": "i.e. use findFirst() (or findAny(), which is probably better) instead of .collect().",
+      "parentUuid": "ba1f61a0_bc54c754",
+      "range": {
+        "startLine": 359,
+        "startChar": 0,
+        "endLine": 362,
+        "endChar": 79
+      },
+      "revId": "ce80080a8f661eb5773240315fda8df9ed00ec65",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
