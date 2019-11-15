@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_f4363b51",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/generated/type/builder/EnumerationBuilderImplTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-16T15:46:37Z",
+      "side": 1,
+      "message": "Oh, for enum capitalization \"f__1_1\" would be more interesting case.",
+      "range": {
+        "startLine": 46,
+        "startChar": 41,
+        "endLine": 46,
+        "endChar": 46
+      },
+      "revId": "451e8f090ff72e3a0f9f6678aee427a692c84439",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_54ee27b5",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/generated/type/builder/EnumerationBuilderImplTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-16T15:46:37Z",
+      "side": 1,
+      "message": "F\n\nIdentical Yang identifiers should give error, I think.",
+      "range": {
+        "startLine": 48,
+        "startChar": 41,
+        "endLine": 48,
+        "endChar": 42
+      },
+      "revId": "451e8f090ff72e3a0f9f6678aee427a692c84439",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3440c3a4",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/generated/type/builder/EnumerationBuilderImplTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-16T15:46:37Z",
+      "side": 1,
+      "message": "Is there a test to show _2 can be generated?",
+      "range": {
+        "startLine": 69,
+        "startChar": 50,
+        "endLine": 69,
+        "endChar": 52
+      },
+      "revId": "451e8f090ff72e3a0f9f6678aee427a692c84439",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
