@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_fad9e822",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "It\u0027s only for part of package name..added to jdoc (and adoc).",
+      "parentUuid": "fafc7978_776cf108",
+      "range": {
+        "startLine": 83,
+        "startChar": 15,
+        "endLine": 83,
+        "endChar": 32
+      },
+      "revId": "d738295ac23a134ffd91258fc44cf3727e9a6abe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d77cbdb7",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
         "patchSetId": 10
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_9af7fc8a",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "It\u0027s parsed according to https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html :\nhyphenated-name.example.org -\u003e org.example.hyphenated_name",
+      "parentUuid": "fafc7978_d77cbdb7",
+      "range": {
+        "startLine": 87,
+        "startChar": 7,
+        "endLine": 87,
+        "endChar": 11
+      },
+      "revId": "d738295ac23a134ffd91258fc44cf3727e9a6abe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_4d72fcad",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
         "patchSetId": 10
@@ -59,6 +107,30 @@
       "writtenOn": "2017-02-23T16:46:59Z",
       "side": 1,
       "message": "Well, it will not become part of the final package name (the return value will). Is this a Yang identifier, or some pre-processed string based on that?",
+      "range": {
+        "startLine": 195,
+        "startChar": 20,
+        "endLine": 195,
+        "endChar": 40
+      },
+      "revId": "d738295ac23a134ffd91258fc44cf3727e9a6abe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a1156f41",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "It\u0027s pre-processed string based on yang identifier. Will be used in BindingMapping.normalizePackageName in spec v2. where is package name (org.example.rev000000.data.foo) splited by dots and these parts will by converted by this method in NonJavaCharsConverter.",
+      "parentUuid": "fafc7978_4d72fcad",
       "range": {
         "startLine": 195,
         "startChar": 20,
@@ -118,6 +190,54 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_8112eb54",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "removed",
+      "parentUuid": "fafc7978_2d02180a",
+      "range": {
+        "startLine": 300,
+        "startChar": 25,
+        "endLine": 300,
+        "endChar": 67
+      },
+      "revId": "d738295ac23a134ffd91258fc44cf3727e9a6abe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_da1b44c8",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Renamed to UNDERSCORE_ACCEPTING_MARKER. This is only inner marker for preservation underscore in part of package name (underscore is allowed char for package names). So it\u0027s not possible to be tested directly (test for this case is in NonJavaCharsConverterTest on line 247 and 228). Example:\n_foo_ is going to be parsed as _foo_",
+      "parentUuid": "fafc7978_773a31e8",
+      "range": {
+        "startLine": 300,
+        "startChar": 25,
+        "endLine": 300,
+        "endChar": 67
+      },
+      "revId": "d738295ac23a134ffd91258fc44cf3727e9a6abe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_f7046119",
         "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
         "patchSetId": 10
@@ -153,6 +273,54 @@
       "side": 1,
       "message": "\u003e line 228\n\nThis file does not have that line.\n\n\"foo.type\" is a valid Yang identifier. Would it turn into \"foofullstoptype\" package name part?",
       "parentUuid": "fafc7978_7a8218c9",
+      "range": {
+        "startLine": 182,
+        "startChar": 35,
+        "endLine": 182,
+        "endChar": 36
+      },
+      "revId": "d738295ac23a134ffd91258fc44cf3727e9a6abe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7a8218c9",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "dash is tested in previous tests (for all java types - special for part of package name line 228). added dot tests",
+      "parentUuid": "fafc7978_f7046119",
+      "range": {
+        "startLine": 182,
+        "startChar": 35,
+        "endLine": 182,
+        "endChar": 36
+      },
+      "revId": "d738295ac23a134ffd91258fc44cf3727e9a6abe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c1187377",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "removed tests dots from normalizePackageNameTest -\u003e original package name it\u0027s splitted by dots -\u003e we will never have it here",
+      "parentUuid": "fafc7978_6d56e007",
       "range": {
         "startLine": 182,
         "startChar": 35,
