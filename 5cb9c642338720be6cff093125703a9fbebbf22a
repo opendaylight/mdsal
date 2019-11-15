@@ -22,6 +22,30 @@
       "revId": "5cb9c642338720be6cff093125703a9fbebbf22a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_f15857fc",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 0,
+      "message": "Done.\nRecover of this test case is here: https://git.opendaylight.org/gerrit/#/c/59236/1",
+      "parentUuid": "1af78d9a_1137e3e4",
+      "range": {
+        "startLine": 472,
+        "startChar": 63,
+        "endLine": 472,
+        "endChar": 66
+      },
+      "revId": "5cb9c642338720be6cff093125703a9fbebbf22a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
