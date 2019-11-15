@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_943b6f9b",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-16T15:18:15Z",
+      "side": 1,
+      "message": "I think we need unit (or integration) tests to verify this works. Example:\n\ntype enumeration {\n    enum f__11;\n    enum f__1;\n    enum F__1;\n}",
+      "range": {
+        "startLine": 129,
+        "startChar": 24,
+        "endLine": 129,
+        "endChar": 36
+      },
+      "revId": "42ed2d4ac6e7dff878f2207c82eb5630323087aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
