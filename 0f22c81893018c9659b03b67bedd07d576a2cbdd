@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_8e3bdb37",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/codecs/UnmappedOperationInputCodec.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T08:55:50Z",
+      "side": 1,
+      "message": "follow @Nonnull annotations from BindingNormalizedNodeCodec interface",
+      "range": {
+        "startLine": 35,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 5
+      },
+      "revId": "0f22c81893018c9659b03b67bedd07d576a2cbdd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
