@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_598d2531",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/resources/yangs/break_ws/bad-ws.yang",
+        "patchSetId": 14
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-06T10:55:56Z",
+      "side": 1,
+      "message": "you need to add this to your test comparison",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 54
+      },
+      "revId": "b019bdd36baa2ce9f9a859ccd468e1a4da49433c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
