@@ -22,6 +22,30 @@
       "revId": "e6eea6747068647a2cf128a7e1a1a4bd1421cdb7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_1417e4ee",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleanerTest.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-06T12:58:58Z",
+      "side": 1,
+      "message": "actually my bad, it\u0027s fixed in test, no action needed :)",
+      "parentUuid": "da01753e_94463422",
+      "range": {
+        "startLine": 34,
+        "startChar": 14,
+        "endLine": 34,
+        "endChar": 43
+      },
+      "revId": "e6eea6747068647a2cf128a7e1a1a4bd1421cdb7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
