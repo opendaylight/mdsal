@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_11909aeb",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/BindingToNormalizedNodeCodec.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-14T12:31:08Z",
+      "side": 1,
+      "message": "typo",
+      "revId": "755d484340d9eeaed52fbb93879d9450d9c3ff3d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_f176aed7",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/BindingToNormalizedNodeCodec.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-14T12:31:08Z",
+      "side": 1,
+      "message": "rpcs are not all operations in yang 1.1...",
+      "range": {
+        "startLine": 326,
+        "startChar": 46,
+        "endLine": 326,
+        "endChar": 62
+      },
+      "revId": "755d484340d9eeaed52fbb93879d9450d9c3ff3d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
