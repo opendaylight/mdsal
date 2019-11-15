@@ -2,6 +2,121 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_123f9dd7",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/twirl/org/opendaylight/mdsal/binding/javav2/generator/impl/yangTemplateForModule.scala.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-31T11:05:01Z",
+      "side": 1,
+      "message": "we shouldn\u0027t depend on concrete implementation",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 100
+      },
+      "revId": "e127a4e7f1d110b54052094dc9e1a23d8f17b986",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_05c86273",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/twirl/org/opendaylight/mdsal/binding/javav2/generator/impl/yangTemplateForModule.scala.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-03T07:35:38Z",
+      "side": 1,
+      "message": "looks like we suffer from issue in Yangtools here, getDescription() is defined in effective implementation only",
+      "range": {
+        "startLine": 44,
+        "startChar": 19,
+        "endLine": 46,
+        "endChar": 21
+      },
+      "revId": "e127a4e7f1d110b54052094dc9e1a23d8f17b986",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_528485b0",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/twirl/org/opendaylight/mdsal/binding/javav2/generator/impl/yangTemplateWriteDeviation.scala.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-31T11:05:01Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 27,
+        "startChar": 5,
+        "endLine": 27,
+        "endChar": 6
+      },
+      "revId": "e127a4e7f1d110b54052094dc9e1a23d8f17b986",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f2c77910",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/twirl/org/opendaylight/mdsal/binding/javav2/generator/impl/yangTemplateWriteUnknownSchemaNode.scala.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-31T11:05:01Z",
+      "side": 1,
+      "message": "@yangTemplateWriteUnknownSchemaNode(unknownSchemaNode)",
+      "range": {
+        "startLine": 20,
+        "startChar": 4,
+        "endLine": 21,
+        "endChar": 15
+      },
+      "revId": "e127a4e7f1d110b54052094dc9e1a23d8f17b986",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_12395d41",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleaner.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-31T11:05:01Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 36,
+        "startChar": 57,
+        "endLine": 36,
+        "endChar": 67
+      },
+      "revId": "e127a4e7f1d110b54052094dc9e1a23d8f17b986",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_921b8dc9",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleaner.java",
         "patchSetId": 8
