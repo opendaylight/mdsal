@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "3afa9182_6d82e353",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/util/BindingRuntimeContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-02T14:19:18Z",
+      "side": 1,
+      "message": "@Beta",
+      "revId": "811dcd2cb1a6ac8a39b0506b8ead939f0e83fd53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_ad6e8bc7",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/util/BindingReflections.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-02T14:16:50Z",
+      "side": 1,
+      "message": "all new public classes/interfaces should be annotated as @Beta",
+      "revId": "811dcd2cb1a6ac8a39b0506b8ead939f0e83fd53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3afa9182_4d79e792",
         "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/util/BindingReflections.java",
         "patchSetId": 7
@@ -13,6 +47,57 @@
       "writtenOn": "2017-06-02T14:16:50Z",
       "side": 1,
       "message": "final",
+      "revId": "811dcd2cb1a6ac8a39b0506b8ead939f0e83fd53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_ada5eb05",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/util/BindingReflections.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-02T14:16:50Z",
+      "side": 1,
+      "message": "access can be package-private",
+      "revId": "811dcd2cb1a6ac8a39b0506b8ead939f0e83fd53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_8daaafd2",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/util/BindingReflections.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-02T14:16:50Z",
+      "side": 1,
+      "message": "static method declared final...",
+      "revId": "811dcd2cb1a6ac8a39b0506b8ead939f0e83fd53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_edaed3e6",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/util/BindingReflections.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-02T14:16:50Z",
+      "side": 1,
+      "message": "@Nonnull",
       "revId": "811dcd2cb1a6ac8a39b0506b8ead939f0e83fd53",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
