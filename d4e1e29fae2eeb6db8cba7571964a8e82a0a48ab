@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_9be109ff",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/generator/test-leaf.yang",
+        "patchSetId": 15
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-27T10:56:50Z",
+      "side": 1,
+      "message": "alow one empty space",
+      "revId": "d4e1e29fae2eeb6db8cba7571964a8e82a0a48ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5be041fa",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/AbstractBaseType.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-27T10:56:50Z",
+      "side": 1,
+      "message": "indentation",
+      "range": {
+        "startLine": 65,
+        "startChar": 8,
+        "endLine": 66,
+        "endChar": 25
+      },
+      "revId": "d4e1e29fae2eeb6db8cba7571964a8e82a0a48ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3bba9de1",
+        "filename": "binding2/mdsal-binding2-util/src/main/java/org/opendaylight/mdsal/binding/javav2/util/BindingMapping.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-27T10:56:50Z",
+      "side": 1,
+      "message": "Since this class has got most of methods deleted, we might want to sit down and think about possible refactoring from binding \u003c-\u003e binding-util \u003c-\u003e binding-generator point of view",
+      "revId": "d4e1e29fae2eeb6db8cba7571964a8e82a0a48ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
