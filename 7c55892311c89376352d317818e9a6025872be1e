@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "1af78d9a_4bb565cc",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/DataContainerCodecPrototype.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T06:56:16Z",
+      "side": 1,
+      "message": "implemented within patch chain here:\nhttps://git.opendaylight.org/gerrit/#/c/58559",
+      "parentUuid": "3afa9182_4921b89e",
+      "range": {
+        "startLine": 123,
+        "startChar": 8,
+        "endLine": 123,
+        "endChar": 29
+      },
+      "revId": "7c55892311c89376352d317818e9a6025872be1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3afa9182_2926ecb7",
         "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/IncorrectNestingException.java",
         "patchSetId": 10
