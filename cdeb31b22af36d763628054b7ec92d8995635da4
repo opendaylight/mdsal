@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_3613fd5d",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-10T11:33:19Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 23,
+        "startChar": 3,
+        "endLine": 23,
+        "endChar": 16
+      },
+      "revId": "cdeb31b22af36d763628054b7ec92d8995635da4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_822c24ad",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-10T11:33:19Z",
+      "side": 1,
+      "message": "fixes actual issue with having Qname instead of QName in generated Java interface - thanks for test",
+      "range": {
+        "startLine": 196,
+        "startChar": 4,
+        "endLine": 196,
+        "endChar": 86
+      },
+      "revId": "cdeb31b22af36d763628054b7ec92d8995635da4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_761d8566",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-10T11:33:19Z",
+      "side": 1,
+      "message": "can be just method call to make it more readable",
+      "range": {
+        "startLine": 243,
+        "startChar": 22,
+        "endLine": 243,
+        "endChar": 71
+      },
+      "revId": "cdeb31b22af36d763628054b7ec92d8995635da4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_a22fa8a0",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-10T11:33:19Z",
+      "side": 1,
+      "message": "Partial",
+      "range": {
+        "startLine": 258,
+        "startChar": 34,
+        "endLine": 258,
+        "endChar": 38
+      },
+      "revId": "cdeb31b22af36d763628054b7ec92d8995635da4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
