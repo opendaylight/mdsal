@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_61e52e37",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "The first string defines full package name.\nYes, it can create surprises unit tests. But with much care, there is no any problem in tests.",
+      "parentUuid": "fafc7978_3bd6b9f1",
+      "range": {
+        "startLine": 194,
+        "startChar": 38,
+        "endLine": 194,
+        "endChar": 52
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_7b1961d6",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
         "patchSetId": 25
@@ -36,6 +60,30 @@
       "writtenOn": "2017-03-01T11:19:29Z",
       "side": 1,
       "message": "This does NOT append rank as normalizeClassIdentifier does, so \"convert\" may be a better verb.",
+      "range": {
+        "startLine": 237,
+        "startChar": 25,
+        "endLine": 237,
+        "endChar": 34
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_61b7ee3a",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_7b1961d6",
       "range": {
         "startLine": 237,
         "startChar": 25,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_a1d27659",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_bbe0e9fa",
+      "range": {
+        "startLine": 20,
+        "startChar": 10,
+        "endLine": 20,
+        "endChar": 23
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9b06c584",
         "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
         "patchSetId": 25
@@ -82,6 +154,30 @@
       "writtenOn": "2017-03-01T11:19:29Z",
       "side": 1,
       "message": "Reserved",
+      "range": {
+        "startLine": 36,
+        "startChar": 30,
+        "endLine": 36,
+        "endChar": 37
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_81d7724a",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_9b06c584",
       "range": {
         "startLine": 36,
         "startChar": 30,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_e13f5e85",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "This is test only for converting reserved keywords. Check tests at lines 23, 42, 64 and 80.",
+      "parentUuid": "fafc7978_bb858908",
+      "range": {
+        "startLine": 56,
+        "startChar": 43,
+        "endLine": 56,
+        "endChar": 46
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9b91a549",
         "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
         "patchSetId": 25
@@ -128,6 +248,30 @@
       "writtenOn": "2017-03-01T11:19:29Z",
       "side": 1,
       "message": "Similarly here, both \"*\" and \"asterisk\" is converted to \"Asterisk\", but normalizing would add \u00271\u0027 to one of them.",
+      "range": {
+        "startLine": 124,
+        "startChar": 19,
+        "endLine": 124,
+        "endChar": 22
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c144da1c",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Same here, this is test only for converting reserved keywords. Check tests at lines 23, 42, 64 and 80.",
+      "parentUuid": "fafc7978_9b91a549",
       "range": {
         "startLine": 124,
         "startChar": 19,
