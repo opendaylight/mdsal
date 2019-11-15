@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "1af78d9a_b0ed378e",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/spi/AbstractForwardedDataBroker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T08:11:08Z",
+      "side": 1,
+      "message": "de-serialization",
+      "range": {
+        "startLine": 29,
+        "startChar": 61,
+        "endLine": 29,
+        "endChar": 76
+      },
+      "revId": "e0e03e7c12dcd4e08b5ac7280fed6016a2bde8cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_10b08b8a",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/spi/loader/AdapterLoader.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T08:11:08Z",
+      "side": 1,
+      "message": "built",
+      "range": {
+        "startLine": 21,
+        "startChar": 16,
+        "endLine": 21,
+        "endChar": 23
+      },
+      "revId": "e0e03e7c12dcd4e08b5ac7280fed6016a2bde8cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_b0bb7771",
         "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/spi/loader/AdapterLoader.java",
         "patchSetId": 4
