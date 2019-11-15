@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "1af78d9a_f812fc60",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/operation/invoker/AbstractMappedOperationInvoker.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-20T07:30:14Z",
+      "side": 1,
+      "message": "let\u0027s introduce Operation marker interface to binding2 spec base and have Rpc, Action \u0026 ListAction extend it and use it here and other places instead of Object.",
+      "range": {
+        "startLine": 50,
+        "startChar": 60,
+        "endLine": 50,
+        "endChar": 66
+      },
+      "revId": "edfe805b0113c80de0086a68879d75119887825a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_7b1d6666",
         "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/operation/invoker/ClassBasedOperationServiceInvoker.java",
         "patchSetId": 5
