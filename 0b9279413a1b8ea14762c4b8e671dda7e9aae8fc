@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa2559ec_1b48c15a",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/namespace/namespace-test-foo1.yang",
+        "patchSetId": 8
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "remove ws, please",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 1
+      },
+      "revId": "0b9279413a1b8ea14762c4b8e671dda7e9aae8fc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
