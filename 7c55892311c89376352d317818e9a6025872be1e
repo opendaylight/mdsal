@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_e92b4480",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/DataContainerCodecPrototype.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-09T14:42:45Z",
+      "side": 1,
+      "message": "useless call",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 16
+      },
+      "revId": "7c55892311c89376352d317818e9a6025872be1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_0927b0b7",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/DataContainerCodecPrototype.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-09T14:42:45Z",
+      "side": 1,
+      "message": "null checks?",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 31
+      },
+      "revId": "7c55892311c89376352d317818e9a6025872be1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_4921b89e",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/DataContainerCodecPrototype.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-09T14:42:45Z",
+      "side": 1,
+      "message": "FIXME: plus a bug number",
+      "range": {
+        "startLine": 123,
+        "startChar": 8,
+        "endLine": 123,
+        "endChar": 29
+      },
+      "revId": "7c55892311c89376352d317818e9a6025872be1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_2926ecb7",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/IncorrectNestingException.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-09T14:42:45Z",
+      "side": 1,
+      "message": "space",
+      "range": {
+        "startLine": 38,
+        "startChar": 9,
+        "endLine": 38,
+        "endChar": 11
+      },
+      "revId": "7c55892311c89376352d317818e9a6025872be1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_693754e4",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/LeafNodeCodecContext.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-09T14:42:45Z",
+      "side": 1,
+      "message": "is this nullable?",
+      "range": {
+        "startLine": 56,
+        "startChar": 8,
+        "endLine": 56,
+        "endChar": 29
+      },
+      "revId": "7c55892311c89376352d317818e9a6025872be1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_c93488e0",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/LeafNodeCodecContext.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-09T14:42:45Z",
+      "side": 1,
+      "message": "move this variable",
+      "range": {
+        "startLine": 93,
+        "startChar": 8,
+        "endLine": 93,
+        "endChar": 20
+      },
+      "revId": "7c55892311c89376352d317818e9a6025872be1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_094e906f",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/MissingSchemaForClassException.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-09T14:42:45Z",
+      "side": 1,
+      "message": "malformed javadoc",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 2
+      },
+      "revId": "7c55892311c89376352d317818e9a6025872be1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_49589832",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/MissingSchemaForClassException.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-09T14:42:45Z",
+      "side": 1,
+      "message": "@Beta for public classes",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 11
+      },
+      "revId": "7c55892311c89376352d317818e9a6025872be1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_a9313cee",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/MissingSchemaForClassException.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-09T14:42:45Z",
+      "side": 1,
+      "message": "space",
+      "range": {
+        "startLine": 50,
+        "startChar": 9,
+        "endLine": 50,
+        "endChar": 11
+      },
+      "revId": "7c55892311c89376352d317818e9a6025872be1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
