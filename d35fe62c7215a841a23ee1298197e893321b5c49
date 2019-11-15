@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_c1ecf3f5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 15
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-24T15:41:57Z",
+      "side": 1,
+      "message": "Underscores *in* package name parts are allowed, but I am not sure whether underscores *as* package name parts are fine with respect to Bug 2791.\nPerhaps it would be easier to substitute \u0027_\u0027 in Yang identifiers for \"underscore\" also in package names (but perhaps still adding \u0027_\u0027 to avoid reserved words or conversion clashes).",
+      "range": {
+        "startLine": 8,
+        "startChar": 53,
+        "endLine": 8,
+        "endChar": 63
+      },
+      "revId": "d35fe62c7215a841a23ee1298197e893321b5c49",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c15073d6",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-24T15:41:57Z",
+      "side": 1,
+      "message": "Oh, I have not spotted this is needed. What about line 202 (and 246), does \"iNt\" input require underscore (I think so)?\n\nOn the other hand, \"CON\" would be normalized to \"CON_\", but I think \"con_\" is the correct output.",
+      "range": {
+        "startLine": 203,
+        "startChar": 81,
+        "endLine": 203,
+        "endChar": 95
+      },
+      "revId": "d35fe62c7215a841a23ee1298197e893321b5c49",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e10137b0",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-24T15:41:57Z",
+      "side": 1,
+      "message": "I would expect \"foofullstopbar\" for \"foo.bar\" yang identifier, but this test does not distinguish it from \"bar\" folder nested in \"foo\" folder. What would the real package name generator take as input, single string with dots or List of strings without dots?\n\nBy the way, \"_..\" is also a valid Yang identifier.",
+      "range": {
+        "startLine": 299,
+        "startChar": 65,
+        "endLine": 299,
+        "endChar": 72
+      },
+      "revId": "d35fe62c7215a841a23ee1298197e893321b5c49",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
