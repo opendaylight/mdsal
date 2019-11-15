@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_58f8757c",
+        "filename": "binding2/mdsal-binding2-api/src/main/java/org/opendaylight/mdsal/binding/javav2/api/NotificationPublishService.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-18T16:17:27Z",
+      "side": 1,
+      "message": "please update Javadoc",
+      "range": {
+        "startLine": 32,
+        "startChar": 3,
+        "endLine": 32,
+        "endChar": 95
+      },
+      "revId": "f13145a060f580d30b092970129f8d243889e970",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_38f5a983",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/notification/BindingDOMNotificationListenerAdapter.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-18T16:17:27Z",
+      "side": 1,
+      "message": "private?",
+      "range": {
+        "startLine": 82,
+        "startChar": 4,
+        "endLine": 82,
+        "endChar": 10
+      },
+      "revId": "f13145a060f580d30b092970129f8d243889e970",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_98f2dd98",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/notification/NotificationListenerInvoker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-18T16:17:27Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 117,
+        "startChar": 43,
+        "endLine": 117,
+        "endChar": 56
+      },
+      "revId": "f13145a060f580d30b092970129f8d243889e970",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_78ef31b1",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/notification/NotificationListenerInvoker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-18T16:17:27Z",
+      "side": 1,
+      "message": "TODO: Action",
+      "revId": "f13145a060f580d30b092970129f8d243889e970",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
