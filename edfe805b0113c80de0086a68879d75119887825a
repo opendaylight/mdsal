@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_7b1d6666",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/operation/invoker/ClassBasedOperationServiceInvoker.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-20T07:36:52Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "edfe805b0113c80de0086a68879d75119887825a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
