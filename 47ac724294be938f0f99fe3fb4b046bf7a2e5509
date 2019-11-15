@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_9a6c1c37",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "it\u0027s there. we missed special case part in review.",
+      "parentUuid": "fafc7978_1a8aec69",
+      "revId": "47ac724294be938f0f99fe3fb4b046bf7a2e5509",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3a29b08a",
         "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
         "patchSetId": 12
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_da722410",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 12
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_3a29b08a",
+      "revId": "47ac724294be938f0f99fe3fb4b046bf7a2e5509",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5a2474ae",
         "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
         "patchSetId": 12
@@ -47,6 +83,24 @@
       "writtenOn": "2017-02-23T14:48:55Z",
       "side": 1,
       "message": "add examples for Windows reserved words \u0026 Java reserved kewords, plus other occurences",
+      "revId": "47ac724294be938f0f99fe3fb4b046bf7a2e5509",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3a637043",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 12
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "it\u0027s there. we missed special case part in review.",
+      "parentUuid": "fafc7978_5a2474ae",
       "revId": "47ac724294be938f0f99fe3fb4b046bf7a2e5509",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
