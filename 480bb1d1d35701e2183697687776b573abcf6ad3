@@ -1,0 +1,74 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_97e366a3",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-20T15:32:13Z",
+      "side": 1,
+      "message": "Will we be expanding this to avoid Bug 6172?\nhttps://bugs.opendaylight.org/show_bug.cgi?id\u003d6172",
+      "range": {
+        "startLine": 50,
+        "startChar": 27,
+        "endLine": 50,
+        "endChar": 46
+      },
+      "revId": "480bb1d1d35701e2183697687776b573abcf6ad3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9791a6f3",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-20T15:32:13Z",
+      "side": 1,
+      "message": "The result may end up conflicting with a previously generated package name folder.",
+      "range": {
+        "startLine": 60,
+        "startChar": 15,
+        "endLine": 60,
+        "endChar": 29
+      },
+      "revId": "480bb1d1d35701e2183697687776b573abcf6ad3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3f5d3048",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-21T09:16:11Z",
+      "side": 1,
+      "message": "Well, I am not sure what kind of \"name\" argument values will this be called with, so I do not have specific examples.\n\nBut, line 51 appends an underscore, perhaps previous call had name with underscore already appended. Similarly, line 55 prepends an underscore which might be there in previous call. Finally, line 58 replaces dash with underscore which might been there in a previous call.\n\nPerhaps the javadoc should mention that different folder names might get normalized to the same string, so another method should be called keep track of generated outputs and append something to make strings different again.",
+      "parentUuid": "fafc7978_bf9c8010",
+      "range": {
+        "startLine": 60,
+        "startChar": 15,
+        "endLine": 60,
+        "endChar": 29
+      },
+      "revId": "480bb1d1d35701e2183697687776b573abcf6ad3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
