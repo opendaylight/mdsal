@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_fbb4b6f3",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/base/Operation.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-20T08:52:54Z",
+      "side": 1,
+      "message": "ListAction",
+      "range": {
+        "startLine": 13,
+        "startChar": 61,
+        "endLine": 13,
+        "endChar": 71
+      },
+      "revId": "2da37f16c8155d3947bfa9040043c9cb72a2b9ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
