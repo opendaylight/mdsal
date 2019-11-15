@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_98b4b2f3",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-01T14:41:14Z",
+      "side": 1,
+      "message": "static and non-static imports need to be separated",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 42
+      },
+      "revId": "e29e5af9bcb36f4531dab12bca93fe59dc71ed94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_78b906e9",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 461,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-01T14:41:14Z",
+      "side": 1,
+      "message": "why not keep using simple concat?",
+      "range": {
+        "startLine": 461,
+        "startChar": 32,
+        "endLine": 461,
+        "endChar": 104
+      },
+      "revId": "e29e5af9bcb36f4531dab12bca93fe59dc71ed94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_b8ca4e6c",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/generator/test-typedef.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-01T14:41:14Z",
+      "side": 1,
+      "message": "trailing whitespace",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 8
+      },
+      "revId": "e29e5af9bcb36f4531dab12bca93fe59dc71ed94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_58a1aaa8",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-01T14:41:14Z",
+      "side": 1,
+      "message": "\u0026\u0026 PRIMITIVE_TYPES.contains(className) {\nreturn className;",
+      "range": {
+        "startLine": 325,
+        "startChar": 33,
+        "endLine": 330,
+        "endChar": 13
+      },
+      "revId": "e29e5af9bcb36f4531dab12bca93fe59dc71ed94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_d8947a46",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/renderers/BaseRenderer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-06-01T14:41:14Z",
+      "side": 1,
+      "message": "leak of mutable map: why?",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 5
+      },
+      "revId": "e29e5af9bcb36f4531dab12bca93fe59dc71ed94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
