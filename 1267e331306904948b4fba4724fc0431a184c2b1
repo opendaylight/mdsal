@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_27a3d79f",
+        "filename": "model-binding2/ietf/ietf-type-util/pom.xml",
+        "patchSetId": 19
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-26T10:04:43Z",
+      "side": 1,
+      "message": "2017",
+      "range": {
+        "startLine": 4,
+        "startChar": 15,
+        "endLine": 4,
+        "endChar": 20
+      },
+      "revId": "1267e331306904948b4fba4724fc0431a184c2b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c79e4b56",
+        "filename": "model-binding2/ietf/pom.xml",
+        "patchSetId": 19
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-26T10:04:43Z",
+      "side": 1,
+      "message": "2017",
+      "range": {
+        "startLine": 4,
+        "startChar": 15,
+        "endLine": 4,
+        "endChar": 19
+      },
+      "revId": "1267e331306904948b4fba4724fc0431a184c2b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
