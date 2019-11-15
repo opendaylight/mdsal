@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_3bd6b9f1",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-03-01T11:19:29Z",
+      "side": 1,
+      "message": "The first string defines namespace we are examining, the second string is the normalized java identifier, right? Having this as a private static object may create surprises in unit tests, but other than that it may work.",
+      "range": {
+        "startLine": 194,
+        "startChar": 38,
+        "endLine": 194,
+        "endChar": 52
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7b1961d6",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-03-01T11:19:29Z",
+      "side": 1,
+      "message": "This does NOT append rank as normalizeClassIdentifier does, so \"convert\" may be a better verb.",
+      "range": {
+        "startLine": 237,
+        "startChar": 25,
+        "endLine": 237,
+        "endChar": 34
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bbe0e9fa",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-03-01T11:19:29Z",
+      "side": 1,
+      "message": "Same as what?",
+      "range": {
+        "startLine": 20,
+        "startChar": 10,
+        "endLine": 20,
+        "endChar": 23
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9b06c584",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-03-01T11:19:29Z",
+      "side": 1,
+      "message": "Reserved",
+      "range": {
+        "startLine": 36,
+        "startChar": 30,
+        "endLine": 36,
+        "endChar": 37
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bb858908",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-03-01T11:19:29Z",
+      "side": 1,
+      "message": "Each of the following tests should also test potential conflicts. I mean, tests specifically for convert* methods can ignore conflicts, but there should be corresponding normalize* methods which append rank. That means converting \"iNt\" and \"inT\" as interface identifiers can both lead to \"IntReservedKeyword\", but normalizing would add \u00271\u0027 to the second one.",
+      "range": {
+        "startLine": 56,
+        "startChar": 43,
+        "endLine": 56,
+        "endChar": 46
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9b91a549",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-03-01T11:19:29Z",
+      "side": 1,
+      "message": "Similarly here, both \"*\" and \"asterisk\" is converted to \"Asterisk\", but normalizing would add \u00271\u0027 to one of them.",
+      "range": {
+        "startLine": 124,
+        "startChar": 19,
+        "endLine": 124,
+        "endChar": 22
+      },
+      "revId": "f7cf4b49dcfabf18fede8a70958e4f30d7681a0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
