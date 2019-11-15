@@ -1,0 +1,147 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_1f018f06",
+        "filename": "binding/mdsal-binding-test-model/src/main/java/org/opendaylight/yang/gen/v1/urn/comp/list/test/rev170101/LIdBuilder.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-24T15:02:11Z",
+      "side": 1,
+      "message": "shouldn\u0027t be commited at all",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 1
+      },
+      "revId": "2937617120e2a97805accc81ab4f4432bfbe6867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_91ff3301",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/comp-list-test.yang",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-24T15:02:11Z",
+      "side": 1,
+      "message": "delete this file",
+      "revId": "2937617120e2a97805accc81ab4f4432bfbe6867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_71028f0a",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/list-test.yang",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-24T15:02:11Z",
+      "side": 1,
+      "message": "delete this file",
+      "revId": "2937617120e2a97805accc81ab4f4432bfbe6867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1113435d",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/AuxiliaryGenUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-24T15:02:11Z",
+      "side": 1,
+      "message": "comment purpose of \"_\"",
+      "revId": "2937617120e2a97805accc81ab4f4432bfbe6867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b12357a6",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 681,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-24T15:02:11Z",
+      "side": 1,
+      "message": "use BindingNamespaceType.Key",
+      "range": {
+        "startLine": 681,
+        "startChar": 70,
+        "endLine": 681,
+        "endChar": 77
+      },
+      "revId": "2937617120e2a97805accc81ab4f4432bfbe6867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_113a23cd",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-24T15:02:11Z",
+      "side": 1,
+      "message": "use BindingNamespaceType.Data",
+      "range": {
+        "startLine": 684,
+        "startChar": 70,
+        "endLine": 684,
+        "endChar": 78
+      },
+      "revId": "2937617120e2a97805accc81ab4f4432bfbe6867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f13b1fc6",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/impl/BindingGeneratorImplTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-24T15:02:11Z",
+      "side": 1,
+      "message": "naming convention?",
+      "range": {
+        "startLine": 28,
+        "startChar": 16,
+        "endLine": 28,
+        "endChar": 22
+      },
+      "revId": "2937617120e2a97805accc81ab4f4432bfbe6867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
