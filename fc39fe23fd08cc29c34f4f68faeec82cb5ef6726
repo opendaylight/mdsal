@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_90fa4673",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-22T08:19:51Z",
+      "side": 1,
+      "message": "static final",
+      "range": {
+        "startLine": 84,
+        "startChar": 12,
+        "endLine": 84,
+        "endChar": 24
+      },
+      "revId": "fc39fe23fd08cc29c34f4f68faeec82cb5ef6726",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d674c637",
+        "filename": "binding2/mdsal-binding2-util/src/main/java/org/opendaylight/mdsal/binding/javav2/util/BindingMapping.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-22T11:18:23Z",
+      "side": 1,
+      "message": "please add similar test(s) for these ones",
+      "range": {
+        "startLine": 38,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 68
+      },
+      "revId": "fc39fe23fd08cc29c34f4f68faeec82cb5ef6726",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_102e56fb",
+        "filename": "binding2/mdsal-binding2-util/src/main/java/org/opendaylight/mdsal/binding/javav2/util/BindingMapping.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-22T08:19:51Z",
+      "side": 1,
+      "message": "Character.isDigit(rawString.charAt(0)",
+      "range": {
+        "startLine": 167,
+        "startChar": 8,
+        "endLine": 168,
+        "endChar": 53
+      },
+      "revId": "fc39fe23fd08cc29c34f4f68faeec82cb5ef6726",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
