@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_cb7c9675",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/data/tree/BindingDOMDataTreeListenerAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T09:08:54Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "f0f71cfa3634db88f909a49e22d43ffafe7bdd03",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_ab814a4c",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/data/tree/BindingDOMDataTreeListenerAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T09:08:54Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "f0f71cfa3634db88f909a49e22d43ffafe7bdd03",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_4b90a695",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/data/tree/BindingDOMDataTreeServiceAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T09:08:54Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "f0f71cfa3634db88f909a49e22d43ffafe7bdd03",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_2b8d5a7c",
+        "filename": "binding2/mdsal-binding2-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/adapter/impl/data/tree/BindingDOMDataTreeServiceAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T09:08:54Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "f0f71cfa3634db88f909a49e22d43ffafe7bdd03",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
