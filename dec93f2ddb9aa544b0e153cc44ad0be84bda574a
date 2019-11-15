@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_bc905c96",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-02T14:21:16Z",
+      "side": 1,
+      "message": "please add info to commit message \nthis patch also fixes\nhttps://bugs.opendaylight.org/show_bug.cgi?id\u003d2641",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 42
+      },
+      "revId": "dec93f2ddb9aa544b0e153cc44ad0be84bda574a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_dc79e094",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-02T14:21:16Z",
+      "side": 1,
+      "message": "apply camel case in appropriate way",
+      "range": {
+        "startLine": 55,
+        "startChar": 10,
+        "endLine": 55,
+        "endChar": 77
+      },
+      "revId": "dec93f2ddb9aa544b0e153cc44ad0be84bda574a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_fc82e450",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-02T14:21:16Z",
+      "side": 1,
+      "message": "resolved identifier",
+      "range": {
+        "startLine": 92,
+        "startChar": 15,
+        "endLine": 92,
+        "endChar": 79
+      },
+      "revId": "dec93f2ddb9aa544b0e153cc44ad0be84bda574a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
