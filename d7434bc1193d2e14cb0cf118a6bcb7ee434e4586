@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_96f2e104",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 994
+      },
+      "writtenOn": "2019-11-15T19:18:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_51f501eb",
+      "revId": "d7434bc1193d2e14cb0cf118a6bcb7ee434e4586",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_310845d9",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 7
@@ -30,6 +48,24 @@
       "writtenOn": "2016-10-03T16:09:01Z",
       "side": 1,
       "message": "The calling method will also call closeResources on line 214 which could potentially cause the provider instance to be closed twice (probably not now but if the code was changed in the future).  I think it would be safer to let the caller call closeResources. You can return a boolean indicating if the provider instance needs to be closed (i.e. return serviceGroup.isEmpty() here and set needCloseProviderInstance above).",
+      "revId": "d7434bc1193d2e14cb0cf118a6bcb7ee434e4586",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_36edcd26",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 994
+      },
+      "writtenOn": "2019-11-15T19:18:24Z",
+      "side": 1,
+      "message": "I\u0027ve used closeClusterSingletonGroup method and that is a bad way. This method is created for general close only (that means, close EOS listener and after we can call closeClusterSingletonGroup method). So yes I have to change closeResouces method. CloseResources methot has to call close MainEntityCandidate only and it has to be guardedBy(\"clusterLock\").",
+      "parentUuid": "7a6b29fe_310845d9",
       "revId": "d7434bc1193d2e14cb0cf118a6bcb7ee434e4586",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_b6aa7dd0",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 994
+      },
+      "writtenOn": "2019-11-15T19:18:24Z",
+      "side": 1,
+      "message": "inClosing param. was removed from implementation. The closing marker could be tracked by serviceEntityCandidateReg \u003d\u003d null.",
+      "parentUuid": "7a6b29fe_b122954f",
+      "revId": "d7434bc1193d2e14cb0cf118a6bcb7ee434e4586",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_919319a2",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/test/java/org/opendaylight/mdsal/singleton/dom/impl/DOMClusterSingletonServiceProviderAsyncImplTest.java",
         "patchSetId": 7
@@ -64,6 +118,24 @@
       "writtenOn": "2016-10-03T16:09:01Z",
       "side": 1,
       "message": "Should call cancel here instead of relying on the finalizer.",
+      "revId": "d7434bc1193d2e14cb0cf118a6bcb7ee434e4586",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5625e9ac",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/test/java/org/opendaylight/mdsal/singleton/dom/impl/DOMClusterSingletonServiceProviderAsyncImplTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 994
+      },
+      "writtenOn": "2019-11-15T19:18:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_919319a2",
       "revId": "d7434bc1193d2e14cb0cf118a6bcb7ee434e4586",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
