@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_c1b9c52f",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "I think, these are same logical parts of code (first part for input and second for output) - of course, with change in args for input/output - so it can be extracted to one method, for exmaple:\nGeneratedTypeBuilder prepareInnerCont(input/output, ...)",
+      "range": {
+        "startLine": 198,
+        "startChar": 0,
+        "endLine": 233,
+        "endChar": 61
+      },
+      "revId": "befff5be311a25cdb7c96ee7d28fb22c795f8ad5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
