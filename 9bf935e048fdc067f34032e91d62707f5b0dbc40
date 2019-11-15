@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "1af78d9a_209ab014",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/impl/Bug8542Test.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "remove blank line, please",
+      "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_40953ce3",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/impl/Bug8542Test.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "remove blank line, please",
+      "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_34e9561b",
         "filename": "binding2/mdsal-binding2-generator-impl/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/impl/Bug8542Test.java",
         "patchSetId": 9
@@ -18,6 +52,178 @@
         "startChar": 58,
         "endLine": 28,
         "endChar": 115
+      },
+      "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_20f3d074",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/bug-8542/recursive-uses-augment.yang",
+        "patchSetId": 9
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "space between",
+      "range": {
+        "startLine": 8,
+        "startChar": 13,
+        "endLine": 8,
+        "endChar": 15
+      },
+      "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_80e8c47d",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/bug-8542/recursive-uses-augment.yang",
+        "patchSetId": 9
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "space",
+      "range": {
+        "startLine": 16,
+        "startChar": 13,
+        "endLine": 16,
+        "endChar": 15
+      },
+      "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_60edd88b",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/bug-8542/recursive-uses-augment.yang",
+        "patchSetId": 9
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "space",
+      "range": {
+        "startLine": 24,
+        "startChar": 13,
+        "endLine": 24,
+        "endChar": 15
+      },
+      "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_c0012c3b",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/bug-8542/recursive-uses-augment.yang",
+        "patchSetId": 9
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "space",
+      "range": {
+        "startLine": 32,
+        "startChar": 13,
+        "endLine": 32,
+        "endChar": 15
+      },
+      "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_e0f8a84b",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/bug-8542/recursive-uses-augment.yang",
+        "patchSetId": 9
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "indent",
+      "range": {
+        "startLine": 43,
+        "startChar": 24,
+        "endLine": 43,
+        "endChar": 25
+      },
+      "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_00fcd43d",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/bug-8542/recursive-uses-augment.yang",
+        "patchSetId": 9
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "remove blank line, please",
+      "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_a0fea036",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/bug-8542/recursive-uses-augment.yang",
+        "patchSetId": 9
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "remove blank line, please",
+      "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_20cc7035",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "add jdoc for public method, please",
+      "range": {
+        "startLine": 353,
+        "startChar": 25,
+        "endLine": 353,
+        "endChar": 61
       },
       "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
