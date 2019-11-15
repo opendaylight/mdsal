@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_13cb6773",
+        "filename": "common/features/features-mdsal/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-05-10T18:00:55Z",
+      "side": 1,
+      "message": "${project.version}",
+      "range": {
+        "startLine": 56,
+        "startChar": 25,
+        "endLine": 56,
+        "endChar": 39
+      },
+      "revId": "e7339f9fe0b09ec13130132f5f89931319a914f6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
