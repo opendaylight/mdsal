@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_0d684d86",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifier.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-03T13:16:22Z",
+      "side": 1,
+      "message": "add Javadoc and @Beta annotation everywhere",
+      "revId": "d25b2ac6d115e1a409f2e78ab389243b339e083b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ad102102",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/generated/type/builder/AbstractGeneratedTypeBuilder.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-03T13:16:22Z",
+      "side": 1,
+      "message": "no change here",
+      "range": {
+        "startLine": 166,
+        "startChar": 94,
+        "endLine": 166,
+        "endChar": 113
+      },
+      "revId": "d25b2ac6d115e1a409f2e78ab389243b339e083b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0dba0d0a",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/generated/type/builder/EnumerationBuilderImpl.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-03T13:16:22Z",
+      "side": 1,
+      "message": "delete it",
+      "range": {
+        "startLine": 51,
+        "startChar": 79,
+        "endLine": 51,
+        "endChar": 114
+      },
+      "revId": "d25b2ac6d115e1a409f2e78ab389243b339e083b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4d3b759c",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/generated/type/builder/EnumerationBuilderImpl.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-03T13:16:22Z",
+      "side": 1,
+      "message": "JavaIdentifier.ENUM",
+      "range": {
+        "startLine": 52,
+        "startChar": 73,
+        "endLine": 52,
+        "endChar": 88
+      },
+      "revId": "d25b2ac6d115e1a409f2e78ab389243b339e083b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6d0639d0",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-03T13:16:22Z",
+      "side": 1,
+      "message": "naming convention",
+      "range": {
+        "startLine": 79,
+        "startChar": 31,
+        "endLine": 79,
+        "endChar": 37
+      },
+      "revId": "d25b2ac6d115e1a409f2e78ab389243b339e083b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4d09b5dc",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverterTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-03T13:16:22Z",
+      "side": 1,
+      "message": "naming convention",
+      "range": {
+        "startLine": 87,
+        "startChar": 34,
+        "endLine": 87,
+        "endChar": 40
+      },
+      "revId": "d25b2ac6d115e1a409f2e78ab389243b339e083b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
