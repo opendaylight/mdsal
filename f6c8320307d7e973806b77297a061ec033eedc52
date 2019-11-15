@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_e65ffb70",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/DataContainerCodecContext.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "missing blank line before",
+      "range": {
+        "startLine": 81,
+        "startChar": 7,
+        "endLine": 82,
+        "endChar": 4
+      },
+      "revId": "f6c8320307d7e973806b77297a061ec033eedc52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_c6bc7f6f",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/DataContainerCodecContext.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "complete this part",
+      "range": {
+        "startLine": 96,
+        "startChar": 0,
+        "endLine": 97,
+        "endChar": 14
+      },
+      "revId": "f6c8320307d7e973806b77297a061ec033eedc52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_268623ba",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/DataContainerCodecContext.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "missing blank line before",
+      "range": {
+        "startLine": 126,
+        "startChar": 0,
+        "endLine": 126,
+        "endChar": 4
+      },
+      "revId": "f6c8320307d7e973806b77297a061ec033eedc52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_460c0f43",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/LazyTreeNode.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "in binding v2 is used implementedInterface()\n -\u003e Instantiable instead of DataObject",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 86
+      },
+      "revId": "f6c8320307d7e973806b77297a061ec033eedc52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_26090332",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/LazyTreeNode.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "indent",
+      "range": {
+        "startLine": 95,
+        "startChar": 16,
+        "endLine": 97,
+        "endChar": 18
+      },
+      "revId": "f6c8320307d7e973806b77297a061ec033eedc52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
