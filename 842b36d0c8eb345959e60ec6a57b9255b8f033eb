@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_c7876b0e",
+        "filename": "model-binding2/iana/pom.xml",
+        "patchSetId": 14
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-26T10:03:07Z",
+      "side": 1,
+      "message": "2017",
+      "range": {
+        "startLine": 4,
+        "startChar": 15,
+        "endLine": 4,
+        "endChar": 19
+      },
+      "revId": "842b36d0c8eb345959e60ec6a57b9255b8f033eb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
