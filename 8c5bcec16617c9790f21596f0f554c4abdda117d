@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_2f54bafd",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-28T16:45:01Z",
+      "side": 1,
+      "message": "The correct order is:\n\n1..N) Do all other conversions, including capitalization.\nN+1) Find out which rank (if any) to append (and append it).\nN+2) Store the exact new result to the collection of known results.\nN+3) Return the result.\n\nIn your implementation, \"int_reserved_word\" origClassName ends up conflicting with \"int\" origClassName.",
+      "range": {
+        "startLine": 333,
+        "startChar": 15,
+        "endLine": 333,
+        "endChar": 22
+      },
+      "revId": "8c5bcec16617c9790f21596f0f554c4abdda117d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8f3fa686",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/NonJavaCharsConverter.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 378,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-02-28T16:45:01Z",
+      "side": 1,
+      "message": "Looking at the documentation [0], in enum constants I think we want to replace everything except letters, digits and (maybe) underscore. We want to replace the dollar sign and the other listed types (\"numeric letters\" and so on).\n\nThat assumes Yang strings are converted from unicode to char strings without any surprises.\n\n[0] https://docs.oracle.com/javase/8/docs/api/java/lang/Character.html#isJavaIdentifierPart-char-",
+      "range": {
+        "startLine": 378,
+        "startChar": 27,
+        "endLine": 378,
+        "endChar": 47
+      },
+      "revId": "8c5bcec16617c9790f21596f0f554c4abdda117d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
