@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_921b8dc9",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleaner.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-31T11:05:01Z",
+      "side": 1,
+      "message": "allow empty space",
+      "revId": "e127a4e7f1d110b54052094dc9e1a23d8f17b986",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_92ed4dba",
+        "filename": "binding2/mdsal-binding2-generator-util/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/util/YangSnippetCleanerTest.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-31T11:05:01Z",
+      "side": 1,
+      "message": "in general, test method should say what is actually testing...",
+      "range": {
+        "startLine": 20,
+        "startChar": 16,
+        "endLine": 20,
+        "endChar": 22
+      },
+      "revId": "e127a4e7f1d110b54052094dc9e1a23d8f17b986",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
