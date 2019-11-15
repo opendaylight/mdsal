@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_6ee78fe5",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/ChoiceNodeCodecContext.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T08:53:50Z",
+      "side": 1,
+      "message": "looks like unnecessary",
+      "range": {
+        "startLine": 113,
+        "startChar": 12,
+        "endLine": 113,
+        "endChar": 19
+      },
+      "revId": "1dd483c03b9fcde0f897b05c58d62c36d066efc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_4eec53c8",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/ChoiceNodeCodecContext.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T08:53:50Z",
+      "side": 1,
+      "message": "looks like unnecessary",
+      "range": {
+        "startLine": 116,
+        "startChar": 26,
+        "endLine": 116,
+        "endChar": 32
+      },
+      "revId": "1dd483c03b9fcde0f897b05c58d62c36d066efc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
