@@ -1,0 +1,68 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_0e2b6b83",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/serializer/BindingToNormalizedStreamWriter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T07:59:11Z",
+      "side": 1,
+      "message": "private?",
+      "revId": "44af135e65618083ef6a35fbee37d35b6104043f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_8e3d9bbe",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/serializer/BindingToNormalizedStreamWriter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T07:59:11Z",
+      "side": 1,
+      "message": "we need a BUG in yangtools to support it first - please update once bug is created",
+      "range": {
+        "startLine": 241,
+        "startChar": 8,
+        "endLine": 241,
+        "endChar": 35
+      },
+      "revId": "44af135e65618083ef6a35fbee37d35b6104043f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_0e0a4bd2",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/serializer/BindingToNormalizedStreamWriter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T08:32:57Z",
+      "side": 1,
+      "message": "https://bugs.opendaylight.org/show_bug.cgi?id\u003d8516 most likely",
+      "parentUuid": "1af78d9a_8e3d9bbe",
+      "range": {
+        "startLine": 241,
+        "startChar": 8,
+        "endLine": 241,
+        "endChar": 35
+      },
+      "revId": "44af135e65618083ef6a35fbee37d35b6104043f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
