@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_bc5491ff",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-02-20T11:21:59Z",
+      "side": 1,
+      "message": "please add information saying: \n\"in binding generator v2 flow, this method is called after dealing with possible non-Java characters\" \n(patch already merged) \nNobody will wonder why we pass input to StringBuilder without checking it.",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 45,
+        "endChar": 7
+      },
+      "revId": "378ec8f58197ecd40e3f5ed7b40545bc8fcc0cbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
