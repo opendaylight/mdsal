@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "ba1f61a0_874cf943",
+        "filename": "dom/mdsal-dom-schema-service-osgi/src/main/java/org/opendaylight/mdsal/dom/schema/service/osgi/OsgiBundleScanningSchemaService.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 6295
+      },
+      "writtenOn": "2017-08-23T04:48:48Z",
+      "side": 1,
+      "message": "please do not use ServiceLoader. inject the instance of JarScanningSchemaService via constuctor using blueprint.",
+      "range": {
+        "startLine": 106,
+        "startChar": 2,
+        "endLine": 112,
+        "endChar": 9
+      },
+      "revId": "62b0d986451209d55c62409d52160fa12e12b370",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_e76215ac",
         "filename": "dom/mdsal-dom-schema-service-osgi/src/main/java/org/opendaylight/mdsal/dom/schema/service/osgi/SchemaServiceActivator.java",
         "patchSetId": 8
