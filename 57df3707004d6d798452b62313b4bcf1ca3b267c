@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_bee3d7a2",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/builderTemplate.scala.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-04-28T14:35:17Z",
+      "side": 1,
+      "message": "yes, this needs fix when parentType is null (elements in root), I will follow with patch for this",
+      "revId": "57df3707004d6d798452b62313b4bcf1ca3b267c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
