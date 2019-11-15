@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "ba068154_b988a3c7",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/util/JavaCodePrettyPrint.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-05-02T07:09:26Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 216,
+        "startChar": 19,
+        "endLine": 217,
+        "endChar": 41
+      },
+      "revId": "413367ef83bbcccd6f1cfd19c02c3abca28407dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_df9bc770",
         "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/builderTemplate.scala.txt",
         "patchSetId": 8
