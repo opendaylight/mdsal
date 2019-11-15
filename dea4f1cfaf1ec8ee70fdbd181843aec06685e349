@@ -42,6 +42,23 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_87e340a3",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/schema/ScanningSchemaServiceProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 6295
+      },
+      "writtenOn": "2017-08-30T19:21:04Z",
+      "side": 1,
+      "message": "missing implementation of DOMSchemaService.getSupportedExtensions()",
+      "revId": "dea4f1cfaf1ec8ee70fdbd181843aec06685e349",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_721528e4",
         "filename": "dom/mdsal-dom-schema-service-osgi/src/main/java/org/opendaylight/mdsal/dom/schema/service/osgi/OsgiBundleScanningSchemaService.java",
         "patchSetId": 4
@@ -70,6 +87,29 @@
       "writtenOn": "2017-08-30T22:16:01Z",
       "side": 1,
       "message": "Why don\u0027t we register the listener with the ScanningSchemaServiceProvider? Then we can eliminate the local notifyListeners method.",
+      "revId": "dea4f1cfaf1ec8ee70fdbd181843aec06685e349",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_27da54e8",
+        "filename": "dom/mdsal-dom-schema-service-osgi/src/main/java/org/opendaylight/mdsal/dom/schema/service/osgi/OsgiBundleScanningSchemaService.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 6295
+      },
+      "writtenOn": "2017-08-30T19:21:04Z",
+      "side": 1,
+      "message": "please move this into scanningSchemaService and call it from there",
+      "range": {
+        "startLine": 281,
+        "startChar": 0,
+        "endLine": 284,
+        "endChar": 5
+      },
       "revId": "dea4f1cfaf1ec8ee70fdbd181843aec06685e349",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
