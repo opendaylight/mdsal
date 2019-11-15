@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_f2afce29",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/impl/Bug8575Test.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "2017",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "25ade865365f7370c798d7bb8ae0ed794ede3c49",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_b2b6e688",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/impl/Bug8575Test.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "should be at the beginning of imports, and static imports and imports should be separet by a blank line\nEx:\nstatic import ..;\n\nimport ..;",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 39
+      },
+      "revId": "25ade865365f7370c798d7bb8ae0ed794ede3c49",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_7218fe84",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/impl/Bug8575Test.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 7786
+      },
+      "writtenOn": "2019-11-15T23:09:16Z",
+      "side": 1,
+      "message": "u can use YangParserTestUtils with path to file inside: YangParserTestUtils.parseYangSource(\"/bug-8575/foo.yang\");",
+      "range": {
+        "startLine": 32,
+        "startChar": 8,
+        "endLine": 35,
+        "endChar": 74
+      },
+      "revId": "25ade865365f7370c798d7bb8ae0ed794ede3c49",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
