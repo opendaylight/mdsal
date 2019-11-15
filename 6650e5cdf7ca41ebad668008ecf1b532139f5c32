@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_52fbc4c0",
+        "filename": "dom/mdsal-dom-schema-service-osgi/src/main/java/org/opendaylight/mdsal/dom/schema/service/osgi/OsgiBundleScanningSchemaService.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-08-30T22:16:01Z",
+      "side": 0,
+      "message": "Why was this removed?",
+      "revId": "6650e5cdf7ca41ebad668008ecf1b532139f5c32",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_5222a452",
+        "filename": "dom/mdsal-dom-schema-service-osgi/src/main/java/org/opendaylight/mdsal/dom/schema/service/osgi/OsgiBundleScanningSchemaService.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-08-30T22:16:01Z",
+      "side": 0,
+      "message": "We\u0027re no longer calling this local method so the ServiceTracker listeners won\u0027t get notified (this would be moot if we eliminate this local method - see above comments). Also we\u0027re not synchronizing the local \u0027lock\u0027 (would be moot if we eliminate this lock - see above comments).",
+      "range": {
+        "startLine": 293,
+        "startChar": 16,
+        "endLine": 293,
+        "endChar": 31
+      },
+      "revId": "6650e5cdf7ca41ebad668008ecf1b532139f5c32",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

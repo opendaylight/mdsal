@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_92537ce1",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/schema/ScanningSchemaServiceProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-08-30T22:16:01Z",
+      "side": 1,
+      "message": "This looks misplaced - \u0027lock\u0027 is the guard. It looks like it guards \u0027listeners\u0027.",
+      "revId": "dea4f1cfaf1ec8ee70fdbd181843aec06685e349",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_9201bcb1",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/schema/ScanningSchemaServiceProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-08-30T22:16:01Z",
+      "side": 1,
+      "message": "registerAvalaibleYangs (sic) -\u003e registerAvailableYangs",
+      "range": {
+        "startLine": 65,
+        "startChar": 30,
+        "endLine": 65,
+        "endChar": 52
+      },
+      "revId": "dea4f1cfaf1ec8ee70fdbd181843aec06685e349",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_721528e4",
+        "filename": "dom/mdsal-dom-schema-service-osgi/src/main/java/org/opendaylight/mdsal/dom/schema/service/osgi/OsgiBundleScanningSchemaService.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-08-30T22:16:01Z",
+      "side": 1,
+      "message": "I think it would simplify things a bit if we consolidate to 1 lock, ie the one in ScanningSchemaServiceProvider - provide lock and unlock methods. Perhaps it might be easier to derive from ScanningSchemaServiceProvider.",
+      "revId": "dea4f1cfaf1ec8ee70fdbd181843aec06685e349",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d2d5f41c",
+        "filename": "dom/mdsal-dom-schema-service-osgi/src/main/java/org/opendaylight/mdsal/dom/schema/service/osgi/OsgiBundleScanningSchemaService.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-08-30T22:16:01Z",
+      "side": 1,
+      "message": "Why don\u0027t we register the listener with the ScanningSchemaServiceProvider? Then we can eliminate the local notifyListeners method.",
+      "revId": "dea4f1cfaf1ec8ee70fdbd181843aec06685e349",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
