@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_43465650",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-05T09:49:34Z",
+      "side": 1,
+      "message": "use \"val\" in xtend",
+      "range": {
+        "startLine": 74,
+        "startChar": 19,
+        "endLine": 74,
+        "endChar": 24
+      },
+      "revId": "2987d51409d58dc3e59e9ee9fbb70f430d57e605",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_e355e2fa",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 1
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-05T09:49:34Z",
+      "side": 1,
+      "message": "formatting?",
+      "range": {
+        "startLine": 727,
+        "startChar": 16,
+        "endLine": 735,
+        "endChar": 24
+      },
+      "revId": "2987d51409d58dc3e59e9ee9fbb70f430d57e605",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_a3764aa2",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/yangtools/sal/java/api/generator/BuilderGeneratorTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-05T09:49:34Z",
+      "side": 1,
+      "message": "allow one empty line as usual...",
+      "revId": "2987d51409d58dc3e59e9ee9fbb70f430d57e605",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
