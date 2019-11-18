@@ -301,35 +301,38 @@ abstract class AbstractTypeGenerator {
             final Type baseInterface, final ListSchemaNode node, final boolean inGrouping) {
         final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, node, inGrouping);
         if (genType != null) {
+            final List<String> listKeys = listKeys(node);
+            final GeneratedTOBuilder keyTypeBuilder;
+            if (!listKeys.isEmpty()) {
+                keyTypeBuilder = typeProvider.newGeneratedTOBuilder(JavaTypeName.create(
+                    packageNameForGeneratedType(context.modulePackageName(), node.getPath()),
+                    BindingMapping.getClassName(node.getQName().getLocalName() + "Key")))
+                        .addImplementsType(identifier(genType));
+                genType.addImplementsType(identifiable(keyTypeBuilder));
+            } else {
+                keyTypeBuilder = null;
+            }
+
             final ParameterizedType listType = listTypeFor(genType);
             constructGetter(parent, listType, node);
             constructNonnull(parent, listType, node);
 
-            final List<String> listKeys = listKeys(node);
-            final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(context, node);
-            if (genTOBuilder != null) {
-                final Type identifierMarker = identifier(genType);
-                final Type identifiableMarker = identifiable(genTOBuilder);
-                genTOBuilder.addImplementsType(identifierMarker);
-                genType.addImplementsType(identifiableMarker);
-
-            }
-            actionsToGenType(context, genType, node, genTOBuilder, inGrouping);
+            actionsToGenType(context, genType, node, keyTypeBuilder, inGrouping);
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
                 if (!schemaNode.isAugmenting()) {
-                    addSchemaNodeToListBuilders(context, schemaNode, genType, genTOBuilder, listKeys, inGrouping);
+                    addSchemaNodeToListBuilders(context, schemaNode, genType, keyTypeBuilder, listKeys, inGrouping);
                 }
             }
 
             // serialVersionUID
-            if (genTOBuilder != null) {
+            if (keyTypeBuilder != null) {
                 final GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("serialVersionUID");
-                prop.setValue(Long.toString(computeDefaultSUID(genTOBuilder)));
-                genTOBuilder.setSUID(prop);
+                prop.setValue(Long.toString(computeDefaultSUID(keyTypeBuilder)));
+                keyTypeBuilder.setSUID(prop);
             }
 
-            typeBuildersToGenTypes(context, genType, genTOBuilder);
+            typeBuildersToGenTypes(context, genType, keyTypeBuilder);
         }
     }
 
@@ -1777,23 +1780,6 @@ abstract class AbstractTypeGenerator {
                 }
                 return listKeys;
         }
-    }
-
-    /**
-     * Generates for the <code>list</code> which contains any list keys special generated TO builder.
-     *
-     * @param packageName string with package name to which the list belongs
-     * @param list list schema node which is source of data about the list name
-     * @return generated TO builder which represents the keys of the <code>list</code> or null if <code>list</code> is
-     *         null or list of key definitions is null or empty.
-     */
-    private GeneratedTOBuilder resolveListKeyTOBuilder(final ModuleContext context, final ListSchemaNode list) {
-        if (list.getKeyDefinition() != null && !list.getKeyDefinition().isEmpty()) {
-            return typeProvider.newGeneratedTOBuilder(JavaTypeName.create(
-                packageNameForGeneratedType(context.modulePackageName(), list.getPath()),
-                BindingMapping.getClassName(list.getQName().getLocalName() + "Key")));
-        }
-        return null;
     }
 
     /**
