@@ -51,6 +51,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1788,15 +1789,19 @@ abstract class AbstractTypeGenerator {
      *         an empty list is returned.
      */
     private static List<String> listKeys(final ListSchemaNode list) {
-        final List<String> listKeys = new ArrayList<>();
-
         final List<QName> keyDefinition = list.getKeyDefinition();
-        if (keyDefinition != null) {
-            for (final QName keyDef : keyDefinition) {
-                listKeys.add(keyDef.getLocalName());
-            }
+        switch (keyDefinition.size()) {
+            case 0:
+                return Collections.emptyList();
+            case 1:
+                return Collections.singletonList(keyDefinition.get(0).getLocalName());
+            default:
+                final List<String> listKeys = new ArrayList<>(keyDefinition.size());
+                for (final QName keyDef : keyDefinition) {
+                    listKeys.add(keyDef.getLocalName());
+                }
+                return listKeys;
         }
-        return listKeys;
     }
 
     /**
