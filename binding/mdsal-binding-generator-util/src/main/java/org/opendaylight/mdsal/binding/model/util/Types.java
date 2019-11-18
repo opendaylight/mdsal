@@ -156,6 +156,14 @@ public final class Types {
         return parameterizedTypeFor(MAP_TYPE, keyType, valueType);
     }
 
+    public static boolean isMapType(final ParameterizedType type) {
+        return MAP_TYPE.equals(type.getRawType());
+    }
+
+    public static boolean isMapType(final Type type) {
+        return type instanceof ParameterizedType && isMapType((ParameterizedType) type);
+    }
+
     /**
      * Returns an instance of {@link ParameterizedType} describing the typed {@link Set}&lt;V&gt; with concrete type
      * of value.
