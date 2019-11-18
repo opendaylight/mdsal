@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.testutils;
 
 import java.util.Collections;
-import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugmentBuilder;
@@ -68,7 +67,7 @@ public final class ExpectedObjects {
             };
             TopLevelList doubleGreaterThan =
                 XtendBuilderExtensions.operator_doubleGreaterThan(topLevelListBuilder, _function_1);
-            it.setTopLevelList(Collections.unmodifiableList(CollectionLiterals.newArrayList(doubleGreaterThan)));
+            it.setTopLevelList(Collections.singletonMap(doubleGreaterThan.key(), doubleGreaterThan));
         };
         return XtendBuilderExtensions.operator_doubleGreaterThan(topBuilder, _function);
     }
