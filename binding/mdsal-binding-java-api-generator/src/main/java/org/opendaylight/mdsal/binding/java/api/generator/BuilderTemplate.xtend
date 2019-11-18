@@ -273,6 +273,16 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «ENDFOR»
     '''
 
+    def private generateSetter(GeneratedProperty field) {
+        val returnType = field.returnType
+        if (returnType instanceof ParameterizedType) {
+            if (Types.isListType(returnType)) {
+                return generateListSetter(field, returnType.actualTypeArguments.get(0))
+            }
+        }
+        return generateSimpleSetter(field, returnType)
+    }
+
     def private generateListSetter(GeneratedProperty field, Type actualType) '''
         «val restrictions = restrictionsForSetter(actualType)»
         «IF restrictions !== null»
@@ -292,7 +302,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
 
     '''
 
-    def private generateSetter(GeneratedProperty field, Type actualType) '''
+    def private generateSimpleSetter(GeneratedProperty field, Type actualType) '''
         «val restrictions = restrictionsForSetter(actualType)»
         «IF restrictions !== null»
             «generateCheckers(field, restrictions, actualType)»
@@ -309,10 +319,6 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         }
     '''
 
-    private def Type getActualType(ParameterizedType ptype) {
-        return ptype.getActualTypeArguments.get(0)
-    }
-
     /**
      * Template method which generates setter methods
      *
@@ -326,11 +332,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             }
         «ENDIF»
         «FOR property : properties»
-            «IF property.returnType instanceof ParameterizedType && Types.isListType(property.returnType)»
-                «generateListSetter(property, getActualType(property.returnType as ParameterizedType))»
-            «ELSE»
-                «generateSetter(property, property.returnType)»
-            «ENDIF»
+            «generateSetter(property)»
         «ENDFOR»
 
         «IF augmentType !== null»
