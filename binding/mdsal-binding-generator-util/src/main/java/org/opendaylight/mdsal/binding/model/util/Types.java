@@ -174,8 +174,12 @@ public final class Types {
         return parameterizedTypeFor(LIST_TYPE, valueType);
     }
 
+    public static boolean isListType(final ParameterizedType type) {
+        return LIST_TYPE.equals(type.getRawType());
+    }
+
     public static boolean isListType(final Type type) {
-        return type instanceof ParameterizedType && LIST_TYPE.equals(((ParameterizedType) type).getRawType());
+        return type instanceof ParameterizedType && isListType((ParameterizedType) type);
     }
 
     /**
