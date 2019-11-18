@@ -38,6 +38,7 @@ import static org.opendaylight.mdsal.binding.model.util.Types.augmentationTypeFo
 import static org.opendaylight.mdsal.binding.model.util.Types.classType;
 import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.listenableFutureTypeFor;
+import static org.opendaylight.mdsal.binding.model.util.Types.mapTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveVoidType;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 import static org.opendaylight.mdsal.binding.model.util.Types.wildcardTypeFor;
@@ -321,7 +322,14 @@ abstract class AbstractTypeGenerator {
                 keyTypeBuilder = null;
             }
 
-            final ParameterizedType listType = listTypeFor(genType);
+            // Decide whether to generate a List or a Map
+            final ParameterizedType listType;
+            if (keyTypeBuilder != null && !node.isUserOrdered()) {
+                listType = mapTypeFor(keyTypeBuilder, genType);
+            } else {
+                listType = listTypeFor(genType);
+            }
+
             constructGetter(parent, listType, node);
             constructNonnull(parent, listType, node);
 

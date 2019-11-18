@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.testutils;
 
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import java.util.Map;
+import java.util.Map.Entry;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -43,8 +43,8 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
     @Test
     public void testAssertDataObjectsWithComplexTopWithKey() {
         AssertDataObjects.assertEqualByText(HEADER + "new TopBuilder >> [\n"
-                + "    topLevelList = #[\n"
-                + "        new TopLevelListBuilder >> [\n"
+                + "    topLevelList = #{\n"
+                + "        new TopLevelListKey(\"foo\") -> new TopLevelListBuilder >> [\n"
                 + "            name = \"foo\"\n"
                 + "            addAugmentation(TreeComplexUsesAugment, new TreeComplexUsesAugmentBuilder >> [\n"
                 + "                containerWithUses = new ContainerWithUsesBuilder >> [\n"
@@ -52,7 +52,7 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
                 + "                ]\n"
                 + "            ])\n"
                 + "        ]\n"
-                + "    ]\n"
+                + "    }\n"
                 + "]", ExpectedObjects.top());
     }
 
@@ -86,8 +86,8 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
         String expectedTopText = "import static extension org.opendaylight.mdsal.binding.testutils."
                 + "XtendBuilderExtensions.operator_doubleGreaterThan\n\n"
                 + "new TopBuilder >> [\n"
-                + "    topLevelList = #[\n"
-                + "        new TopLevelListBuilder >> [\n"
+                + "    topLevelList = #{\n"
+                + "        new TopLevelListKey(\"foo\") -> new TopLevelListBuilder >> [\n"
                 + "            name = \"foo\"\n"
                 + "            addAugmentation(TreeComplexUsesAugment, new TreeComplexUsesAugmentBuilder >> [\n"
                 + "                containerWithUses = new ContainerWithUsesBuilder >> [\n"
@@ -95,13 +95,13 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
                 + "                ]\n"
                 + "            ])\n"
                 + "        ]\n"
-                + "    ]\n"
+                + "    }\n"
                 + "]";
         AssertDataObjects.assertEqualByText(expectedTopText, actualTop);
     }
 
     <T extends DataObject> void put(WriteTransaction tx, LogicalDatastoreType store,
-            Map.Entry<InstanceIdentifier<T>, T> obj) {
+            Entry<InstanceIdentifier<T>, T> obj) {
         tx.put(OPERATIONAL, obj.getKey(), obj.getValue());
     }
 
