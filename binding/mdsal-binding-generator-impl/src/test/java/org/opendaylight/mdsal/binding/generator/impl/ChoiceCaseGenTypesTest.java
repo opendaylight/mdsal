@@ -76,7 +76,7 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
         containsInterface("LockType", genType);
 
         genType = checkGeneratedType(genTypes, "PartialLock", pcgPref + ".lock.type"); // case
-        containsMethods(genType, new NameTypePattern("getPartialLock", "List<PartialLock>"));
+        containsMethods(genType, new NameTypePattern("getPartialLock", "Map<PartialLockKey,PartialLock>"));
         containsInterface("LockType", genType);
 
         genType = checkGeneratedType(genTypes, "Fingerprint", pcgPref + ".lock.type"); // case
@@ -159,7 +159,7 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
 
         genType = checkGeneratedType(genTypes, "UnknownFiles", pcgPref
                 + ".netconf.state.datastores.datastore.storage.format"); // case
-        containsMethods(genType, new NameTypePattern("getFiles", "List<Files>"));
+        containsMethods(genType, new NameTypePattern("getFiles", "Map<FilesKey,Files>"));
         containsInterface("StorageFormat", genType);
 
         // case

@@ -86,7 +86,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
         final List<SourceReference> requiredSources = new ArrayList<>();
         final List<SourceReference> librarySources = new ArrayList<>();
 
-        for (Module module : modState.nonnullModule()) {
+        for (Module module : modState.nonnullModule().values()) {
             final SourceReference modRef = sourceRefFor(module, module.getSchema());
 
             // TODO: take deviations/features into account
@@ -97,7 +97,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
                 requiredSources.add(modRef);
             }
 
-            for (Submodule submodule : module.nonnullSubmodule()) {
+            for (Submodule submodule : module.nonnullSubmodule().values()) {
                 // Submodules go to library, as they are pulled in as needed
                 librarySources.add(sourceRefFor(submodule, submodule.getSchema()));
             }
