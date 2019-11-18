@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +45,10 @@ public class ForwardedNotificationAdapterTest extends AbstractNotificationBroker
     }
 
     private static TwoLevelListChanged createTestData() {
-        final TwoLevelListChangedBuilder tb = new TwoLevelListChangedBuilder();
-        tb.setTopLevelList(ImmutableList.of(new TopLevelListBuilder().withKey(new TopLevelListKey("test")).build()));
-        return tb.build();
+        final TopLevelListKey key = new TopLevelListKey("test");
+        return new TwoLevelListChangedBuilder()
+                .setTopLevelList(ImmutableMap.of(key, new TopLevelListBuilder().withKey(key).build()))
+                .build();
     }
 
     @Test
