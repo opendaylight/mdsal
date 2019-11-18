@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.testutils;
 
+import com.google.common.collect.Maps;
 import java.util.Collections;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugmentBuilder;
@@ -47,12 +48,12 @@ public final class ExpectedObjects {
 
     public static Top top() {
         return new TopBuilder()
-                .setTopLevelList(Collections.singletonList(new TopLevelListBuilder()
+                .setTopLevelList(Maps.uniqueIndex(Collections.singletonList(new TopLevelListBuilder()
                     .setName("foo")
                     .addAugmentation(TreeComplexUsesAugment.class, new TreeComplexUsesAugmentBuilder()
                         .setContainerWithUses(new ContainerWithUsesBuilder().setLeafFromGrouping("foo").build())
                         .build())
-                    .build()))
+                    .build()), TopLevelList::key))
                 .build();
     }
 }

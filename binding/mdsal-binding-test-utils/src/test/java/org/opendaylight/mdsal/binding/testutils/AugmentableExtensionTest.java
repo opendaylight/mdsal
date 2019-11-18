@@ -57,7 +57,7 @@ public class AugmentableExtensionTest extends AbstractDataBrokerTest {
         Top actualTop = readTx.read(OPERATIONAL, id).get().get();
         AssertBeans.assertEqualByText("#{\n}", augmentableExtension.getAugmentations(actualTop));
 
-        TopLevelList topLevelList = actualTop.getTopLevelList().get(0);
+        TopLevelList topLevelList = actualTop.getTopLevelList().values().iterator().next();
         AssertDataObjects.assertEqualByText("#{\n"
                 + "    TreeComplexUsesAugment -> new TreeComplexUsesAugmentBuilder >> [\n"
                 + "        containerWithUses = new ContainerWithUsesBuilder >> [\n"
