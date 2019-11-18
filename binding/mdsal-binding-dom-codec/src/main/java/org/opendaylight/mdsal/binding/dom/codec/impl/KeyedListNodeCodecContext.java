@@ -10,8 +10,14 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.IDENTIFIABLE_KEY_NAME;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
@@ -20,12 +26,56 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
+import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
+import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 
-final class KeyedListNodeCodecContext<D extends DataObject & Identifiable<?>> extends ListNodeCodecContext<D> {
+abstract class KeyedListNodeCodecContext<D extends DataObject & Identifiable<?>> extends ListNodeCodecContext<D> {
+    private static final class Ordered<D extends DataObject & Identifiable<?>> extends KeyedListNodeCodecContext<D> {
+        Ordered(final DataContainerCodecPrototype<ListSchemaNode> prototype, final Method keyMethod,
+                final IdentifiableItemCodec codec) {
+            super(prototype, keyMethod, codec);
+        }
+    }
+
+    private static final class Unordered<D extends DataObject & Identifiable<?>> extends KeyedListNodeCodecContext<D> {
+        private final MethodHandle keyHandle;
+
+        Unordered(final DataContainerCodecPrototype<ListSchemaNode> prototype, final Method keyMethod,
+                final IdentifiableItemCodec codec) {
+            super(prototype, keyMethod, codec);
+            try {
+                this.keyHandle = MethodHandles.publicLookup().unreflect(keyMethod);
+            } catch (IllegalAccessException e) {
+                throw new LinkageError("Failed to acquire method " + keyMethod, e);
+            }
+        }
+
+        @Override
+        Map<?, D> fromMap(final MapNode nodes) {
+            final Collection<MapEntryNode> value = nodes.getValue();
+            final Builder<Object, D> builder = ImmutableMap.builderWithExpectedSize(value.size());
+            // FIXME: Could be this lazy transformed map?
+            for (MapEntryNode node : value) {
+                final D entry = fromMapEntry(node);
+                builder.put(getKey(entry), entry);
+            }
+            return builder.build();
+        }
+
+        @SuppressWarnings("checkstyle:illegalCatch")
+        private Object getKey(final D entry) {
+            try {
+                return keyHandle.invoke(entry);
+            } catch (Throwable e) {
+                throw new LinkageError("Failed to extract key from " + entry, e);
+            }
+        }
+    }
+
     private final IdentifiableItemCodec codec;
 
-    private KeyedListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype,
+    KeyedListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype,
             final Method keyMethod, final IdentifiableItemCodec codec) {
         super(prototype, keyMethod);
         this.codec = requireNonNull(codec);
@@ -41,9 +91,10 @@ final class KeyedListNodeCodecContext<D extends DataObject & Identifiable<?>> ex
             throw new IllegalStateException("Required method not available", e);
         }
 
-        final IdentifiableItemCodec codec = prototype.getFactory().getPathArgumentCodec(bindingClass,
-            prototype.getSchema());
-        return new KeyedListNodeCodecContext<>(prototype, keyMethod, codec);
+        final ListSchemaNode schema = prototype.getSchema();
+        final IdentifiableItemCodec codec = prototype.getFactory().getPathArgumentCodec(bindingClass, schema);
+        return schema.isUserOrdered() ? new Ordered<>(prototype, keyMethod, codec)
+                : new Unordered<>(prototype, keyMethod, codec);
     }
 
     @Override
