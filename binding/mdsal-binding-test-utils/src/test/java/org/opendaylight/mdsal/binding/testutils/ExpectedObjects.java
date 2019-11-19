@@ -8,8 +8,6 @@
 package org.opendaylight.mdsal.binding.testutils;
 
 import java.util.Collections;
-import org.eclipse.xtext.xbase.lib.CollectionLiterals;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugmentBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ContainerWithUses;
@@ -48,28 +46,13 @@ public final class ExpectedObjects {
     }
 
     public static Top top() {
-        TopBuilder topBuilder = new TopBuilder();
-        final Procedure1<TopBuilder> _function = (TopBuilder it) -> {
-            TopLevelListBuilder topLevelListBuilder = new TopLevelListBuilder();
-            final Procedure1<TopLevelListBuilder> _function_1 = (TopLevelListBuilder it1) -> {
-                it1.setName("foo");
-                TreeComplexUsesAugmentBuilder treeComplexUsesAugmentBuilder = new TreeComplexUsesAugmentBuilder();
-                final Procedure1<TreeComplexUsesAugmentBuilder> _function_2 = (TreeComplexUsesAugmentBuilder it2) -> {
-                    ContainerWithUsesBuilder containerWithUsesBuilder = new ContainerWithUsesBuilder();
-                    final Procedure1<ContainerWithUsesBuilder> _function_3 =
-                        (ContainerWithUsesBuilder it3) -> it3.setLeafFromGrouping("foo");
-                    ContainerWithUses doubleGreaterThan = XtendBuilderExtensions.operator_doubleGreaterThan(
-                                    containerWithUsesBuilder, _function_3);
-                    it2.setContainerWithUses(doubleGreaterThan);
-                };
-                TreeComplexUsesAugment doubleGreaterThan = XtendBuilderExtensions.operator_doubleGreaterThan(
-                                treeComplexUsesAugmentBuilder, _function_2);
-                it1.addAugmentation(TreeComplexUsesAugment.class, doubleGreaterThan);
-            };
-            TopLevelList doubleGreaterThan =
-                XtendBuilderExtensions.operator_doubleGreaterThan(topLevelListBuilder, _function_1);
-            it.setTopLevelList(Collections.unmodifiableList(CollectionLiterals.newArrayList(doubleGreaterThan)));
-        };
-        return XtendBuilderExtensions.operator_doubleGreaterThan(topBuilder, _function);
+        return new TopBuilder()
+                .setTopLevelList(Collections.singletonList(new TopLevelListBuilder()
+                    .setName("foo")
+                    .addAugmentation(TreeComplexUsesAugment.class, new TreeComplexUsesAugmentBuilder()
+                        .setContainerWithUses(new ContainerWithUsesBuilder().setLeafFromGrouping("foo").build())
+                        .build())
+                    .build()))
+                .build();
     }
 }
