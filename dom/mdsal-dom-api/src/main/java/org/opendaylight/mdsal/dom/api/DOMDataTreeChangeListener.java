@@ -42,8 +42,8 @@ public interface DOMDataTreeChangeListener extends EventListener {
 
     /**
      * Invoked only once during registration of the listener if there was no data in the conceptual data tree
-     * for the supplied path, which was used to register this listener, and after this {@link #onDataTreeChanged}
-     * would always be invoked for data changes.
+     * for the supplied path, which was used to register this listener, and after this
+     * {@link #onDataTreeChanged(Collection)} would always be invoked for data changes.
      *
      * <p>
      * Default implementation does nothing and is appropriate for users who do not care about ascertaining
