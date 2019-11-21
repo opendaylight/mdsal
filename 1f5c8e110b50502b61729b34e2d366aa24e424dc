@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c61b9916_aafda8be",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 6731
+      },
+      "writtenOn": "2019-11-21T13:28:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76c942e0_07268ac5",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 3
+      },
+      "revId": "1f5c8e110b50502b61729b34e2d366aa24e424dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fca4fd93_c19ec97d",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -91,6 +115,30 @@
       "revId": "1f5c8e110b50502b61729b34e2d366aa24e424dc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dedd708d_90685e33",
+        "filename": "model/ietf/ietf-ted/src/main/yang/ted@2013-10-21.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 6731
+      },
+      "writtenOn": "2019-11-21T13:28:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bbb13b94_f5712dd5",
+      "range": {
+        "startLine": 214,
+        "startChar": 0,
+        "endLine": 214,
+        "endChar": 1
+      },
+      "revId": "1f5c8e110b50502b61729b34e2d366aa24e424dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
