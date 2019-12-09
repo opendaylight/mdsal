@@ -8,6 +8,7 @@
 package org.opendaylight.yangtools.yang.binding;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
@@ -88,6 +89,11 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      */
     public final @NonNull Class<T> getTargetType() {
         return targetType;
+    }
+
+    public <N extends DataObject> @NonNull InstanceIdentifier<N> safeCastTo(final Class<N> newTarget) {
+        checkState(targetType.isAssignableFrom(newTarget), "Cannot converted from %s to %s", targetType, newTarget);
+        return (InstanceIdentifier) this;
     }
 
     /**
