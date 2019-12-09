@@ -27,7 +27,9 @@ import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.InstanceNotification;
 import org.opendaylight.yangtools.yang.binding.KeyedListAction;
+import org.opendaylight.yangtools.yang.binding.KeyedListNotification;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.opendaylight.yangtools.yang.binding.OpaqueObject;
@@ -71,6 +73,8 @@ public final class BindingTypes {
     private static final ConcreteType KEYED_LIST_ACTION = typeForClass(KeyedListAction.class);
     private static final ConcreteType OPAQUE_OBJECT = typeForClass(OpaqueObject.class);
     private static final ConcreteType RPC_RESULT = typeForClass(RpcResult.class);
+    private static final ConcreteType INSTANCE_NOTIFICATION = typeForClass(InstanceNotification.class);
+    private static final ConcreteType KEYED_LIST_NOTIFICATION = typeForClass(KeyedListNotification.class);
 
     private BindingTypes() {
 
@@ -102,6 +106,29 @@ public final class BindingTypes {
     public static ParameterizedType keyedListAction(final Type parent, final Type keyType, final Type input,
             final Type output) {
         return parameterizedTypeFor(KEYED_LIST_ACTION, keyType, parent, input, output);
+    }
+
+    /**
+     * Type specializing {@link InstanceNotification} for a particular type.
+     *
+     * @param parent Type of parent defining the notification
+     * @return A parameterized type corresponding to {@code InstanceNotification<Parent>}
+     * @throws NullPointerException if {@code parent} is is null
+     */
+    public static ParameterizedType instanceNotification(final Type parent) {
+        return parameterizedTypeFor(INSTANCE_NOTIFICATION, parent);
+    }
+
+    /**
+     * Type specializing {@link InstanceNotification} for a particular type.
+     *
+     * @param parent Type of parent defining the notification
+     * @param keyType Type of parent's key
+     * @return A parameterized type corresponding to {@code KeyedInstanceNotification<ParentKey, Parent>}
+     * @throws NullPointerException if any argument is is null
+     */
+    public static ParameterizedType keyedListNotification(final Type parent, final Type keyType) {
+        return parameterizedTypeFor(KEYED_LIST_NOTIFICATION, parent, keyType);
     }
 
     /**
