@@ -29,7 +29,9 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.childOf;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.choiceIn;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifiable;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifier;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.instanceNotification;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.keyedListAction;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.keyedListNotification;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.opaqueObject;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.rpcResult;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
@@ -109,6 +111,7 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
+import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -302,6 +305,7 @@ abstract class AbstractTypeGenerator {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes(), inGrouping);
             actionsToGenType(context, genType, node, null, inGrouping);
+            notificationsToGenType(context, genType, node, null, inGrouping);
         }
     }
 
@@ -326,6 +330,7 @@ abstract class AbstractTypeGenerator {
             constructNonnull(parent, listType, node);
 
             actionsToGenType(context, genType, node, keyTypeBuilder, inGrouping);
+            notificationsToGenType(context, genType, node, keyTypeBuilder, inGrouping);
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
                 if (!schemaNode.isAugmenting()) {
@@ -601,6 +606,40 @@ abstract class AbstractTypeGenerator {
         context.addTopLevelNodeType(listenerInterface);
     }
 
+    private <T extends DataNodeContainer & NotificationNodeContainer> void notificationsToGenType(
+            final ModuleContext context, final Type parent, final T parentSchema, final Type keyType,
+            final boolean inGrouping) {
+        final Set<NotificationDefinition> notifications = parentSchema.getNotifications();
+        if (notifications.isEmpty()) {
+            return;
+        }
+
+        for (NotificationDefinition notif : notifications) {
+            if (notif.isAugmenting()) {
+                continue;
+            }
+            if (parentSchema instanceof GroupingDefinition) {
+                // Notifications cannot be really established, as they lack instantiation context, which would be
+                // completely described by an InstanceIdentifier -- hence we cannot create a binding class
+                continue;
+            }
+
+            processUsesAugments(notif, context, false);
+
+            final GeneratedTypeBuilder notifInterface = addDefaultInterfaceDefinition(
+                packageNameForGeneratedType(context.modulePackageName(), notif.getPath()), notif, DATA_OBJECT, context);
+            defaultImplementedInterace(notifInterface);
+            annotateDeprecatedIfNecessary(notif, notifInterface);
+
+            notifInterface.addImplementsType(keyType != null ? keyedListNotification(notifInterface, parent, keyType)
+                    : instanceNotification(notifInterface, parent));
+            context.addChildNodeType(notif, notifInterface);
+
+            // Notification object
+            resolveDataSchemaNodes(context, notifInterface, notifInterface, notif.getChildNodes(), false);
+        }
+    }
+
     /**
      * Converts all <b>identities</b> of the module to the list of
      * <code>Type</code> objects.
@@ -709,6 +748,7 @@ abstract class AbstractTypeGenerator {
             groupingsToGenTypes(context, grouping.getGroupings());
             processUsesAugments(grouping, context, true);
             actionsToGenType(context, genType, grouping, null, true);
+            notificationsToGenType(context, genType, grouping, null, true);
         }
     }
 
@@ -939,6 +979,8 @@ abstract class AbstractTypeGenerator {
 
         augSchemaNodeToMethods(context, augTypeBuilder, augSchema.getChildNodes(), inGrouping);
         actionsToGenType(context, augTypeBuilder, augSchema, null, inGrouping);
+        notificationsToGenType(context, augTypeBuilder, augSchema, null, inGrouping);
+
         augmentBuilders.put(augTypeName, augTypeBuilder);
 
         if (!augSchema.getChildNodes().isEmpty()) {
