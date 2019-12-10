@@ -19,6 +19,13 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.Identifiable;
+import org.opendaylight.yangtools.yang.binding.Identifier;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.InstanceNotification;
+import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
 @VisibleForTesting
@@ -41,6 +48,37 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
         final ListenerRegistration<BindingDOMNotificationListenerAdapter> domRegistration =
                 domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications());
         return new ListenerRegistrationImpl<>(listener, domRegistration);
+    }
+
+    @Override
+    public <N extends Notification, T extends Listener<N>> ListenerRegistration<T> registerListener(final Class<N> type,
+            final T listener) {
+        // FIXME: implement this
+        throw uoe();
+    }
+
+    @Override
+    public <P extends DataObject, N extends InstanceNotification<N, P>, T extends InstanceListener<P, N>>
+            ListenerRegistration<T> registerListener(final Class<N> type, final InstanceIdentifier<P> path,
+                final T listener) {
+        // FIXME: implement this
+        throw uoe();
+    }
+
+    @Override
+    public <P extends DataObject & Identifiable<K>, N extends InstanceNotification<N, P>, K extends Identifier<P>,
+            T extends KeyedListListener<P, N, K>> ListenerRegistration<T> registerListener(
+                final Class<N> type, final KeyedInstanceIdentifier<P, K> path, final T listener) {
+        // FIXME: implement this
+        throw uoe();
+    }
+
+    public DOMNotificationService getDomService() {
+        return domNotifService;
+    }
+
+    private static UnsupportedOperationException uoe() {
+        return new UnsupportedOperationException("Not implemented yet");
     }
 
     private static class ListenerRegistrationImpl<T extends NotificationListener>
@@ -73,9 +111,5 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
         public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
             return ImmutableSet.of(DOMNotificationService.class);
         }
-    }
-
-    public DOMNotificationService getDomService() {
-        return domNotifService;
     }
 }
