@@ -22,6 +22,12 @@ import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.Identifiable;
+import org.opendaylight.yangtools.yang.binding.Identifier;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.InstanceNotification;
+import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
@@ -167,6 +173,13 @@ public interface NotificationService extends BindingService {
         return registerCompositeListener(listener, MoreExecutors.directExecutor());
     }
 
+    <P extends DataObject, N extends InstanceNotification<N, P>, T extends InstanceListener<P, N>>
+        @NonNull ListenerRegistration<T> registerListener(Class<N> type, InstanceIdentifier<P> path, T listener);
+
+    <P extends DataObject & Identifiable<K>, N extends InstanceNotification<N, P>, K extends Identifier<P>,
+        T extends KeyedListListener<P, N, K>> @NonNull ListenerRegistration<T> registerListener(Class<N> type,
+                KeyedInstanceIdentifier<P, K> path, T listener);
+
     /**
      * Interface for listeners on global (YANG 1.0) notifications. Such notifications are identified by their generated
      * interface which extends {@link Notification}. Each listener instance can listen to only a single notification
@@ -182,6 +195,35 @@ public interface NotificationService extends BindingService {
          * @param notification Notification body
          */
         void onNotification(@NonNull N notification);
+    }
+
+    /*
+     * Interface for listeners on instance (YANG 1.1) notifications.
+     */
+    @FunctionalInterface
+    interface InstanceListener<P extends DataObject, N extends InstanceNotification<N, P>> extends EventListener {
+        /**
+         * Process an instance notification.
+         *
+         * @param path Instance path
+         * @param notification Notification body
+         */
+        void onNotification(@NonNull InstanceIdentifier<P> path, @NonNull N notification);
+    }
+
+    /**
+     * Interface for listeners on instance (YANG 1.1) notifications defined in a {@code list} with a {@code key}.
+     */
+    @FunctionalInterface
+    interface KeyedListListener<P extends DataObject & Identifiable<K>, N extends InstanceNotification<N, P>,
+            K extends Identifier<P>> extends EventListener {
+        /**
+         * Process an instance notification.
+         *
+         * @param path Instance path
+         * @param notification Notification body
+         */
+        void onNotification(@NonNull KeyedInstanceIdentifier<P, K> path, @NonNull N notification);
     }
 
     /**
