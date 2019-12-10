@@ -14,6 +14,7 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -22,6 +23,11 @@ import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.Identifiable;
+import org.opendaylight.yangtools.yang.binding.Identifier;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.InstanceNotification;
+import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
@@ -54,8 +60,35 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
         return domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications());
     }
 
+    @Override
+    public <P extends DataObject, N extends InstanceNotification<N, P>, T extends InstanceListener<P, N>>
+            ListenerRegistration<T> registerListener(final Class<N> type, final InstanceIdentifier<P> path,
+                final T listener) {
+        // FIXME: implement this
+        throw uoe();
+    }
+
+    @Override
+    public <P extends DataObject & Identifiable<K>, N extends InstanceNotification<N, P>, K extends Identifier<P>,
+            T extends KeyedListListener<P, N, K>> ListenerRegistration<T> registerListener(
+                final Class<N> type, final KeyedInstanceIdentifier<P, K> path, final T listener) {
+        // FIXME: implement this
+        throw uoe();
+    }
+
+    @Override
+    public @NonNull Registration registerCompositeListener(final CompositeListener arg0, final Executor arg1) {
+        // FIXME: implement this
+        throw uoe();
+    }
+
+
     public DOMNotificationService getDomService() {
         return domNotifService;
+    }
+
+    private static UnsupportedOperationException uoe() {
+        return new UnsupportedOperationException("Not implemented yet");
     }
 
     private static class ListenerRegistrationImpl<T extends NotificationListener>
