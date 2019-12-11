@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.mdsal.dom.spi.store.AbstractDOMStoreTreeChangePublisher;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
+import org.opendaylight.yangtools.util.concurrent.EqualityQueuedNotificationManager;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -30,23 +30,26 @@ import org.slf4j.LoggerFactory;
 final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChangePublisher {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMStoreTreeChangePublisher.class);
 
-    private final QueuedNotificationManager<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
+    // Registrations use identity for equality, hence we can skip wrapping them
+    private final EqualityQueuedNotificationManager<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
         notificationManager;
 
-    InMemoryDOMStoreTreeChangePublisher(final ExecutorService listenerExecutor, final int maxQueueSize) {
-        notificationManager = QueuedNotificationManager.create(listenerExecutor, (listener, notifications) -> {
-            if (!listener.isClosed()) {
-                listener.getInstance().onDataTreeChanged(notifications);
-            }
-        }, maxQueueSize, "DataTreeChangeListenerQueueMgr");
+    InMemoryDOMStoreTreeChangePublisher(final String dsName, final ExecutorService listenerExecutor,
+            final int maxQueueSize) {
+        notificationManager = new EqualityQueuedNotificationManager<>("DataTreeChangeListenerQueueMgr + dsName",
+                listenerExecutor, maxQueueSize, (listener, notifications) -> {
+                    if (!listener.isClosed()) {
+                        listener.getInstance().onDataTreeChanged(notifications);
+                    }
+                });
     }
 
-    private InMemoryDOMStoreTreeChangePublisher(final QueuedNotificationManager<
+    private InMemoryDOMStoreTreeChangePublisher(final EqualityQueuedNotificationManager<
             AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> notificationManager) {
         this.notificationManager = notificationManager;
     }
 
-    QueuedNotificationManager<?, ?> getNotificationManager() {
+    EqualityQueuedNotificationManager<?, ?> getNotificationManager() {
         return notificationManager;
     }
 
