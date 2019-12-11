@@ -76,6 +76,17 @@
                 <artifactId>mdsal-dom-inmemory-datastore</artifactId>
                 <version>5.0.6-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-dom-testkit-spi</artifactId>
+                <version>5.0.6-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-dom-testkit</artifactId>
+                <version>5.0.6-SNAPSHOT</version>
+                <scope>test</scope>
+            </dependency>
 
             <!-- Binding MD-SAL & Java Binding -->
             <dependency>
@@ -162,6 +173,11 @@
                 <artifactId>mdsal-binding-test-utils</artifactId>
                 <version>5.0.6-SNAPSHOT</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-binding-testkit-spi</artifactId>
+                <version>5.0.6-SNAPSHOT</version>
             </dependency>
 
             <dependency>
