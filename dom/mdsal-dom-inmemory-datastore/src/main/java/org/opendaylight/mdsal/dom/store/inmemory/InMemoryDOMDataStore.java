@@ -27,7 +27,7 @@ import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.Trans
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ExecutorServiceUtil;
-import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
+import org.opendaylight.yangtools.util.concurrent.EqualityQueuedNotificationManager;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
@@ -89,11 +89,11 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
         this.dataChangeListenerExecutor = requireNonNull(dataChangeListenerExecutor);
         this.debugTransactions = debugTransactions;
         dataTree = new InMemoryDataTreeFactory().create(config);
-        changePublisher = new InMemoryDOMStoreTreeChangePublisher(this.dataChangeListenerExecutor,
+        changePublisher = new InMemoryDOMStoreTreeChangePublisher("name", this.dataChangeListenerExecutor,
                 maxDataChangeListenerQueueSize);
     }
 
-    public QueuedNotificationManager<?, ?> getDataChangeListenerNotificationManager() {
+    public EqualityQueuedNotificationManager<?, ?> getDataChangeListenerNotificationManager() {
         return changePublisher.getNotificationManager();
     }
 
