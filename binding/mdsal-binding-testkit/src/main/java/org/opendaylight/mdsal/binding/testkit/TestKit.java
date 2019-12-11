@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) 2019 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.opendaylight.mdsal.binding.testkit;
+
+import com.google.common.annotations.Beta;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.BindingService;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
+import org.opendaylight.mdsal.binding.testkit.spi.AbstractTestKit;
+import org.opendaylight.mdsal.dom.testkit.DOMTestKit;
+
+/**
+ * Base class for tests running with models packaged as Binding artifacts on their classpath and need to interact with
+ * {@link BindingService}s. Services are lazily instantiated on-demand.
+ *
+ * @author Robert Varga
+ */
+@Beta
+public class TestKit extends AbstractTestKit<BindingDOMDataBrokerAdapter> {
+    private volatile BindingToNormalizedNodeCodec adapterCodec;
+
+    public TestKit() {
+        this(new DOMTestKit());
+    }
+
+    public TestKit(final DOMTestKit domTestKit) {
+        super(domTestKit);
+    }
+
+    public TestKit(final DOMTestKit domTestKit, final ListenerClassifier classifier) {
+        super(domTestKit, classifier);
+    }
+
+    @Override
+    public final BindingNormalizedNodeSerializer nodeSerializer() {
+        return adapterCodec();
+    }
+
+    @Override
+    protected BindingDOMDataBrokerAdapter createDataBroker() {
+        return new BindingDOMDataBrokerAdapter(domTestKit().domDataBroker(), adapterCodec());
+    }
+
+    @Override
+    protected void closeDataBroker(final BindingDOMDataBrokerAdapter dataBroker) {
+        // No-op
+    }
+
+    private @NonNull BindingToNormalizedNodeCodec adapterCodec() {
+        BindingToNormalizedNodeCodec local = adapterCodec;
+        if (local == null) {
+            synchronized (this) {
+                local = adapterCodec;
+                if (local == null) {
+                    adapterCodec = local = new BindingToNormalizedNodeCodec(
+                        GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), codecRegistry());
+                }
+            }
+        }
+        return local;
+    }
+}
