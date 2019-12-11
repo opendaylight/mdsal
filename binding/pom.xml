@@ -43,8 +43,9 @@
         <module>mdsal-binding-api</module>
         <module>mdsal-binding-spi</module>
         <module>mdsal-binding-util</module>
-        <module>mdsal-binding-test-utils</module>
+        <module>mdsal-binding-testkit-spi</module>
         <module>mdsal-binding-dom-adapter</module>
+        <module>mdsal-binding-test-utils</module>
         <module>mdsal-binding-util-tests</module>
     </modules>
 
