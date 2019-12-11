@@ -119,6 +119,12 @@
                 <version>3.0.5-SNAPSHOT</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-binding-dom-test-utils</artifactId>
+                <version>5.0.5-SNAPSHOT</version>
+                <scope>test</scope>
+            </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
