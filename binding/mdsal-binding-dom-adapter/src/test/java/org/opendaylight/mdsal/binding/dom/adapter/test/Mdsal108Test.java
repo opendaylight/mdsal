@@ -7,7 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
+import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
@@ -20,27 +22,29 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public class Mdsal108Test extends AbstractDataBrokerTest {
+public class Mdsal108Test {
     @Test
-    public void testDelete() {
-        DataBroker dataBroker = getDataBroker();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        ArrayList<TopLevelList> list = new ArrayList<>();
-        list.add(new TopLevelListBuilder().setName("name").build());
-        TopBuilder builder = new TopBuilder().setTopLevelList(list);
-        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Top.class), builder.build());
-        assertCommit(writeTransaction.commit());
+    public void testDelete() throws ExecutionException {
+        try (AdapterTestKit testkit = new AdapterTestKit()) {
+            DataBroker dataBroker = testkit.dataBroker();
+            WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+            ArrayList<TopLevelList> list = new ArrayList<>();
+            list.add(new TopLevelListBuilder().setName("name").build());
+            writeTransaction.put(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Top.class),
+                new TopBuilder().setTopLevelList(list).build());
+            Futures.getDone(writeTransaction.commit());
 
-        InstanceIdentifier<TopLevelList> id = InstanceIdentifier.builder(Top.class)
-                .child(TopLevelList.class, new TopLevelListKey("name")).build();
+            InstanceIdentifier<TopLevelList> id = InstanceIdentifier.builder(Top.class)
+                    .child(TopLevelList.class, new TopLevelListKey("name")).build();
 
-        ReadWriteTransaction writeTransaction1 = dataBroker.newReadWriteTransaction();
+            ReadWriteTransaction writeTransaction1 = dataBroker.newReadWriteTransaction();
 
-        writeTransaction1.delete(LogicalDatastoreType.OPERATIONAL, id);
-        assertCommit(writeTransaction1.commit());
-        ReadWriteTransaction writeTransaction2 = dataBroker.newReadWriteTransaction();
+            writeTransaction1.delete(LogicalDatastoreType.OPERATIONAL, id);
+            Futures.getDone(writeTransaction1.commit());
+            ReadWriteTransaction writeTransaction2 = dataBroker.newReadWriteTransaction();
 
-        writeTransaction2.delete(LogicalDatastoreType.OPERATIONAL, id);
-        assertCommit(writeTransaction2.commit());
+            writeTransaction2.delete(LogicalDatastoreType.OPERATIONAL, id);
+            Futures.getDone(writeTransaction2.commit());
+        }
     }
 }

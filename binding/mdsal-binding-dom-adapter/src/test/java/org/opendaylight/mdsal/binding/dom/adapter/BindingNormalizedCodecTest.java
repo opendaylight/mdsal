@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
@@ -25,10 +24,11 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractSchemaAwareTest;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
+import org.opendaylight.mdsal.dom.testkit.spi.EffectiveModelContextTestKit;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeLeafOnlyAugment;
@@ -42,11 +42,10 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.util.AbstractSchemaContext;
 
-public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
+public class BindingNormalizedCodecTest {
 
     private static final TopLevelListKey TOP_FOO_KEY = new TopLevelListKey("foo");
     private static final InstanceIdentifier<TopLevelList> BA_TOP_LEVEL_LIST = InstanceIdentifier
@@ -60,28 +59,27 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
     private static final YangInstanceIdentifier BI_TOP_LEVEL_LIST = YangInstanceIdentifier.builder().node(Top.QNAME)
         .node(TopLevelList.QNAME).nodeWithKey(TopLevelList.QNAME, NAME_QNAME, TOP_FOO_KEY.getName()).build();
 
+    private EffectiveModelContextTestKit testkit;
     private BindingToNormalizedNodeCodec codec;
-    private SchemaContext context;
 
-    @Override
-    protected void setupWithSchema(final SchemaContext schemaContext) {
-        this.context = schemaContext;
-        final BindingNormalizedNodeCodecRegistry registry = new BindingNormalizedNodeCodecRegistry();
-        this.codec = new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-                registry, true);
+    @Before
+    public void setup() {
+        testkit = new EffectiveModelContextTestKit();
+        codec = new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
+            new BindingNormalizedNodeCodecRegistry(), true);
     }
+
 
     @Test
     public void testComplexAugmentationSerialization() {
-        this.codec.onGlobalContextUpdated(this.context);
+        codec.onGlobalContextUpdated(testkit.effectiveModelContext());
         final PathArgument lastArg = this.codec.toYangInstanceIdentifier(BA_TREE_COMPLEX_USES).getLastPathArgument();
         assertTrue(lastArg instanceof AugmentationIdentifier);
     }
 
-
     @Test
     public void testLeafOnlyAugmentationSerialization() {
-        this.codec.onGlobalContextUpdated(this.context);
+        codec.onGlobalContextUpdated(testkit.effectiveModelContext());
         final PathArgument leafOnlyLastArg = this.codec.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY)
             .getLastPathArgument();
         assertTrue(leafOnlyLastArg instanceof AugmentationIdentifier);
@@ -107,7 +105,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
         }).start();
 
         Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-        this.codec.onGlobalContextUpdated(this.context);
+        this.codec.onGlobalContextUpdated(testkit.effectiveModelContext());
 
         assertTrue("toYangInstanceIdentifierBlocking completed",
                 Uninterruptibles.awaitUninterruptibly(done, 3, TimeUnit.SECONDS));
@@ -146,7 +144,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
         }).start();
 
         Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-        this.codec.onGlobalContextUpdated(this.context);
+        this.codec.onGlobalContextUpdated(testkit.effectiveModelContext());
 
         assertTrue("getRpcMethodToSchemaPath completed",
                 Uninterruptibles.awaitUninterruptibly(done, 3, TimeUnit.SECONDS));
