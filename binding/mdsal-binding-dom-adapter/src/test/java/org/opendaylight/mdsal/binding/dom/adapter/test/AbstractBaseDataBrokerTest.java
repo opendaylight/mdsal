@@ -15,6 +15,12 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
+/**
+ * Legacy base class for databrokers.
+ *
+ * @deprecated Use {@code org.opendaylight.mdsal.binding.testkit.TestKit} instead.
+ */
+@Deprecated
 public abstract class AbstractBaseDataBrokerTest extends AbstractSchemaAwareTest {
 
     private static final int ASSERT_COMMIT_DEFAULT_TIMEOUT = 5000;
@@ -52,7 +58,7 @@ public abstract class AbstractBaseDataBrokerTest extends AbstractSchemaAwareTest
         assertCommit(commit, ASSERT_COMMIT_DEFAULT_TIMEOUT);
     }
 
-    protected static final void assertCommit(final ListenableFuture<?> commit, long timeoutInMS) {
+    protected static final void assertCommit(final ListenableFuture<?> commit, final long timeoutInMS) {
         try {
             commit.get(timeoutInMS, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {

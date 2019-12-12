@@ -22,7 +22,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public class WriteTransactionTest extends AbstractDataBrokerTest {
+public class WriteTransactionTest extends AbstractTestKitTest {
 
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
     private static final TopLevelListKey TOP_LIST_KEY = new TopLevelListKey("foo");
@@ -46,9 +46,9 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<Top> topNode = readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();
-        assertTrue("Top node must exists after commit",topNode.isPresent());
+        assertTrue("Top node must exists after commit", topNode.isPresent());
         final Optional<TopLevelList> listNode = readTx.read(LogicalDatastoreType.OPERATIONAL, NODE_PATH).get();
-        assertTrue("List node must exists after commit",listNode.isPresent());
+        assertTrue("List node must exists after commit", listNode.isPresent());
     }
 
     @Test
@@ -60,9 +60,9 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<Top> topNode = readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();
-        assertTrue("Top node must exists after commit",topNode.isPresent());
+        assertTrue("Top node must exists after commit", topNode.isPresent());
         final Optional<TopLevelList> listNode = readTx.read(LogicalDatastoreType.OPERATIONAL, NODE_PATH).get();
-        assertTrue("List node must exists after commit",listNode.isPresent());
+        assertTrue("List node must exists after commit", listNode.isPresent());
     }
 
 }

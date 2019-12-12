@@ -57,7 +57,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
-public class Mdsal298Test extends AbstractDataBrokerTest {
+public class Mdsal298Test extends AbstractTestKitTest {
     private static final InstanceIdentifier<Container> CONTAINER = InstanceIdentifier.create(Container.class);
     private static final DataTreeIdentifier<Container> CONTAINER_TID = DataTreeIdentifier.create(CONFIGURATION,
         CONTAINER);
