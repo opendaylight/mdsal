@@ -72,23 +72,24 @@
             <artifactId>yang-model-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-test-util</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-parser-impl</artifactId>
-            <scope>test</scope>
+            <artifactId>yang-test-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding-testkit-spi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-test-model</artifactId>
         </dependency>
+
+        <!-- FIXME: remove when AbstractDataBrokerTest is gone -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-dom-inmemory-datastore</artifactId>
@@ -104,6 +105,7 @@
                 <executions>
                     <execution>
                         <goals>
+                            <!-- FIXME: remove when AbstractDataBrokerTest is gone -->
                             <goal>test-jar</goal>
                         </goals>
                     </execution>
