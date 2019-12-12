@@ -11,11 +11,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -23,32 +20,17 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.OpendaylightMdsalBindingTestListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelListChanged;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelListChangedBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ForwardedNotificationAdapterTest extends AbstractNotificationBrokerTest {
-
+public class ForwardedNotificationAdapterTest extends AbstractTestKitTest {
     private static final Logger LOG = LoggerFactory.getLogger(ForwardedNotificationAdapterTest.class);
-
-    @Override
-    protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return ImmutableSet.of(BindingReflections.getModuleInfo(TwoLevelListChanged.class));
-
-    }
-
-    private static TwoLevelListChanged createTestData() {
-        final TwoLevelListChangedBuilder tb = new TwoLevelListChangedBuilder();
-        tb.setTopLevelList(ImmutableList.of(new TopLevelListBuilder().withKey(new TopLevelListKey("test")).build()));
-        return tb.build();
-    }
 
     @Test
     public void testNotifSubscription() throws InterruptedException {
@@ -56,9 +38,9 @@ public class ForwardedNotificationAdapterTest extends AbstractNotificationBroker
         final TwoLevelListChanged testData = createTestData();
 
         final TestNotifListener testNotifListener = new TestNotifListener(latch);
-        final ListenerRegistration<TestNotifListener> listenerRegistration = getNotificationService()
+        final ListenerRegistration<TestNotifListener> listenerRegistration = testkit.notificationService()
                 .registerNotificationListener(testNotifListener);
-        getNotificationPublishService().putNotification(testData);
+        testkit.notificationPublishService().putNotification(testData);
 
         latch.await();
         assertTrue(testNotifListener.getReceivedNotifications().size() == 1);
@@ -73,10 +55,10 @@ public class ForwardedNotificationAdapterTest extends AbstractNotificationBroker
         final TwoLevelListChanged testData = createTestData();
 
         final TestNotifListener testNotifListener = new TestNotifListener(latch);
-        final ListenerRegistration<TestNotifListener> listenerRegistration = getNotificationService()
+        final ListenerRegistration<TestNotifListener> listenerRegistration = testkit.notificationService()
                 .registerNotificationListener(testNotifListener);
         try {
-            getNotificationPublishService().offerNotification(testData).get(1, TimeUnit.SECONDS);
+            testkit.notificationPublishService().offerNotification(testData).get(1, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException e) {
             LOG.error("Notification delivery failed", e);
             Assert.fail("notification should be delivered");
@@ -95,10 +77,10 @@ public class ForwardedNotificationAdapterTest extends AbstractNotificationBroker
         final TwoLevelListChanged testData = createTestData();
 
         final TestNotifListener testNotifListener = new TestNotifListener(latch);
-        final ListenerRegistration<TestNotifListener> listenerRegistration = getNotificationService()
+        final ListenerRegistration<TestNotifListener> listenerRegistration = testkit.notificationService()
                 .registerNotificationListener(testNotifListener);
         assertNotSame(NotificationPublishService.REJECTED,
-                getNotificationPublishService().offerNotification(testData, 5, TimeUnit.SECONDS));
+            testkit.notificationPublishService().offerNotification(testData, 5, TimeUnit.SECONDS));
 
         latch.await();
         assertTrue(testNotifListener.getReceivedNotifications().size() == 1);
@@ -124,5 +106,11 @@ public class ForwardedNotificationAdapterTest extends AbstractNotificationBroker
         public List<TwoLevelListChanged> getReceivedNotifications() {
             return receivedNotifications;
         }
+    }
+
+    private static TwoLevelListChanged createTestData() {
+        return new TwoLevelListChangedBuilder()
+                .setTopLevelList(List.of(new TopLevelListBuilder().withKey(new TopLevelListKey("test")).build()))
+                .build();
     }
 }
