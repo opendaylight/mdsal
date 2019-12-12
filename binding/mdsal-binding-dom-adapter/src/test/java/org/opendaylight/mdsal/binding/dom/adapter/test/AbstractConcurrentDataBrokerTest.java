@@ -14,7 +14,9 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
  * AbstractDataBrokerTest) in order to allow tests to use the DataBroker concurrently from several threads.
  *
  * @author Michael Vorburger
+ * @deprecated Use {@code org.opendaylight.mdsal.binding.testkit.TestKit} instead.
  */
+@Deprecated
 public abstract class AbstractConcurrentDataBrokerTest extends AbstractBaseDataBrokerTest {
     private final boolean useMTDataTreeChangeListenerExecutor;
 

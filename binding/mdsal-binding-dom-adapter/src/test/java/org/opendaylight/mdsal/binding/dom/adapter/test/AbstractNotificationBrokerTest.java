@@ -13,6 +13,12 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
+/**
+ * Legacy base class for notification brokers.
+ *
+ * @deprecated Use {@code org.opendaylight.mdsal.binding.testkit.TestKit} instead.
+ */
+@Deprecated
 public class AbstractNotificationBrokerTest extends AbstractSchemaAwareTest {
     private BindingToNormalizedNodeCodec bindingToNormalizedNodeCodec;
     private DOMNotificationRouter domNotificationRouter;
