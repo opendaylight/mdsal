@@ -11,13 +11,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainerBuilder;
 import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101._boolean.container.BooleanListBuilder;
@@ -27,16 +22,13 @@ import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101._boolean.container.Bo
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-public class Bug5845booleanKeyTest extends AbstractDataBrokerTest {
+public class Bug5845booleanKeyTest extends AbstractTestKitTest {
+    public Bug5845booleanKeyTest() {
+        super(BooleanContainer.class);
+    }
 
     @Test
     public void testBug5845() throws Exception {
-        final BindingToNormalizedNodeCodec mappingService = new BindingToNormalizedNodeCodec(
-                GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry());
-        final ModuleInfoBackedContext moduleInfoBackedContext = ModuleInfoBackedContext.create();
-        moduleInfoBackedContext.registerModuleInfo(BindingReflections.getModuleInfo(BooleanContainer.class));
-        mappingService.onGlobalContextUpdated(moduleInfoBackedContext.tryToCreateSchemaContext().get());
-
         final BooleanContainer booleanContainer = new BooleanContainerBuilder().setBooleanList(Collections
                 .singletonList(new BooleanListBuilder()
                         .withKey(new BooleanListKey(true, true))
@@ -52,7 +44,7 @@ public class Bug5845booleanKeyTest extends AbstractDataBrokerTest {
                         .build()))
                 .build();
 
-        final BindingCodecTree codecContext = mappingService.getCodecFactory().getCodecContext();
+        final BindingCodecTree codecContext = testkit.codecRegistry().getCodecContext();
         final BindingDataObjectCodecTreeNode<BooleanContainer> subtreeCodec = codecContext.getSubtreeCodec(
                 InstanceIdentifier.create(BooleanContainer.class));
         final NormalizedNode<?, ?> serializedInt = subtreeCodec.serialize(booleanContainerInt);

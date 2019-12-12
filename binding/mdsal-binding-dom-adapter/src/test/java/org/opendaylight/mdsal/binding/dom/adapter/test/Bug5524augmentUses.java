@@ -11,13 +11,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.bug._5524.module1.rev160101.grouping.module1.ListModule11Builder;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.bug._5524.module1.rev160101.grouping.module1.list.module1._1.ListModule12Builder;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.bug._5524.module1.rev160101.grouping.module1.list.module1._1.list.module1._2.ContainerModule1Builder;
@@ -38,16 +33,13 @@ import org.opendaylight.yang.gen.v1.urn.test.opendaylight.bug._5524.module4.rev1
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-public class Bug5524augmentUses extends AbstractDataBrokerTest {
+public class Bug5524augmentUses extends AbstractTestKitTest {
+    public Bug5524augmentUses() {
+        super(Module4Main.class);
+    }
 
     @Test
     public void testBug5224() throws Exception {
-        final BindingToNormalizedNodeCodec mappingService = new BindingToNormalizedNodeCodec(
-                GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry());
-        final ModuleInfoBackedContext moduleInfoBackedContext = ModuleInfoBackedContext.create();
-        moduleInfoBackedContext.registerModuleInfo(BindingReflections.getModuleInfo(Module4Main.class));
-        mappingService.onGlobalContextUpdated(moduleInfoBackedContext.tryToCreateSchemaContext().get());
-
         final Module4Main module4Main = new Module4MainBuilder().setContainerModule4(
                 new ContainerModule4Builder().setListModule11(Collections.singletonList(
                         new ListModule11Builder().setListModule12(Collections.singletonList(
@@ -73,7 +65,7 @@ public class Bug5524augmentUses extends AbstractDataBrokerTest {
                                                 new ContainerManualContainerModule2Builder().build()).build())
                                         .build())).build())).build()).build();
 
-        final BindingCodecTree codecContext = mappingService.getCodecFactory().getCodecContext();
+        final BindingCodecTree codecContext = testkit.codecRegistry().getCodecContext();
         final BindingDataObjectCodecTreeNode<Module4Main> subtreeCodec = codecContext.getSubtreeCodec(
                 InstanceIdentifier.create(Module4Main.class));
         final NormalizedNode<?, ?> serialized = subtreeCodec.serialize(module4Main);
