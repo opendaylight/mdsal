@@ -13,7 +13,10 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 /**
  * Abstract base for DataBroker tests. Note that it performs synchronous commits via a direct executor which can cause
  * issues if used in a concurrent manner so it is recommended to use AbstractConcurrentDataBrokerTest instead.
+ *
+ * @deprecated Use {@code org.opendaylight.mdsal.binding.testkit.TestKit} instead.
  */
+@Deprecated
 public class AbstractDataBrokerTest extends AbstractBaseDataBrokerTest {
     @Override
     protected AbstractDataBrokerTestCustomizer createDataBrokerTestCustomizer() {
@@ -21,7 +24,7 @@ public class AbstractDataBrokerTest extends AbstractBaseDataBrokerTest {
     }
 
     @Override
-    protected void setupWithSchema(SchemaContext context) {
+    protected void setupWithSchema(final SchemaContext context) {
         super.setupWithSchema(context);
         setupWithDataBroker(getDataBroker());
     }
