@@ -19,6 +19,12 @@ import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
+/**
+ * Legacy base class for schema-aware tests brokers.
+ *
+ * @deprecated Use {@code org.opendaylight.mdsal.dom.testkit.EffectiveModelContextTestKit} instead.
+ */
+@Deprecated
 public abstract class AbstractSchemaAwareTest {
     private static final LoadingCache<Set<YangModuleInfo>, SchemaContext> SCHEMA_CONTEXT_CACHE =
             CacheBuilder.newBuilder().weakValues().build(new CacheLoader<Set<YangModuleInfo>, SchemaContext>() {

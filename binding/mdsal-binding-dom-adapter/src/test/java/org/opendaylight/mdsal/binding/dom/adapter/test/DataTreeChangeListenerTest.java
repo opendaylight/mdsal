@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
 import static org.junit.Assert.assertEquals;
@@ -19,34 +18,25 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.p
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.top;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Collection;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
-public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
-
+public class DataTreeChangeListenerTest extends AbstractTestKitTest {
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
     private static final PathArgument TOP_ARGUMENT = TOP_PATH.getPathArguments().iterator().next();
     private static final InstanceIdentifier<TopLevelList> FOO_PATH = path(TOP_FOO_KEY);
@@ -59,8 +49,6 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
             = DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, TOP_PATH);
 
     private static final Top TOP_INITIAL_DATA = top(FOO_DATA);
-
-    private BindingDOMDataBrokerAdapter dataBrokerImpl;
 
     private static final class EventCapturingListener<T extends DataObject> implements DataTreeChangeListener<T> {
 
@@ -79,23 +67,10 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         }
     }
 
-    @Override
-    protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return ImmutableSet.of(
-                BindingReflections.getModuleInfo(TwoLevelList.class),
-                BindingReflections.getModuleInfo(TreeComplexUsesAugment.class)
-                );
-    }
-
-    @Override
-    protected void setupWithDataBroker(final DataBroker dataBroker) {
-        dataBrokerImpl = (BindingDOMDataBrokerAdapter) dataBroker;
-    }
-
     @Test
     public void testTopLevelListener() throws Exception {
         final EventCapturingListener<Top> listener = new EventCapturingListener<>();
-        dataBrokerImpl.registerDataTreeChangeListener(TOP_IDENTIFIER, listener);
+        getDataBroker().registerDataTreeChangeListener(TOP_IDENTIFIER, listener);
 
         createAndVerifyTop(listener);
 
@@ -116,7 +91,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
                 TopLevelList.class, TOP_BAR_KEY);
         verifyModification(barDeleteMod, BAR_ARGUMENT, ModificationType.DELETE);
 
-        dataBrokerImpl.registerDataTreeChangeListener(TOP_IDENTIFIER, listener).close();
+        getDataBroker().registerDataTreeChangeListener(TOP_IDENTIFIER, listener).close();
     }
 
     @Test
@@ -124,7 +99,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
         final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.create(
                 LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
-        dataBrokerImpl.registerDataTreeChangeListener(wildcard, listener);
+        getDataBroker().registerDataTreeChangeListener(wildcard, listener);
 
         putTx(TOP_PATH, TOP_INITIAL_DATA).commit().get();
 
@@ -150,7 +125,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
         final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.create(
                 LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
-        dataBrokerImpl.registerDataTreeChangeListener(wildcard, listener);
+        getDataBroker().registerDataTreeChangeListener(wildcard, listener);
 
         final DataTreeModification<TopLevelList> fooWriteEvent = Iterables.getOnlyElement(listener.nextEvent());
         assertEquals(FOO_PATH, fooWriteEvent.getRootPath().getRootIdentifier());
@@ -176,13 +151,13 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     }
 
     private <T extends DataObject> WriteTransaction putTx(final InstanceIdentifier<T> path, final T data) {
-        final WriteTransaction tx = dataBrokerImpl.newWriteOnlyTransaction();
+        final WriteTransaction tx = getDataBroker().newWriteOnlyTransaction();
         tx.put(LogicalDatastoreType.OPERATIONAL, path, data);
         return tx;
     }
 
     private WriteTransaction deleteTx(final InstanceIdentifier<?> path) {
-        final WriteTransaction tx = dataBrokerImpl.newWriteOnlyTransaction();
+        final WriteTransaction tx = getDataBroker().newWriteOnlyTransaction();
         tx.delete(LogicalDatastoreType.OPERATIONAL, path);
         return tx;
     }
