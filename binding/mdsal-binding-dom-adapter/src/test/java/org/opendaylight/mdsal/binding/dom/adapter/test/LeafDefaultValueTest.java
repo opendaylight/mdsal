@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
 import static org.junit.Assert.assertEquals;
@@ -52,7 +51,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.valu
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.TinyUintContainerBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public class LeafDefaultValueTest extends AbstractDataBrokerTest {
+public class LeafDefaultValueTest extends AbstractTestKitTest {
 
     private static final InstanceIdentifier<TinyIntContainer> TINY_INT_NODE_PATH
             = InstanceIdentifier.create(TinyIntContainer.class);

@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
 import static org.junit.Assert.assertEquals;
@@ -45,8 +44,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
-public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
-
+public class DataTreeChangeListenerTest extends AbstractTestKitTest {
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
     private static final PathArgument TOP_ARGUMENT = TOP_PATH.getPathArguments().iterator().next();
     private static final InstanceIdentifier<TopLevelList> FOO_PATH = path(TOP_FOO_KEY);
