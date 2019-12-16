@@ -9,8 +9,8 @@ package org.opendaylight.mdsal.binding.yang.types;
 
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.TYPE_OBJECT;
-import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
+import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataTreeSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.annotations.Beta;
@@ -269,16 +269,17 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
         // Then try to look up the expression.
         final PathExpression leafRefXPath = leafref.getPathStatement();
-        final PathExpression leafRefStrippedXPath = new PathExpressionImpl(
-            GROUPS_PATTERN.matcher(leafRefXPath.getOriginalString()).replaceAll(""), leafRefXPath.isAbsolute());
         final Module parentModule = getParentModule(parentNode);
         final SchemaNode leafRefValueNode;
-        if (!leafRefStrippedXPath.isAbsolute()) {
-            leafRefValueNode = SchemaContextUtil.findDataSchemaNodeForRelativeXPath(schemaContext, parentModule,
-                    parentNode, leafRefStrippedXPath);
+        if (leafRefXPath.isAbsolute()) {
+            leafRefValueNode = SchemaContextUtil.findDataTreeSchemaNode(schemaContext, parentModule.getQNameModule(),
+                leafRefXPath);
         } else {
-            leafRefValueNode = SchemaContextUtil.findDataSchemaNode(schemaContext, parentModule, leafRefStrippedXPath);
+            leafRefValueNode = SchemaContextUtil.findDataSchemaNodeForRelativeXPath(schemaContext, parentModule,
+                parentNode, new PathExpressionImpl(
+                    GROUPS_PATTERN.matcher(leafRefXPath.getOriginalString()).replaceAll(""), false));
         }
+
         return leafRefValueNode != null && leafRefValueNode.equals(parentNode);
     }
 
@@ -513,7 +514,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
         final SchemaNode dataNode;
         if (xpath.isAbsolute()) {
-            dataNode = findDataSchemaNode(schemaContext, module, xpath);
+            dataNode = findDataTreeSchemaNode(schemaContext, module.getQNameModule(), xpath);
         } else {
             dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
             if (dataNode == null && inGrouping) {
@@ -1531,7 +1532,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 if (module != null) {
                     final SchemaNode dataNode;
                     if (xpath.isAbsolute()) {
-                        dataNode = findDataSchemaNode(schemaContext, module, xpath);
+                        dataNode = findDataTreeSchemaNode(schemaContext, module.getQNameModule(), xpath);
                     } else {
                         dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
                     }
