@@ -395,7 +395,10 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
 
     private Method findRpcMethod(final Class<? extends RpcService> key, final RpcDefinition rpcDef)
             throws NoSuchMethodException {
-        final String methodName = BindingMapping.getMethodName(rpcDef.getQName());
+        String methodName = BindingMapping.getMethodName(rpcDef.getQName());
+        if (BindingMapping.JAVA_RESERVED_WORDS.contains(methodName)) {
+            methodName = "$" + methodName;
+        }
         final Class<?> inputClz = runtimeContext().getClassForSchema(rpcDef.getInput());
         return key.getMethod(methodName, inputClz);
     }
