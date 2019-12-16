@@ -1,0 +1,26 @@
+module imported {
+    namespace "http://foo/bar/yang/imported";
+    prefix imp;
+
+    revision 2019-12-16 {
+        description "init";
+    }
+
+    typedef foo {
+        type string {
+            pattern
+                'S(\d+G)?(\d+M)?';
+        }
+    }
+
+    extension bar {
+        argument "name";
+    }
+
+    container root {
+        leaf leaf1 {
+            type string;
+        }
+    }
+
+}
