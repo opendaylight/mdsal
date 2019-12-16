@@ -291,6 +291,21 @@ public final class BindingMapping {
     }
 
     /**
+     * Returns the {@link String} {@code s} with a '$' character as suffix. This
+     * function is null-safe.
+     *
+     * @param str the string that should get a '$' character as suffix.
+     * @return the {@link String} {@code str} with a '$' character as suffix
+     */
+    public static @NonNull String getRpcMethodName(final @NonNull String str) {
+        String methodName = BindingMapping.getMethodName(str);
+        if (BindingMapping.JAVA_RESERVED_WORDS.contains(methodName)) {
+            methodName = methodName + "$";
+        }
+        return  methodName;
+    }
+
+    /**
      * Returns Java identifiers, conforming to JLS9 Section 3.8 to use for specified YANG assigned names
      * (RFC7950 Section 9.6.4). This method considers two distinct encodings: one the pre-Fluorine mapping, which is
      * okay and convenient for sane strings, and an escaping-based bijective mapping which works for all possible

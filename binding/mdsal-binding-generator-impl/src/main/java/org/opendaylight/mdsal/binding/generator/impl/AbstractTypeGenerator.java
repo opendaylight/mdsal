@@ -522,7 +522,8 @@ abstract class AbstractTypeGenerator {
         for (final RpcDefinition rpc : rpcDefinitions) {
             if (rpc != null) {
                 final String rpcName = BindingMapping.getClassName(rpc.getQName());
-                final String rpcMethodName = BindingMapping.getPropertyName(rpcName);
+                final String rpcPropertyName = BindingMapping.getPropertyName(rpcName);
+                final String rpcMethodName = BindingMapping.getRpcMethodName(rpcPropertyName);
                 final MethodSignatureBuilder method = interfaceBuilder.addMethod(rpcMethodName);
 
                 // Do not refer to annotation class, as it may not be available at runtime
