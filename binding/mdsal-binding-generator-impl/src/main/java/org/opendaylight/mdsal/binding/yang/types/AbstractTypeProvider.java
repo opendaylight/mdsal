@@ -9,8 +9,8 @@ package org.opendaylight.mdsal.binding.yang.types;
 
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.TYPE_OBJECT;
-import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
+import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataTreeSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.annotations.Beta;
@@ -281,7 +281,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             leafRefValueNode = SchemaContextUtil.findDataSchemaNodeForRelativeXPath(schemaContext, parentModule,
                     parentNode, leafRefStrippedXPath);
         } else {
-            leafRefValueNode = SchemaContextUtil.findDataSchemaNode(schemaContext, parentModule, leafRefStrippedXPath);
+            leafRefValueNode = SchemaContextUtil.findDataTreeSchemaNode(schemaContext, parentModule.getQNameModule(),
+                leafRefStrippedXPath);
         }
         return leafRefValueNode != null && leafRefValueNode.equals(parentNode);
     }
@@ -517,7 +518,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
         final SchemaNode dataNode;
         if (xpath.isAbsolute()) {
-            dataNode = findDataSchemaNode(schemaContext, module, xpath);
+            dataNode = findDataTreeSchemaNode(schemaContext, module.getQNameModule(), xpath);
         } else {
             dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
             if (dataNode == null && inGrouping) {
@@ -1535,7 +1536,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 if (module != null) {
                     final SchemaNode dataNode;
                     if (xpath.isAbsolute()) {
-                        dataNode = findDataSchemaNode(schemaContext, module, xpath);
+                        dataNode = findDataTreeSchemaNode(schemaContext, module.getQNameModule(), xpath);
                     } else {
                         dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
                     }
