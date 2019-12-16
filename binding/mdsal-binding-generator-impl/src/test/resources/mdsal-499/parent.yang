@@ -1,0 +1,11 @@
+module parent {
+
+   namespace "https://foo/bar/parent";
+   prefix par;
+
+    revision 2019-12-16 {
+         description  "init";
+    }
+
+    include child;
+}
