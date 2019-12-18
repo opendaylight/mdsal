@@ -34,7 +34,6 @@ import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.WildcardType;
 import org.opendaylight.yangtools.concepts.Builder;
-import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
@@ -65,7 +64,6 @@ public final class Types {
     private static final @NonNull ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
     private static final @NonNull ConcreteType SET_TYPE = typeForClass(Set.class);
 
-    private static final @NonNull ConcreteType AUGMENTABLE = typeForClass(Augmentable.class);
     private static final @NonNull ConcreteType AUGMENTATION = typeForClass(Augmentation.class);
 
     /**
@@ -249,9 +247,11 @@ public final class Types {
      * @return <code>ParametrizedType</code> representation of raw type
      *         <code>Augmentable</code> with actual parameter
      *         <code>valueType</code>
+     * @deprecated Use {@link BindingTypes#augmentable(Type)} instead.
      */
+    @Deprecated(forRemoval = true)
     public static @NonNull ParameterizedType augmentableTypeFor(final Type valueType) {
-        return parameterizedTypeFor(AUGMENTABLE, valueType);
+        return BindingTypes.augmentable(valueType);
     }
 
     /**
