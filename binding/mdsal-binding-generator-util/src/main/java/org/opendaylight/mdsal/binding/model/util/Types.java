@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.BaseTypeWithRestrictions;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
@@ -33,7 +34,6 @@ import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.WildcardType;
 import org.opendaylight.yangtools.concepts.Builder;
-import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
@@ -237,10 +237,11 @@ public final class Types {
      * @return <code>ParametrizedType</code> representation of raw type
      *         <code>Augmentable</code> with actual parameter
      *         <code>valueType</code>
+     * @deprecated Use {@link BindingTypes#augmentable(Type)} instead.
      */
-    public static ParameterizedType augmentableTypeFor(final Type valueType) {
-        final Type augmentable = typeForClass(Augmentable.class);
-        return parameterizedTypeFor(augmentable, valueType);
+    @Deprecated
+    public static @NonNull ParameterizedType augmentableTypeFor(final Type valueType) {
+        return BindingTypes.augmentable(valueType);
     }
 
     /**
