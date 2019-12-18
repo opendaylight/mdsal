@@ -34,7 +34,6 @@ import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.WildcardType;
 import org.opendaylight.yangtools.concepts.Builder;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
@@ -250,13 +249,14 @@ public final class Types {
      * is <code>valueType</code>.
      *
      * @param valueType JAVA <code>Type</code> with actual parameter
-     * @return <code>ParametrizedType</code> reprezentation of raw type
+     * @return <code>ParametrizedType</code> representation of raw type
      *         <code>Augmentation</code> with actual parameter
      *         <code>valueType</code>
+     * @deprecated Use {@link BindingTypes#augmentation(Type)} instead.
      */
-    public static ParameterizedType augmentationTypeFor(final Type valueType) {
-        final Type augmentation = typeForClass(Augmentation.class);
-        return parameterizedTypeFor(augmentation, valueType);
+    @Deprecated
+    public static @NonNull ParameterizedType augmentationTypeFor(final Type valueType) {
+        return BindingTypes.augmentation(valueType);
     }
 
     public static @Nullable String getOuterClassName(final Type valueType) {
