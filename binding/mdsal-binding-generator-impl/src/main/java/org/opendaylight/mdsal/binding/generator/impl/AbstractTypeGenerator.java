@@ -19,6 +19,7 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_OBJECT
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_ROOT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION_LISTENER;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.QNAME;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.ROUTING_CONTEXT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_INPUT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_OUTPUT;
@@ -41,7 +42,6 @@ import static org.opendaylight.mdsal.binding.model.util.Types.classType;
 import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.listenableFutureTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveVoidType;
-import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 import static org.opendaylight.mdsal.binding.model.util.Types.wildcardTypeFor;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
@@ -719,7 +719,7 @@ abstract class AbstractTypeGenerator {
 
     private static Constant qnameConstant(final GeneratedTypeBuilderBase<?> toBuilder,
             final JavaTypeName yangModuleInfo, final String localName) {
-        return toBuilder.addConstant(typeForClass(QName.class), BindingMapping.QNAME_STATIC_FIELD_NAME,
+        return toBuilder.addConstant(QNAME, BindingMapping.QNAME_STATIC_FIELD_NAME,
             new SimpleImmutableEntry<>(yangModuleInfo, localName));
     }
 

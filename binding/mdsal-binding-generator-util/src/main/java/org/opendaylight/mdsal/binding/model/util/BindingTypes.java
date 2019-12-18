@@ -39,6 +39,7 @@ import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 public final class BindingTypes {
@@ -50,6 +51,7 @@ public final class BindingTypes {
     public static final ConcreteType DATA_ROOT = typeForClass(DataRoot.class);
     public static final ConcreteType NOTIFICATION = typeForClass(Notification.class);
     public static final ConcreteType NOTIFICATION_LISTENER = typeForClass(NotificationListener.class);
+    public static final ConcreteType QNAME = typeForClass(QName.class);
     public static final ConcreteType RPC_INPUT = typeForClass(RpcInput.class);
     public static final ConcreteType RPC_OUTPUT = typeForClass(RpcOutput.class);
     public static final ConcreteType RPC_SERVICE = typeForClass(RpcService.class);
