@@ -460,8 +460,7 @@ abstract class AbstractTypeGenerator {
                 final GeneratedTypeBuilder builder = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
                     packageNameForGeneratedType(context.modulePackageName(), action.getPath()),
                     BindingMapping.getClassName(qname)));
-                qnameConstant(builder, JavaTypeName.create(context.modulePackageName(),
-                    BindingMapping.MODULE_INFO_CLASS_NAME), qname.getLocalName());
+                qnameConstant(builder, context.moduleInfoType(), qname.getLocalName());
 
                 annotateDeprecatedIfNecessary(action, builder);
                 builder.addImplementsType(keyType != null ? keyedListAction(parent, keyType, input, output)
@@ -545,7 +544,7 @@ abstract class AbstractTypeGenerator {
     private Type createRpcContainer(final ModuleContext context, final String rpcName, final RpcDefinition rpc,
             final ContainerSchemaNode schema, final Type type) {
         processUsesAugments(schema, context, false);
-        final GeneratedTypeBuilder outType = addRawInterfaceDefinition(
+        final GeneratedTypeBuilder outType = addRawInterfaceDefinition(context,
             JavaTypeName.create(context.modulePackageName(), rpcName + BindingMapping.getClassName(schema.getQName())),
             schema);
         addImplementedInterfaceFromUses(schema, outType);
@@ -715,8 +714,7 @@ abstract class AbstractTypeGenerator {
         newType.setModuleName(module.getName());
         newType.setSchemaPath(identity.getPath());
 
-        qnameConstant(newType, JavaTypeName.create(context.modulePackageName(), BindingMapping.MODULE_INFO_CLASS_NAME),
-            identity.getQName().getLocalName());
+        qnameConstant(newType, context.moduleInfoType(), identity.getQName().getLocalName());
 
         context.addIdentityType(identity, newType);
     }
@@ -1135,7 +1133,7 @@ abstract class AbstractTypeGenerator {
     private void choiceToGeneratedType(final ModuleContext context, final GeneratedTypeBuilder parent,
             final ChoiceSchemaNode choiceNode, final boolean inGrouping) {
         if (!choiceNode.isAddedByUses()) {
-            final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(
+            final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(context,
                 JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), choiceNode.getPath()),
                 BindingMapping.getClassName(choiceNode.getQName())), choiceNode);
             choiceTypeBuilder.addImplementsType(choiceIn(parent));
@@ -1152,7 +1150,7 @@ abstract class AbstractTypeGenerator {
     private void opaqueToGeneratedType(final ModuleContext context, final GeneratedTypeBuilder parent,
             final DataSchemaNode anyNode) {
         if (!anyNode.isAddedByUses()) {
-            final GeneratedTypeBuilder anyxmlTypeBuilder = addRawInterfaceDefinition(
+            final GeneratedTypeBuilder anyxmlTypeBuilder = addRawInterfaceDefinition(context,
                 JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), anyNode.getPath()),
                 BindingMapping.getClassName(anyNode.getQName())), anyNode);
             anyxmlTypeBuilder.addImplementsType(opaqueObject(anyxmlTypeBuilder)).addImplementsType(childOf(parent));
@@ -1664,7 +1662,7 @@ abstract class AbstractTypeGenerator {
             name = JavaTypeName.create(packageName, BindingMapping.getClassName(schemaNode.getQName()));
         }
 
-        final GeneratedTypeBuilder it = addRawInterfaceDefinition(name, schemaNode);
+        final GeneratedTypeBuilder it = addRawInterfaceDefinition(context, name, schemaNode);
         it.addImplementsType(baseInterface);
         if (!(schemaNode instanceof GroupingDefinition)) {
             it.addImplementsType(augmentable(it));
@@ -1695,7 +1693,8 @@ abstract class AbstractTypeGenerator {
      *             <li>if schemaNode name is null</li>
      *             </ul>
      */
-    private GeneratedTypeBuilder addRawInterfaceDefinition(final JavaTypeName identifier, final SchemaNode schemaNode) {
+    private GeneratedTypeBuilder addRawInterfaceDefinition(final ModuleContext context, final JavaTypeName identifier,
+            final SchemaNode schemaNode) {
         checkArgument(schemaNode != null, "Data Schema Node cannot be NULL.");
         checkArgument(schemaNode.getQName() != null, "QName for Data Schema Node cannot be NULL.");
         final String schemaNodeName = schemaNode.getQName().getLocalName();
@@ -1703,10 +1702,9 @@ abstract class AbstractTypeGenerator {
 
         // FIXME: Validation of name conflict
         final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(identifier);
-        final Module module = findParentModule(schemaContext, schemaNode);
-        qnameConstant(newType, JavaTypeName.create(BindingMapping.getRootPackageName(module.getQNameModule()),
-            BindingMapping.MODULE_INFO_CLASS_NAME), schemaNode.getQName().getLocalName());
+        qnameConstant(newType, context.moduleInfoType(), schemaNode.getQName().getLocalName());
 
+        final Module module = context.module();
         addCodegenInformation(newType, module, schemaNode);
         newType.setSchemaPath(schemaNode.getPath());
         newType.setModuleName(module.getName());

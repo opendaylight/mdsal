@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
@@ -69,6 +70,7 @@ public final class ModuleContext implements Mutable {
     private final Map<JavaTypeName, SchemaNode> nameMapping = new HashMap<>();
 
     private GeneratedTypeBuilder moduleNode;
+    private JavaTypeName moduleInfoType;
     private String modulePackageName;
 
     ModuleContext(final Module module) {
@@ -79,10 +81,18 @@ public final class ModuleContext implements Mutable {
         return module;
     }
 
-    String modulePackageName() {
+    @NonNull String modulePackageName() {
         String ret = modulePackageName;
         if (ret == null) {
             modulePackageName = ret = BindingMapping.getRootPackageName(module.getQNameModule());
+        }
+        return ret;
+    }
+
+    @NonNull JavaTypeName moduleInfoType() {
+        JavaTypeName ret = moduleInfoType;
+        if (ret == null) {
+            moduleInfoType = ret = JavaTypeName.create(modulePackageName(), BindingMapping.MODULE_INFO_CLASS_NAME);
         }
         return ret;
     }
