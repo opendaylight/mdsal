@@ -75,6 +75,7 @@ public final class ModuleContext implements Mutable {
     private final Map<JavaTypeName, SchemaNode> nameMapping = new HashMap<>();
 
     private GeneratedTypeBuilder moduleNode;
+    private JavaTypeName moduleInfoType;
     private String modulePackageName;
 
     ModuleContext(final Module module) {
@@ -85,10 +86,18 @@ public final class ModuleContext implements Mutable {
         return module;
     }
 
-    String modulePackageName() {
+    @NonNull String modulePackageName() {
         String ret = modulePackageName;
         if (ret == null) {
             modulePackageName = ret = BindingMapping.getRootPackageName(module.getQNameModule());
+        }
+        return ret;
+    }
+
+    @NonNull JavaTypeName moduleInfoType() {
+        JavaTypeName ret = moduleInfoType;
+        if (ret == null) {
+            moduleInfoType = ret = JavaTypeName.create(modulePackageName(), BindingMapping.MODULE_INFO_CLASS_NAME);
         }
         return ret;
     }
