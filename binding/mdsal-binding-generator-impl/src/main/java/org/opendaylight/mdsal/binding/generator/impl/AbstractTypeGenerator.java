@@ -26,6 +26,7 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_OUTPUT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_SERVICE;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.action;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.augmentable;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.augmentation;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.childOf;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.choiceIn;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifiable;
@@ -37,7 +38,6 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.opaqueObjec
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.rpcResult;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
-import static org.opendaylight.mdsal.binding.model.util.Types.augmentationTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.classType;
 import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.listenableFutureTypeFor;
@@ -981,7 +981,7 @@ abstract class AbstractTypeGenerator {
         augTypeBuilder.addImplementsType(DATA_OBJECT);
         defaultImplementedInterace(augTypeBuilder);
 
-        augTypeBuilder.addImplementsType(augmentationTypeFor(targetTypeRef));
+        augTypeBuilder.addImplementsType(augmentation(targetTypeRef));
         annotateDeprecatedIfNecessary(augSchema, augTypeBuilder);
         addImplementedInterfaceFromUses(augSchema, augTypeBuilder);
 

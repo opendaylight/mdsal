@@ -149,6 +149,17 @@ public final class BindingTypes {
     }
 
     /**
+     * Specialize {@link Augmentation} for a particular type.
+     *
+     * @param type Type for which to specialize
+     * @return A parameterized type corresponding to {@code Augmentation<Type>}
+     * @throws NullPointerException if {@code type} is null
+     */
+    public static @NonNull ParameterizedType augmentation(final Type type) {
+        return parameterizedTypeFor(AUGMENTATION, type);
+    }
+
+    /**
      * Specialize {@link ChildOf} for a particular type.
      *
      * @param type Type for which to specialize

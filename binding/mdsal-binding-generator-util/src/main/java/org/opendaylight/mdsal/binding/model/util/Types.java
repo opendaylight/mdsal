@@ -34,7 +34,6 @@ import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.WildcardType;
 import org.opendaylight.yangtools.concepts.Builder;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
@@ -63,8 +62,6 @@ public final class Types {
     private static final @NonNull ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
     private static final @NonNull ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
     private static final @NonNull ConcreteType SET_TYPE = typeForClass(Set.class);
-
-    private static final @NonNull ConcreteType AUGMENTATION = typeForClass(Augmentation.class);
 
     /**
      * It is not desirable to create instance of this class.
@@ -260,12 +257,14 @@ public final class Types {
      * is <code>valueType</code>.
      *
      * @param valueType JAVA <code>Type</code> with actual parameter
-     * @return <code>ParametrizedType</code> reprezentation of raw type
+     * @return <code>ParametrizedType</code> representation of raw type
      *         <code>Augmentation</code> with actual parameter
      *         <code>valueType</code>
+     * @deprecated Use {@link BindingTypes#augmentation(Type)} instead.
      */
+    @Deprecated(forRemoval = true)
     public static @NonNull ParameterizedType augmentationTypeFor(final Type valueType) {
-        return parameterizedTypeFor(AUGMENTATION, valueType);
+        return BindingTypes.augmentation(valueType);
     }
 
     public static @Nullable String getOuterClassName(final Type valueType) {
