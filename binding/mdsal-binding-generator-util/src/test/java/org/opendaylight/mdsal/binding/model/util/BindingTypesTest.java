@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
@@ -54,11 +55,23 @@ public class BindingTypesTest {
 
     @Test
     public void testAugmentable() {
-        assertNotNull(BindingTypes.augmentable(Types.objectType()));
+        ParameterizedType augmentableType = BindingTypes.augmentable(Types.objectType());
+        assertEquals("Augmentable", augmentableType.getName());
     }
 
     @Test
     public void testChildOf() {
         assertNotNull(BindingTypes.childOf(Types.objectType()));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testAugmentationNull() {
+        BindingTypes.augmentation(null);
+    }
+
+    @Test
+    public void testAugmentation() {
+        ParameterizedType augmentationType = BindingTypes.augmentation(Types.objectType());
+        assertEquals("Augmentation", augmentationType.getName());
     }
 }

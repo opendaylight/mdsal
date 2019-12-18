@@ -72,22 +72,26 @@ public class TypesTest {
         assertEquals("WildcardTypeTest", wildcardType.getName());
     }
 
+    @Deprecated
     @Test(expected = NullPointerException.class)
     public void testAugmentableTypeForNull() {
         Types.augmentableTypeFor(null);
     }
 
+    @Deprecated
     @Test(expected = NullPointerException.class)
     public void augmentationTypeForNull() {
         Types.augmentationTypeFor(null);
     }
 
+    @Deprecated
     @Test
     public void testAugmentableTypeFor() {
         ParameterizedType augmentableType = Types.augmentableTypeFor(Types.objectType());
         assertEquals("Augmentable", augmentableType.getName());
     }
 
+    @Deprecated
     @Test
     public void augmentationTypeFor() {
         ParameterizedType augmentationType = Types.augmentationTypeFor(Types.objectType());
