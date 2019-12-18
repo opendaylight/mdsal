@@ -464,8 +464,7 @@ abstract class AbstractTypeGenerator {
                 final GeneratedTypeBuilder builder = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
                     packageNameForGeneratedType(context.modulePackageName(), action.getPath()),
                     BindingMapping.getClassName(qname)));
-                qnameConstant(builder, JavaTypeName.create(context.modulePackageName(),
-                    BindingMapping.MODULE_INFO_CLASS_NAME), qname.getLocalName());
+                qnameConstant(builder, context.moduleInfoType(), qname.getLocalName());
 
                 annotateDeprecatedIfNecessary(action, builder);
                 builder.addImplementsType(keyType != null ? keyedListAction(parent, keyType, input, output)
@@ -719,8 +718,7 @@ abstract class AbstractTypeGenerator {
         newType.setModuleName(module.getName());
         newType.setSchemaPath(identity.getPath());
 
-        qnameConstant(newType, JavaTypeName.create(context.modulePackageName(), BindingMapping.MODULE_INFO_CLASS_NAME),
-            identity.getQName().getLocalName());
+        qnameConstant(newType, context.moduleInfoType(), identity.getQName().getLocalName());
 
         context.addIdentityType(identity, newType);
     }
