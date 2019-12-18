@@ -11,6 +11,7 @@ import static org.opendaylight.mdsal.binding.model.util.Types.parameterizedTypeF
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
@@ -141,7 +142,7 @@ public final class BindingTypes {
      * @return A parameterized type corresponding to {@code Augmentable<Type>}
      * @throws NullPointerException if {@code type} is null
      */
-    public static ParameterizedType augmentable(final Type type) {
+    public static @NonNull ParameterizedType augmentable(final Type type) {
         return parameterizedTypeFor(AUGMENTABLE, type);
     }
 
