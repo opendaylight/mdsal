@@ -233,40 +233,6 @@ public final class Types {
         return new WildcardTypeImpl(identifier);
     }
 
-    /**
-     * Creates instance of
-     * {@link org.opendaylight.mdsal.binding.model.api.ParameterizedType
-     * ParameterizedType} where raw type is
-     * {@link org.opendaylight.yangtools.yang.binding.Augmentable} and actual
-     * parameter is <code>valueType</code>.
-     *
-     * @param valueType JAVA <code>Type</code> with actual parameter
-     * @return <code>ParametrizedType</code> representation of raw type
-     *         <code>Augmentable</code> with actual parameter
-     *         <code>valueType</code>
-     * @deprecated Use {@link BindingTypes#augmentable(Type)} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public static @NonNull ParameterizedType augmentableTypeFor(final Type valueType) {
-        return BindingTypes.augmentable(valueType);
-    }
-
-    /**
-     * Creates instance of {@link org.opendaylight.mdsal.binding.model.api.ParameterizedType ParameterizedType} where
-     * raw type is {@link org.opendaylight.yangtools.yang.binding.Augmentation} and actual parameter
-     * is <code>valueType</code>.
-     *
-     * @param valueType JAVA <code>Type</code> with actual parameter
-     * @return <code>ParametrizedType</code> representation of raw type
-     *         <code>Augmentation</code> with actual parameter
-     *         <code>valueType</code>
-     * @deprecated Use {@link BindingTypes#augmentation(Type)} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public static @NonNull ParameterizedType augmentationTypeFor(final Type valueType) {
-        return BindingTypes.augmentation(valueType);
-    }
-
     public static @Nullable String getOuterClassName(final Type valueType) {
         return valueType.getIdentifier().immediatelyEnclosingClass().map(Object::toString).orElse(null);
     }
