@@ -129,14 +129,17 @@ abstract class AbstractBuilderTemplate extends BaseTemplate {
             «IF augmentType !== null»
                 «generateCopyAugmentation(implType)»
             «ENDIF»
-            «val allProps = new ArrayList(properties)»
+            «var Collection<GeneratedProperty> allProps»
             «IF keyType !== null && implementsIfc(targetType, BindingTypes.identifiable(targetType))»
                 «val keyProps = new ArrayList((keyType as GeneratedTransferObject).properties)»
                 «keyProps.sort(KEY_PROPS_COMPARATOR)»
+                «allProps = new ArrayList(properties)»
                 «FOR field : keyProps»
                     «removeProperty(allProps, field.name)»
                 «ENDFOR»
                 «generateCopyKeys(keyProps)»
+            «ELSE»
+                «allProps = properties»
             «ENDIF»
             «FOR field : allProps»
                 this.«field.fieldName» = base.«field.getterMethodName»();
