@@ -1,6 +1,6 @@
-module mdsal-500 {
-    namespace "rpc";
-    prefix "rpc";
+module mdsal500 {
+    namespace "mdsal500";
+    prefix "mdsal500";
 
     rpc switch {
         input {
