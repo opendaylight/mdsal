@@ -19,10 +19,10 @@ import java.util.Set
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
 import org.opendaylight.yangtools.yang.model.api.Module
-import org.opendaylight.yangtools.yang.model.api.SchemaContext
 import org.sonatype.plexus.build.incremental.BuildContext
 
 class WadlRestconfGenerator {
@@ -30,7 +30,7 @@ class WadlRestconfGenerator {
     static val PATH_DELIMETER = '/'
     val BuildContext buildContext;
     val File path
-    var SchemaContext context;
+    var EffectiveModelContext context;
     var List<DataSchemaNode> configData;
     var List<DataSchemaNode> operationalData;
     var Module module;
@@ -42,7 +42,7 @@ class WadlRestconfGenerator {
         this.buildContext = buildContext
     }
 
-    def generate(SchemaContext context, Set<Module> modules) {
+    def generate(EffectiveModelContext context, Set<Module> modules) {
         val result = new HashSet;
         this.context = context
         for (module : modules) {

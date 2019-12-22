@@ -40,7 +40,6 @@ import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
 import org.opendaylight.yangtools.yang2sources.spi.BuildContextAware;
 import org.opendaylight.yangtools.yang2sources.spi.MavenProjectAware;
@@ -127,7 +126,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     }
 
     private Collection<? extends File> generateModuleInfos(final File outputBaseDir, final Set<Module> yangModules,
-            final SchemaContext context, final Function<Module, Optional<String>> moduleResourcePathResolver) {
+            final EffectiveModelContext context, final Function<Module, Optional<String>> moduleResourcePathResolver) {
         Builder<File> result = ImmutableSet.builder();
         Builder<String> bindingProviders = ImmutableSet.builder();
         for (Module module : yangModules) {
@@ -193,8 +192,8 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         this.buildContext = requireNonNull(buildContext);
     }
 
-    private Set<File> generateYangModuleInfo(final File outputBaseDir, final Module module, final SchemaContext ctx,
-            final Function<Module, Optional<String>> moduleResourcePathResolver,
+    private Set<File> generateYangModuleInfo(final File outputBaseDir, final Module module,
+            final EffectiveModelContext ctx, final Function<Module, Optional<String>> moduleResourcePathResolver,
             final Builder<String> providerSourceSet) {
         Builder<File> generatedFiles = ImmutableSet.builder();
 

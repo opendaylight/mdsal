@@ -34,6 +34,7 @@ import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext
 import org.opendaylight.yangtools.yang.model.api.ElementCountConstraintAware
 import org.opendaylight.yangtools.yang.model.api.ExtensionDefinition
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition
@@ -42,7 +43,6 @@ import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
 import org.opendaylight.yangtools.yang.model.api.Module
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition
-import org.opendaylight.yangtools.yang.model.api.SchemaContext
 import org.opendaylight.yangtools.yang.model.api.SchemaNode
 import org.opendaylight.yangtools.yang.model.api.SchemaPath
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition
@@ -71,14 +71,14 @@ class GeneratorImpl {
 
     val Map<String, String> imports = new HashMap();
     var Module currentModule;
-    var SchemaContext ctx;
+    var EffectiveModelContext ctx;
     var File path
 
     StringBuilder augmentChildNodesAsString
 
     DataSchemaNode lastNodeInTargetPath = null
 
-    def generate(BuildContext buildContext, SchemaContext context, File targetPath, Set<Module> modulesToGen)
+    def generate(BuildContext buildContext, EffectiveModelContext context, File targetPath, Set<Module> modulesToGen)
             throws IOException {
         path = targetPath;
         path.mkdirs();
@@ -89,7 +89,7 @@ class GeneratorImpl {
         return it;
     }
 
-    def generateDocumentation(BuildContext buildContext, Module module, SchemaContext ctx) {
+    def generateDocumentation(BuildContext buildContext, Module module, EffectiveModelContext ctx) {
         val destination = new File(path, '''«module.name».html''')
         this.ctx = ctx;
         module.imports.forEach[importModule | this.imports.put(importModule.prefix, importModule.moduleName)]
@@ -106,7 +106,7 @@ class GeneratorImpl {
         return destination;
     }
 
-    def generate(Module module, SchemaContext ctx) '''
+    def generate(Module module, EffectiveModelContext ctx) '''
         <!DOCTYPE html>
         <html lang="en">
           <head>
@@ -118,7 +118,7 @@ class GeneratorImpl {
         </html>
     '''
 
-    def body(Module module, SchemaContext ctx) '''
+    def body(Module module, EffectiveModelContext ctx) '''
         «header(module)»
 
         «typeDefinitionsSummary(module)»
@@ -307,7 +307,7 @@ class GeneratorImpl {
         '''
     }
 
-    def augmentations(Module module, SchemaContext context) {
+    def augmentations(Module module, EffectiveModelContext context) {
         if (module.augmentations.empty) {
             return '';
         }
@@ -488,7 +488,7 @@ class GeneratorImpl {
         '''
     }
 
-    private def augmentationsSummary(Module module, SchemaContext context) {
+    private def augmentationsSummary(Module module, EffectiveModelContext context) {
         if (module.augmentations.empty) {
             return '';
         }
@@ -1209,7 +1209,7 @@ class GeneratorImpl {
         return it.toString;
     }
 
-    private def String schemaPathToString(Module module, SchemaPath schemaPath, SchemaContext ctx, DataNodeContainer dataNode) {
+    private def String schemaPathToString(Module module, SchemaPath schemaPath, EffectiveModelContext ctx, DataNodeContainer dataNode) {
             val List<QName> path = Lists.newArrayList(schemaPath.pathFromRoot);
         val StringBuilder pathString = new StringBuilder()
         if (schemaPath.absolute) {
