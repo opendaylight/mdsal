@@ -16,7 +16,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
-import org.opendaylight.yangtools.yang.xpath.api.YangLocationPath;
 
 /**
  * Mock LeafrefDypeDefinition implementation with non-null referenced RevisionAwareXPath. Although RevisionAwareXPath
@@ -38,7 +37,7 @@ public class LeafrefTypeWithNullToStringInXpath implements LeafrefTypeDefinition
             }
 
             @Override
-            public YangLocationPath getLocation() {
+            public Steps getSteps() {
                 throw new UnsupportedOperationException();
             }
         };
