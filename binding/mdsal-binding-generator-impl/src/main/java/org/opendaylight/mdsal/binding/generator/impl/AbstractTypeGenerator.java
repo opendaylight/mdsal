@@ -1809,6 +1809,8 @@ abstract class AbstractTypeGenerator {
                 choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) schemaNode, inGrouping);
             } else if (schemaNode instanceof ListSchemaNode) {
                 listToGenType(context, typeBuilder, childOf(typeBuilder), (ListSchemaNode) schemaNode, inGrouping);
+            } else if (schemaNode instanceof AnyXmlSchemaNode || schemaNode instanceof AnyDataSchemaNode) {
+                opaqueToGeneratedType(context, typeBuilder, schemaNode);
             }
         }
     }
