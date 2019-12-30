@@ -14,6 +14,7 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findD
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.annotations.Beta;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -495,7 +496,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *             <li>if path statement of <code>leafrefType</code> equal null</li>
      *             </ul>
      */
-    public Type provideTypeForLeafref(final LeafrefTypeDefinition leafrefType, final SchemaNode parentNode,
+    @VisibleForTesting
+    Type provideTypeForLeafref(final LeafrefTypeDefinition leafrefType, final SchemaNode parentNode,
             final boolean inGrouping) {
         Preconditions.checkArgument(leafrefType != null, "Leafref Type Definition reference cannot be NULL!");
 
