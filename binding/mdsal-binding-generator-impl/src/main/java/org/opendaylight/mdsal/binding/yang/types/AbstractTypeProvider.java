@@ -241,39 +241,35 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     private boolean isLeafRefSelfReference(final LeafrefTypeDefinition leafref, final SchemaNode parentNode) {
-        final SchemaNode leafRefValueNode;
-        final PathExpression leafRefXPath = leafref.getPathStatement();
-        final PathExpression leafRefStrippedXPath = new PathExpressionImpl(
-            GROUPS_PATTERN.matcher(leafRefXPath.getOriginalString()).replaceAll(""), leafRefXPath.isAbsolute());
-
-        ///// skip leafrefs in augments - they're checked once augments are resolved
-        final Iterator<QName> iterator = parentNode.getPath().getPathFromRoot().iterator();
-        boolean isAugmenting = false;
+        /*
+         * First check if the leafref is an augment. If that is the case, skip it as it will be checked once augments
+         * are resolved.
+         */
         DataNodeContainer current = null;
         DataSchemaNode dataChildByName;
-
-        while (iterator.hasNext() && !isAugmenting) {
-            final QName next = iterator.next();
+        for (QName next : parentNode.getPath().getPathFromRoot()) {
             if (current == null) {
                 dataChildByName = schemaContext.getDataChildByName(next);
             } else {
                 dataChildByName = current.getDataChildByName(next);
             }
-            if (dataChildByName != null) {
-                isAugmenting = dataChildByName.isAugmenting();
-            } else {
+            if (dataChildByName == null) {
+                return false;
+            }
+            if (dataChildByName.isAugmenting()) {
                 return false;
             }
             if (dataChildByName instanceof DataNodeContainer) {
                 current = (DataNodeContainer) dataChildByName;
             }
         }
-        if (isAugmenting) {
-            return false;
-        }
-        /////
 
+        // Then try to look up the expression.
+        final PathExpression leafRefXPath = leafref.getPathStatement();
+        final PathExpression leafRefStrippedXPath = new PathExpressionImpl(
+            GROUPS_PATTERN.matcher(leafRefXPath.getOriginalString()).replaceAll(""), leafRefXPath.isAbsolute());
         final Module parentModule = getParentModule(parentNode);
+        final SchemaNode leafRefValueNode;
         if (!leafRefStrippedXPath.isAbsolute()) {
             leafRefValueNode = SchemaContextUtil.findDataSchemaNodeForRelativeXPath(schemaContext, parentModule,
                     parentNode, leafRefStrippedXPath);
