@@ -27,6 +27,7 @@
     <modules>
         <module>mdsal-common-api</module>
         <module>mdsal-common-util</module>
+        <module>mdsal-uint24-netty</module>
     </modules>
 
     <properties>
