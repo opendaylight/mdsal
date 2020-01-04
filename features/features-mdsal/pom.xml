@@ -130,6 +130,20 @@
             <type>xml</type>
         </dependency>
 
+        <!-- uint24 support -->
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-model-odl-uint24</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-uint24-netty</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+
         <!-- Models -->
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>

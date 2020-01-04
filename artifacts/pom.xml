@@ -379,6 +379,18 @@
                 <type>xml</type>
             </dependency>
 
+            <!-- uint24 support -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-uint24</artifactId>
+                <version>5.0.7-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-uint24-netty</artifactId>
+                <version>5.0.7-SNAPSHOT</version>
+            </dependency>
+
             <!-- MODELS -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
@@ -909,6 +921,20 @@
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-odl-l2-types</artifactId>
                 <version>3.0.7-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-odl-uint24</artifactId>
+                <version>5.0.7-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>odl-mdsal-uint24-netty</artifactId>
+                <version>5.0.7-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
