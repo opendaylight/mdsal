@@ -94,6 +94,7 @@
 
         <!-- OpenDaylight-specific -->
         <module>odl-mdsal-model-odl-l2-types</module>
+        <module>odl-mdsal-model-odl-uint24</module>
     </modules>
 
     <properties>

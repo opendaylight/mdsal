@@ -29,6 +29,7 @@
         <module>iana</module>
         <module>ietf</module>
         <module>l2-types</module>
+        <module>uint24</module>
         <module>general-entity</module>
     </modules>
 
