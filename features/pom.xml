@@ -59,6 +59,10 @@
         <module>odl-mdsal-exp-yanglib-rfc7895</module>
         <module>odl-mdsal-exp-yanglib-rfc8525</module>
 
+        <!-- uint24 support -->
+        <module>odl-mdsal-model-odl-uint24</module>
+        <module>odl-mdsal-uint24-netty</module>
+
         <!-- Models -->
         <!-- Standards -->
         <module>odl-mdsal-model-rfc6991</module>
