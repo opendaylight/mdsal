@@ -11,6 +11,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.UUID;
 import org.junit.Test;
 
 public class AbstractIetfYangUtilTest {
@@ -34,7 +35,22 @@ public class AbstractIetfYangUtilTest {
     }
 
     @Test
-    public void testPhysToBytes() throws Exception {
+    public void testBytesToHex() {
+        final HexClass hex = UTIL.hexStringFor(BYTES);
+        assertEquals(CANON, hex.getValue());
+    }
+
+    @Test
+    public void testHexToBytes() {
+        final byte[] bytes1 = UTIL.hexStringBytes(new HexClass(CANON));
+        assertArrayEquals(BYTES, bytes1);
+
+        final byte[] bytes2 = UTIL.hexStringBytes(new HexClass("01:02:1E:5a:Fb:88"));
+        assertArrayEquals(BYTES, bytes2);
+    }
+
+    @Test
+    public void testPhysToBytes() {
         final byte[] bytes1 = UTIL.physAddressBytes(new PhysClass(CANON));
         assertArrayEquals(BYTES, bytes1);
 
@@ -44,6 +60,22 @@ public class AbstractIetfYangUtilTest {
         assertArrayEquals(new byte[0], UTIL.physAddressBytes(new PhysClass("")));
         assertArrayEquals(new byte[] { (byte) 0xaa }, UTIL.physAddressBytes(new PhysClass("aa")));
         assertArrayEquals(new byte[] { (byte) 0xaa, (byte) 0xbb }, UTIL.physAddressBytes(new PhysClass("aa:bb")));
+    }
+
+    @Test
+    public void testQuadBytes() {
+        assertArrayEquals(new byte[] { 1, 2, 3, 4 }, UTIL.dottedQuadBytes(new QuadClass("1.2.3.4")));
+    }
+
+    @Test
+    public void testQuadFor() {
+        assertEquals("1.2.3.4", UTIL.dottedQuadFor(new byte[] { 1, 2, 3, 4 }).getValue());
+    }
+
+    @Test
+    public void testUuidFor() {
+        final UUID uuid = UUID.fromString("f81d4fae-7dec-11d0-a765-00a0c91e6bf6");
+        assertEquals("f81d4fae-7dec-11d0-a765-00a0c91e6bf6", UTIL.uuidFor(uuid).getValue());
     }
 
     @Test
