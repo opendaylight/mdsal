@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.annotations.Beta;
 import java.util.Arrays;
+import java.util.UUID;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
 
@@ -22,7 +23,7 @@ import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
  * @param <P> phys-address type
  */
 @Beta
-public abstract class AbstractIetfYangUtil<M, P> {
+public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
     private static final int MAC_BYTE_LENGTH = 6;
     private static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
     private static final byte @NonNull[] EMPTY_BYTES = new byte[0];
@@ -47,10 +48,17 @@ public abstract class AbstractIetfYangUtil<M, P> {
 
     private final StringValueObjectFactory<M> macFactory;
     private final StringValueObjectFactory<P> physFactory;
+    private final StringValueObjectFactory<H> hexFactory;
+    private final StringValueObjectFactory<Q> quadFactory;
+    private final StringValueObjectFactory<U> uuidFactory;
 
-    protected AbstractIetfYangUtil(final Class<M> macClass, final Class<P> physClass) {
+    protected AbstractIetfYangUtil(final Class<M> macClass, final Class<P> physClass, final Class<H> hexClass,
+            final Class<Q> quadClass, final Class<U> uuidClass) {
         this.macFactory = StringValueObjectFactory.create(macClass, "00:00:00:00:00:00");
         this.physFactory = StringValueObjectFactory.create(physClass, "00:00");
+        this.hexFactory = StringValueObjectFactory.create(hexClass, "00");
+        this.quadFactory = StringValueObjectFactory.create(quadClass, "0.0.0.0");
+        this.uuidFactory = StringValueObjectFactory.create(uuidClass, "f81d4fae-7dec-11d0-a765-00a0c91e6bf6");
     }
 
     /**
@@ -118,9 +126,39 @@ public abstract class AbstractIetfYangUtil<M, P> {
         return macAddressBytes(macAddress);
     }
 
+    public final @NonNull H hexStringFor(final byte @NonNull[] bytes) {
+        checkArgument(bytes.length > 0, "Hex string should have at least one byte");
+        return hexFactory.newInstance(bytesToString(bytes, bytes.length * 3 - 1));
+    }
+
+    public final byte @NonNull[] hexStringBytes(final @NonNull H hexString) {
+        final String str = getHexValue(hexString);
+        return stringToBytes(str, str.length() / 3 + 1);
+    }
+
+    public final @NonNull Q dottedQuadFor(final byte @NonNull[] bytes) {
+        checkArgument(bytes.length == 4, "Dotted-quad should have 4 bytes");
+        return quadFactory.newInstance(AbstractIetfInetUtil.addressStringV4(bytes));
+    }
+
+    public final byte @NonNull[] dottedQuadBytes(final @NonNull Q hexString) {
+        final String str = getQuadValue(hexString);
+        final byte[] bytes = new byte[4];
+        Ipv4Utils.fillIpv4Bytes(bytes, 0, str, 0, str.length());
+        return bytes;
+    }
+
+    public final @NonNull U uuidFor(final @NonNull UUID uuid) {
+        return uuidFactory.newInstance(uuid.toString());
+    }
+
     protected abstract String getValue(M macAddress);
 
     protected abstract String getPhysValue(P physAddress);
+
+    protected abstract String getHexValue(H hexString);
+
+    protected abstract String getQuadValue(Q dottedQuad);
 
     static byte hexValue(final char ch) {
         byte value;
