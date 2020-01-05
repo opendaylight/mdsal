@@ -648,7 +648,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         }
     }
 
-    private static String addressStringV4(final byte @NonNull[] bytes) {
+    static String addressStringV4(final byte @NonNull[] bytes) {
         final StringBuilder sb = new StringBuilder(15);
         appendIpv4String(sb, bytes);
         return sb.toString();
