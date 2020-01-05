@@ -5,12 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.model.ietf.util;
 
-final class MacUtil extends AbstractIetfYangUtil<MacClass, PhysClass> {
+final class MacUtil extends AbstractIetfYangUtil<MacClass, PhysClass, HexClass, QuadClass, UuidClass> {
     MacUtil() {
-        super(MacClass.class, PhysClass.class);
+        super(MacClass.class, PhysClass.class, HexClass.class, QuadClass.class, UuidClass.class);
     }
 
     @Override
@@ -19,7 +18,17 @@ final class MacUtil extends AbstractIetfYangUtil<MacClass, PhysClass> {
     }
 
     @Override
-    protected String getPhysValue(PhysClass physAddress) {
+    protected String getPhysValue(final PhysClass physAddress) {
         return physAddress.getValue();
+    }
+
+    @Override
+    protected String getHexValue(final HexClass hexString) {
+       return hexString.getValue();
+    }
+
+    @Override
+    protected String getQuadValue(final QuadClass dottedQuad) {
+        return dottedQuad.getValue();
     }
 }
