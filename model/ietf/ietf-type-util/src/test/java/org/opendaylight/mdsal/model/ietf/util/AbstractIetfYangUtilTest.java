@@ -34,7 +34,22 @@ public class AbstractIetfYangUtilTest {
     }
 
     @Test
-    public void testPhysToBytes() throws Exception {
+    public void testBytesToHex(){
+        final HexClass hex = UTIL.hexStringFor(BYTES);
+        assertEquals(CANON, hex.getValue());
+    }
+
+    @Test
+    public void testHexToBytes() {
+        final byte[] bytes1 = UTIL.hexStringBytes(new HexClass(CANON));
+        assertArrayEquals(BYTES, bytes1);
+
+        final byte[] bytes2 = UTIL.hexStringBytes(new HexClass("01:02:1E:5a:Fb:88"));
+        assertArrayEquals(BYTES, bytes2);
+    }
+
+    @Test
+    public void testPhysToBytes() {
         final byte[] bytes1 = UTIL.physAddressBytes(new PhysClass(CANON));
         assertArrayEquals(BYTES, bytes1);
 
@@ -44,6 +59,16 @@ public class AbstractIetfYangUtilTest {
         assertArrayEquals(new byte[0], UTIL.physAddressBytes(new PhysClass("")));
         assertArrayEquals(new byte[] { (byte) 0xaa }, UTIL.physAddressBytes(new PhysClass("aa")));
         assertArrayEquals(new byte[] { (byte) 0xaa, (byte) 0xbb }, UTIL.physAddressBytes(new PhysClass("aa:bb")));
+    }
+
+    @Test
+    public void testQuadBytes() {
+        assertArrayEquals(new byte[] { 1, 2, 3, 4 }, UTIL.dottedQuadBytes(new QuadClass("1.2.3.4")));
+    }
+
+    @Test
+    public void testQuadFor() {
+        assertEquals("1.2.3.4", UTIL.dottedQuadFor(new byte[] { 1, 2, 3, 4 }).getValue());
     }
 
     @Test
