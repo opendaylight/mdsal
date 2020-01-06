@@ -658,7 +658,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         checkArgument(bytes.length == INET6_LENGTH, "IPv6 address length is 16 bytes");
 
         try {
-            return addressStringV6(Inet6Address.getByAddress(bytes));
+            return addressStringV6(Inet6Address.getByAddress(null, bytes, null));
         } catch (UnknownHostException e) {
             throw new IllegalArgumentException(String.format("Invalid input %s", bytes), e);
         }
