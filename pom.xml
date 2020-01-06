@@ -35,6 +35,8 @@
         <module>singleton-service</module>
         <module>trace</module>
 
+        <!-- Netty integrations -->
+        <module>netty</module>
         <!-- IETF YANG (Module) Library -->
         <module>yanglib</module>
     </modules>
