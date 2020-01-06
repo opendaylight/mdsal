@@ -25,6 +25,7 @@
     <description>${project.artifactId}</description>
 
     <modules>
+        <module>mdsal-rfc6991-netty</module>
         <module>mdsal-uint24-netty</module>
     </modules>
 
