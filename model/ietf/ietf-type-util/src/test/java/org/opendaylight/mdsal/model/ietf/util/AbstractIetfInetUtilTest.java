@@ -137,6 +137,11 @@ public class AbstractIetfInetUtilTest {
         assertTrue(UTIL.splitIpv6Prefix(new IpClass("::/32")).getValue().equals(32));
         assertArrayEquals(new byte[] { 0, 10, 0, 0, 0, 0, 0, 0, 0, 11, 0, 12, 0, 13, 0, 14, 64 },
                 UTIL.ipv6PrefixToBytes(new IpClass("A::B:C:D:E/64")));
+
+        // verify that an IPv4-mapped IPv6 address gets parsed as an IPv6 address
+        assertEquals("::ffff:ab0:eb", UTIL.ipv6AddressFor(
+                new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 0xff, (byte) 0xff, 0x0a, (byte) 0xb0, 0, (byte) 0xeb})
+                .getValue());
     }
 
     @Test
