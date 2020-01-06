@@ -35,4 +35,35 @@ final class Ipv4Utils {
 
         bytes[out] = (byte) val;
     }
+
+    static int addressBits(final String str, final int limit) {
+        int prev = 0;
+        int current = 0;
+        for (int i = 0, shift = 24; i < limit; ++i) {
+            final char c = str.charAt(i);
+            if (c == '.') {
+                prev |= current << shift;
+                shift -= 8;
+                current = 0;
+            } else {
+                current = 10 * current + c - '0';
+            }
+        }
+        return prev | current;
+    }
+
+    static byte @NonNull[] addressBytes(final String str, final int limit) {
+        final byte[] bytes = new byte[4];
+        Ipv4Utils.fillIpv4Bytes(bytes, 0, str, 0, limit);
+        return bytes;
+    }
+
+    static String addressString(final int bits) {
+        return new StringBuilder(15)
+                .append(bits >>> 24).append('.')
+                .append(bits >>> 16 & 0xFF).append('.')
+                .append(bits >>> 8 & 0xFF).append('.')
+                .append(bits & 0xFF)
+                .toString();
+    }
 }
