@@ -478,8 +478,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws NullPointerException if addr is null
      */
     public final @NonNull A6 ipv6AddressFor(final @NonNull InetAddress addr) {
-        requireNonNull(addr, "Address must not be null");
-        checkArgument(addr instanceof Inet6Address, "Address has to be an Inet6Address");
         return address6Factory.newInstance(addressStringV6(addr));
     }
 
@@ -504,8 +502,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws NullPointerException if addr is null
      */
     public final @NonNull A6NZ ipv6AddressNoZoneFor(final @NonNull InetAddress addr) {
-        requireNonNull(addr, "Address must not be null");
-        checkArgument(addr instanceof Inet6Address, "Address has to be an Inet6Address");
         return address6NoZoneFactory.newInstance(addressStringV6(addr));
     }
 
@@ -563,11 +559,11 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     }
 
     /**
-     * Create a /128 Ipv6Prefix by interpreting input bytes as an IPv4 address.
+     * Create a /128 Ipv6Prefix by interpreting input bytes as an IPv6 address.
      *
      * @param addr an {@link Inet6Address}
      * @return An Ipv6Prefix object
-     * @throws IllegalArgumentException if addr is not an Inet6Address or if mask is not in range 0-128
+     * @throws IllegalArgumentException if addr is not an Inet6Address
      * @throws NullPointerException if addr is null
      */
     public final @NonNull P6 ipv6PrefixFor(final @NonNull InetAddress addr) {
@@ -586,8 +582,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws NullPointerException if addr is null
      */
     public final @NonNull P6 ipv6PrefixFor(final @NonNull InetAddress addr, final int mask) {
-        requireNonNull(addr, "Address must not be null");
-        checkArgument(addr instanceof Inet6Address, "Address has to be an Inet6Address");
         checkArgument(mask >= 0 && mask <= 128, "Invalid mask %s", mask);
         return prefix6Factory.newInstance(addressStringV6(addr) + '/' + mask);
     }
@@ -683,13 +677,19 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         checkArgument(bytes.length == INET6_LENGTH, "IPv6 address length is 16 bytes");
 
         try {
-            return addressStringV6(Inet6Address.getByAddress(bytes));
+            return addressStringV6(Inet6Address.getByAddress(null, bytes, null));
         } catch (UnknownHostException e) {
             throw new IllegalArgumentException(String.format("Invalid input %s", bytes), e);
         }
     }
 
     private static String addressStringV6(final InetAddress addr) {
+        requireNonNull(addr, "Address must not be null");
+        checkArgument(addr instanceof Inet6Address, "Address has to be an Inet6Address");
+        return addressStringV6((Inet6Address) addr);
+    }
+
+    private static String addressStringV6(final Inet6Address addr) {
         return InetAddresses.toAddrString(addr);
     }
 
