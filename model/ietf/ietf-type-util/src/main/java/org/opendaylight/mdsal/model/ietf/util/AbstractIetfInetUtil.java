@@ -251,6 +251,16 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     }
 
     /**
+     * Create an Ipv4Address by interpreting input 32 bits as an IPv4 address in big-endian format.
+     *
+     * @param bits 32 bits, big endian
+     * @return An Ipv4Address object
+     */
+    public final @NonNull A4 ipv4AddressFor(final int bits) {
+        return address4Factory.newInstance(addressString(bits));
+    }
+
+    /**
      * Create an Ipv4AddressNoZone by interpreting input bytes as an IPv4 address.
      *
      * @param bytes 4-byte array
@@ -274,6 +284,16 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         requireNonNull(addr, "Address must not be null");
         checkArgument(addr instanceof Inet4Address, "Address has to be an Inet4Address");
         return address4NoZoneFactory.newInstance(addr.getHostAddress());
+    }
+
+    /**
+     * Create an Ipv4AddressNoZone by interpreting input 32 bits as an IPv4 address in big-endian format.
+     *
+     * @param bits 32 bits, big endian
+     * @return An Ipv4AddressNoZone object
+     */
+    public final @NonNull A4NZ ipv4AddressNoZoneFor(final int bits) {
+        return address4NoZoneFactory.newInstance(addressString(bits));
     }
 
     public final @NonNull A4 ipv4AddressFrom(final @NonNull P4 prefix) {
@@ -646,6 +666,15 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         for (int i = 1; i < INET4_LENGTH; ++i) {
             sb.append('.').append(Byte.toUnsignedInt(bytes[i]));
         }
+    }
+
+    private static String addressString(final int bits) {
+        return new StringBuilder(15)
+                .append(bits >>> 24).append('.')
+                .append(bits >>> 16 & 0xFF).append('.')
+                .append(bits >>> 8 & 0xFF).append('.')
+                .append(bits & 0xFF)
+                .toString();
     }
 
     static String addressStringV4(final byte @NonNull[] bytes) {
