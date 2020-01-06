@@ -257,7 +257,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @return An Ipv4Address object
      */
     public final @NonNull A4 ipv4AddressFor(final int bits) {
-        return address4Factory.newInstance(addressString(bits));
+        return address4Factory.newInstance(Ipv4Utils.addressString(bits));
     }
 
     /**
@@ -293,7 +293,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @return An Ipv4AddressNoZone object
      */
     public final @NonNull A4NZ ipv4AddressNoZoneFor(final int bits) {
-        return address4NoZoneFactory.newInstance(addressString(bits));
+        return address4NoZoneFactory.newInstance(Ipv4Utils.addressString(bits));
     }
 
     public final @NonNull A4 ipv4AddressFrom(final @NonNull P4 prefix) {
@@ -311,13 +311,13 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
          */
         final String str = ipv4AddressString(addr);
         final int percent = str.indexOf('%');
-        return ipv4StringBytes(str, percent == -1 ? str.length() : percent);
+        return Ipv4Utils.addressBytes(str, percent == -1 ? str.length() : percent);
     }
 
     public final int ipv4AddressBits(final @NonNull A4 addr) {
         final String str = ipv4AddressString(addr);
         final int percent = str.indexOf('%');
-        return ipv4StringBits(str, percent == -1 ? str.length() : percent);
+        return Ipv4Utils.addressBits(str, percent == -1 ? str.length() : percent);
     }
 
     public final byte @NonNull[] ipv4AddressNoZoneBytes(final @NonNull A4NZ addr) {
@@ -326,34 +326,12 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
          * the Ipv4AddressNoZone pattern, which must not include a zone index.
          */
         final String str = ipv4AddressString(addr);
-        return ipv4StringBytes(str, str.length());
+        return Ipv4Utils.addressBytes(str, str.length());
     }
 
     public final int ipv4AddressNoZoneBits(final @NonNull A4NZ addr) {
         final String str = ipv4AddressString(addr);
-        return ipv4StringBits(str, str.length());
-    }
-
-    private static byte @NonNull[] ipv4StringBytes(final String str, final int limit) {
-        final byte[] bytes = new byte[INET4_LENGTH];
-        Ipv4Utils.fillIpv4Bytes(bytes, 0, str, 0, limit);
-        return bytes;
-    }
-
-    private static int ipv4StringBits(final String str, final int limit) {
-        int prev = 0;
-        int current = 0;
-        for (int i = 0, shift = 24; i < limit; ++i) {
-            final char c = str.charAt(i);
-            if (c == '.') {
-                prev |= current << shift;
-                shift -= 8;
-                current = 0;
-            } else {
-                current = 10 * current + c - '0';
-            }
-        }
-        return prev | current;
+        return Ipv4Utils.addressBits(str, str.length());
     }
 
     /**
@@ -693,10 +671,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         for (int i = 1; i < INET4_LENGTH; ++i) {
             sb.append('.').append(Byte.toUnsignedInt(bytes[i]));
         }
-    }
-
-    private static String addressString(final int bits) {
-        return (bits >>> 24) + "." + (bits >>> 16 & 0xFF) + "." + (bits >>> 8 & 0xFF) + "." + (bits & 0xFF);
     }
 
     static String addressStringV4(final byte @NonNull[] bytes) {

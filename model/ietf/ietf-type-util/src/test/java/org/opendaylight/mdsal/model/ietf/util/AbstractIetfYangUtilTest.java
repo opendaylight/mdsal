@@ -63,12 +63,24 @@ public class AbstractIetfYangUtilTest {
     }
 
     @Test
+    public void testQuadBits() {
+        assertEquals(0x01020304, UTIL.dottedQuadBits(new QuadClass("1.2.3.4")));
+        assertEquals(0xFFFFFFFF, UTIL.dottedQuadBits(new QuadClass("255.255.255.255")));
+    }
+
+    @Test
     public void testQuadBytes() {
         assertArrayEquals(new byte[] { 1, 2, 3, 4 }, UTIL.dottedQuadBytes(new QuadClass("1.2.3.4")));
     }
 
     @Test
-    public void testQuadFor() {
+    public void testQuadForBits() {
+        assertEquals("1.2.3.4", UTIL.dottedQuadFor(0x01020304).getValue());
+        assertEquals("255.255.255.255", UTIL.dottedQuadFor(0xFFFFFFFF).getValue());
+    }
+
+    @Test
+    public void testQuadForBytes() {
         assertEquals("1.2.3.4", UTIL.dottedQuadFor(new byte[] { 1, 2, 3, 4 }).getValue());
     }
 

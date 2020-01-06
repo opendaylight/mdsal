@@ -141,11 +141,18 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
         return quadFactory.newInstance(AbstractIetfInetUtil.addressStringV4(bytes));
     }
 
-    public final byte @NonNull[] dottedQuadBytes(final @NonNull Q hexString) {
-        final String str = getQuadValue(hexString);
-        final byte[] bytes = new byte[4];
-        Ipv4Utils.fillIpv4Bytes(bytes, 0, str, 0, str.length());
-        return bytes;
+    public final @NonNull Q dottedQuadFor(final int bits) {
+        return quadFactory.newInstance(Ipv4Utils.addressString(bits));
+    }
+
+    public final int dottedQuadBits(final @NonNull Q dottedQuad) {
+        final String str = getQuadValue(dottedQuad);
+        return Ipv4Utils.addressBits(str, str.length());
+    }
+
+    public final byte @NonNull[] dottedQuadBytes(final @NonNull Q dottedQuad) {
+        final String str = getQuadValue(dottedQuad);
+        return Ipv4Utils.addressBytes(str, str.length());
     }
 
     public final @NonNull U uuidFor(final @NonNull UUID uuid) {
