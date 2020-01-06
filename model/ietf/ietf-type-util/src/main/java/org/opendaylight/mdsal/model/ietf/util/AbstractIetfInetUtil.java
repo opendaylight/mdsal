@@ -669,12 +669,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     }
 
     private static String addressString(final int bits) {
-        return new StringBuilder(15)
-                .append(bits >>> 24).append('.')
-                .append(bits >>> 16 & 0xFF).append('.')
-                .append(bits >>> 8 & 0xFF).append('.')
-                .append(bits & 0xFF)
-                .toString();
+        return (bits >>> 24) + "." + (bits >>> 16 & 0xFF) + "." + (bits >>> 8 & 0xFF) + "." + (bits & 0xFF);
     }
 
     static String addressStringV4(final byte @NonNull[] bytes) {
