@@ -39,17 +39,16 @@ final class Ipv4Utils {
     static int addressBits(final String str, final int limit) {
         int prev = 0;
         int current = 0;
-        for (int i = 0, shift = 24; i < limit; ++i) {
+        for (int i = 0; i < limit; ++i) {
             final char c = str.charAt(i);
             if (c == '.') {
-                prev |= current << shift;
-                shift -= 8;
+                prev = prev << 8 | current;
                 current = 0;
             } else {
                 current = 10 * current + c - '0';
             }
         }
-        return prev | current;
+        return prev << 8 | current;
     }
 
     static byte @NonNull[] addressBytes(final String str, final int limit) {
