@@ -11,15 +11,12 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.io.BufferedWriter;
@@ -31,15 +28,11 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -131,55 +124,23 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         }
         LOG.info("Generating {} Binding source files into {} directories", dirs.size(), dirs.keySet().size());
 
-        // Step three: wrap common FJ pool, submit parent directory creation tasks and wait for them to complete
+        // Step three: submit parent directory creation tasks (via parallelStream()) and wait for them to complete
         sw.reset().start();
-        final ListeningExecutorService service = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
-        final List<ListenableFuture<Void>> parentFutures = new ArrayList<>(dirs.keySet().size());
-        for (Entry<Path, Collection<GenerationTask>> entry : dirs.asMap().entrySet()) {
-            parentFutures.add(service.submit(() -> {
-                Files.createDirectories(entry.getKey());
-                return null;
-            }));
-        }
-
-        try {
-            Futures.whenAllComplete(parentFutures).call(() -> {
-                for (ListenableFuture<Void> future : parentFutures) {
-                    Futures.getDone(future);
-                }
-                return null;
-            }, MoreExecutors.directExecutor()).get();
-        } catch (InterruptedException e) {
-            throw new IOException("Interrupted while creating parent directories", e);
-        } catch (ExecutionException e) {
-            LOG.debug("Failed to create parent directories", e);
-            Throwables.throwIfInstanceOf(e.getCause(), IOException.class);
-            throw new IOException("Failed to create parent directories", e);
-        }
+        dirs.keySet().parallelStream().forEach(path -> {
+            try {
+                Files.createDirectories(path);
+            } catch (IOException e) {
+                throw new IllegalStateException("Failed to create " + path, e);
+            }
+        });
         LOG.debug("Parent directories created in {}", sw);
 
-        // Step four: submit all code generation tasks and wait for them to complete
+        // Step four: submit all code generation tasks (via parallelStream()) and wait for them to complete
+        final ListeningExecutorService service = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
         sw.reset().start();
-        final List<ListenableFuture<File>> futureFiles = dirs.values().stream()
-                .map(service::submit)
+        final List<File> result = dirs.values().parallelStream()
+                .map(GenerationTask::generateFile)
                 .collect(Collectors.toList());
-
-        final List<File> result;
-        try {
-            result = Futures.whenAllComplete(futureFiles).call(() -> {
-                List<File> ret = new ArrayList<>(futureFiles.size());
-                for (ListenableFuture<File> future : futureFiles) {
-                    ret.add(Futures.getDone(future));
-                }
-                return ret;
-            }, MoreExecutors.directExecutor()).get();
-        } catch (InterruptedException e) {
-            throw new IOException("Interrupted while generating files", e);
-        } catch (ExecutionException e) {
-            LOG.error("Failed to create generated files", e);
-            Throwables.throwIfInstanceOf(e.getCause(), IOException.class);
-            throw new IOException("Failed to create generated files", e);
-        }
         LOG.debug("{} Binding source type files generated in {}", result.size(), sw);
 
         // Step five: generate auxiliary files
@@ -303,7 +264,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         return file;
     }
 
-    private static final class GenerationTask implements Callable<File> {
+    private static final class GenerationTask {
         private final BuildContext buildContext;
         private final Supplier<String> contentSupplier;
         private final File target;
@@ -314,14 +275,17 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
             this.contentSupplier = requireNonNull(contentSupplier);
         }
 
-        @Override
-        public File call() throws IOException {
-            try (OutputStream stream = buildContext.newFileOutputStream(target)) {
-                try (Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
-                    try (BufferedWriter bw = new BufferedWriter(fw)) {
-                        bw.write(contentSupplier.get());
+        File generateFile() {
+            try {
+                try (OutputStream stream = buildContext.newFileOutputStream(target)) {
+                    try (Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+                        try (BufferedWriter bw = new BufferedWriter(fw)) {
+                            bw.write(contentSupplier.get());
+                        }
                     }
                 }
+            } catch (IOException e) {
+                throw new IllegalStateException("Failed to generate file " + target, e);
             }
             return target;
         }
