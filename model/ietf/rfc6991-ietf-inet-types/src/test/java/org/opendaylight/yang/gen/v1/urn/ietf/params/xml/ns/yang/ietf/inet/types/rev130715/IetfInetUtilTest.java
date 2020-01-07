@@ -10,6 +10,7 @@ package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 import java.lang.reflect.Constructor;
 import org.junit.Test;
@@ -62,5 +63,29 @@ public class IetfInetUtilTest {
     public void testAddressToString() {
         assertEquals(new Ipv4Prefix("1.2.3.4/8"), IetfInetUtil.INSTANCE.ipv4PrefixFor(new Ipv4Address("1.2.3.4%1"), 8));
         assertEquals(new Ipv6Prefix("ff00::/8"), IetfInetUtil.INSTANCE.ipv6PrefixFor(new Ipv6Address("ff00::%bar"), 8));
+    }
+
+    @Test
+    public void testIpv4ZoneStripping() {
+        final Ipv4AddressNoZone noZone = new Ipv4AddressNoZone("1.2.3.4");
+        assertSame(noZone, IetfInetUtil.INSTANCE.ipv4AddressNoZoneFor(noZone));
+
+        final Ipv4Address withoutZone = new Ipv4Address(noZone);
+        final Ipv4AddressNoZone stripped = IetfInetUtil.INSTANCE.ipv4AddressNoZoneFor(withoutZone);
+        assertSame(withoutZone.getValue(), stripped.getValue());
+
+        assertEquals(noZone, IetfInetUtil.INSTANCE.ipv4AddressNoZoneFor(new Ipv4Address("1.2.3.4%1")));
+    }
+
+    @Test
+    public void testIpv6ZoneStripping() {
+        final Ipv6AddressNoZone noZone = new Ipv6AddressNoZone("ff00::");
+        assertSame(noZone, IetfInetUtil.INSTANCE.ipv6AddressNoZoneFor(noZone));
+
+        final Ipv6Address withoutZone = new Ipv6Address(noZone);
+        final Ipv6AddressNoZone stripped = IetfInetUtil.INSTANCE.ipv6AddressNoZoneFor(withoutZone);
+        assertSame(withoutZone.getValue(), stripped.getValue());
+
+        assertEquals(noZone, IetfInetUtil.INSTANCE.ipv6AddressNoZoneFor(new Ipv6Address("ff00::%1")));
     }
 }

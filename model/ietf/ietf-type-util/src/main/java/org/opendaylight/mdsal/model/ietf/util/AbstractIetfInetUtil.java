@@ -37,10 +37,14 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     private final StringValueObjectFactory<A6> address6Factory;
     private final StringValueObjectFactory<A6NZ> address6NoZoneFactory;
     private final StringValueObjectFactory<P6> prefix6Factory;
+    private final Class<A4NZ> addr4nzClass;
+    private final Class<A6NZ> addr6nzClass;
 
     protected AbstractIetfInetUtil(final Class<A4> addr4Class, final Class<A4NZ> addr4nzClass,
             final Class<P4> prefix4Class, final Class<A6> addr6Class, final Class<A6NZ> addr6nzClass,
             final Class<P6> prefix6Class) {
+        this.addr4nzClass = requireNonNull(addr4nzClass);
+        this.addr6nzClass = requireNonNull(addr6nzClass);
         this.address4Factory = StringValueObjectFactory.create(addr4Class, "0.0.0.0");
         this.address4NoZoneFactory = StringValueObjectFactory.create(addr4nzClass, "0.0.0.0");
         this.prefix4Factory = StringValueObjectFactory.create(prefix4Class, "0.0.0.0/0");
@@ -296,6 +300,19 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         return address4NoZoneFactory.newInstance(Ipv4Utils.addressString(bits));
     }
 
+    /**
+     * Create an Ipv4AddressNoZone by interpreting an Ipv4Address.
+     *
+     * @param addr An Ipv4Address
+     * @return An Ipv4AddressNoZone object
+     * @throws NullPointerException if addr is null
+     */
+    public final @NonNull A4NZ ipv4AddressNoZoneFor(final @NonNull A4 addr) {
+        requireNonNull(addr, "Address must not be null");
+        return addr4nzClass.isInstance(addr) ? addr4nzClass.cast(addr)
+                : address4NoZoneFactory.newInstance(stripZone(ipv4AddressString(addr)));
+    }
+
     public final @NonNull A4 ipv4AddressFrom(final @NonNull P4 prefix) {
         return prefixToAddress(address4Factory, ipv4PrefixString(prefix));
     }
@@ -503,6 +520,19 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      */
     public final @NonNull A6NZ ipv6AddressNoZoneFor(final @NonNull InetAddress addr) {
         return address6NoZoneFactory.newInstance(addressStringV6(addr));
+    }
+
+    /**
+     * Create an Ipv6AddressNoZone by interpreting an Ipv6Address.
+     *
+     * @param addr An Ipv6Address
+     * @return An Ipv6AddressNoZone object
+     * @throws NullPointerException if addr is null
+     */
+    public final @NonNull A6NZ ipv6AddressNoZoneFor(final @NonNull A6 addr) {
+        requireNonNull(addr, "Address must not be null");
+        return addr6nzClass.isInstance(addr) ? addr6nzClass.cast(addr)
+                : address6NoZoneFactory.newInstance(stripZone(ipv6AddressString(addr)));
     }
 
     public final @NonNull A6 ipv6AddressFrom(final @NonNull P6 prefix) {
