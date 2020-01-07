@@ -18,7 +18,7 @@ final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpCla
     private static final Pattern IP_V4_PATTERN = Pattern.compile(IP_V4_REGEX);
 
     IpUtil() {
-        super(IpClass.class, IpClass.class, IpClass.class, IpClass.class, IpClass.class, IpClass.class);
+        super(IpClass.class, IpClass.class, IpClass.class, IpClass.class);
     }
 
     @Override

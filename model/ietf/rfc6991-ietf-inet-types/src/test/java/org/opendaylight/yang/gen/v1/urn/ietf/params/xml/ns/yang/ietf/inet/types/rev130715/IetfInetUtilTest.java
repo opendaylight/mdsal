@@ -29,7 +29,7 @@ public class IetfInetUtilTest {
 
     @Test
     public void testIpv4Address() {
-        final Ipv4Address ipv4Address = new Ipv4Address("192.168.1.1");
+        final Ipv4AddressNoZone ipv4Address = new Ipv4AddressNoZone("192.168.1.1");
         final Ipv4Prefix ipv4Prefix = new Ipv4Prefix("192.0.2.1/24");
         final IpAddress ipAddress = IetfInetUtil.INSTANCE.ipv4Address(ipv4Address);
         final String ipv4AddressString = IetfInetUtil.INSTANCE.ipv4AddressString(ipv4Address);
@@ -45,7 +45,7 @@ public class IetfInetUtilTest {
 
     @Test
     public void testIpv6Address() {
-        final Ipv6Address ipv6Address = new Ipv6Address("ABCD:EF01:2345:6789:ABCD:EF01:2345:6789");
+        final Ipv6AddressNoZone ipv6Address = new Ipv6AddressNoZone("ABCD:EF01:2345:6789:ABCD:EF01:2345:6789");
         final Ipv6Prefix ipv6Prefix = new Ipv6Prefix("ff00::/8");
         final IpAddress ipAddress = IetfInetUtil.INSTANCE.ipv6Address(ipv6Address);
         final String ipv6AddressString = IetfInetUtil.INSTANCE.ipv6AddressString(ipv6Address);

@@ -19,12 +19,11 @@ public final class IetfInetUtil extends AbstractIetfInetUtil<Ipv4Address, Ipv4Ad
     public static final IetfInetUtil INSTANCE = new IetfInetUtil();
 
     private IetfInetUtil() {
-        super(Ipv4Address.class, Ipv4AddressNoZone.class, Ipv4Prefix.class, Ipv6Address.class, Ipv6AddressNoZone.class,
-            Ipv6Prefix.class);
+        super(Ipv4AddressNoZone.class, Ipv4Prefix.class, Ipv6AddressNoZone.class, Ipv6Prefix.class);
     }
 
     @Override
-    protected IpAddress ipv4Address(final Ipv4Address addr) {
+    protected IpAddress ipv4Address(final Ipv4AddressNoZone addr) {
         return new IpAddress(addr);
     }
 
@@ -39,7 +38,7 @@ public final class IetfInetUtil extends AbstractIetfInetUtil<Ipv4Address, Ipv4Ad
     }
 
     @Override
-    protected IpAddress ipv6Address(final Ipv6Address addr) {
+    protected IpAddress ipv6Address(final Ipv6AddressNoZone addr) {
         return new IpAddress(addr);
     }
 
