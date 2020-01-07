@@ -245,9 +245,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws NullPointerException if addr is null
      */
     public final @NonNull A4 ipv4AddressFor(final @NonNull InetAddress addr) {
-        requireNonNull(addr, "Address must not be null");
-        checkArgument(addr instanceof Inet4Address, "Address has to be an Inet4Address");
-        return address4Factory.newInstance(addr.getHostAddress());
+        return address4Factory.newInstance(addressStringV4(addr));
     }
 
     /**
@@ -281,9 +279,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws NullPointerException if addr is null
      */
     public final @NonNull A4NZ ipv4AddressNoZoneFor(final @NonNull InetAddress addr) {
-        requireNonNull(addr, "Address must not be null");
-        checkArgument(addr instanceof Inet4Address, "Address has to be an Inet4Address");
-        return address4NoZoneFactory.newInstance(addr.getHostAddress());
+        return address4NoZoneFactory.newInstance(addressStringV4(addr));
     }
 
     /**
@@ -371,9 +367,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws NullPointerException if addr is null
      */
     public final @NonNull P4 ipv4PrefixFor(final @NonNull InetAddress addr) {
-        requireNonNull(addr, "Address must not be null");
-        checkArgument(addr instanceof Inet4Address, "Address has to be an Inet4Address");
-        return prefix4Factory.newInstance(addr.getHostAddress() + "/32");
+        return prefix4Factory.newInstance(addressStringV4(addr) + "/32");
     }
 
     /**
@@ -386,9 +380,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws NullPointerException if addr is null
      */
     public final @NonNull P4 ipv4PrefixFor(final @NonNull InetAddress addr, final int mask) {
-        requireNonNull(addr, "Address must not be null");
-        checkArgument(addr instanceof Inet4Address, "Address has to be an Inet4Address");
-        return newIpv4Prefix(addr.getHostAddress(), mask);
+        return newIpv4Prefix(addressStringV4(addr), mask);
     }
 
     public final @NonNull P4 ipv4PrefixFor(final @NonNull A4 addr) {
@@ -671,6 +663,12 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         final StringBuilder sb = new StringBuilder(15);
         appendIpv4String(sb, bytes);
         return sb.toString();
+    }
+
+    private static @NonNull String addressStringV4(final InetAddress addr) {
+        requireNonNull(addr, "Address must not be null");
+        checkArgument(addr instanceof Inet4Address, "Address has to be an Inet4Address");
+        return addr.getHostAddress();
     }
 
     private static String addressStringV6(final byte @NonNull[] bytes) {
