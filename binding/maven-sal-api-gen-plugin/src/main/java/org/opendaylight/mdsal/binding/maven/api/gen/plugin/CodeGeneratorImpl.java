@@ -10,11 +10,18 @@ package org.opendaylight.mdsal.binding.maven.api.gen.plugin;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Stopwatch;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
-import com.google.common.io.Files;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -22,14 +29,21 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.apache.maven.project.MavenProject;
 import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile;
@@ -67,7 +81,11 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
         outputBaseDir = outputDir == null ? getDefaultOutputBaseDir() : outputDir;
 
+        // Step one: determine binding types which we are generating
+        final Stopwatch sw = Stopwatch.createStarted();
         final List<Type> types = new BindingGeneratorImpl().generateTypes(context, yangModules);
+        LOG.info("Found {} Binding types in {}", types.size(), sw);
+
         final GeneratorJavaFile generator = new GeneratorJavaFile(types);
 
         File persistentSourcesDir = null;
@@ -88,7 +106,9 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
         final Table<FileKind, String, Supplier<String>> generatedFiles = generator.generateFileContent(
             ignoreDuplicateFiles);
-        final List<File> result = new ArrayList<>(generatedFiles.size());
+
+        // Step two: create generation tasks for each target file and group them by parent directory
+        final ListMultimap<Path, GenerationTask> dirs = MultimapBuilder.hashKeys().arrayListValues().build();
         for (Cell<FileKind, String, Supplier<String>> cell : generatedFiles.cellSet()) {
             final File target;
             switch (cell.getRowKey()) {
@@ -106,21 +126,62 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
                     throw new IllegalStateException("Unsupported file type in " + cell);
             }
 
-            Files.createParentDirs(target);
-            try (OutputStream stream = buildContext.newFileOutputStream(target)) {
-                try (Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
-                    try (BufferedWriter bw = new BufferedWriter(fw)) {
-                        bw.write(cell.getValue().get());
-                    }
-                } catch (IOException e) {
-                    LOG.error("Failed to write generate output into {}", target.getPath(), e);
-                    throw e;
-                }
-            }
+            dirs.put(target.getParentFile().toPath(), new GenerationTask(buildContext, target, cell.getValue()));
+        }
+        LOG.info("Generating {} Binding source files into {} directories", dirs.size(), dirs.keySet().size());
 
-            result.add(target);
+        // Step three: wrap common FJ pool, submit parent directory creation tasks and wait for them to complete
+        sw.reset().start();
+        final ListeningExecutorService service = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
+        final List<ListenableFuture<Void>> parentFutures = new ArrayList<>(dirs.keySet().size());
+        for (Entry<Path, Collection<GenerationTask>> entry : dirs.asMap().entrySet()) {
+            parentFutures.add(service.submit(() -> {
+                Files.createDirectories(entry.getKey());
+                return null;
+            }));
         }
 
+        try {
+            Futures.whenAllComplete(parentFutures).call(() -> {
+                for (ListenableFuture<Void> future : parentFutures) {
+                    Futures.getDone(future);
+                }
+                return null;
+            }, MoreExecutors.directExecutor()).get();
+        } catch (InterruptedException e) {
+            throw new IOException("Interrupted while creating parent directories", e);
+        } catch (ExecutionException e) {
+            LOG.debug("Failed to create parent directories", e);
+            Throwables.throwIfInstanceOf(e.getCause(), IOException.class);
+            throw new IOException("Failed to create parent directories", e);
+        }
+        LOG.debug("Parent directories created in {}", sw);
+
+        // Step four: submit all code generation tasks and wait for them to complete
+        sw.reset().start();
+        final List<ListenableFuture<File>> futureFiles = dirs.values().stream()
+                .map(service::submit)
+                .collect(Collectors.toList());
+
+        final List<File> result;
+        try {
+            result = Futures.whenAllComplete(futureFiles).call(() -> {
+                List<File> ret = new ArrayList<>(futureFiles.size());
+                for (ListenableFuture<File> future : futureFiles) {
+                    ret.add(Futures.getDone(future));
+                }
+                return ret;
+            }, MoreExecutors.directExecutor()).get();
+        } catch (InterruptedException e) {
+            throw new IOException("Interrupted while generating files", e);
+        } catch (ExecutionException e) {
+            LOG.error("Failed to create generated files", e);
+            Throwables.throwIfInstanceOf(e.getCause(), IOException.class);
+            throw new IOException("Failed to create generated files", e);
+        }
+        LOG.debug("{} Binding source type files generated in {}", result.size(), sw);
+
+        // Step five: generate auxiliary files
         result.addAll(generateModuleInfos(outputBaseDir, yangModules, context, moduleResourcePathResolver));
         return result;
     }
@@ -239,5 +300,29 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
             LOG.error("Could not create file: {}", file, e);
         }
         return file;
+    }
+
+    private static final class GenerationTask implements Callable<File> {
+        private final BuildContext buildContext;
+        private final Supplier<String> contentSupplier;
+        private final File target;
+
+        GenerationTask(final BuildContext buildContext, final File target, final Supplier<String> contentSupplier) {
+            this.buildContext = requireNonNull(buildContext);
+            this.target = requireNonNull(target);
+            this.contentSupplier = requireNonNull(contentSupplier);
+        }
+
+        @Override
+        public File call() throws IOException {
+            try (OutputStream stream = buildContext.newFileOutputStream(target)) {
+                try (Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+                    try (BufferedWriter bw = new BufferedWriter(fw)) {
+                        bw.write(contentSupplier.get());
+                    }
+                }
+            }
+            return target;
+        }
     }
 }
