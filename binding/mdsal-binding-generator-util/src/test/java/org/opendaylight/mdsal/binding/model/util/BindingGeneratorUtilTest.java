@@ -19,7 +19,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.Rule;
@@ -43,7 +42,7 @@ import org.opendaylight.yangtools.yang.model.api.type.DecimalTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.Int16TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.Uint16TypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
-import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
+import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.type.DerivedTypes;
 import org.opendaylight.yangtools.yang.model.util.type.InvalidLengthConstraintException;
@@ -86,10 +85,8 @@ public class BindingGeneratorUtilTest {
                 "org.opendaylight.yang.gen.v1.urn.m.o.d.u.l.e.n.a.m.e.t.e.s.t._case._1digit.rev130910", packageName);
 
         // test of the method packageNameForGeneratedType()
-        DataNodeIterator it = new DataNodeIterator(module);
-        List<ContainerSchemaNode> schemaContainers = it.allContainers();
         String subPackageNameForDataNode = "";
-        for (ContainerSchemaNode containerSchemaNode : schemaContainers) {
+        for (ContainerSchemaNode containerSchemaNode : SchemaNodeUtils.getAllContainers(module)) {
             if (containerSchemaNode.getQName().getLocalName().equals("cont-inner")) {
                 subPackageNameForDataNode = BindingGeneratorUtil.packageNameForGeneratedType(packageName,
                         containerSchemaNode.getPath());

@@ -113,7 +113,6 @@ import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
@@ -252,11 +251,8 @@ abstract class AbstractTypeGenerator {
     private void allTypeDefinitionsToGenTypes(final ModuleContext context) {
         final Module module = context.module();
         checkArgument(module.getName() != null, "Module name cannot be NULL.");
-        final DataNodeIterator it = new DataNodeIterator(module);
-        final List<TypeDefinition<?>> typeDefinitions = it.allTypedefs();
-        checkState(typeDefinitions != null, "Type Definitions for module %s cannot be NULL.", module.getName());
 
-        for (final TypeDefinition<?> typedef : typeDefinitions) {
+        for (final TypeDefinition<?> typedef : SchemaNodeUtils.getAllTypeDefinitions(module)) {
             if (typedef != null) {
                 final Type type = typeProvider.generatedTypeForExtendedDefinitionType(typedef,  typedef);
                 if (type != null) {
