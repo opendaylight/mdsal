@@ -11,13 +11,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>5.0.8-SNAPSHOT</version>
+        <version>5.0.9-SNAPSHOT</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-odl-uint24</artifactId>
-    <version>5.0.8-SNAPSHOT</version>
+    <version>5.0.9-SNAPSHOT</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Model :: OpenDaylight uint24 type</name>
     <description>OpenDaylight-specific model of uint24</description>
