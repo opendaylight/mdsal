@@ -12,7 +12,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.Collection;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
@@ -73,7 +73,7 @@ public class BaseYangTypesTest {
     }
 
     private static void initTypeDefinitionsFromSchemaContext() {
-        Set<TypeDefinition<?>> typedefs = schemaContext.getTypeDefinitions();
+        Collection<? extends TypeDefinition<?>> typedefs = schemaContext.getTypeDefinitions();
         assertTrue(!typedefs.isEmpty());
 
         for (final TypeDefinition<?> typedef : typedefs) {

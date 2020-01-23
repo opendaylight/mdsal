@@ -15,7 +15,6 @@ import static org.mockito.Mockito.doReturn;
 import com.google.common.collect.Range;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -219,8 +218,7 @@ public class TypeProviderTest {
 
     private static TypeDefinition<?> resolveTypeDefinitionFromModule(final Module module, final String typedefName) {
         TypeDefinition<?> result = null;
-        final Set<TypeDefinition<?>> typeDefs = module.getTypeDefinitions();
-        for (final TypeDefinition<?> typedef : typeDefs) {
+        for (final TypeDefinition<?> typedef : module.getTypeDefinitions()) {
             if (typedef.getQName().getLocalName().equals(typedefName)) {
                 result = typedef;
             }
@@ -493,7 +491,6 @@ public class TypeProviderTest {
         final AbstractTypeProvider provider = new CodegenTypeProvider(SCHEMA_CONTEXT);
 
         final Module baseYangTypes = resolveModule("base-yang-types");
-        final Set<TypeDefinition<?>> typeDefs = baseYangTypes.getTypeDefinitions();
 
         Type yangBoolean = null;
         Type yangEmpty = null;
@@ -514,7 +511,7 @@ public class TypeProviderTest {
         Type yangBits = null;
         Type yangInstanceIdentifier = null;
 
-        for (final TypeDefinition<?> typedef : typeDefs) {
+        for (final TypeDefinition<?> typedef : baseYangTypes.getTypeDefinitions()) {
             final Type type = provider.generatedTypeForExtendedDefinitionType(typedef, typedef);
             if (type instanceof GeneratedTransferObject) {
                 if (type.getName().equals("YangBoolean")) {
