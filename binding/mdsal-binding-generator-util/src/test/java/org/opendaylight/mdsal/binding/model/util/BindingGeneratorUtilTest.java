@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -21,9 +22,7 @@ import com.google.common.collect.Range;
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.Set;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
@@ -52,9 +51,6 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorUtilTest {
     private static final SchemaPath ROOT_PATH = SchemaPath.create(true, QName.create("test", "root"));
-
-    @Rule
-    public ExpectedException expectedEx = ExpectedException.none();
 
     /*
      * Tests methods:
@@ -124,8 +120,7 @@ public class BindingGeneratorUtilTest {
      */
     @Test
     public void testPackageNameForGeneratedTypeNullBasePackageName() {
-        expectedEx.expect(NullPointerException.class);
-        BindingGeneratorUtil.packageNameForGeneratedType(null, null);
+        assertThrows(NullPointerException.class, () ->  BindingGeneratorUtil.packageNameForGeneratedType(null, null));
     }
 
     /*
@@ -137,8 +132,8 @@ public class BindingGeneratorUtilTest {
      */
     @Test
     public void testPackageNameForGeneratedTypeNullSchemaPath() {
-        expectedEx.expect(NullPointerException.class);
-        BindingGeneratorUtil.packageNameForGeneratedType("test.package", null);
+        assertThrows(NullPointerException.class,
+            () -> BindingGeneratorUtil.packageNameForGeneratedType("test.package", null));
     }
 
     /*
