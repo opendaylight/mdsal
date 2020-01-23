@@ -120,6 +120,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
@@ -141,8 +142,8 @@ abstract class AbstractTypeGenerator {
      * Comparator based on augment target path.
      */
     private static final Comparator<AugmentationSchemaNode> AUGMENT_COMP = (o1, o2) -> {
-        final Iterator<QName> thisIt = o1.getTargetPath().getPathFromRoot().iterator();
-        final Iterator<QName> otherIt = o2.getTargetPath().getPathFromRoot().iterator();
+        final Iterator<QName> thisIt = o1.getTargetPath().getNodeIdentifiers().iterator();
+        final Iterator<QName> otherIt = o2.getTargetPath().getNodeIdentifiers().iterator();
 
         while (thisIt.hasNext()) {
             if (!otherIt.hasNext()) {
@@ -478,7 +479,7 @@ abstract class AbstractTypeGenerator {
 
     private Optional<ActionDefinition> findOrigAction(final DataNodeContainer parent, final ActionDefinition action) {
         for (UsesNode uses : parent.getUses()) {
-            final GroupingDefinition grp = findUsedGrouping(uses);
+            final GroupingDefinition grp = uses.getSourceGrouping();
             final Optional<ActionDefinition> found = grp.findAction(action.getQName());
             if (found.isPresent()) {
                 final ActionDefinition result = found.get();
@@ -823,10 +824,11 @@ abstract class AbstractTypeGenerator {
                 "Augmentation Schema does not contain Target Path (Target Path is NULL).");
 
         processUsesAugments(augSchema, context, false);
-        final SchemaPath targetPath = augSchema.getTargetPath();
+        final SchemaNodeIdentifier targetPath = augSchema.getTargetPath();
         SchemaNode targetSchemaNode = null;
 
-        targetSchemaNode = findDataSchemaNode(schemaContext, targetPath);
+        // FIXME: can we use findDataSchemaNode() instead?
+        targetSchemaNode = findDataSchemaNode(schemaContext, targetPath.getNodeIdentifiers());
         if (targetSchemaNode instanceof DataSchemaNode && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
             if (targetSchemaNode instanceof DerivableSchemaNode) {
                 targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orElse(null);
@@ -864,7 +866,7 @@ abstract class AbstractTypeGenerator {
                 "Augmentation Schema does not contain Target Path (Target Path is NULL).");
 
         processUsesAugments(augSchema, context, inGrouping);
-        final SchemaPath targetPath = augSchema.getTargetPath();
+        final SchemaNodeIdentifier targetPath = augSchema.getTargetPath();
         final SchemaNode targetSchemaNode = findOriginalTargetFromGrouping(targetPath, usesNode);
         if (targetSchemaNode == null) {
             throw new IllegalArgumentException("augment target not found: " + targetPath);
@@ -893,16 +895,6 @@ abstract class AbstractTypeGenerator {
         }
     }
 
-    private GroupingDefinition findUsedGrouping(final UsesNode uses) {
-        final SchemaNode targetGrouping = findNodeInSchemaContext(schemaContext, uses.getGroupingPath()
-            .getPathFromRoot());
-        if (targetGrouping instanceof GroupingDefinition) {
-            return (GroupingDefinition) targetGrouping;
-        }
-
-        throw new IllegalArgumentException("Failed to resolve used grouping for " + uses);
-    }
-
     /**
      * Convenient method to find node added by uses statement.
      *
@@ -910,11 +902,12 @@ abstract class AbstractTypeGenerator {
      * @param parentUsesNode parent of uses node
      * @return node from its original location in grouping
      */
-    private DataSchemaNode findOriginalTargetFromGrouping(final SchemaPath targetPath, final UsesNode parentUsesNode) {
-        SchemaNode result = findUsedGrouping(parentUsesNode);
-        for (final QName node : targetPath.getPathFromRoot()) {
+    private static DataSchemaNode findOriginalTargetFromGrouping(final SchemaNodeIdentifier targetPath,
+            final UsesNode parentUsesNode) {
+        SchemaNode result = parentUsesNode.getSourceGrouping();
+        for (final QName node : targetPath.getNodeIdentifiers()) {
             if (result instanceof DataNodeContainer) {
-                final QName resultNode = node.withModule(result.getQName().getModule());
+                final QName resultNode = node.bindTo(result.getQName().getModule());
                 result = ((DataNodeContainer) result).getDataChildByName(resultNode);
             } else if (result instanceof ChoiceSchemaNode) {
                 result = findNamedCase((ChoiceSchemaNode) result, node.getLocalName());
@@ -1188,7 +1181,7 @@ abstract class AbstractTypeGenerator {
         checkArgument(refChoiceType != null, "Referenced Choice Type cannot be NULL.");
         checkArgument(choiceNode != null, "ChoiceNode cannot be NULL.");
 
-        for (final CaseSchemaNode caseNode : choiceNode.getCases().values()) {
+        for (final CaseSchemaNode caseNode : choiceNode.getCases()) {
             if (caseNode != null && !caseNode.isAddedByUses() && !caseNode.isAugmenting()) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(context, caseNode);
                 caseTypeBuilder.addImplementsType(refChoiceType);
@@ -1205,8 +1198,10 @@ abstract class AbstractTypeGenerator {
 
                         if (parent instanceof AugmentationSchemaNode) {
                             final AugmentationSchemaNode augSchema = (AugmentationSchemaNode) parent;
-                            final SchemaPath targetPath = augSchema.getTargetPath();
-                            SchemaNode targetSchemaNode = findDataSchemaNode(schemaContext, targetPath);
+                            final SchemaNodeIdentifier targetPath = augSchema.getTargetPath();
+                            // FIXME: can we use findDataSchemaNode?
+                            SchemaNode targetSchemaNode = findNodeInSchemaContext(schemaContext,
+                                targetPath.getNodeIdentifiers());
                             if (targetSchemaNode instanceof DataSchemaNode
                                     && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
                                 if (targetSchemaNode instanceof DerivableSchemaNode) {
@@ -1324,7 +1319,7 @@ abstract class AbstractTypeGenerator {
     }
 
     private static CaseSchemaNode findNamedCase(final ChoiceSchemaNode choice, final String caseName) {
-        final List<CaseSchemaNode> cases = choice.findCaseNodes(caseName);
+        final List<? extends CaseSchemaNode> cases = choice.findCaseNodes(caseName);
         return cases.isEmpty() ? null : cases.get(0);
     }
 
@@ -1926,10 +1921,10 @@ abstract class AbstractTypeGenerator {
     private GeneratedTypeBuilder addImplementedInterfaceFromUses(final DataNodeContainer dataNodeContainer,
             final GeneratedTypeBuilder builder) {
         for (final UsesNode usesNode : dataNodeContainer.getUses()) {
-            final GeneratedTypeBuilder genType = findGroupingByPath(usesNode.getGroupingPath());
+            final GeneratedTypeBuilder genType = findGrouping(usesNode.getSourceGrouping());
             if (genType == null) {
-                throw new IllegalStateException("Grouping " + usesNode.getGroupingPath() + "is not resolved for "
-                        + builder.getName());
+                throw new IllegalStateException("Grouping " + usesNode.getSourceGrouping().getQName()
+                    + " is not resolved for " + builder.getName());
             }
 
             builder.addImplementsType(genType.build());
@@ -1940,6 +1935,16 @@ abstract class AbstractTypeGenerator {
     private GeneratedTypeBuilder findChildNodeByPath(final SchemaPath path) {
         for (final ModuleContext ctx : genCtx.values()) {
             final GeneratedTypeBuilder result = ctx.getChildNode(path);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    private GeneratedTypeBuilder findGrouping(final GroupingDefinition grouping) {
+        for (final ModuleContext ctx : genCtx.values()) {
+            final GeneratedTypeBuilder result = ctx.getGrouping(grouping.getPath());
             if (result != null) {
                 return result;
             }
