@@ -76,7 +76,7 @@ public final class BindingSchemaContextUtils {
                     && BindingReflections.isAugmentationChild(currentArg.getType())) {
                 currentQName = BindingReflections.findQName(currentArg.getType());
             } else {
-                currentQName = BindingReflections.findQName(currentArg.getType()).withModule(currentQName.getModule());
+                currentQName = BindingReflections.findQName(currentArg.getType()).bindTo(currentQName.getModule());
             }
             Optional<DataNodeContainer> potential = findDataNodeContainer(currentContainer.get(), currentQName);
             if (potential.isPresent()) {
@@ -93,6 +93,7 @@ public final class BindingSchemaContextUtils {
 
         for (DataSchemaNode child : ctx.getChildNodes()) {
             if (child instanceof ChoiceSchemaNode) {
+                // FIXME: use ChoiceSchemaNode.findDataSchemaChild(QName)?
                 DataNodeContainer potential = findInCases((ChoiceSchemaNode) child, targetQName);
                 if (potential != null) {
                     return Optional.of(potential);
@@ -120,7 +121,7 @@ public final class BindingSchemaContextUtils {
     }
 
     private static DataNodeContainer findInCases(final ChoiceSchemaNode choiceNode, final QName targetQName) {
-        for (CaseSchemaNode caze : choiceNode.getCases().values()) {
+        for (CaseSchemaNode caze : choiceNode.getCases()) {
             Optional<DataNodeContainer> potential = findDataNodeContainer(caze, targetQName);
             if (potential.isPresent()) {
                 return potential.get();
@@ -192,7 +193,7 @@ public final class BindingSchemaContextUtils {
 
     public static Optional<CaseSchemaNode> findInstantiatedCase(final ChoiceSchemaNode instantiatedChoice,
             final CaseSchemaNode originalDefinition) {
-        CaseSchemaNode potential = instantiatedChoice.getCaseNodeByName(originalDefinition.getQName());
+        CaseSchemaNode potential = instantiatedChoice.findCase(originalDefinition.getQName()).orElse(null);
         if (originalDefinition.equals(potential)) {
             return Optional.of(potential);
         }
