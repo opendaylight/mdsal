@@ -7,22 +7,25 @@
  */
 package org.opendaylight.mdsal.binding.yang.types;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
+import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Range;
 import java.util.List;
 import java.util.Optional;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.binding.model.api.BaseTypeWithRestrictions;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
@@ -226,8 +229,6 @@ public class TypeProviderTest {
         return result;
     }
 
-    // FIXME: Remove @Ignore annotation once the bug https://bugs.opendaylight.org/show_bug.cgi?id=1862 is fixed
-    @Ignore
     @Test
     public void bug1862RestrictedTypedefTransformationTest() {
         final TypeProvider provider = new CodegenTypeProvider(SCHEMA_CONTEXT);
@@ -236,10 +237,12 @@ public class TypeProviderTest {
 
         final TypeDefinition<?> leafType = leaf.getType();
         final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(leafType);
+        assertEquals(ImmutableRangeSet.of(Range.closed((byte) 1, (byte)100)),
+            restrictions.getRangeConstraint().get().getAllowedRanges());
         final Type result = provider.javaTypeForSchemaDefinitionType(leafType, leaf, restrictions);
         assertNotNull(result);
-        assertTrue(result instanceof GeneratedTransferObject);
-        //TODO: complete test after bug 1862 is fixed
+        assertThat(result, instanceOf(BaseTypeWithRestrictions.class));
+        assertEquals(Byte.class.getName(), result.getFullyQualifiedName());
     }
 
     @Test
