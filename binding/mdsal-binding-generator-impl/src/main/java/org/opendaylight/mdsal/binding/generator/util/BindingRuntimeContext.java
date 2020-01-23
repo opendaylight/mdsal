@@ -418,8 +418,7 @@ public final class BindingRuntimeContext implements Immutable {
     public ImmutableMap<AugmentationIdentifier, Type> getAvailableAugmentationTypes(final DataNodeContainer container) {
         final Map<AugmentationIdentifier, Type> identifierToType = new HashMap<>();
         if (container instanceof AugmentationTarget) {
-            final Set<AugmentationSchemaNode> augments = ((AugmentationTarget) container).getAvailableAugmentations();
-            for (final AugmentationSchemaNode augment : augments) {
+            for (final AugmentationSchemaNode augment : ((AugmentationTarget) container).getAvailableAugmentations()) {
                 // Augmentation must have child nodes if is to be used with Binding classes
                 AugmentationSchemaNode augOrig = augment;
                 while (augOrig.getOriginalDefinition().isPresent()) {

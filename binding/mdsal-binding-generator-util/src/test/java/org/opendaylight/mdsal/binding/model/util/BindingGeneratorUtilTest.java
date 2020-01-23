@@ -19,8 +19,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -69,8 +69,8 @@ public class BindingGeneratorUtilTest {
      */
     @Test
     public void testBindingGeneratorUtilMethods() {
-        final Set<Module> modules = YangParserTestUtils.parseYangResources(BindingGeneratorUtilTest.class,
-            "/module.yang").getModules();
+        final Collection<? extends Module> modules = YangParserTestUtils.parseYangResources(
+            BindingGeneratorUtilTest.class, "/module.yang").getModules();
         String packageName = "";
         Module module = null;
         for (Module m : modules) {
