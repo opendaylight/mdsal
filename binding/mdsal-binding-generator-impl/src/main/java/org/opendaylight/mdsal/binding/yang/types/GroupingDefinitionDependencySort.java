@@ -26,7 +26,6 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
 
 public class GroupingDefinitionDependencySort {
@@ -72,12 +71,12 @@ public class GroupingDefinitionDependencySort {
      * @return set of nodes where every one contains wrapped grouping definition
      */
     private Set<Node> groupingDefinitionsToNodes(final Collection<? extends GroupingDefinition> groupingDefinitions) {
-        final Map<SchemaPath, Node> nodeMap = new HashMap<>();
+        final Map<GroupingDefinition, Node> nodeMap = new HashMap<>();
         final Set<Node> resultNodes = new HashSet<>();
 
         for (final GroupingDefinition groupingDefinition : groupingDefinitions) {
             final Node node = new NodeWrappedType(groupingDefinition);
-            nodeMap.put(groupingDefinition.getPath(), node);
+            nodeMap.put(groupingDefinition, node);
             resultNodes.add(node);
         }
 
@@ -88,12 +87,9 @@ public class GroupingDefinitionDependencySort {
             Set<UsesNode> usesNodes = getAllUsesNodes(groupingDefinition);
 
             for (UsesNode usesNode : usesNodes) {
-                SchemaPath schemaPath = usesNode.getGroupingPath();
-                if (schemaPath != null) {
-                    Node nodeTo = nodeMap.get(schemaPath);
-                    if (nodeTo != null) {
-                        nodeWrappedType.addEdge(nodeTo);
-                    }
+                Node nodeTo = nodeMap.get(usesNode.getSourceGrouping());
+                if (nodeTo != null) {
+                    nodeWrappedType.addEdge(nodeTo);
                 }
             }
         }
@@ -125,7 +121,7 @@ public class GroupingDefinitionDependencySort {
             if (childNode instanceof DataNodeContainer) {
                 ret.addAll(getAllUsesNodes((DataNodeContainer) childNode));
             } else if (childNode instanceof ChoiceSchemaNode) {
-                for (CaseSchemaNode choiceCaseNode : ((ChoiceSchemaNode) childNode).getCases().values()) {
+                for (CaseSchemaNode choiceCaseNode : ((ChoiceSchemaNode) childNode).getCases()) {
                     ret.addAll(getAllUsesNodes(choiceCaseNode));
                 }
             }
