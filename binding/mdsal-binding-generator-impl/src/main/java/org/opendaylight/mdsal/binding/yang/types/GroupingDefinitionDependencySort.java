@@ -125,7 +125,7 @@ public class GroupingDefinitionDependencySort {
             if (childNode instanceof DataNodeContainer) {
                 ret.addAll(getAllUsesNodes((DataNodeContainer) childNode));
             } else if (childNode instanceof ChoiceSchemaNode) {
-                for (CaseSchemaNode choiceCaseNode : ((ChoiceSchemaNode) childNode).getCases().values()) {
+                for (CaseSchemaNode choiceCaseNode : ((ChoiceSchemaNode) childNode).getCases()) {
                     ret.addAll(getAllUsesNodes(choiceCaseNode));
                 }
             }

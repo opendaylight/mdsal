@@ -1184,7 +1184,7 @@ abstract class AbstractTypeGenerator {
         checkArgument(refChoiceType != null, "Referenced Choice Type cannot be NULL.");
         checkArgument(choiceNode != null, "ChoiceNode cannot be NULL.");
 
-        for (final CaseSchemaNode caseNode : choiceNode.getCases().values()) {
+        for (final CaseSchemaNode caseNode : choiceNode.getCases()) {
             if (caseNode != null && !caseNode.isAddedByUses() && !caseNode.isAugmenting()) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(context, caseNode);
                 caseTypeBuilder.addImplementsType(refChoiceType);
@@ -1320,7 +1320,7 @@ abstract class AbstractTypeGenerator {
     }
 
     private static CaseSchemaNode findNamedCase(final ChoiceSchemaNode choice, final String caseName) {
-        final List<CaseSchemaNode> cases = choice.findCaseNodes(caseName);
+        final List<? extends CaseSchemaNode> cases = choice.findCaseNodes(caseName);
         return cases.isEmpty() ? null : cases.get(0);
     }
 
