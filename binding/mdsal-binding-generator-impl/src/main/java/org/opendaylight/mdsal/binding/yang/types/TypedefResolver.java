@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.yang.types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -47,7 +46,7 @@ final class TypedefResolver {
     }
 
     private static void fillRecursively(final List<TypeDefinition<?>> list, final DataNodeContainer container) {
-        final Collection<DataSchemaNode> childNodes = container.getChildNodes();
+        final Collection<? extends DataSchemaNode> childNodes = container.getChildNodes();
         if (childNodes != null) {
             for (DataSchemaNode childNode : childNodes) {
                 if (!childNode.isAugmenting()) {
@@ -66,7 +65,7 @@ final class TypedefResolver {
 
         list.addAll(container.getTypeDefinitions());
 
-        final Set<GroupingDefinition> groupings = container.getGroupings();
+        final Collection<? extends GroupingDefinition> groupings = container.getGroupings();
         if (groupings != null) {
             for (GroupingDefinition grouping : groupings) {
                 fillRecursively(list, grouping);

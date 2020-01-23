@@ -10,10 +10,10 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
@@ -54,7 +54,7 @@ public class BindingGeneratorImpl implements BindingGenerator, BindingRuntimeGen
      *             if <code>context</code> contain no modules
      */
     @Override
-    public List<Type> generateTypes(final SchemaContext context, final Set<Module> modules) {
+    public List<Type> generateTypes(final SchemaContext context, final Collection<? extends Module> modules) {
         checkContext(context);
         checkArgument(modules != null, "Set of Modules cannot be NULL.");
 

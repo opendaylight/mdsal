@@ -155,7 +155,7 @@ class GeneratorImpl {
 
 
     private def typeDefinitionsSummary(Module module) {
-        val Set<TypeDefinition<?>> typedefs = module.typeDefinitions
+        val Collection<? extends TypeDefinition<?>> typedefs = module.typeDefinitions
         if (typedefs.empty) {
             return '';
         }
@@ -183,7 +183,7 @@ class GeneratorImpl {
     }
 
     def typeDefinitions(Module module) {
-        val Set<TypeDefinition<?>> typedefs = module.typeDefinitions
+        val Collection<? extends TypeDefinition<?>> typedefs = module.typeDefinitions
         if (typedefs.empty) {
             return '';
         }
@@ -374,8 +374,8 @@ class GeneratorImpl {
         return targetPathNodes
     }
 
-    private def DataSchemaNode findNodeInChildNodes(QName findingNode, Iterable<DataSchemaNode> childNodes) {
-        for(child : childNodes) {
+    private def DataSchemaNode findNodeInChildNodes(QName findingNode, Iterable<? extends DataSchemaNode> childNodes) {
+        for (child : childNodes) {
             if (child.QName.equals(findingNode))
                 return child;
         }
@@ -515,7 +515,7 @@ class GeneratorImpl {
     }
 
     def notifications(Module module) {
-        val Set<NotificationDefinition> notificationdefs = module.notifications
+        val Collection<? extends NotificationDefinition> notificationdefs = module.notifications
         if (notificationdefs.empty) {
             return '';
         }
@@ -818,8 +818,7 @@ class GeneratorImpl {
                 «ENDFOR»
                 </ul>
                 <ul>
-                «val Set<TypeDefinition<?>> typeDefinitions = dataNode.typeDefinitions»
-                «FOR typeDef : typeDefinitions»
+                «FOR typeDef : dataNode.typeDefinitions»
                     «typeDef.restrictions»
                 «ENDFOR»
                 </ul>
@@ -957,7 +956,7 @@ class GeneratorImpl {
         '''
     }
 
-    def CharSequence printChildren(Iterable<DataSchemaNode> nodes, int level, YangInstanceIdentifier path) {
+    def CharSequence printChildren(Iterable<? extends DataSchemaNode> nodes, int level, YangInstanceIdentifier path) {
         val anyxmlNodes = nodes.filter(AnyxmlSchemaNode)
         val leafNodes = nodes.filter(LeafSchemaNode)
         val leafListNodes = nodes.filter(LeafListSchemaNode)
@@ -1007,13 +1006,13 @@ class GeneratorImpl {
         '''
     }
 
-    def CharSequence xmlExample(Iterable<DataSchemaNode> nodes, QName name,YangInstanceIdentifier path) '''
+    def CharSequence xmlExample(Iterable<? extends DataSchemaNode> nodes, QName name, YangInstanceIdentifier path) '''
     <pre>
         «xmlExampleTag(name,nodes.xmplExampleTags(path))»
     </pre>
     '''
 
-    def CharSequence xmplExampleTags(Iterable<DataSchemaNode> nodes, YangInstanceIdentifier identifier) '''
+    def CharSequence xmplExampleTags(Iterable<? extends DataSchemaNode> nodes, YangInstanceIdentifier identifier) '''
         <!-- Child nodes -->
         «FOR node : nodes»
         <!-- «node.QName.localName» -->
@@ -1279,7 +1278,7 @@ class GeneratorImpl {
         «ENDIF»
     '''
 
-    private def CharSequence treeSet(Collection<DataSchemaNode> childNodes, YangInstanceIdentifier path) '''
+    private def CharSequence treeSet(Collection<? extends DataSchemaNode> childNodes, YangInstanceIdentifier path) '''
         «IF childNodes !== null && !childNodes.empty»
             <ul>
             «FOR child : childNodes»

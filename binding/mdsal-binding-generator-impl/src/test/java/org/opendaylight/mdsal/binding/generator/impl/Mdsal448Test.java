@@ -12,8 +12,8 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.common.collect.Iterables;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort;
@@ -26,7 +26,7 @@ public class Mdsal448Test {
     @Test
     public void groupingSortIncludesActions() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal448.yang");
-        final Set<GroupingDefinition> groupings = context.findModule("mdsal448").get().getGroupings();
+        final Collection<? extends GroupingDefinition> groupings = context.findModule("mdsal448").get().getGroupings();
         assertEquals(2, groupings.size());
 
         final List<GroupingDefinition> ordered = sortGroupings(Iterables.get(groupings, 0),

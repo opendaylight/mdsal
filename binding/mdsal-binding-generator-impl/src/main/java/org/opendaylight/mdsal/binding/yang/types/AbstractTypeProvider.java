@@ -351,7 +351,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      * @return JAVA <code>Type</code> of the identity which is referenced through <code>idref</code>
      */
     private Type provideTypeForIdentityref(final IdentityrefTypeDefinition idref) {
-        final Collection<IdentitySchemaNode> identities = idref.getIdentities();
+        final Collection<? extends IdentitySchemaNode> identities = idref.getIdentities();
         if (identities.size() > 1) {
             LOG.warn("Identity reference {} has multiple identities, using only the first one", idref);
         }
@@ -364,7 +364,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 identity = id;
             }
         }
-        Preconditions.checkArgument(identity != null, "Target identity '" + baseIdQName + "' do not exists");
+        Preconditions.checkArgument(identity != null, "Target identity '" + baseIdQName + "' do not exist");
 
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
         final JavaTypeName identifier = JavaTypeName.create(BindingGeneratorUtil.packageNameForGeneratedType(
@@ -743,7 +743,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      * which map current module name to the map which maps type names to returned types (generated types).
      */
     private void resolveTypeDefsFromContext() {
-        final Set<Module> modules = schemaContext.getModules();
+        final Collection<? extends Module> modules = schemaContext.getModules();
         Preconditions.checkArgument(modules != null, "Set of Modules cannot be NULL!");
         final List<Module> modulesSortedByDependency = ModuleDependencySort.sort(modules);
 
@@ -1145,11 +1145,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         genTOBuilder.addImplementsType(TYPE_OBJECT);
         addCodegenInformation(genTOBuilder, typeDef);
 
-        final List<Bit> bitList = typeDef.getBits();
-        GeneratedPropertyBuilder genPropertyBuilder;
-        for (Bit bit : bitList) {
+        for (Bit bit : typeDef.getBits()) {
             final String name = bit.getName();
-            genPropertyBuilder = genTOBuilder.addProperty(BindingMapping.getPropertyName(name));
+            GeneratedPropertyBuilder genPropertyBuilder = genTOBuilder.addProperty(
+                BindingMapping.getPropertyName(name));
             genPropertyBuilder.setReadOnly(true);
             genPropertyBuilder.setReturnType(BaseYangTypes.BOOLEAN_TYPE);
 
@@ -1557,7 +1556,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         if (type.getBaseType() != null) {
             final QName typeQName = type.getQName();
             Module module = null;
-            final Set<Module> modules = schemaContext.findModules(typeQName.getNamespace());
+            final Collection<? extends Module> modules = schemaContext.findModules(typeQName.getNamespace());
             if (modules.size() > 1) {
                 for (Module m : modules) {
                     if (m.getRevision().equals(typeQName.getRevision())) {
