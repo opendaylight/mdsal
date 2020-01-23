@@ -13,9 +13,9 @@ import java.io.OutputStreamWriter
 import java.net.URI
 import java.nio.charset.StandardCharsets
 import java.util.ArrayList
+import java.util.Collection
 import java.util.HashSet
 import java.util.List
-import java.util.Set
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
@@ -42,7 +42,7 @@ class WadlRestconfGenerator {
         this.buildContext = buildContext
     }
 
-    def generate(EffectiveModelContext context, Set<Module> modules) {
+    def generate(EffectiveModelContext context, Collection<? extends Module> modules) {
         val result = new HashSet;
         this.context = context
         for (module : modules) {
