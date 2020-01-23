@@ -12,6 +12,9 @@ import java.util.List;
 import org.opendaylight.binding.runtime.api.ClassLoadingStrategy;
 import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultReactors;
+import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -30,6 +33,8 @@ public final class Activator implements BundleActivator {
         LOG.info("Binding-DOM codec starting");
 
         final ModuleInfoBackedContext moduleInfoBackedContext = ModuleInfoBackedContext.create(
+            "binding-dom-codec",
+            new YangParserFactoryImpl(DefaultReactors.defaultReactorBuilder(new AntlrXPathParserFactory()).build()),
             // FIXME: This is the fallback strategy, it should not be needed
             GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy());
 

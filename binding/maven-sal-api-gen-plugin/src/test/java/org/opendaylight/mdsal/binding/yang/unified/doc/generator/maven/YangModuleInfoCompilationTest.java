@@ -148,7 +148,7 @@ public class YangModuleInfoCompilationTest {
         final EffectiveModelContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
-        codegen.generateSources(context, sourcesOutputDir, context.getModules(),
+        codegen.generateSources(context, sourcesOutputDir, Set.copyOf(context.getModules()),
             module -> Optional.of(resourceDirPath + File.separator + module.getName()
             + YangConstants.RFC6020_YANG_FILE_EXTENSION));
     }
@@ -162,7 +162,7 @@ public class YangModuleInfoCompilationTest {
         codegen.setResourceBaseDir(null);
         codegen.setMavenProject(new MavenProject());
         codegen.setAdditionalConfig(ImmutableMap.of("test", "test"));
-        Collection<File> files = codegen.generateSources(context, null, context.getModules(),
+        Collection<File> files = codegen.generateSources(context, null, Set.copyOf(context.getModules()),
             module -> Optional.of(module.getName()));
         assertFalse(files.isEmpty());
         files.forEach(file -> {
