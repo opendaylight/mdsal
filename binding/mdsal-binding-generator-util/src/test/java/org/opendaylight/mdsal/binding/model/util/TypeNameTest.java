@@ -11,16 +11,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 
 public class TypeNameTest {
-
-    @Rule
-    public ExpectedException expException = ExpectedException.none();
-
     @Test
     public void testHashCode() {
         JavaTypeName baseType1 = JavaTypeName.create("org.opendaylight.yangtools.test", "Test");
