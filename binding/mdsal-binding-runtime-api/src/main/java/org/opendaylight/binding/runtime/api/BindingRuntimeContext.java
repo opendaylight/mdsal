@@ -388,7 +388,7 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
 
     private static Optional<CaseSchemaNode> findInstantiatedCase(final ChoiceSchemaNode instantiatedChoice,
             final CaseSchemaNode originalDefinition) {
-        CaseSchemaNode potential = instantiatedChoice.getCaseNodeByName(originalDefinition.getQName());
+        CaseSchemaNode potential = instantiatedChoice.findCase(originalDefinition.getQName()).orElse(null);
         if (originalDefinition.equals(potential)) {
             return Optional.of(potential);
         }
