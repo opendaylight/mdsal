@@ -91,7 +91,7 @@ public final class YangSchemaUtils {
             } else if (child instanceof ChoiceSchemaNode) {
                 final QName caseQName = arguments.next();
                 Preconditions.checkArgument(arguments.hasNext(), "Path must not refer case only.");
-                currentNode = ((ChoiceSchemaNode) child).getCaseNodeByName(caseQName);
+                currentNode = ((ChoiceSchemaNode) child).findCase(caseQName).orElse(null);
             } else {
                 // Search in grouping
                 for (GroupingDefinition grouping : currentNode.getGroupings()) {

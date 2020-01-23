@@ -45,7 +45,6 @@ import static org.opendaylight.mdsal.binding.model.util.Types.mapTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveVoidType;
 import static org.opendaylight.mdsal.binding.model.util.Types.wildcardTypeFor;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
-import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.base.Splitter;
@@ -473,7 +472,7 @@ abstract class AbstractTypeGenerator {
 
     private Optional<ActionDefinition> findOrigAction(final DataNodeContainer parent, final ActionDefinition action) {
         for (UsesNode uses : parent.getUses()) {
-            final GroupingDefinition grp = findUsedGrouping(uses);
+            final GroupingDefinition grp = uses.getSourceGrouping();
             final Optional<ActionDefinition> found = grp.findAction(action.getQName());
             if (found.isPresent()) {
                 final ActionDefinition result = found.get();
@@ -889,16 +888,6 @@ abstract class AbstractTypeGenerator {
         }
     }
 
-    private GroupingDefinition findUsedGrouping(final UsesNode uses) {
-        final SchemaNode targetGrouping = findNodeInSchemaContext(schemaContext, uses.getGroupingPath()
-            .getPathFromRoot());
-        if (targetGrouping instanceof GroupingDefinition) {
-            return (GroupingDefinition) targetGrouping;
-        }
-
-        throw new IllegalArgumentException("Failed to resolve used grouping for " + uses);
-    }
-
     /**
      * Convenient method to find node added by uses statement.
      *
@@ -907,10 +896,10 @@ abstract class AbstractTypeGenerator {
      * @return node from its original location in grouping
      */
     private DataSchemaNode findOriginalTargetFromGrouping(final SchemaPath targetPath, final UsesNode parentUsesNode) {
-        SchemaNode result = findUsedGrouping(parentUsesNode);
+        SchemaNode result = parentUsesNode.getSourceGrouping();
         for (final QName node : targetPath.getPathFromRoot()) {
             if (result instanceof DataNodeContainer) {
-                final QName resultNode = node.withModule(result.getQName().getModule());
+                final QName resultNode = node.bindTo(result.getQName().getModule());
                 result = ((DataNodeContainer) result).getDataChildByName(resultNode);
             } else if (result instanceof ChoiceSchemaNode) {
                 result = findNamedCase((ChoiceSchemaNode) result, node.getLocalName());
@@ -1184,7 +1173,7 @@ abstract class AbstractTypeGenerator {
         checkArgument(refChoiceType != null, "Referenced Choice Type cannot be NULL.");
         checkArgument(choiceNode != null, "ChoiceNode cannot be NULL.");
 
-        for (final CaseSchemaNode caseNode : choiceNode.getCases().values()) {
+        for (final CaseSchemaNode caseNode : choiceNode.getCases()) {
             if (caseNode != null && !caseNode.isAddedByUses() && !caseNode.isAugmenting()) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(context, caseNode);
                 caseTypeBuilder.addImplementsType(refChoiceType);
@@ -1320,7 +1309,7 @@ abstract class AbstractTypeGenerator {
     }
 
     private static CaseSchemaNode findNamedCase(final ChoiceSchemaNode choice, final String caseName) {
-        final List<CaseSchemaNode> cases = choice.findCaseNodes(caseName);
+        final List<? extends CaseSchemaNode> cases = choice.findCaseNodes(caseName);
         return cases.isEmpty() ? null : cases.get(0);
     }
 
