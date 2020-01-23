@@ -46,7 +46,7 @@ public class GroupingDefinitionDependencySort {
      * @throws IllegalArgumentException if {@code groupingDefinitions}
      *
      */
-    public List<GroupingDefinition> sort(final Collection<GroupingDefinition> groupingDefinitions) {
+    public List<GroupingDefinition> sort(final Collection<? extends GroupingDefinition> groupingDefinitions) {
         if (groupingDefinitions == null) {
             throw new IllegalArgumentException("Set of Type Definitions cannot be NULL!");
         }
@@ -71,7 +71,7 @@ public class GroupingDefinitionDependencySort {
      * @param groupingDefinitions set of goruping definition which will be wrapped to nodes
      * @return set of nodes where every one contains wrapped grouping definition
      */
-    private Set<Node> groupingDefinitionsToNodes(final Collection<GroupingDefinition> groupingDefinitions) {
+    private Set<Node> groupingDefinitionsToNodes(final Collection<? extends GroupingDefinition> groupingDefinitions) {
         final Map<SchemaPath, Node> nodeMap = new HashMap<>();
         final Set<Node> resultNodes = new HashSet<>();
 
@@ -110,7 +110,7 @@ public class GroupingDefinitionDependencySort {
      */
     private Set<UsesNode> getAllUsesNodes(final DataNodeContainer container) {
         Set<UsesNode> ret = new HashSet<>();
-        Set<UsesNode> usesNodes = container.getUses();
+        Collection<? extends UsesNode> usesNodes = container.getUses();
         ret.addAll(usesNodes);
 
         for (UsesNode usesNode : usesNodes) {

@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.generator.api;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -42,5 +42,5 @@ public interface BindingGenerator {
      * @see Module
      * @see SchemaContext
      */
-    List<Type> generateTypes(SchemaContext context, Set<Module> modules);
+    List<Type> generateTypes(SchemaContext context, Collection<? extends Module> modules);
 }

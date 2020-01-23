@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -318,12 +317,11 @@ public class TypeProviderIntegrationTest {
     @Test
     public void testGetParamNameFromType() {
         module = CONTEXT.findModule("ietf-inet-types", Revision.of("2010-09-24")).get();
-        Set<TypeDefinition<?>> types = module.getTypeDefinitions();
         TypeDefinition<?> ipv4 = null;
         TypeDefinition<?> ipv6 = null;
         TypeDefinition<?> ipv4Pref = null;
         TypeDefinition<?> ipv6Pref = null;
-        for (TypeDefinition<?> type : types) {
+        for (TypeDefinition<?> type : module.getTypeDefinitions()) {
             if ("ipv4-address".equals(type.getQName().getLocalName())) {
                 ipv4 = type;
             } else if ("ipv6-address".equals(type.getQName().getLocalName())) {

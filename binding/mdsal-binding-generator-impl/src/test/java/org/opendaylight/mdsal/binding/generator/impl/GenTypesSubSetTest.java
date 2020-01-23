@@ -28,10 +28,8 @@ public class GenTypesSubSetTest {
         final SchemaContext context = YangParserTestUtils.parseYangResources(GenTypesSubSetTest.class,
                 "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf/ietf-interfaces.yang",
                 "/ietf/ietf-inet-types.yang", "/ietf/ietf-yang-types.yang");
-        Set<Module> modules = context.getModules();
-
         final Set<Module> toGenModules = new HashSet<>();
-        for (final Module module : modules) {
+        for (final Module module : context.getModules()) {
             if (module.getName().equals("abstract-topology")) {
                 toGenModules.add(module);
             } else if (module.getName().equals("ietf-interfaces")) {
@@ -55,10 +53,9 @@ public class GenTypesSubSetTest {
                 "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf/ietf-interfaces.yang",
                 "/ietf/ietf-inet-types.yang", "/ietf/ietf-yang-types.yang", "/ietf/iana-if-type.yang");
         assertNotNull("Schema Context is null", context);
-        final Set<Module> modules = context.getModules();
 
         final Set<Module> toGenModules = new HashSet<>();
-        for (final Module module : modules) {
+        for (final Module module : context.getModules()) {
             if (module.getName().equals("abstract-topology")) {
                 toGenModules.add(module);
             } else if (module.getName().equals("ietf-interfaces")) {
