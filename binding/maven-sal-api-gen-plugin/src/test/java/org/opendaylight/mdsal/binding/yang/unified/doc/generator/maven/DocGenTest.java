@@ -23,7 +23,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 import org.sonatype.plexus.build.incremental.DefaultBuildContext;
 
@@ -51,11 +50,10 @@ public class DocGenTest {
     public void testListGeneration() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/doc-gen");
         final EffectiveModelContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
-        final Set<Module> modules = context.getModules();
         final DocumentationGeneratorImpl generator = new DocumentationGeneratorImpl();
         generator.setBuildContext(new DefaultBuildContext());
-        Collection<File> generatedFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR, modules,
-            module -> Optional.empty());
+        Collection<File> generatedFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR,
+            Set.copyOf(context.getModules()), module -> Optional.empty());
         assertEquals(4, generatedFiles.size());
     }
 
