@@ -117,7 +117,7 @@ public class YangSchemaUtilsTest {
                 mock(ChoiceSchemaNode.class, withSettings().extraInterfaces(DataSchemaNode.class));
         doReturn(choiceNode).when(container).getDataChildByName(any());
         final CaseSchemaNode caseNode = mock(CaseSchemaNode.class);
-        doReturn(caseNode).when(choiceNode).getCaseNodeByName(any());
+        doReturn(Optional.of(caseNode)).when(choiceNode).findCase(any());
         doReturn(ImmutableSet.of(typeDefinition)).when(caseNode).getTypeDefinitions();
         assertEquals(typeDefinition, YangSchemaUtils.findTypeDefinition(context,
             SchemaPath.create(false, Q_NAME, Q_NAME, Q_NAME)));

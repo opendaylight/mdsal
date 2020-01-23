@@ -347,7 +347,7 @@ class GeneratorImpl {
     }
 
     private def parseTargetPath(SchemaPath path) {
-        val List<DataSchemaNode> nodes = new ArrayList<DataSchemaNode>();
+        val nodes = new ArrayList<DataSchemaNode>();
         for (QName pathElement : path.pathFromRoot) {
             val module = ctx.findModule(pathElement.module)
             if (module.isPresent) {
@@ -368,7 +368,7 @@ class GeneratorImpl {
             lastNodeInTargetPath = nodes.get(nodes.size() - 1)
         }
 
-        val List<DataSchemaNode> targetPathNodes = new ArrayList<DataSchemaNode>();
+        val targetPathNodes = new ArrayList<DataSchemaNode>();
         targetPathNodes.add(lastNodeInTargetPath)
 
         return targetPathNodes
@@ -435,10 +435,10 @@ class GeneratorImpl {
     }
 
     private def printChoiceNode(ChoiceSchemaNode child) {
-        val List<CaseSchemaNode> cases = new ArrayList(child.cases.values);
-        if(!cases.empty) {
+        val cases = new ArrayList(child.cases)
+        if (!cases.empty) {
             val CaseSchemaNode aCase = cases.get(0)
-            for(caseChildNode : aCase.childNodes)
+            for (caseChildNode : aCase.childNodes)
                 printAugmentedNode(caseChildNode)
         }
     }
@@ -767,10 +767,10 @@ class GeneratorImpl {
 
     private def dispatch CharSequence tree(ChoiceSchemaNode node,YangInstanceIdentifier path) '''
         «node.nodeName» (choice)
-        «casesTree(node.cases.values, path)»
+        «casesTree(node.cases, path)»
     '''
 
-    def casesTree(Collection<CaseSchemaNode> nodes, YangInstanceIdentifier path) '''
+    def casesTree(Collection<? extends CaseSchemaNode> nodes, YangInstanceIdentifier path) '''
         <ul>
         «FOR node : nodes»
             <li>
@@ -878,7 +878,7 @@ class GeneratorImpl {
             return '''
                 «printInfo(node, "choice")»
                 «listItem("default case", node.defaultCase.map([ CaseSchemaNode n | n.getQName.localName]).orElse(null))»
-                «FOR caseNode : node.cases.values»
+                «FOR caseNode : node.cases»
                     «caseNode.printSchemaNodeInfo»
                 «ENDFOR»
                 </ul>
@@ -1092,7 +1092,7 @@ class GeneratorImpl {
     '''
 
     private def dispatch CharSequence printInfo(ChoiceSchemaNode node, int level, YangInstanceIdentifier path) '''
-        «val Set<DataSchemaNode> choiceCases = new HashSet(node.cases.values)»
+        «val Set<DataSchemaNode> choiceCases = new HashSet(node.cases)»
         «choiceCases.printChildren(level, path)»
     '''
 
@@ -1208,8 +1208,10 @@ class GeneratorImpl {
         return it.toString;
     }
 
-    private def String schemaPathToString(Module module, SchemaPath schemaPath, EffectiveModelContext ctx, DataNodeContainer dataNode) {
-            val List<QName> path = Lists.newArrayList(schemaPath.pathFromRoot);
+    private def String schemaPathToString(Module module, SchemaPath schemaPath, EffectiveModelContext ctx,
+            DataNodeContainer dataNode) {
+        // FIXME: do not instantiate a list here
+        val path = Lists.newArrayList(schemaPath.pathFromRoot);
         val StringBuilder pathString = new StringBuilder()
         if (schemaPath.absolute) {
             pathString.append('/')
@@ -1449,7 +1451,7 @@ class GeneratorImpl {
             result.append('/')
         }
         if (path !== null && !path.empty) {
-            val List<QName> actual = new ArrayList()
+            val actual = new ArrayList()
             var i = 0;
             for (pathElement : path) {
                 actual.add(pathElement)
