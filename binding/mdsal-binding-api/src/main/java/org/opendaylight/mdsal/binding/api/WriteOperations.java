@@ -12,6 +12,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Write-like operations supported by {@link WriteTransaction} and {@link ReadWriteTransaction}. This interface defines
@@ -64,6 +66,8 @@ public interface WriteOperations {
     @Deprecated(forRemoval = true)
     default <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
             @NonNull T data, boolean createMissingParents) {
+        Logger log = LoggerFactory.getLogger(WriteOperations.class);
+        log.error("Writing data to the mdsal, path {}, data {}", path, data);
         if (createMissingParents) {
             mergeParentStructurePut(store, path, data);
         } else {
@@ -137,6 +141,8 @@ public interface WriteOperations {
     @Deprecated(forRemoval = true)
     default <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
             @NonNull T data, boolean createMissingParents) {
+        Logger log = LoggerFactory.getLogger(WriteOperations.class);
+        log.error("Writing merge data to the mdsal, path {}, data {}", path, data);
         if (createMissingParents) {
             mergeParentStructureMerge(store, path, data);
         } else {
