@@ -15,7 +15,7 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
  *
  * @param <T> RPC implementation type
  */
+// FIXME: reconsider usefulness of this capture
 public interface DOMRpcImplementationRegistration<T extends DOMRpcImplementation> extends ObjectRegistration<T> {
-    @Override
-    void close();
+
 }
