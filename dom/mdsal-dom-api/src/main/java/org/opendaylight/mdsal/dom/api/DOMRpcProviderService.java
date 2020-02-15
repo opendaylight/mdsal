@@ -7,8 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.concepts.Registration;
 
 /**
  * A {@link DOMService} which allows registration of RPC implementations with a conceptual router. The client
@@ -39,4 +41,14 @@ public interface DOMRpcProviderService extends DOMService {
      */
     @NonNull <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T>
         registerRpcImplementation(@NonNull T implementation, @NonNull Set<DOMRpcIdentifier> rpcs);
+
+    /**
+     * Register a set of {@link DOMRpcImplementation}s with this service. The registration is performed atomically.
+     *
+     * @param map Map of RPC identifiers and their corresponding implementations
+     * @return A registration object, guaranteed to be non-null
+     * @throws NullPointerException if map is null or contains a null element
+     * @throws IllegalArgumentException if map is empty.
+     */
+    @NonNull Registration registerRpcImplementations(Map<DOMRpcIdentifier, DOMRpcImplementation> map);
 }
