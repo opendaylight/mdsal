@@ -11,11 +11,13 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimaps;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventListener;
@@ -27,9 +29,11 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 
 /**
  * Abstract routing table definition for Action and RPC.
+ *
  * @param <I> instance type of RPC or Acton
  * @param <D> identifier type of RPC or Acton
  * @param <M> implementation type of RPC or Acton
@@ -66,18 +70,25 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
             return this;
         }
 
+        final Builder<K, E> mb = ImmutableMap.builder();
+        add(implementation, oprsToAdd, mb);
+
+        return newInstance(mb.build(), schemaContext);
+    }
+
+    private void add(final M implementation, final Set<I> oprsToAdd,
+            final Builder<K, E> tableInputBuilder) {
         // First decompose the identifiers to a multimap
         final ListMultimap<K, D> toAdd = decomposeIdentifiers(oprsToAdd);
 
         // Now iterate over existing entries, modifying them as appropriate...
-        final Builder<K, E> mb = ImmutableMap.builder();
         for (Entry<K, E> re : this.operations.entrySet()) {
             List<D> newOperations = new ArrayList<>(toAdd.removeAll(re.getKey()));
             if (!newOperations.isEmpty()) {
                 final E ne = (E) re.getValue().add(implementation, newOperations);
-                mb.put(re.getKey(), ne);
+                tableInputBuilder.put(re.getKey(), ne);
             } else {
-                mb.put(re);
+                tableInputBuilder.put(re);
             }
         }
 
@@ -89,14 +100,26 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
                 vb.put(i, v);
             }
 
-            final E entry = createOperationEntry(schemaContext, e.getKey(),
-                vb.build());
+            final E entry = createOperationEntry(schemaContext, e.getKey(), vb.build());
             if (entry != null) {
-                mb.put(e.getKey(), entry);
+                tableInputBuilder.put(e.getKey(), entry);
             }
         }
+    }
 
-        return newInstance(mb.build(), schemaContext);
+    AbstractDOMRoutingTable<I, D, M, L, K, E> addAll(final Map<I, M> map) {
+        if (map.isEmpty()) {
+            return this;
+        }
+
+        HashMultimap<M, I> inverted = invertImplementationsMap(map);
+
+        final Builder<K, E> tableInputBuilder = ImmutableMap.builder();
+        for (M impl : inverted.keySet()) {
+            add(impl, inverted.get(impl), tableInputBuilder);
+        }
+
+        return newInstance(tableInputBuilder.build(), schemaContext);
     }
 
     AbstractDOMRoutingTable<I, D, M, L, K, E> remove(final M implementation, final Set<I> instances) {
@@ -123,6 +146,42 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
 
         // All done, whatever is in toRemove, was not there in the first place
         return newInstance(b.build(), schemaContext);
+    }
+
+
+    private void remove(final M implementation, final Set<I> oprsToRemove,
+                        final Builder<K, E> tableInputBuilder) {
+        final ListMultimap<K, D> toRemove = decomposeIdentifiers(oprsToRemove);
+
+        for (Entry<K, E> e : this.operations.entrySet()) {
+            final List<D> removed = new ArrayList<>(toRemove.removeAll(e.getKey()));
+            if (!removed.isEmpty()) {
+                final E ne = (E) e.getValue().remove(implementation, removed);
+                if (ne != null) {
+                    tableInputBuilder.put(e.getKey(), ne);
+                }
+            } else {
+                tableInputBuilder.put(e);
+            }
+        }
+    }
+
+    AbstractDOMRoutingTable<I, D, M, L, K, E> removeAll(final Map<I, M> map) {
+        if (map.isEmpty()) {
+            return this;
+        }
+        HashMultimap<M, I> inverted = invertImplementationsMap(map);
+
+        final Builder<K, E> tableInputBuilder = ImmutableMap.builder();
+        for (M impl : inverted.keySet()) {
+            remove(impl, inverted.get(impl), tableInputBuilder);
+        }
+
+        return newInstance(tableInputBuilder.build(), schemaContext);
+    }
+
+    HashMultimap<M, I> invertImplementationsMap(final Map<I, M> map) {
+        return Multimaps.invertFrom(Multimaps.forMap(map), HashMultimap.create());
     }
 
     @VisibleForTesting
