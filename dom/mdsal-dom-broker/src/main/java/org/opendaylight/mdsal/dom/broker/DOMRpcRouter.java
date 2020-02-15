@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
@@ -16,6 +17,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
@@ -132,6 +134,16 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
 
     @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
             justification = "https://github.com/spotbugs/spotbugs/issues/811")
+    private synchronized void removeRpcImplementations(final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
+        final DOMRpcRoutingTable oldTable = routingTable;
+        final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.removeAll(map);
+        routingTable = newTable;
+
+        listenerNotifier.execute(() -> notifyRemoved(newTable, map.values()));
+    }
+
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private synchronized void removeActionImplementation(final DOMActionImplementation implementation,
             final Set<DOMActionInstance> actions) {
         final DOMActionRoutingTable oldTable = actionRoutingTable;
@@ -161,9 +173,33 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
+    private synchronized void notifyAdded(final DOMRpcRoutingTable newTable,
+            final Collection<? extends DOMRpcImplementation> impls) {
+        for (Registration<?> l : listeners) {
+            for (DOMRpcImplementation impl : impls) {
+                l.addRpc(newTable, impl);
+            }
+        }
+    }
+
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private synchronized void notifyRemoved(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
         for (Registration<?> l : listeners) {
             l.removeRpc(newTable, impl);
+        }
+    }
+
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
+    private synchronized void notifyRemoved(final DOMRpcRoutingTable newTable,
+            final Collection<? extends DOMRpcImplementation> impls) {
+        for (Registration<?> l : listeners) {
+            for (DOMRpcImplementation impl : impls) {
+                l.removeRpc(newTable, impl);
+            }
         }
     }
 
@@ -453,13 +489,13 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
     private final class RpcProviderServiceFacade implements DOMRpcProviderService {
         @Override
         public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
-            final T implementation, final DOMRpcIdentifier... rpcs) {
+                final T implementation, final DOMRpcIdentifier... rpcs) {
             return registerRpcImplementation(implementation, ImmutableSet.copyOf(rpcs));
         }
 
         @Override
         public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
-            final T implementation, final Set<DOMRpcIdentifier> rpcs) {
+                final T implementation, final Set<DOMRpcIdentifier> rpcs) {
 
             synchronized (DOMRpcRouter.this) {
                 final DOMRpcRoutingTable oldTable = routingTable;
@@ -473,6 +509,28 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                 @Override
                 protected void removeRegistration() {
                     removeRpcImplementation(getInstance(), rpcs);
+                }
+            };
+        }
+
+        @Override
+        public org.opendaylight.yangtools.concepts.Registration registerRpcImplementations(
+                final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
+            final ImmutableMap<DOMRpcIdentifier, DOMRpcImplementation> defensive = ImmutableMap.copyOf(map);
+            checkArgument(!map.isEmpty());
+
+            synchronized (DOMRpcRouter.this) {
+                final DOMRpcRoutingTable oldTable = routingTable;
+                final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.addAll(defensive);
+                routingTable = newTable;
+
+                listenerNotifier.execute(() -> notifyAdded(newTable, defensive.values()));
+            }
+
+            return new AbstractRegistration() {
+                @Override
+                protected void removeRegistration() {
+                    removeRpcImplementations(defensive);
                 }
             };
         }
