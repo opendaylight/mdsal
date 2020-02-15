@@ -11,12 +11,15 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Map;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 
 public class AbstractDOMRpcProviderServiceTest extends AbstractDOMRpcProviderService {
 
@@ -34,5 +37,10 @@ public class AbstractDOMRpcProviderServiceTest extends AbstractDOMRpcProviderSer
     public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
             final T implementation, final Set<DOMRpcIdentifier> rpcs) {
         return domRpcImplementationRegistration;
+    }
+
+    @Override
+    public Registration registerRpcImplementations(Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
+        throw new UnsupportedOperationException();
     }
 }

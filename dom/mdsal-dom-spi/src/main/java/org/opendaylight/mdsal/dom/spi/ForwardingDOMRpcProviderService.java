@@ -8,12 +8,14 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.collect.ForwardingObject;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
+import org.opendaylight.yangtools.concepts.Registration;
 
 /**
  * Utility class which implements {@link DOMRpcProviderService} by forwarding
@@ -33,5 +35,10 @@ public abstract class ForwardingDOMRpcProviderService extends ForwardingObject i
     public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
             final T implementation, final Set<DOMRpcIdentifier> types) {
         return delegate().registerRpcImplementation(implementation, types);
+    }
+
+    @Override
+    public Registration registerRpcImplementations(final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
+        return delegate().registerRpcImplementations(map);
     }
 }
