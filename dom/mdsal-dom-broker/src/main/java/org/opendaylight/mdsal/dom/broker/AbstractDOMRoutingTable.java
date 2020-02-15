@@ -31,6 +31,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
  * Abstract routing table definition for Action and RPC.
+ *
  * @param <I> instance type of RPC or Acton
  * @param <D> identifier type of RPC or Acton
  * @param <M> implementation type of RPC or Acton
@@ -101,6 +102,15 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
         return newInstance(mb.build(), schemaContext);
     }
 
+    AbstractDOMRoutingTable<I, D, M, L, E> addAll(final Map<I, M> map) {
+        if (map.isEmpty()) {
+            return this;
+        }
+
+        // FIXME: implement this
+        return null;
+    }
+
     AbstractDOMRoutingTable<I, D, M, L, E> remove(final M implementation, final Set<I> instances) {
         if (instances.isEmpty()) {
             return this;
@@ -125,6 +135,15 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
 
         // All done, whatever is in toRemove, was not there in the first place
         return newInstance(b.build(), schemaContext);
+    }
+
+    AbstractDOMRoutingTable<I, D, M, L, E> removeAll(final Map<I, M> map) {
+        if (map.isEmpty()) {
+            return this;
+        }
+
+        // FIXME: implement this
+        return null;
     }
 
     @VisibleForTesting
