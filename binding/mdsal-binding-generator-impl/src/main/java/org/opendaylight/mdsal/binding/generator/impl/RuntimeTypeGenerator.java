@@ -63,7 +63,8 @@ final class RuntimeTypeGenerator extends AbstractTypeGenerator {
             }
         }
 
-        return new BindingRuntimeTypes(augmentationToSchema, typeToDefiningSchema, choiceToCases, identities);
+        return new BindingRuntimeTypes(schemaContext(), augmentationToSchema, typeToDefiningSchema, choiceToCases,
+            identities);
     }
 
     private static Type builtType(final Map<Type, Type> knownTypes, final Type type) {

@@ -62,6 +62,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
@@ -184,7 +185,7 @@ abstract class AbstractTypeGenerator {
     /**
      * Holds reference to schema context to resolve data of augmented element when creating augmentation builder.
      */
-    private final SchemaContext schemaContext;
+    private final @NonNull SchemaContext schemaContext;
 
     /**
      * Holds renamed elements.
@@ -204,6 +205,10 @@ abstract class AbstractTypeGenerator {
         }
 
         contexts.forEach(this::allAugmentsToGenTypes);
+    }
+
+    final @NonNull SchemaContext schemaContext() {
+        return schemaContext;
     }
 
     final Collection<ModuleContext> moduleContexts() {

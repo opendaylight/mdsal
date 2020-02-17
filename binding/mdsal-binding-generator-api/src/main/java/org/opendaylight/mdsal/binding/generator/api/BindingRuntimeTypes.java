@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.generator.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.BiMap;
@@ -17,30 +19,40 @@ import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 
 /**
  * The result of BindingGenerator run. Contains mapping between Types and SchemaNodes.
  */
 @Beta
-public final class BindingRuntimeTypes implements Immutable {
-
+public final class BindingRuntimeTypes implements SchemaContextProvider, Immutable {
+    private final @NonNull SchemaContext schemaContext;
     private final ImmutableMap<Type, AugmentationSchemaNode> typeToAugmentation;
     private final ImmutableBiMap<Type, WithStatus> typeToSchema;
     private final ImmutableMultimap<Type, Type> choiceToCases;
     private final ImmutableMap<QName, Type> identities;
 
-    public BindingRuntimeTypes(final Map<Type, AugmentationSchemaNode> typeToAugmentation,
+    public BindingRuntimeTypes(final SchemaContext schemaContext,
+            final Map<Type, AugmentationSchemaNode> typeToAugmentation,
             final BiMap<Type, WithStatus> typeToDefiningSchema, final Multimap<Type, Type> choiceToCases,
             final Map<QName, Type> identities) {
+        this.schemaContext = requireNonNull(schemaContext);
         this.typeToAugmentation = ImmutableMap.copyOf(typeToAugmentation);
         this.typeToSchema = ImmutableBiMap.copyOf(typeToDefiningSchema);
         this.choiceToCases = ImmutableMultimap.copyOf(choiceToCases);
         this.identities = ImmutableMap.copyOf(identities);
+    }
+
+    @Override
+    public SchemaContext getSchemaContext() {
+        return schemaContext;
     }
 
     public Optional<AugmentationSchemaNode> findAugmentation(final Type type) {

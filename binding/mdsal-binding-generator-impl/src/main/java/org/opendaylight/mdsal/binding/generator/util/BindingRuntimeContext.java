@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -58,6 +59,7 @@ import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
@@ -80,14 +82,13 @@ import org.slf4j.LoggerFactory;
  *
  * <p>Same goes for all possible augmentations.
  */
-public final class BindingRuntimeContext implements Immutable {
+public final class BindingRuntimeContext implements SchemaContextProvider, Immutable {
 
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeContext.class);
     private static final char DOT = '.';
 
     private final BindingRuntimeTypes runtimeTypes;
     private final ClassLoadingStrategy strategy;
-    private final SchemaContext schemaContext;
 
     private final LoadingCache<QName, Class<?>> identityClasses = CacheBuilder.newBuilder().weakValues().build(
         new CacheLoader<QName, Class<?>>() {
@@ -103,10 +104,9 @@ public final class BindingRuntimeContext implements Immutable {
             }
         });
 
-    private BindingRuntimeContext(final ClassLoadingStrategy strategy, final SchemaContext schema) {
-        this.strategy = strategy;
-        this.schemaContext = schema;
-        runtimeTypes = new BindingGeneratorImpl().generateTypeMapping(schema);
+    private BindingRuntimeContext(final BindingRuntimeTypes runtimeTypes, final ClassLoadingStrategy strategy) {
+        this.runtimeTypes = requireNonNull(runtimeTypes);
+        this.strategy = requireNonNull(strategy);
     }
 
     /**
@@ -117,7 +117,7 @@ public final class BindingRuntimeContext implements Immutable {
      * @return Instance of BindingRuntimeContext for supplied schema context.
      */
     public static BindingRuntimeContext create(final ClassLoadingStrategy strategy, final SchemaContext ctx) {
-        return new BindingRuntimeContext(strategy, ctx);
+        return new BindingRuntimeContext(new BindingGeneratorImpl().generateTypeMapping(ctx), strategy);
     }
 
     /**
@@ -135,8 +135,9 @@ public final class BindingRuntimeContext implements Immutable {
      *
      * @return stable view of schema context
      */
+    @Override
     public SchemaContext getSchemaContext() {
-        return schemaContext;
+        return runtimeTypes.getSchemaContext();
     }
 
     /**
@@ -490,6 +491,6 @@ public final class BindingRuntimeContext implements Immutable {
         return MoreObjects.toStringHelper(this)
                 .add("ClassLoadingStrategy", strategy)
                 .add("runtimeTypes", runtimeTypes)
-                .add("schemaContext", schemaContext).toString();
+                .toString();
     }
 }
