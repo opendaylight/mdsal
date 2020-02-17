@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
@@ -26,12 +27,12 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
 
 public class LazyDataTreeModificationTest {
-
     @Test
     public void basicTest() throws Exception {
         final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
-        final BindingToNormalizedNodeCodec codec =
-                new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), registry);
+        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
+            new DefaultBindingRuntimeGenerator(), GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
+            registry);
         final DOMDataTreeCandidate domDataTreeCandidate = mock(DOMDataTreeCandidate.class);
         final DOMDataTreeIdentifier domDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
@@ -45,5 +46,4 @@ public class LazyDataTreeModificationTest {
 
         assertNotNull(LazyDataTreeModification.create(codec, domDataTreeCandidate));
     }
-
 }

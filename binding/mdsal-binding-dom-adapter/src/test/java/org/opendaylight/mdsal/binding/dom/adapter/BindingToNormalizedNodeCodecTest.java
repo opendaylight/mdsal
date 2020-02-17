@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -37,7 +39,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingToNormalizedNodeCodecTest {
-
     /**
      * Positive test.
      *
@@ -116,10 +117,12 @@ public class BindingToNormalizedNodeCodecTest {
             final SchemaContext schemaCtx) {
         final GeneratedClassLoadingStrategy classLoadingStrategy =
                 GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
-        final BindingRuntimeContext ctx = BindingRuntimeContext.create(classLoadingStrategy, schemaCtx);
+        final BindingRuntimeGenerator generator = new DefaultBindingRuntimeGenerator();
+        final BindingRuntimeContext ctx = BindingRuntimeContext.create(
+            generator.generateTypeMapping(schemaCtx), classLoadingStrategy);
         final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry(ctx);
-        final BindingToNormalizedNodeCodec codec =
-                new BindingToNormalizedNodeCodec(classLoadingStrategy, codecRegistry);
+        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
+            generator, classLoadingStrategy, codecRegistry);
         final List<PathArgument> pathArgs = new ArrayList<>();
         pathArgs.add(NodeIdentifier.create(QName.create("urn:test", "2017-01-01", "cont")));
 

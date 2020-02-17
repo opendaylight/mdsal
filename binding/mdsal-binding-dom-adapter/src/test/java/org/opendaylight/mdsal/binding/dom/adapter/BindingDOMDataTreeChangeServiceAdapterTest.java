@@ -26,6 +26,7 @@ import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
@@ -69,8 +70,8 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
 
     @Test
     public void testRegisterDataTreeChangeListener() {
-        final BindingToNormalizedNodeCodec codec =
-                new BindingToNormalizedNodeCodec(this.classLoadingStrategy, this.codecRegistry);
+        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
+            new DefaultBindingRuntimeGenerator(), classLoadingStrategy, codecRegistry);
 
         final DataTreeChangeService service = BindingDOMDataTreeChangeServiceAdapter.create(codec, this.mockDOMService);
 
