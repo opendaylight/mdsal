@@ -31,6 +31,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSeriali
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.dom.codec.util.AbstractBindingLazyContainerNode;
+import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -320,10 +321,8 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
                         "Could not create BindingRuntimeContext from class " + bindingCls.getName(), e);
             }
         }
-        final BindingRuntimeContext runtimeCtx = BindingRuntimeContext.create(strategy, context);
-        return create(runtimeCtx);
+        return create(BindingRuntimeContext.create(new BindingGeneratorImpl().generateTypeMapping(context), strategy));
     }
-
 
     private static final class DeserializeFunction<T> implements Function<Optional<NormalizedNode<?, ?>>, Optional<T>> {
         private final DataObjectCodecContext<?,?> ctx;
