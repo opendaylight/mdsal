@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -32,7 +33,6 @@ import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
-import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -307,7 +307,7 @@ public class TypeProviderTest {
 
         final Type leafrefResolvedType1 = provider.javaTypeForSchemaDefinitionType(leafType, leaf);
         assertNotNull(leafrefResolvedType1);
-        assertTrue(leafrefResolvedType1 instanceof ReferencedTypeImpl);
+        assertTrue(leafrefResolvedType1 instanceof DefaultType);
 
         final QName leafListNode = QName.create(module.getQNameModule(), "enums");
         final DataSchemaNode enumListNode = module.findDataChildByName(leafListNode).get();
@@ -324,18 +324,14 @@ public class TypeProviderTest {
         final LeafSchemaNode enumLeafNode = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo",
             "resolve-direct-use-of-enum");
         final TypeDefinition<?> enumLeafTypedef = enumLeafNode.getType();
-        Type enumType = provider.javaTypeForSchemaDefinitionType(enumLeafTypedef, enumLeafNode);
-
-        Type refType = new ReferencedTypeImpl(enumType.getIdentifier());
-        provider.putReferencedType(enumLeafNode.getPath(), refType);
+        provider.putReferencedType(enumLeafNode.getPath(),
+            DefaultType.of(provider.javaTypeForSchemaDefinitionType(enumLeafTypedef, enumLeafNode)));
 
         final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(TEST_TYPE_PROVIDER,
             "foo", "list-of-enums");
         final TypeDefinition<?> enumLeafListTypedef = enumListNode.getType();
-        enumType = provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode);
-
-        refType = new ReferencedTypeImpl(enumType.getIdentifier());
-        provider.putReferencedType(enumListNode.getPath(), refType);
+        provider.putReferencedType(enumListNode.getPath(),
+            DefaultType.of(provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode)));
     }
 
     @Test
