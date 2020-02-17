@@ -5,12 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.api;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -25,12 +26,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.ServiceLoader;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
-import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
-import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
@@ -60,28 +58,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Runtime Context for Java YANG Binding classes
+ * Runtime Context for Java YANG Binding classes. It provides information derived from the backing effective model,
+ * which is not captured in generated classes (and hence cannot be obtained from {@code BindingReflections}.
  *
- * <p>Runtime Context provides additional insight in Java YANG Binding,
- * binding classes and underlying YANG schema, it contains
- * runtime information, which could not be derived from generated
- * classes alone using {@link org.opendaylight.mdsal.binding.spec.reflect.BindingReflections}.
- *
- * <p>Some of this information are for example list of all available
- * children for cases {@link #getChoiceCaseChildren(DataNodeContainer)}, since
- * choices are augmentable and new choices may be introduced by additional models.
- *
- * <p>Same goes for all possible augmentations.
+ * <p>Some of this information are for example list of all available children for cases
+ * {@link #getChoiceCaseChildren(DataNodeContainer)}, since choices are augmentable and new choices may be introduced
+ * by additional models. Same goes for all possible augmentations.
  */
+@Beta
 public final class BindingRuntimeContext implements SchemaContextProvider, Immutable {
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeContext.class);
-    private static final BindingRuntimeGenerator GENERATOR = ServiceLoader.load(BindingRuntimeGenerator.class)
-            .findFirst()
-            .orElseThrow(() -> new IllegalStateException("No BindingRuntimeGenerator implementation found"));
 
-
-    private final BindingRuntimeTypes runtimeTypes;
-    private final ClassLoadingStrategy strategy;
+    private final @NonNull BindingRuntimeTypes runtimeTypes;
+    private final @NonNull ClassLoadingStrategy strategy;
 
     private final LoadingCache<QName, Class<?>> identityClasses = CacheBuilder.newBuilder().weakValues().build(
         new CacheLoader<QName, Class<?>>() {
@@ -106,11 +95,12 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
      * Creates Binding Runtime Context from supplied class loading strategy and schema context.
      *
      * @param strategy Class loading strategy to retrieve generated Binding classes
-     * @param ctx Schema Context which describes YANG model and to which Binding classes should be mapped
-     * @return Instance of BindingRuntimeContext for supplied schema context.
+     * @param runtimeTypes Binding classes to YANG schema mapping
+     * @return A new instance
      */
-    public static BindingRuntimeContext create(final ClassLoadingStrategy strategy, final SchemaContext ctx) {
-        return new BindingRuntimeContext(GENERATOR.generateTypeMapping(ctx), strategy);
+    public static @NonNull BindingRuntimeContext create(final BindingRuntimeTypes runtimeTypes,
+            final ClassLoadingStrategy strategy) {
+        return new BindingRuntimeContext(runtimeTypes, strategy);
     }
 
     /**
@@ -119,7 +109,7 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
      *
      * @return Class loading strategy.
      */
-    public ClassLoadingStrategy getStrategy() {
+    public @NonNull ClassLoadingStrategy getStrategy() {
         return strategy;
     }
 

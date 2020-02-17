@@ -19,7 +19,8 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.$YangModuleInfoImpl;
@@ -43,8 +44,8 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
     private final EffectiveModelContext context;
 
     @Inject
-    public YangModuleLibrarySupport(final @Reference YangParserFactory parserFactory)
-            throws YangParserException, IOException {
+    public YangModuleLibrarySupport(final @Reference YangParserFactory parserFactory,
+            final @Reference BindingRuntimeGenerator generator) throws YangParserException, IOException {
         final YangModuleInfo yangLibModule = $YangModuleInfoImpl.getInstance();
 
         context = parserFactory.createParser()
@@ -53,7 +54,7 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
                 .addSource(createSource(yangLibModule))
                 .buildEffectiveModel();
         final BindingCodecTree codecTree = new BindingNormalizedNodeCodecRegistry(BindingRuntimeContext.create(
-            SimpleStrategy.INSTANCE, context)).getCodecContext();
+            generator.generateTypeMapping(context), SimpleStrategy.INSTANCE)).getCodecContext();
 
         this.codec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
     }
