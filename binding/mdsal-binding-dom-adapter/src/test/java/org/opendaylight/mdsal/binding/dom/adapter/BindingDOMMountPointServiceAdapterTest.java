@@ -18,6 +18,7 @@ import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -26,12 +27,12 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class BindingDOMMountPointServiceAdapterTest {
-
     @Test
     public void basicTest() throws Exception {
         final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
-        final BindingToNormalizedNodeCodec codec =
-                new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), registry);
+        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
+            new DefaultBindingRuntimeGenerator(), GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
+            registry);
         doReturn(YangInstanceIdentifier.empty()).when(registry).toYangInstanceIdentifier(any());
         final DOMMountPointService mountPointService = mock(DOMMountPointService.class);
 
