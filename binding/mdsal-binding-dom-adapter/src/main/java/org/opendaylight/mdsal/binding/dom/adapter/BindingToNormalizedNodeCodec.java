@@ -41,8 +41,9 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaException;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -100,27 +101,31 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
             });
     private final BindingNormalizedNodeCodecRegistry codecRegistry;
     private final ClassLoadingStrategy classLoadingStrategy;
+    private final BindingRuntimeGenerator generator;
     private final FutureSchema futureSchema;
+
     private ListenerRegistration<?> listenerRegistration;
 
     @Inject
-    public BindingToNormalizedNodeCodec(final ClassLoadingStrategy classLoadingStrategy,
-            final BindingNormalizedNodeCodecRegistry codecRegistry) {
-        this(classLoadingStrategy, codecRegistry, false);
+    public BindingToNormalizedNodeCodec(final BindingRuntimeGenerator generator,
+            final ClassLoadingStrategy classLoadingStrategy, final BindingNormalizedNodeCodecRegistry codecRegistry) {
+        this(generator, classLoadingStrategy, codecRegistry, false);
     }
 
-    public BindingToNormalizedNodeCodec(final ClassLoadingStrategy classLoadingStrategy,
-            final BindingNormalizedNodeCodecRegistry codecRegistry, final boolean waitForSchema) {
+    public BindingToNormalizedNodeCodec(final BindingRuntimeGenerator generator,
+            final ClassLoadingStrategy classLoadingStrategy, final BindingNormalizedNodeCodecRegistry codecRegistry,
+            final boolean waitForSchema) {
+        this.generator = requireNonNull(generator, "generator");
         this.classLoadingStrategy = requireNonNull(classLoadingStrategy, "classLoadingStrategy");
         this.codecRegistry = requireNonNull(codecRegistry, "codecRegistry");
         this.futureSchema = FutureSchema.create(WAIT_DURATION_SEC, TimeUnit.SECONDS, waitForSchema);
     }
 
-    public static BindingToNormalizedNodeCodec newInstance(final ClassLoadingStrategy classLoadingStrategy,
-            final DOMSchemaService schemaService) {
+    public static BindingToNormalizedNodeCodec newInstance(final BindingRuntimeGenerator generator,
+            final ClassLoadingStrategy classLoadingStrategy, final DOMSchemaService schemaService) {
         final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry();
-        BindingToNormalizedNodeCodec instance = new BindingToNormalizedNodeCodec(
-                classLoadingStrategy, codecRegistry, true);
+        BindingToNormalizedNodeCodec instance = new BindingToNormalizedNodeCodec(generator, classLoadingStrategy,
+            codecRegistry, true);
         instance.listenerRegistration = schemaService.registerSchemaContextListener(instance);
         return instance;
     }
@@ -304,7 +309,8 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
 
     @Override
     public void onGlobalContextUpdated(final SchemaContext context) {
-        final BindingRuntimeContext runtimeContext = BindingRuntimeContext.create(classLoadingStrategy, context);
+        final BindingRuntimeContext runtimeContext = BindingRuntimeContext.create(
+            generator.generateTypeMapping(context), classLoadingStrategy);
         codecRegistry.onBindingRuntimeContextUpdated(runtimeContext);
         futureSchema.onRuntimeContextUpdated(runtimeContext);
     }
@@ -403,11 +409,6 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     @Override
     public final BindingCodecTree create(final BindingRuntimeContext context) {
         return codecRegistry.create(context);
-    }
-
-    @Override
-    public final BindingCodecTree create(final SchemaContext context, final Class<?>... bindingClasses) {
-        return codecRegistry.create(context, bindingClasses);
     }
 
     protected @NonNull Entry<InstanceIdentifier<?>, BindingDataObjectCodecTreeNode<?>> getSubtreeCodec(

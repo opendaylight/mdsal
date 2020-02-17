@@ -7,12 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import java.util.ServiceLoader;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaForClassException;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
-import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeLeafOnlyAugment;
@@ -24,7 +26,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class ExceptionReportingTest {
     private static final BindingNormalizedNodeCodecRegistry CODEC_WITHOUT_TOP = codec(LowestLevel1.class);
@@ -86,8 +88,10 @@ public class ExceptionReportingTest {
                 throw new IllegalStateException(e);
             }
         }
-        final SchemaContext schema = ctx.tryToCreateSchemaContext().get();
-        final BindingRuntimeContext runtimeCtx = BindingRuntimeContext.create(ctx, schema);
+        final EffectiveModelContext schema = ctx.tryToCreateModelContext().get();
+        final BindingRuntimeContext runtimeCtx = BindingRuntimeContext.create(
+            ServiceLoader.load(BindingRuntimeGenerator.class).findFirst().orElseThrow().generateTypeMapping(schema),
+            ctx);
         final BindingNormalizedNodeCodecRegistry registry = new BindingNormalizedNodeCodecRegistry(runtimeCtx);
         return registry;
     }
