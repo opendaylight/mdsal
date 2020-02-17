@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
@@ -68,8 +69,8 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
                 DOM_ENTITY.getIdentifier());
 
         this.adapter = new BindingDOMEntityOwnershipServiceAdapter(this.mockDOMService,
-                new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-                        this.mockCodecRegistry));
+                new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(),
+                    GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), mockCodecRegistry));
     }
 
     @Test
@@ -140,8 +141,8 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
     public void testOwnershipChangeWithException() throws Exception {
         final DOMEntityOwnershipListenerAdapter domEntityOwnershipListenerAdapter =
                 new DOMEntityOwnershipListenerAdapter(mock(EntityOwnershipListener.class),
-                        new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-                            this.mockCodecRegistry));
+                        new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(),
+                            GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), mockCodecRegistry));
         final DOMEntityOwnershipChange domOwnershipChange = mock(DOMEntityOwnershipChange.class);
         doThrow(IllegalStateException.class).when(domOwnershipChange).getEntity();
         domEntityOwnershipListenerAdapter.ownershipChanged(domOwnershipChange);

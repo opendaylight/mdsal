@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
@@ -28,6 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractSchemaAwareTest;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
@@ -66,9 +66,9 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
     @Override
     protected void setupWithSchema(final SchemaContext schemaContext) {
         this.context = schemaContext;
-        final BindingNormalizedNodeCodecRegistry registry = new BindingNormalizedNodeCodecRegistry();
-        this.codec = new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-                registry, true);
+        this.codec = new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(),
+            GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry(),
+            true);
     }
 
     @Test

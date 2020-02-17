@@ -21,6 +21,7 @@ import java.util.Deque;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -40,8 +41,9 @@ public class BindingDOMDataTreeWriteCursorAdapterTest {
                         InstanceIdentifier.create(DataObject.class));
         final DOMDataTreeWriteCursor delegate = mock(DOMDataTreeWriteCursor.class);
         final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
-        final BindingToNormalizedNodeCodec codec =
-                new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), registry);
+        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
+            new DefaultBindingRuntimeGenerator(), GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
+            registry);
         final BindingDOMDataTreeWriteCursorAdapter<?> adapter =
                 new BindingDOMDataTreeWriteCursorAdapter<>(identifier, delegate, codec);
 
