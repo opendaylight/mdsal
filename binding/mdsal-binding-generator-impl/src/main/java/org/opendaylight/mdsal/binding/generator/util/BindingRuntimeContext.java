@@ -31,13 +31,12 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
+import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -158,7 +157,7 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
     public @Nullable AugmentationSchemaNode getAugmentationDefinition(final Class<?> augClass) {
         checkArgument(Augmentation.class.isAssignableFrom(augClass),
             "Class %s does not represent augmentation", augClass);
-        return runtimeTypes.findAugmentation(referencedType(augClass)).orElse(null);
+        return runtimeTypes.findAugmentation(DefaultType.of(augClass)).orElse(null);
     }
 
     /**
@@ -178,11 +177,11 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
         checkArgument(!Augmentation.class.isAssignableFrom(cls), "Supplied class must not be an augmentation (%s is)",
             cls);
         checkArgument(!Action.class.isAssignableFrom(cls), "Supplied class must not be an action (%s is)", cls);
-        return (DataSchemaNode) runtimeTypes.findSchema(referencedType(cls)).orElse(null);
+        return (DataSchemaNode) runtimeTypes.findSchema(DefaultType.of(cls)).orElse(null);
     }
 
     public ActionDefinition getActionDefinition(final Class<? extends Action<?, ?, ?>> cls) {
-        return (ActionDefinition) runtimeTypes.findSchema(referencedType(cls)).orElse(null);
+        return (ActionDefinition) runtimeTypes.findSchema(DefaultType.of(cls)).orElse(null);
     }
 
     public Entry<AugmentationIdentifier, AugmentationSchemaNode> getResolvedAugmentationSchema(
@@ -259,7 +258,7 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
      *     which was used to generate supplied class.
      */
     public Entry<GeneratedType, WithStatus> getTypeWithSchema(final Class<?> type) {
-        return getTypeWithSchema(referencedType(type));
+        return getTypeWithSchema(DefaultType.of(type));
     }
 
     private Entry<GeneratedType, WithStatus> getTypeWithSchema(final Type referencedType) {
@@ -284,7 +283,7 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
             checkState(optType.isPresent(), "Failed to find generated type for choice %s", originalChoice);
             final Type choiceType = optType.get();
 
-            for (Type caze : runtimeTypes.findCases(referencedType(choiceType))) {
+            for (Type caze : runtimeTypes.findCases(choiceType)) {
                 final Entry<Type,Type> caseIdentifier = new SimpleEntry<>(choiceType, caze);
                 final HashSet<Type> caseChildren = new HashSet<>();
                 if (caze instanceof GeneratedTypeBuilder) {
@@ -300,7 +299,7 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
     }
 
     public Set<Class<?>> getCases(final Class<?> choice) {
-        final Collection<Type> cazes = runtimeTypes.findCases(referencedType(choice));
+        final Collection<Type> cazes = runtimeTypes.findCases(DefaultType.of(choice));
         final Set<Class<?>> ret = new HashSet<>(cazes.size());
         for (final Type caze : cazes) {
             try {
@@ -366,17 +365,6 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
             .collect(ImmutableSet.toImmutableSet()));
     }
 
-    private static Type referencedType(final Class<?> type) {
-        return new ReferencedTypeImpl(JavaTypeName.create(type));
-    }
-
-    private static Type referencedType(final Type type) {
-        if (type instanceof ReferencedTypeImpl) {
-            return type;
-        }
-        return new ReferencedTypeImpl(type.getIdentifier());
-    }
-
     private static Set<Type> collectAllContainerTypes(final GeneratedType type, final Set<Type> collection) {
         for (final MethodSignature definition : type.getMethodDefinitions()) {
             Type childType = definition.getReturnType();
@@ -384,7 +372,7 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
                 childType = ((ParameterizedType) childType).getActualTypeArguments()[0];
             }
             if (childType instanceof GeneratedType || childType instanceof GeneratedTypeBuilder) {
-                collection.add(referencedType(childType));
+                collection.add(childType);
             }
         }
         for (final Type parent : type.getImplements()) {
