@@ -13,16 +13,15 @@ import static org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadin
 
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 
 public class BindingMountPointAdapterTest {
-
     @Test
     public void basicTest() throws Exception {
-        final GeneratedClassLoadingStrategy loading = getTCCLClassLoadingStrategy();
-        final BindingNormalizedNodeCodecRegistry codecRegistry = mock(BindingNormalizedNodeCodecRegistry.class);
-        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(loading, codecRegistry);
+        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
+            new DefaultBindingRuntimeGenerator(), getTCCLClassLoadingStrategy(),
+            mock(BindingNormalizedNodeCodecRegistry.class));
         final DOMMountPoint domMountPoint = mock(DOMMountPoint.class);
         final BindingMountPointAdapter bindingMountPointAdapter = new BindingMountPointAdapter(codec, domMountPoint);
         assertNull(bindingMountPointAdapter.getIdentifier());

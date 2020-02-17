@@ -42,7 +42,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
  *
  * @author Thomas Pantelis
  */
-public class BindingDOMDataTreeChangeServiceAdapterTest {
+public class BindingDOMDataTreeChangeServiceAdapterTest extends AbstractAdapterTest {
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
 
     @Mock
@@ -69,9 +69,6 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
 
     @Test
     public void testRegisterDataTreeChangeListener() {
-        final BindingToNormalizedNodeCodec codec =
-                new BindingToNormalizedNodeCodec(this.classLoadingStrategy, this.codecRegistry);
-
         final DataTreeChangeService service = BindingDOMDataTreeChangeServiceAdapter.create(codec, this.mockDOMService);
 
         doReturn(this.mockDOMReg).when(this.mockDOMService).registerDataTreeChangeListener(
