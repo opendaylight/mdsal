@@ -66,6 +66,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
+import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -82,7 +83,6 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
-import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.model.util.TypeConstants;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
@@ -849,8 +849,7 @@ abstract class AbstractTypeGenerator {
         }
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            final Type targetType = new ReferencedTypeImpl(targetTypeBuilder.getIdentifier());
-            addRawAugmentGenTypeDefinition(context, targetType, augSchema, false);
+            addRawAugmentGenTypeDefinition(context, DefaultType.of(targetTypeBuilder), augSchema, false);
 
         } else {
             generateTypesFromAugmentedChoiceCases(context, targetTypeBuilder.build(),
@@ -1579,7 +1578,7 @@ abstract class AbstractTypeGenerator {
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
                 final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, nodeName,
                     typeBuilder, context);
-                returnType = new ReferencedTypeImpl(enumBuilder.getIdentifier());
+                returnType = DefaultType.of(enumBuilder);
                 typeProvider.putReferencedType(node.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
                 final UnionTypeDefinition unionDef = (UnionTypeDefinition)typeDef;
@@ -1995,7 +1994,7 @@ abstract class AbstractTypeGenerator {
     }
 
     private static void defaultImplementedInterace(final GeneratedTypeBuilder typeBuilder) {
-        defineImplementedInterfaceMethod(typeBuilder, new ReferencedTypeImpl(typeBuilder.getIdentifier()))
+        defineImplementedInterfaceMethod(typeBuilder, DefaultType.of(typeBuilder))
             .setDefault(true);
     }
 
