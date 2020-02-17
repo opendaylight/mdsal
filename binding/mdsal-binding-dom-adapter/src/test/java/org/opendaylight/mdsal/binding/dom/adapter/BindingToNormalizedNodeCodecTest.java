@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -116,7 +117,8 @@ public class BindingToNormalizedNodeCodecTest {
             final SchemaContext schemaCtx) {
         final GeneratedClassLoadingStrategy classLoadingStrategy =
                 GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
-        final BindingRuntimeContext ctx = BindingRuntimeContext.create(classLoadingStrategy, schemaCtx);
+        final BindingRuntimeContext ctx = BindingRuntimeContext.create(
+            new BindingGeneratorImpl().generateTypeMapping(schemaCtx), classLoadingStrategy);
         final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry(ctx);
         final BindingToNormalizedNodeCodec codec =
                 new BindingToNormalizedNodeCodec(classLoadingStrategy, codecRegistry);
