@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.model.util;
 
+import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 
 /**
