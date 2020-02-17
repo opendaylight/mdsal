@@ -36,7 +36,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.generator.impl.BindingSchemaContextUtils;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
@@ -250,8 +249,7 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
          * that user may be unaware that he is using incorrect case
          * which was generated for choice inside grouping.
          */
-        final Optional<CaseSchemaNode> found = BindingSchemaContextUtils.findInstantiatedCase(schema,
-                (CaseSchemaNode) origSchema);
+        final Optional<CaseSchemaNode> found = findInstantiatedCase(schema, (CaseSchemaNode) origSchema);
         return found;
     }
 
@@ -439,6 +437,18 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
         return ImmutableMap.copyOf(identifierToType);
     }
 
+    public Class<?> getIdentityClass(final QName input) {
+        return identityClasses.getUnchecked(input);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("ClassLoadingStrategy", strategy)
+                .add("runtimeTypes", runtimeTypes)
+                .toString();
+    }
+
     private static AugmentationIdentifier getAugmentationIdentifier(final AugmentationSchemaNode augment) {
         // FIXME: use DataSchemaContextNode.augmentationIdentifierFrom() once it does caching
         return AugmentationIdentifier.create(augment.getChildNodes().stream().map(DataSchemaNode::getQName)
@@ -483,15 +493,33 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
         return choice;
     }
 
-    public Class<?> getIdentityClass(final QName input) {
-        return identityClasses.getUnchecked(input);
-    }
+    private static Optional<CaseSchemaNode> findInstantiatedCase(final ChoiceSchemaNode instantiatedChoice,
+            final CaseSchemaNode originalDefinition) {
+        CaseSchemaNode potential = instantiatedChoice.getCaseNodeByName(originalDefinition.getQName());
+        if (originalDefinition.equals(potential)) {
+            return Optional.of(potential);
+        }
+        if (potential != null) {
+            SchemaNode potentialRoot = SchemaNodeUtils.getRootOriginalIfPossible(potential);
+            if (originalDefinition.equals(potentialRoot)) {
+                return Optional.of(potential);
+            }
+        }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("ClassLoadingStrategy", strategy)
-                .add("runtimeTypes", runtimeTypes)
-                .toString();
+        // We try to find case by name, then lookup its root definition
+        // and compare it with original definition
+        // This solves case, if choice was inside grouping
+        // which was used in different module and thus namespaces are
+        // different, but local names are still same.
+        //
+        // Still we need to check equality of definition, because local name is not
+        // sufficient to uniquelly determine equality of cases
+        //
+        for (CaseSchemaNode caze : instantiatedChoice.findCaseNodes(originalDefinition.getQName().getLocalName())) {
+            if (originalDefinition.equals(SchemaNodeUtils.getRootOriginalIfPossible(caze))) {
+                return Optional.of(caze);
+            }
+        }
+        return Optional.empty();
     }
 }
