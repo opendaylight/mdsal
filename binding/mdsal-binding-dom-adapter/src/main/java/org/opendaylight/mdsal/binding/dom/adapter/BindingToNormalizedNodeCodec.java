@@ -42,6 +42,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSeriali
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaException;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
+import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -304,7 +305,8 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
 
     @Override
     public void onGlobalContextUpdated(final SchemaContext context) {
-        final BindingRuntimeContext runtimeContext = BindingRuntimeContext.create(classLoadingStrategy, context);
+        final BindingRuntimeContext runtimeContext = BindingRuntimeContext.create(
+            new BindingGeneratorImpl().generateTypeMapping(context), classLoadingStrategy);
         codecRegistry.onBindingRuntimeContextUpdated(runtimeContext);
         futureSchema.onRuntimeContextUpdated(runtimeContext);
     }

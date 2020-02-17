@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.dom.codec.osgi.impl;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -16,6 +15,7 @@ import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.opendaylight.mdsal.binding.dom.codec.osgi.BindingRuntimeContextListener;
 import org.opendaylight.mdsal.binding.dom.codec.osgi.BindingRuntimeContextService;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
+import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
@@ -57,7 +57,8 @@ final class SimpleBindingRuntimeContextService extends
     }
 
     void updateBindingRuntimeContext(final SchemaContext schemaContext) {
-        final BindingRuntimeContext next = verifyNotNull(BindingRuntimeContext.create(strategy, schemaContext));
+        final BindingRuntimeContext next = BindingRuntimeContext.create(
+            new BindingGeneratorImpl().generateTypeMapping(schemaContext), strategy);
 
         final BindingRuntimeContextListener[] listeners;
         synchronized (lock) {
