@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -27,7 +28,6 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBu
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
-import org.opendaylight.mdsal.binding.model.util.AbstractBaseType;
 
 abstract class AbstractGeneratedType extends AbstractBaseType implements GeneratedType {
 
