@@ -7,17 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
-import org.opendaylight.mdsal.binding.model.util.AbstractBaseType;
 import org.opendaylight.yangtools.util.LazyCollections;
 
 final class AnnotationTypeBuilderImpl extends AbstractBaseType implements AnnotationTypeBuilder {
@@ -73,22 +71,6 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        return getIdentifier().equals(((AnnotationTypeBuilderImpl) obj).getIdentifier());
-    }
-
-    @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append("AnnotationTypeBuilder [packageName=");
@@ -103,15 +85,14 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         return builder.toString();
     }
 
-    private static final class AnnotationTypeImpl implements AnnotationType {
-        private final JavaTypeName identifier;
+    private static final class AnnotationTypeImpl extends AbstractBaseType implements AnnotationType {
         private final List<AnnotationType> annotations;
         private final List<AnnotationType.Parameter> parameters;
         private final List<String> paramNames;
 
         AnnotationTypeImpl(final JavaTypeName identifier, final List<AnnotationTypeBuilder> annotationBuilders,
                 final List<AnnotationType.Parameter> parameters) {
-            this.identifier = requireNonNull(identifier);
+            super(identifier);
 
             final List<AnnotationType> a = new ArrayList<>();
             for (final AnnotationTypeBuilder builder : annotationBuilders) {
@@ -126,11 +107,6 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
             this.paramNames = ImmutableList.copyOf(p);
 
             this.parameters = parameters.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(parameters);
-        }
-
-        @Override
-        public JavaTypeName getIdentifier() {
-            return identifier;
         }
 
         @Override
@@ -163,23 +139,6 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         @Override
         public boolean containsParameters() {
             return !this.parameters.isEmpty();
-        }
-
-        @Override
-        public int hashCode() {
-            return identifier.hashCode();
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-            final AnnotationTypeImpl other = (AnnotationTypeImpl) obj;
-            return identifier.equals(other.identifier);
         }
 
         @Override
