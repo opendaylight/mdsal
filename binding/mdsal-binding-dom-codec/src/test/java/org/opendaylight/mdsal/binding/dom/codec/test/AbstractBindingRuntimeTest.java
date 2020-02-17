@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.codec.test;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -24,7 +25,8 @@ public abstract class AbstractBindingRuntimeTest {
         ModuleInfoBackedContext ctx = ModuleInfoBackedContext.create();
         ctx.addModuleInfos(BindingReflections.loadModuleInfos());
         schemaContext = ctx.tryToCreateSchemaContext().get();
-        runtimeContext = BindingRuntimeContext.create(ctx, schemaContext);
+        runtimeContext = BindingRuntimeContext.create(new BindingGeneratorImpl().generateTypeMapping(schemaContext),
+            ctx);
     }
 
     @AfterClass
