@@ -32,6 +32,8 @@ import java.util.Set;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.api.ModuleInfoRegistry;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -209,6 +211,12 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         for (YangModuleInfo yangModuleInfo : moduleInfos) {
             register(requireNonNull(yangModuleInfo));
         }
+    }
+
+    @Beta
+    public @NonNull BindingRuntimeContext createRuntimeContext(final BindingRuntimeGenerator generator) {
+        return BindingRuntimeContext.create(generator.generateTypeMapping(tryToCreateModelContext().orElseThrow()),
+            this);
     }
 
     // TODO finish schema parsing and expose as SchemaService

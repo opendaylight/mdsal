@@ -14,6 +14,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
@@ -32,8 +33,8 @@ public class ActionLookupTest {
         ctx.addModuleInfos(BindingReflections.loadModuleInfos());
 
         final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
-        CODEC = new BindingToNormalizedNodeCodec(ctx, registry);
-        CODEC.onGlobalContextUpdated(ctx.tryToCreateSchemaContext().get());
+        CODEC = new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(), ctx, registry);
+        CODEC.onGlobalContextUpdated(ctx.tryToCreateModelContext().get());
     }
 
     @AfterClass

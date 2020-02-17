@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceA
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.MockSchemaService;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -46,9 +47,8 @@ public abstract class AbstractDataBrokerTestCustomizer {
 
     public AbstractDataBrokerTestCustomizer() {
         this.schemaService = new MockSchemaService();
-        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry();
-        final GeneratedClassLoadingStrategy loading = GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
-        this.bindingToNormalized = new BindingToNormalizedNodeCodec(loading, codecRegistry);
+        this.bindingToNormalized = new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(),
+            GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry());
         this.schemaService.registerSchemaContextListener(this.bindingToNormalized);
         this.domNotificationRouter = DOMNotificationRouter.create(16);
     }

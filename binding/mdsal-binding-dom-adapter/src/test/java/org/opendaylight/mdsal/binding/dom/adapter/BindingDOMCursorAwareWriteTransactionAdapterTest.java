@@ -17,7 +17,6 @@ import static org.mockito.Mockito.verify;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -25,14 +24,11 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-public class BindingDOMCursorAwareWriteTransactionAdapterTest {
-
+public class BindingDOMCursorAwareWriteTransactionAdapterTest extends AbstractAdapterTest {
     @Test
     public void basicTest() throws Exception {
         final DOMDataTreeCursorAwareTransaction delegate = mock(DOMDataTreeCursorAwareTransaction.class);
         final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
-        final BindingToNormalizedNodeCodec codec =
-                new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), registry);
         final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.empty();
         doReturn(yangInstanceIdentifier).when(registry).toYangInstanceIdentifier(any());
         doReturn(mock(DOMDataTreeWriteCursor.class)).when(delegate).createCursor(any());
