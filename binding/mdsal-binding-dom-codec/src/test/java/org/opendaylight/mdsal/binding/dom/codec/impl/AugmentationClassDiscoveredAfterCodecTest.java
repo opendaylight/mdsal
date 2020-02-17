@@ -12,10 +12,12 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.ServiceLoader;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingClassInLoadingStrategyException;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
@@ -30,7 +32,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 /**
  * This sets of tests are designed in way, that schema context contains models for all augmentations, but backing class
@@ -41,7 +43,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  */
 public class AugmentationClassDiscoveredAfterCodecTest {
 
-    private SchemaContext schemaContext;
+    private EffectiveModelContext schemaContext;
     private BindingRuntimeContext runtimeContext;
     private ClassExcludingClassLoadingStrategy mockedContext;
     private BindingNormalizedNodeCodecRegistry registry;
@@ -51,8 +53,9 @@ public class AugmentationClassDiscoveredAfterCodecTest {
         final ModuleInfoBackedContext ctx = ModuleInfoBackedContext.create();
         ctx.addModuleInfos(BindingReflections.loadModuleInfos());
         mockedContext = new ClassExcludingClassLoadingStrategy(ctx);
-        schemaContext = ctx.tryToCreateSchemaContext().get();
-        runtimeContext = BindingRuntimeContext.create(mockedContext, schemaContext);
+        schemaContext = ctx.tryToCreateModelContext().get();
+        runtimeContext = BindingRuntimeContext.create(ServiceLoader.load(BindingRuntimeGenerator.class)
+            .findFirst().orElseThrow().generateTypeMapping(schemaContext), mockedContext);
         registry = new BindingNormalizedNodeCodecRegistry(runtimeContext);
     }
 
