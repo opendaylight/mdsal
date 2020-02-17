@@ -12,29 +12,21 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.ServiceLoader;
 import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -44,11 +36,9 @@ import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
-import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
-import org.opendaylight.yangtools.yang.binding.Enumeration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
@@ -63,7 +53,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.EffectiveAugmentationSchema;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.slf4j.Logger;
@@ -84,13 +73,7 @@ import org.slf4j.LoggerFactory;
  * <p>Same goes for all possible augmentations.
  */
 public final class BindingRuntimeContext implements SchemaContextProvider, Immutable {
-
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeContext.class);
-    private static final BindingRuntimeGenerator GENERATOR = ServiceLoader.load(BindingRuntimeGenerator.class)
-            .findFirst()
-            .orElseThrow(() -> new IllegalStateException("No BindingRuntimeGenerator implementation found"));
-
-    private static final char DOT = '.';
 
     private final BindingRuntimeTypes runtimeTypes;
     private final ClassLoadingStrategy strategy;
@@ -308,93 +291,6 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
             }
         }
         return ImmutableMap.copyOf(childToCase);
-    }
-
-    /**
-     * Map enum constants: yang - java.
-     *
-     * @param enumClass enum generated class
-     * @return mapped enum constants from yang with their corresponding values in generated binding classes
-     * @deprecated This method is not guaranteed to be accurate. Use {@link Enumeration#getName()} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public BiMap<String, String> getEnumMapping(final Class<?> enumClass) {
-        final Entry<GeneratedType, WithStatus> typeWithSchema = getTypeWithSchema(enumClass);
-        return getEnumMapping(typeWithSchema);
-    }
-
-    /**
-     * Map enum constants: yang - java.
-     *
-     * @param enumClassName enum generated class name
-     * @return mapped enum constants from yang with their corresponding values in generated binding classes
-     * @deprecated This method is not guaranteed to be accurate. Use {@link Enumeration#getName()} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public BiMap<String, String> getEnumMapping(final String enumClassName) {
-        return getEnumMapping(findTypeWithSchema(enumClassName));
-    }
-
-    private static BiMap<String, String> getEnumMapping(final Entry<GeneratedType, WithStatus> typeWithSchema) {
-        final TypeDefinition<?> typeDef = (TypeDefinition<?>) typeWithSchema.getValue();
-
-        Preconditions.checkArgument(typeDef instanceof EnumTypeDefinition);
-        final EnumTypeDefinition enumType = (EnumTypeDefinition) typeDef;
-
-        final HashBiMap<String, String> mappedEnums = HashBiMap.create();
-
-        for (final EnumTypeDefinition.EnumPair enumPair : enumType.getValues()) {
-            mappedEnums.put(enumPair.getName(), BindingMapping.getClassName(enumPair.getName()));
-        }
-
-        // TODO cache these maps for future use
-        return mappedEnums;
-    }
-
-    private Entry<GeneratedType, WithStatus> findTypeWithSchema(final String className) {
-        // All we have is a straight FQCN, which we need to split into a hierarchical JavaTypeName. This involves
-        // some amount of guesswork -- we do that by peeling components at the dot and trying out, e.g. given
-        // "foo.bar.baz.Foo.Bar.Baz" we end up trying:
-        // "foo.bar.baz.Foo.Bar" + "Baz"
-        // "foo.bar.baz.Foo" + Bar" + "Baz"
-        // "foo.bar.baz" + Foo" + Bar" + "Baz"
-        //
-        // And see which one sticks. We cannot rely on capital letters, as they can be used in package names, too.
-        // Nested classes are not common, so we should be arriving at the result pretty quickly.
-        final List<String> components = new ArrayList<>();
-        String packageName = className;
-
-        for (int lastDot = packageName.lastIndexOf(DOT); lastDot != -1; lastDot = packageName.lastIndexOf(DOT)) {
-            components.add(packageName.substring(lastDot + 1));
-            packageName = packageName.substring(0, lastDot);
-
-            final Iterator<String> it = components.iterator();
-            JavaTypeName name = JavaTypeName.create(packageName, it.next());
-            while (it.hasNext()) {
-                name = name.createEnclosed(it.next());
-            }
-
-            final Type type = new ReferencedTypeImpl(name);
-            final Optional<WithStatus> optSchema = runtimeTypes.findSchema(type);
-            if (!optSchema.isPresent()) {
-                continue;
-            }
-
-            final WithStatus schema = optSchema.get();
-            final Optional<Type> optDefinedType =  runtimeTypes.findType(schema);
-            if (!optDefinedType.isPresent()) {
-                continue;
-            }
-
-            final Type definedType = optDefinedType.get();
-            if (definedType instanceof GeneratedTypeBuilder) {
-                return new SimpleEntry<>(((GeneratedTypeBuilder) definedType).build(), schema);
-            }
-            checkArgument(definedType instanceof GeneratedType, "Type %s is not a GeneratedType", className);
-            return new SimpleEntry<>((GeneratedType) definedType, schema);
-        }
-
-        throw new IllegalArgumentException("Failed to find type for " + className);
     }
 
     public Set<Class<?>> getCases(final Class<?> choice) {
