@@ -47,6 +47,7 @@ import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.yang.binding.Enumeration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
@@ -310,7 +311,9 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
      *
      * @param enumClass enum generated class
      * @return mapped enum constants from yang with their corresponding values in generated binding classes
+     * @deprecated This method is not guaranteed to be accurate. Use {@link Enumeration#getName()} instead.
      */
+    @Deprecated(forRemoval = true)
     public BiMap<String, String> getEnumMapping(final Class<?> enumClass) {
         final Entry<GeneratedType, WithStatus> typeWithSchema = getTypeWithSchema(enumClass);
         return getEnumMapping(typeWithSchema);
@@ -321,7 +324,9 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
      *
      * @param enumClassName enum generated class name
      * @return mapped enum constants from yang with their corresponding values in generated binding classes
+     * @deprecated This method is not guaranteed to be accurate. Use {@link Enumeration#getName()} instead.
      */
+    @Deprecated(forRemoval = true)
     public BiMap<String, String> getEnumMapping(final String enumClassName) {
         return getEnumMapping(findTypeWithSchema(enumClassName));
     }
