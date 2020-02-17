@@ -29,6 +29,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcProviderServiceAd
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -50,8 +51,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 @Beta
 public class BindingTestContext implements AutoCloseable {
-
-
     private BindingToNormalizedNodeCodec codec;
 
     private final ListeningExecutorService executor;
@@ -141,7 +140,7 @@ public class BindingTestContext implements AutoCloseable {
     public void startBindingToDomMappingService() {
         final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry();
         final GeneratedClassLoadingStrategy loading = GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
-        codec = new BindingToNormalizedNodeCodec(loading,  codecRegistry);
+        codec = new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(), loading,  codecRegistry);
         mockSchemaService.registerSchemaContextListener(codec);
     }
 
