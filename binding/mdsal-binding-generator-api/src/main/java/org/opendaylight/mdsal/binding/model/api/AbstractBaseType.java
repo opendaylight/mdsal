@@ -5,17 +5,18 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.model.util;
+package org.opendaylight.mdsal.binding.model.api;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
-import org.opendaylight.mdsal.binding.model.api.Type;
 
 /**
- * It is used only as ancestor for other <code>Type</code>s.
+ * It is used only as ancestor for other <code>Type</code>s. Note this forms the equality domain over most types, please
+ * consider joining the party.
  */
+@Beta
 public class AbstractBaseType implements Type {
     /**
      * Name of this <code>Type</code>.
@@ -37,23 +38,19 @@ public class AbstractBaseType implements Type {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return identifier.hashCode();
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public final boolean equals(final Object obj) {
         if (this == obj) {
             return true;
-        }
-        if (obj == null) {
-            return false;
         }
         if (!(obj instanceof Type)) {
             return false;
         }
-        final Type other = (Type) obj;
-        return identifier.equals(other.getIdentifier());
+        return identifier.equals(((Type) obj).getIdentifier());
     }
 
     @Override
