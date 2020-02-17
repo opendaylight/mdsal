@@ -7,25 +7,21 @@
  */
 package org.opendaylight.mdsal.binding.yang.types;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class GroupingDefinitionDependencySortTest {
-
-    @Rule
-    public ExpectedException expException = ExpectedException.none();
-
     private final GroupingDefinitionDependencySort groupingDefinitionDependencySort =
             new GroupingDefinitionDependencySort();
 
@@ -93,8 +89,8 @@ public class GroupingDefinitionDependencySortTest {
 
     @Test
     public void testNullSort() {
-        expException.expect(IllegalArgumentException.class);
-        expException.expectMessage("Set of Type Definitions cannot be NULL!");
-        groupingDefinitionDependencySort.sort(null);
+        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+            () -> groupingDefinitionDependencySort.sort(null));
+        assertEquals("Set of Type Definitions cannot be NULL!", ex.getMessage());
     }
 }
