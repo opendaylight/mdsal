@@ -12,6 +12,7 @@ import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecR
 import org.opendaylight.mdsal.binding.dom.codec.impl.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.dom.codec.impl.MissingSchemaException;
 import org.opendaylight.mdsal.binding.dom.codec.impl.MissingSchemaForClassException;
+import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -90,7 +91,8 @@ public class ExceptionReportingTest {
             }
         }
         final SchemaContext schema = ctx.tryToCreateSchemaContext().get();
-        final BindingRuntimeContext runtimeCtx = BindingRuntimeContext.create(ctx, schema);
+        final BindingRuntimeContext runtimeCtx = BindingRuntimeContext.create(
+            new BindingGeneratorImpl().generateTypeMapping(schema), ctx);
         final BindingNormalizedNodeCodecRegistry registry = new BindingNormalizedNodeCodecRegistry(runtimeCtx);
         return registry;
     }

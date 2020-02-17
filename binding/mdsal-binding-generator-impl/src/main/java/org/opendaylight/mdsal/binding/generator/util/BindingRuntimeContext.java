@@ -35,7 +35,6 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.generator.impl.BindingSchemaContextUtils;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -116,8 +115,9 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
      * @param ctx Schema Context which describes YANG model and to which Binding classes should be mapped
      * @return Instance of BindingRuntimeContext for supplied schema context.
      */
-    public static BindingRuntimeContext create(final ClassLoadingStrategy strategy, final SchemaContext ctx) {
-        return new BindingRuntimeContext(new BindingGeneratorImpl().generateTypeMapping(ctx), strategy);
+    public static BindingRuntimeContext create(final BindingRuntimeTypes runtimeTypes,
+            final ClassLoadingStrategy strategy) {
+        return new BindingRuntimeContext(runtimeTypes, strategy);
     }
 
     /**
