@@ -7,24 +7,27 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.test;
 
+import java.util.ServiceLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractBindingRuntimeTest {
-
-    private static SchemaContext schemaContext;
+    private static EffectiveModelContext schemaContext;
     private static BindingRuntimeContext runtimeContext;
 
     @BeforeClass
     public static void beforeClass() {
         ModuleInfoBackedContext ctx = ModuleInfoBackedContext.create();
         ctx.addModuleInfos(BindingReflections.loadModuleInfos());
-        schemaContext = ctx.tryToCreateSchemaContext().get();
-        runtimeContext = BindingRuntimeContext.create(ctx, schemaContext);
+        schemaContext = ctx.tryToCreateModelContext().get();
+
+        runtimeContext = BindingRuntimeContext.create(ServiceLoader.load(BindingRuntimeGenerator.class)
+            .findFirst().orElseThrow().generateTypeMapping(schemaContext), ctx);
     }
 
     @AfterClass
@@ -33,7 +36,7 @@ public abstract class AbstractBindingRuntimeTest {
         runtimeContext = null;
     }
 
-    public static final SchemaContext getSchemaContext() {
+    public static final EffectiveModelContext getSchemaContext() {
         return schemaContext;
     }
 
