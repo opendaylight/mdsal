@@ -7,41 +7,44 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 
 public abstract class GeneratedClassLoadingStrategy implements ClassLoadingStrategy {
+    private static final class AlwaysFailClassLoadingStrategy extends GeneratedClassLoadingStrategy {
+        static final @NonNull AlwaysFailClassLoadingStrategy INSTANCE = new AlwaysFailClassLoadingStrategy();
 
-    private static final GeneratedClassLoadingStrategy TCCL_STRATEGY = new TCCLClassLoadingStrategy();
-
-    private static final GeneratedClassLoadingStrategy ALWAYS_FAIL_STRATEGY = new GeneratedClassLoadingStrategy() {
         @Override
         public Class<?> loadClass(final String fullyQualifiedName) throws ClassNotFoundException {
             throw new ClassNotFoundException(fullyQualifiedName);
         }
-    };
-
-    @Override
-    public Class<?> loadClass(final Type type) throws ClassNotFoundException {
-        return loadClass(type.getFullyQualifiedName());
-    }
-
-    @Override
-    public abstract Class<?> loadClass(String fullyQualifiedName) throws ClassNotFoundException;
-
-    public static final GeneratedClassLoadingStrategy getTCCLClassLoadingStrategy() {
-        return TCCL_STRATEGY;
-    }
-
-    public static final GeneratedClassLoadingStrategy getAlwaysFailClassLoadingStrategy() {
-        return ALWAYS_FAIL_STRATEGY;
     }
 
     private static final class TCCLClassLoadingStrategy extends GeneratedClassLoadingStrategy {
+        static final @NonNull TCCLClassLoadingStrategy INSTANCE = new TCCLClassLoadingStrategy();
+
         @Override
         public Class<?> loadClass(final String fullyQualifiedName) throws ClassNotFoundException {
             return ClassLoaderUtils.loadClassWithTCCL(fullyQualifiedName);
         }
+    }
+
+    protected GeneratedClassLoadingStrategy() {
+
+    }
+
+    public static final @NonNull GeneratedClassLoadingStrategy getTCCLClassLoadingStrategy() {
+        return TCCLClassLoadingStrategy.INSTANCE;
+    }
+
+    public static final @NonNull GeneratedClassLoadingStrategy getAlwaysFailClassLoadingStrategy() {
+        return AlwaysFailClassLoadingStrategy.INSTANCE;
+    }
+
+    @Override
+    public Class<?> loadClass(final Type type) throws ClassNotFoundException {
+        return loadClass(type.getFullyQualifiedName());
     }
 }
