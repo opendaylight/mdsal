@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -39,8 +38,7 @@ public class GenTypesSubSetTest {
 
         assertEquals("Set of to Generate Modules must contain 2 modules", 2, toGenModules.size());
         assertNotNull("Schema Context is null", context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context, toGenModules);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context, toGenModules);
         assertNotNull("genTypes is null", genTypes);
         assertFalse("genTypes is empty", genTypes.isEmpty());
         assertEquals("Expected Generated Types from provided sub set of " + "modules should be 23!", 23,
@@ -66,8 +64,7 @@ public class GenTypesSubSetTest {
         }
         assertEquals("Set of to Generate Modules must contain 3 modules", 3, toGenModules.size());
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context, toGenModules);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context, toGenModules);
         assertNotNull("genTypes is null", genTypes);
         assertFalse("genTypes is empty", genTypes.isEmpty());
         assertEquals("Expected Generated Types", 24, genTypes.size());

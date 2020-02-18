@@ -32,13 +32,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.apache.maven.project.MavenProject;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
+import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile;
 import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile.FileKind;
 import org.opendaylight.mdsal.binding.java.api.generator.YangModuleInfoTemplate;
@@ -60,6 +61,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
     private static final Logger LOG = LoggerFactory.getLogger(CodeGeneratorImpl.class);
     private static final String FS = File.separator;
+
     private BuildContext buildContext;
     private File projectBaseDir;
     private Map<String, String> additionalConfig;
@@ -76,7 +78,9 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
         // Step one: determine binding types which we are generating
         final Stopwatch sw = Stopwatch.createStarted();
-        final List<Type> types = new BindingGeneratorImpl().generateTypes(context, yangModules);
+        final List<Type> types = ServiceLoader.load(BindingGenerator.class)
+                .findFirst().orElseThrow(() -> new IllegalStateException("No BindingGenerator implementation found"))
+                .generateTypes(context, yangModules);
         LOG.info("Found {} Binding types in {}", types.size(), sw);
 
         final GeneratorJavaFile generator = new GeneratorJavaFile(types);

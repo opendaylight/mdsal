@@ -13,7 +13,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -29,8 +28,7 @@ public class UnionTypeDefTest {
             "/union-test-models/abstract-topology.yang", "/ietf/ietf-inet-types.yang");
 
         assertNotNull("context is null", context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         assertNotNull("genTypes is null", genTypes);
         assertFalse("genTypes is empty", genTypes.isEmpty());
@@ -43,7 +41,7 @@ public class UnionTypeDefTest {
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(
             "/leafref_typedef_union/bug8449.yang");
         assertNotNull(schemaContext);
-        final List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(schemaContext);
+        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(schemaContext);
         assertNotNull(generateTypes);
         for (final Type type : generateTypes) {
             if (type.getName().equals("Cont")) {

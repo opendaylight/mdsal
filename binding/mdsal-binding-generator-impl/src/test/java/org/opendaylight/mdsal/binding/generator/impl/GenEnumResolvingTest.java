@@ -13,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
@@ -29,8 +28,7 @@ public class GenEnumResolvingTest {
             "/enum-test-models/ietf-interfaces@2012-11-15.yang", "/ietf/iana-if-type.yang");
         assertTrue(context != null);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
         assertTrue(genTypes != null);
 
         assertEquals("Expected count of all Generated Types", 6, genTypes.size());
@@ -89,8 +87,7 @@ public class GenEnumResolvingTest {
     public void testTypedefEnumResolving() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/ietf/iana-if-type.yang");
         assertTrue(context != null);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
         assertTrue(genTypes != null);
         assertEquals(1, genTypes.size());
 
@@ -107,8 +104,7 @@ public class GenEnumResolvingTest {
             "/enum-test-models/abstract-topology@2013-02-08.yang", "/enum-test-models/ietf-interfaces@2012-11-15.yang",
             "/ietf/iana-if-type.yang");
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
         assertNotNull(genTypes);
         assertTrue(!genTypes.isEmpty());
 

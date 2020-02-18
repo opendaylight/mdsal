@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
@@ -55,8 +54,7 @@ public class IdentityrefTypeTest {
         final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         GeneratedType moduleGenType = null;
         for (Type type : genTypes) {

@@ -20,13 +20,12 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal406TypeObjectTest {
-
     @Test
     public void typeObjectTest() {
         final SchemaContext context = YangParserTestUtils.parseYangResources(ExtendedTypedefTest.class,
                 "/type-provider/test.yang", "/ietf/ietf-inet-types.yang");
 
-        final List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
+        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
         assertNotNull(generateTypes);
 
         final Type typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
@@ -45,7 +44,7 @@ public class Mdsal406TypeObjectTest {
         final SchemaContext context = YangParserTestUtils.parseYangResources(ExtendedTypedefTest.class,
                 "/type-provider/test.yang", "/ietf/ietf-inet-types.yang");
 
-        final List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
+        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
         assertNotNull(generateTypes);
 
         final Type typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
@@ -64,7 +63,7 @@ public class Mdsal406TypeObjectTest {
         final SchemaContext context = YangParserTestUtils.parseYangResources(ExtendedTypedefTest.class,
                 "/type-provider/test.yang", "/ietf/ietf-inet-types.yang");
 
-        final List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
+        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
         assertNotNull(generateTypes);
 
         final Type typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()

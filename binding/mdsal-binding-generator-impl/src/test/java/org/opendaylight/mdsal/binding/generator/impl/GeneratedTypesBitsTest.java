@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -31,8 +30,7 @@ public class GeneratedTypesBitsTest {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-bits-demo.yang");
         assertTrue(context != null);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
         assertTrue(genTypes != null);
 
         List<MethodSignature> methodSignaturesList = null;
