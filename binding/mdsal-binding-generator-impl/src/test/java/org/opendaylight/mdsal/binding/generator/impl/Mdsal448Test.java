@@ -22,7 +22,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal448Test {
-
     @Test
     public void groupingSortIncludesActions() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal448.yang");
@@ -41,7 +40,7 @@ public class Mdsal448Test {
             Iterables.get(groupings, 0));
         assertEquals(ordered, reverse);
 
-        final List<Type> types = new BindingGeneratorImpl().generateTypes(context);
+        final List<Type> types = DefaultBindingGenerator.generateFor(context);
         assertNotNull(types);
         assertEquals(9, types.size());
     }

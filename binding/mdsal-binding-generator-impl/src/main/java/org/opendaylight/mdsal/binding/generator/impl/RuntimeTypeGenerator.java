@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -37,7 +38,7 @@ final class RuntimeTypeGenerator extends AbstractTypeGenerator {
         super(context, new RuntimeTypeProvider(context, renames), renames);
     }
 
-    BindingRuntimeTypes toTypeMapping() {
+    @NonNull BindingRuntimeTypes toTypeMapping() {
         final Map<Type, AugmentationSchemaNode> augmentationToSchema = new HashMap<>();
         final BiMap<Type, WithStatus> typeToDefiningSchema = HashBiMap.create();
         final Multimap<Type, Type> choiceToCases = HashMultimap.create();

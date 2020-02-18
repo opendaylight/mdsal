@@ -20,7 +20,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class Mdsal500Test {
     @Test
     public void testAugmentedAction() {
-        final List<Type> types = new BindingGeneratorImpl().generateTypes(
+        final List<Type> types = DefaultBindingGenerator.generateFor(
                 YangParserTestUtils.parseYangResource("/mdsal500.yang"));
         assertNotNull(types);
         final MethodSignature signature = ((GeneratedType) types.get(2)).getMethodDefinitions().iterator().next();

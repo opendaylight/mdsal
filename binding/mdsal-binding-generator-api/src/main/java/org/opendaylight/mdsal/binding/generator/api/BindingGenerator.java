@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.api;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -26,7 +27,7 @@ public interface BindingGenerator {
      *
      * @see SchemaContext
      */
-    default List<Type> generateTypes(final SchemaContext context) {
+    default @NonNull List<Type> generateTypes(final SchemaContext context) {
         return generateTypes(context, context.getModules());
     }
 
@@ -42,5 +43,5 @@ public interface BindingGenerator {
      * @see Module
      * @see SchemaContext
      */
-    List<Type> generateTypes(SchemaContext context, Collection<? extends Module> modules);
+    @NonNull List<Type> generateTypes(SchemaContext context, Collection<? extends Module> modules);
 }

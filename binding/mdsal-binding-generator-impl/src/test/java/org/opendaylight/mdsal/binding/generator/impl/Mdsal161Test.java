@@ -20,14 +20,13 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal161Test {
-
     /**
      * Test if leaves with inner union type defined in groupings can be used as list keys at the place of instantiation.
      */
     @Test
     public void mdsal161Test() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal161.yang");
-        final Collection<Type> types = new BindingGeneratorImpl().generateTypes(context);
+        final Collection<Type> types = DefaultBindingGenerator.generateFor(context);
         assertNotNull(types);
         assertEquals(24, types.size());
 

@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -30,8 +29,7 @@ public class ExtendedTypedefTest {
             "/typedef-of-typedef/typedef_of_typedef.yang", "/ietf/ietf-inet-types.yang");
         assertNotNull("Schema Context is null", context);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         GeneratedTransferObject simpleTypedef4 = null;
         GeneratedTransferObject extendedTypedefUnion = null;

@@ -20,10 +20,9 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal459Test {
-
     @Test
     public void testAugmentedAction() {
-        final List<Type> types = new BindingGeneratorImpl().generateTypes(
+        final List<Type> types = DefaultBindingGenerator.generateFor(
             YangParserTestUtils.parseYangResourceDirectory("/mdsal-459/"));
         assertNotNull(types);
         assertEquals(6, types.size());
