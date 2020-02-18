@@ -67,6 +67,6 @@ public class LazySerializedContainerNodeTest {
         assertEquals(lazySerializedContainerNode.getIdentifier().getNodeType(),
                 lazySerializedContainerNode.getNodeType());
         assertEquals(rpcName.getLastComponent(), lazySerializedContainerNode.getIdentifier().getNodeType());
-        assertEquals(dataObject, lazySerializedContainerNode.bindingData());
+        assertEquals(dataObject, lazySerializedContainerNode.getDataObject());
     }
 }

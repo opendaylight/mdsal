@@ -27,7 +27,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
  *        deprecated, as we want to move to actions in the long term.
  */
 class LazySerializedContainerNode extends AbstractBindingLazyContainerNode<DataObject,
-        BindingNormalizedNodeCodecRegistry> implements BindingDataAware {
+        BindingNormalizedNodeCodecRegistry> {
 
     private LazySerializedContainerNode(final QName identifier, final DataObject binding,
             final BindingNormalizedNodeCodecRegistry registry) {
@@ -42,11 +42,6 @@ class LazySerializedContainerNode extends AbstractBindingLazyContainerNode<DataO
     static ContainerNode withContextRef(final SchemaPath rpcName, final DataObject data,
             final LeafNode<?> contextRef, final BindingNormalizedNodeCodecRegistry codec) {
         return new WithContextRef(rpcName.getLastComponent(), data, contextRef, codec);
-    }
-
-    @Override
-    public final DataObject bindingData() {
-        return getDataObject();
     }
 
     @Override

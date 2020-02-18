@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.RpcServiceInvoker;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -79,8 +80,8 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
     }
 
     private DataObject deserialize(final SchemaPath rpcPath, final NormalizedNode<?, ?> input) {
-        if (ENABLE_CODEC_SHORTCUT && input instanceof BindingDataAware) {
-            return ((BindingDataAware) input).bindingData();
+        if (ENABLE_CODEC_SHORTCUT && input instanceof BindingLazyContainerNode) {
+            return ((BindingLazyContainerNode<?>) input).getDataObject();
         }
         final SchemaPath inputSchemaPath = rpcPath.createChild(inputQname);
         return codec.fromNormalizedNodeRpcData(inputSchemaPath, (ContainerNode) input);
