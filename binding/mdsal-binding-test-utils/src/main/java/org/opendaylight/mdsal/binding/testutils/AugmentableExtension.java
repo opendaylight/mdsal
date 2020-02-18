@@ -9,10 +9,7 @@ package org.opendaylight.mdsal.binding.testutils;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import org.eclipse.xtext.xbase.lib.util.ReflectExtensions;
-import org.opendaylight.mdsal.binding.dom.codec.util.AugmentationReader;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.AugmentationHolder;
@@ -35,26 +32,18 @@ class AugmentableExtension {
     private static final ReflectExtensions REFLECT_EXTENSIONS = new ReflectExtensions();
 
     public ClassToInstanceMap<Augmentation<?>> getAugmentations(final Augmentable<?> augmentable) {
-        if (augmentable instanceof AugmentationReader) {
-            AugmentationReader augmentationReader = (AugmentationReader) augmentable;
-            return ImmutableClassToInstanceMap.copyOf(augmentationReader.getAugmentations(augmentable));
-        } else if (augmentable instanceof AugmentationHolder) {
+        if (augmentable instanceof AugmentationHolder) {
             AugmentationHolder<?> augmentationHolder = (AugmentationHolder<?>) augmentable;
             return ImmutableClassToInstanceMap.copyOf(augmentationHolder.augmentations());
-        } else if (Proxy.isProxyClass(augmentable.getClass())) {
-            InvocationHandler invocationHandler = Proxy.getInvocationHandler(augmentable);
-            // class LazyDataObject implements InvocationHandler, AugmentationReader
-            AugmentationReader augmentationReader = (AugmentationReader) invocationHandler;
-            return ImmutableClassToInstanceMap.copyOf(augmentationReader.getAugmentations(augmentable));
-        } else {
-            try {
-                return ImmutableClassToInstanceMap.copyOf(REFLECT_EXTENSIONS.get(augmentable, "augmentation"));
-            } catch (ClassCastException | SecurityException | NoSuchFieldException | IllegalArgumentException
-                    | IllegalAccessException e) {
-                throw new IllegalArgumentException("TODO Implement getAugmentations() for an Augmentable which "
-                        + "is neither a (Proxy of an) AugmentationReader nor has an internal field named "
-                        + "'augmentation': " + augmentable.getClass(), e);
-            }
+        }
+
+        try {
+            return ImmutableClassToInstanceMap.copyOf(REFLECT_EXTENSIONS.get(augmentable, "augmentation"));
+        } catch (ClassCastException | SecurityException | NoSuchFieldException | IllegalArgumentException
+                | IllegalAccessException e) {
+            throw new IllegalArgumentException("TODO Implement getAugmentations() for an Augmentable which "
+                    + "is neither a (Proxy of an) AugmentationReader nor has an internal field named "
+                    + "'augmentation': " + augmentable.getClass(), e);
         }
     }
 
