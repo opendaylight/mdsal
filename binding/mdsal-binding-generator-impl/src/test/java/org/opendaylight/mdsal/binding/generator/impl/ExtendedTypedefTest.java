@@ -14,10 +14,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.generator.util.BaseYangTypes;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.yang.types.BaseYangTypes;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 

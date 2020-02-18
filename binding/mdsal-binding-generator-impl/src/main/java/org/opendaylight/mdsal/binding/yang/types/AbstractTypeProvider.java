@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.binding.generator.util.BaseYangTypes;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
