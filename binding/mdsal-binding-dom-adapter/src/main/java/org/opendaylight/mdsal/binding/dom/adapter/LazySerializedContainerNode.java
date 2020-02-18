@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.dom.codec.util.AbstractBindingLazyContainerNode;
+import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingLazyContainerNode;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
