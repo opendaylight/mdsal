@@ -13,18 +13,18 @@ import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public abstract class AbstractBindingRuntimeTest {
-
-    private static SchemaContext schemaContext;
+    private static EffectiveModelContext schemaContext;
     private static BindingRuntimeContext runtimeContext;
 
     @BeforeClass
     public static void beforeClass() {
         ModuleInfoBackedContext ctx = ModuleInfoBackedContext.create();
         ctx.addModuleInfos(BindingReflections.loadModuleInfos());
-        schemaContext = ctx.tryToCreateSchemaContext().get();
+        schemaContext = ctx.tryToCreateModelContext().get();
         runtimeContext = BindingRuntimeContext.create(new BindingGeneratorImpl().generateTypeMapping(schemaContext),
             ctx);
     }
