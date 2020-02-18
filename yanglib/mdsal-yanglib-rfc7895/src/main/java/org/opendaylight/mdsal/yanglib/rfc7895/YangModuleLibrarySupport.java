@@ -33,7 +33,6 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.StatementParserMode;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 
 @Beta
@@ -48,8 +47,7 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
             throws YangParserException, IOException {
         final YangModuleInfo yangLibModule = $YangModuleInfoImpl.getInstance();
 
-        // FIXME: DEFAULT_MODE should not be necessary, but it seems blueprint is still b0rked
-        context = parserFactory.createParser(StatementParserMode.DEFAULT_MODE)
+        context = parserFactory.createParser()
                 .addLibSources(Collections2.transform(yangLibModule.getImportedModules(),
                     YangModuleLibrarySupport::createSource))
                 .addSource(createSource(yangLibModule))
