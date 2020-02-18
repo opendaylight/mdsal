@@ -17,12 +17,11 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal437Test extends AbstractOpaqueTest {
-
     @Test
     public void generateAnyxmlTest() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal437.yang");
 
-        final List<Type> types = new BindingGeneratorImpl().generateTypes(context);
+        final List<Type> types = DefaultBindingGenerator.generateFor(context);
         assertNotNull(types);
         assertEquals(7, types.size());
 

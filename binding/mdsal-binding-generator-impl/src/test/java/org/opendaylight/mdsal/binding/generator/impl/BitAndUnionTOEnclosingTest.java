@@ -15,7 +15,6 @@ import static org.opendaylight.mdsal.binding.generator.impl.SupportTestUtil.cont
 import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -33,8 +32,7 @@ public class BitAndUnionTOEnclosingTest {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/bit_and_union.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        genTypes = bindingGen.generateTypes(context);
+        genTypes = DefaultBindingGenerator.generateFor(context);
 
         for (Type type : genTypes) {
             if (type instanceof GeneratedType) {

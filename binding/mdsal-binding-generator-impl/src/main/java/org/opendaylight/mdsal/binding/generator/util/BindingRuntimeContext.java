@@ -31,11 +31,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.generator.impl.BindingSchemaContextUtils;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -85,6 +86,10 @@ import org.slf4j.LoggerFactory;
 public final class BindingRuntimeContext implements SchemaContextProvider, Immutable {
 
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeContext.class);
+    private static final BindingRuntimeGenerator GENERATOR = ServiceLoader.load(BindingRuntimeGenerator.class)
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("No BindingRuntimeGenerator implementation found"));
+
     private static final char DOT = '.';
 
     private final BindingRuntimeTypes runtimeTypes;
@@ -117,7 +122,7 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
      * @return Instance of BindingRuntimeContext for supplied schema context.
      */
     public static BindingRuntimeContext create(final ClassLoadingStrategy strategy, final SchemaContext ctx) {
-        return new BindingRuntimeContext(new BindingGeneratorImpl().generateTypeMapping(ctx), strategy);
+        return new BindingRuntimeContext(GENERATOR.generateTypeMapping(ctx), strategy);
     }
 
     /**

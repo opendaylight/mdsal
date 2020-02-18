@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.generator.api;
 
 import com.google.common.annotations.Beta;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 /**
@@ -15,6 +16,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  * metadata not required at runtime, such as comments, references and similar.
  */
 @Beta
+@NonNullByDefault
 public interface BindingRuntimeGenerator {
     /**
      * Generate Type mapping from specified {@link SchemaContext} for the specified subset of modules. The SchemaContext

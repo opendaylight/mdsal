@@ -20,18 +20,17 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
  * Test leafref resolution when the leaf is from a grouping.
  */
 public class Mdsal182Test {
-
     @Test
     public void testOneUpLeafref() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal-182/good-leafref.yang");
-        final Collection<Type> types = new BindingGeneratorImpl().generateTypes(context);
+        final Collection<Type> types = DefaultBindingGenerator.generateFor(context);
         assertEquals(6, types.size());
     }
 
     @Test
     public void testTwoUpLeafref() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal-182/grouping-leafref.yang");
-        final Collection<Type> types = new BindingGeneratorImpl().generateTypes(context);
+        final Collection<Type> types = DefaultBindingGenerator.generateFor(context);
         assertNotNull(types);
         assertEquals(4, types.size());
     }

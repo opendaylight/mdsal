@@ -21,7 +21,7 @@ public class ActionsTest {
     public void actionsTypeTest() {
         SchemaContext context = YangParserTestUtils.parseYangResource("/actions.yang");
 
-        List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
+        List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
         assertNotNull(generateTypes);
         assertEquals(21, generateTypes.size());
     }

@@ -19,12 +19,11 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal335Test {
-
     @Test
     public void mdsal335Test() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal335.yang");
 
-        final List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
+        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
         assertNotNull(generateTypes);
         assertEquals(2, generateTypes.size());
 

@@ -15,7 +15,6 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -35,8 +34,7 @@ public class GeneratedTypesLeafrefTest {
         assertNotNull(context);
         assertEquals(4, context.getModules().size());
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         assertEquals(54, genTypes.size());
         assertNotNull(genTypes);
@@ -219,9 +217,8 @@ public class GeneratedTypesLeafrefTest {
         assertNotNull(context);
         assertEquals(1, context.getModules().size());
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         try {
-            bindingGen.generateTypes(context);
+            DefaultBindingGenerator.generateFor(context);
             fail("Expected IllegalArgumentException caused by invalid leafref path");
         } catch (IllegalArgumentException e) {
             String expected = "Failed to find leafref target";

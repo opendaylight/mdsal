@@ -14,7 +14,6 @@ import static org.opendaylight.mdsal.binding.generator.impl.SupportTestUtil.cont
 
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -29,8 +28,7 @@ public class UsesTest {
             "/uses-of-grouping/uses-of-grouping-dependencies.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
         GeneratedType groupingU = null;
         GeneratedType groupingX = null;
         GeneratedType groupingV = null;
@@ -83,8 +81,7 @@ public class UsesTest {
             "/uses-of-grouping/uses-of-grouping-case.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         GeneratedType groupingCaseTest = null;
         int groupingCaseTestCounter = 0;
@@ -130,8 +127,7 @@ public class UsesTest {
             "/uses-of-grouping/uses-of-grouping-container.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         int containerTestCount = 0;
         int groupingContainerTestCounter = 0;
@@ -182,8 +178,7 @@ public class UsesTest {
             "/uses-of-grouping/uses-of-grouping-grouping.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         int groupingTestCount = 0;
         int groupingGroupingTestCounter = 0;
@@ -232,8 +227,7 @@ public class UsesTest {
             "/uses-of-grouping/uses-of-grouping-list.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         int listTestCounter = 0;
         int groupingListTestCounter = 0;
@@ -313,8 +307,7 @@ public class UsesTest {
             "/uses-of-grouping/uses-of-grouping-modul.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         int groupingModulTestCounter = 0;
         int groupingUsesModulDataCounter = 0;
@@ -363,8 +356,7 @@ public class UsesTest {
             "/uses-of-grouping/uses-of-grouping-rpc.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         int rpcTestInputCounter = 0;
         int rpcTestOutputCounter = 0;
@@ -455,8 +447,7 @@ public class UsesTest {
             "/uses-of-grouping/uses-of-grouping-augment.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         GeneratedType containerAugment1 = null;
         GeneratedType groupingAugmentTest = null;
@@ -507,8 +498,7 @@ public class UsesTest {
             "/uses-of-grouping/uses-of-grouping-notification.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl();
-        final List<Type> genTypes = bindingGen.generateTypes(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
 
         GeneratedType notificationTest = null;
         GeneratedType groupingNotificationTest = null;
