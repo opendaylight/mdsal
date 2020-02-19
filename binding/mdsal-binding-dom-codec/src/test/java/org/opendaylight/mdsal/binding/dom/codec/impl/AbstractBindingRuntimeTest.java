@@ -9,9 +9,9 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeContext;
+import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
