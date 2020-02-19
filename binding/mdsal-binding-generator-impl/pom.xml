@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
         </dependency>
 
         <dependency>
@@ -75,7 +75,6 @@
                 <configuration>
                     <instructions>
                         <Bundle-Name>${project.groupId}.${project.artifactId}</Bundle-Name>
-                        <Bundle-Activator>org.opendaylight.mdsal.binding.generator.impl.Activator</Bundle-Activator>
                         <Export-Package>
                             {local-packages},
                             org.opendaylight.mdsal.binding.generator.impl,

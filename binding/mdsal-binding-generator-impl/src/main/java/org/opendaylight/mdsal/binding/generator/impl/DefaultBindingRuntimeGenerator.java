@@ -17,6 +17,7 @@ import org.opendaylight.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Default implementation of {@link BindingRuntimeGenerator}.
@@ -24,6 +25,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 @Beta
 @MetaInfServices
 @Singleton
+@Component
 public final class DefaultBindingRuntimeGenerator implements BindingRuntimeGenerator {
     @Override
     public BindingRuntimeTypes generateTypeMapping(final SchemaContext context) {
