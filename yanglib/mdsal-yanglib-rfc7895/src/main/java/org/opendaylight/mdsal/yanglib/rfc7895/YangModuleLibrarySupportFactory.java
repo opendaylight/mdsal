@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.yanglib.rfc7895;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.Beta;
 import java.io.IOException;
 import java.util.ServiceLoader;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -19,6 +20,7 @@ import org.opendaylight.mdsal.yanglib.api.YangLibSupportFactory;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 
+@Beta
 @MetaInfServices
 @NonNullByDefault
 public final class YangModuleLibrarySupportFactory implements YangLibSupportFactory {
