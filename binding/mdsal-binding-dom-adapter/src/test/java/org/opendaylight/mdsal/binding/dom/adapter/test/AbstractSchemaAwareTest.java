@@ -13,8 +13,8 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.junit.Before;
-import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
+import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
+import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -26,7 +26,7 @@ public abstract class AbstractSchemaAwareTest {
                 public SchemaContext load(final Set<YangModuleInfo> key) {
                     return ModuleInfoBackedContext.cacheContext(
                         GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), ImmutableSet.copyOf(key))
-                            .tryToCreateSchemaContext().get();
+                            .tryToCreateModelContext().get();
                 }
             });
 

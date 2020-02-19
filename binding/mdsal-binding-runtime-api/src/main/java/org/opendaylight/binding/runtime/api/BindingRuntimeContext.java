@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.generator.api;
+package org.opendaylight.binding.runtime.api;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -111,6 +111,10 @@ public final class BindingRuntimeContext implements SchemaContextProvider, Immut
      */
     public @NonNull ClassLoadingStrategy getStrategy() {
         return strategy;
+    }
+
+    public @NonNull BindingRuntimeTypes getTypes() {
+        return runtimeTypes;
     }
 
     /**

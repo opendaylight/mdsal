@@ -36,6 +36,10 @@
         <module>yang-binding</module>
         <module>mdsal-binding-spec-util</module>
 
+        <!-- Binding Runtime Services, dealing with class/schema mapping -->
+        <module>mdsal-binding-runtime-api</module>
+        <module>mdsal-binding-runtime-spi</module>
+
         <module>mdsal-binding-test-model</module>
         <module>mdsal-binding-dom-codec</module>
         <module>mdsal-binding-dom-codec-api</module>
