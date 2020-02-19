@@ -17,6 +17,11 @@ import org.opendaylight.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of {@link BindingRuntimeGenerator}.
@@ -24,7 +29,10 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 @Beta
 @MetaInfServices
 @Singleton
+@Component(immediate = true)
 public final class DefaultBindingRuntimeGenerator implements BindingRuntimeGenerator {
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultBindingRuntimeGenerator.class);
+
     @Override
     public BindingRuntimeTypes generateTypeMapping(final SchemaContext context) {
         GeneratorUtils.checkContext(context);
@@ -37,5 +45,17 @@ public final class DefaultBindingRuntimeGenerator implements BindingRuntimeGener
                 GeneratorUtils.rename(renames, e);
             }
         }
+    }
+
+    @Activate
+    @SuppressWarnings("static-method")
+    void activate() {
+        LOG.info("Binding/YANG type support activated");
+    }
+
+    @Deactivate
+    @SuppressWarnings("static-method")
+    void deactivate() {
+        LOG.info("Binding/YANG type support deactivated");
     }
 }

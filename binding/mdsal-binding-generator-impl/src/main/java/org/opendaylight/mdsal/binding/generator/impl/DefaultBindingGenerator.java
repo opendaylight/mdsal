@@ -31,6 +31,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 @Beta
 @MetaInfServices
 @Singleton
+// Note: not exposed in OSGi on purpose, as this should only be needed at compile-time
 public final class DefaultBindingGenerator implements BindingGenerator {
     @Override
     public List<Type> generateTypes(final SchemaContext context, final Collection<? extends Module> modules) {

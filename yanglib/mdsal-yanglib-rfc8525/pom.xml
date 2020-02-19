@@ -48,9 +48,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.apache.aries.blueprint</groupId>
-            <artifactId>blueprint-maven-plugin-annotation</artifactId>
-            <optional>true</optional>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.cmpn</artifactId>
         </dependency>
 
         <dependency>
@@ -70,10 +69,6 @@
                         <Automatic-Module-Name>org.opendaylight.mdsal.yanglib.rfc8525</Automatic-Module-Name>
                     </instructions>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.aries.blueprint</groupId>
-                <artifactId>blueprint-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

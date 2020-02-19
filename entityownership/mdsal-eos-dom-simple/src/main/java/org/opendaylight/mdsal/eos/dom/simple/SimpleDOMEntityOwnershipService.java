@@ -23,6 +23,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+import javax.inject.Singleton;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
@@ -36,6 +37,7 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +48,8 @@ import org.slf4j.LoggerFactory;
  * @author Robert Varga
  */
 @MetaInfServices
+@Singleton
+@Component(immediate = true)
 public final class SimpleDOMEntityOwnershipService implements DOMEntityOwnershipService {
     private static final Logger LOG = LoggerFactory.getLogger(SimpleDOMEntityOwnershipService.class);
 
