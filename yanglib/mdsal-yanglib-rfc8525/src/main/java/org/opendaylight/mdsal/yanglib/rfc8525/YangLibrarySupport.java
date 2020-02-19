@@ -14,7 +14,6 @@ import com.google.common.collect.Collections2;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.apache.aries.blueprint.annotation.service.Reference;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
@@ -49,8 +48,8 @@ public final class YangLibrarySupport implements YangLibSupport {
     private final EffectiveModelContext context;
 
     @Inject
-    public YangLibrarySupport(final @Reference YangParserFactory parserFactory,
-            final @Reference BindingRuntimeGenerator generator) throws YangParserException, IOException {
+    public YangLibrarySupport(final YangParserFactory parserFactory, final BindingRuntimeGenerator generator)
+            throws YangParserException, IOException {
         final YangModuleInfo yangLibModule = $YangModuleInfoImpl.getInstance();
 
         context = parserFactory.createParser()
