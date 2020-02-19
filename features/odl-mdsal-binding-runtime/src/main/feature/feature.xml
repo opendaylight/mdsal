@@ -3,5 +3,6 @@
     <feature name="odl-mdsal-binding-runtime">
         <feature version="[4,5)">odl-yangtools-data</feature>
         <feature version="[4,5)">odl-yangtools-parser</feature>
+        <feature>scr</feature>
     </feature>
 </features>
