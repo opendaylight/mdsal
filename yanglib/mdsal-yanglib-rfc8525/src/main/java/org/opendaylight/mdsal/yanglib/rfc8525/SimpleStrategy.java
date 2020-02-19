@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.yanglib.rfc8525;
 
-import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
+import org.opendaylight.binding.runtime.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
 final class SimpleStrategy implements ClassLoadingStrategy {
