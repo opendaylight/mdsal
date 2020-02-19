@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ServiceLoader;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.kohsuke.MetaInfServices;
-import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
+import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupportFactory;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;

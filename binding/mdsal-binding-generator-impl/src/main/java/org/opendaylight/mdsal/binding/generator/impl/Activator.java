@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
+import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
