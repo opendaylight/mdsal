@@ -24,10 +24,6 @@
             <artifactId>guava</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-eos-common-api</artifactId>
         </dependency>
@@ -49,22 +45,16 @@
             <artifactId>metainf-services</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.cmpn</artifactId>
+        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions combine.children="append">
-                        <Bundle-Activator>org.opendaylight.mdsal.eos.dom.simple.Activator</Bundle-Activator>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <scm>
         <connection>scm:git:http://git.opendaylight.org/gerrit/controller.git</connection>
