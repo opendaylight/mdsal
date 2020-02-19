@@ -8,15 +8,12 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Grpcont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Othercont;
@@ -29,12 +26,8 @@ public class ActionLookupTest {
 
     @BeforeClass
     public static void beforeClass() {
-        final ModuleInfoBackedContext ctx = ModuleInfoBackedContext.create();
-        ctx.addModuleInfos(BindingReflections.loadModuleInfos());
-
-        final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
-        CODEC = new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(), ctx, registry);
-        CODEC.onGlobalContextUpdated(ctx.tryToCreateModelContext().get());
+        CODEC = new BindingToNormalizedNodeCodec(
+            BindingRuntimeHelpers.createRuntimeContext(new DefaultBindingRuntimeGenerator()));
     }
 
     @AfterClass

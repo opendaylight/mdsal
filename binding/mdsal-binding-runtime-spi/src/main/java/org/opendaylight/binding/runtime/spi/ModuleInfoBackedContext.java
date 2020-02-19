@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.generator.impl;
+package org.opendaylight.binding.runtime.spi;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
@@ -32,10 +32,9 @@ import java.util.Set;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeContext;
-import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
-import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.generator.api.ModuleInfoRegistry;
+import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
+import org.opendaylight.binding.runtime.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
@@ -43,8 +42,7 @@ import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
@@ -56,8 +54,9 @@ import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaSourceRegistrat
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Beta
 public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
-        implements ModuleInfoRegistry, SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
+        implements ModuleInfoRegistry, EffectiveModelContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
     private abstract static class AbstractRegisteredModuleInfo {
         final YangTextSchemaSourceRegistration reg;
         final YangModuleInfo info;
@@ -151,17 +150,13 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         return CONTEXT_CACHES.getUnchecked(loadingStrategy).getUnchecked(infos);
     }
 
-    public static ModuleInfoBackedContext create() {
-        return new ModuleInfoBackedContext(getTCCLClassLoadingStrategy());
-    }
-
     public static ModuleInfoBackedContext create(final ClassLoadingStrategy loadingStrategy) {
         return new ModuleInfoBackedContext(loadingStrategy);
     }
 
     @Override
-    public SchemaContext getSchemaContext() {
-        final Optional<? extends SchemaContext> contextOptional = tryToCreateSchemaContext();
+    public EffectiveModelContext getEffectiveModelContext() {
+        final Optional<? extends EffectiveModelContext> contextOptional = tryToCreateModelContext();
         checkState(contextOptional.isPresent(), "Unable to recreate SchemaContext, error while parsing");
         return contextOptional.get();
     }
@@ -185,14 +180,7 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
             }
 
             final Class<?> cls = backingLoadingStrategy.loadClass(fullyQualifiedName);
-            final YangModuleInfo moduleInfo;
-            try {
-                moduleInfo = BindingReflections.getModuleInfo(cls);
-            } catch (Exception e) {
-                throw new IllegalStateException("Failed to resolve module information for class " + cls, e);
-            }
-
-            registerImplicitModuleInfo(requireNonNull(moduleInfo));
+            registerImplicitModuleInfo(BindingRuntimeHelpers.extractYangModuleInfo(cls));
             return cls;
         }
     }
@@ -221,11 +209,6 @@ public final class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
     // TODO finish schema parsing and expose as SchemaService
     // Unite with current SchemaService
-
-    @Deprecated
-    public Optional<? extends SchemaContext> tryToCreateSchemaContext() {
-        return ctxResolver.getSchemaContext();
-    }
 
     public Optional<? extends EffectiveModelContext> tryToCreateModelContext() {
         return ctxResolver.getEffectiveModelContext();

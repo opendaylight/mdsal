@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.Beta;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -32,6 +33,9 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
+import org.opendaylight.binding.runtime.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
@@ -41,9 +45,6 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaException;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeContext;
-import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
-import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -110,6 +111,18 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     public BindingToNormalizedNodeCodec(final BindingRuntimeGenerator generator,
             final ClassLoadingStrategy classLoadingStrategy, final BindingNormalizedNodeCodecRegistry codecRegistry) {
         this(generator, classLoadingStrategy, codecRegistry, false);
+    }
+
+    @Beta
+    public BindingToNormalizedNodeCodec(final BindingRuntimeContext runtimeContext) {
+        generator = (final SchemaContext context) -> {
+            throw new UnsupportedOperationException("Static context assigned");
+        };
+        classLoadingStrategy = runtimeContext.getStrategy();
+        codecRegistry = new BindingNormalizedNodeCodecRegistry(runtimeContext);
+        // TODO: this should have a specialized constructor or not be needed
+        futureSchema = FutureSchema.create(0, TimeUnit.SECONDS, false);
+        futureSchema.onRuntimeContextUpdated(runtimeContext);
     }
 
     public BindingToNormalizedNodeCodec(final BindingRuntimeGenerator generator,

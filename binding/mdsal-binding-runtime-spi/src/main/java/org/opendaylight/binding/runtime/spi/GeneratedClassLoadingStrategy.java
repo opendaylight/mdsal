@@ -5,13 +5,14 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.generator.impl;
+package org.opendaylight.binding.runtime.spi;
 
+import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.binding.runtime.api.ClassLoadingStrategy;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 
+@Beta
 public abstract class GeneratedClassLoadingStrategy implements ClassLoadingStrategy {
     private static final class AlwaysFailClassLoadingStrategy extends GeneratedClassLoadingStrategy {
         static final @NonNull AlwaysFailClassLoadingStrategy INSTANCE = new AlwaysFailClassLoadingStrategy();
@@ -41,10 +42,5 @@ public abstract class GeneratedClassLoadingStrategy implements ClassLoadingStrat
 
     public static final @NonNull GeneratedClassLoadingStrategy getAlwaysFailClassLoadingStrategy() {
         return AlwaysFailClassLoadingStrategy.INSTANCE;
-    }
-
-    @Override
-    public Class<?> loadClass(final Type type) throws ClassNotFoundException {
-        return loadClass(type.getFullyQualifiedName());
     }
 }

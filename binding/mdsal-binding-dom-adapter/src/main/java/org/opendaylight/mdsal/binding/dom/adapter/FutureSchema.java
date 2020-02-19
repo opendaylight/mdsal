@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 import org.checkerframework.checker.lock.qual.GuardedBy;
-import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeContext;
+import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 
