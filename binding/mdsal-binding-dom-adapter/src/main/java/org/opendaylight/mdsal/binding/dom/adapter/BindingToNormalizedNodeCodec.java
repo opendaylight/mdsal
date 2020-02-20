@@ -36,6 +36,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.binding.runtime.api.ClassLoadingStrategy;
+import org.opendaylight.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
@@ -322,7 +323,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
 
     @Override
     public void onGlobalContextUpdated(final SchemaContext context) {
-        final BindingRuntimeContext runtimeContext = BindingRuntimeContext.create(
+        final BindingRuntimeContext runtimeContext = DefaultBindingRuntimeContext.create(
             generator.generateTypeMapping(context), classLoadingStrategy);
         codecRegistry.onBindingRuntimeContextUpdated(runtimeContext);
         futureSchema.onRuntimeContextUpdated(runtimeContext);
