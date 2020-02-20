@@ -16,8 +16,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
+import org.opendaylight.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
@@ -53,7 +53,7 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
                     YangModuleLibrarySupport::createSource))
                 .addSource(createSource(yangLibModule))
                 .buildEffectiveModel();
-        final BindingCodecTree codecTree = new BindingNormalizedNodeCodecRegistry(BindingRuntimeContext.create(
+        final BindingCodecTree codecTree = new BindingNormalizedNodeCodecRegistry(DefaultBindingRuntimeContext.create(
             generator.generateTypeMapping(context), SimpleStrategy.INSTANCE)).getCodecContext();
 
         this.codec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
