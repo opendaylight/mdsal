@@ -10,12 +10,10 @@ package org.opendaylight.mdsal.singleton.dom.impl;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.eos.common.api.GenericEntity;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.Identifiable;
-import org.opendaylight.yangtools.concepts.Path;
 
 /**
  * {@link ClusterSingletonServiceGroup} maintains a group of {@link ClusterSingletonService} instances.
@@ -25,14 +23,8 @@ import org.opendaylight.yangtools.concepts.Path;
  * registration for ownership of the service entity in the cluster and also a registration that acts as a guard to
  * ensure a service group instance has fully closed prior to relinquishing service ownership. To achieve ownership
  * of the service group, a service group candidate must hold ownership of both these entities.
- *
- * @param <P> the instance identifier path type
- * @param <E> the GenericEntity type
- * @param <C> the GenericEntityOwnershipChange type
  */
-abstract class ClusterSingletonServiceGroup<P extends Path<P>, E extends GenericEntity<P>,
-                                       C extends GenericEntityOwnershipChange<P, E>> implements Identifiable<String> {
-
+abstract class ClusterSingletonServiceGroup implements Identifiable<String> {
     /**
      * This method must be called once on startup to initialize this group and
      * register the relevant group entity candidate. It means create relevant
@@ -67,7 +59,7 @@ abstract class ClusterSingletonServiceGroup<P extends Path<P>, E extends Generic
      *
      * @param ownershipChange change role for ClusterSingletonServiceGroup
      */
-    abstract void ownershipChanged(C ownershipChange);
+    abstract void ownershipChanged(DOMEntityOwnershipChange ownershipChange);
 
     /**
      * Closes this service group. All registered service providers are also closed. Please be careful

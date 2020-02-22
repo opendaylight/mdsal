@@ -16,8 +16,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.opendaylight.mdsal.singleton.dom.impl.AbstractClusterSingletonServiceProviderImpl.CLOSE_SERVICE_ENTITY_TYPE;
-import static org.opendaylight.mdsal.singleton.dom.impl.AbstractClusterSingletonServiceProviderImpl.SERVICE_ENTITY_TYPE;
+import static org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl.CLOSE_SERVICE_ENTITY_TYPE;
+import static org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl.SERVICE_ENTITY_TYPE;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -108,7 +108,7 @@ public class ClusterSingletonServiceGroupImplTest {
             }
         };
 
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, MAIN_ENTITY, CLOSE_ENTITY,
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(SERVICE_IDENTIFIER, MAIN_ENTITY, CLOSE_ENTITY,
             mockEosService);
     }
 
