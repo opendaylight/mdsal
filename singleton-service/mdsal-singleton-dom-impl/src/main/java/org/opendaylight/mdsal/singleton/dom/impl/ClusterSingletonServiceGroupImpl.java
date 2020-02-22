@@ -37,14 +37,12 @@ import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
-import org.opendaylight.mdsal.eos.common.api.GenericEntity;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipCandidateRegistration;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
-import org.opendaylight.yangtools.concepts.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,17 +61,8 @@ import org.slf4j.LoggerFactory;
  * it should remain the owner. In case a new service owner emerges, the old owner will start the cleanup process,
  * eventually releasing the cleanup entity. The new owner registers for the cleanup entity -- but will not see it
  * granted until the old owner finishes the cleanup.
- *
- * @param <P> the instance identifier path type
- * @param <E> the GenericEntity type
- * @param <C> the GenericEntityOwnershipChange type
- * @param <G> the GenericEntityOwnershipListener type
- * @param <S> the GenericEntityOwnershipService type
  */
-final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends GenericEntity<P>,
-        C extends GenericEntityOwnershipChange<P, E>,  G extends GenericEntityOwnershipListener<P, C>,
-        S extends GenericEntityOwnershipService<P, E, G>> extends ClusterSingletonServiceGroup<P, E, C> {
-
+final class ClusterSingletonServiceGroupImpl extends ClusterSingletonServiceGroup {
     private enum EntityState {
         /**
          * This entity was never registered.
@@ -113,25 +102,23 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
 
     private static final Logger LOG = LoggerFactory.getLogger(ClusterSingletonServiceGroupImpl.class);
 
-    private final S entityOwnershipService;
-    private final String identifier;
+    private final DOMEntityOwnershipService entityOwnershipService;
+    private final @NonNull String identifier;
 
     /* Entity instances */
-    private final E serviceEntity;
-    private final E cleanupEntity;
+    private final DOMEntity serviceEntity;
+    private final DOMEntity cleanupEntity;
 
     private final Set<ClusterSingletonServiceRegistration> members = ConcurrentHashMap.newKeySet();
     // Guarded by lock
     private final Map<ClusterSingletonServiceRegistration, ServiceInfo> services = new HashMap<>();
 
     // Marker for when any state changed
-    @SuppressWarnings("rawtypes")
     private static final AtomicIntegerFieldUpdater<ClusterSingletonServiceGroupImpl> DIRTY_UPDATER =
             AtomicIntegerFieldUpdater.newUpdater(ClusterSingletonServiceGroupImpl.class, "dirty");
     private volatile int dirty;
 
     // Simplified lock: non-reentrant, support tryLock() only
-    @SuppressWarnings("rawtypes")
     private static final AtomicIntegerFieldUpdater<ClusterSingletonServiceGroupImpl> LOCK_UPDATER =
             AtomicIntegerFieldUpdater.newUpdater(ClusterSingletonServiceGroupImpl.class, "lock");
     @SuppressWarnings("unused")
@@ -165,7 +152,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      * acquire {@link #cleanupEntity}.
      */
     @GuardedBy("this")
-    private GenericEntityOwnershipCandidateRegistration<P, E> serviceEntityReg = null;
+    private DOMEntityOwnershipCandidateRegistration serviceEntityReg = null;
     /**
      * Service (base) entity last reported state.
      */
@@ -177,7 +164,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      * and startup.
      */
     @GuardedBy("this")
-    private GenericEntityOwnershipCandidateRegistration<P, E> cleanupEntityReg;
+    private DOMEntityOwnershipCandidateRegistration cleanupEntityReg;
     /**
      * Cleanup (owner) entity last reported state.
      */
@@ -196,8 +183,9 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      * @param parent parent service
      * @param services Services list
      */
-    ClusterSingletonServiceGroupImpl(final String identifier, final S entityOwnershipService, final E mainEntity,
-            final E closeEntity, final Collection<ClusterSingletonServiceRegistration> services) {
+    ClusterSingletonServiceGroupImpl(final String identifier, final DOMEntityOwnershipService entityOwnershipService,
+            final DOMEntity mainEntity, final DOMEntity closeEntity,
+            final Collection<ClusterSingletonServiceRegistration> services) {
         checkArgument(!identifier.isEmpty(), "Identifier may not be empty");
         this.identifier = identifier;
         this.entityOwnershipService = requireNonNull(entityOwnershipService);
@@ -209,8 +197,8 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     }
 
     @VisibleForTesting
-    ClusterSingletonServiceGroupImpl(final String identifier, final E mainEntity,
-            final E closeEntity, final S entityOwnershipService) {
+    ClusterSingletonServiceGroupImpl(final String identifier, final DOMEntity mainEntity,
+            final DOMEntity closeEntity, final DOMEntityOwnershipService entityOwnershipService) {
         this(identifier, entityOwnershipService, mainEntity, closeEntity, ImmutableList.of());
     }
 
@@ -325,7 +313,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     }
 
     @Override
-    void ownershipChanged(final C ownershipChange) {
+    void ownershipChanged(final DOMEntityOwnershipChange ownershipChange) {
         LOG.debug("Ownership change {} for ClusterSingletonServiceGroup {}", ownershipChange, identifier);
 
         synchronized (this) {
@@ -349,8 +337,8 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      * @param ownershipChange reported change
      */
     @Holding("this")
-    private void lockedOwnershipChanged(final C ownershipChange) {
-        final E entity = ownershipChange.getEntity();
+    private void lockedOwnershipChanged(final DOMEntityOwnershipChange ownershipChange) {
+        final DOMEntity entity = ownershipChange.getEntity();
         if (serviceEntity.equals(entity)) {
             serviceOwnershipChanged(ownershipChange.getState(), ownershipChange.inJeopardy());
             markDirty();
