@@ -15,10 +15,10 @@
         <relativePath>../feature-parent</relativePath>
     </parent>
 
-    <artifactId>odl-mdsal-binding-runtime</artifactId>
+    <artifactId>odl-mdsal-binding-runtime-api</artifactId>
     <packaging>feature</packaging>
-    <name>OpenDaylight :: MD-SAL :: Binding Runtime</name>
-    <description>MD-SAL Java Binding runtime</description>
+    <name>OpenDaylight :: MD-SAL :: Binding Runtime APIs</name>
+    <description>MD-SAL Java Binding runtime APIs</description>
 
     <dependencies>
         <dependency>
@@ -41,29 +41,27 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-binding-runtime-api</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
+            <artifactId>mdsal-binding-generator-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-generator-impl</artifactId>
+            <artifactId>mdsal-binding-generator-util</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-dom-codec</artifactId>
-            <exclusions>
-                <exclusion>
-                    <!-- This dependency is shaded, but the build reactor
-                         still sees it, hence we need to explicitly exclude it -->
-                    <groupId>net.bytebuddy</groupId>
-                    <artifactId>byte-buddy</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>mdsal-binding-runtime-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-runtime-osgi</artifactId>
+            <artifactId>mdsal-binding-runtime-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding-dom-codec-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding-dom-codec-spi</artifactId>
         </dependency>
     </dependencies>
 </project>
