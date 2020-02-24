@@ -47,11 +47,17 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-binding-runtime-api</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-dom-broker</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-schema-service-osgi</artifactId>
+            <artifactId>mdsal-dom-schema-osgi</artifactId>
         </dependency>
     </dependencies>
 </project>
