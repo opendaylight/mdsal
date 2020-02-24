@@ -30,6 +30,7 @@ import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.WithYangTextSources
         implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(ScanningSchemaServiceProvider.class);
