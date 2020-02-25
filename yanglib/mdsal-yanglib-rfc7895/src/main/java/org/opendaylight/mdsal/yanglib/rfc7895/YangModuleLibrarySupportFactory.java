@@ -15,6 +15,7 @@ import java.util.ServiceLoader;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupportFactory;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
@@ -24,20 +25,27 @@ import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 @MetaInfServices
 @NonNullByDefault
 public final class YangModuleLibrarySupportFactory implements YangLibSupportFactory {
+    private final BindingCodecTreeFactory codecFactory;
     private final BindingRuntimeGenerator generator;
 
     public YangModuleLibrarySupportFactory() {
-        this(ServiceLoader.load(BindingRuntimeGenerator.class).findFirst()
-            .orElseThrow(() -> new IllegalStateException("Failed to find a BindingRuntimeGenerator service")));
+        this(load(BindingRuntimeGenerator.class), load(BindingCodecTreeFactory.class));
     }
 
-    public YangModuleLibrarySupportFactory(final BindingRuntimeGenerator generator) {
+    public YangModuleLibrarySupportFactory(final BindingRuntimeGenerator generator,
+            final BindingCodecTreeFactory codecFactory) {
         this.generator = requireNonNull(generator);
+        this.codecFactory = requireNonNull(codecFactory);
     }
 
     @Override
     public YangLibSupport createYangLibSupport(final YangParserFactory parserFactory)
             throws YangParserException, IOException {
-        return new YangModuleLibrarySupport(parserFactory, generator);
+        return new YangModuleLibrarySupport(parserFactory, generator, codecFactory);
+    }
+
+    private static <T> T load(final Class<T> clazz) {
+        return ServiceLoader.load(clazz).findFirst()
+                .orElseThrow(() -> new IllegalStateException("Failed to find a " + clazz.getSimpleName() + " service"));
     }
 }

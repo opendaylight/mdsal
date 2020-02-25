@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.yanglib.rfc7895;
 import com.google.common.annotations.Beta;
 import java.io.IOException;
 import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
@@ -32,6 +33,8 @@ public final class OSGiYangModuleLibrarySupport implements YangLibSupport {
     YangParserFactory parserFactory = null;
     @Reference
     BindingRuntimeGenerator generator = null;
+    @Reference
+    BindingCodecTreeFactory codecFactory = null;
 
     private YangModuleLibrarySupport delegate;
 
@@ -43,7 +46,7 @@ public final class OSGiYangModuleLibrarySupport implements YangLibSupport {
 
     @Activate
     void activate() throws YangParserException, IOException {
-        delegate = new YangModuleLibrarySupport(parserFactory, generator);
+        delegate = new YangModuleLibrarySupport(parserFactory, generator, codecFactory);
         LOG.info("RFC7895 YANG Module Library support activated");
     }
 
