@@ -40,7 +40,6 @@ import org.opendaylight.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
@@ -66,11 +65,8 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
-import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
-import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
@@ -467,27 +463,6 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
 
     protected NormalizedNode<?, ?> instanceIdentifierToNode(final YangInstanceIdentifier parentPath) {
         return ImmutableNodes.fromInstanceId(runtimeContext().getSchemaContext(), parentPath);
-    }
-
-    /**
-     * This method creates an empty list container of a particular type.
-     *
-     * @deprecated This method is not generally useful, as empty lists do not convey information in YANG (they are
-     *             equivalent to non-present lists). It also leaks implementation details to a broader scope and should
-     *             never have been public in the first place.
-     */
-    @Deprecated
-    public NormalizedNode<?, ?> getDefaultNodeFor(final YangInstanceIdentifier parentMapPath) {
-        final BindingCodecTreeNode mapCodec = requireNonNull(
-                codecRegistry.getCodecContext().getSubtreeCodec(parentMapPath),
-                "Codec not found for yang instance identifier: " + parentMapPath);
-        final WithStatus schema = mapCodec.getSchema();
-        if (schema instanceof ListSchemaNode) {
-            final ListSchemaNode castedSchema = (ListSchemaNode) schema;
-            return castedSchema.isUserOrdered() ? Builders.orderedMapBuilder(castedSchema).build()
-                    : Builders.mapBuilder(castedSchema).build();
-        }
-        throw new IllegalArgumentException("Path does not point to list schema node");
     }
 
     protected Collection<DOMDataTreeIdentifier> toDOMDataTreeIdentifiers(
