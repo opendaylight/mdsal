@@ -12,17 +12,19 @@ import static java.util.Objects.requireNonNull;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.time.Instant;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
@@ -59,9 +61,19 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         BindingNormalizedNodeWriterFactory, BindingNormalizedNodeSerializer {
     private static final Logger LOG = LoggerFactory.getLogger(BindingNormalizedNodeCodecRegistry.class);
 
-    private static final AtomicReferenceFieldUpdater<BindingNormalizedNodeCodecRegistry, BindingCodecContext> UPDATER =
-            AtomicReferenceFieldUpdater.newUpdater(BindingNormalizedNodeCodecRegistry.class, BindingCodecContext.class,
-                "codecContext");
+    private static final VarHandle CODEC_CONTEXT;
+
+    static {
+        try {
+            CODEC_CONTEXT = MethodHandles.lookup().findVarHandle(BindingNormalizedNodeCodecRegistry.class,
+                "codecContext", BindingCodecContext.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    // Accessed via CODEC_CONTEXT
+    @SuppressWarnings("unused")
     private volatile BindingCodecContext codecContext;
 
     public BindingNormalizedNodeCodecRegistry() {
@@ -69,7 +81,6 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
     }
 
     public BindingNormalizedNodeCodecRegistry(final BindingRuntimeContext codecContext) {
-        this();
         onBindingRuntimeContextUpdated(codecContext);
     }
 
@@ -78,39 +89,45 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         return codecContext().getSerializer(type);
     }
 
-    public BindingCodecTree getCodecContext() {
-        return codecContext;
-    }
-
     public void onBindingRuntimeContextUpdated(final BindingRuntimeContext context) {
         // BindingCodecContext is a costly resource. Let us not ditch it unless we have to
-        final BindingCodecContext current = codecContext;
+        final BindingCodecContext current = currentCodecContext();
         if (current != null && context.equals(current.getRuntimeContext())) {
             LOG.debug("Skipping update of runtime context {}", context);
             return;
         }
 
         final BindingCodecContext updated = new BindingCodecContext(context);
-        if (!UPDATER.compareAndSet(this, current, updated)) {
-            LOG.warn("Concurrent update of runtime context (expected={} current={}) detected at ", current,
-                codecContext, new Throwable());
+        final Object witness = CODEC_CONTEXT.compareAndExchangeRelease(this, current, updated);
+        if (witness != current) {
+            LOG.warn("Concurrent update of runtime context (expected={} current={}) detected at ", current, witness,
+                new Throwable());
         }
     }
 
-    final @NonNull BindingCodecContext codecContext() {
-        final BindingCodecContext local = codecContext;
+    // FIXME: assert same as codecContext() ?
+    public @Nullable BindingCodecTree getCodecContext() {
+        return currentCodecContext();
+    }
+
+    private @Nullable BindingCodecContext currentCodecContext() {
+        return (BindingCodecContext) CODEC_CONTEXT.getAcquire(this);
+    }
+
+    private @NonNull BindingCodecContext codecContext() {
+        final BindingCodecContext local = currentCodecContext();
         checkState(local != null, "No context available yet");
         return local;
     }
 
     @Override
     public YangInstanceIdentifier toYangInstanceIdentifier(final InstanceIdentifier<?> binding) {
-        return codecContext.getInstanceIdentifierCodec().serialize(binding);
+        return codecContext().getInstanceIdentifierCodec().serialize(binding);
     }
 
     @Override
     public InstanceIdentifier<?> fromYangInstanceIdentifier(final YangInstanceIdentifier dom) {
-        return codecContext.getInstanceIdentifierCodec().deserialize(dom);
+        return codecContext().getInstanceIdentifierCodec().deserialize(dom);
     }
 
     @Override
@@ -121,7 +138,7 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         final NormalizedNodeStreamWriter domWriter = ImmutableNormalizedNodeStreamWriter.from(result);
 
         // We create Binding Stream Writer which translates from Binding to Normalized Nodes
-        final Entry<YangInstanceIdentifier, BindingStreamEventWriter> writeCtx = codecContext.newWriter(path,
+        final Entry<YangInstanceIdentifier, BindingStreamEventWriter> writeCtx = codecContext().newWriter(path,
             domWriter);
 
         // We get serializer which reads binding data and uses Binding To Normalized Node writer to write result
@@ -207,7 +224,7 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         }
 
         final List<PathArgument> builder = new ArrayList<>();
-        final BindingDataObjectCodecTreeNode<?> codec = codecContext.getCodecContextNode(path, builder);
+        final BindingDataObjectCodecTreeNode<?> codec = codecContext().getCodecContextNode(path, builder);
         if (codec == null) {
             if (data != null) {
                 LOG.warn("Path {} does not have a binding equivalent, should have been caught earlier ({})", path,
@@ -223,7 +240,7 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
 
     @Override
     public Notification fromNormalizedNodeNotification(final SchemaPath path, final ContainerNode data) {
-        final NotificationCodecContext<?> codec = codecContext.getNotificationContext(path);
+        final NotificationCodecContext<?> codec = codecContext().getNotificationContext(path);
         return codec.deserialize(data);
     }
 
@@ -234,75 +251,73 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
             return fromNormalizedNodeNotification(path, data);
         }
 
-        final NotificationCodecContext<?> codec = codecContext.getNotificationContext(path);
+        final NotificationCodecContext<?> codec = codecContext().getNotificationContext(path);
         return codec.deserialize(data, eventInstant);
     }
 
     @Override
     public DataObject fromNormalizedNodeRpcData(final SchemaPath path, final ContainerNode data) {
-        final RpcInputCodec<?> codec = codecContext.getRpcInputCodec(path);
+        final RpcInputCodec<?> codec = codecContext().getRpcInputCodec(path);
         return codec.deserialize(data);
     }
 
     @Override
     public <T extends RpcInput> T fromNormalizedNodeActionInput(final Class<? extends Action<?, ?, ?>> action,
             final ContainerNode input) {
-        return (T) requireNonNull(codecContext.getActionCodec(action).input().deserialize(requireNonNull(input)));
+        return (T) requireNonNull(codecContext().getActionCodec(action).input().deserialize(requireNonNull(input)));
     }
 
     @Override
     public <T extends RpcOutput> T fromNormalizedNodeActionOutput(final Class<? extends Action<?, ?, ?>> action,
             final ContainerNode output) {
-        return (T) requireNonNull(codecContext.getActionCodec(action).output().deserialize(requireNonNull(output)));
+        return (T) requireNonNull(codecContext().getActionCodec(action).output().deserialize(requireNonNull(output)));
     }
 
     @Override
     public Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriterAndIdentifier(
             final InstanceIdentifier<?> path, final NormalizedNodeStreamWriter domWriter) {
-        return codecContext.newWriter(path, domWriter);
+        return codecContext().newWriter(path, domWriter);
     }
 
     @Override
     public BindingStreamEventWriter newWriter(final InstanceIdentifier<?> path,
             final NormalizedNodeStreamWriter domWriter) {
-        return codecContext.newWriterWithoutIdentifier(path, domWriter);
+        return codecContext().newWriterWithoutIdentifier(path, domWriter);
     }
 
     @Override
     public BindingStreamEventWriter newNotificationWriter(final Class<? extends Notification> notification,
             final NormalizedNodeStreamWriter streamWriter) {
-        return codecContext.newNotificationWriter(notification, streamWriter);
+        return codecContext().newNotificationWriter(notification, streamWriter);
     }
 
     @Override
     public BindingStreamEventWriter newActionInputWriter(final Class<? extends Action<?, ?, ?>> action,
             final NormalizedNodeStreamWriter domWriter) {
-        return codecContext.getActionCodec(action).input().createWriter(domWriter);
+        return codecContext().getActionCodec(action).input().createWriter(domWriter);
     }
 
     @Override
     public BindingStreamEventWriter newActionOutputWriter(final Class<? extends Action<?, ?, ?>> action,
             final NormalizedNodeStreamWriter domWriter) {
-        return codecContext.getActionCodec(action).output().createWriter(domWriter);
+        return codecContext().getActionCodec(action).output().createWriter(domWriter);
     }
 
     @Override
     public BindingStreamEventWriter newRpcWriter(final Class<? extends DataContainer> rpcInputOrOutput,
             final NormalizedNodeStreamWriter streamWriter) {
-        return codecContext.newRpcWriter(rpcInputOrOutput,streamWriter);
+        return codecContext().newRpcWriter(rpcInputOrOutput,streamWriter);
     }
 
     public <T extends DataObject> Function<Optional<NormalizedNode<?, ?>>, Optional<T>>  deserializeFunction(
             final InstanceIdentifier<T> path) {
-        final DataObjectCodecContext<?,?> ctx = (DataObjectCodecContext<?,?>) codecContext.getCodecContextNode(path,
-            null);
-        return new DeserializeFunction<>(ctx);
+        return new DeserializeFunction<>((DataObjectCodecContext<?, ?>) codecContext().getCodecContextNode(path, null));
     }
 
     private static final class DeserializeFunction<T> implements Function<Optional<NormalizedNode<?, ?>>, Optional<T>> {
-        private final DataObjectCodecContext<?,?> ctx;
+        private final DataObjectCodecContext<?, ?> ctx;
 
-        DeserializeFunction(final DataObjectCodecContext<?,?> ctx) {
+        DeserializeFunction(final DataObjectCodecContext<?, ?> ctx) {
             this.ctx = ctx;
         }
 
