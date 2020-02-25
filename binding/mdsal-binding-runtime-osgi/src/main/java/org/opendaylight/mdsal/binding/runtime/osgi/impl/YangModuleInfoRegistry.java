@@ -7,104 +7,29 @@
  */
 package org.opendaylight.mdsal.binding.runtime.osgi.impl;
 
-import static java.util.Objects.requireNonNull;
-
-import org.checkerframework.checker.lock.qual.GuardedBy;
-import org.checkerframework.checker.lock.qual.Holding;
-import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
-import org.opendaylight.binding.runtime.api.DefaultBindingRuntimeContext;
-import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
-import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentFactory;
-import org.osgi.service.component.ComponentInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Update SchemaContext service in Service Registry each time new YangModuleInfo is added or removed.
  */
-final class YangModuleInfoRegistry {
-    private static final Logger LOG = LoggerFactory.getLogger(YangModuleInfoRegistry.class);
-
-    private final ComponentFactory contextFactory;
-    private final BindingRuntimeGenerator generator;
-    private final ModuleInfoBackedContext moduleInfoRegistry;
-
-    @GuardedBy("this")
-    private ComponentInstance currentInstance;
-    @GuardedBy("this")
-    private int generation;
-
-    private volatile boolean ignoreScanner = true;
-
-    YangModuleInfoRegistry(final ComponentFactory contextFactory, final YangParserFactory factory,
-            final BindingRuntimeGenerator generator) {
-        this.contextFactory = requireNonNull(contextFactory);
-        this.generator = requireNonNull(generator);
-
-        moduleInfoRegistry = ModuleInfoBackedContext.create("binding-dom-codec", factory,
-            // FIXME: This is the fallback strategy, it should not be needed
-            GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy());
+abstract class YangModuleInfoRegistry {
+    static @NonNull YangModuleInfoRegistry create(final BundleContext ctx, final ComponentFactory contextFactory,
+            final YangParserFactory factory, final BindingRuntimeGenerator generator) {
+        return KarafFeaturesSupport.wrap(ctx, new RegularYangModuleInfoRegistry(contextFactory, factory, generator));
     }
 
     // Invocation from scanner, we may want to ignore this in order to not process partial updates
-    void scannerUpdate() {
-        if (!ignoreScanner) {
-            synchronized (this) {
-                updateService();
-            }
-        }
-    }
+    abstract void scannerUpdate();
 
-    synchronized void enableScannerAndUpdate() {
-        ignoreScanner = false;
-        updateService();
-    }
+    abstract void enableScannerAndUpdate();
 
-    synchronized void close() {
-        ignoreScanner = true;
-        if (currentInstance != null) {
-            currentInstance.dispose();
-            currentInstance = null;
-        }
-    }
+    abstract void close();
 
-    ObjectRegistration<YangModuleInfo> registerInfo(final YangModuleInfo yangModuleInfo) {
-        return moduleInfoRegistry.registerModuleInfo(yangModuleInfo);
-    }
-
-    @Holding("this")
-    @SuppressWarnings("checkstyle:illegalCatch")
-    private void updateService() {
-        final EffectiveModelContext context;
-        try {
-            context = moduleInfoRegistry.getEffectiveModelContext();
-        } catch (final RuntimeException e) {
-            // The ModuleInfoBackedContext throws a RuntimeException if it can't create the schema context.
-            LOG.error("Error updating the schema context", e);
-            return;
-        }
-        LOG.trace("Assembled context {}", context);
-
-
-        final BindingRuntimeContext delegate = DefaultBindingRuntimeContext.create(
-            generator.generateTypeMapping(context), moduleInfoRegistry);
-
-        final ComponentInstance newInstance = contextFactory.newInstance(
-            BindingRuntimeContextImpl.props(nextGeneration(), delegate));
-        if (currentInstance != null) {
-            currentInstance.dispose();
-        }
-        currentInstance = newInstance;
-    }
-
-    @Holding("this")
-    private long nextGeneration() {
-        return generation == -1 ? -1 : ++generation;
-    }
+    abstract ObjectRegistration<YangModuleInfo> registerInfo(YangModuleInfo yangModuleInfo);
 }
