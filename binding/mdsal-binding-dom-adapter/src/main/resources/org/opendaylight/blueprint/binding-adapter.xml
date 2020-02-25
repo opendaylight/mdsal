@@ -15,7 +15,6 @@
   <service ref="mappingCodec" odl:type="default">
     <interfaces>
       <value>org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer</value>
-      <value>org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory</value>
     </interfaces>
   </service>
 
