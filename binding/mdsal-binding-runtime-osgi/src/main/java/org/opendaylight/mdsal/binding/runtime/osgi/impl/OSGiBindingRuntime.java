@@ -35,7 +35,7 @@ public final class OSGiBindingRuntime {
     @Activate
     void activate(final BundleContext ctx) {
         LOG.info("Binding Runtime starting");
-        moduleRegistry = new YangModuleInfoRegistry(contextFactory, parserFactory, generator);
+        moduleRegistry = YangModuleInfoRegistry.create(ctx, contextFactory, parserFactory, generator);
         bundleTracker = new YangModuleInfoScanner(ctx, moduleRegistry);
         bundleTracker.open();
         moduleRegistry.enableScannerAndUpdate();

@@ -43,6 +43,7 @@ public class OSGiBindingRuntimeTest {
         target.parserFactory = parserFactory;
         target.generator = generator;
         target.contextFactory = contextFactory;
+        doReturn(null).when(bundleContext).getServiceReference(any(Class.class));
     }
 
     @After
