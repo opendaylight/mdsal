@@ -27,6 +27,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
@@ -40,7 +41,6 @@ public final class OsgiBundleScanningSchemaService extends ScanningSchemaService
 
     private static final Logger LOG = LoggerFactory.getLogger(OsgiBundleScanningSchemaService.class);
     private static final AtomicReference<OsgiBundleScanningSchemaService> GLOBAL_INSTANCE = new AtomicReference<>();
-    private static final long FRAMEWORK_BUNDLE_ID = 0;
 
     private final BundleScanner scanner = new BundleScanner();
     private final BundleContext context;
@@ -125,7 +125,7 @@ public final class OsgiBundleScanningSchemaService extends ScanningSchemaService
         @Override
         public Iterable<Registration> addingBundle(final Bundle bundle, final BundleEvent event) {
 
-            if (bundle.getBundleId() == FRAMEWORK_BUNDLE_ID) {
+            if (bundle.getBundleId() == Constants.SYSTEM_BUNDLE_ID) {
                 return Collections.emptyList();
             }
 
@@ -158,7 +158,7 @@ public final class OsgiBundleScanningSchemaService extends ScanningSchemaService
 
         @Override
         public void modifiedBundle(final Bundle bundle, final BundleEvent event, final Iterable<Registration> object) {
-            if (bundle.getBundleId() == FRAMEWORK_BUNDLE_ID) {
+            if (bundle.getBundleId() == Constants.SYSTEM_BUNDLE_ID) {
                 LOG.debug("Framework bundle {} got event {}", bundle, event.getType());
                 if ((event.getType() & BundleEvent.STOPPING) != 0) {
                     LOG.info("OSGi framework is being stopped, halting bundle scanning");
