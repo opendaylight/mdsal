@@ -478,9 +478,12 @@ abstract class AbstractTypeGenerator {
     }
 
     private Optional<ActionDefinition> findOrigAction(final DataNodeContainer parent, final ActionDefinition action) {
+        final QName qname = action.getQName();
         for (UsesNode uses : parent.getUses()) {
             final GroupingDefinition grp = uses.getSourceGrouping();
-            final Optional<ActionDefinition> found = grp.findAction(action.getQName());
+            // Target grouping may reside in a different module, hence we need to rebind the QName to match grouping's
+            // namespace
+            final Optional<ActionDefinition> found = grp.findAction(qname.bindTo(grp.getQName().getModule()));
             if (found.isPresent()) {
                 final ActionDefinition result = found.get();
                 return result.isAddedByUses() ? findOrigAction(grp, result) : found;
