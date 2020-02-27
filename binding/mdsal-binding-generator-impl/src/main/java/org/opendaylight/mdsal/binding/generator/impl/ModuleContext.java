@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.BiMap;
@@ -22,6 +23,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
@@ -31,6 +35,7 @@ import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
@@ -59,6 +64,7 @@ public final class ModuleContext implements Mutable {
     private final List<GeneratedTypeBuilder> augmentations = new ArrayList<>();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final Set<GeneratedTypeBuilder> topLevelNodes = new HashSet<>();
+    private final Map<SchemaPath, JavaTypeName> aliases = new HashMap<>();
     private final Map<Type, WithStatus> typeToSchema = new HashMap<>();
     private final List<GeneratedTOBuilder> genTOs = new ArrayList<>();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
@@ -149,6 +155,23 @@ public final class ModuleContext implements Mutable {
 
     public void addGeneratedTOBuilder(final GeneratedTOBuilder builder) {
         genTOs.add(builder);
+    }
+
+    @NonNull GeneratedType addAliasType(final ModuleContext sourceContext, final ContainerSchemaNode source,
+            final ContainerSchemaNode alias) {
+        final GeneratedTypeBuilder builder = sourceContext.getChildNode(source.getPath());
+        checkState(builder != null, "Could not find builder for %s", source);
+
+        final JavaTypeName id = builder.getIdentifier();
+        final SchemaPath path = alias.getPath();
+        final JavaTypeName prev = aliases.putIfAbsent(path, id);
+        checkState(prev == null, "Type aliasing conflict on %s: %s vs %s", path, prev, id);
+
+        return builder.build();
+    }
+
+    @Nullable JavaTypeName getAlias(final SchemaPath path) {
+        return aliases.get(path);
     }
 
     public void addChildNodeType(final SchemaNode def, final GeneratedTypeBuilder builder) {

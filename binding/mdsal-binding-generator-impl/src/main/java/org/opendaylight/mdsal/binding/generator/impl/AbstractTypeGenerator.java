@@ -440,8 +440,8 @@ abstract class AbstractTypeGenerator {
                 // Original definition may live in a different module, make sure we account for that
                 final ModuleContext origContext = moduleContext(
                     orig.getPath().getPathFromRoot().iterator().next().getModule());
-                input = origContext.getChildNode(orig.getInput().getPath()).build();
-                output = origContext.getChildNode(orig.getOutput().getPath()).build();
+                input = context.addAliasType(origContext, orig.getInput(), action.getInput());
+                output = context.addAliasType(origContext, orig.getOutput(), action.getOutput());
             } else {
                 input = actionContainer(context, RPC_INPUT, action.getInput(), inGrouping);
                 output = actionContainer(context, RPC_OUTPUT, action.getOutput(), inGrouping);
@@ -834,22 +834,30 @@ abstract class AbstractTypeGenerator {
             throw new IllegalArgumentException("augment target not found: " + targetPath);
         }
 
-        GeneratedTypeBuilder targetTypeBuilder = findChildNodeByPath(targetSchemaNode.getPath());
-        if (targetTypeBuilder == null) {
-            targetTypeBuilder = findCaseByPath(targetSchemaNode.getPath());
-        }
-        if (targetTypeBuilder == null) {
-            throw new IllegalStateException("Target type not yet generated: " + targetSchemaNode);
+        if (targetSchemaNode instanceof ChoiceSchemaNode) {
+            final GeneratedTypeBuilder builder = findChildNodeByPath(targetSchemaNode.getPath());
+            checkState(builder != null, "Choice target type not generated for %s", targetSchemaNode);
+            generateTypesFromAugmentedChoiceCases(context, builder.build(), (ChoiceSchemaNode) targetSchemaNode,
+                augSchema.getChildNodes(), null, false);
+            return;
         }
 
-        if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            final Type targetType = new ReferencedTypeImpl(targetTypeBuilder.getIdentifier());
-            addRawAugmentGenTypeDefinition(context, targetType, augSchema, false);
-
+        final JavaTypeName targetName;
+        if (targetSchemaNode instanceof CaseSchemaNode) {
+            final GeneratedTypeBuilder builder = findCaseByPath(targetSchemaNode.getPath());
+            checkState(builder != null, "Case target type not generated for %s", targetSchemaNode);
+            targetName = builder.getIdentifier();
         } else {
-            generateTypesFromAugmentedChoiceCases(context, targetTypeBuilder.build(),
-                    (ChoiceSchemaNode) targetSchemaNode, augSchema.getChildNodes(), null, false);
+            final GeneratedTypeBuilder builder = findChildNodeByPath(targetSchemaNode.getPath());
+            if (builder == null) {
+                targetName = findAliasByPath(targetSchemaNode.getPath());
+                checkState(targetName != null, "Target type not yet generated: %s", targetSchemaNode);
+            } else {
+                targetName = builder.getIdentifier();
+            }
         }
+
+        addRawAugmentGenTypeDefinition(context, new ReferencedTypeImpl(targetName), augSchema, false);
     }
 
     private void usesAugmentationToGenTypes(final ModuleContext context, final AugmentationSchemaNode augSchema,
@@ -1927,6 +1935,16 @@ abstract class AbstractTypeGenerator {
             builder.addImplementsType(genType.build());
         }
         return builder;
+    }
+
+    private JavaTypeName findAliasByPath(final SchemaPath path) {
+        for (final ModuleContext ctx : genCtx.values()) {
+            final JavaTypeName result = ctx.getAlias(path);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
     }
 
     private GeneratedTypeBuilder findChildNodeByPath(final SchemaPath path) {
