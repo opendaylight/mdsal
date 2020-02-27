@@ -1,0 +1,17 @@
+module b {
+  yang-version 1.1;
+  namespace "b";
+  prefix b;
+  import a {
+    prefix a;
+  }
+
+ augment "/a:a-cont/a:a-act/a:input" {
+   description
+      "An augmentation of a action input of module a";
+    leaf b-aug-leaf {
+       type empty;
+     }
+  }
+
+}
