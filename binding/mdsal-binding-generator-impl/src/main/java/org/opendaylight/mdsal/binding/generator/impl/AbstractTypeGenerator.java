@@ -437,8 +437,11 @@ abstract class AbstractTypeGenerator {
             final GeneratedType output;
             if (action.isAddedByUses()) {
                 final ActionDefinition orig = findOrigAction(parentSchema, action).get();
-                input = context.getChildNode(orig.getInput().getPath()).build();
-                output = context.getChildNode(orig.getOutput().getPath()).build();
+                // Original definition may live in a different module, make sure we account for that
+                final ModuleContext origContext = moduleContext(
+                    orig.getPath().getPathFromRoot().iterator().next().getModule());
+                input = origContext.getChildNode(orig.getInput().getPath()).build();
+                output = origContext.getChildNode(orig.getOutput().getPath()).build();
             } else {
                 input = actionContainer(context, RPC_INPUT, action.getInput(), inGrouping);
                 output = actionContainer(context, RPC_OUTPUT, action.getOutput(), inGrouping);
@@ -466,9 +469,12 @@ abstract class AbstractTypeGenerator {
     }
 
     private Optional<ActionDefinition> findOrigAction(final DataNodeContainer parent, final ActionDefinition action) {
+        final QName qname = action.getQName();
         for (UsesNode uses : parent.getUses()) {
             final GroupingDefinition grp = findUsedGrouping(uses);
-            final Optional<ActionDefinition> found = grp.findAction(action.getQName());
+            // Target grouping may reside in a different module, hence we need to rebind the QName to match grouping's
+            // namespace
+            final Optional<ActionDefinition> found = grp.findAction(qname.withModule(grp.getQName().getModule()));
             if (found.isPresent()) {
                 final ActionDefinition result = found.get();
                 return result.isAddedByUses() ? findOrigAction(grp, result) : found;
