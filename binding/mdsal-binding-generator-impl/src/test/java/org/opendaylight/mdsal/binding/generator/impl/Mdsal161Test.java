@@ -28,7 +28,7 @@ public class Mdsal161Test {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal161.yang");
         final Collection<Type> types = DefaultBindingGenerator.generateFor(context);
         assertNotNull(types);
-        assertEquals(24, types.size());
+        assertEquals(23, types.size());
 
         assertKeyStructure(types, "org.opendaylight.yang.gen.v1.mdsal161.norev.WithGrpKey");
         assertKeyStructure(types, "org.opendaylight.yang.gen.v1.mdsal161.norev.WithGrpExtKey");
