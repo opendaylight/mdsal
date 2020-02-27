@@ -452,8 +452,8 @@ abstract class AbstractTypeGenerator {
                 // Original definition may live in a different module, make sure we account for that
                 final ModuleContext origContext = moduleContext(
                     orig.getPath().getPathFromRoot().iterator().next().getModule());
-                input = origContext.getChildNode(orig.getInput().getPath()).build();
-                output = origContext.getChildNode(orig.getOutput().getPath()).build();
+                input = context.addAliasType(origContext, orig.getInput(), action.getInput());
+                output = context.addAliasType(origContext, orig.getOutput(), action.getOutput());
             } else {
                 input = actionContainer(context, RPC_INPUT, action.getInput(), inGrouping);
                 output = actionContainer(context, RPC_OUTPUT, action.getOutput(), inGrouping);

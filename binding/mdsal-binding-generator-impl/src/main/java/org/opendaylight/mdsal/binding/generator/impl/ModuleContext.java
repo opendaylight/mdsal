@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.BiMap;
@@ -22,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
@@ -51,6 +53,7 @@ public final class ModuleContext implements Mutable {
     private static final Logger LOG = LoggerFactory.getLogger(ModuleContext.class);
 
     private final BiMap<Type, AugmentationSchemaNode> typeToAugmentation = HashBiMap.create();
+    private final Map<SchemaPath, GeneratedTypeBuilder> aliasChildNodes = new HashMap<>();
     private final Map<SchemaPath, GeneratedTypeBuilder> childNodes = new HashMap<>();
     private final Map<SchemaPath, GeneratedTypeBuilder> groupings = new HashMap<>();
     private final BiMap<Type, CaseSchemaNode> caseTypeToSchema = HashBiMap.create();
@@ -149,6 +152,17 @@ public final class ModuleContext implements Mutable {
 
     public void addGeneratedTOBuilder(final GeneratedTOBuilder builder) {
         genTOs.add(builder);
+    }
+
+    public <T extends SchemaNode> GeneratedType addAliasType(final ModuleContext sourceContext, final T source,
+            final T alias) {
+        final GeneratedTypeBuilder builder = sourceContext.getChildNode(source.getPath());
+        checkState(builder != null, "Could not find builder for %s", source);
+
+        final SchemaPath path = alias.getPath();
+        final GeneratedTypeBuilder prev = aliasChildNodes.putIfAbsent(path, builder);
+        checkState(prev == null, "Type aliasing conflict on %s: %s", path, prev);
+        return builder.build();
     }
 
     public void addChildNodeType(final SchemaNode def, final GeneratedTypeBuilder builder) {
