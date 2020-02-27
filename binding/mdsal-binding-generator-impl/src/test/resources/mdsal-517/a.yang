@@ -1,0 +1,17 @@
+module a {
+  yang-version 1.1;
+  namespace "a";
+  prefix a;
+  grouping a-grp {
+    action a-act {
+    input {
+      leaf a-action-input-leaf {
+      type empty;
+      }
+       }
+    }
+  }
+  container a-cont {
+    uses a:a-grp;
+  }
+}
