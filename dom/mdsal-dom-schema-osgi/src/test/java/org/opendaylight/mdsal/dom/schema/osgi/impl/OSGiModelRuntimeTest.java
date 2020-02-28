@@ -12,6 +12,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import org.apache.karaf.features.FeaturesService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +40,7 @@ public class OSGiModelRuntimeTest {
         target = new OSGiModelRuntime();
         target.parserFactory = parserFactory;
         target.contextFactory = contextFactory;
+        doReturn(null).when(bundleContext).getServiceReference(FeaturesService.class);
     }
 
     @After

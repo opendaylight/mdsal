@@ -7,101 +7,31 @@
  */
 package org.opendaylight.mdsal.dom.schema.osgi.impl;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.List;
-import java.util.NoSuchElementException;
-import org.checkerframework.checker.lock.qual.GuardedBy;
-import org.checkerframework.checker.lock.qual.Holding;
-import org.opendaylight.binding.runtime.api.ModuleInfoSnapshot;
-import org.opendaylight.binding.runtime.spi.ModuleInfoSnapshotBuilder;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentFactory;
-import org.osgi.service.component.ComponentInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Update SchemaContext service in Service Registry each time new YangModuleInfo is added or removed.
  */
-final class YangModuleInfoRegistry {
-    private static final Logger LOG = LoggerFactory.getLogger(YangModuleInfoRegistry.class);
-
-    private final ComponentFactory contextFactory;
-    private final ModuleInfoSnapshotBuilder moduleInfoRegistry;
-
-    @GuardedBy("this")
-    private ComponentInstance currentInstance;
-    @GuardedBy("this")
-    private ModuleInfoSnapshot currentSnapshot;
-    @GuardedBy("this")
-    private int generation;
-
-    private volatile boolean ignoreScanner = true;
-
-    YangModuleInfoRegistry(final ComponentFactory contextFactory, final YangParserFactory factory) {
-        this.contextFactory = requireNonNull(contextFactory);
-        moduleInfoRegistry = new ModuleInfoSnapshotBuilder("binding-dom-codec", factory);
+abstract class YangModuleInfoRegistry {
+    static @NonNull YangModuleInfoRegistry create(final BundleContext ctx, final ComponentFactory contextFactory,
+            final YangParserFactory factory) {
+        return KarafFeaturesSupport.wrap(ctx, new RegularYangModuleInfoRegistry(contextFactory, factory));
     }
 
     // Invocation from scanner, we may want to ignore this in order to not process partial updates
-    void scannerUpdate() {
-        if (!ignoreScanner) {
-            synchronized (this) {
-                updateService();
-            }
-        }
-    }
+    abstract void scannerUpdate();
 
-    synchronized void scannerShutdown() {
-        ignoreScanner = true;
-    }
+    abstract void scannerShutdown();
 
-    synchronized void enableScannerAndUpdate() {
-        ignoreScanner = false;
-        updateService();
-    }
+    abstract void enableScannerAndUpdate();
 
-    synchronized void close() {
-        ignoreScanner = true;
-        if (currentInstance != null) {
-            currentInstance.dispose();
-            currentInstance = null;
-        }
-    }
+    abstract void close();
 
-    List<ObjectRegistration<YangModuleInfo>> registerInfos(final List<YangModuleInfo> infos) {
-        return moduleInfoRegistry.registerModuleInfos(infos);
-    }
-
-    @Holding("this")
-    private void updateService() {
-        final ModuleInfoSnapshot newSnapshot;
-        try {
-            newSnapshot = moduleInfoRegistry.build();
-        } catch (NoSuchElementException e) {
-            LOG.debug("No snapshot available", e);
-            return;
-        }
-        if (newSnapshot.equals(currentSnapshot)) {
-            LOG.debug("No update to snapshot");
-            return;
-        }
-
-
-        final ComponentInstance newInstance = contextFactory.newInstance(
-            OSGiEffectiveModelImpl.props(nextGeneration(), newSnapshot));
-        if (currentInstance != null) {
-            currentInstance.dispose();
-        }
-        currentInstance = newInstance;
-        currentSnapshot = newSnapshot;
-    }
-
-    @Holding("this")
-    private long nextGeneration() {
-        return generation == -1 ? -1 : ++generation;
-    }
+    abstract List<ObjectRegistration<YangModuleInfo>> registerInfos(List<YangModuleInfo> infos);
 }
