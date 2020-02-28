@@ -108,7 +108,6 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
         }
     }
 
-
     @Override
     public void removedBundle(final Bundle bundle, final BundleEvent event,
             final List<ObjectRegistration<YangModuleInfo>> regs) {
