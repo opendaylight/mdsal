@@ -8,6 +8,8 @@
 package org.opendaylight.mdsal.dom.schema.osgi;
 
 import com.google.common.annotations.Beta;
+import com.google.common.primitives.UnsignedLong;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.binding.runtime.api.ModuleInfoSnapshot;
 
 /**
@@ -16,5 +18,5 @@ import org.opendaylight.binding.runtime.api.ModuleInfoSnapshot;
 @Beta
 public interface OSGiModuleInfoSnapshot extends ModuleInfoSnapshot {
 
-    long getGeneration();
+    @NonNull UnsignedLong getGeneration();
 }

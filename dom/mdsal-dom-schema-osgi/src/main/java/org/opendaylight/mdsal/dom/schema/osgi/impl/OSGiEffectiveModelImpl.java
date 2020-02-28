@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.primitives.UnsignedLong;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -45,10 +46,10 @@ public final class OSGiEffectiveModelImpl implements OSGiModuleInfoSnapshot {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiEffectiveModelImpl.class);
 
     private ModuleInfoSnapshot delegate;
-    private long generation;
+    private UnsignedLong generation;
 
     @Override
-    public long getGeneration() {
+    public UnsignedLong getGeneration() {
         return generation;
     }
 
@@ -69,7 +70,7 @@ public final class OSGiEffectiveModelImpl implements OSGiModuleInfoSnapshot {
 
     @Activate
     void activate(final Map<String, ?> properties) {
-        generation = (Long) verifyNotNull(properties.get(GENERATION));
+        generation = (UnsignedLong) verifyNotNull(properties.get(GENERATION));
         delegate = (ModuleInfoSnapshot) verifyNotNull(properties.get(DELEGATE));
         LOG.debug("ClassLoadingEffectiveModelContext generation {} activated", generation);
     }
@@ -84,7 +85,7 @@ public final class OSGiEffectiveModelImpl implements OSGiModuleInfoSnapshot {
     static Dictionary<String, ?> props(final long generation, final ModuleInfoSnapshot delegate) {
         final Dictionary<String, Object> ret = new Hashtable<>(4);
         ret.put(Constants.SERVICE_RANKING, ranking(generation));
-        ret.put(GENERATION, generation);
+        ret.put(GENERATION, UnsignedLong.fromLongBits(generation));
         ret.put(DELEGATE, requireNonNull(delegate));
         return ret;
     }
