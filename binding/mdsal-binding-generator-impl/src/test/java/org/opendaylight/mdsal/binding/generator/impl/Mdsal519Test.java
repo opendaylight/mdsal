@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2020 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.opendaylight.mdsal.binding.generator.impl;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.Collection;
+import org.junit.Test;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
+
+/**
+ * Test specific combination of leafrefs, grouping and relative paths.
+ */
+public class Mdsal519Test {
+
+    @Test
+    public void testNestedLeafref2() {
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal-519/specific-grouping-leafref.yang");
+        final Collection<Type> types = DefaultBindingGenerator.generateFor(context);
+        assertNotNull(types);
+        assertEquals(4, types.size());
+    }
+}
