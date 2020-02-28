@@ -853,7 +853,7 @@ abstract class AbstractTypeGenerator {
             targetTypeBuilder = findCaseByPath(targetSchemaNode.getPath());
         }
         if (targetTypeBuilder == null) {
-            throw new NullPointerException("Target type not yet generated: " + targetSchemaNode);
+            throw new IllegalStateException("Target type not yet generated: " + targetSchemaNode);
         }
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
