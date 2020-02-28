@@ -558,7 +558,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             returnType = Types.listTypeFor(referencedTypes.get(dataNode.getPath()));
         }
         if (returnType == null) {
-            returnType = resolveTypeFromDataSchemaNode(dataNode);
+            returnType = resolveTypeFromDataSchemaNode(dataNode, inGrouping);
         }
         Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s in module %s (%s)",
                 strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule(), this);
@@ -714,16 +714,16 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      * @param dataNode contains information about YANG type
      * @return JAVA <code>Type</code> representation of <code>dataNode</code>
      */
-    private Type resolveTypeFromDataSchemaNode(final SchemaNode dataNode) {
+    private Type resolveTypeFromDataSchemaNode(final SchemaNode dataNode, final boolean inGrouping) {
         Type returnType = null;
         if (dataNode != null) {
             if (dataNode instanceof LeafSchemaNode) {
                 final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
                 final TypeDefinition<?> type = CompatUtils.compatType(leaf);
-                returnType = javaTypeForSchemaDefinitionType(type, leaf);
+                returnType = javaTypeForSchemaDefinitionType(type, leaf, inGrouping);
             } else if (dataNode instanceof LeafListSchemaNode) {
                 final LeafListSchemaNode leafList = (LeafListSchemaNode) dataNode;
-                returnType = javaTypeForSchemaDefinitionType(leafList.getType(), leafList);
+                returnType = javaTypeForSchemaDefinitionType(leafList.getType(), leafList, inGrouping);
             }
         }
         return returnType;
