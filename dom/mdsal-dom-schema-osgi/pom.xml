@@ -52,6 +52,13 @@
             <groupId>org.osgi</groupId>
             <artifactId>osgi.cmpn</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.features</groupId>
+            <artifactId>org.apache.karaf.features.core</artifactId>
+            <scope>provided</scope>
+            <!-- Needed to generate optional OSGi import -->
+            <optional>true</optional>
+        </dependency>
 
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
