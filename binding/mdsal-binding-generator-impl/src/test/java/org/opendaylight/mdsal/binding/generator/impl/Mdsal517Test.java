@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal517Test extends AbstractOpaqueTest {
     @Test
-    public void generateAnydataTest() {
+    public void augmentActionInputInGroupingTest() {
         final List<Type> types = DefaultBindingGenerator.generateFor(
                 YangParserTestUtils.parseYangResourceDirectory("/mdsal-517"));
         assertNotNull(types);

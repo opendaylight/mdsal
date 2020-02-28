@@ -10,7 +10,7 @@ module bar {
   augment "/foo:foo-cont/foo:foo-act/foo:input" {
     description
       "An augmentation of a action input of module a";
-    leaf b-aug-leaf {
+    leaf bar-aug-leaf {
       type empty;
     }
   }
