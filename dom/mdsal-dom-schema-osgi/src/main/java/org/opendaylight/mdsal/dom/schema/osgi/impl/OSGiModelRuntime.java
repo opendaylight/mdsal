@@ -32,7 +32,7 @@ public final class OSGiModelRuntime {
     @Activate
     void activate(final BundleContext ctx) {
         LOG.info("Model Runtime starting");
-        moduleRegistry = new YangModuleInfoRegistry(contextFactory, parserFactory);
+        moduleRegistry = YangModuleInfoRegistry.create(ctx, contextFactory, parserFactory);
         bundleTracker = new YangModuleInfoScanner(ctx, moduleRegistry);
         bundleTracker.open();
         moduleRegistry.enableScannerAndUpdate();
