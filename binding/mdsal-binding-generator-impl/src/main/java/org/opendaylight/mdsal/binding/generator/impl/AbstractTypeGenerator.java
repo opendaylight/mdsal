@@ -916,11 +916,37 @@ abstract class AbstractTypeGenerator {
     private DataSchemaNode findOriginalTargetFromGrouping(final SchemaPath targetPath, final UsesNode parentUsesNode) {
         SchemaNode result = findUsedGrouping(parentUsesNode);
         for (final QName node : targetPath.getPathFromRoot()) {
+            // FIXME: this dispatch is rather ugly, we probably want to refactor it a bit
             if (result instanceof DataNodeContainer) {
                 final QName resultNode = node.withModule(result.getQName().getModule());
-                result = ((DataNodeContainer) result).getDataChildByName(resultNode);
+
+                SchemaNode found = ((DataNodeContainer) result).getDataChildByName(resultNode);
+                if (found == null) {
+                    if (result instanceof ActionNodeContainer) {
+                        found = ((ActionNodeContainer) result).findAction(resultNode).orElse(null);
+                    }
+                    if (found == null && result instanceof NotificationNodeContainer) {
+                        found = ((NotificationNodeContainer) result).findNotification(resultNode).orElse(null);
+                    }
+                }
+                result = found;
             } else if (result instanceof ChoiceSchemaNode) {
                 result = findNamedCase((ChoiceSchemaNode) result, node.getLocalName());
+            } else if (result instanceof ActionDefinition) {
+                final ActionDefinition action = (ActionDefinition) result;
+                final QName resultNode = node.withModule(result.getQName().getModule());
+
+                final ContainerSchemaNode input = action.getInput();
+                final ContainerSchemaNode output = action.getOutput();
+                if (resultNode.equals(input.getQName())) {
+                    result = input;
+                } else if (resultNode.equals(output.getQName())) {
+                    result = output;
+                } else {
+                    result = null;
+                }
+            } else if (result != null) {
+                throw new IllegalStateException("Cannot handle " + result);
             }
         }
         if (result == null) {
