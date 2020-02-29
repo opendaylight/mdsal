@@ -102,8 +102,6 @@ public class TracingBroker implements TracingDOMDataBroker {
 
     private static final int STACK_TRACE_FIRST_RELEVANT_FRAME = 2;
 
-    // "default" VS "pingpong"
-    private final String type;
     private final BindingNormalizedNodeSerializer codec;
     private final DOMDataBroker delegate;
     private final List<Watch> registrationWatches = new ArrayList<>();
@@ -119,19 +117,18 @@ public class TracingBroker implements TracingDOMDataBroker {
         final String iidString;
         final LogicalDatastoreType store;
 
-        Watch(String iidString, LogicalDatastoreType storeOrNull) {
+        Watch(final String iidString, final LogicalDatastoreType storeOrNull) {
             this.store = storeOrNull;
             this.iidString = iidString;
         }
 
-        private String toIidCompString(YangInstanceIdentifier iid) {
+        private String toIidCompString(final YangInstanceIdentifier iid) {
             StringBuilder builder = new StringBuilder();
             toPathString(iid, builder);
-            builder.append('/');
-            return builder.toString();
+            return builder.append('/').toString();
         }
 
-        private boolean isParent(String parent, String child) {
+        private boolean isParent(final String parent, final String child) {
             int parentOffset = 0;
             if (parent.length() > 0 && parent.charAt(0) == '<') {
                 parentOffset = parent.indexOf('>') + 1;
@@ -146,7 +143,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         }
 
         @SuppressWarnings({ "checkstyle:hiddenField", "hiding" })
-        public boolean subtreesOverlap(YangInstanceIdentifier iid, LogicalDatastoreType store) {
+        public boolean subtreesOverlap(final YangInstanceIdentifier iid, final LogicalDatastoreType store) {
             if (this.store != null && !this.store.equals(store)) {
                 return false;
             }
@@ -156,7 +153,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         }
 
         @SuppressWarnings({ "checkstyle:hiddenField", "hiding" })
-        public boolean eventIsOfInterest(YangInstanceIdentifier iid, LogicalDatastoreType store) {
+        public boolean eventIsOfInterest(final YangInstanceIdentifier iid, final LogicalDatastoreType store) {
             if (this.store != null && !this.store.equals(store)) {
                 return false;
             }
@@ -165,8 +162,8 @@ public class TracingBroker implements TracingDOMDataBroker {
         }
     }
 
-    public TracingBroker(String type, DOMDataBroker delegate, Config config, BindingNormalizedNodeSerializer codec) {
-        this.type = requireNonNull(type, "type");
+    public TracingBroker(final DOMDataBroker delegate, final Config config,
+            final BindingNormalizedNodeSerializer codec) {
         this.delegate = requireNonNull(delegate, "delegate");
         this.codec = requireNonNull(codec, "codec");
         configure(config);
@@ -183,7 +180,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         this.readWriteTransactionsRegistry = new CloseTrackedRegistry<>(db, "newReadWriteTransaction()", isDebugging);
     }
 
-    private void configure(Config config) {
+    private void configure(final Config config) {
         registrationWatches.clear();
         List<String> paths = config.getRegistrationWatches();
         if (paths != null) {
@@ -206,7 +203,7 @@ public class TracingBroker implements TracingDOMDataBroker {
      * @param iidString the iid path of the root of the subtree
      * @param store Which LogicalDataStore? or null for both
      */
-    public void watchRegistrations(String iidString, LogicalDatastoreType store) {
+    public void watchRegistrations(final String iidString, final LogicalDatastoreType store) {
         LOG.info("Watching registrations to {} in {}", iidString, store);
         registrationWatches.add(new Watch(iidString, store));
     }
@@ -216,7 +213,7 @@ public class TracingBroker implements TracingDOMDataBroker {
      * @param iidString the iid path of the root of the subtree
      * @param store Which LogicalDataStore? or null for both
      */
-    public void watchWrites(String iidString, LogicalDatastoreType store) {
+    public void watchWrites(final String iidString, final LogicalDatastoreType store) {
         LOG.info("Watching writes to {} in {}", iidString, store);
         Watch watch = new Watch(iidString, store);
         writeWatches.add(watch);
@@ -224,7 +221,7 @@ public class TracingBroker implements TracingDOMDataBroker {
 
     @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
             justification = "https://github.com/spotbugs/spotbugs/issues/811")
-    private boolean isRegistrationWatched(YangInstanceIdentifier iid, LogicalDatastoreType store) {
+    private boolean isRegistrationWatched(final YangInstanceIdentifier iid, final LogicalDatastoreType store) {
         if (registrationWatches.isEmpty()) {
             return true;
         }
@@ -238,7 +235,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         return false;
     }
 
-    boolean isWriteWatched(YangInstanceIdentifier iid, LogicalDatastoreType store) {
+    boolean isWriteWatched(final YangInstanceIdentifier iid, final LogicalDatastoreType store) {
         if (writeWatches.isEmpty()) {
             return true;
         }
@@ -252,20 +249,20 @@ public class TracingBroker implements TracingDOMDataBroker {
         return false;
     }
 
-    static void toPathString(InstanceIdentifier<? extends DataObject> iid, StringBuilder builder) {
+    static void toPathString(final InstanceIdentifier<? extends DataObject> iid, final StringBuilder builder) {
         for (InstanceIdentifier.PathArgument pathArg : iid.getPathArguments()) {
             builder.append('/').append(pathArg.getType().getSimpleName());
         }
     }
 
-    String toPathString(YangInstanceIdentifier  yiid) {
+    String toPathString(final YangInstanceIdentifier  yiid) {
         StringBuilder sb = new StringBuilder();
         toPathString(yiid, sb);
         return sb.toString();
     }
 
 
-    private void toPathString(YangInstanceIdentifier yiid, StringBuilder sb) {
+    private void toPathString(final YangInstanceIdentifier yiid, final StringBuilder sb) {
         InstanceIdentifier<?> iid = codec.fromYangInstanceIdentifier(yiid);
         if (null == iid) {
             reconstructIidPathString(yiid, sb);
@@ -274,7 +271,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         }
     }
 
-    private static void reconstructIidPathString(YangInstanceIdentifier yiid, StringBuilder sb) {
+    private static void reconstructIidPathString(final YangInstanceIdentifier yiid, final StringBuilder sb) {
         sb.append("<RECONSTRUCTED FROM: \"").append(yiid.toString()).append("\">");
         for (YangInstanceIdentifier.PathArgument pathArg : yiid.getPathArguments()) {
             if (pathArg instanceof YangInstanceIdentifier.AugmentationIdentifier) {
@@ -308,13 +305,14 @@ public class TracingBroker implements TracingDOMDataBroker {
     }
 
     @Override
-    public DOMTransactionChain createTransactionChain(DOMTransactionChainListener transactionChainListener) {
+    public DOMTransactionChain createTransactionChain(final DOMTransactionChainListener transactionChainListener) {
         return new TracingTransactionChain(delegate.createTransactionChain(transactionChainListener), this,
             transactionChainsRegistry);
     }
 
     @Override
-    public DOMTransactionChain createMergingTransactionChain(DOMTransactionChainListener transactionChainListener) {
+    public DOMTransactionChain createMergingTransactionChain(
+            final DOMTransactionChainListener transactionChainListener) {
         return new TracingTransactionChain(delegate.createMergingTransactionChain(transactionChainListener), this,
             transactionChainsRegistry);
     }
@@ -336,7 +334,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         res.put(DOMDataTreeChangeService.class, new DOMDataTreeChangeService() {
             @Override
             public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerDataTreeChangeListener(
-                    DOMDataTreeIdentifier domDataTreeIdentifier, L listener) {
+                    final DOMDataTreeIdentifier domDataTreeIdentifier, final L listener) {
                 if (isRegistrationWatched(domDataTreeIdentifier.getRootIdentifier(),
                         domDataTreeIdentifier.getDatastoreType())) {
                     LOG.warn("{} registration (registerDataTreeChangeListener) for {} from {}.",
@@ -351,18 +349,17 @@ public class TracingBroker implements TracingDOMDataBroker {
     }
 
     @Override
-    public boolean printOpenTransactions(PrintStream ps, int minOpenTXs) {
+    public boolean printOpenTransactions(final PrintStream ps, final int minOpenTXs) {
         if (transactionChainsRegistry.getAllUnique().isEmpty()
             && readOnlyTransactionsRegistry.getAllUnique().isEmpty()
             && writeTransactionsRegistry.getAllUnique().isEmpty()
             && readWriteTransactionsRegistry.getAllUnique().isEmpty()) {
 
-            ps.println(type + ": No open transactions, great!");
+            ps.println("No open transactions, great!");
             return false;
         }
 
-        ps.println(type + ": " + getClass().getSimpleName()
-                 + " found some not yet (or never..) closed transaction[chain]s!");
+        ps.println(getClass().getSimpleName() + " found some not yet (or never..) closed transaction[chain]s!");
         ps.println("[NB: If no stack traces are shown below, then "
                  + "enable transaction-debug-context-enabled in mdsaltrace_config.xml]");
         ps.println();
@@ -394,8 +391,8 @@ public class TracingBroker implements TracingDOMDataBroker {
         return hasFound;
     }
 
-    private <T extends CloseTracked<T>> boolean print(
-            CloseTrackedRegistry<T> registry, PrintStream ps, String indent, int minOpenTransactions) {
+    private <T extends CloseTracked<T>> boolean print(final CloseTrackedRegistry<T> registry, final PrintStream ps,
+            final String indent, final int minOpenTransactions) {
         Set<CloseTrackedRegistryReportEntry<T>> unsorted = registry.getAllUnique();
         if (unsorted.size() < minOpenTransactions) {
             return false;
@@ -418,7 +415,8 @@ public class TracingBroker implements TracingDOMDataBroker {
         return true;
     }
 
-    private void printStackTraceElements(PrintStream ps, String indent, List<StackTraceElement> stackTraceElements) {
+    private void printStackTraceElements(final PrintStream ps, final String indent,
+            final List<StackTraceElement> stackTraceElements) {
         boolean ellipsis = false;
         for (final StackTraceElement stackTraceElement : stackTraceElements) {
             if (isStackTraceElementInteresting(stackTraceElement)) {
@@ -431,7 +429,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         }
     }
 
-    private boolean isStackTraceElementInteresting(StackTraceElement element) {
+    private boolean isStackTraceElementInteresting(final StackTraceElement element) {
         final String className = element.getClassName();
         return !className.startsWith(getClass().getPackage().getName())
             && !className.startsWith(CloseTracked.class.getPackage().getName())
