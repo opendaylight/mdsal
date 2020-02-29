@@ -113,7 +113,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     @Override
     public synchronized <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(
             final T listener, final Collection<SchemaPath> types) {
-        final ListenerRegistration<T> reg = new AbstractListenerRegistration<T>(listener) {
+        final ListenerRegistration<T> reg = new AbstractListenerRegistration<>(listener) {
             @Override
             protected void removeRegistration() {
                 synchronized (DOMNotificationRouter.this) {
@@ -158,8 +158,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     @SuppressWarnings("checkstyle:IllegalCatch")
     private void notifyListenerTypesChanged(final Set<SchemaPath> typesAfter) {
         final List<? extends DOMNotificationSubscriptionListener> listenersAfter =
-                subscriptionListeners.getRegistrations().stream().map(ListenerRegistration::getInstance)
-                .collect(ImmutableList.toImmutableList());
+                subscriptionListeners.streamListeners().collect(ImmutableList.toImmutableList());
         executor.execute(() -> {
             for (final DOMNotificationSubscriptionListener subListener : listenersAfter) {
                 try {
