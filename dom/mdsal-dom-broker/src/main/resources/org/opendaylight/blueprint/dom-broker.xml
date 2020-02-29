@@ -68,12 +68,4 @@
       <value>org.opendaylight.mdsal.dom.api.DOMActionProviderService</value>
     </interfaces>
   </service>
-
-  <!-- DOM MountPoint Service -->
-
-  <bean id="domMountPointService" class="org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl"/>
-
-  <service ref="domMountPointService" interface="org.opendaylight.mdsal.dom.api.DOMMountPointService"
-        odl:type="default"/>
-
 </blueprint>

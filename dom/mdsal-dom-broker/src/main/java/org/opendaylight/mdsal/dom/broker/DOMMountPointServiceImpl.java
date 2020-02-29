@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.broker;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -16,6 +15,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import javax.inject.Singleton;
+import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -27,10 +28,16 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DOMMountPointServiceImpl implements DOMMountPointService {
+@Component(immediate = true)
+@MetaInfServices
+@Singleton
+public final class DOMMountPointServiceImpl implements DOMMountPointService {
     private static final Logger LOG = LoggerFactory.getLogger(DOMMountPointServiceImpl.class);
 
     private final Map<YangInstanceIdentifier, DOMMountPoint> mountPoints = new HashMap<>();
@@ -53,6 +60,18 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         return listeners.register(listener);
     }
 
+    @Activate
+    @SuppressWarnings("static-method")
+    void activate() {
+        LOG.info("DOMMountPointService activated");
+    }
+
+    @Deactivate
+    @SuppressWarnings("static-method")
+    void deactivate() {
+        LOG.info("DOMMountPointService deactivated");
+    }
+
     @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
             justification = "https://github.com/spotbugs/spotbugs/issues/811")
     @SuppressWarnings("checkstyle:IllegalCatch")
@@ -70,7 +89,7 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
             }
         });
 
-        return new AbstractObjectRegistration<DOMMountPoint>(mountPoint) {
+        return new AbstractObjectRegistration<>(mountPoint) {
             @Override
             protected void removeRegistration() {
                 unregisterMountPoint(getInstance().getIdentifier());
