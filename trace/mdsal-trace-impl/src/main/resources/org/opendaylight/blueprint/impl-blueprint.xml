@@ -26,7 +26,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       odl:type="default" />
 
   <bean id="tracingDefaultDOMBroker" class="org.opendaylight.mdsal.trace.impl.TracingBroker">
-      <argument value="default" />
       <argument ref="realDefaultDOMBroker" />
       <argument ref="mdsalConfig" />
       <argument ref="codec" />
