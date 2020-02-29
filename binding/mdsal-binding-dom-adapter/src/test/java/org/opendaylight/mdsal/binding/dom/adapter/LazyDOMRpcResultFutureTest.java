@@ -38,7 +38,7 @@ public class LazyDOMRpcResultFutureTest {
 
     @Before
     public void setUp() throws Exception {
-        lazyDOMRpcResultFuture = (LazyDOMRpcResultFuture) LazyDOMRpcResultFuture.create(codec, future);
+        lazyDOMRpcResultFuture = LazyDOMRpcResultFuture.create(codec, future);
         reset(future);
         doReturn(true).when(future).cancel(anyBoolean());
         doNothing().when(future).addListener(any(), any());
