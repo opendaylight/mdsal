@@ -917,7 +917,7 @@ abstract class AbstractTypeGenerator {
      * @param parentUsesNode parent of uses node
      * @return node from its original location in grouping
      */
-    private static DataSchemaNode findOriginalTargetFromGrouping(final SchemaNodeIdentifier targetPath,
+    private static SchemaNode findOriginalTargetFromGrouping(final SchemaNodeIdentifier targetPath,
             final UsesNode parentUsesNode) {
         SchemaNode result = parentUsesNode.getSourceGrouping();
         for (final QName node : targetPath.getNodeIdentifiers()) {
@@ -967,20 +967,19 @@ abstract class AbstractTypeGenerator {
         }
 
         if (result instanceof DataSchemaNode) {
-            DataSchemaNode resultDataSchemaNode = (DataSchemaNode) result;
-            if (resultDataSchemaNode.isAddedByUses()) {
+            if (((DataSchemaNode) result).isAddedByUses()) {
                 // The original node is required, but we have only the copy of
                 // the original node.
                 // Maybe this indicates a bug in Yang parser.
                 throw new IllegalStateException("Failed to generate code for augment in " + parentUsesNode);
             }
 
-            return resultDataSchemaNode;
+            return result;
+        } else if (result instanceof NotificationDefinition) {
+            return result;
+        } else {
+            throw new IllegalStateException("Unhandled uses-augment target " + result);
         }
-
-        throw new IllegalStateException(
-            "Target node of uses-augment statement must be DataSchemaNode. Failed to generate code for augment in "
-                    + parentUsesNode);
     }
 
     /**
