@@ -79,18 +79,6 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
         return sourceRegistrator;
     }
 
-    public void removeListener(final SchemaContextListener schemaContextListener) {
-        synchronized (lock) {
-            for (final ListenerRegistration<? extends SchemaContextListener> listenerRegistration
-                    : listeners.getRegistrations()) {
-                if (listenerRegistration.getInstance().equals(schemaContextListener)) {
-                    listenerRegistration.close();
-                    break;
-                }
-            }
-        }
-    }
-
     public boolean hasListeners() {
         synchronized (lock) {
             return !Iterables.isEmpty(listeners.getRegistrations());
