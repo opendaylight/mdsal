@@ -110,7 +110,7 @@ public class ScanningSchemaServiceProviderTest {
         assertNotEquals(baseSchemaCtx, unregistredListenerSchemaCtx);
         assertNotEquals(nextSchemaCtx, unregistredListenerSchemaCtx);
 
-        schemaService.removeListener(schemaCtxListener);
+        registerSchemaContextListener.close();
         schemaService.notifyListeners(unregistredListenerSchemaCtx);
 
         assertNotEquals(unregistredListenerSchemaCtx, actualSchemaCtx.getSchemaContext());
