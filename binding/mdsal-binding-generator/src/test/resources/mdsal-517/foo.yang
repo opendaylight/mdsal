@@ -11,6 +11,10 @@ module foo {
         }
       }
     }
+
+    notification foo-notif {
+
+    }
   }
 
   container foo-cont {

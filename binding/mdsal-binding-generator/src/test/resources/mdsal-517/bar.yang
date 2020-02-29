@@ -14,4 +14,10 @@ module bar {
       type empty;
     }
   }
+
+  augment "/foo:foo-cont/foo:foo-notif" {
+    leaf bar-aug-leaf {
+      type empty;
+    }
+  }
 }
