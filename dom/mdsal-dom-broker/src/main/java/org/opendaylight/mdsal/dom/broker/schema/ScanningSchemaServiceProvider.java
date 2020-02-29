@@ -105,7 +105,7 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
     @Override
     public void close() {
         synchronized (lock) {
-            listeners.getRegistrations().forEach(ListenerRegistration::close);
+            listeners.clear();
         }
     }
 }
