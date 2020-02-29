@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -67,11 +68,12 @@ public class DOMNotificationRouterTest extends TestUtils {
         ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners =
                 domNotificationRouter.subscriptionListeners();
 
-        assertFalse(subscriptionListeners.getRegistrations().iterator().hasNext());
+        assertEquals(0, subscriptionListeners.streamListeners().count());
         assertNotNull(domNotificationRouter.registerSubscriptionListener(domNotificationSubscriptionListener));
 
         subscriptionListeners = domNotificationRouter.subscriptionListeners();
-        assertTrue(subscriptionListeners.getRegistrations().iterator().hasNext());
+        assertSame(domNotificationSubscriptionListener,
+            subscriptionListeners.streamListeners().findAny().orElseThrow());
 
         final DOMNotification domNotification = mock(DOMNotification.class);
         doReturn("test").when(domNotification).toString();
