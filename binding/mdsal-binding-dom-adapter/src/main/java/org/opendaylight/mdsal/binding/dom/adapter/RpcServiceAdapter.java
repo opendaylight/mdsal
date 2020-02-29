@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map.Entry;
 import java.util.Optional;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -144,7 +144,7 @@ class RpcServiceAdapter implements InvocationHandler {
         }
 
         private ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
-                final ListenableFuture<DOMRpcResult> domFuture, final BindingNormalizedNodeCodecRegistry resultCodec) {
+                final ListenableFuture<DOMRpcResult> domFuture, final BindingNormalizedNodeSerializer resultCodec) {
             return Futures.transform(domFuture, input -> {
                 final NormalizedNode<?, ?> domData = input.getResult();
                 final DataObject bindingResult;
