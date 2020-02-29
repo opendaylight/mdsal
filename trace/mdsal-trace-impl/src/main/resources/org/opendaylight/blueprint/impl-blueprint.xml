@@ -15,6 +15,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                             binding-class="org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsaltrace.rev160908.Config">
   </odl:clustered-app-config>
 
+  <!-- FIXME: MDSAL-522: this should be BindingCodecTree, from which we need BindingInstanceIdentifierCodec -->
   <reference id="codec"
         interface="org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer"
         odl:type="default" />

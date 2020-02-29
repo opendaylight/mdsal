@@ -109,12 +109,12 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
 
     @Override
     public YangInstanceIdentifier toYangInstanceIdentifier(final InstanceIdentifier<?> binding) {
-        return codecContext.getInstanceIdentifierCodec().serialize(binding);
+        return codecContext.getInstanceIdentifierCodec().fromBinding(binding);
     }
 
     @Override
-    public InstanceIdentifier<?> fromYangInstanceIdentifier(final YangInstanceIdentifier dom) {
-        return codecContext.getInstanceIdentifierCodec().deserialize(dom);
+    public <T extends DataObject> InstanceIdentifier<T> fromYangInstanceIdentifier(final YangInstanceIdentifier dom) {
+        return codecContext.getInstanceIdentifierCodec().toBinding(dom);
     }
 
     @Override

@@ -36,6 +36,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
@@ -117,7 +118,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         });
 
     private final @NonNull CodecClassLoader loader = CodecClassLoader.create();
-    private final InstanceIdentifierCodec instanceIdentifierCodec;
+    private final @NonNull InstanceIdentifierCodec instanceIdentifierCodec;
     private final @NonNull IdentityCodec identityCodec;
     private final BindingNormalizedNodeCodecRegistry registry;
     private final BindingRuntimeContext context;
@@ -141,16 +142,17 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         return loader;
     }
 
-    InstanceIdentifierCodec getInstanceIdentifierCodec() {
-        return instanceIdentifierCodec;
-    }
-
     @Override
     public IdentityCodec getIdentityCodec() {
         return identityCodec;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public BindingInstanceIdentifierCodec getInstanceIdentifierCodec() {
+        return instanceIdentifierCodec;
+    }
+
     @Override
     public DataObjectSerializer getEventStreamSerializer(final Class<?> type) {
         return registry.getSerializer((Class) type);
