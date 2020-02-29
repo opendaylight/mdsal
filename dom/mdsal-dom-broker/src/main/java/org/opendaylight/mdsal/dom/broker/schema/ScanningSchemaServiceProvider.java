@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.dom.broker.schema;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.io.IOException;
 import java.net.URL;
@@ -55,14 +54,13 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void notifyListeners(final SchemaContext schemaContext) {
         synchronized (lock) {
-            for (final ListenerRegistration<? extends SchemaContextListener> registration
-                    : listeners.getRegistrations()) {
+            listeners.streamListeners().forEach(listener -> {
                 try {
-                    registration.getInstance().onGlobalContextUpdated(schemaContext);
+                    listener.onGlobalContextUpdated(schemaContext);
                 } catch (final Exception e) {
-                    LOG.error("Exception occured during invoking listener", e);
+                    LOG.error("Exception occured during invoking listener {}", listener, e);
                 }
-            }
+            });
         }
     }
 
@@ -92,7 +90,7 @@ public class ScanningSchemaServiceProvider extends AbstractDOMSchemaService.With
 
     public boolean hasListeners() {
         synchronized (lock) {
-            return !Iterables.isEmpty(listeners.getRegistrations());
+            return !listeners.isEmpty();
         }
     }
 

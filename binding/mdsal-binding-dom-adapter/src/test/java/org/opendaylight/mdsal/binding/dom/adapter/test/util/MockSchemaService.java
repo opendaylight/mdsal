@@ -51,8 +51,6 @@ public final class MockSchemaService implements DOMSchemaService, SchemaContextP
 
     public synchronized void changeSchema(final SchemaContext newContext) {
         schemaContext = newContext;
-        for (ListenerRegistration<? extends SchemaContextListener> listener : listeners.getRegistrations()) {
-            listener.getInstance().onGlobalContextUpdated(schemaContext);
-        }
+        listeners.streamListeners().forEach(listener -> listener.onGlobalContextUpdated(schemaContext));
     }
 }
