@@ -16,7 +16,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DefaultDOMRpcException;
@@ -27,8 +27,8 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implements BindingRpcFutureAware {
-    private static final ExceptionMapper<DOMRpcException> DOM_RPC_EX_MAPPER =
-            new ExceptionMapper<DOMRpcException>("rpc", DOMRpcException.class) {
+    private static final ExceptionMapper<DOMRpcException> DOM_RPC_EX_MAPPER = new ExceptionMapper<>("rpc",
+            DOMRpcException.class) {
         @Override
         protected DOMRpcException newWithCause(final String message, final Throwable cause) {
             return cause instanceof DOMRpcException ? (DOMRpcException)cause
@@ -37,16 +37,16 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
     };
 
     private final ListenableFuture<RpcResult<?>> bindingFuture;
-    private final BindingNormalizedNodeCodecRegistry codec;
+    private final BindingNormalizedNodeSerializer codec;
     private volatile DOMRpcResult result;
 
     private LazyDOMRpcResultFuture(final ListenableFuture<RpcResult<?>> delegate,
-            final BindingNormalizedNodeCodecRegistry codec) {
+            final BindingNormalizedNodeSerializer codec) {
         this.bindingFuture = requireNonNull(delegate, "delegate");
         this.codec = requireNonNull(codec, "codec");
     }
 
-    static @NonNull LazyDOMRpcResultFuture create(final BindingNormalizedNodeCodecRegistry codec,
+    static @NonNull LazyDOMRpcResultFuture create(final BindingNormalizedNodeSerializer codec,
             final ListenableFuture<RpcResult<?>> bindingResult) {
         return new LazyDOMRpcResultFuture(bindingResult, codec);
     }
