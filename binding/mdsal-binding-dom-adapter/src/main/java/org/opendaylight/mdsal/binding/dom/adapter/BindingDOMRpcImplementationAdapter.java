@@ -20,7 +20,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.RpcServiceInvoker;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
@@ -41,12 +41,12 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
     // Default implementations are 0, we need to perform some translation, hence we have a slightly higher cost
     private static final int COST = 1;
 
-    private final BindingNormalizedNodeCodecRegistry codec;
+    private final BindingNormalizedNodeSerializer codec;
     private final RpcServiceInvoker invoker;
     private final RpcService delegate;
     private final QName inputQname;
 
-    <T extends RpcService> BindingDOMRpcImplementationAdapter(final BindingNormalizedNodeCodecRegistry codec,
+    <T extends RpcService> BindingDOMRpcImplementationAdapter(final BindingNormalizedNodeSerializer codec,
             final Class<T> type, final Map<SchemaPath, Method> localNameToMethod, final T delegate) {
         try {
             this.invoker = SERVICE_INVOKERS.get(type, () -> {
