@@ -116,8 +116,8 @@ public class BindingNormalizedNodeCodecRegistry
         final NormalizedNodeStreamWriter domWriter = ImmutableNormalizedNodeStreamWriter.from(result);
 
         // We create Binding Stream Writer which translates from Binding to Normalized Nodes
-        final Entry<YangInstanceIdentifier, BindingStreamEventWriter> writeCtx = codecContext.newWriter(path,
-            domWriter);
+        final Entry<YangInstanceIdentifier, BindingStreamEventWriter> writeCtx =
+                codecContext.newWriterAndIdentifier(path, domWriter);
 
         // We get serializer which reads binding data and uses Binding To Normalized Node writer to write result
         try {
@@ -254,13 +254,13 @@ public class BindingNormalizedNodeCodecRegistry
     @Override
     public Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriterAndIdentifier(
             final InstanceIdentifier<?> path, final NormalizedNodeStreamWriter domWriter) {
-        return codecContext.newWriter(path, domWriter);
+        return codecContext.newWriterAndIdentifier(path, domWriter);
     }
 
     @Override
     public BindingStreamEventWriter newWriter(final InstanceIdentifier<?> path,
             final NormalizedNodeStreamWriter domWriter) {
-        return codecContext.newWriterWithoutIdentifier(path, domWriter);
+        return codecContext.newWriter(path, domWriter);
     }
 
     @Override
@@ -272,13 +272,13 @@ public class BindingNormalizedNodeCodecRegistry
     @Override
     public BindingStreamEventWriter newActionInputWriter(final Class<? extends Action<?, ?, ?>> action,
             final NormalizedNodeStreamWriter domWriter) {
-        return codecContext.getActionCodec(action).input().createWriter(domWriter);
+        return codecContext.newActionInputWriter(action, domWriter);
     }
 
     @Override
     public BindingStreamEventWriter newActionOutputWriter(final Class<? extends Action<?, ?, ?>> action,
             final NormalizedNodeStreamWriter domWriter) {
-        return codecContext.getActionCodec(action).output().createWriter(domWriter);
+        return codecContext.newActionOutputWriter(action, domWriter);
     }
 
     @Override
