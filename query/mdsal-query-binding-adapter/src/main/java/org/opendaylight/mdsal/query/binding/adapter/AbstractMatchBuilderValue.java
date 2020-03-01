@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2020 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.opendaylight.mdsal.query.binding.adapter;
+
+import static java.util.Objects.requireNonNull;
+
+import org.opendaylight.mdsal.query.binding.adapter.QueryBuilderState.BoundMethod;
+import org.opendaylight.mdsal.query.binding.api.MatchBuilderValue;
+import org.opendaylight.mdsal.query.binding.api.ValueMatch;
+import org.opendaylight.mdsal.query.dom.api.DOMQueryPredicate;
+import org.opendaylight.mdsal.query.dom.api.DOMQueryPredicate.Exists;
+import org.opendaylight.mdsal.query.dom.api.DOMQueryPredicate.ValueEquals;
+import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+
+abstract class AbstractMatchBuilderValue<T extends DataObject, V> implements MatchBuilderValue<T, V> {
+    private final QueryBuilderState builder;
+    private final InstanceIdentifier<T> select;
+    private final BoundMethod method;
+
+    AbstractMatchBuilderValue(final QueryBuilderState builder, final InstanceIdentifier<T> select,
+            final BoundMethod method) {
+        this.builder = requireNonNull(builder);
+        this.select = requireNonNull(select);
+        this.method = requireNonNull(method);
+    }
+
+    @Override
+    public final ValueMatch<T> nonNull() {
+        return withPredicate(new Exists(relativePath()));
+    }
+
+    @Override
+    public final ValueMatch<T> valueEquals(final V value) {
+        return withPredicate(new ValueEquals<>(relativePath(), value));
+    }
+
+    final YangInstanceIdentifier relativePath() {
+        return method.parentPath.node(method.methodSchema.getQName());
+    }
+
+    final ValueMatch<T> withPredicate(final DOMQueryPredicate predicate) {
+        // FIXME: this does not quite take value codec into account :(
+        builder.addPredicate(predicate);
+        return new DefaultValueMatch<>(builder, select);
+    }
+}
