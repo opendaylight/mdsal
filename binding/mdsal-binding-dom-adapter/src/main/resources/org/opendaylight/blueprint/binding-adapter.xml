@@ -19,6 +19,13 @@
     </interfaces>
   </service>
 
+  <!-- QueryFactory based on the codec -->
+  <bean id="queryFactory" class="org.opendaylight.mdsal.query.binding.adapter.DefaultQueryFactory">
+      <argument ref="mappingCodec"/>
+  </bean>
+
+  <service ref="queryFactory" interface="org.opendaylight.mdsal.binding.api.query.QueryFactory"/>
+
   <!-- Adapter factory based on the codec -->
   <bean id="adapterFactory" class="org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory">
     <argument ref="mappingCodec"/>
