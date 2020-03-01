@@ -27,7 +27,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -323,17 +322,6 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
             generator.generateTypeMapping(context), classLoadingStrategy);
         codecRegistry.onBindingRuntimeContextUpdated(runtimeContext);
         futureSchema.onRuntimeContextUpdated(runtimeContext);
-    }
-
-    /**
-     * Deprecated.
-     *
-     * @deprecated Use {@link BindingNormalizedNodeCodecRegistry#deserializeFunction} instead.
-     */
-    @Deprecated
-    public final <T extends DataObject> Function<Optional<NormalizedNode<?, ?>>, Optional<T>> deserializeFunction(
-            final InstanceIdentifier<T> path) {
-        return codecRegistry.deserializeFunction(path)::apply;
     }
 
     public final BindingNormalizedNodeCodecRegistry getCodecRegistry() {
