@@ -5,15 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.schema.osgi;
+package org.opendaylight.mdsal.binding.runtime.osgi;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.binding.runtime.api.ModuleInfoSnapshot;
+import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.dom.schema.osgi.ModelGenerationAware;
 
-/**
- * Combination of a {@link ModuleInfoSnapshot} with a linear generation.
- */
 @Beta
-public interface OSGiModuleInfoSnapshot extends ModelGenerationAware<ModuleInfoSnapshot> {
+public interface OSGiBindingRuntimeContext extends ModelGenerationAware<BindingRuntimeContext> {
 
 }
