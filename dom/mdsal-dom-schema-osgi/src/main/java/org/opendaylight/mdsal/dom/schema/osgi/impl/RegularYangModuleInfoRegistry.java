@@ -97,7 +97,7 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
 
 
         final ComponentInstance newInstance = contextFactory.newInstance(
-            OSGiEffectiveModelImpl.props(nextGeneration(), newSnapshot));
+            OSGiModuleInfoSnapshotImpl.props(nextGeneration(), newSnapshot));
         if (currentInstance != null) {
             currentInstance.dispose();
         }

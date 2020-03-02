@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.schema.osgi.OSGiModuleInfoSnapshot;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMSchemaService;
@@ -44,11 +45,11 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService {
 
     private final List<SchemaContextListener> listeners = new CopyOnWriteArrayList<>();
 
-    private volatile OSGiModuleInfoSnapshot currentContext;
+    private volatile ModuleInfoSnapshot currentSnapshot;
 
     @Override
     public EffectiveModelContext getGlobalContext() {
-        return currentContext.getEffectiveModelContext();
+        return currentSnapshot.getEffectiveModelContext();
     }
 
     @Override
@@ -58,10 +59,11 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService {
     }
 
     @Reference(fieldOption = FieldOption.REPLACE)
-    void bindContext(final OSGiModuleInfoSnapshot newContext) {
-        final EffectiveModelContext ctx = newContext.getEffectiveModelContext();
-        LOG.trace("Updating context to {}", ctx);
-        currentContext = newContext;
+    void bindSnapshot(final OSGiModuleInfoSnapshot newContext) {
+        LOG.trace("Updating context to generation {}", newContext.getGeneration());
+        final ModuleInfoSnapshot snapshot = newContext.getService();
+        final EffectiveModelContext ctx = snapshot.getEffectiveModelContext();
+        currentSnapshot = snapshot;
         listeners.forEach(listener -> notifyListener(ctx, listener));
     }
 
