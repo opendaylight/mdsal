@@ -1,0 +1,10 @@
+module def {
+  namespace def;
+  prefix def;
+
+  leaf def {
+    type string;
+    default "\\u@\\h\\M% ";
+  }
+}
+
