@@ -410,7 +410,19 @@ public final class BindingGeneratorUtil {
         return description;
     }
 
+    @Deprecated(forRemoval = true)
     public static String replaceAllIllegalChars(final CharSequence stringBuilder) {
+        return doReplaceIllegalChars(stringBuilder);
+    }
+
+    public static String replaceAllIllegalChars(final String str) {
+        final int backslash = str.indexOf('\\');
+        return backslash == -1 ? str : doReplaceIllegalChars(str);
+    }
+
+    private static String doReplaceIllegalChars(final CharSequence stringBuilder) {
+        // TODO: we should be able to receive the first offset from the non-deprecated method and perform a manual
+        //       check for eligibility and escape -- that would be faster I think.
         final String ret = UNICODE_CHAR_PATTERN.matcher(stringBuilder).replaceAll("\\\\\\\\u");
         return ret.isEmpty() ? "" : ret;
     }
