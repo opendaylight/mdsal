@@ -13,16 +13,13 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.primitives.UnsignedLong;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 import org.gaul.modernizer_maven_annotations.SuppressModernizer;
 import org.opendaylight.binding.runtime.api.ModuleInfoSnapshot;
+import org.opendaylight.mdsal.dom.schema.osgi.ModelGenerationAware;
 import org.opendaylight.mdsal.dom.schema.osgi.OSGiModuleInfoSnapshot;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -31,9 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Beta
-@Component(factory = OSGiEffectiveModelImpl.FACTORY_NAME,
-           service = { OSGiModuleInfoSnapshot.class, ModuleInfoSnapshot.class })
-public final class OSGiEffectiveModelImpl implements OSGiModuleInfoSnapshot {
+@Component(factory = OSGiModuleInfoSnapshotImpl.FACTORY_NAME, service = OSGiModuleInfoSnapshot.class)
+public final class OSGiModuleInfoSnapshotImpl implements OSGiModuleInfoSnapshot {
     // OSGi DS Component Factory name
     static final String FACTORY_NAME = "org.opendaylight.mdsal.dom.schema.osgi.impl.OSGiEffectiveModelImpl";
 
@@ -43,54 +39,40 @@ public final class OSGiEffectiveModelImpl implements OSGiModuleInfoSnapshot {
     @VisibleForTesting
     static final String DELEGATE = "org.opendaylight.mdsal.dom.schema.osgi.impl.ModuleInfoSnapshot";
 
-    private static final Logger LOG = LoggerFactory.getLogger(OSGiEffectiveModelImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OSGiModuleInfoSnapshotImpl.class);
 
     private ModuleInfoSnapshot delegate;
     private UnsignedLong generation;
 
     @Override
     public UnsignedLong getGeneration() {
-        return generation;
+        return verifyNotNull(generation);
     }
 
     @Override
-    public EffectiveModelContext getEffectiveModelContext() {
-        return delegate.getEffectiveModelContext();
-    }
-
-    @Override
-    public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
-        return delegate.getSource(sourceIdentifier);
-    }
-
-    @Override
-    public Class<?> loadClass(final String fullyQualifiedName) throws ClassNotFoundException {
-        return delegate.loadClass(fullyQualifiedName);
+    public ModuleInfoSnapshot getService() {
+        return verifyNotNull(delegate);
     }
 
     @Activate
     void activate(final Map<String, ?> properties) {
         generation = (UnsignedLong) verifyNotNull(properties.get(GENERATION));
         delegate = (ModuleInfoSnapshot) verifyNotNull(properties.get(DELEGATE));
-        LOG.debug("ClassLoadingEffectiveModelContext generation {} activated", generation);
+        LOG.info("EffectiveModelContext generation {} activated", generation);
     }
 
     @Deactivate
     void deactivate() {
         delegate = null;
-        LOG.debug("ClassLoadingEffectiveModelContext generation {} deactivated", generation);
+        LOG.info("EffectiveModelContext generation {} deactivated", generation);
     }
 
     @SuppressModernizer
     static Dictionary<String, ?> props(final long generation, final ModuleInfoSnapshot delegate) {
         final Dictionary<String, Object> ret = new Hashtable<>(4);
-        ret.put(Constants.SERVICE_RANKING, ranking(generation));
+        ret.put(Constants.SERVICE_RANKING, ModelGenerationAware.computeServiceRanking(generation));
         ret.put(GENERATION, UnsignedLong.fromLongBits(generation));
         ret.put(DELEGATE, requireNonNull(delegate));
         return ret;
-    }
-
-    private static Integer ranking(final long generation) {
-        return generation >= 0 && generation <= Integer.MAX_VALUE ? (int) generation : Integer.MAX_VALUE;
     }
 }

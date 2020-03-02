@@ -12,12 +12,6 @@
     <argument ref="schemaService"/>
   </bean>
 
-  <service ref="mappingCodec" odl:type="default">
-    <interfaces>
-      <value>org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer</value>
-    </interfaces>
-  </service>
-
   <!-- Adapter factory based on the codec -->
   <bean id="adapterFactory" class="org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory">
     <argument ref="mappingCodec"/>
