@@ -45,6 +45,7 @@
         <module>mdsal-binding-dom-codec</module>
         <module>mdsal-binding-dom-codec-api</module>
         <module>mdsal-binding-dom-codec-spi</module>
+        <module>mdsal-binding-dom-codec-osgi</module>
 
         <module>mdsal-binding-api</module>
         <module>mdsal-binding-spi</module>
