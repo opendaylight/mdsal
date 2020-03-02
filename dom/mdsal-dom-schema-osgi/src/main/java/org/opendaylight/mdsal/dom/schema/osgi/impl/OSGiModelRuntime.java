@@ -23,7 +23,7 @@ public final class OSGiModelRuntime {
 
     @Reference
     YangParserFactory parserFactory = null;
-    @Reference(target = "(component.factory=" + OSGiEffectiveModelImpl.FACTORY_NAME + ")")
+    @Reference(target = "(component.factory=" + OSGiModuleInfoSnapshotImpl.FACTORY_NAME + ")")
     ComponentFactory contextFactory = null;
 
     private YangModuleInfoScanner bundleTracker = null;
