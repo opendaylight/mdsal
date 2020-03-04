@@ -5,16 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
 import java.util.Collection;
 import java.util.Map;
-
 import org.junit.Assert;
 
 public final class AssertCollections {
-
     private AssertCollections() {
     }
 
@@ -30,7 +27,6 @@ public final class AssertCollections {
         for (Object key : values) {
             Assert.assertTrue(set.contains(key));
         }
-
     }
 
     public static void assertContains(final Map<?,?> map, final Object... values) {
@@ -50,7 +46,4 @@ public final class AssertCollections {
             Assert.assertFalse(map.containsKey(key));
         }
     }
-
-
-
 }
