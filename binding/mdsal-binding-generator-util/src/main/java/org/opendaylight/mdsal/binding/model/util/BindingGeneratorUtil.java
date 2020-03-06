@@ -410,11 +410,6 @@ public final class BindingGeneratorUtil {
         return description;
     }
 
-    @Deprecated(forRemoval = true)
-    public static String replaceAllIllegalChars(final CharSequence stringBuilder) {
-        return defangUnicodeEscapes(stringBuilder);
-    }
-
     /**
      * Escape potential unicode references so that the resulting string is safe to put into a {@code .java} file. This
      * processing is required to ensure this text we want to append does not end up with eligible backslashes. See
@@ -429,10 +424,10 @@ public final class BindingGeneratorUtil {
         return backslash == -1 ? str : defangUnicodeEscapes(str);
     }
 
-    private static String defangUnicodeEscapes(final CharSequence stringBuilder) {
+    private static String defangUnicodeEscapes(final String str) {
         // TODO: we should be able to receive the first offset from the non-deprecated method and perform a manual
         //       check for eligibility and escape -- that would be faster I think.
-        final String ret = UNICODE_CHAR_PATTERN.matcher(stringBuilder).replaceAll("\\\\\\\\u");
+        final String ret = UNICODE_CHAR_PATTERN.matcher(str).replaceAll("\\\\\\\\u");
         return ret.isEmpty() ? "" : ret;
     }
 }
