@@ -421,12 +421,20 @@ public final class BindingGeneratorUtil {
      */
     public static String replaceAllIllegalChars(final String str) {
         final int backslash = str.indexOf('\\');
-        return backslash == -1 ? str : defangUnicodeEscapes(str);
+        // There is no backslash, there is nothing to consider. Otherwise we need to escape all eligible backslashes.
+        return backslash == -1 ? str : escapeEligible(str, backslash);
+    }
+
+    // Split out of replaceAllIllegalChars() to aid common case (no backslash in input)
+    private static String escapeEligible(final String str, final int backslash) {
+        final int nextu = str.indexOf('u', backslash + 1);
+        // If the backslash is not followed by a 'u' character, it does not matter if it is eligible
+        return nextu == -1 ? str : defangUnicodeEscapes(str);
     }
 
     private static String defangUnicodeEscapes(final String str) {
-        // TODO: we should be able to receive the first offset from the non-deprecated method and perform a manual
-        //       check for eligibility and escape -- that would be faster I think.
+        // FIXME: this does not look right: we may end up trimming overly-long backslash sequence to just four
+        //        backslashes, i.e. losing data.
         final String ret = UNICODE_CHAR_PATTERN.matcher(str).replaceAll("\\\\\\\\u");
         return ret.isEmpty() ? "" : ret;
     }
