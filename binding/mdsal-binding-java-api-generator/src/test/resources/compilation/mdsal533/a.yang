@@ -1,0 +1,69 @@
+module a {
+  yang-version 1;
+  namespace "a";
+  prefix "a";
+
+  grouping baz_grp {
+    leaf baz_leaf {
+      type leafref {
+        path "../a:baz_cont/a:name2";
+      }
+    }
+  }
+
+  grouping baz_grp_child {
+    uses baz_grp;
+    container baz_cont {
+      leaf name2 {
+        type string {
+          length "1..255";
+        }
+      }
+    }
+  }
+
+  list baz_list {
+    key "baz_leaf";
+    uses baz_grp_child;
+  }
+
+  list foo_list_2 {
+    key "name";
+    leaf name {
+      type string {
+        length "1..255";
+      }
+    }
+  }
+
+  grouping foo_grp {
+    leaf key_leaf1 {
+      type leafref {
+        path "../../../a:foo_list/a:name";
+      }
+    }
+    leaf key_leaf2 {
+      type string;
+    }
+    leaf key_leaf3 {
+      type string;
+    }
+  }
+
+  container foo_cont {
+    list foo_list {
+      key "name";
+      leaf name {
+        type string {
+          length "1..255";
+        }
+      }
+    }
+    container foo_cont2 {
+      list foo_list2 {
+        key "key_leaf1 key_leaf2 key_leaf3";
+        uses foo_grp;
+      }
+    }
+  }
+}
