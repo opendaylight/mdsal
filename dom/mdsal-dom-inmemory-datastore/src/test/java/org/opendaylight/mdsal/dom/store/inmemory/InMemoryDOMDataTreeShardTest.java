@@ -16,7 +16,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.opendaylight.controller.md.sal.dom.store.impl.TestModel.createTestContext;
+import static org.opendaylight.mdsal.dom.store.inmemory.TestModel.createTestContext;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_IDENTIFIER;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_SHARD_PRODUCER;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.resetMocks;
