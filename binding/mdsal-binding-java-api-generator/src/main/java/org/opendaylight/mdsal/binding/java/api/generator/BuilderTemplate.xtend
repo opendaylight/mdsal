@@ -25,6 +25,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName
+import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
@@ -125,7 +126,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «IF (impl instanceof GeneratedType)»
             «IF impl.hasNonDefaultMethods»
                 public «type.name»(«impl.fullyQualifiedName» arg) {
-                    «printConstructorPropertySetter(impl)»
+                «printConstructorPropertySetter(impl, true)»
                 }
             «ENDIF»
             «FOR implTypeImplement : impl.implements»
@@ -134,16 +135,25 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «ENDIF»
     '''
 
-    def private Object printConstructorPropertySetter(Type implementedIfc) '''
-        «IF (implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))»
-            «val ifc = implementedIfc as GeneratedType»
-            «FOR getter : ifc.nonDefaultMethods»
-                «IF BindingMapping.isGetterMethodName(getter.name)»
-                    this._«getter.propertyNameFromGetter» = arg.«getter.name»();
-                «ENDIF»
-            «ENDFOR»
+    /**
+     * Print assignment expression of the fields, which corresponding to passed type properties.
+     *
+     * @param propertyOrigin type, which properties should be assigned
+     * @param isNative       <code>true</code> if {@link propertyOrigin} is type of constructor argument
+     */
+    def private Object printConstructorPropertySetter(Type propertyOrigin, boolean isNative) '''
+        «IF (propertyOrigin instanceof GeneratedType && !(propertyOrigin instanceof GeneratedTransferObject))»
+            «val ifc = propertyOrigin as GeneratedType»
+                «FOR getter : ifc.nonDefaultMethods»
+                    «IF BindingMapping.isGetterMethodName(getter.name)»
+                        «val propertyName = getter.propertyNameFromGetter»
+                        «IF (isNative || !gettersSpecified.containsKey(getter.name))»
+                            this._«propertyName» = «addCast(getter, '''arg.«getter.name»()''', propertyName)»;
+                        «ENDIF»
+                    «ENDIF»
+                «ENDFOR»
             «FOR impl : ifc.implements»
-                «printConstructorPropertySetter(impl)»
+                «printConstructorPropertySetter(impl, false)»
             «ENDFOR»
         «ENDIF»
     '''
@@ -177,7 +187,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
          * </ul>
          *
          * @param arg grouping object
-         * @throws IllegalArgumentException if given argument is none of valid types
+         * @throws IllegalArgumentException if given argument is none of valid types or has property with incompatible value
         */
     '''
 
@@ -197,23 +207,44 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     def private generateIfCheck(Type impl, List<Type> done) '''
         «IF (impl instanceof GeneratedType && (impl as GeneratedType).hasNonDefaultMethods)»
             «val implType = impl as GeneratedType»
-            if (arg instanceof «implType.fullyQualifiedName») {
-                «printPropertySetter(implType)»
-                isValidArg = true;
-            }
+            «val propertySetter = printPropertySetter(implType)»
+            «IF (propertySetter.length > 0)»
+                if (arg instanceof «implType.fullyQualifiedName») {
+                    «propertySetter»
+                    isValidArg = true;
+                }
+            «ENDIF»
         «ENDIF»
     '''
 
-    def private printPropertySetter(Type implementedIfc) '''
-        «IF (implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))»
-        «val ifc = implementedIfc as GeneratedType»
-        «FOR getter : ifc.nonDefaultMethods»
-            «IF BindingMapping.isGetterMethodName(getter.name)»
-                this._«getter.propertyNameFromGetter» = ((«implementedIfc.fullyQualifiedName»)arg).«getter.name»();
+    def private printPropertySetter(GeneratedType ifc) '''
+        «FOR grpGetter : ifc.nonDefaultMethods»
+            «IF BindingMapping.isGetterMethodName(grpGetter.name)»
+                «val builderGetter = gettersSpecified.get(grpGetter.name)»
+                «val propertyName = grpGetter.propertyNameFromGetter»
+                «val getterCall = '''((«ifc.fullyQualifiedName»)arg).«grpGetter.name»()'''»
+                «IF builderGetter !== null»
+                    «IF !builderGetter.returnType.equals(grpGetter.returnType)»
+                        this._«propertyName» = «checkFieldCast(builderGetter, getterCall, propertyName)»;
+                    «ENDIF»
+                «ELSE»
+                    this._«propertyName» = «getterCall»;
+                «ENDIF»
             «ENDIF»
         «ENDFOR»
-        «ENDIF»
     '''
+
+    def private addCast(MethodSignature getter, String retrieveProperty, String propertyName) {
+        val builderGetter = gettersSpecified.get(getter.name);
+        if (builderGetter !== null && !getter.returnType.equals(builderGetter.returnType)) {
+            return checkFieldCast(builderGetter, retrieveProperty, propertyName)
+        }
+        return retrieveProperty
+    }
+
+    def private checkFieldCast(MethodSignature getter, String retrieveProperty, String propertyName) '''
+        «CODEHELPERS.importedName».checkFieldCast(«getter.returnType.fullyQualifiedName».class, «retrieveProperty», "«propertyName»")'''
+
 
     private def List<Type> getBaseIfcs(GeneratedType type) {
         val List<Type> baseIfcs = new ArrayList();
@@ -516,9 +547,5 @@ class BuilderTemplate extends AbstractBuilderTemplate {
 
     private static def hasNonDefaultMethods(GeneratedType type) {
         !type.methodDefinitions.isEmpty && type.methodDefinitions.exists([def | !def.isDefault])
-    }
-
-    private static def nonDefaultMethods(GeneratedType type) {
-        type.methodDefinitions.filter([def | !def.isDefault])
     }
 }

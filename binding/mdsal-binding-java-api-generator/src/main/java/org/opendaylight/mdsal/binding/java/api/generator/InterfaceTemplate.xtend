@@ -19,7 +19,9 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CON
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects
+import com.google.common.collect.Maps
 import java.util.List
+import java.util.Map
 import java.util.Map.Entry
 import java.util.Set
 import org.gaul.modernizer_maven_annotations.SuppressModernizer
@@ -60,6 +62,11 @@ class InterfaceTemplate extends BaseTemplate {
     var Entry<Type, Set<BuilderGeneratedProperty>> typeAnalysis
 
     /**
+     * Map of method signatures, which methods override return type
+     */
+    val Map<String, MethodSignature> gettersSpecified
+
+    /**
      * Creates the instance of this class which is used for generating the interface file source
      * code from <code>genType</code>.
      *
@@ -69,6 +76,7 @@ class InterfaceTemplate extends BaseTemplate {
         super(genType)
         consts = genType.constantDefinitions
         methods = genType.methodDefinitions
+        gettersSpecified = Maps.newHashMap
         enums = genType.enumerations
         enclosedGeneratedTypes = genType.enclosedTypes
     }
@@ -92,7 +100,6 @@ class InterfaceTemplate extends BaseTemplate {
             «generateConstants»
 
             «generateMethods»
-
         }
 
     '''
@@ -169,19 +176,29 @@ class InterfaceTemplate extends BaseTemplate {
      */
     def private generateMethods() '''
         «IF !methods.empty»
-            «FOR m : methods SEPARATOR "\n"»
-                «IF m.isDefault»
-                    «generateDefaultMethod(m)»
-                «ELSEIF m.isStatic»
-                    «generateStaticMethod(m)»
-                «ELSEIF m.parameters.empty && m.name.isGetterMethodName»
-                    «generateAccessorMethod(m)»
-                «ELSE»
-                    «generateMethod(m)»
-                «ENDIF»
+            «FOR m : methods»
+                «newLineSeparator(identifyMethodTypeAndGenerate(m))»
             «ENDFOR»
         «ENDIF»
     '''
+
+    def private identifyMethodTypeAndGenerate(MethodSignature m) '''
+        «IF m.isDefault»
+            «generateDefaultMethod(m)»
+        «ELSEIF m.isStatic»
+            «generateStaticMethod(m)»
+        «ELSEIF m.parameters.empty && m.name.isGetterMethodName»
+            «generateAccessorMethod(m)»
+        «ELSE»
+            «generateMethod(m)»
+        «ENDIF»
+    '''
+
+    def private newLineSeparator(CharSequence declaration) {
+        if (declaration.length > 0) {
+            return declaration + '\n'
+        }
+    }
 
     def private generateDefaultMethod(MethodSignature method) {
         if (method.name.isNonnullMethodName) {
@@ -207,12 +224,47 @@ class InterfaceTemplate extends BaseTemplate {
         «method.returnType.importedName» «method.name»(«method.parameters.generateParameters»);
     '''
 
-    def private generateAccessorMethod(MethodSignature method) '''
-        «val ret = method.returnType»
-        «formatDataForJavaDoc(method, "@return " + asCode(ret.fullyQualifiedName) + " " + asCode(propertyNameFromGetter(method)) + ", or " + asCode("null") + " if not present")»
-        «method.annotations.generateAnnotations»
-        «nullableType(ret)» «method.name»();
-    '''
+    def private generateAccessorMethod(MethodSignature method) {
+        analyzeType
+        var isOverride = false
+        var isDuplicate = false
+        if (gettersSpecified.containsKey(method.name)) {
+            if (isAlreadyOverridden(method)) {
+                isDuplicate = true
+            } else {
+                isOverride = true
+            }
+        }
+        return '''
+            «IF !isDuplicate»
+                «val ret = method.returnType»
+                «formatDataForJavaDoc(method, "@return " + asCode(ret.fullyQualifiedName) + " " + asCode(propertyNameFromGetter(method)) + ", or " + asCode("null") + " if not present")»
+                «IF isOverride»
+                    @«OVERRIDE.importedName»
+                «ENDIF»
+                «method.annotations.generateAnnotations»
+                «nullableType(ret)» «method.name»();
+            «ENDIF»
+        '''
+    }
+
+    def private isAlreadyOverridden(MethodSignature getter) {
+        for (impl : type.implements) {
+            if (impl instanceof GeneratedType) {
+                for (method : impl.nonDefaultMethods) {
+                    if (getter.name.equals(method.name)) {
+                        if (getter.returnType.equals(method.returnType)) {
+                            return true
+                        } else {
+                            return false
+                        }
+                    }
+                }
+            }
+        }
+        //should never get here
+        return false
+    }
 
     def private generateDefaultImplementedInterface() '''
         @«OVERRIDE.importedName»
@@ -350,7 +402,7 @@ class InterfaceTemplate extends BaseTemplate {
 
     private def boolean analyzeType() {
         if (typeAnalysis === null) {
-            typeAnalysis = analyzeTypeHierarchy(type)
+            typeAnalysis = analyzeTypeHierarchy(type, gettersSpecified)
         }
         typeAnalysis.key !== null
     }
