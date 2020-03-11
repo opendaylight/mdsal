@@ -12,7 +12,7 @@ import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME;
 
-import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Sets;
 import java.lang.reflect.Method;
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -20,12 +20,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
@@ -218,13 +220,58 @@ class JavaFileTemplate {
      * Run type analysis, which results in identification of the augmentable type, as well as all methods available
      * to the type, expressed as properties.
      */
-    static Map.Entry<Type, Set<BuilderGeneratedProperty>> analyzeTypeHierarchy(final GeneratedType type) {
+    static Map.Entry<Type, Set<BuilderGeneratedProperty>> analyzeTypeHierarchy(final GeneratedType type,
+            final Map<String, MethodSignature> gettersSpecified) {
         final Set<MethodSignature> methods = new LinkedHashSet<>();
         final Type augmentType = createMethods(type, methods);
-        final Set<MethodSignature> sortedMethods = ImmutableSortedSet.orderedBy(METHOD_COMPARATOR).addAll(methods)
-                .build();
+        final Set<MethodSignature> sortedMethods = new TreeSet<>(METHOD_COMPARATOR);
+        sortedMethods.addAll(methods);
+
+        removeWrongGroupingsMethods(sortedMethods, gettersSpecified, type);
 
         return new AbstractMap.SimpleImmutableEntry<>(augmentType, propertiesFromMethods(sortedMethods));
+    }
+
+    /**
+     * Remove overridden methods collected from groupings Types.
+     *
+     * @param methods signatures to clean up
+     * @param gettersSpecified map to populate with getters, which override return type
+     * @param type analyzed type
+     */
+    private static void removeWrongGroupingsMethods(final Set<MethodSignature> methods,
+            final Map<String, MethodSignature> gettersSpecified, final GeneratedType type) {
+        final Iterator<MethodSignature> it = methods.iterator();
+        final Set<MethodSignature> toDelete = Sets.newHashSet();
+
+        MethodSignature previous;
+
+        if (it.hasNext()) {
+            previous = it.next();
+        } else {
+            return;
+        }
+
+        while (it.hasNext()) {
+            final MethodSignature current = it.next();
+            if (current.getName().equals(previous.getName())) {
+                final MethodSignature nativeGroupingMethod;
+                final MethodSignature usedGroupingMethod;
+                if (current.getDefiningType().equals(type)) {
+                    usedGroupingMethod = current;
+                    nativeGroupingMethod = previous;
+                } else {
+                    usedGroupingMethod = previous;
+                    nativeGroupingMethod = current;
+                }
+                toDelete.add(nativeGroupingMethod);
+                gettersSpecified.put(usedGroupingMethod.getName(), usedGroupingMethod);
+            }
+            previous = current;
+        }
+        if (!toDelete.isEmpty()) {
+            methods.removeAll(toDelete);
+        }
     }
 
     static final Restrictions restrictionsForSetter(final Type actualType) {
