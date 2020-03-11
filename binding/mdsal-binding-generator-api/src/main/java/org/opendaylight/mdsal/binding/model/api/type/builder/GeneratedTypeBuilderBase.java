@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.model.api.type.builder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -115,6 +116,13 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      * @return <code>new</code> instance of Method Signature Builder.
      */
     MethodSignatureBuilder addMethod(String name);
+
+    /**
+     * Add getter, which overrides return type.
+     *
+     * @param getter Specified getter
+     */
+    void addSpecifiedGetter(MethodSignatureBuilder getter);
 
     /**
      * Checks if GeneratedTypeBuilder contains method with name <code>methodName</code>.
