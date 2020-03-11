@@ -1103,13 +1103,30 @@ abstract class AbstractTypeGenerator {
         if (schemaNodes != null && parent != null) {
             final Type baseInterface = childOf == null ? DATA_OBJECT : childOf(childOf);
             for (final DataSchemaNode schemaNode : schemaNodes) {
-                if (!schemaNode.isAugmenting() && !schemaNode.isAddedByUses()) {
+                if (!schemaNode.isAugmenting() && (!schemaNode.isAddedByUses() || needMethodDefinition(schemaNode))) {
                     addSchemaNodeToBuilderAsMethod(context, schemaNode, parent, baseInterface, inGrouping);
                 }
             }
         }
         return parent;
     }
+
+
+    // Determine whether a particular node needs to be reflected as a method. This check would be super easy were it not
+    // for relative leafrefs in groupings. These can legally point outside of the grouping -- which means we cannot
+    // inherently cannot determine their type, as they are polymorphic.
+    private static boolean needMethodDefinition(final DataSchemaNode child) {
+        return child instanceof TypedDataSchemaNode && needMethodDefinition((TypedDataSchemaNode) child);
+    }
+
+    private static boolean needMethodDefinition(final TypedDataSchemaNode child) {
+        // This is a child added through uses and it is is data-bearing, i.e. leaf or leaf-list. Under normal
+        // circumstances we would not bother, but if the target type is a leafref we have more checks to do.
+        final TypeDefinition<? extends TypeDefinition<?>> type = ((TypedDataSchemaNode)child).getType();
+        // TODO: we probably need to find thee original definition and see if it was completely resolved -- we
+        //       do not want to attempt re-resolution every time.
+        return type instanceof LeafrefTypeDefinition;
+	}
 
     /**
      * Adds the methods to <code>typeBuilder</code> what represents subnodes of node for which <code>typeBuilder</code>
@@ -1418,7 +1435,7 @@ abstract class AbstractTypeGenerator {
      */
     private Type resolveLeafSchemaNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
             final ModuleContext context, final boolean inGrouping) {
-        if (leaf == null || typeBuilder == null || leaf.isAddedByUses()) {
+        if (leaf == null || typeBuilder == null || (leaf.isAddedByUses() && !needMethodDefinition(leaf))) {
             return null;
         }
 
