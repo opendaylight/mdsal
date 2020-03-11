@@ -36,12 +36,14 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.keyedListAc
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.keyedListNotification;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.opaqueObject;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.rpcResult;
-import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 import static org.opendaylight.mdsal.binding.model.util.Types.classType;
+import static org.opendaylight.mdsal.binding.model.util.Types.isBooleanType;
 import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
+import static org.opendaylight.mdsal.binding.model.util.Types.listTypeWildcard;
 import static org.opendaylight.mdsal.binding.model.util.Types.listenableFutureTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.mapTypeFor;
+import static org.opendaylight.mdsal.binding.model.util.Types.objectType;
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveBooleanType;
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveIntType;
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveVoidType;
@@ -67,12 +69,14 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
+import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
@@ -142,6 +146,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 abstract class AbstractTypeGenerator {
+    private enum InheritedGetter {
+        /**
+         * There is no matching method present.
+         */
+        NOT_PRESENT,
+        /**
+         * There is a matching method and its return type is resolved.
+         */
+        RESOLVED,
+        /**
+         * There is a matching method and its return type is unresolved -- i.e. in case of a leafref pointing to outside
+         * of its parent grouping.
+         */
+        UNRESOLVED;
+
+        /**
+         * We are using {@code @Override} annotation to indicate specialization, hence we can differentiate between
+         * resolved and unresolved methods based on them.
+         *
+         * @param annotations Method annotations
+         * @return Either {@link #RESOLVED} or {@link #UNRESOLVED}.
+         */
+        static InheritedGetter fromAnnotations(final List<AnnotationType> annotations) {
+            for (AnnotationType annotation : annotations) {
+                if (OVERRIDE_ANNOTATION.equals(annotation.getIdentifier())) {
+                    return InheritedGetter.RESOLVED;
+                }
+            }
+            return InheritedGetter.UNRESOLVED;
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTypeGenerator.class);
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
     private static final JavaTypeName DEPRECATED_ANNOTATION = JavaTypeName.create(Deprecated.class);
@@ -317,7 +353,7 @@ abstract class AbstractTypeGenerator {
         return genType;
     }
 
-    private void containerToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
+    private Type containerToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
             final Type baseInterface, final ContainerSchemaNode node, final boolean inGrouping) {
         final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, node, inGrouping);
         if (genType != null) {
@@ -326,9 +362,10 @@ abstract class AbstractTypeGenerator {
             actionsToGenType(context, genType, node, null, inGrouping);
             notificationsToGenType(context, genType, node, null, inGrouping);
         }
+        return genType;
     }
 
-    private void listToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
+    private GeneratedTypeBuilder listToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
             final Type baseInterface, final ListSchemaNode node, final boolean inGrouping) {
         final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, node, inGrouping);
         if (genType != null) {
@@ -373,6 +410,7 @@ abstract class AbstractTypeGenerator {
 
             typeBuildersToGenTypes(context, genType, keyTypeBuilder);
         }
+        return genType;
     }
 
     private void processUsesAugments(final DataNodeContainer node, final ModuleContext context,
@@ -1113,12 +1151,110 @@ abstract class AbstractTypeGenerator {
         if (schemaNodes != null && parent != null) {
             final Type baseInterface = childOf == null ? DATA_OBJECT : childOf(childOf);
             for (final DataSchemaNode schemaNode : schemaNodes) {
-                if (!schemaNode.isAugmenting() && !schemaNode.isAddedByUses()) {
+                if (!schemaNode.isAugmenting()) {
                     addSchemaNodeToBuilderAsMethod(context, schemaNode, parent, baseInterface, inGrouping);
                 }
             }
         }
         return parent;
+    }
+
+    private void addSchemaNodeToBuilderAsMethod(final ModuleContext context, final DataSchemaNode schemaNode,
+            final GeneratedTypeBuilder parent, final Type baseInterface, final boolean inGrouping) {
+        if (!schemaNode.isAddedByUses()) {
+            addUnambiguousNodeToBuilderAsMethod(context, schemaNode, parent, baseInterface, inGrouping);
+        } else if (needGroupingMethodOverride(schemaNode, parent)) {
+            addLeafrefNodeToBuilderAsMethod(context, (TypedDataSchemaNode) schemaNode, parent, inGrouping);
+        }
+    }
+
+    /**
+     * Determine whether a particular node, added from a grouping, needs to be reflected as a method. This method
+     * performs a check for {@link TypedDataSchemaNode} and defers to
+     * {@link #needGroupingMethodOverride(TypedDataSchemaNode, GeneratedTypeBuilder)}.
+     *
+     * @param parent {@code GeneratedType} where method should be defined
+     * @param child node from which method should be defined
+     * @return True if an override method is needed
+     */
+    private static boolean needGroupingMethodOverride(final DataSchemaNode child, final GeneratedTypeBuilder parent) {
+        return child instanceof TypedDataSchemaNode && needGroupingMethodOverride((TypedDataSchemaNode) child, parent);
+    }
+
+    /**
+     * Determine whether a particular {@link TypedDataSchemaNode}, added from a grouping, needs to be reflected as a
+     * method.
+     *
+     * <p>
+     * This check would be super easy were it not for relative leafrefs in groupings. These can legally point outside of
+     * the grouping -- which means we cannot inherently cannot determine their type, as they are polymorphic.
+     *
+     * @param parent {@code GeneratedType} where method should be defined
+     * @param child node from which method should be defined
+     * @return True if an override method is needed
+     */
+    private static boolean needGroupingMethodOverride(final TypedDataSchemaNode child,
+            final GeneratedTypeBuilder parent) {
+        // This is a child added through uses and it is is data-bearing, i.e. leaf or leaf-list. Under normal
+        // circumstances we would not bother, but if the target type is a leafref we have more checks to do.
+        return isRelativeLeafref(child.getType()) && needMethodDefinition(child.getQName().getLocalName(), parent);
+    }
+
+    private static boolean needMethodDefinition(final String localName, final GeneratedTypeBuilder parent) {
+        for (Type implementsType : parent.getImplementsTypes()) {
+            if (implementsType instanceof GeneratedType) {
+                final InheritedGetter precision = findInheritedGetter(localName, (GeneratedType) implementsType);
+                switch (precision) {
+                    case RESOLVED:
+                        return false;
+                    case UNRESOLVED:
+                        return true;
+                    default:
+                        // No-op
+                }
+            }
+        }
+        throw new IllegalStateException(localName + " should be present in " + parent
+            + " or in one of its ancestors as a getter");
+    }
+
+    private static InheritedGetter findInheritedGetter(final String localName, final GeneratedType impl) {
+        // Okay, we need to pre-construct possible names here. The crux of the issue that we may have a situation where
+        // the grouping failed to resolve the type and has 'Object getFoo()' whereas we end up resolving the type to
+        // boolean -- and thus we have a joyful transition to 'Boolean isFoo()' to deal with.
+        final String nameRoot = BindingMapping.getGetterRoot(localName);
+        final String getter = BindingMapping.getGetterMethodName(nameRoot, false);
+        final String booleanGetter = BindingMapping.getGetterMethodName(nameRoot, true);
+
+        return findInheritedGetter(impl, getter, booleanGetter);
+    }
+
+    private static InheritedGetter findInheritedGetter(final GeneratedType type, final String getter,
+            final String booleanGetter) {
+        for (MethodSignature method : type.getMethodDefinitions()) {
+            if (booleanGetter.equals(method.getName())) {
+                return InheritedGetter.RESOLVED;
+            }
+            if (getter.equals(method.getName())) {
+                return InheritedGetter.fromAnnotations(method.getAnnotations());
+            }
+        }
+
+        // Try to find the method in other interfaces we implement
+        for (Type implementsType : type.getImplements()) {
+            if (implementsType instanceof GeneratedType) {
+                final InheritedGetter found = findInheritedGetter((GeneratedType) implementsType, getter,
+                    booleanGetter);
+                if (found != InheritedGetter.NOT_PRESENT) {
+                    return found;
+                }
+            }
+        }
+        return InheritedGetter.NOT_PRESENT;
+    }
+
+    private static boolean isRelativeLeafref(final TypeDefinition<? extends TypeDefinition<?>> type) {
+        return type instanceof LeafrefTypeDefinition && !((LeafrefTypeDefinition) type).getPathStatement().isAbsolute();
     }
 
     /**
@@ -1150,33 +1286,48 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Adds to <code>typeBuilder</code> a method which is derived from <code>schemaNode</code>.
+     * Adds to {@code typeBuilder} a method which is derived from {@code schemaNode}.
      *
      * @param node data schema node which is added to <code>typeBuilder</code> as a method
      * @param typeBuilder generated type builder to which is <code>schemaNode</code> added as a method.
      * @param childOf parent type
      * @param module current module
      */
-    private void addSchemaNodeToBuilderAsMethod(final ModuleContext context, final DataSchemaNode node,
-            final GeneratedTypeBuilder typeBuilder, final Type baseInterface, final boolean inGrouping) {
+    private void addLeafrefNodeToBuilderAsMethod(final ModuleContext context, final TypedDataSchemaNode node,
+            final GeneratedTypeBuilder typeBuilder, final boolean inGrouping) {
         if (node != null && typeBuilder != null) {
             if (node instanceof LeafSchemaNode) {
-                resolveLeafSchemaNodeAsMethod(typeBuilder, (LeafSchemaNode) node, context, inGrouping);
+                resolveLeafLeafrefNodeAsMethod(typeBuilder, (LeafSchemaNode) node, context, inGrouping);
             } else if (node instanceof LeafListSchemaNode) {
-                resolveLeafListSchemaNode(typeBuilder, (LeafListSchemaNode) node, context, inGrouping);
-            } else if (node instanceof ContainerSchemaNode) {
-                containerToGenType(context, typeBuilder, baseInterface, (ContainerSchemaNode) node, inGrouping);
-            } else if (node instanceof ListSchemaNode) {
-                listToGenType(context, typeBuilder, baseInterface, (ListSchemaNode) node, inGrouping);
-            } else if (node instanceof ChoiceSchemaNode) {
-                choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) node, inGrouping);
-            } else if (node instanceof AnyxmlSchemaNode || node instanceof AnydataSchemaNode) {
-                opaqueToGeneratedType(context, typeBuilder, node);
+                resolveLeafListLeafrefNode(typeBuilder, (LeafListSchemaNode) node, context, inGrouping);
             } else {
-                LOG.debug("Unable to add schema node {} as method in {}: unsupported type of node.", node.getClass(),
-                        typeBuilder.getFullyQualifiedName());
+                logUnableToAddNodeAsMethod(node, typeBuilder);
             }
         }
+    }
+
+    private void addUnambiguousNodeToBuilderAsMethod(final ModuleContext context, final DataSchemaNode node,
+            final GeneratedTypeBuilder typeBuilder, final Type baseInterface, final boolean inGrouping) {
+        if (node instanceof LeafSchemaNode) {
+            resolveUnambiguousLeafNodeAsMethod(typeBuilder, (LeafSchemaNode) node, context, inGrouping);
+        } else if (node instanceof LeafListSchemaNode) {
+            resolveUnambiguousLeafListNode(typeBuilder, (LeafListSchemaNode) node, context, inGrouping);
+        } else if (node instanceof ContainerSchemaNode) {
+            containerToGenType(context, typeBuilder, baseInterface, (ContainerSchemaNode) node, inGrouping);
+        } else if (node instanceof ListSchemaNode) {
+            listToGenType(context, typeBuilder, baseInterface, (ListSchemaNode) node, inGrouping);
+        } else if (node instanceof ChoiceSchemaNode) {
+            choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) node, inGrouping);
+        } else if (node instanceof AnyxmlSchemaNode || node instanceof AnydataSchemaNode) {
+            opaqueToGeneratedType(context, typeBuilder, node);
+        } else {
+            logUnableToAddNodeAsMethod(node, typeBuilder);
+        }
+    }
+
+    private static void logUnableToAddNodeAsMethod(final DataSchemaNode node, final GeneratedTypeBuilder typeBuilder) {
+        LOG.debug("Unable to add schema node {} as method in {}: unsupported type of node.", node.getClass(),
+                typeBuilder.getFullyQualifiedName());
     }
 
     /**
@@ -1413,26 +1564,44 @@ abstract class AbstractTypeGenerator {
         }
     }
 
-    /**
-     * Converts <code>leaf</code> to the getter method which is added to <code>typeBuilder</code>.
-     *
-     * @param typeBuilder generated type builder to which is added getter method as <code>leaf</code> mapping
-     * @param leaf leaf schema node which is mapped as getter method which is added to <code>typeBuilder</code>
-     * @param module Module in which type was defined
-     * @return boolean value
-     *         <ul>
-     *         <li>false - if <code>leaf</code> or <code>typeBuilder</code> are
-     *         null</li>
-     *         <li>true - in other cases</li>
-     *         </ul>
-     */
-    private Type resolveLeafSchemaNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
+    private Type resolveLeafLeafrefNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
             final ModuleContext context, final boolean inGrouping) {
-        if (leaf == null || typeBuilder == null || leaf.isAddedByUses()) {
-            return null;
-        }
-
         final Module parentModule = findParentModule(schemaContext, leaf);
+        final Type returnType = resolveReturnType(typeBuilder, leaf, context, parentModule, inGrouping);
+        if (returnType != null && isTypeSpecified(returnType)) {
+            processContextRefExtension(leaf, constructOverrideGetter(typeBuilder, returnType, leaf), parentModule);
+        }
+        return returnType;
+    }
+
+    /**
+     * Converts {@code leafList} to the getter method which is added to {@code typeBuilder}.
+     *
+     * @param context module in which type was defined
+     * @param typeBuilder generated type builder to which is added getter method as {@code leafList} mapping
+     * @param leafList leaf-list schema node which is mapped as getter method which is added to {@code typeBuilder}
+     */
+    private void resolveLeafListNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafListSchemaNode leafList,
+            final ModuleContext context, final boolean inGrouping) {
+        if (!leafList.isAddedByUses()) {
+            resolveUnambiguousLeafListNode(typeBuilder, leafList, context, inGrouping);
+        } else if (needGroupingMethodOverride(leafList, typeBuilder)) {
+            resolveLeafListLeafrefNode(typeBuilder, leafList, context, inGrouping);
+        }
+    }
+
+    private Type resolveUnambiguousLeafNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
+            final ModuleContext context, final boolean inGrouping) {
+        final Module parentModule = findParentModule(schemaContext, leaf);
+        final Type returnType = resolveReturnType(typeBuilder, leaf, context, parentModule, inGrouping);
+        if (returnType != null) {
+            processContextRefExtension(leaf, constructGetter(typeBuilder,  returnType, leaf), parentModule);
+        }
+        return returnType;
+    }
+
+    private Type resolveReturnType(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
+            final ModuleContext context, final Module parentModule, final boolean inGrouping) {
         Type returnType = null;
 
         final TypeDefinition<?> typeDef = CompatUtils.compatType(leaf);
@@ -1488,9 +1657,11 @@ abstract class AbstractTypeGenerator {
             typeProvider.putReferencedType(leaf.getPath(), returnType);
         }
 
-        final MethodSignatureBuilder getter = constructGetter(typeBuilder,  returnType, leaf);
-        processContextRefExtension(leaf, getter, parentModule);
         return returnType;
+    }
+
+    private static boolean isTypeSpecified(final Type type) {
+        return !type.equals(objectType());
     }
 
     private static TypeDefinition<?> getBaseOrDeclaredType(final TypeDefinition<?> typeDef) {
@@ -1615,42 +1786,53 @@ abstract class AbstractTypeGenerator {
         return true;
     }
 
+    private void resolveLeafListLeafrefNode(final GeneratedTypeBuilder typeBuilder, final LeafListSchemaNode node,
+            final ModuleContext context, final boolean inGrouping) {
+        final Type returnType = resolveLeafListItemsType(typeBuilder, node, context, inGrouping,
+            findParentModule(schemaContext, node));
+        if (isTypeSpecified(returnType)) {
+            constructOverrideGetter(typeBuilder, listTypeFor(returnType), node);
+        }
+    }
+
     /**
      * Converts <code>node</code> leaf list schema node to getter method of <code>typeBuilder</code>.
      *
+     * @param context module
      * @param typeBuilder generated type builder to which is <code>node</code> added as getter method
      * @param node leaf list schema node which is added to <code>typeBuilder</code> as getter method
-     * @param module module
-     * @return boolean value
-     *         <ul>
-     *         <li>true - if <code>node</code>, <code>typeBuilder</code>,
-     *         nodeName equal null or <code>node</code> is added by <i>uses</i></li>
-     *         <li>false - other cases</li>
-     *         </ul>
      */
-    private boolean resolveLeafListSchemaNode(final GeneratedTypeBuilder typeBuilder, final LeafListSchemaNode node,
+    private Type resolveUnambiguousLeafListNode(final GeneratedTypeBuilder typeBuilder, final LeafListSchemaNode node,
             final ModuleContext context, final boolean inGrouping) {
-        if (node == null || typeBuilder == null || node.isAddedByUses()) {
-            return false;
+        final Module parentModule = findParentModule(schemaContext, node);
+        final Type listItemsType = resolveLeafListItemsType(typeBuilder, node, context, inGrouping, parentModule);
+        final Type returnType;
+        if (listItemsType.equals(objectType())) {
+            returnType = listTypeWildcard();
+        } else {
+            returnType = listTypeFor(listItemsType);
         }
 
-        final QName nodeName = node.getQName();
+        constructGetter(typeBuilder, returnType, node);
 
-        final TypeDefinition<?> typeDef = node.getType();
-        final Module parentModule = findParentModule(schemaContext, node);
+        return returnType;
+    }
 
-        Type returnType = null;
+    private Type resolveLeafListItemsType(final GeneratedTypeBuilder typeBuilder, final LeafListSchemaNode node,
+            final ModuleContext context, final boolean inGrouping, final Module parentModule) {
+        final Type returnType;
+        final TypeDefinition<? extends TypeDefinition<?>> typeDef = node.getType();
         if (typeDef.getBaseType() == null) {
             if (typeDef instanceof EnumTypeDefinition) {
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
-                returnType = resolveInnerEnumFromTypeDefinition(enumTypeDef, nodeName, typeBuilder, context);
+                returnType = resolveInnerEnumFromTypeDefinition(enumTypeDef, node.getQName(), typeBuilder, context);
                 typeProvider.putReferencedType(node.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
-                final UnionTypeDefinition unionDef = (UnionTypeDefinition)typeDef;
+                final UnionTypeDefinition unionDef = (UnionTypeDefinition) typeDef;
                 returnType = addTOToTypeBuilder(unionDef, typeBuilder, node, parentModule);
             } else if (typeDef instanceof BitsTypeDefinition) {
-                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder((BitsTypeDefinition)typeDef, typeBuilder,
-                    node, parentModule);
+                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder((BitsTypeDefinition) typeDef, typeBuilder,
+                        node, parentModule);
                 returnType = genTOBuilder.build();
             } else {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
@@ -1662,9 +1844,7 @@ abstract class AbstractTypeGenerator {
             returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions, inGrouping);
             addPatternConstant(typeBuilder, node.getQName().getLocalName(), restrictions.getPatternConstraints());
         }
-
-        constructGetter(typeBuilder, listTypeFor(returnType), node);
-        return true;
+        return returnType;
     }
 
     private Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final UnionTypeDefinition typeDef,
@@ -1805,7 +1985,7 @@ abstract class AbstractTypeGenerator {
      * @return string with the name of the getter method for <code>methodName</code> in JAVA method format
      */
     public static String getterMethodName(final String localName, final Type returnType) {
-        return BindingMapping.getGetterMethodName(localName, BOOLEAN.equals(returnType));
+        return BindingMapping.getGetterMethodName(localName, isBooleanType(returnType));
     }
 
     /**
@@ -1830,6 +2010,13 @@ abstract class AbstractTypeGenerator {
         addComment(getMethod, node);
 
         return getMethod;
+    }
+
+    private MethodSignatureBuilder constructOverrideGetter(final GeneratedTypeBuilder interfaceBuilder,
+            final Type returnType, final SchemaNode node) {
+        final MethodSignatureBuilder getter = constructGetter(interfaceBuilder, returnType, node);
+        getter.addAnnotation(OVERRIDE_ANNOTATION);
+        return getter;
     }
 
     private static void constructNonnull(final GeneratedTypeBuilder interfaceBuilder, final Type returnType,
@@ -1866,7 +2053,15 @@ abstract class AbstractTypeGenerator {
         if (schemaNode instanceof LeafSchemaNode) {
             final LeafSchemaNode leaf = (LeafSchemaNode) schemaNode;
             final String leafName = leaf.getQName().getLocalName();
-            Type type = resolveLeafSchemaNodeAsMethod(typeBuilder, leaf, context, inGrouping);
+            final Type type;
+            if (!schemaNode.isAddedByUses()) {
+                type = resolveUnambiguousLeafNodeAsMethod(typeBuilder, leaf, context, inGrouping);
+            } else if (needGroupingMethodOverride(leaf, typeBuilder)) {
+                type = resolveLeafLeafrefNodeAsMethod(typeBuilder, leaf, context, inGrouping);
+            } else {
+                type = null;
+            }
+
             if (listKeys.contains(leafName)) {
                 if (type == null) {
                     resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, true);
@@ -1874,12 +2069,12 @@ abstract class AbstractTypeGenerator {
                     resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, type, true);
                 }
             }
+        } else if (schemaNode instanceof LeafListSchemaNode) {
+            resolveLeafListNodeAsMethod(typeBuilder, (LeafListSchemaNode) schemaNode, context, inGrouping);
         } else if (!schemaNode.isAddedByUses()) {
-            if (schemaNode instanceof LeafListSchemaNode) {
-                resolveLeafListSchemaNode(typeBuilder, (LeafListSchemaNode) schemaNode, context, inGrouping);
-            } else if (schemaNode instanceof ContainerSchemaNode) {
-                containerToGenType(context, typeBuilder, childOf(typeBuilder),
-                    (ContainerSchemaNode) schemaNode, inGrouping);
+            if (schemaNode instanceof ContainerSchemaNode) {
+                containerToGenType(context, typeBuilder, childOf(typeBuilder), (ContainerSchemaNode) schemaNode,
+                    inGrouping);
             } else if (schemaNode instanceof ChoiceSchemaNode) {
                 choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) schemaNode, inGrouping);
             } else if (schemaNode instanceof ListSchemaNode) {
