@@ -1,0 +1,21 @@
+module foo {
+  namespace "foo";
+  prefix a;
+  import bar { prefix b; }
+
+  grouping foo {
+    grouping first {
+      uses second;
+    }
+
+    grouping second {
+      leaf second {
+        type string;
+      }
+    }
+  }
+
+  augment "/b:bar" {
+    uses a:foo;
+  }
+}
