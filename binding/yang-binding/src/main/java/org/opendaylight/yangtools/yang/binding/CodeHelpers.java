@@ -410,6 +410,57 @@ public final class CodeHelpers {
     }
 
     /**
+     * Utility method for checking whether a target object is compatible.
+     *
+     * @param requiredClass Required class
+     * @param obj           Object to check, may be null
+     * @return              Object cast to required class, if its class matches requirement,
+     *                      throws {@link IllegalArgumentException} otherwise
+     * @throws NullPointerException if {@code requiredClass} is null
+     * @throws IllegalArgumentException if obj is not instance of {@code requiredClass}
+     */
+    public static <T> @Nullable T checkedFieldCast(final @NonNull Class<T> requiredClass,
+            final @Nullable Object obj, final @NonNull String fieldName) {
+        if (obj == null) {
+            return null;
+        }
+        checkArgument(requiredClass.isInstance(obj), "Input value (%s) for %s property should be compatible with %s",
+            obj.getClass(), fieldName, requiredClass);
+        return requiredClass.cast(obj);
+    }
+
+    /**
+     * Utility method for checking whether the items of target list is compatible.
+     *
+     * @param requiredItemClass         Required item class
+     * @param list                    List, which items should be checked
+     * @throws IllegalArgumentException if list items is not instance of {@code requiredItemClass}
+     */
+    public static void checkListItemsType(final @NonNull Class<?> requiredItemClass,
+            final @Nullable List<?> list, final @NonNull String fieldName) {
+        if (list != null) {
+            for (Object obj : list) {
+                if (obj != null) {
+                    checkArgument(requiredItemClass.isInstance(obj),
+                        "Input list item (%s) for %s property is not compatible with %s", obj.getClass(), fieldName,
+                        requiredItemClass);
+                }
+            }
+        }
+    }
+
+    public static <T> @Nullable T fill(final @NonNull Class<T> requiredClass,
+            final @Nullable Object obj, final @NonNull String fieldName) {
+        if (obj == null) {
+            return null;
+        }
+        checkArgument(requiredClass.isInstance(obj),
+            "Input value (%s) for %s property should be compatible with %s", obj.getClass(), fieldName,
+            requiredClass);
+        return requiredClass.cast(obj);
+    }
+
+    /**
      * The constant '31' is the result of folding this code:
      * <pre>
      *     final int prime = 31;
