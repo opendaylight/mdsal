@@ -1,0 +1,8 @@
+module bar {
+  namespace "bar";
+  prefix b;
+
+  container bar {
+
+  }
+}
