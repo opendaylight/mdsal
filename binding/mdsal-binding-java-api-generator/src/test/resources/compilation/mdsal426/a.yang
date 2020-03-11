@@ -1,0 +1,35 @@
+module a {
+  yang-version 1;
+  namespace "a";
+  prefix "a";
+
+  grouping foo_grp {
+    leaf key_leaf1 {
+      type leafref {
+        path "../a:name";
+      }
+    }
+    leaf key_leaf2 {
+      type string;
+    }
+  }
+
+  grouping bar_grp {
+    uses foo_grp;
+    leaf name {
+        type string;
+    }
+  }
+
+  container bar_cont {
+    uses bar_grp;
+  }
+
+  grouping bzz_grp {
+    uses bar_grp;
+  }
+
+  container bzz_cont {
+    uses bzz_grp;
+  }
+}
