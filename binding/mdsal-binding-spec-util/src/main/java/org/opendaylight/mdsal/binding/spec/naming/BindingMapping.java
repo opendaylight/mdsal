@@ -216,16 +216,20 @@ public final class BindingMapping {
         return getMethodName(name.getLocalName());
     }
 
-    public static @NonNull String getGetterPrefix(final boolean isBoolean) {
-        return isBoolean ? BOOLEAN_GETTER_PREFIX : GETTER_PREFIX;
-    }
-
     public static @NonNull String getGetterMethodName(final String localName, final boolean isBoolean) {
-        return getGetterPrefix(isBoolean) + toFirstUpper(getPropertyName(localName));
+        return getGetterPrefix(isBoolean) + getGetterRoot(localName);
     }
 
     public static @NonNull String getGetterMethodName(final QName name, final boolean isBoolean) {
         return getGetterPrefix(isBoolean) + getGetterSuffix(name);
+    }
+
+    public static @NonNull String getGetterPrefix(final boolean isBoolean) {
+        return isBoolean ? BOOLEAN_GETTER_PREFIX : GETTER_PREFIX;
+    }
+
+    public static @NonNull String getGetterRoot(final String localName) {
+        return toFirstUpper(getPropertyName(localName));
     }
 
     public static boolean isGetterMethodName(final String methodName) {
