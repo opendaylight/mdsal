@@ -51,12 +51,12 @@ public final class Types {
             CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
 
     public static final @NonNull ConcreteType BOOLEAN = typeForClass(Boolean.class);
-    public static final @NonNull ConcreteType STRING = typeForClass(String.class);
-    public static final @NonNull ConcreteType VOID = typeForClass(Void.class);
+    public static final @NonNull ConcreteType BUILDER = typeForClass(Builder.class);
     public static final @NonNull ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
     public static final @NonNull ConcreteType CLASS = typeForClass(Class.class);
+    public static final @NonNull ConcreteType STRING = typeForClass(String.class);
+    public static final @NonNull ConcreteType VOID = typeForClass(Void.class);
 
-    private static final @NonNull ConcreteType BUILDER = typeForClass(Builder.class);
     private static final @NonNull ConcreteType LIST_TYPE = typeForClass(List.class);
     private static final @NonNull ConcreteType LISTENABLE_FUTURE = typeForClass(ListenableFuture.class);
     private static final @NonNull ConcreteType MAP_TYPE = typeForClass(Map.class);
@@ -66,6 +66,9 @@ public final class Types {
     private static final @NonNull ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
     private static final @NonNull ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
     private static final @NonNull ConcreteType SET_TYPE = typeForClass(Set.class);
+
+    public static final Type UNRESOLVED_LEAF_TYPE = objectType();
+    public static final Type UNRESOLVED_LEAF_LIST_TYPE = listTypeWildcard();
 
     /**
      * It is not desirable to create instance of this class.
@@ -206,6 +209,10 @@ public final class Types {
         return parameterizedTypeFor(LIST_TYPE, valueType);
     }
 
+    public static @NonNull ParameterizedType listTypeWildcard() {
+        return parameterizedTypeFor(LIST_TYPE);
+    }
+
     public static boolean isListType(final ParameterizedType type) {
         return LIST_TYPE.equals(type.getRawType());
     }
@@ -256,6 +263,31 @@ public final class Types {
      */
     public static WildcardType wildcardTypeFor(final JavaTypeName identifier) {
         return new WildcardTypeImpl(identifier);
+    }
+
+    public static boolean strictTypeEquals(final Type type1, final Type type2) {
+        if (!type1.equals(type2)) {
+            return false;
+        }
+        if (type1 instanceof ParameterizedType) {
+            if (type2 instanceof ParameterizedType) {
+               return strictParameterizedTypeEquals((ParameterizedType)type1, (ParameterizedType)type2);
+            } else {
+                return false;
+            }
+        }
+        return (!(type2 instanceof ParameterizedType));
+    }
+
+    public static boolean strictParameterizedTypeEquals(ParameterizedType type1, ParameterizedType type2) {
+        if (!type1.equals(type2)) {
+            return false;
+        }
+        return Arrays.equals(type1.getActualTypeArguments(), type2.getActualTypeArguments());
+    }
+
+    public static boolean isBooleanType(Type type) {
+        return BOOLEAN.equals(type);
     }
 
     public static @Nullable String getOuterClassName(final Type valueType) {
