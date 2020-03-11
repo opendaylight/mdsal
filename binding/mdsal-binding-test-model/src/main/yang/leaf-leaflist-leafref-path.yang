@@ -1,0 +1,31 @@
+module leaf-leaflist-leafref-path {
+    yang-version 1;
+    namespace "lllp";
+    prefix "lllp";
+
+    revision "2016-01-01" {
+    }
+
+        container bar {
+            leaf leaf-leafref {
+                type leafref {
+                    path "../target-leaf-list";
+                }
+            }
+            leaf-list target-leaf-list {
+                type string {
+
+                }
+            }
+            leaf-list leaf-list-leafref {
+                type leafref {
+                    path "../target-leaf";
+                }
+            }
+            leaf target-leaf {
+                type string {
+
+                }
+            }
+        }
+}
