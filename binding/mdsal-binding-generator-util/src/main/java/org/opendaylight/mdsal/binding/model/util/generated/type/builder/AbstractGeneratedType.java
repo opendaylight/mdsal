@@ -9,8 +9,10 @@ package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
@@ -90,6 +92,17 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         }
     }
 
+    protected static <T> Set<T> makeUnmodifiable(final Set<T> set) {
+        switch (set.size()) {
+            case 0:
+                return Collections.emptySet();
+            case 1:
+                return Collections.singleton(set.iterator().next());
+            default:
+                return Collections.unmodifiableSet(set);
+        }
+    }
+
     private static List<GeneratedType> toUnmodifiableEnclosedTypes(
             final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
             final List<GeneratedTOBuilder> enclosedGenTOBuilders) {
@@ -122,6 +135,14 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     protected final List<MethodSignature> toUnmodifiableMethods(final List<MethodSignatureBuilder> methodBuilders) {
         final List<MethodSignature> methods = new ArrayList<>(methodBuilders.size());
         for (final MethodSignatureBuilder methodBuilder : methodBuilders) {
+            methods.add(methodBuilder.toInstance(this));
+        }
+        return makeUnmodifiable(methods);
+    }
+
+    protected final Set<MethodSignature> toUnmodifiableMethods(final Set<MethodSignatureBuilder> getters) {
+        final Set<MethodSignature> methods = new HashSet<>(getters.size());
+        for (final MethodSignatureBuilder methodBuilder : getters) {
             methods.add(methodBuilder.toInstance(this));
         }
         return makeUnmodifiable(methods);
