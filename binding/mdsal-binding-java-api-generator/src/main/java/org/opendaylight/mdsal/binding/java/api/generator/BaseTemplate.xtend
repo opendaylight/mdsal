@@ -102,20 +102,6 @@ abstract class BaseTemplate extends JavaFileTemplate {
         "_" + property.name
     }
 
-    final protected static def propertyNameFromGetter(MethodSignature getter) {
-        var String prefix;
-        if (getter.name.startsWith(BindingMapping.BOOLEAN_GETTER_PREFIX)) {
-            prefix = BindingMapping.BOOLEAN_GETTER_PREFIX
-        } else if (getter.name.startsWith(BindingMapping.GETTER_PREFIX)) {
-            prefix = BindingMapping.GETTER_PREFIX
-        } else if (getter.name.startsWith(BindingMapping.NONNULL_PREFIX)) {
-            prefix = BindingMapping.NONNULL_PREFIX
-        } else {
-            throw new IllegalArgumentException(getter + " is not a getter")
-        }
-        return getter.name.substring(prefix.length).toFirstLower;
-    }
-
     /**
      * Template method which generates the getter method for <code>field</code>
      *
@@ -134,10 +120,16 @@ abstract class BaseTemplate extends JavaFileTemplate {
         }
     '''
 
-    final protected def getterMethodName(GeneratedProperty field) {
-        val prefix = if(field.returnType.equals(Types.BOOLEAN)) "is" else "get"
-        return '''«prefix»«field.name.toFirstUpper»'''
+    final protected def getterMethodName(GeneratedProperty field) '''«getterMethodName(field.name, field.returnType)»'''
+
+    final protected def getterMethodName(String fieldName, Type returnType) '''«getterMethodName(fieldName, returnType.equals(Types.BOOLEAN))»'''
+
+    final protected def getterMethodName(String fieldName, boolean isBoolean) {
+        val prefix = if(isBoolean) "is" else "get"
+        return '''«prefix»«fieldName.toFirstUpper»'''
     }
+
+    final protected def commonGetterMethodName(GeneratedProperty field) '''«getterMethodName(field.name, false)»'''
 
     /**
      * Template method which generates the setter method for <code>field</code>
