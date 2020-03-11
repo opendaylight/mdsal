@@ -235,6 +235,9 @@ class InterfaceTemplate extends BaseTemplate {
         return '''
             «accessorJavadoc(method, "{@code null}")»
             «method.annotations.generateAnnotations»
+             «IF type.specifiedGetters.contains(method) && !Types.isBooleanType(method.returnType)»
+                 @«OVERRIDE.importedName»
+             «ENDIF»
             «method.returnType.nullableType» «method.name»();
         '''
     }

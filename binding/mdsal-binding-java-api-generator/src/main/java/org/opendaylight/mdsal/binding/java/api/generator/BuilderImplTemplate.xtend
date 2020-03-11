@@ -46,7 +46,7 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
 
             «generateCopyConstructor(builderType, type)»
 
-            «generateGetters(true)»
+            «generateGetters()»
 
             «generateHashCode()»
 
@@ -59,6 +59,39 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
     override generateDeprecatedAnnotation(AnnotationType ann) {
         return generateAnnotation(ann)
     }
+
+    def private generateGetters() '''
+        «IF keyType !== null»
+            @«OVERRIDE.importedName»
+            public «keyType.importedName» «BindingMapping.IDENTIFIABLE_KEY_NAME»() {
+                return key;
+            }
+
+        «ENDIF»
+        «IF !properties.empty»
+            «FOR field : properties SEPARATOR '\n'»
+                «field.getterMethod»
+            «ENDFOR»
+        «ENDIF»
+    '''
+
+    override getterMethod(GeneratedProperty field) '''
+        @«OVERRIDE.importedName»
+        public «field.returnType.importedName» «field.getterMethodName»() {
+            «val fieldName = field.fieldName»
+            «IF field.returnType.name.endsWith("[]")»
+            return «fieldName» == null ? null : «fieldName».clone();
+            «ELSE»
+            return «fieldName»;
+            «ENDIF»
+        }
+        «IF Types.isBooleanType(field.returnType)»
+        @«OVERRIDE.importedName»
+        public «field.returnType.importedName» «field.commonGetterMethodName»() {
+            return «field.fieldName»;
+        }
+        «ENDIF»
+    '''
 
     /**
      * Template method which generates the method <code>hashCode()</code>.

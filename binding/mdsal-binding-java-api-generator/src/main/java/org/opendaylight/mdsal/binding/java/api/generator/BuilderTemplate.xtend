@@ -14,17 +14,20 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTA
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
 import com.google.common.collect.ImmutableList
+import com.google.common.collect.Sets
 import java.util.ArrayList
 import java.util.Collection
 import java.util.HashSet
 import java.util.List
 import java.util.Map
+import java.util.Optional
 import java.util.Set
 import org.opendaylight.mdsal.binding.model.api.AnnotationType
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName
+import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
@@ -139,11 +142,27 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             «val ifc = implementedIfc as GeneratedType»
             «FOR getter : ifc.nonDefaultMethods»
                 «IF BindingMapping.isGetterMethodName(getter.name)»
-                    this._«getter.propertyNameFromGetter» = arg.«getter.name»();
+                    «val propertyName = getter.propertyNameFromGetter»
+                    this._«propertyName» = «addCast(getter, '''arg.«getter.name»()''', propertyName)»;
                 «ENDIF»
             «ENDFOR»
             «FOR impl : ifc.implements»
-                «printConstructorPropertySetter(impl)»
+                «printConstructorPropertySetter(impl, ifc.specifiedGetters)»
+            «ENDFOR»
+        «ENDIF»
+    '''
+
+    def private Object printConstructorPropertySetter(Type implementedIfc, Set<MethodSignature> alreadySetProperties) '''
+        «IF (implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))»
+            «val ifc = implementedIfc as GeneratedType»
+            «FOR getter : ifc.nonDefaultMethods»
+                «IF BindingMapping.isGetterMethodName(getter.name) && getterByName(alreadySetProperties, getter.name).isEmpty»
+                    «val propertyName = getter.propertyNameFromGetter»
+                    this._«propertyName» = «addCast(getter, '''arg.«getter.name»()''', propertyName)»;
+                «ENDIF»
+            «ENDFOR»
+            «FOR impl : ifc.implements»
+                «printConstructorPropertySetter(impl, Sets.union(alreadySetProperties, ifc.specifiedGetters))»
             «ENDFOR»
         «ENDIF»
     '''
@@ -177,7 +196,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
          * </ul>
          *
          * @param arg grouping object
-         * @throws IllegalArgumentException if given argument is none of valid types
+         * @throws IllegalArgumentException if given argument is none of valid types or has property with incompatible value
         */
     '''
 
@@ -208,12 +227,63 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «IF (implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))»
         «val ifc = implementedIfc as GeneratedType»
         «FOR getter : ifc.nonDefaultMethods»
-            «IF BindingMapping.isGetterMethodName(getter.name)»
-                this._«getter.propertyNameFromGetter» = ((«implementedIfc.fullyQualifiedName»)arg).«getter.name»();
+            «IF BindingMapping.isGetterMethodName(getter.name) && !ifc.specifiedGetters.contains(getter)»
+                «val propertyName = getter.propertyNameFromGetter»
+                «val getterCall = '''((«ifc.fullyQualifiedName»)arg).«getter.name»()'''»
+                «IF BindingMapping.isGetterMethodName(getter.name)»
+                    this._«propertyName» = «addCast(getter, getterCall, propertyName)»;
+                «ENDIF»
             «ENDIF»
         «ENDFOR»
         «ENDIF»
     '''
+
+    def private addCast(MethodSignature getter, String retrieveProperty, String propertyName) {
+        val ownGetter = findGetterInEnclosedType(getter.name);
+        if (!Types.strictTypeEquals(getter.returnType, ownGetter.returnType)) {
+            return checkFieldCast(ownGetter, retrieveProperty, propertyName)
+        }
+        return retrieveProperty
+    }
+
+    protected def findGetterInEnclosedType(String getterName) {
+        val implType = type.enclosedTypes.get(0)
+        val ownGetter = getterByName(implType.nonDefaultMethods, getterName);
+        if (ownGetter.isPresent) {
+            return ownGetter.get;
+        }
+        for (ifc : implType.implements) {
+            if (ifc instanceof GeneratedType) {
+                val getter = findGetter(ifc as GeneratedType, getterName)
+                if (getter.isPresent) {
+                    return (getter.get)
+                }
+            }
+        }
+        throw new IllegalStateException(
+                String.format("%s should be present in %s type or in one of its ancestors as getter",
+                        getterName.propertyNameFromGetter, implType));
+    }
+
+    private def Optional<MethodSignature> findGetter(GeneratedType implType, String getterName) {
+        val getter = getterByName(implType.nonDefaultMethods, getterName);
+        if (getter.isPresent) {
+            return getter;
+        }
+        for (ifc : implType.implements) {
+            if (ifc instanceof GeneratedType) {
+                val getterImpl = findGetter(ifc as GeneratedType, getterName)
+                if (getterImpl.isPresent) {
+                    return (getterImpl)
+                }
+            }
+        }
+        return Optional.empty
+    }
+
+    def private checkFieldCast(MethodSignature getter, String retrieveProperty, String propertyName) '''
+        «CODEHELPERS.importedName».checkFieldCast(«getter.returnType.fullyQualifiedName».class, «retrieveProperty», "«propertyName»")'''
+
 
     private def List<Type> getBaseIfcs(GeneratedType type) {
         val List<Type> baseIfcs = new ArrayList();

@@ -324,7 +324,7 @@ public final class CompilationTestUtils {
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
         List<File> filesList = getJavaFiles(sourcesOutputDir);
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(filesList);
-        Iterable<String> options = Arrays.asList("-d", compiledOutputDir.getAbsolutePath());
+        Iterable<String> options = Arrays.asList("-d", compiledOutputDir.getAbsolutePath(), "-Xlint:unchecked");
 
         List<Diagnostic<?>> diags = new ArrayList<>();
         boolean compiled = compiler.getTask(null, null, diags::add, options, null, compilationUnits).call();
