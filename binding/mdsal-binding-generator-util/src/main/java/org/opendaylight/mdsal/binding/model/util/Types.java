@@ -28,9 +28,11 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
+import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.BaseTypeWithRestrictions;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -51,12 +53,13 @@ public final class Types {
             CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
 
     public static final @NonNull ConcreteType BOOLEAN = typeForClass(Boolean.class);
-    public static final @NonNull ConcreteType STRING = typeForClass(String.class);
-    public static final @NonNull ConcreteType VOID = typeForClass(Void.class);
+    public static final @NonNull ConcreteType BUILDER = typeForClass(Builder.class);
     public static final @NonNull ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
     public static final @NonNull ConcreteType CLASS = typeForClass(Class.class);
+    public static final @NonNull ConcreteType STRING = typeForClass(String.class);
+    public static final @NonNull ConcreteType VOID = typeForClass(Void.class);
+    public static final @NonNull JavaTypeName OVERRIDE_ANNOTATION = JavaTypeName.create(Override.class);
 
-    private static final @NonNull ConcreteType BUILDER = typeForClass(Builder.class);
     private static final @NonNull ConcreteType LIST_TYPE = typeForClass(List.class);
     private static final @NonNull ConcreteType LISTENABLE_FUTURE = typeForClass(ListenableFuture.class);
     private static final @NonNull ConcreteType MAP_TYPE = typeForClass(Map.class);
@@ -66,6 +69,7 @@ public final class Types {
     private static final @NonNull ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
     private static final @NonNull ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
     private static final @NonNull ConcreteType SET_TYPE = typeForClass(Set.class);
+    private static final @NonNull ParameterizedType LIST_TYPE_WILDCARD = parameterizedTypeFor(LIST_TYPE);
 
     /**
      * It is not desirable to create instance of this class.
@@ -206,6 +210,10 @@ public final class Types {
         return parameterizedTypeFor(LIST_TYPE, valueType);
     }
 
+    public static @NonNull ParameterizedType listTypeWildcard() {
+        return LIST_TYPE_WILDCARD;
+    }
+
     public static boolean isListType(final ParameterizedType type) {
         return LIST_TYPE.equals(type.getRawType());
     }
@@ -256,6 +264,31 @@ public final class Types {
      */
     public static WildcardType wildcardTypeFor(final JavaTypeName identifier) {
         return new WildcardTypeImpl(identifier);
+    }
+
+    public static boolean strictTypeEquals(final Type type1, final Type type2) {
+        if (!type1.equals(type2)) {
+            return false;
+        }
+        if (type1 instanceof ParameterizedType) {
+            if (type2 instanceof ParameterizedType) {
+                return strictParameterizedTypeEquals((ParameterizedType)type1, (ParameterizedType)type2);
+            } else {
+                return false;
+            }
+        }
+        return !(type2 instanceof ParameterizedType);
+    }
+
+    public static boolean strictParameterizedTypeEquals(final ParameterizedType type1, final ParameterizedType type2) {
+        if (!type1.equals(type2)) {
+            return false;
+        }
+        return Arrays.equals(type1.getActualTypeArguments(), type2.getActualTypeArguments());
+    }
+
+    public static boolean isBooleanType(final Type type) {
+        return BOOLEAN.equals(type);
     }
 
     public static @Nullable String getOuterClassName(final Type valueType) {
@@ -431,5 +464,14 @@ public final class Types {
         public RangeSet<T> getAllowedRanges() {
             return ImmutableRangeSet.of(Range.closed(min, max));
         }
+    }
+
+    public static boolean isSpecifiedGetter(final MethodSignature method) {
+        for (final AnnotationType annotation : method.getAnnotations()) {
+            if (annotation.getIdentifier().equals(OVERRIDE_ANNOTATION)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
