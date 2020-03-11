@@ -14,6 +14,10 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class FileSearchUtil {
+    private FileSearchUtil(){
+
+    }
+
     static boolean findInFile(final File file, final String searchText) throws FileNotFoundException {
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
