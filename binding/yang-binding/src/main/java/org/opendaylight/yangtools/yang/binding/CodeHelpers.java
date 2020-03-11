@@ -395,6 +395,27 @@ public final class CodeHelpers {
     }
 
     /**
+     * Utility method for checking whether a target object is a compatible.
+     *
+     * @param requiredClass Required class
+     * @param obj           Object to check, may be null
+     * @return              Object cast to required class, if its class matches requirement,
+     *                      throws {@link IllegalArgumentException} otherwise
+     * @throws NullPointerException if {@code requiredClass} is null
+     * @throws IllegalArgumentException if obj is not instance of {@code requiredClass}
+     */
+    public static <T> @Nullable T checkFieldCast(final @NonNull Class<T> requiredClass,
+            final @Nullable Object obj, final @NonNull String fieldName) {
+        if (obj == null) {
+            return null;
+        }
+        checkArgument(obj.getClass().isAssignableFrom(requiredClass),
+                "Input value class({}) for {} property should be compatible with {}", obj.getClass(), fieldName,
+                requiredClass);
+        return requiredClass.cast(obj);
+    }
+
+    /**
      * The constant '31' is the result of folding this code:
      * <pre>
      *     final int prime = 31;
