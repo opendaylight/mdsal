@@ -532,6 +532,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         if (xpath.isAbsolute()) {
             dataNode = findDataTreeSchemaNode(schemaContext, module.getQNameModule(), xpath);
         } else {
+            if (parentNode instanceof LeafSchemaNode && ((LeafSchemaNode)parentNode).isAddedByUses()) {
+                final SchemaNode original = SchemaContextUtil.findDataSchemaNode(schemaContext,
+                        leafrefType.getPath().getParent());
+                return provideTypeForLeafref(leafrefType, original, true);
+            }
             dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
             if (dataNode == null && inGrouping) {
                 // Relative path within a grouping may end up being unresolvable because it may refer outside
