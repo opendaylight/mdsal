@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.java.api.generator;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
+import static org.eclipse.xtext.xbase.lib.StringExtensions.toFirstLower;
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME;
 
 import com.google.common.collect.ImmutableSortedSet;
@@ -29,7 +30,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
@@ -44,7 +44,6 @@ import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.CodeHelpers;
-
 
 /**
  * Base Java file template. Contains a non-null type and imports which the generated code refers to.
@@ -283,7 +282,7 @@ class JavaFileTemplate {
         for (Type implementedIfc : implementedIfcs) {
             if (implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject)) {
                 final GeneratedType ifc = (GeneratedType) implementedIfc;
-                methods.addAll(ifc.getMethodDefinitions());
+                addImplMethods(methods, ifc);
 
                 final ParameterizedType t = collectImplementedMethods(type, methods, ifc.getImplements());
                 if (t != null && augmentType == null) {
@@ -295,6 +294,56 @@ class JavaFileTemplate {
         }
 
         return augmentType;
+    }
+
+    private static void addImplMethods(final Set<MethodSignature> methods, final GeneratedType implType) {
+        for (final MethodSignature implMethod : implType.getMethodDefinitions()) {
+            if (implType.getSpecifiedGetters().contains(implMethod)) {
+                methods.add(implMethod);
+            } else {
+                final String implMethodName = implMethod.getName();
+                if (BindingMapping.isGetterMethodName(implMethodName)
+                        && getterByName(methods, implMethodName).isEmpty()) {
+
+                    methods.add(implMethod);
+                }
+            }
+        }
+    }
+
+    protected static Optional<MethodSignature> getterByName(final Iterable<MethodSignature> methods,
+            final String implMethodName) {
+        for (MethodSignature method : methods) {
+            final String methodName = method.getName();
+            if (BindingMapping.isGetterMethodName(methodName)) {
+                if (isSameProperty(method.getName(), implMethodName)) {
+                    return Optional.of(method);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    protected static String propertyNameFromGetter(MethodSignature getter) {
+        return propertyNameFromGetter(getter.getName());
+    }
+
+    protected static String propertyNameFromGetter(final String getterName) {
+        String prefix;
+        if (getterName.startsWith(BindingMapping.BOOLEAN_GETTER_PREFIX)) {
+            prefix = BindingMapping.BOOLEAN_GETTER_PREFIX;
+        } else if (getterName.startsWith(BindingMapping.GETTER_PREFIX)) {
+            prefix = BindingMapping.GETTER_PREFIX;
+        } else if (getterName.startsWith(BindingMapping.NONNULL_PREFIX)) {
+            prefix = BindingMapping.NONNULL_PREFIX;
+        } else {
+            throw new IllegalArgumentException(getterName + " is not a getter name");
+        }
+        return toFirstLower(getterName.substring(prefix.length()));
+    }
+
+    private static boolean isSameProperty(final String getterName1, final String getterName2) {
+        return propertyNameFromGetter(getterName1).equals((propertyNameFromGetter(getterName2)));
     }
 
     /**
@@ -337,12 +386,12 @@ class JavaFileTemplate {
         if (method.isDefault()) {
             return null;
         }
-        final String prefix = BindingMapping.getGetterPrefix(Types.BOOLEAN.equals(method.getReturnType()));
+        final String prefix = BindingMapping.getGetterPrefix(Types.isBooleanType(method.getReturnType()));
         if (!method.getName().startsWith(prefix)) {
             return null;
         }
 
-        final String fieldName = StringExtensions.toFirstLower(method.getName().substring(prefix.length()));
+        final String fieldName = toFirstLower(method.getName().substring(prefix.length()));
         return new BuilderGeneratedProperty(fieldName, method);
     }
 }

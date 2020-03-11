@@ -13,10 +13,12 @@ import static java.util.Objects.requireNonNull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
@@ -27,6 +29,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.model.util.LazySets;
 import org.opendaylight.yangtools.util.LazyCollections;
 
 abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T>> extends AbstractBaseType
@@ -37,6 +40,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     private List<EnumBuilder> enumDefinitions = Collections.emptyList();
     private List<Constant> constants = Collections.emptyList();
     private List<MethodSignatureBuilder> methodDefinitions = Collections.emptyList();
+    private Set<MethodSignatureBuilder> specifiedGetters = Collections.emptySet();
     private final List<GeneratedTypeBuilder> enclosedTypes = Collections.emptyList();
     private List<GeneratedTOBuilder> enclosedTransferObjects = Collections.emptyList();
     private List<GeneratedPropertyBuilder> properties = Collections.emptyList();
@@ -77,6 +81,11 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     @Override
     public List<MethodSignatureBuilder> getMethodDefinitions() {
         return this.methodDefinitions;
+    }
+
+    @Override
+    public Set<MethodSignatureBuilder> getSpecifiedGetters() {
+        return this.specifiedGetters;
     }
 
     protected List<GeneratedTypeBuilder> getEnclosedTypes() {
@@ -186,6 +195,12 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         this.methodDefinitions = LazyCollections.lazyAdd(this.methodDefinitions, builder);
         return builder;
     }
+
+    @Override
+    public void addSpecifiedGetter(final MethodSignatureBuilder getter) {
+        this.specifiedGetters = LazySets.lazyAdd(this.specifiedGetters, getter);
+    }
+
 
     @Override
     public boolean containsMethod(final String name) {

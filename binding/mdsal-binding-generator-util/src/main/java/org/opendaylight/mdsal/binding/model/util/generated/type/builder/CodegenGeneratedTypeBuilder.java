@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
+import java.util.Set;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;

@@ -221,7 +221,11 @@ public final class BindingMapping {
     }
 
     public static @NonNull String getGetterMethodName(final String localName, final boolean isBoolean) {
-        return getGetterPrefix(isBoolean) + toFirstUpper(getPropertyName(localName));
+        return getGetterPrefix(isBoolean) + getGetterRoot(localName);
+    }
+
+    public static @NonNull String getGetterRoot(final String localName) {
+        return toFirstUpper(getPropertyName(localName));
     }
 
     public static @NonNull String getGetterMethodName(final QName name, final boolean isBoolean) {

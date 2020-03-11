@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.model.api;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Every Java interface has to be specified with:
@@ -93,6 +94,15 @@ public interface GeneratedType extends Type, DocumentedType {
      * @return List of Method Definitions associated with Generated Type.
      */
     List<MethodSignature> getMethodDefinitions();
+
+    /**
+     * Returns Set of Method Definitions which overridden corresponding getters signature of implemented Generated
+     * Types.
+     *
+     * @return Set of Method Definitions which overridden corresponding getters signature of implemented Generated
+     * Types.
+     */
+    Set<MethodSignature> getSpecifiedGetters();
 
     /**
      * Returns List of Properties that are declared for Generated Transfer Object.
