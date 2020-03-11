@@ -13,12 +13,15 @@ import java.util.ArrayList
 import java.util.Collection
 import java.util.Collections
 import java.util.Comparator
+import java.util.HashMap
 import java.util.List
+import java.util.Map;
 import java.util.Set
 import org.opendaylight.mdsal.binding.model.api.AnnotationType
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
+import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.util.BindingTypes
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping
@@ -35,6 +38,11 @@ abstract class AbstractBuilderTemplate extends BaseTemplate {
      * Set of class attributes (fields) which are derived from the getter methods names.
      */
     protected val Set<BuilderGeneratedProperty> properties
+
+   /**
+    * Map of method signatures, which methods override return type
+    */
+    protected val Map<String, MethodSignature> gettersSpecified = new HashMap
 
     /**
      * GeneratedType for key type, null if this type does not have a key.
@@ -57,7 +65,7 @@ abstract class AbstractBuilderTemplate extends BaseTemplate {
         this.targetType = targetType
         this.keyType = keyType
 
-        val analysis = analyzeTypeHierarchy(targetType)
+        val analysis = analyzeTypeHierarchy(targetType, gettersSpecified)
         augmentType = analysis.key
         properties = analysis.value
     }
