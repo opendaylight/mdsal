@@ -9,8 +9,10 @@ package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
@@ -38,6 +40,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     private final List<Enumeration> enumerations;
     private final List<Constant> constants;
     private final List<MethodSignature> methodSignatures;
+    private final Set<MethodSignature> specifiedGetters;
     private final List<GeneratedType> enclosedTypes;
     private final List<GeneratedProperty> properties;
     private final boolean isAbstract;
@@ -52,6 +55,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         this.constants = makeUnmodifiable(builder.getConstants());
         this.enumerations = toUnmodifiableEnumerations(builder.getEnumerations());
         this.methodSignatures = toUnmodifiableMethods(builder.getMethodDefinitions());
+        this.specifiedGetters = toUnmodifiableMethods(builder.getSpecifiedGetters());
         this.enclosedTypes = toUnmodifiableEnclosedTypes(builder.getEnclosedTypes(),
                 builder.getEnclosedTransferObjects());
         this.properties = toUnmodifiableProperties(builder.getProperties());
@@ -64,6 +68,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
             final List<Type> implementsTypes, final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
             final List<GeneratedTOBuilder> enclosedGenTOBuilders, final List<EnumBuilder> enumBuilders,
             final List<Constant> constants, final List<MethodSignatureBuilder> methodBuilders,
+            final Set<MethodSignatureBuilder> getterBuilders,
             final List<GeneratedPropertyBuilder> propertyBuilders) {
         super(identifier);
         this.parent = parent;
@@ -73,6 +78,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         this.constants = makeUnmodifiable(constants);
         this.enumerations = toUnmodifiableEnumerations(enumBuilders);
         this.methodSignatures = toUnmodifiableMethods(methodBuilders);
+        this.specifiedGetters = toUnmodifiableMethods(getterBuilders);
         this.enclosedTypes = toUnmodifiableEnclosedTypes(enclosedGenTypeBuilders, enclosedGenTOBuilders);
         this.properties = toUnmodifiableProperties(propertyBuilders);
         this.isAbstract = isAbstract;
@@ -87,6 +93,17 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
                 return Collections.singletonList(list.get(0));
             default:
                 return Collections.unmodifiableList(list);
+        }
+    }
+
+    protected static <T> Set<T> makeUnmodifiable(final Set<T> set) {
+        switch (set.size()) {
+            case 0:
+                return Collections.emptySet();
+            case 1:
+                return Collections.singleton(set.iterator().next());
+            default:
+                return Collections.unmodifiableSet(set);
         }
     }
 
@@ -122,6 +139,14 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     protected final List<MethodSignature> toUnmodifiableMethods(final List<MethodSignatureBuilder> methodBuilders) {
         final List<MethodSignature> methods = new ArrayList<>(methodBuilders.size());
         for (final MethodSignatureBuilder methodBuilder : methodBuilders) {
+            methods.add(methodBuilder.toInstance(this));
+        }
+        return makeUnmodifiable(methods);
+    }
+
+    protected final Set<MethodSignature> toUnmodifiableMethods(final Set<MethodSignatureBuilder> getters) {
+        final Set<MethodSignature> methods = new HashSet<>(getters.size());
+        for (final MethodSignatureBuilder methodBuilder : getters) {
             methods.add(methodBuilder.toInstance(this));
         }
         return makeUnmodifiable(methods);
@@ -187,6 +212,11 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     @Override
     public final List<MethodSignature> getMethodDefinitions() {
         return this.methodSignatures;
+    }
+
+    @Override
+    public final Set<MethodSignature> getSpecifiedGetters() {
+        return this.specifiedGetters;
     }
 
     @Override
