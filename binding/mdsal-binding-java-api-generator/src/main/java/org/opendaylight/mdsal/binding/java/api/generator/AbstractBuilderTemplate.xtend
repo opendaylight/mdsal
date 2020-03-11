@@ -9,16 +9,19 @@ package org.opendaylight.mdsal.binding.java.api.generator
 
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
 
+import com.google.common.collect.Maps
 import java.util.ArrayList
 import java.util.Collection
 import java.util.Collections
 import java.util.Comparator
 import java.util.List
+import java.util.Map;
 import java.util.Set
 import org.opendaylight.mdsal.binding.model.api.AnnotationType
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
+import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.util.BindingTypes
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping
@@ -36,6 +39,11 @@ abstract class AbstractBuilderTemplate extends BaseTemplate {
      */
     protected val Set<BuilderGeneratedProperty> properties
 
+   /**
+    * Map of method signatures, which methods override return type
+    */
+    protected val Map<String, MethodSignature> gettersSpecified
+
     /**
      * GeneratedType for key type, null if this type does not have a key.
      */
@@ -48,6 +56,7 @@ abstract class AbstractBuilderTemplate extends BaseTemplate {
         super(javaType, type)
         this.targetType = targetType
         this.properties = properties
+        this.gettersSpecified = Maps.newHashMap
         this.augmentType = augmentType
         this.keyType = keyType
     }
@@ -57,7 +66,8 @@ abstract class AbstractBuilderTemplate extends BaseTemplate {
         this.targetType = targetType
         this.keyType = keyType
 
-        val analysis = analyzeTypeHierarchy(targetType)
+        this.gettersSpecified = Maps.newHashMap
+        val analysis = analyzeTypeHierarchy(targetType, gettersSpecified)
         augmentType = analysis.key
         properties = analysis.value
     }
