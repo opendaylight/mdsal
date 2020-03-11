@@ -489,4 +489,8 @@ abstract class BaseTemplate extends JavaFileTemplate {
         )
         «ENDIF»
     '''
+
+     static def nonDefaultMethods(GeneratedType type) {
+        type.methodDefinitions.filter([def | !def.isDefault])
+    }
 }
