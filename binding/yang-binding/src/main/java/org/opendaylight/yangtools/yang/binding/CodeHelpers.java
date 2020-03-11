@@ -332,7 +332,7 @@ public final class CodeHelpers {
      */
     @Deprecated
     public static @Nullable Uint8 compatUint(final @Nullable Short value) {
-        return value == null ? null : Uint8.valueOf(value.shortValue());
+        return value == null ? null : Uint8.valueOf(value);
     }
 
     /**
@@ -347,7 +347,7 @@ public final class CodeHelpers {
      */
     @Deprecated
     public static @Nullable Uint16 compatUint(final @Nullable Integer value) {
-        return value == null ? null : Uint16.valueOf(value.intValue());
+        return value == null ? null : Uint16.valueOf(value);
     }
 
     /**
@@ -362,7 +362,7 @@ public final class CodeHelpers {
      */
     @Deprecated
     public static @Nullable Uint32 compatUint(final @Nullable Long value) {
-        return value == null ? null : Uint32.valueOf(value.longValue());
+        return value == null ? null : Uint32.valueOf(value);
     }
 
     /**
@@ -378,6 +378,62 @@ public final class CodeHelpers {
     @Deprecated
     public static @Nullable Uint64 compatUint(final @Nullable BigInteger value) {
         return value == null ? null : Uint64.valueOf(value);
+    }
+
+    /**
+     * Utility method for checking whether a target object is a compatible DataObject.
+     *
+     * @param requiredClass Required DataObject class
+     * @param obj Object to check, may be null
+     * @return Object cast to required class, if its implemented class matches requirement, null otherwise
+     * @throws NullPointerException if {@code requiredClass} is null
+     */
+    public static <T extends DataObject> @Nullable T checkCast(final @NonNull Class<T> requiredClass,
+            final @Nullable Object obj) {
+        return obj instanceof DataObject && requiredClass.equals(((DataObject) obj).implementedInterface())
+            ? requiredClass.cast(obj) : null;
+    }
+
+    /**
+     * Utility method for checking whether a target object is compatible.
+     *
+     * @param requiredClass Required class
+     * @param fieldName name of the field being filled
+     * @param obj Object to check, may be null
+     * @return Object cast to required class, if its class matches requirement, or null
+     * @throws IllegalArgumentException if {@code obj} is not an instance of {@code requiredClass}
+     * @throws NullPointerException if {@code requiredClass} or {@code fieldName} is null
+     */
+    public static <T> @Nullable T checkFieldCast(final @NonNull Class<T> requiredClass, final @NonNull String fieldName,
+            final @Nullable Object obj) {
+        try {
+            return requiredClass.cast(obj);
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException("Invalid input value for property \"" + fieldName + "\"", e);
+        }
+    }
+
+    /**
+     * Utility method for checking whether the items of target list is compatible.
+     *
+     * @param requiredClass Required item class
+     * @param fieldName name of the field being filled
+     * @param list List, which items should be checked
+     * @throws IllegalArgumentException if a list item is not instance of {@code requiredItemClass}
+     * @throws NullPointerException if {@code requiredClass} or {@code fieldName} is null
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> @Nullable List<T> checkListFieldCast(final @NonNull Class<?> requiredClass,
+            final @NonNull String fieldName, final @Nullable List<?> list) {
+        if (list != null) {
+            try {
+                list.forEach(item -> requiredClass.cast(requireNonNull(item)));
+            } catch (ClassCastException | NullPointerException e) {
+                throw new IllegalArgumentException("Invalid input list item for property \"" + requireNonNull(fieldName)
+                    + "\"", e);
+            }
+        }
+        return (List<T>) list;
     }
 
     /**
