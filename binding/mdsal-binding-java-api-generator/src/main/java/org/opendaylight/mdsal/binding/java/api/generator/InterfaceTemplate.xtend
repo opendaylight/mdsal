@@ -107,6 +107,17 @@ class InterfaceTemplate extends BaseTemplate {
         «ENDIF»
     '''
 
+    def private generateAccessorAnnotations(MethodSignature method) '''
+         «val annotations = method.annotations»
+         «IF annotations !== null && !annotations.empty»
+             «FOR annotation : annotations»
+                  «IF method.returnType != Types.BOOLEAN || !(annotation.identifier == OVERRIDE)»
+                      «annotation.generateAnnotation»
+                  «ENDIF»
+             «ENDFOR»
+        «ENDIF»
+    '''
+
     /**
      * Template method which generates the interface name declaration.
      *
@@ -245,7 +256,7 @@ class InterfaceTemplate extends BaseTemplate {
     def private generateAccessorMethod(MethodSignature method) {
         return '''
             «accessorJavadoc(method, "{@code null}")»
-            «method.annotations.generateAnnotations»
+            «method.generateAccessorAnnotations»
             «method.returnType.nullableType» «method.name»();
         '''
     }
