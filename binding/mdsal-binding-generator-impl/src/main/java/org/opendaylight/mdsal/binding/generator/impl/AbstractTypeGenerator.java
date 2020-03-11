@@ -1100,8 +1100,13 @@ abstract class AbstractTypeGenerator {
         if (schemaNodes != null && parent != null) {
             final Type baseInterface = childOf == null ? DATA_OBJECT : childOf(childOf);
             for (final DataSchemaNode schemaNode : schemaNodes) {
-                if (!schemaNode.isAugmenting() && !schemaNode.isAddedByUses()) {
-                    addSchemaNodeToBuilderAsMethod(context, schemaNode, parent, baseInterface, inGrouping);
+                if (!schemaNode.isAugmenting()) {
+                    // add the node if it's not added by uses or the node type is leafref
+                    if (!schemaNode.isAddedByUses()
+                        || (schemaNode instanceof TypedDataSchemaNode
+                            && ((TypedDataSchemaNode)schemaNode).getType() instanceof LeafrefTypeDefinition)) {
+                        addSchemaNodeToBuilderAsMethod(context, schemaNode, parent, baseInterface, inGrouping);
+                    }
                 }
             }
         }
@@ -1415,7 +1420,7 @@ abstract class AbstractTypeGenerator {
      */
     private Type resolveLeafSchemaNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
             final ModuleContext context, final boolean inGrouping) {
-        if (leaf == null || typeBuilder == null || leaf.isAddedByUses()) {
+        if (leaf == null || typeBuilder == null) {
             return null;
         }
 
@@ -1423,6 +1428,11 @@ abstract class AbstractTypeGenerator {
         Type returnType = null;
 
         final TypeDefinition<?> typeDef = CompatUtils.compatType(leaf);
+
+        if (leaf.isAddedByUses() && !(typeDef instanceof LeafrefTypeDefinition)) {
+            return null;
+        }
+
         if (isInnerType(leaf, typeDef)) {
             if (typeDef instanceof EnumTypeDefinition) {
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
