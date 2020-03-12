@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ef7b7dab_de036b0f",
+        "filename": "binding/mdsal-binding-generator-impl/src/test/resources/mdsal-531/bar.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 8125
+      },
+      "writtenOn": "2020-03-12T10:50:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "456589cd_5b59dc2b",
+      "revId": "3d81fb14658d8e8bad0b64635fc7db30086ef54c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dc8a9eef_971415d1",
         "filename": "binding/mdsal-binding-generator-impl/src/test/resources/mdsal-531/bar.yang",
         "patchSetId": 2
@@ -39,6 +57,30 @@
       "revId": "3d81fb14658d8e8bad0b64635fc7db30086ef54c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9df24f35_e23a3469",
+        "filename": "binding/mdsal-binding-generator-impl/src/test/resources/mdsal-531/bar.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 8125
+      },
+      "writtenOn": "2020-03-12T10:50:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dc8a9eef_971415d1",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 2
+      },
+      "revId": "3d81fb14658d8e8bad0b64635fc7db30086ef54c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
