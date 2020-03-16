@@ -15,7 +15,7 @@ import static org.mockito.Mockito.mock;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
@@ -36,7 +36,7 @@ public class TracingBrokerTest {
     public void testPrintOpenTransactions() {
         DOMDataBroker domDataBroker = mock(DOMDataBroker.class, RETURNS_DEEP_STUBS);
         Config config = new ConfigBuilder().setTransactionDebugContextEnabled(true).build();
-        BindingNormalizedNodeSerializer codec = mock(BindingNormalizedNodeSerializer.class);
+        BindingCodecTree codec = mock(BindingCodecTree.class);
         TracingBroker tracingBroker = new TracingBroker(domDataBroker, config, codec);
 
         for (int i = 0; i < 3; i++) {

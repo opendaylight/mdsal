@@ -16,7 +16,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -102,7 +102,7 @@ public class TracingBroker implements TracingDOMDataBroker {
 
     private static final int STACK_TRACE_FIRST_RELEVANT_FRAME = 2;
 
-    private final BindingNormalizedNodeSerializer codec;
+    private final BindingCodecTree codec;
     private final DOMDataBroker delegate;
     private final List<Watch> registrationWatches = new ArrayList<>();
     private final List<Watch> writeWatches = new ArrayList<>();
@@ -162,8 +162,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         }
     }
 
-    public TracingBroker(final DOMDataBroker delegate, final Config config,
-            final BindingNormalizedNodeSerializer codec) {
+    public TracingBroker(final DOMDataBroker delegate, final Config config, final BindingCodecTree codec) {
         this.delegate = requireNonNull(delegate, "delegate");
         this.codec = requireNonNull(codec, "codec");
         configure(config);
@@ -263,7 +262,7 @@ public class TracingBroker implements TracingDOMDataBroker {
 
 
     private void toPathString(final YangInstanceIdentifier yiid, final StringBuilder sb) {
-        InstanceIdentifier<?> iid = codec.fromYangInstanceIdentifier(yiid);
+        InstanceIdentifier<?> iid = codec.getInstanceIdentifierCodec().toBinding(yiid);
         if (null == iid) {
             reconstructIidPathString(yiid, sb);
         } else {
