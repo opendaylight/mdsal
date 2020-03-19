@@ -34,6 +34,10 @@
         <module>odl-mdsal-binding-dom-adapter</module>
         <module>odl-mdsal-binding-runtime</module>
 
+        <!-- Backup -->
+        <module>odl-mdsal-backup-consumer</module>
+        <module>odl-mdsal-backup-producer</module>
+
         <!-- Common -->
         <module>odl-mdsal-common</module>
 

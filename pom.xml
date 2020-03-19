@@ -34,6 +34,7 @@
         <module>entityownership</module>
         <module>singleton-service</module>
         <module>trace</module>
+        <module>backup</module>
 
         <!-- IETF YANG (Module) Library -->
         <module>yanglib</module>
