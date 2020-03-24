@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.testutils;
 
 import ch.vorburger.xtendbeans.AssertBeans;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.yangtools.test.union.rev150121.LowestLevel2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.yangtools.test.union.rev150121.UnionTestType;
@@ -21,6 +22,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.yangtool
  */
 public class UnionTest {
 
+    // Has random failures based on method order due to https://github.com/vorburger/xtendbeans/pull/33
+    @Ignore
     @Test
     public void testUnionType() {
         AssertBeans.assertEqualByText(

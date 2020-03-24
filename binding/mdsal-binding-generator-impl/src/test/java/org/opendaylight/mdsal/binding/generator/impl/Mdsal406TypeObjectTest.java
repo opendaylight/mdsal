@@ -16,6 +16,8 @@ import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.util.BindingTypes;
+import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
@@ -35,8 +37,8 @@ public class Mdsal406TypeObjectTest {
         assertNotNull(((GeneratedType)  typedefType).getImplements());
         Type objectType = ((GeneratedType)  typedefType).getImplements().stream()
                 .filter(type -> type.getFullyQualifiedName()
-                .equals("org.opendaylight.yangtools.yang.binding.TypeObject")).findAny().get();
-        assertEquals(TYPE_OBJECT, objectType);
+                .equals("org.opendaylight.yangtools.yang.binding.ScalarTypeObject")).findAny().get();
+        assertEquals(BindingTypes.scalarTypeObject(Types.BYTE_ARRAY), objectType);
     }
 
     @Test
