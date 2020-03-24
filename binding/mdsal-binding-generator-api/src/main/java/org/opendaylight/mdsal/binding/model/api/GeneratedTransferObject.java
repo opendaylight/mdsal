@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.model.api;
 
 import java.util.List;
+import java.util.Optional;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
 /**
@@ -71,4 +72,15 @@ public interface GeneratedTransferObject extends GeneratedType {
     boolean isUnionTypeBuilder();
 
     Restrictions getRestrictions();
+
+    default Optional<? extends GeneratedProperty> findProperty(final String name) {
+        final Optional<GeneratedProperty> optProp = getProperties().stream()
+                .filter(prop -> prop.getName().equals(name)).findFirst();
+        if (optProp.isPresent()) {
+            return optProp;
+        }
+
+        final GeneratedTransferObject parent = getSuperType();
+        return parent != null ? parent.findProperty(name) : Optional.empty();
+    }
 }
