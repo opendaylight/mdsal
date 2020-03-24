@@ -38,6 +38,7 @@ import org.opendaylight.yangtools.yang.binding.OpaqueObject;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
+import org.opendaylight.yangtools.yang.binding.ScalarTypeObject;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -80,6 +81,7 @@ public final class BindingTypes {
     private static final ConcreteType KEYED_LIST_NOTIFICATION = typeForClass(KeyedListNotification.class);
     private static final ConcreteType OPAQUE_OBJECT = typeForClass(OpaqueObject.class);
     private static final ConcreteType RPC_RESULT = typeForClass(RpcResult.class);
+    private static final ConcreteType SCALAR_TYPE_OBJECT = typeForClass(ScalarTypeObject.class);
 
     private BindingTypes() {
 
@@ -246,5 +248,16 @@ public final class BindingTypes {
      */
     public static ParameterizedType rpcResult(final Type type) {
         return parameterizedTypeFor(RPC_RESULT, type);
+    }
+
+    /**
+     * Type specializing {@link ScalarTypeObject} for a particular type.
+     *
+     * @param type Type for which to specialize
+     * @return A parameterized type corresponding to {@code ScalarTypeObject<Type>}
+     * @throws NullPointerException if {@code type} is null
+     */
+    public static ParameterizedType scalarTypeObject(final Type type) {
+        return parameterizedTypeFor(SCALAR_TYPE_OBJECT, type);
     }
 }
