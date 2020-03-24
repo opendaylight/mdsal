@@ -862,7 +862,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
         final GeneratedTOBuilder genTOBuilder = typedefToTransferObject(basePackageName, typedef, moduleName);
         genTOBuilder.setRestrictions(BindingGeneratorUtil.getRestrictions(typedef));
-        final GeneratedPropertyBuilder genPropBuilder = genTOBuilder.addProperty("value");
+        final GeneratedPropertyBuilder genPropBuilder = genTOBuilder.addProperty(TypeConstants.VALUE_PROP);
         genPropBuilder.setReturnType(javaType);
         genTOBuilder.addEqualsIdentity(genPropBuilder);
         genTOBuilder.addHashIdentity(genPropBuilder);
@@ -1603,7 +1603,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
     @Override
     public String getConstructorPropertyName(final SchemaNode node) {
-        return node instanceof TypeDefinition<?> ? "value" : "";
+        return node instanceof TypeDefinition<?> ? TypeConstants.VALUE_PROP : "";
     }
 
     @Override

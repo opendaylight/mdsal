@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.model.util;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.yang.binding.ScalarTypeObject;
+
 /**
  * Contains constants used in relations with <code>Type</code>.
  */
@@ -19,7 +22,12 @@ public final class TypeConstants {
      * The map is keyed by Pattern-compatible string and values are XSD-compatible
      * strings.
      */
-    public static final String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
+    public static final @NonNull String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
+
+    /**
+     * Name of the property holding the value encapsulated in a {@link ScalarTypeObject}.
+     */
+    public static final @NonNull String VALUE_PROP = "value";
 
     /**
      * Creation of new instance is prohibited.
