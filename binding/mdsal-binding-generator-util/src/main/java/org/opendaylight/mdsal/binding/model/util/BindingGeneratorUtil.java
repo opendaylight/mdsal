@@ -11,6 +11,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -93,6 +94,9 @@ public final class BindingGeneratorUtil {
         Comparator.comparing(TypeMemberBuilder::getName);
 
     private static final Comparator<Type> SUID_NAME_COMPARATOR = Comparator.comparing(Type::getFullyQualifiedName);
+
+    private static final ImmutableSet<?> IGNORED_INTERFACES =
+            ImmutableSet.of(BindingTypes.TYPE_OBJECT, BindingTypes.SCALAR_TYPE_OBJECT);
 
     /**
      * Converts <code>parameterName</code> to valid JAVA parameter name. If the <code>parameterName</code> is one
@@ -215,7 +219,7 @@ public final class BindingGeneratorUtil {
     }
 
     private static Collection<Type> filteredImplementsTypes(final GeneratedTypeBuilderBase<?> to) {
-        return Collections2.filter(to.getImplementsTypes(), item -> !BindingTypes.TYPE_OBJECT.equals(item));
+        return Collections2.filter(to.getImplementsTypes(), item -> !IGNORED_INTERFACES.contains(item));
     }
 
     private static <T extends Optional<?>> T currentOrEmpty(final T current, final T base) {
