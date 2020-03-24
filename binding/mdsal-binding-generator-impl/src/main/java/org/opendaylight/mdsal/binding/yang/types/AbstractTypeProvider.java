@@ -50,6 +50,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
+import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.mdsal.binding.model.util.TypeConstants;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.AbstractEnumerationBuilder;
@@ -864,10 +865,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         genTOBuilder.setRestrictions(BindingGeneratorUtil.getRestrictions(typedef));
         final GeneratedPropertyBuilder genPropBuilder = genTOBuilder.addProperty(TypeConstants.VALUE_PROP);
         genPropBuilder.setReturnType(javaType);
+
         genTOBuilder.addEqualsIdentity(genPropBuilder);
         genTOBuilder.addHashIdentity(genPropBuilder);
         genTOBuilder.addToStringProperty(genPropBuilder);
-        genTOBuilder.addImplementsType(TYPE_OBJECT);
+        genTOBuilder.addImplementsType(BindingTypes.scalarTypeObject(javaType));
         if (typedef.getStatus() == Status.DEPRECATED) {
             genTOBuilder.addAnnotation("java.lang", "Deprecated");
         }
