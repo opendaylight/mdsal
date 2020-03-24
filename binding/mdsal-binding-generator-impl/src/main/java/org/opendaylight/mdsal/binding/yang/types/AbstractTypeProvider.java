@@ -1592,13 +1592,13 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     private static String union(final String className, final String defaultValue, final LeafSchemaNode node) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("new ");
-        sb.append(className);
-        sb.append("(\"");
-        sb.append(defaultValue);
-        sb.append("\".toCharArray())");
-        return sb.toString();
+        return new StringBuilder()
+                .append("new ")
+                .append(className)
+                .append("(\"")
+                .append(defaultValue)
+                .append("\".toCharArray())")
+                .toString();
     }
 
     @Override
