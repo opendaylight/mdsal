@@ -99,7 +99,8 @@ class ClassTemplate extends BaseTemplate {
         this.consts = genType.constantDefinitions
 
         if (restrictions !== null && restrictions.rangeConstraint.present) {
-            rangeGenerator = requireNonNull(AbstractRangeGenerator.forType(findProperty(genType, "value").returnType))
+            rangeGenerator = requireNonNull(AbstractRangeGenerator.forType(
+            	findProperty(genType, TypeUtils.VALUE_PROP).returnType))
         } else {
             rangeGenerator = null
         }
