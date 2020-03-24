@@ -19,7 +19,7 @@ import org.opendaylight.mdsal.binding.model.api.Type;
  * Random utility methods for dealing with {@link Type} objects.
  */
 final class TypeUtils {
-    private static final String VALUE_PROP = "value";
+    static final String VALUE_PROP = "value";
 
     private TypeUtils() {
         throw new UnsupportedOperationException();
@@ -56,5 +56,9 @@ final class TypeUtils {
         // Should never happen
         throw new IllegalArgumentException(String.format("Type %s root %s properties %s do not include \"%s\"",
             type, rootGto, rootGto.getProperties(), VALUE_PROP));
+    }
+
+    static Type encapsulatedValueType(final GeneratedTransferObject gto) {
+        return gto.findProperty(TypeUtils.VALUE_PROP).orElseThrow().getReturnType();
     }
 }
