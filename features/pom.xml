@@ -106,6 +106,9 @@
 
         <!-- OpenDaylight-specific -->
         <module>odl-mdsal-model-odl-l2-types</module>
+
+        <!-- Use case features -->
+        <module>odl-mdsal-uc-transient-1node</module>
     </modules>
 
     <properties>
