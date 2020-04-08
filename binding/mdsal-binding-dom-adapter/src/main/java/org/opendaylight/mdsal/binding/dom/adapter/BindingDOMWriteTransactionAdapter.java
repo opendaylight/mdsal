@@ -11,7 +11,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Map.Entry;
-import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -35,8 +34,8 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     }
 
     @Override
-    public final <U extends DataObject> void mergeParentStructurePut(@NonNull LogicalDatastoreType store,
-            @NonNull InstanceIdentifier<U> path, @NonNull U data) {
+    public final <U extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
+            final InstanceIdentifier<U> path, final U data) {
         final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> normalized = toNormalized("put",
             path, data);
         ensureParentsByMerge(store, normalized.getKey(), path);
@@ -51,8 +50,8 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     }
 
     @Override
-    public final <U extends DataObject> void mergeParentStructureMerge(@NonNull LogicalDatastoreType store,
-            @NonNull InstanceIdentifier<U> path, @NonNull U data) {
+    public final <U extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
+            final InstanceIdentifier<U> path, final U data) {
         final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> normalized = toNormalized("merge", path, data);
         ensureParentsByMerge(store, normalized.getKey(), path);
         getDelegate().merge(store, normalized.getKey(), normalized.getValue());
@@ -67,7 +66,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     }
 
     @Override
-    public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+    public FluentFuture<? extends CommitInfo> commit() {
         return getDelegate().commit();
     }
 
