@@ -23,7 +23,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class WriteTransactionTest extends AbstractDataBrokerTest {
-
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
     private static final TopLevelListKey TOP_LIST_KEY = new TopLevelListKey("foo");
     private static final InstanceIdentifier<TopLevelList> NODE_PATH = TOP_PATH.child(TopLevelList.class, TOP_LIST_KEY);
@@ -39,9 +38,8 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
 
     @Test
     public void testPutCreateParentsSuccess() throws InterruptedException, ExecutionException {
-
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
-        writeTx.put(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);
+        writeTx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE);
         writeTx.commit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
@@ -53,9 +51,8 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
 
     @Test
     public void testMergeCreateParentsSuccess() throws InterruptedException, ExecutionException {
-
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
-        writeTx.merge(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);
+        writeTx.mergeParentStructureMerge(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE);
         writeTx.commit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
@@ -64,5 +61,4 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
         final Optional<TopLevelList> listNode = readTx.read(LogicalDatastoreType.OPERATIONAL, NODE_PATH).get();
         assertTrue("List node must exists after commit",listNode.isPresent());
     }
-
 }
