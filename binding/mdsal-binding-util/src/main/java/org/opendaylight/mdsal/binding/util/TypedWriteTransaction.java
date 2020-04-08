@@ -34,29 +34,6 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
     <T extends DataObject> void put(InstanceIdentifier<T> path, T data);
 
     /**
-     * Writes an object to the given path, creating missing parents if requested.
-     *
-     * @see WriteOperations#put(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)
-     *
-     * @param path The path to write to.
-     * @param data The object to write.
-     * @param createMissingParents {@link WriteOperations#CREATE_MISSING_PARENTS} to create missing parents,
-     *                             {@link WriteOperations#FAIL_ON_MISSING_PARENTS} to fail if parents are missing.
-     * @param <T> The type of the provided object.
-     * @deprecated Use {@link #put(InstanceIdentifier, DataObject)} or
-     *             {@link #mergeParentStructurePut(InstanceIdentifier, DataObject)} instead.
-     */
-    @Deprecated
-    default <T extends DataObject> void put(final InstanceIdentifier<T> path, final T data,
-            final boolean createMissingParents) {
-        if (createMissingParents) {
-            mergeParentStructurePut(path, data);
-        } else {
-            put(path, data);
-        }
-    }
-
-    /**
      * Writes an object to the given path, creating significant parents, like presence containers and list entries,
      * if needed.
      *
@@ -82,33 +59,9 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
     <T extends DataObject> void merge(InstanceIdentifier<T> path, T data);
 
     /**
-     * Merges an object with the data already present at the given path, creating significant parents, like presence
-     * containers and list entries, if needed.
-     *
-     * @see WriteOperations#merge(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)
-     *
-     * @param path The path to write to.
-     * @param data The object to merge.
-     * @param createMissingParents {@link WriteOperations#CREATE_MISSING_PARENTS} to create missing parents,
-     *                             {@link WriteOperations#FAIL_ON_MISSING_PARENTS} to fail if parents are missing.
-     * @param <T> The type of the provided object.
-     * @deprecated Use {@link #merge(InstanceIdentifier, DataObject)} or
-     *             {@link #mergeParentStructureMerge(InstanceIdentifier, DataObject)} instead.
-     */
-    @Deprecated
-    default <T extends DataObject> void merge(final InstanceIdentifier<T> path, final T data,
-            final boolean createMissingParents) {
-        if (createMissingParents) {
-            mergeParentStructureMerge(path, data);
-        } else {
-            merge(path, data);
-        }
-    }
-
-    /**
      * Merges an object with the data already present at the given path, creating missing parents if requested.
      *
-     * @see WriteOperations#merge(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)
+     * @see WriteOperations#merge(LogicalDatastoreType, InstanceIdentifier, DataObject)
      *
      * @param path The path to write to.
      * @param data The object to merge.
