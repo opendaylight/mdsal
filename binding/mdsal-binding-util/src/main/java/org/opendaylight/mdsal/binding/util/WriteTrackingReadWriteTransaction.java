@@ -34,14 +34,6 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     }
 
     @Override
-    @Deprecated
-    public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
-            final T data, final boolean createMissingParents) {
-        super.put(store, path, data, createMissingParents);
-        written = true;
-    }
-
-    @Override
     public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path, final T data) {
         super.mergeParentStructurePut(store, path, data);
@@ -52,14 +44,6 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data) {
         super.merge(store, path, data);
-        written = true;
-    }
-
-    @Override
-    @Deprecated
-    public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
-            final T data, final boolean createMissingParents) {
-        super.merge(store, path, data, createMissingParents);
         written = true;
     }
 

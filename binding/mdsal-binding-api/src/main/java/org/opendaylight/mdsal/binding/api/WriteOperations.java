@@ -37,42 +37,6 @@ public interface WriteOperations {
 
     /**
      * Stores a piece of data at the specified path. This acts as an add / replace operation, which is to say that whole
-     * subtree will be replaced by the specified data.
-     *
-     * <p>
-     * If you need to make sure that a parent object exists but you do not want modify its pre-existing state by using
-     * put, consider using {@link #merge} instead.
-     *
-     * <b>WARNING:</b> Using this method may introduce garbage in data store, or recreate nodes, which were deleted by
-     *                 a previous transaction. It is not necessary in most scenarios and has a significantly higher cost
-     *                 than {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject)} and should only be used
-     *                 when absolutely necessary.
-     *
-     * @param store the logical data store which should be modified
-     * @param path the data object path
-     * @param data the data object to be written to the specified path
-     * @param createMissingParents if {@link #CREATE_MISSING_PARENTS}, any missing parent nodes will be automatically
-     *                             created using a merge operation. <b>WARNING:</b> using this option is not needed
-     *                             in most scenarios and has a significant performance cost and should be avoided
-     *                             whenever possible.
-     * @throws IllegalStateException if the transaction has already been submitted
-     * @throws NullPointerException if any of the arguments is null
-     * @deprecated Use {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject)} or
-     *             {@link #mergeParentStructurePut(LogicalDatastoreType, InstanceIdentifier, DataObject)}
-     *             instead.
-     */
-    @Deprecated(forRemoval = true)
-    default <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
-            @NonNull T data, boolean createMissingParents) {
-        if (createMissingParents) {
-            mergeParentStructurePut(store, path, data);
-        } else {
-            put(store, path, data);
-        }
-    }
-
-    /**
-     * Stores a piece of data at the specified path. This acts as an add / replace operation, which is to say that whole
      * subtree will be replaced by the specified data. Unlike
      * {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject)}, this method will attempt to create
      * semantically-significant parent nodes, like list entries and presence containers, as indicated by {@code path}.
@@ -116,36 +80,6 @@ public interface WriteOperations {
 
     /**
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
-     * overwritten will be preserved. This means that if you store a container, its child lists will be merged.
-     *
-     * <p>
-     * If you require an explicit replace operation, use {@link #put} instead.
-     *
-     * @param store the logical data store which should be modified
-     * @param path the data object path
-     * @param data the data object to be merged to the specified path
-     * @param createMissingParents if {@link #CREATE_MISSING_PARENTS}, any missing parent nodes will be automatically
-     *                             created using a merge operation. <b>WARNING:</b> using this option is not needed
-     *                             in most scenarios and has a significant performance cost and should be avoided
-     *                             whenever possible.
-     * @throws IllegalStateException if the transaction has already been submitted
-     * @throws NullPointerException if any of the arguments is null
-     * @deprecated Use {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject)} or
-     *             {@link #mergeParentStructureMerge(LogicalDatastoreType, InstanceIdentifier, DataObject)}
-     *             instead.
-     */
-    @Deprecated(forRemoval = true)
-    default <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
-            @NonNull T data, boolean createMissingParents) {
-        if (createMissingParents) {
-            mergeParentStructureMerge(store, path, data);
-        } else {
-            merge(store, path, data);
-        }
-    }
-
-    /**
-     * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
      * overwritten will be preserved. This means that if you store a container, its child lists will be merged. Unlike
      * {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject)}, this method will attempt to create
      * semantically-significant parent nodes, like list entries and presence containers, as indicated by {@code path}.
@@ -178,27 +112,4 @@ public interface WriteOperations {
      * @throws IllegalStateException if the transaction was committed or canceled.
      */
     void delete(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path);
-
-    /**
-     * Flag value indicating that missing parents should be created.
-     *
-     * <p>
-     * <b>WARNING:</b> Using this flag may introduce garbage in data store, or recreate nodes, which were deleted by
-     *                 a previous transaction. It is not necessary in most scenarios and also has a significantly higher
-     *                 cost than {@link #FAIL_ON_MISSING_PARENTS} and should only be used when absolutely necessary.
-     *
-     * @deprecated To be removed with {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)}
-     *             and {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)}.
-     */
-    @Deprecated(forRemoval = true)
-    boolean CREATE_MISSING_PARENTS = true;
-
-    /**
-     * Flag value indicating that missing parents should cause an error.
-     *
-     * @deprecated To be removed with {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)}
-     *             and {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)}.
-     */
-    @Deprecated(forRemoval = true)
-    boolean FAIL_ON_MISSING_PARENTS = false;
 }
