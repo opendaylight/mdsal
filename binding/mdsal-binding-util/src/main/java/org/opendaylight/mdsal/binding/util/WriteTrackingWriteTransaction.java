@@ -20,38 +20,26 @@ class WriteTrackingWriteTransaction extends ForwardingWriteTransaction implement
     // This is only ever read *after* changes to the transaction are complete
     private boolean written;
 
-    WriteTrackingWriteTransaction(WriteTransaction delegate) {
+    WriteTrackingWriteTransaction(final WriteTransaction delegate) {
         super(delegate);
     }
 
     @Override
-    public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
+    public <T extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+            final T data) {
         super.put(store, path, data);
         written = true;
     }
 
     @Override
-    public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-        boolean createMissingParents) {
-        super.put(store, path, data, createMissingParents);
-        written = true;
-    }
-
-    @Override
-    public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
+    public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
+            final T data) {
         super.merge(store, path, data);
         written = true;
     }
 
     @Override
-    public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-        boolean createMissingParents) {
-        super.merge(store, path, data, createMissingParents);
-        written = true;
-    }
-
-    @Override
-    public void delete(LogicalDatastoreType store, InstanceIdentifier<?> path) {
+    public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         super.delete(store, path);
         written = true;
     }
