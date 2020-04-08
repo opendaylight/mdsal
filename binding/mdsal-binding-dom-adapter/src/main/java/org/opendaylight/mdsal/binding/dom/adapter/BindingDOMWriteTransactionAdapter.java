@@ -86,7 +86,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     private void ensureParentsByMerge(final LogicalDatastoreType store, final YangInstanceIdentifier domPath,
             final InstanceIdentifier<?> path) {
         final YangInstanceIdentifier parentPath = domPath.getParent();
-        if (parentPath != null) {
+        if (parentPath != null && !parentPath.isEmpty()) {
             final NormalizedNode<?, ?> parentNode = getCodec().instanceIdentifierToNode(parentPath);
             getDelegate().merge(store, YangInstanceIdentifier.create(parentNode.getIdentifier()), parentNode);
         }
