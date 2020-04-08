@@ -50,6 +50,13 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
     }
 
     @Test
+    public void testPutCreateParentsSuperfluous() throws InterruptedException, ExecutionException {
+        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        writeTx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, TOP_PATH, new TopBuilder().build());
+        writeTx.commit().get();
+    }
+
+    @Test
     public void testMergeCreateParentsSuccess() throws InterruptedException, ExecutionException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.mergeParentStructureMerge(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE);
@@ -60,5 +67,12 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
         assertTrue("Top node must exists after commit",topNode.isPresent());
         final Optional<TopLevelList> listNode = readTx.read(LogicalDatastoreType.OPERATIONAL, NODE_PATH).get();
         assertTrue("List node must exists after commit",listNode.isPresent());
+    }
+
+    @Test
+    public void testMergeCreateParentsSuperfluous() throws InterruptedException, ExecutionException {
+        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        writeTx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, TOP_PATH, new TopBuilder().build());
+        writeTx.commit().get();
     }
 }
