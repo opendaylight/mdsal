@@ -22,10 +22,8 @@ import java.lang.reflect.Method;
 import java.time.Instant;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.annotation.PreDestroy;
@@ -69,7 +67,6 @@ import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -417,23 +414,6 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
          */
         final BindingDataObjectCodecTreeNode<?> codecContext = currentCodecTree.getSubtreeCodec(bindingPath);
         return new SimpleEntry<>(bindingPath, codecContext);
-    }
-
-    @SuppressWarnings("unchecked")
-    public final Set<Class<? extends Notification>> getNotificationClasses(final Set<SchemaPath> interested) {
-        final Set<Class<? extends Notification>> result = new HashSet<>();
-        final BindingRuntimeContext runtimeContext = runtimeContext();
-        for (final NotificationDefinition notification : runtimeContext.getSchemaContext().getNotifications()) {
-            if (interested.contains(notification.getPath())) {
-                try {
-                    result.add((Class<? extends Notification>) runtimeContext.getClassForSchema(notification));
-                } catch (final IllegalStateException e) {
-                    // Ignore
-                    LOG.warn("Class for {} is currently not known.", notification.getPath(), e);
-                }
-            }
-        }
-        return result;
     }
 
     SchemaPath getActionPath(final Class<? extends Action<?, ?, ?>> type) {
