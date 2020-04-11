@@ -65,7 +65,8 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                     final InstanceIdentifier<?> path = (InstanceIdentifier<?>) requireNonNull(args[0]);
                     final RpcInput input = (RpcInput) requireNonNull(args[1]);
                     final ListenableFuture<? extends DOMActionResult> future = getDelegate().invokeAction(schemaPath,
-                        new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, getCodec().toNormalized(path)),
+                        new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
+                            getCodec().toYangInstanceIdentifier(path)),
                         getCodec().toLazyNormalizedNodeActionInput(type, inputName, input));
 
                     // Invocation returned a future we know about -- return that future instead

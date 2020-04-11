@@ -147,20 +147,6 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
         }
     }
 
-    /**
-     * Translates supplied Binding Instance Identifier into NormalizedNode
-     * instance identifier.
-     *
-     * @param binding
-     *            Binding Instance Identifier
-     * @return DOM Instance Identifier
-     * @throws IllegalArgumentException
-     *             If supplied Instance Identifier is not valid.
-     */
-    public final YangInstanceIdentifier toNormalized(final InstanceIdentifier<? extends DataObject> binding) {
-        return codecRegistry.toYangInstanceIdentifier(binding);
-    }
-
     @Override
     public final YangInstanceIdentifier toYangInstanceIdentifier(final InstanceIdentifier<?> binding) {
         return codecRegistry.toYangInstanceIdentifier(binding);

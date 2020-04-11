@@ -35,7 +35,7 @@ public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurs
     private YangInstanceIdentifier.PathArgument convertToNormalized(final PathArgument child) {
         stack.push(child);
         final InstanceIdentifier<?> iid = InstanceIdentifier.create(stack);
-        final YangInstanceIdentifier ret = getCodec().toNormalized(iid);
+        final YangInstanceIdentifier ret = getCodec().toYangInstanceIdentifier(iid);
         stack.pop();
         return ret.getLastPathArgument();
     }

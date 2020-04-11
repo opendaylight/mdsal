@@ -28,7 +28,7 @@ public class BindingDOMCursorAwareWriteTransactionAdapter<T extends DOMDataTreeC
 
     @Override
     public <P extends DataObject> DataTreeWriteCursor createCursor(final DataTreeIdentifier<P> path) {
-        final YangInstanceIdentifier yPath = getCodec().toNormalized(path.getRootIdentifier());
+        final YangInstanceIdentifier yPath = getCodec().toYangInstanceIdentifier(path.getRootIdentifier());
         final DOMDataTreeWriteCursor cursor = getDelegate().createCursor(
                 new DOMDataTreeIdentifier(path.getDatastoreType(), yPath));
         return new BindingDOMDataTreeWriteCursorAdapter<>(path, cursor, getCodec());
