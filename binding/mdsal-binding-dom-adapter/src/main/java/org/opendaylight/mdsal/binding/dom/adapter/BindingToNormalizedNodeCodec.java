@@ -276,10 +276,6 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
         }
     }
 
-    public final BindingNormalizedNodeCodecRegistry getCodecFactory() {
-        return codecRegistry;
-    }
-
     // FIXME: This should be probably part of Binding Runtime context
     public final ImmutableBiMap<Method, SchemaPath> getRpcMethodToSchemaPath(final Class<? extends RpcService> key) {
         final Module module = getModuleBlocking(key);

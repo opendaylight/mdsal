@@ -7,10 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -140,7 +140,7 @@ class RpcServiceAdapter implements InvocationHandler {
                 return ((BindingRpcFutureAware) result).getBindingFuture();
             }
 
-            return transformFuture(schemaPath, result, codec.getCodecFactory());
+            return transformFuture(schemaPath, result, codec.getCodecRegistry());
         }
 
         private ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
@@ -183,7 +183,7 @@ class RpcServiceAdapter implements InvocationHandler {
             super(path);
             final Optional<Class<? extends DataContainer>> maybeInputType =
                     BindingReflections.resolveRpcInputClass(rpcMethod);
-            Preconditions.checkState(maybeInputType.isPresent(), "RPC method %s has no input", rpcMethod.getName());
+            checkState(maybeInputType.isPresent(), "RPC method %s has no input", rpcMethod.getName());
             final Class<? extends DataContainer> inputType = maybeInputType.get();
             refExtractor = ContextReferenceExtractor.from(inputType);
             this.contextName = new NodeIdentifier(leafName);

@@ -101,7 +101,7 @@ public class Mdsal500Test {
 
         biRpcProviderService.registerRpcImplementation((rpc, input) ->
             FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec()
-                    .getCodecFactory().toNormalizedNodeRpcData(baSwitchOutput))),
+                    .getCodecRegistry().toNormalizedNodeRpcData(baSwitchOutput))),
             DOMRpcIdentifier.create(SWITCH_PATH));
 
         final Mdsal500Service baSwitchService =
@@ -143,7 +143,7 @@ public class Mdsal500Test {
     }
 
     private ContainerNode toDOMSwitchInput(final SwitchInput from) {
-        return testContext.getCodec().getCodecFactory().toNormalizedNodeRpcData(from);
+        return testContext.getCodec().getCodecRegistry().toNormalizedNodeRpcData(from);
     }
 
     private static class Mdsal500ServiceImpl implements Mdsal500Service {

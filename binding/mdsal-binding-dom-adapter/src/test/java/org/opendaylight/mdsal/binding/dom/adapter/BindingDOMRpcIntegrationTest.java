@@ -109,7 +109,7 @@ public class BindingDOMRpcIntegrationTest {
 
         biRpcProviderService.registerRpcImplementation((rpc, input) ->
             FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec()
-                    .getCodecFactory().toNormalizedNodeRpcData(baKnockKnockOutput))),
+                    .getCodecRegistry().toNormalizedNodeRpcData(baKnockKnockOutput))),
             DOMRpcIdentifier.create(KNOCK_KNOCK_PATH, testContext.getCodec().toYangInstanceIdentifier(BA_NODE_ID)));
 
         final OpendaylightKnockKnockRpcService baKnockService =
@@ -153,7 +153,7 @@ public class BindingDOMRpcIntegrationTest {
     }
 
     private ContainerNode toDOMKnockKnockInput(final KnockKnockInput from) {
-        return testContext.getCodec().getCodecFactory().toNormalizedNodeRpcData(from);
+        return testContext.getCodec().getCodecRegistry().toNormalizedNodeRpcData(from);
     }
 
     private static class OpendaylightKnockKnockRpcServiceImpl implements OpendaylightKnockKnockRpcService {
