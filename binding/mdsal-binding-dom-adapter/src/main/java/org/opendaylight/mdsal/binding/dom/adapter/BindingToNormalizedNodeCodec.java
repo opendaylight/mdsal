@@ -167,22 +167,6 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
         }
     }
 
-    /**
-     * Converts Binding Map.Entry to DOM Map.Entry.
-     *
-     * <p>
-     * Same as {@link #toNormalizedNode(InstanceIdentifier, DataObject)}.
-     *
-     * @param binding Map Entry with InstanceIdentifier as key and DataObject as value.
-     * @return DOM Map Entry with {@link YangInstanceIdentifier} as key and {@link NormalizedNode}
-     *         as value.
-     */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> toNormalizedNode(
-            final Entry<InstanceIdentifier<? extends DataObject>, DataObject> binding) {
-        return toNormalizedNode((InstanceIdentifier) binding.getKey(), binding.getValue());
-    }
-
     @Override
     public final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final YangInstanceIdentifier path,
             final NormalizedNode<?, ?> data) {

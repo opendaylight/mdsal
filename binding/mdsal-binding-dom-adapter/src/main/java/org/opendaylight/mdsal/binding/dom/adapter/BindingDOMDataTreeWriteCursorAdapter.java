@@ -9,7 +9,6 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map.Entry;
@@ -44,8 +43,9 @@ public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurs
             final PathArgument child, final P data) {
         stack.push(child);
         final InstanceIdentifier<?> iid = InstanceIdentifier.create(stack);
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = getCodec()
-                .toNormalizedNode(new SimpleEntry<>(iid, data));
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = getCodec().toNormalizedNode(
+            (InstanceIdentifier) iid, data);
         stack.pop();
         return entry;
     }
