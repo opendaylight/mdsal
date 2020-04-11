@@ -12,6 +12,7 @@ import static com.google.common.base.Verify.verifyNotNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.io.ByteSource;
 import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -37,6 +38,21 @@ public abstract class ResourceYangModuleInfo implements YangModuleInfo {
             throw new IOException(message);
         }
         return ret;
+    }
+
+    @Override
+    public final ByteSource getYangTextByteSource() {
+        return new ByteSource() {
+            @Override
+            public InputStream openStream() throws IOException {
+                return openYangTextStream();
+            }
+
+            @Override
+            public String toString() {
+                return resourceName();
+            }
+        };
     }
 
     @Override
