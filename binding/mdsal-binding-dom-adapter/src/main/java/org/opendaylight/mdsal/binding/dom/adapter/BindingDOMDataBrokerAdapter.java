@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
@@ -35,14 +36,14 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * Besides this the DataBrokerImpl and it's collaborators also cache data that is already transformed from the binding
  * independent to binding aware format.
  */
-public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker implements DataBroker,
+public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull DOMDataBroker> implements DataBroker,
         DataTreeChangeService {
 
     static final Factory<DataBroker> BUILDER_FACTORY = Builder::new;
     private final DataTreeChangeService treeChangeService;
 
     public BindingDOMDataBrokerAdapter(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
-        super(domDataBroker, codec);
+        super(codec, domDataBroker);
         final DOMDataTreeChangeService domTreeChange = domDataBroker.getExtensions()
                 .getInstance(DOMDataTreeChangeService.class);
         if (domTreeChange != null) {
