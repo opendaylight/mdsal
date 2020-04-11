@@ -287,33 +287,6 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
         }
     }
 
-    public final Optional<Entry<InstanceIdentifier<? extends DataObject>, DataObject>> toBinding(
-            final @NonNull Entry<YangInstanceIdentifier, ? extends NormalizedNode<?, ?>> normalized)
-                    throws DeserializationException {
-        try {
-            /*
-             * This cast is required, due to generics behaviour in openjdk / oracle javac.
-             *
-             * <p>
-             * InstanceIdentifier has definition InstanceIdentifier<T extends DataObject>,
-             * this means '?' is always  <? extends DataObject>. Eclipse compiler
-             * is able to determine this relationship and treats
-             * Entry<InstanceIdentifier<?>, DataObject> and Entry<InstanceIdentifier<? extends DataObject, DataObject>
-             * as assignable. However openjdk / oracle javac treats this two types
-             * as incompatible and issues a compile error.
-             *
-             * <p>
-             * It is safe to lose generic information and cast it to other generic signature.
-             */
-            @SuppressWarnings("unchecked")
-            final Entry<InstanceIdentifier<? extends DataObject>, DataObject> binding = Entry.class.cast(
-                    codecRegistry.fromNormalizedNode(normalized.getKey(), normalized.getValue()));
-            return Optional.ofNullable(binding);
-        } catch (final IllegalArgumentException e) {
-            return Optional.empty();
-        }
-    }
-
     @Override
     public void onModelContextUpdated(final EffectiveModelContext newModelContext) {
         final BindingRuntimeContext runtimeContext = DefaultBindingRuntimeContext.create(
