@@ -19,6 +19,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
 class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> extends AbstractForwardedTransaction<T>
         implements WriteTransaction {
@@ -87,7 +88,8 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
             final InstanceIdentifier<?> path) {
         final YangInstanceIdentifier parentPath = domPath.getParent();
         if (parentPath != null && !parentPath.isEmpty()) {
-            final NormalizedNode<?, ?> parentNode = getCodec().instanceIdentifierToNode(parentPath);
+            final NormalizedNode<?, ?> parentNode = ImmutableNodes.fromInstanceId(
+                getCodec().runtimeContext().getSchemaContext(), parentPath);
             getDelegate().merge(store, YangInstanceIdentifier.create(parentNode.getIdentifier()), parentNode);
         }
     }

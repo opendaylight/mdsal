@@ -62,7 +62,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
@@ -359,22 +358,18 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
         return new SimpleEntry<>(bindingPath, codecContext);
     }
 
-    SchemaPath getActionPath(final Class<? extends Action<?, ?, ?>> type) {
+    final SchemaPath getActionPath(final Class<? extends Action<?, ?, ?>> type) {
         final ActionDefinition schema = runtimeContext().getActionDefinition(type);
         checkArgument(schema != null, "Failed to find schema for %s", type);
         return schema.getPath();
     }
 
-    private BindingRuntimeContext runtimeContext() {
+    final BindingRuntimeContext runtimeContext() {
         return futureSchema.runtimeContext();
     }
 
     private static Collection<Class<?>> decompose(final InstanceIdentifier<?> path) {
         return ImmutableSet.copyOf(Iterators.transform(path.getPathArguments().iterator(), PathArgument::getType));
-    }
-
-    protected NormalizedNode<?, ?> instanceIdentifierToNode(final YangInstanceIdentifier parentPath) {
-        return ImmutableNodes.fromInstanceId(runtimeContext().getSchemaContext(), parentPath);
     }
 
     protected Collection<DOMDataTreeIdentifier> toDOMDataTreeIdentifiers(
