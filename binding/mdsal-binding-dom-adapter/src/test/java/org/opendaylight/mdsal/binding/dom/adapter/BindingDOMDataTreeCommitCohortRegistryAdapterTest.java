@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -45,9 +44,6 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapterTest {
         doNothing().when(cohortRegistration).close();
         final BindingDOMDataTreeCommitCohortRegistryAdapter registryAdapter =
                 new BindingDOMDataTreeCommitCohortRegistryAdapter(bindingTestContext.getCodec(), cohortRegistry);
-
-        assertNotNull(BindingDOMDataTreeCommitCohortRegistryAdapter.from(bindingTestContext.getCodec(),
-            cohortRegistry));
 
         final DataTreeIdentifier<Top> dataTreeIdentifier = DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.create(Top.class));

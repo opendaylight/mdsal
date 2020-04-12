@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Method;
@@ -15,7 +17,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.NotificationListenerInvoker;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMEvent;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
@@ -27,14 +28,13 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
 
-    private final BindingNormalizedNodeSerializer codec;
+    private final AdapterContext adapterContext;
     private final NotificationListener delegate;
     private final ImmutableMap<SchemaPath, NotificationListenerInvoker> invokers;
 
-    BindingDOMNotificationListenerAdapter(final BindingNormalizedNodeSerializer codec,
-            final NotificationListener delegate) {
-        this.codec = codec;
-        this.delegate = delegate;
+    BindingDOMNotificationListenerAdapter(final AdapterContext adapterContext, final NotificationListener delegate) {
+        this.adapterContext = requireNonNull(adapterContext);
+        this.delegate = requireNonNull(delegate);
         this.invokers = createInvokerMapFor(delegate.getClass());
     }
 
@@ -51,9 +51,11 @@ class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
             //       okay, for now at least.
             return ((LazySerializedDOMNotification) notification).getBindingData();
         }
-        return notification instanceof DOMEvent ? codec.fromNormalizedNodeNotification(notification.getType(),
+
+        final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
+        return notification instanceof DOMEvent ? serializer.fromNormalizedNodeNotification(notification.getType(),
             notification.getBody(), ((DOMEvent) notification).getEventInstant())
-                : codec.fromNormalizedNodeNotification(notification.getType(), notification.getBody());
+                : serializer.fromNormalizedNodeNotification(notification.getType(), notification.getBody());
     }
 
     private NotificationListenerInvoker getInvoker(final SchemaPath type) {

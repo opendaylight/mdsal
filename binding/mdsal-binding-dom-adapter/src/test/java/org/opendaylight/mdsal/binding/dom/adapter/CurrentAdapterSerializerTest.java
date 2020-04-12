@@ -7,21 +7,20 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Method;
 import java.util.Map.Entry;
 import org.junit.Test;
-import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
-import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -29,7 +28,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
@@ -39,7 +37,7 @@ import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
-public class BindingToNormalizedNodeCodecTest {
+public class CurrentAdapterSerializerTest {
     /**
      * Positive test.
      *
@@ -91,15 +89,11 @@ public class BindingToNormalizedNodeCodecTest {
         assertNotNull(value);
         final Class<? extends DataObject> iface = value.implementedInterface();
         assertEquals("Cont", iface.getSimpleName());
-        final Object[] objs = {};
-        try {
-            iface.getDeclaredMethod("getVlanId").invoke(value, objs);
-            fail();
-        } catch (final InvocationTargetException e) {
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertEquals(cause.getClass(), IllegalArgumentException.class);
-        }
+
+        final Method getVlanId = iface.getDeclaredMethod("getVlanId");
+        final InvocationTargetException ex = assertThrows(InvocationTargetException.class,
+            () -> getVlanId.invoke(value));
+        assertThat(ex.getCause(), instanceOf(IllegalArgumentException.class));
     }
 
     private static NormalizedNode<?, ?> prepareData(final SchemaContext schemaCtx, final Object value) {
@@ -116,20 +110,12 @@ public class BindingToNormalizedNodeCodecTest {
 
     private static Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final NormalizedNode<?, ?> data,
             final SchemaContext schemaCtx) {
-        final GeneratedClassLoadingStrategy classLoadingStrategy =
-                GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
-        final BindingRuntimeGenerator generator = new DefaultBindingRuntimeGenerator();
-        final BindingRuntimeContext ctx = DefaultBindingRuntimeContext.create(
-            generator.generateTypeMapping(schemaCtx), classLoadingStrategy);
-        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry(ctx);
-        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
-            generator, classLoadingStrategy, codecRegistry);
-        final List<PathArgument> pathArgs = new ArrayList<>();
-        pathArgs.add(NodeIdentifier.create(QName.create("urn:test", "2017-01-01", "cont")));
+        final CurrentAdapterSerializer codec = new CurrentAdapterSerializer(new BindingCodecContext(
+            DefaultBindingRuntimeContext.create(new DefaultBindingRuntimeGenerator().generateTypeMapping(schemaCtx),
+                GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy())));
 
-        final YangInstanceIdentifier path = YangInstanceIdentifier.create(pathArgs);
-        final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = codec.fromNormalizedNode(path, data);
-        codec.close();
-        return fromNormalizedNode;
+        final YangInstanceIdentifier path = YangInstanceIdentifier.create(NodeIdentifier.create(QName.create(
+            "urn:test", "2017-01-01", "cont")));
+        return codec.fromNormalizedNode(path, data);
     }
 }

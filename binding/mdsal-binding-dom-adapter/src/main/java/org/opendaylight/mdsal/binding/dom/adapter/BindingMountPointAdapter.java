@@ -20,8 +20,8 @@ final class BindingMountPointAdapter implements MountPoint {
     private final InstanceIdentifier<?> identifier;
     private final LoadingCache<Class<? extends BindingService>, Optional<BindingService>> services;
 
-    BindingMountPointAdapter(final BindingToNormalizedNodeCodec codec, final DOMMountPoint domMountPoint) {
-        identifier = codec.fromYangInstanceIdentifier(domMountPoint.getIdentifier());
+    BindingMountPointAdapter(final AdapterContext codec, final DOMMountPoint domMountPoint) {
+        identifier = codec.currentSerializer().fromYangInstanceIdentifier(domMountPoint.getIdentifier());
         services = CacheBuilder.newBuilder().build(new BindingDOMAdapterLoader(codec) {
             @Override
             protected DOMService getDelegate(final Class<? extends DOMService> reqDeleg) {

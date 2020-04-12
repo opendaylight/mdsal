@@ -16,22 +16,19 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Set;
 import org.opendaylight.binding.runtime.spi.BindingRuntimeHelpers;
-import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcProviderServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -51,7 +48,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 @Beta
 public class BindingTestContext implements AutoCloseable {
-    private BindingToNormalizedNodeCodec codec;
+    private MockAdapterContext codec;
 
     private final ListeningExecutorService executor;
 
@@ -86,7 +83,7 @@ public class BindingTestContext implements AutoCloseable {
         return newDOMDataBroker;
     }
 
-    public BindingToNormalizedNodeCodec getCodec() {
+    public AdapterContext getCodec() {
         return codec;
     }
 
@@ -101,7 +98,7 @@ public class BindingTestContext implements AutoCloseable {
     public void startNewDataBroker() {
         checkState(executor != null, "Executor needs to be set");
         checkState(newDOMDataBroker != null, "DOM Data Broker must be set");
-        dataBroker = new BindingDOMDataBrokerAdapter(newDOMDataBroker, codec);
+        dataBroker = new BindingDOMDataBrokerAdapter(codec, newDOMDataBroker);
     }
 
     public void startNewDomDataBroker() {
@@ -128,9 +125,9 @@ public class BindingTestContext implements AutoCloseable {
     public void startBindingBroker() {
         checkState(executor != null, "Executor needs to be set");
 
-        baConsumerRpc = new BindingDOMRpcServiceAdapter(getDomRpcInvoker(), codec);
-        baProviderRpc = new BindingDOMRpcProviderServiceAdapter(getDomRpcRegistry(), codec);
-        final MountPointService mountService = new BindingDOMMountPointServiceAdapter(biMountImpl, codec);
+        baConsumerRpc = new BindingDOMRpcServiceAdapter(codec, getDomRpcInvoker());
+        baProviderRpc = new BindingDOMRpcProviderServiceAdapter(codec, getDomRpcRegistry());
+        final MountPointService mountService = new BindingDOMMountPointServiceAdapter(codec, biMountImpl);
     }
 
     public void startForwarding() {
@@ -138,9 +135,7 @@ public class BindingTestContext implements AutoCloseable {
     }
 
     public void startBindingToDomMappingService() {
-        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry();
-        final GeneratedClassLoadingStrategy loading = GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
-        codec = new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(), loading,  codecRegistry);
+        codec = new MockAdapterContext();
         mockSchemaService.registerSchemaContextListener(codec);
     }
 
@@ -166,7 +161,7 @@ public class BindingTestContext implements AutoCloseable {
 
         if (schemaModuleInfos != null) {
             updateYangSchema(schemaModuleInfos);
-        } else if (this.startWithSchema) {
+        } else if (startWithSchema) {
             loadYangSchemaFromClasspath();
         }
     }
@@ -226,6 +221,6 @@ public class BindingTestContext implements AutoCloseable {
     }
 
     public void setSchemaModuleInfos(final Set<YangModuleInfo> moduleInfos) {
-        this.schemaModuleInfos = moduleInfos;
+        schemaModuleInfos = moduleInfos;
     }
 }

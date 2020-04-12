@@ -34,15 +34,16 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
     private final NodeIdentifier inputName;
     private final SchemaPath schemaPath;
 
-    ActionAdapter(final BindingToNormalizedNodeCodec codec, final DOMActionService delegate,
+    ActionAdapter(final AdapterContext codec, final DOMActionService delegate,
             final Class<? extends Action<?, ?, ?>> type) {
         super(codec, delegate);
         this.type = requireNonNull(type);
-        this.schemaPath = getCodec().getActionPath(type);
+        this.schemaPath = currentSerializer().getActionPath(type);
         this.inputName = NodeIdentifier.create(operationInputQName(schemaPath.getLastComponent().getModule()));
     }
 
-    @Override public @Nullable Object invoke(final @Nullable Object proxy, final @Nullable Method method,
+    @Override
+    public @Nullable Object invoke(final @Nullable Object proxy, final @Nullable Method method,
             final Object @Nullable [] args) throws Throwable {
         switch (method.getName()) {
             case "equals":
@@ -64,10 +65,11 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                 if (args.length == 2) {
                     final InstanceIdentifier<?> path = (InstanceIdentifier<?>) requireNonNull(args[0]);
                     final RpcInput input = (RpcInput) requireNonNull(args[1]);
+                    final CurrentAdapterSerializer serializer = currentSerializer();
                     final ListenableFuture<? extends DOMActionResult> future = getDelegate().invokeAction(schemaPath,
                         new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-                            getCodec().toYangInstanceIdentifier(path)),
-                        getCodec().toLazyNormalizedNodeActionInput(type, inputName, input));
+                            serializer.toYangInstanceIdentifier(path)),
+                        serializer.toLazyNormalizedNodeActionInput(type, inputName, input));
 
                     // Invocation returned a future we know about -- return that future instead
                     if (ENABLE_CODEC_SHORTCUT && future instanceof BindingRpcFutureAware) {
@@ -76,8 +78,9 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
 
                     return Futures.transform(future,
                         dom -> RpcResultUtil.rpcResultFromDOM(dom.getErrors(), dom.getOutput()
-                            .map(output -> getCodec().fromNormalizedNodeActionOutput(type, output))
-                            .orElse(null)), MoreExecutors.directExecutor());
+                            .map(output -> serializer.fromNormalizedNodeActionOutput(type, output))
+                            .orElse(null)),
+                        MoreExecutors.directExecutor());
                 }
                 break;
             default:

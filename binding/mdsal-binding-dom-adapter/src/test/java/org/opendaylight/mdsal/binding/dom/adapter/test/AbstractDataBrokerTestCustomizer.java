@@ -10,17 +10,15 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.dom.adapter.test.util.MockAdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.MockSchemaService;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
@@ -36,7 +34,7 @@ public abstract class AbstractDataBrokerTestCustomizer {
     private final DOMNotificationRouter domNotificationRouter;
     private final MockSchemaService schemaService;
     private ImmutableMap<LogicalDatastoreType, DOMStore> datastores;
-    private final BindingToNormalizedNodeCodec bindingToNormalized;
+    private final MockAdapterContext adapterContext;
 
     public ImmutableMap<LogicalDatastoreType, DOMStore> createDatastores() {
         return ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
@@ -46,22 +44,21 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public AbstractDataBrokerTestCustomizer() {
-        this.schemaService = new MockSchemaService();
-        this.bindingToNormalized = new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(),
-            GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry());
-        this.schemaService.registerSchemaContextListener(this.bindingToNormalized);
-        this.domNotificationRouter = DOMNotificationRouter.create(16);
+        schemaService = new MockSchemaService();
+        adapterContext = new MockAdapterContext();
+        schemaService.registerSchemaContextListener(adapterContext);
+        domNotificationRouter = DOMNotificationRouter.create(16);
     }
 
     public DOMStore createConfigurationDatastore() {
         final InMemoryDOMDataStore store = new InMemoryDOMDataStore("CFG", getDataTreeChangeListenerExecutor());
-        this.schemaService.registerSchemaContextListener(store);
+        schemaService.registerSchemaContextListener(store);
         return store;
     }
 
     public DOMStore createOperationalDatastore() {
         final InMemoryDOMDataStore store = new InMemoryDOMDataStore("OPER", getDataTreeChangeListenerExecutor());
-        this.schemaService.registerSchemaContextListener(store);
+        schemaService.registerSchemaContextListener(store);
         return store;
     }
 
@@ -70,12 +67,11 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public NotificationService createNotificationService() {
-        return new BindingDOMNotificationServiceAdapter(this.domNotificationRouter,
-                this.bindingToNormalized.getCodecRegistry());
+        return new BindingDOMNotificationServiceAdapter(adapterContext, domNotificationRouter);
     }
 
     public NotificationPublishService createNotificationPublishService() {
-        return new BindingDOMNotificationPublishServiceAdapter(this.domNotificationRouter, this.bindingToNormalized);
+        return new BindingDOMNotificationPublishServiceAdapter(adapterContext, domNotificationRouter);
     }
 
     public abstract ListeningExecutorService getCommitCoordinatorExecutor();
@@ -85,36 +81,36 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public DataBroker createDataBroker() {
-        return new BindingDOMDataBrokerAdapter(getDOMDataBroker(), this.bindingToNormalized);
+        return new BindingDOMDataBrokerAdapter(adapterContext, getDOMDataBroker());
     }
 
-    public BindingToNormalizedNodeCodec getBindingToNormalized() {
-        return this.bindingToNormalized;
+    public AdapterContext getAdapterContext() {
+        return adapterContext;
     }
 
     public DOMSchemaService getSchemaService() {
-        return this.schemaService;
+        return schemaService;
     }
 
     public DOMDataBroker getDOMDataBroker() {
-        if (this.domDataBroker == null) {
-            this.domDataBroker = createDOMDataBroker();
+        if (domDataBroker == null) {
+            domDataBroker = createDOMDataBroker();
         }
-        return this.domDataBroker;
+        return domDataBroker;
     }
 
     private synchronized ImmutableMap<LogicalDatastoreType, DOMStore> getDatastores() {
-        if (this.datastores == null) {
-            this.datastores = createDatastores();
+        if (datastores == null) {
+            datastores = createDatastores();
         }
-        return this.datastores;
+        return datastores;
     }
 
     public void updateSchema(final EffectiveModelContext ctx) {
-        this.schemaService.changeSchema(ctx);
+        schemaService.changeSchema(ctx);
     }
 
     public DOMNotificationRouter getDomNotificationRouter() {
-        return this.domNotificationRouter;
+        return domNotificationRouter;
     }
 }

@@ -9,12 +9,12 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
 
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class AbstractNotificationBrokerTest extends AbstractSchemaAwareTest {
-    private BindingToNormalizedNodeCodec bindingToNormalizedNodeCodec;
+    private AdapterContext bindingToNormalizedNodeCodec;
     private DOMNotificationRouter domNotificationRouter;
     private NotificationService notificationService;
     private NotificationPublishService notificationPublishService;
@@ -26,7 +26,7 @@ public class AbstractNotificationBrokerTest extends AbstractSchemaAwareTest {
         domNotificationRouter = testCustomizer.getDomNotificationRouter();
         notificationService = testCustomizer.createNotificationService();
         notificationPublishService = testCustomizer.createNotificationPublishService();
-        bindingToNormalizedNodeCodec = testCustomizer.getBindingToNormalized();
+        bindingToNormalizedNodeCodec = testCustomizer.getAdapterContext();
         testCustomizer.updateSchema(context);
     }
 
@@ -46,7 +46,7 @@ public class AbstractNotificationBrokerTest extends AbstractSchemaAwareTest {
         return domNotificationRouter;
     }
 
-    public BindingToNormalizedNodeCodec getBindingToNormalizedNodeCodec() {
+    public AdapterContext getBindingToNormalizedNodeCodec() {
         return bindingToNormalizedNodeCodec;
     }
 }

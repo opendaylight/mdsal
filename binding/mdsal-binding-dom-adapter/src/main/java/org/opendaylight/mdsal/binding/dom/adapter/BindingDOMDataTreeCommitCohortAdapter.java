@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.util.concurrent.FluentFuture;
@@ -19,19 +18,18 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohort;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
-class BindingDOMDataTreeCommitCohortAdapter<T extends DataObject>
+final class BindingDOMDataTreeCommitCohortAdapter<T extends DataObject>
         extends AbstractBindingAdapter<DataTreeCommitCohort<T>> implements DOMDataTreeCommitCohort {
-
-    BindingDOMDataTreeCommitCohortAdapter(final BindingToNormalizedNodeCodec codec,
-            final DataTreeCommitCohort<T> cohort) {
+    BindingDOMDataTreeCommitCohortAdapter(final AdapterContext codec, final DataTreeCommitCohort<T> cohort) {
         super(codec, cohort);
     }
 
     @Override
     public FluentFuture<PostCanCommitStep> canCommit(final Object txId,
             final SchemaContext ctx, final Collection<DOMDataTreeCandidate> candidates) {
-        final Collection<DataTreeModification<T>> modifications = candidates.stream().map(
-            candidate -> LazyDataTreeModification.<T>create(getCodec(), candidate)).collect(Collectors.toList());
+        final Collection<DataTreeModification<T>> modifications = candidates.stream()
+                .map(candidate -> LazyDataTreeModification.<T>create(currentSerializer(), candidate))
+                .collect(Collectors.toList());
         return getDelegate().canCommit(txId, modifications);
     }
 }
