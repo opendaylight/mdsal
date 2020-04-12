@@ -201,7 +201,8 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
     }
 
     @Override
-    public final InstanceIdentifier<?> fromYangInstanceIdentifier(final YangInstanceIdentifier dom) {
+    public final <T extends DataObject> InstanceIdentifier<T> fromYangInstanceIdentifier(
+            final YangInstanceIdentifier dom) {
         return codecRegistry.fromYangInstanceIdentifier(dom);
     }
 
