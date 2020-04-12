@@ -22,16 +22,17 @@ import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> implements Delegator<T>,
         Identifiable<Object> {
 
-    private final @NonNull BindingToNormalizedNodeCodec codec;
+    private final @NonNull AdapterContext adapterContext;
     private final @NonNull T delegate;
 
-    AbstractForwardedTransaction(final T delegateTx, final BindingToNormalizedNodeCodec codec) {
+    AbstractForwardedTransaction(final AdapterContext adapterContext, final T delegateTx) {
+        this.adapterContext = requireNonNull(adapterContext, "Codec must not be null");
         this.delegate = requireNonNull(delegateTx, "Delegate must not be null");
-        this.codec = requireNonNull(codec, "Codec must not be null");
     }
 
     @Override
@@ -49,8 +50,8 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
         return txType.cast(delegate);
     }
 
-    protected final BindingToNormalizedNodeCodec getCodec() {
-        return codec;
+    protected final AdapterContext adapterContext() {
+        return adapterContext;
     }
 
     protected final <D extends DataObject> @NonNull FluentFuture<Optional<D>> doRead(
@@ -58,13 +59,17 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
             final InstanceIdentifier<D> path) {
         checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 
-        return readOps.read(store, codec.toYangInstanceIdentifierBlocking(path))
-                .transform(codec.getCodecRegistry().deserializeFunction(path)::apply, MoreExecutors.directExecutor());
+        final CurrentAdapterSerializer codec = adapterContext.currentSerializer();
+        final YangInstanceIdentifier domPath = codec.toYangInstanceIdentifier(path);
+
+        return readOps.read(store, domPath)
+                .transform(optData -> optData.map(domData -> (D) codec.fromNormalizedNode(domPath, domData)),
+                    MoreExecutors.directExecutor());
     }
 
     protected final @NonNull FluentFuture<Boolean> doExists(final DOMDataTreeReadOperations readOps,
             final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         checkArgument(!path.isWildcarded(), "Invalid exists of wildcarded path %s", path);
-        return readOps.exists(store, codec.toYangInstanceIdentifierBlocking(path));
+        return readOps.exists(store, adapterContext.currentSerializer().toYangInstanceIdentifier(path));
     }
 }

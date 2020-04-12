@@ -16,7 +16,6 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 /**
  * Adapter exposing Binding {@link DataTreeChangeService} and wrapping a {@link DOMDataTreeChangeService} and is
@@ -27,15 +26,9 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
  */
 final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapter<DOMDataTreeChangeService>
         implements DataTreeChangeService {
-
-    private BindingDOMDataTreeChangeServiceAdapter(final BindingToNormalizedNodeCodec codec,
+    BindingDOMDataTreeChangeServiceAdapter(final AdapterContext adapterContext,
             final DOMDataTreeChangeService dataTreeChangeService) {
-        super(codec, dataTreeChangeService);
-    }
-
-    static DataTreeChangeService create(final BindingToNormalizedNodeCodec codec,
-            final DOMDataTreeChangeService dataTreeChangeService) {
-        return new BindingDOMDataTreeChangeServiceAdapter(codec, dataTreeChangeService);
+        super(adapterContext, dataTreeChangeService);
     }
 
     @Override
@@ -46,8 +39,8 @@ final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapte
         final BindingDOMDataTreeChangeListenerAdapter<T> domListener =
                 listener instanceof ClusteredDataTreeChangeListener
                         ? new BindingClusteredDOMDataTreeChangeListenerAdapter<>(
-                                getCodec(), (ClusteredDataTreeChangeListener<T>) listener, storeType)
-                        : new BindingDOMDataTreeChangeListenerAdapter<>(getCodec(), listener, storeType);
+                                adapterContext(), (ClusteredDataTreeChangeListener<T>) listener, storeType)
+                        : new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), listener, storeType);
 
         final ListenerRegistration<BindingDOMDataTreeChangeListenerAdapter<T>> domReg =
                 getDelegate().registerDataTreeChangeListener(domIdentifier, domListener);
@@ -55,7 +48,7 @@ final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapte
     }
 
     private DOMDataTreeIdentifier toDomTreeIdentifier(final DataTreeIdentifier<?> treeId) {
-        final YangInstanceIdentifier domPath = getCodec().toYangInstanceIdentifierBlocking(treeId.getRootIdentifier());
-        return new DOMDataTreeIdentifier(treeId.getDatastoreType(), domPath);
+        return new DOMDataTreeIdentifier(treeId.getDatastoreType(),
+            currentSerializer().toYangInstanceIdentifier(treeId.getRootIdentifier()));
     }
 }

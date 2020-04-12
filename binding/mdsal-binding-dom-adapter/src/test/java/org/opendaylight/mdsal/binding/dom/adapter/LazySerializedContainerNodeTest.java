@@ -34,7 +34,6 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class LazySerializedContainerNodeTest {
-
     @Test
     public void basicTest() throws Exception {
         final SchemaPath rpcName;
@@ -49,8 +48,8 @@ public class LazySerializedContainerNodeTest {
         final BindingTestContext bindingTestContext = bindingBrokerTestFactory.getTestContext();
         bindingTestContext.start();
 
-        final ImmutableBiMap<?, ?> biMap =
-                bindingTestContext.getCodec().getRpcMethodToSchema(OpendaylightTestRpcServiceService.class);
+        final ImmutableBiMap<?, ?> biMap = bindingTestContext.getCodec().currentSerializer()
+                .getRpcMethodToSchema(OpendaylightTestRpcServiceService.class);
         rpcName = ((RpcDefinition) biMap.values().iterator().next()).getPath();
         final LeafNode<?> leafNode = ImmutableLeafNodeBuilder.create().withNodeIdentifier(NodeIdentifier
                 .create(QName.create("", "test"))).withValue("").build();

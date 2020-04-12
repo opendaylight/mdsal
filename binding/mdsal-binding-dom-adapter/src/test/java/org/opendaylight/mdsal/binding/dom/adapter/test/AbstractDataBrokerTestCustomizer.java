@@ -14,6 +14,7 @@ import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
@@ -36,7 +37,7 @@ public abstract class AbstractDataBrokerTestCustomizer {
     private final DOMNotificationRouter domNotificationRouter;
     private final MockSchemaService schemaService;
     private ImmutableMap<LogicalDatastoreType, DOMStore> datastores;
-    private final BindingToNormalizedNodeCodec bindingToNormalized;
+    private final AdapterContext adapterContext;
 
     public ImmutableMap<LogicalDatastoreType, DOMStore> createDatastores() {
         return ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
@@ -47,9 +48,9 @@ public abstract class AbstractDataBrokerTestCustomizer {
 
     public AbstractDataBrokerTestCustomizer() {
         this.schemaService = new MockSchemaService();
-        this.bindingToNormalized = new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(),
+        this.adapterContext = new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(),
             GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry());
-        this.schemaService.registerSchemaContextListener(this.bindingToNormalized);
+        this.schemaService.registerSchemaContextListener(this.adapterContext);
         this.domNotificationRouter = DOMNotificationRouter.create(16);
     }
 
@@ -70,12 +71,11 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public NotificationService createNotificationService() {
-        return new BindingDOMNotificationServiceAdapter(this.domNotificationRouter,
-                this.bindingToNormalized.getCodecRegistry());
+        return new BindingDOMNotificationServiceAdapter(adapterContext, domNotificationRouter);
     }
 
     public NotificationPublishService createNotificationPublishService() {
-        return new BindingDOMNotificationPublishServiceAdapter(this.domNotificationRouter, this.bindingToNormalized);
+        return new BindingDOMNotificationPublishServiceAdapter(adapterContext, domNotificationRouter);
     }
 
     public abstract ListeningExecutorService getCommitCoordinatorExecutor();
@@ -85,36 +85,36 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public DataBroker createDataBroker() {
-        return new BindingDOMDataBrokerAdapter(getDOMDataBroker(), this.bindingToNormalized);
+        return new BindingDOMDataBrokerAdapter(adapterContext, getDOMDataBroker());
     }
 
-    public BindingToNormalizedNodeCodec getBindingToNormalized() {
-        return this.bindingToNormalized;
+    public AdapterContext getAdapterContext() {
+        return adapterContext;
     }
 
     public DOMSchemaService getSchemaService() {
-        return this.schemaService;
+        return schemaService;
     }
 
     public DOMDataBroker getDOMDataBroker() {
-        if (this.domDataBroker == null) {
-            this.domDataBroker = createDOMDataBroker();
+        if (domDataBroker == null) {
+            domDataBroker = createDOMDataBroker();
         }
-        return this.domDataBroker;
+        return domDataBroker;
     }
 
     private synchronized ImmutableMap<LogicalDatastoreType, DOMStore> getDatastores() {
-        if (this.datastores == null) {
-            this.datastores = createDatastores();
+        if (datastores == null) {
+            datastores = createDatastores();
         }
-        return this.datastores;
+        return datastores;
     }
 
     public void updateSchema(final EffectiveModelContext ctx) {
-        this.schemaService.changeSchema(ctx);
+        schemaService.changeSchema(ctx);
     }
 
     public DOMNotificationRouter getDomNotificationRouter() {
-        return this.domNotificationRouter;
+        return domNotificationRouter;
     }
 }

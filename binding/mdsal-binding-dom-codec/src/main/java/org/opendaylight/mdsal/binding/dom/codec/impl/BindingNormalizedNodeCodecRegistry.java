@@ -72,7 +72,7 @@ public class BindingNormalizedNodeCodecRegistry extends AbstractBindingNormalize
         }
     }
 
-    final @NonNull BindingCodecContext codecContext() {
+    private @NonNull BindingCodecContext codecContext() {
         final BindingCodecContext local = codecContext;
         checkState(local != null, "No context available yet");
         return local;

@@ -13,7 +13,6 @@ import com.google.common.base.MoreObjects;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
@@ -21,6 +20,7 @@ import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
@@ -42,30 +42,26 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static <T extends DataObject> DataTreeModification<T> create(final BindingToNormalizedNodeCodec codec,
+    static <T extends DataObject> DataTreeModification<T> create(final CurrentAdapterSerializer serializer,
             final DataTreeCandidate domChange, final LogicalDatastoreType datastoreType) {
-        final Entry<InstanceIdentifier<?>, BindingDataObjectCodecTreeNode<?>> codecCtx = codec.getSubtreeCodec(
-            domChange.getRootPath());
-        final DataTreeIdentifier<?> path = DataTreeIdentifier.create(datastoreType, codecCtx.getKey());
-        final DataObjectModification<?> modification = LazyDataObjectModification.create(codecCtx.getValue(),
-            domChange.getRootNode());
-        return new LazyDataTreeModification(path, modification);
+        final InstanceIdentifier<?> bindingPath = serializer.coerceInstanceIdentifier(domChange.getRootPath());
+        final BindingDataObjectCodecTreeNode<?> codec = serializer.getSubtreeCodec(bindingPath);
+        final DataTreeIdentifier<?> path = DataTreeIdentifier.create(datastoreType, bindingPath);
+        return new LazyDataTreeModification(path, LazyDataObjectModification.create(codec, domChange.getRootNode()));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static <T extends DataObject> DataTreeModification<T> create(final BindingToNormalizedNodeCodec codec,
+    static <T extends DataObject> DataTreeModification<T> create(final CurrentAdapterSerializer serializer,
             final DOMDataTreeCandidate candidate) {
-        final Entry<InstanceIdentifier<?>, BindingDataObjectCodecTreeNode<?>> codecCtx = codec.getSubtreeCodec(
-            candidate.getRootPath().getRootIdentifier());
-        final DataTreeIdentifier<?> path = DataTreeIdentifier.create(candidate.getRootPath().getDatastoreType(),
-            codecCtx.getKey());
-        final DataObjectModification<?> modification = LazyDataObjectModification.create(codecCtx.getValue(),
-            candidate.getRootNode());
-        return new LazyDataTreeModification(path, modification);
+        final DOMDataTreeIdentifier domRootPath = candidate.getRootPath();
+        final InstanceIdentifier<?> bindingPath = serializer.coerceInstanceIdentifier(domRootPath.getRootIdentifier());
+        final BindingDataObjectCodecTreeNode<?> codec = serializer.getSubtreeCodec(bindingPath);
+        return new LazyDataTreeModification(DataTreeIdentifier.create(domRootPath.getDatastoreType(), bindingPath),
+            LazyDataObjectModification.create(codec, candidate.getRootNode()));
     }
 
     static <T extends DataObject> @NonNull Collection<DataTreeModification<T>> from(
-            final BindingToNormalizedNodeCodec codec, final Collection<DataTreeCandidate> domChanges,
+            final CurrentAdapterSerializer codec, final Collection<DataTreeCandidate> domChanges,
             final LogicalDatastoreType datastoreType) {
         final List<DataTreeModification<T>> result = new ArrayList<>(domChanges.size());
         for (final DataTreeCandidate domChange : domChanges) {

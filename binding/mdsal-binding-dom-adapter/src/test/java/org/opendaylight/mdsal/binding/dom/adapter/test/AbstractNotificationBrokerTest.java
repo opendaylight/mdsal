@@ -26,7 +26,7 @@ public class AbstractNotificationBrokerTest extends AbstractSchemaAwareTest {
         domNotificationRouter = testCustomizer.getDomNotificationRouter();
         notificationService = testCustomizer.createNotificationService();
         notificationPublishService = testCustomizer.createNotificationPublishService();
-        bindingToNormalizedNodeCodec = testCustomizer.getBindingToNormalized();
+        bindingToNormalizedNodeCodec = testCustomizer.getAdapterContext();
         testCustomizer.updateSchema(context);
     }
 
