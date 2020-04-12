@@ -19,14 +19,14 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 public class BindingDOMMountPointServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMMountPointService, DOMMountPoint, BindingMountPointAdapter>
         implements MountPointService {
-    public BindingDOMMountPointServiceAdapter(final DOMMountPointService mountService,
-            final BindingToNormalizedNodeCodec codec) {
-        super(codec, mountService);
+    public BindingDOMMountPointServiceAdapter(final AdapterContext adapterContext,
+            final DOMMountPointService mountService) {
+        super(adapterContext, mountService);
     }
 
     @Override
     public Optional<MountPoint> getMountPoint(final InstanceIdentifier<?> mountPoint) {
-        YangInstanceIdentifier domPath = getCodec().toYangInstanceIdentifierBlocking(mountPoint);
+        YangInstanceIdentifier domPath = currentSerializer().toCachedYangInstanceIdentifier(mountPoint);
         Optional<DOMMountPoint> domMount = getDelegate().getMountPoint(domPath);
         return domMount.map(this::getAdapter);
     }
@@ -34,11 +34,11 @@ public class BindingDOMMountPointServiceAdapter
     @Override
     public <T extends MountPointListener> ListenerRegistration<T> registerListener(final InstanceIdentifier<?> path,
             final T listener) {
-        return new BindingDOMMountPointListenerAdapter<>(listener, getCodec(), getDelegate());
+        return new BindingDOMMountPointListenerAdapter<>(listener, adapterContext(), getDelegate());
     }
 
     @Override
     BindingMountPointAdapter loadAdapter(final DOMMountPoint key) {
-        return new BindingMountPointAdapter(getCodec(), key);
+        return new BindingMountPointAdapter(adapterContext(), key);
     }
 }

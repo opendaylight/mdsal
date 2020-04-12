@@ -18,16 +18,16 @@ import static org.mockito.Mockito.verify;
 import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
@@ -43,6 +43,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
  *
  * @author Thomas Pantelis
  */
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMDataTreeChangeServiceAdapterTest {
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
 
@@ -53,7 +54,7 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
     private GeneratedClassLoadingStrategy classLoadingStrategy;
 
     @Mock
-    private BindingNormalizedNodeCodecRegistry codecRegistry;
+    private BindingDOMCodecServices services;
 
     @Mock
     private YangInstanceIdentifier mockYangID;
@@ -64,30 +65,28 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        doReturn(this.mockYangID).when(this.codecRegistry).toYangInstanceIdentifier(TOP_PATH);
+        doReturn(mockYangID).when(services).toYangInstanceIdentifier(TOP_PATH);
     }
 
     @Test
     public void testRegisterDataTreeChangeListener() {
-        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
-            new DefaultBindingRuntimeGenerator(), classLoadingStrategy, codecRegistry);
+        final AdapterContext codec = new ConstantAdapterContext(services);
 
-        final DataTreeChangeService service = BindingDOMDataTreeChangeServiceAdapter.create(codec, this.mockDOMService);
+        final DataTreeChangeService service = new BindingDOMDataTreeChangeServiceAdapter(codec, mockDOMService);
 
-        doReturn(this.mockDOMReg).when(this.mockDOMService).registerDataTreeChangeListener(
-                domDataTreeIdentifier(this.mockYangID),
+        doReturn(mockDOMReg).when(mockDOMService).registerDataTreeChangeListener(
+                domDataTreeIdentifier(mockYangID),
                 any(DOMDataTreeChangeListener.class));
         final DataTreeIdentifier<Top> treeId = DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION, TOP_PATH);
         final TestClusteredDataTreeChangeListener mockClusteredListener = new TestClusteredDataTreeChangeListener();
         service.registerDataTreeChangeListener(treeId , mockClusteredListener);
 
-        verify(this.mockDOMService).registerDataTreeChangeListener(domDataTreeIdentifier(this.mockYangID),
+        verify(mockDOMService).registerDataTreeChangeListener(domDataTreeIdentifier(this.mockYangID),
                 isA(ClusteredDOMDataTreeChangeListener.class));
 
-        reset(this.mockDOMService);
-        doReturn(this.mockDOMReg).when(this.mockDOMService).registerDataTreeChangeListener(
-                domDataTreeIdentifier(this.mockYangID), any(DOMDataTreeChangeListener.class));
+        reset(mockDOMService);
+        doReturn(mockDOMReg).when(mockDOMService).registerDataTreeChangeListener(
+                domDataTreeIdentifier(mockYangID), any(DOMDataTreeChangeListener.class));
         final TestDataTreeChangeListener mockNonClusteredListener = new TestDataTreeChangeListener();
         service.registerDataTreeChangeListener(treeId , mockNonClusteredListener);
 

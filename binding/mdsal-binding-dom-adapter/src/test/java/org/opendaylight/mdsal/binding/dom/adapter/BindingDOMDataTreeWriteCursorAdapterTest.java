@@ -19,10 +19,8 @@ import com.google.common.collect.ImmutableList;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Deque;
 import org.junit.Test;
-import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -33,19 +31,16 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public class BindingDOMDataTreeWriteCursorAdapterTest {
-
     @Test
     public void basicTest() throws Exception {
         final DataTreeIdentifier<?> identifier =
                 DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
                         InstanceIdentifier.create(DataObject.class));
         final DOMDataTreeWriteCursor delegate = mock(DOMDataTreeWriteCursor.class);
-        final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
-        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
-            new DefaultBindingRuntimeGenerator(), GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-            registry);
+        final BindingDOMCodecServices registry = mock(BindingDOMCodecServices.class);
+        final AdapterContext codec = new ConstantAdapterContext(registry);
         final BindingDOMDataTreeWriteCursorAdapter<?> adapter =
-                new BindingDOMDataTreeWriteCursorAdapter<>(identifier, delegate, codec);
+                new BindingDOMDataTreeWriteCursorAdapter<>(codec, delegate, identifier);
 
         final PathArgument pathArgument = Item.of(DataObject.class);
         final DataObject data = mock(DataObject.class);

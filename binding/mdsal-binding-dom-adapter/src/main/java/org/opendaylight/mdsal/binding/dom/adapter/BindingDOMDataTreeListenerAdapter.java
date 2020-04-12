@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeListeningException;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
@@ -33,8 +34,8 @@ public class BindingDOMDataTreeListenerAdapter extends AbstractBindingAdapter<Da
 
     private final LogicalDatastoreType store;
 
-    protected BindingDOMDataTreeListenerAdapter(final DataTreeListener delegate,
-            final BindingToNormalizedNodeCodec codec, final LogicalDatastoreType store) {
+    protected BindingDOMDataTreeListenerAdapter(final DataTreeListener delegate, final AdapterContext codec,
+            final LogicalDatastoreType store) {
         super(codec, delegate);
         this.store = requireNonNull(store, "store");
     }
@@ -42,28 +43,27 @@ public class BindingDOMDataTreeListenerAdapter extends AbstractBindingAdapter<Da
     @Override
     public void onDataTreeChanged(final Collection<DataTreeCandidate> domChanges,
             final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> domSubtrees) {
-
-        final Collection<DataTreeModification<?>> changes = toBinding(domChanges);
-        final Map<DataTreeIdentifier<?>, DataObject> subtrees = toBinding(domSubtrees);
-
-        getDelegate().onDataTreeChanged(changes, subtrees);
+        final CurrentAdapterSerializer serializer = currentSerializer();
+        getDelegate().onDataTreeChanged(toBinding(serializer, domChanges), toBinding(serializer, domSubtrees));
     }
 
-    private Map<DataTreeIdentifier<?>, DataObject> toBinding(
+    private Map<DataTreeIdentifier<?>, DataObject> toBinding(final BindingNormalizedNodeSerializer serializer,
             final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> domSubtrees) {
         // FIXME: Introduce lazy translating map
         final Map<DataTreeIdentifier<?>, DataObject> ret = Maps.newHashMapWithExpectedSize(domSubtrees.size());
+
         for (final Entry<DOMDataTreeIdentifier, NormalizedNode<?, ?>> domEntry : domSubtrees.entrySet()) {
             final Entry<InstanceIdentifier<?>, DataObject> bindingEntry =
-                    getCodec().fromNormalizedNode(domEntry.getKey().getRootIdentifier(), domEntry.getValue());
+                    serializer.fromNormalizedNode(domEntry.getKey().getRootIdentifier(), domEntry.getValue());
             ret.put(DataTreeIdentifier.create(store, bindingEntry.getKey()), bindingEntry.getValue());
         }
         return ret;
     }
 
     @SuppressWarnings("unchecked")
-    private Collection<DataTreeModification<?>> toBinding(final Collection<DataTreeCandidate> domChanges) {
-        return Collection.class.cast(LazyDataTreeModification.from(getCodec(), domChanges, store));
+    private Collection<DataTreeModification<?>> toBinding(final CurrentAdapterSerializer serializer,
+            final Collection<DataTreeCandidate> domChanges) {
+        return Collection.class.cast(LazyDataTreeModification.from(serializer, domChanges, store));
     }
 
     @Override

@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import java.util.Optional;
+import static java.util.Objects.requireNonNull;
+
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -25,12 +26,12 @@ final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> im
 
     private final T listener;
     private final ListenerRegistration<DOMMountPointListener> registration;
-    private final BindingToNormalizedNodeCodec codec;
+    private final AdapterContext adapterContext;
 
-    BindingDOMMountPointListenerAdapter(final T listener, final BindingToNormalizedNodeCodec codec,
+    BindingDOMMountPointListenerAdapter(final T listener, final AdapterContext adapterContext,
             final DOMMountPointService mountService) {
-        this.listener = listener;
-        this.codec = codec;
+        this.listener = requireNonNull(listener);
+        this.adapterContext = requireNonNull(adapterContext);
         this.registration = mountService.registerProvisionListener(this);
     }
 
@@ -54,16 +55,6 @@ final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> im
         }
     }
 
-    private InstanceIdentifier<? extends DataObject> toBinding(final YangInstanceIdentifier path)
-            throws DeserializationException {
-        final Optional<InstanceIdentifier<? extends DataObject>> instanceIdentifierOptional = codec.toBinding(path);
-        if (instanceIdentifierOptional.isPresent()) {
-            return instanceIdentifierOptional.get();
-        }
-
-        throw new DeserializationException("Deserialization unsuccessful, " + instanceIdentifierOptional);
-    }
-
     @Override
     public void onMountPointRemoved(final YangInstanceIdentifier path) {
         try {
@@ -73,4 +64,20 @@ final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> im
             LOG.error("Unable to translate mountPoint path {}. Omitting event.", path, e);
         }
     }
+
+    private InstanceIdentifier<? extends DataObject> toBinding(final YangInstanceIdentifier path)
+            throws DeserializationException {
+        final InstanceIdentifier<?> binding;
+        try {
+            binding = adapterContext.currentSerializer().fromYangInstanceIdentifier(path);
+        } catch (IllegalArgumentException e) {
+            throw new DeserializationException("Deserialization unsuccessful, " + path, e);
+        }
+        if (binding == null) {
+            throw new DeserializationException("Deserialization unsuccessful, " + path);
+        }
+        return binding;
+    }
+
+
 }

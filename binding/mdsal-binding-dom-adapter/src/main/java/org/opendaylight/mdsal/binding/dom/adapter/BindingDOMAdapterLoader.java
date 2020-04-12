@@ -7,7 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
@@ -31,19 +33,17 @@ public abstract class BindingDOMAdapterLoader extends AdapterLoader<BindingServi
             .put(ActionProviderService.class, ActionProviderServiceAdapter.BUILDER_FACTORY)
             .build();
 
-    private final BindingToNormalizedNodeCodec codec;
+    private final AdapterContext codec;
 
-    public BindingDOMAdapterLoader(final BindingToNormalizedNodeCodec codec) {
-        this.codec = codec;
+    public BindingDOMAdapterLoader(final AdapterContext codec) {
+        this.codec = requireNonNull(codec);
     }
 
     @Override
     protected final AdapterBuilder<? extends BindingService, DOMService> createBuilder(
                 final Class<? extends BindingService> key) {
         final Factory<?> factory = FACTORIES.get(key);
-        Preconditions.checkArgument(factory != null, "Unsupported service type %s", key);
-        final BindingDOMAdapterBuilder<?> builder = factory.newBuilder();
-        builder.setCodec(codec);
-        return builder;
+        checkArgument(factory != null, "Unsupported service type %s", key);
+        return factory.newBuilder(codec);
     }
 }
