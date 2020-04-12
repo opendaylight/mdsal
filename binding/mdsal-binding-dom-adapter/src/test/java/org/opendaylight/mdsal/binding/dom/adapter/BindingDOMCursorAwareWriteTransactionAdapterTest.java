@@ -15,10 +15,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
-import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -30,16 +28,14 @@ public class BindingDOMCursorAwareWriteTransactionAdapterTest {
     @Test
     public void basicTest() throws Exception {
         final DOMDataTreeCursorAwareTransaction delegate = mock(DOMDataTreeCursorAwareTransaction.class);
-        final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
-        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
-            new DefaultBindingRuntimeGenerator(), GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-                registry);
+        final BindingDOMCodecServices registry = mock(BindingDOMCodecServices.class);
+        final AdapterContext codec = new ConstantAdapterContext(registry);
         final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.empty();
         doReturn(yangInstanceIdentifier).when(registry).toYangInstanceIdentifier(any());
         doReturn(mock(DOMDataTreeWriteCursor.class)).when(delegate).createCursor(any());
 
-        final BindingDOMCursorAwareWriteTransactionAdapter adapter =
-                new BindingDOMCursorAwareWriteTransactionAdapter<>(delegate, codec);
+        final BindingDOMCursorAwareWriteTransactionAdapter<?> adapter =
+                new BindingDOMCursorAwareWriteTransactionAdapter<>(codec, delegate);
 
         assertNotNull(adapter.createCursor(DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
                 InstanceIdentifier.create(DataObject.class))));

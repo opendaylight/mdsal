@@ -18,23 +18,17 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
-public final class BindingDOMDataTreeServiceAdapter extends AbstractBindingAdapter<DOMDataTreeService>
+final class BindingDOMDataTreeServiceAdapter extends AbstractBindingAdapter<DOMDataTreeService>
         implements DataTreeService {
-    private BindingDOMDataTreeServiceAdapter(final BindingToNormalizedNodeCodec codec,
-            final DOMDataTreeService delegate) {
-        super(codec, delegate);
-    }
-
-    public static BindingDOMDataTreeServiceAdapter create(final DOMDataTreeService domService,
-            final BindingToNormalizedNodeCodec codec) {
-        return new BindingDOMDataTreeServiceAdapter(codec, domService);
+    BindingDOMDataTreeServiceAdapter(final AdapterContext adapterContext, final DOMDataTreeService delegate) {
+        super(adapterContext, delegate);
     }
 
     @Override
     public DataTreeProducer createProducer(final Collection<DataTreeIdentifier<?>> subtrees) {
-        final Collection<DOMDataTreeIdentifier> domSubtrees = getCodec().toDOMDataTreeIdentifiers(subtrees);
+        final Collection<DOMDataTreeIdentifier> domSubtrees = currentSerializer().toDOMDataTreeIdentifiers(subtrees);
         final DOMDataTreeProducer domChildProducer = getDelegate().createProducer(domSubtrees);
-        return BindingDOMDataTreeProducerAdapter.create(domChildProducer, getCodec());
+        return new BindingDOMDataTreeProducerAdapter(adapterContext(), domChildProducer);
     }
 
     @Override

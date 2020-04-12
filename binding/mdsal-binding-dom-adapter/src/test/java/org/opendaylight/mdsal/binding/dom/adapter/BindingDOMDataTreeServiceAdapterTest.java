@@ -36,7 +36,7 @@ public class BindingDOMDataTreeServiceAdapterTest extends AbstractAdapterTest {
         initMocks(this);
         super.before();
 
-        bindingDOMDataTreeServiceAdapter = BindingDOMDataTreeServiceAdapter.create(delegate, codec);
+        bindingDOMDataTreeServiceAdapter = new BindingDOMDataTreeServiceAdapter(codec, delegate);
     }
 
     @Test

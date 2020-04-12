@@ -11,7 +11,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -22,23 +21,21 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
  * and translated DOM events to their Binding equivalent.
  */
 class BindingDOMDataTreeChangeListenerAdapter<T extends DataObject> implements DOMDataTreeChangeListener {
-
-    private final BindingToNormalizedNodeCodec codec;
+    private final AdapterContext adapterContext;
     private final DataTreeChangeListener<T> listener;
     private final LogicalDatastoreType store;
 
-    BindingDOMDataTreeChangeListenerAdapter(final BindingToNormalizedNodeCodec codec,
+    BindingDOMDataTreeChangeListenerAdapter(final AdapterContext adapterContext,
             final DataTreeChangeListener<T> listener, final LogicalDatastoreType store) {
-        this.codec = requireNonNull(codec);
+        this.adapterContext = requireNonNull(adapterContext);
         this.listener = requireNonNull(listener);
         this.store = requireNonNull(store);
     }
 
     @Override
     public void onDataTreeChanged(final Collection<DataTreeCandidate> domChanges) {
-        final Collection<DataTreeModification<T>> bindingChanges = LazyDataTreeModification.from(codec, domChanges,
-            store);
-        listener.onDataTreeChanged(bindingChanges);
+        listener.onDataTreeChanged(LazyDataTreeModification.from(adapterContext.currentSerializer(), domChanges,
+            store));
     }
 
     @Override

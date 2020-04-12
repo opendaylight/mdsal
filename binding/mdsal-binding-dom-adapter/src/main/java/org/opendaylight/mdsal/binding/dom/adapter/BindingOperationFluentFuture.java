@@ -14,7 +14,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.ExecutionException;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.yangtools.yang.binding.Action;
@@ -28,15 +27,15 @@ final class BindingOperationFluentFuture<O extends RpcOutput> extends AbstractFu
     private final Class<? extends Action<?, ?, O>> action;
     private final NodeIdentifier identifier;
 
-    private BindingNormalizedNodeSerializer codec;
+    private AdapterContext adapterContext;
 
     BindingOperationFluentFuture(final ListenableFuture<RpcResult<O>> userFuture,
             final Class<? extends Action<?, ?, O>> action, final NodeIdentifier identifier,
-            final BindingNormalizedNodeSerializer codec) {
+            final AdapterContext adapterContext) {
         this.userFuture = requireNonNull(userFuture);
         this.action = requireNonNull(action);
         this.identifier = requireNonNull(identifier);
-        this.codec = requireNonNull(codec);
+        this.adapterContext = requireNonNull(adapterContext);
         userFuture.addListener(this::userFutureCompleted, MoreExecutors.directExecutor());
     }
 
@@ -53,23 +52,23 @@ final class BindingOperationFluentFuture<O extends RpcOutput> extends AbstractFu
         try {
             final RpcResult<O> bindingResult = Futures.getDone(userFuture);
             if (bindingResult.getResult() != null) {
-                domResult = new SimpleDOMActionResult(
-                        codec.toLazyNormalizedNodeActionOutput(action, identifier, bindingResult.getResult()),
-                        bindingResult.getErrors());
+                domResult = new SimpleDOMActionResult(adapterContext.currentSerializer()
+                    .toLazyNormalizedNodeActionOutput(action, identifier, bindingResult.getResult()),
+                    bindingResult.getErrors());
             } else {
                 domResult = new SimpleDOMActionResult(bindingResult.getErrors());
             }
         } catch (ExecutionException e) {
-            codec = null;
+            adapterContext = null;
             setException(e.getCause());
             return;
         } catch (RuntimeException | Error e) {
-            codec = null;
+            adapterContext = null;
             setException(e);
             return;
         }
 
-        codec = null;
+        adapterContext = null;
         set(domResult);
     }
 }

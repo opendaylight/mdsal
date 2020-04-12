@@ -17,28 +17,23 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 
-class BindingDOMDataTreeProducerAdapter extends AbstractBindingAdapter<DOMDataTreeProducer>
+final class BindingDOMDataTreeProducerAdapter extends AbstractBindingAdapter<DOMDataTreeProducer>
         implements DataTreeProducer {
-
-    BindingDOMDataTreeProducerAdapter(final BindingToNormalizedNodeCodec codec, final DOMDataTreeProducer delegate) {
-        super(codec, delegate);
+    BindingDOMDataTreeProducerAdapter(final AdapterContext adapterContext, final DOMDataTreeProducer delegate) {
+        super(adapterContext, delegate);
     }
 
     @Override
     public CursorAwareWriteTransaction createTransaction(final boolean isolated) {
         final DOMDataTreeCursorAwareTransaction domTx = getDelegate().createTransaction(isolated);
-        return new BindingDOMCursorAwareWriteTransactionAdapter<>(domTx, getCodec());
-    }
-
-    static DataTreeProducer create(final DOMDataTreeProducer domProducer, final BindingToNormalizedNodeCodec codec) {
-        return new BindingDOMDataTreeProducerAdapter(codec, domProducer);
+        return new BindingDOMCursorAwareWriteTransactionAdapter<>(adapterContext(), domTx);
     }
 
     @Override
     public DataTreeProducer createProducer(final Collection<DataTreeIdentifier<?>> subtrees) {
-        final Collection<DOMDataTreeIdentifier> domSubtrees = getCodec().toDOMDataTreeIdentifiers(subtrees);
+        final Collection<DOMDataTreeIdentifier> domSubtrees = currentSerializer().toDOMDataTreeIdentifiers(subtrees);
         final DOMDataTreeProducer domChildProducer = getDelegate().createProducer(domSubtrees);
-        return BindingDOMDataTreeProducerAdapter.create(domChildProducer, getCodec());
+        return new BindingDOMDataTreeProducerAdapter(adapterContext(), domChildProducer);
     }
 
     @Override

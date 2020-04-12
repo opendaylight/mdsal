@@ -14,13 +14,14 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.DataTreeProducerException;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
@@ -29,17 +30,16 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMDataTreeProducerAdapterTest {
-
     private BindingDOMDataTreeProducerAdapter bindingDOMDataTreeProducerAdapter;
-    private BindingToNormalizedNodeCodec codec;
+    private AdapterContext codec;
 
     @Mock
     private DOMDataTreeProducer delegate;
 
     @Before
     public void setUp() {
-        initMocks(this);
         final BindingBrokerTestFactory testFactory = new BindingBrokerTestFactory();
         testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
         final BindingTestContext testContext = testFactory.getTestContext();
@@ -53,11 +53,6 @@ public class BindingDOMDataTreeProducerAdapterTest {
         doReturn(mock(DOMDataTreeCursorAwareTransaction.class)).when(delegate).createTransaction(true);
         assertNotNull(bindingDOMDataTreeProducerAdapter.createTransaction(true));
         verify(delegate).createTransaction(true);
-    }
-
-    @Test
-    public void createTest() {
-        assertNotNull(BindingDOMDataTreeProducerAdapter.create(delegate, codec));
     }
 
     @Test
