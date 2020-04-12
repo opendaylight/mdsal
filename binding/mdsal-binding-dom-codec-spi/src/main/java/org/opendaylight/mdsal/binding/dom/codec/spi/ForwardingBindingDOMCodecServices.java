@@ -11,6 +11,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.collect.ForwardingObject;
 import java.time.Instant;
 import java.util.Map.Entry;
+import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
 import org.opendaylight.yangtools.yang.binding.Action;
@@ -150,5 +151,10 @@ public abstract class ForwardingBindingDOMCodecServices extends ForwardingObject
     public BindingStreamEventWriter newRpcWriter(final Class<? extends DataContainer> rpcInputOrOutput,
             final NormalizedNodeStreamWriter streamWriter) {
         return delegate().newRpcWriter(rpcInputOrOutput,streamWriter);
+    }
+
+    @Override
+    public BindingRuntimeContext getRuntimeContext() {
+        return delegate().getRuntimeContext();
     }
 }

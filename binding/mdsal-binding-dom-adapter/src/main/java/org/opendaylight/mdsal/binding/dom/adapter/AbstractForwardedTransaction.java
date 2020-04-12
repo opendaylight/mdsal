@@ -26,10 +26,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> implements Delegator<T>,
         Identifiable<Object> {
 
-    private final @NonNull BindingToNormalizedNodeCodec codec;
+    private final @NonNull AdapterContext codec;
     private final @NonNull T delegate;
 
-    AbstractForwardedTransaction(final T delegateTx, final BindingToNormalizedNodeCodec codec) {
+    AbstractForwardedTransaction(final T delegateTx, final AdapterContext codec) {
         this.delegate = requireNonNull(delegateTx, "Delegate must not be null");
         this.codec = requireNonNull(codec, "Codec must not be null");
     }
@@ -49,7 +49,7 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
         return txType.cast(delegate);
     }
 
-    protected final BindingToNormalizedNodeCodec getCodec() {
+    protected final AdapterContext getCodec() {
         return codec;
     }
 

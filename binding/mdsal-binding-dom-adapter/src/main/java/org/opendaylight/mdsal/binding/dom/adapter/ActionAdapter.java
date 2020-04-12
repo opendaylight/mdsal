@@ -34,7 +34,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
     private final NodeIdentifier inputName;
     private final SchemaPath schemaPath;
 
-    ActionAdapter(final BindingToNormalizedNodeCodec codec, final DOMActionService delegate,
+    ActionAdapter(final AdapterContext codec, final DOMActionService delegate,
             final Class<? extends Action<?, ?, ?>> type) {
         super(codec, delegate);
         this.type = requireNonNull(type);
@@ -42,7 +42,8 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
         this.inputName = NodeIdentifier.create(operationInputQName(schemaPath.getLastComponent().getModule()));
     }
 
-    @Override public @Nullable Object invoke(final @Nullable Object proxy, final @Nullable Method method,
+    @Override
+    public @Nullable Object invoke(final @Nullable Object proxy, final @Nullable Method method,
             final Object @Nullable [] args) throws Throwable {
         switch (method.getName()) {
             case "equals":

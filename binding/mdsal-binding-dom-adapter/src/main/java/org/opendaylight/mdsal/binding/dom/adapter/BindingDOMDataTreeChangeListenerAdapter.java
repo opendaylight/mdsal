@@ -22,13 +22,12 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
  * and translated DOM events to their Binding equivalent.
  */
 class BindingDOMDataTreeChangeListenerAdapter<T extends DataObject> implements DOMDataTreeChangeListener {
-
-    private final BindingToNormalizedNodeCodec codec;
+    private final AdapterContext codec;
     private final DataTreeChangeListener<T> listener;
     private final LogicalDatastoreType store;
 
-    BindingDOMDataTreeChangeListenerAdapter(final BindingToNormalizedNodeCodec codec,
-            final DataTreeChangeListener<T> listener, final LogicalDatastoreType store) {
+    BindingDOMDataTreeChangeListenerAdapter(final AdapterContext codec, final DataTreeChangeListener<T> listener,
+            final LogicalDatastoreType store) {
         this.codec = requireNonNull(codec);
         this.listener = requireNonNull(listener);
         this.store = requireNonNull(store);

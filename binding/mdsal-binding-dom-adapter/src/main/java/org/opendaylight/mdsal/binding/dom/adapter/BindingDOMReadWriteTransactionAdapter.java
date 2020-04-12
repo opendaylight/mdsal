@@ -17,9 +17,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 class BindingDOMReadWriteTransactionAdapter extends BindingDOMWriteTransactionAdapter<DOMDataTreeReadWriteTransaction>
         implements ReadWriteTransaction {
-
     BindingDOMReadWriteTransactionAdapter(final DOMDataTreeReadWriteTransaction delegateTx,
-            final BindingToNormalizedNodeCodec codec) {
+            final AdapterContext codec) {
         super(delegateTx, codec);
     }
 

@@ -25,7 +25,7 @@ public class BindingDOMRpcServiceAdapter
 
     protected static final Factory<RpcConsumerRegistry> BUILDER_FACTORY = Builder::new;
 
-    public BindingDOMRpcServiceAdapter(final DOMRpcService domService, final BindingToNormalizedNodeCodec codec) {
+    public BindingDOMRpcServiceAdapter(final DOMRpcService domService, final AdapterContext codec) {
         super(codec, domService);
     }
 
@@ -45,7 +45,7 @@ public class BindingDOMRpcServiceAdapter
 
     private static final class Builder extends BindingDOMAdapterBuilder<RpcConsumerRegistry> {
         @Override
-        protected RpcConsumerRegistry createInstance(final BindingToNormalizedNodeCodec codec,
+        protected RpcConsumerRegistry createInstance(final AdapterContext codec,
                 final ClassToInstanceMap<DOMService> delegates) {
             final DOMRpcService domRpc = delegates.getInstance(DOMRpcService.class);
             return new BindingDOMRpcServiceAdapter(domRpc  , codec);

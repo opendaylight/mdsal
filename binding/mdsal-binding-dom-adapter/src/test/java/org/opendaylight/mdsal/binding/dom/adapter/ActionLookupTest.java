@@ -22,7 +22,7 @@ import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.grpcont.Bar;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class ActionLookupTest {
-    private static BindingToNormalizedNodeCodec CODEC;
+    private static BlockingBindingNormalizer CODEC;
 
     @BeforeClass
     public static void beforeClass() {

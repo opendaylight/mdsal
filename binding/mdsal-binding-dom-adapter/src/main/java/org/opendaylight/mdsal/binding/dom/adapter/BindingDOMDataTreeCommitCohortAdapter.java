@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.util.concurrent.FluentFuture;
@@ -21,9 +20,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 class BindingDOMDataTreeCommitCohortAdapter<T extends DataObject>
         extends AbstractBindingAdapter<DataTreeCommitCohort<T>> implements DOMDataTreeCommitCohort {
-
-    BindingDOMDataTreeCommitCohortAdapter(final BindingToNormalizedNodeCodec codec,
-            final DataTreeCommitCohort<T> cohort) {
+    BindingDOMDataTreeCommitCohortAdapter(final AdapterContext codec, final DataTreeCommitCohort<T> cohort) {
         super(codec, cohort);
     }
 
