@@ -43,23 +43,23 @@ public class InstanceIdentifierTest extends AbstractBindingCodecTest {
 
     @Test
     public void testComplexAugmentationSerialization() {
-        final YangInstanceIdentifier yangII = registry.toYangInstanceIdentifier(BA_TREE_COMPLEX_USES);
+        final YangInstanceIdentifier yangII = codecContext.toYangInstanceIdentifier(BA_TREE_COMPLEX_USES);
         final PathArgument lastArg = yangII.getLastPathArgument();
         assertTrue("Last argument should be AugmentationIdentifier", lastArg instanceof AugmentationIdentifier);
-        final InstanceIdentifier<?> bindingII = registry.fromYangInstanceIdentifier(yangII);
+        final InstanceIdentifier<?> bindingII = codecContext.fromYangInstanceIdentifier(yangII);
         assertEquals(BA_TREE_COMPLEX_USES, bindingII);
     }
 
     @Test
     public void testLeafOnlyAugmentationSerialization() {
-        final PathArgument leafOnlyLastArg = registry.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY).getLastPathArgument();
+        final PathArgument leafOnlyLastArg = codecContext.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY).getLastPathArgument();
         assertTrue("Last argument should be AugmentationIdentifier", leafOnlyLastArg instanceof AugmentationIdentifier);
         assertTrue(((AugmentationIdentifier) leafOnlyLastArg).getPossibleChildNames().contains(SIMPLE_VALUE_QNAME));
     }
 
     @Test
     public void testCamelCaseKeys() {
-        final InstanceIdentifier<?> result = registry.fromYangInstanceIdentifier(YangInstanceIdentifier.create(
+        final InstanceIdentifier<?> result = codecContext.fromYangInstanceIdentifier(YangInstanceIdentifier.create(
             NodeIdentifier.create(OspfStatLsdbBrief.QNAME),
             NodeIdentifierWithPredicates.of(OspfStatLsdbBrief.QNAME, ImmutableMap.of(
                 QName.create(OspfStatLsdbBrief.QNAME, "AreaIndex"), 1,

@@ -43,7 +43,7 @@ public class UnionTypeTest extends AbstractBindingCodecTest {
     public void unionTest() {
         TopLevel topLevel = TopLevelBuilder.getDefaultInstance(TEST_STRING);
         Wrapper wrapper = new WrapperBuilder().setWrap(topLevel).build();
-        NormalizedNode<?, ?> topLevelEntry = registry.toNormalizedNode(InstanceIdentifier.create(Wrapper.class),
+        NormalizedNode<?, ?> topLevelEntry = codecContext.toNormalizedNode(InstanceIdentifier.create(Wrapper.class),
             wrapper).getValue();
 
         ContainerNode containerNode = ImmutableContainerNodeBuilder.create()
@@ -57,10 +57,10 @@ public class UnionTypeTest extends AbstractBindingCodecTest {
     public void bug5446Test() {
         IpAddressBinary ipAddress = IpAddressBinaryBuilder.getDefaultInstance("fwAAAQ==");
         Root root = new RootBuilder().setIpAddress(ipAddress).build();
-        NormalizedNode<?, ?> rootNode = registry.toNormalizedNode(InstanceIdentifier.builder(Root.class).build(), root)
+        NormalizedNode<?, ?> rootNode = codecContext.toNormalizedNode(InstanceIdentifier.builder(Root.class).build(), root)
                 .getValue();
 
-        Entry<InstanceIdentifier<?>, DataObject> rootEntry = registry.fromNormalizedNode(
+        Entry<InstanceIdentifier<?>, DataObject> rootEntry = codecContext.fromNormalizedNode(
                 YangInstanceIdentifier.of(rootNode.getNodeType()), rootNode);
 
         DataObject rootObj = rootEntry.getValue();
