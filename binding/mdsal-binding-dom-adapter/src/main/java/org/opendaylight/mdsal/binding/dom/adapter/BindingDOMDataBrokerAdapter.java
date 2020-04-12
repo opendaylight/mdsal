@@ -42,7 +42,7 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
     static final Factory<DataBroker> BUILDER_FACTORY = Builder::new;
     private final DataTreeChangeService treeChangeService;
 
-    public BindingDOMDataBrokerAdapter(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
+    public BindingDOMDataBrokerAdapter(final DOMDataBroker domDataBroker, final AdapterContext codec) {
         super(codec, domDataBroker);
         final DOMDataTreeChangeService domTreeChange = domDataBroker.getExtensions()
                 .getInstance(DOMDataTreeChangeService.class);
@@ -86,7 +86,7 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
         }
 
         @Override
-        protected DataBroker createInstance(final BindingToNormalizedNodeCodec codec,
+        protected DataBroker createInstance(final AdapterContext codec,
                 final ClassToInstanceMap<DOMService> delegates) {
             final DOMDataBroker domDataBroker = delegates.getInstance(DOMDataBroker.class);
             return new BindingDOMDataBrokerAdapter(domDataBroker, codec);

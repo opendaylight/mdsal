@@ -22,7 +22,7 @@ abstract class AbstractBindingLoadingAdapter<D, K, V> extends AbstractBindingAda
             }
         });
 
-    AbstractBindingLoadingAdapter(final BindingToNormalizedNodeCodec codec, final D delegate) {
+    AbstractBindingLoadingAdapter(final AdapterContext codec, final D delegate) {
         super(codec, delegate);
     }
 

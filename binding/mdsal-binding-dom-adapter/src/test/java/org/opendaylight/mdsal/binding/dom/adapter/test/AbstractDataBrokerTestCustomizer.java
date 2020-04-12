@@ -14,6 +14,7 @@ import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
@@ -36,7 +37,7 @@ public abstract class AbstractDataBrokerTestCustomizer {
     private final DOMNotificationRouter domNotificationRouter;
     private final MockSchemaService schemaService;
     private ImmutableMap<LogicalDatastoreType, DOMStore> datastores;
-    private final BindingToNormalizedNodeCodec bindingToNormalized;
+    private final AdapterContext bindingToNormalized;
 
     public ImmutableMap<LogicalDatastoreType, DOMStore> createDatastores() {
         return ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
@@ -70,12 +71,11 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public NotificationService createNotificationService() {
-        return new BindingDOMNotificationServiceAdapter(this.domNotificationRouter,
-                this.bindingToNormalized.getCodecRegistry());
+        return new BindingDOMNotificationServiceAdapter(domNotificationRouter, bindingToNormalized.getCodecRegistry());
     }
 
     public NotificationPublishService createNotificationPublishService() {
-        return new BindingDOMNotificationPublishServiceAdapter(this.domNotificationRouter, this.bindingToNormalized);
+        return new BindingDOMNotificationPublishServiceAdapter(domNotificationRouter, bindingToNormalized);
     }
 
     public abstract ListeningExecutorService getCommitCoordinatorExecutor();
@@ -88,7 +88,7 @@ public abstract class AbstractDataBrokerTestCustomizer {
         return new BindingDOMDataBrokerAdapter(getDOMDataBroker(), this.bindingToNormalized);
     }
 
-    public BindingToNormalizedNodeCodec getBindingToNormalized() {
+    public AdapterContext getBindingToNormalized() {
         return this.bindingToNormalized;
     }
 

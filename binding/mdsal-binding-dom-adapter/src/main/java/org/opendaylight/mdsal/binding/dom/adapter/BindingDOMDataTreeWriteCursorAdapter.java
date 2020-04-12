@@ -26,7 +26,7 @@ public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurs
     private final Deque<PathArgument> stack = new ArrayDeque<>();
 
     public BindingDOMDataTreeWriteCursorAdapter(final DataTreeIdentifier<?> path, final T delegate,
-            final BindingToNormalizedNodeCodec codec) {
+            final AdapterContext codec) {
         super(codec, delegate);
         path.getRootIdentifier().getPathArguments().forEach(stack::push);
     }

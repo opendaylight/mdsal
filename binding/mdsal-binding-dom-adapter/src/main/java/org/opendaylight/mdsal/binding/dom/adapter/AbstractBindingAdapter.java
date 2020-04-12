@@ -14,10 +14,10 @@ import org.opendaylight.yangtools.concepts.Delegator;
 
 @NonNullByDefault
 abstract class AbstractBindingAdapter<T> implements Delegator<T> {
-    private final BindingToNormalizedNodeCodec codec;
+    private final AdapterContext codec;
     private final T delegate;
 
-    AbstractBindingAdapter(final BindingToNormalizedNodeCodec codec, final T delegate) {
+    AbstractBindingAdapter(final AdapterContext codec, final T delegate) {
         this.codec = requireNonNull(codec);
         this.delegate = requireNonNull(delegate);
     }
@@ -27,7 +27,7 @@ abstract class AbstractBindingAdapter<T> implements Delegator<T> {
         return delegate;
     }
 
-    protected final BindingToNormalizedNodeCodec getCodec() {
+    protected final AdapterContext getCodec() {
         return codec;
     }
 }

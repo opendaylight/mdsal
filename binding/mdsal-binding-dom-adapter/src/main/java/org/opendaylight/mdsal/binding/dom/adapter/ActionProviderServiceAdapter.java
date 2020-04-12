@@ -15,11 +15,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
@@ -44,10 +42,10 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
         implements ActionProviderService {
     private static final class Builder extends BindingDOMAdapterBuilder<ActionProviderService> {
         @Override
-        protected ActionProviderService createInstance(final @Nullable BindingToNormalizedNodeCodec codec,
+        protected ActionProviderService createInstance(final AdapterContext codec,
                 final ClassToInstanceMap<DOMService> delegates) {
             final DOMActionProviderService domAction = delegates.getInstance(DOMActionProviderService.class);
-            return new ActionProviderServiceAdapter(requireNonNull(codec), domAction);
+            return new ActionProviderServiceAdapter(codec, domAction);
         }
 
         @Override
@@ -58,12 +56,12 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
 
     static final Factory<ActionProviderService> BUILDER_FACTORY = Builder::new;
 
-    ActionProviderServiceAdapter(final BindingToNormalizedNodeCodec codec, final DOMActionProviderService delegate) {
+    ActionProviderServiceAdapter(final AdapterContext codec, final DOMActionProviderService delegate) {
         super(codec, delegate);
     }
 
     @Deprecated
-    public static ActionProviderServiceAdapter create(final BindingToNormalizedNodeCodec codec,
+    public static ActionProviderServiceAdapter create(final AdapterContext codec,
             final DOMActionProviderService delegate) {
         return new ActionProviderServiceAdapter(codec, delegate);
     }
@@ -78,7 +76,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
             new Impl(getCodec(),
                 NodeIdentifier.create(YangConstants.operationOutputQName(path.getLastComponent().getModule())),
                 actionInterface, implementation), ImmutableSet.of());
-        return new AbstractObjectRegistration<S>(implementation) {
+        return new AbstractObjectRegistration<>(implementation) {
             @Override
             protected void removeRegistration() {
                 reg.close();
@@ -89,10 +87,10 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
     private static final class Impl implements DOMActionImplementation {
         private final Class<? extends Action<?, ?, ?>> actionInterface;
         private final Action implementation;
-        private final BindingNormalizedNodeSerializer codec;
+        private final AdapterContext codec;
         private final NodeIdentifier outputName;
 
-        Impl(final BindingNormalizedNodeSerializer codec, final NodeIdentifier outputName,
+        Impl(final AdapterContext codec, final NodeIdentifier outputName,
                 final Class<? extends Action<?, ?, ?>> actionInterface, final Action<?, ?, ?> implementation) {
             this.codec = requireNonNull(codec);
             this.outputName = requireNonNull(outputName);

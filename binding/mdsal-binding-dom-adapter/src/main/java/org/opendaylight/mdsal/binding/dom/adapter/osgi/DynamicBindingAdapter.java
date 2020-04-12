@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
 import com.google.common.collect.ImmutableList;
 import java.util.List;
-import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.BindingService;
@@ -32,6 +31,10 @@ import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,13 +45,17 @@ import org.slf4j.LoggerFactory;
  *
  * @author Robert Varga
  */
-public final class DynamicBindingAdapter implements AutoCloseable {
+@Component(immediate = true)
+public final class DynamicBindingAdapter {
     private static final Logger LOG = LoggerFactory.getLogger(DynamicBindingAdapter.class);
 
-    @GuardedBy("this")
-    private List<AdaptingTracker<?, ?>> trackers;
+    private List<AdaptingTracker<?, ?>> trackers = ImmutableList.of();
 
-    public DynamicBindingAdapter(final AdapterFactory factory, final BundleContext ctx) {
+    @Reference
+    AdapterFactory factory = null;
+
+    @Activate
+    void activate(final BundleContext ctx) {
         trackers = ImmutableList.of(
             new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker),
             new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, factory::createDataTreeService),
@@ -71,18 +78,13 @@ public final class DynamicBindingAdapter implements AutoCloseable {
         LOG.info("{} DOMService trackers started", trackers.size());
     }
 
-    @Override
-    public void close() {
-        final List<AdaptingTracker<?, ?>> toClose;
-        synchronized (this) {
-            toClose = trackers;
-            trackers = ImmutableList.of();
+    @Deactivate
+    void deactivate() {
+        LOG.debug("Stopping {} DOMService trackers", trackers.size());
+        if (!trackers.isEmpty()) {
+            trackers.forEach(AdaptingTracker::close);
+            LOG.info("{} DOMService trackers stopped", trackers.size());
         }
-
-        LOG.debug("Stopping {} DOMService trackers", toClose.size());
-        if (!toClose.isEmpty()) {
-            toClose.forEach(AdaptingTracker::close);
-            LOG.info("{} DOMService trackers stopped", toClose.size());
-        }
+        trackers = ImmutableList.of();
     }
 }

@@ -20,7 +20,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 class BindingDOMDataTreeProducerAdapter extends AbstractBindingAdapter<DOMDataTreeProducer>
         implements DataTreeProducer {
 
-    BindingDOMDataTreeProducerAdapter(final BindingToNormalizedNodeCodec codec, final DOMDataTreeProducer delegate) {
+    BindingDOMDataTreeProducerAdapter(final AdapterContext codec, final DOMDataTreeProducer delegate) {
         super(codec, delegate);
     }
 
@@ -30,7 +30,7 @@ class BindingDOMDataTreeProducerAdapter extends AbstractBindingAdapter<DOMDataTr
         return new BindingDOMCursorAwareWriteTransactionAdapter<>(domTx, getCodec());
     }
 
-    static DataTreeProducer create(final DOMDataTreeProducer domProducer, final BindingToNormalizedNodeCodec codec) {
+    static DataTreeProducer create(final DOMDataTreeProducer domProducer, final AdapterContext codec) {
         return new BindingDOMDataTreeProducerAdapter(codec, domProducer);
     }
 

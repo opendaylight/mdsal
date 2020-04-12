@@ -29,7 +29,7 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     private static final ImmutableSet<YangInstanceIdentifier> GLOBAL = ImmutableSet.of(YangInstanceIdentifier.empty());
 
     public BindingDOMRpcProviderServiceAdapter(final DOMRpcProviderService domRpcRegistry,
-            final BindingToNormalizedNodeCodec codec) {
+            final AdapterContext codec) {
         super(codec, domRpcRegistry);
     }
 
@@ -70,7 +70,7 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     private Collection<YangInstanceIdentifier> toYangInstanceIdentifiers(final Set<InstanceIdentifier<?>> identifiers) {
         final Collection<YangInstanceIdentifier> ret = new ArrayList<>(identifiers.size());
         for (final InstanceIdentifier<?> binding : identifiers) {
-            ret.add(getCodec().toYangInstanceIdentifierCached(binding));
+            ret.add(getCodec().toCachedYangInstanceIdentifier(binding));
         }
         return ret;
     }

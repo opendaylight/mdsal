@@ -23,6 +23,7 @@ import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
@@ -51,7 +52,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 @Beta
 public class BindingTestContext implements AutoCloseable {
-    private BindingToNormalizedNodeCodec codec;
+    private AdapterContext codec;
 
     private final ListeningExecutorService executor;
 
@@ -86,7 +87,7 @@ public class BindingTestContext implements AutoCloseable {
         return newDOMDataBroker;
     }
 
-    public BindingToNormalizedNodeCodec getCodec() {
+    public AdapterContext getCodec() {
         return codec;
     }
 

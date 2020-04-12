@@ -80,11 +80,11 @@ import org.slf4j.LoggerFactory;
  * NOTE: this class is non-final to allow controller adapter migration without duplicated code.
  */
 @Singleton
-public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerializer, EffectiveModelContextListener,
+public class BindingToNormalizedNodeCodecOld implements BindingNormalizedNodeSerializer, EffectiveModelContextListener,
         AutoCloseable {
 
     private static final long WAIT_DURATION_SEC = 5;
-    private static final Logger LOG = LoggerFactory.getLogger(BindingToNormalizedNodeCodec.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BindingToNormalizedNodeCodecOld.class);
 
     private final LoadingCache<InstanceIdentifier<?>, YangInstanceIdentifier> iiCache = CacheBuilder.newBuilder()
             .softValues().build(new CacheLoader<InstanceIdentifier<?>, YangInstanceIdentifier>() {
@@ -101,13 +101,13 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
     private ListenerRegistration<?> listenerRegistration;
 
     @Inject
-    public BindingToNormalizedNodeCodec(final BindingRuntimeGenerator generator,
+    public BindingToNormalizedNodeCodecOld(final BindingRuntimeGenerator generator,
             final ClassLoadingStrategy classLoadingStrategy, final BindingNormalizedNodeCodecRegistry codecRegistry) {
         this(generator, classLoadingStrategy, codecRegistry, false);
     }
 
     @Beta
-    public BindingToNormalizedNodeCodec(final BindingRuntimeContext runtimeContext) {
+    public BindingToNormalizedNodeCodecOld(final BindingRuntimeContext runtimeContext) {
         generator = (final SchemaContext context) -> {
             throw new UnsupportedOperationException("Static context assigned");
         };
@@ -118,7 +118,7 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
         futureSchema.onRuntimeContextUpdated(runtimeContext);
     }
 
-    public BindingToNormalizedNodeCodec(final BindingRuntimeGenerator generator,
+    public BindingToNormalizedNodeCodecOld(final BindingRuntimeGenerator generator,
             final ClassLoadingStrategy classLoadingStrategy, final BindingNormalizedNodeCodecRegistry codecRegistry,
             final boolean waitForSchema) {
         this.generator = requireNonNull(generator, "generator");
@@ -127,10 +127,10 @@ public class BindingToNormalizedNodeCodec implements BindingNormalizedNodeSerial
         this.futureSchema = FutureSchema.create(WAIT_DURATION_SEC, TimeUnit.SECONDS, waitForSchema);
     }
 
-    public static BindingToNormalizedNodeCodec newInstance(final BindingRuntimeGenerator generator,
+    public static BindingToNormalizedNodeCodecOld newInstance(final BindingRuntimeGenerator generator,
             final ClassLoadingStrategy classLoadingStrategy, final DOMSchemaService schemaService) {
         final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry();
-        BindingToNormalizedNodeCodec instance = new BindingToNormalizedNodeCodec(generator, classLoadingStrategy,
+        BindingToNormalizedNodeCodecOld instance = new BindingToNormalizedNodeCodecOld(generator, classLoadingStrategy,
             codecRegistry, true);
         instance.listenerRegistration = schemaService.registerSchemaContextListener(instance);
         return instance;

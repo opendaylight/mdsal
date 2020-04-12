@@ -44,11 +44,11 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 class RpcServiceAdapter implements InvocationHandler {
     private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
     private final Class<? extends RpcService> type;
-    private final BindingToNormalizedNodeCodec codec;
+    private final AdapterContext codec;
     private final DOMRpcService delegate;
     private final RpcService proxy;
 
-    RpcServiceAdapter(final Class<? extends RpcService> type, final BindingToNormalizedNodeCodec codec,
+    RpcServiceAdapter(final Class<? extends RpcService> type, final AdapterContext codec,
             final DOMRpcService domService) {
         this.type = requireNonNull(type);
         this.codec = requireNonNull(codec);
@@ -193,7 +193,7 @@ class RpcServiceAdapter implements InvocationHandler {
         ContainerNode serialize(final DataObject input) {
             final InstanceIdentifier<?> bindingII = refExtractor.extract(input);
             if (bindingII != null) {
-                final YangInstanceIdentifier yangII = codec.toYangInstanceIdentifierCached(bindingII);
+                final YangInstanceIdentifier yangII = codec.toCachedYangInstanceIdentifier(bindingII);
                 final LeafNode<?> contextRef = ImmutableNodes.leafNode(contextName, yangII);
                 return LazySerializedContainerNode.withContextRef(getRpcName(), input, contextRef,
                         codec.getCodecRegistry());

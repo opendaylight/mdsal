@@ -23,7 +23,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
 class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> extends AbstractForwardedTransaction<T>
         implements WriteTransaction {
-    BindingDOMWriteTransactionAdapter(final T delegateTx, final BindingToNormalizedNodeCodec codec) {
+    BindingDOMWriteTransactionAdapter(final T delegateTx, final AdapterContext codec) {
         super(delegateTx, codec);
     }
 

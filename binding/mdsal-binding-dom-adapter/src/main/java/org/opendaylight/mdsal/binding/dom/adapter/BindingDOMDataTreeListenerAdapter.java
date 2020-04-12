@@ -33,8 +33,8 @@ public class BindingDOMDataTreeListenerAdapter extends AbstractBindingAdapter<Da
 
     private final LogicalDatastoreType store;
 
-    protected BindingDOMDataTreeListenerAdapter(final DataTreeListener delegate,
-            final BindingToNormalizedNodeCodec codec, final LogicalDatastoreType store) {
+    protected BindingDOMDataTreeListenerAdapter(final DataTreeListener delegate, final AdapterContext codec,
+            final LogicalDatastoreType store) {
         super(codec, delegate);
         this.store = requireNonNull(store, "store");
     }
