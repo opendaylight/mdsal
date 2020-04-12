@@ -20,11 +20,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.TransactionChainListener;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -44,7 +42,7 @@ public class BindingDOMTransactionChainAdapterTest {
     private TransactionChainListener transactionChainListener;
 
     @Mock
-    private BindingNormalizedNodeCodecRegistry mockCodecRegistry;
+    private BindingDOMCodecServices mockCodecRegistry;
 
     private BindingDOMTransactionChainAdapter bindingDOMTransactionChainAdapter;
 
@@ -53,9 +51,8 @@ public class BindingDOMTransactionChainAdapterTest {
         doReturn(transactionChain).when(domService).createTransactionChain(any());
         doReturn(ImmutableClassToInstanceMap.of()).when(domService).getExtensions();
 
-        BindingDOMAdapterLoader bindingDOMAdapterLoader = new BindingDOMAdapterLoader(new BindingToNormalizedNodeCodec(
-                new DefaultBindingRuntimeGenerator(), GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-                mockCodecRegistry)) {
+        BindingDOMAdapterLoader bindingDOMAdapterLoader = new BindingDOMAdapterLoader(
+                new ConstantAdapterContext(mockCodecRegistry)) {
             @Override
             protected DOMService getDelegate(final Class<? extends DOMService> reqDeleg) {
                 return domService;

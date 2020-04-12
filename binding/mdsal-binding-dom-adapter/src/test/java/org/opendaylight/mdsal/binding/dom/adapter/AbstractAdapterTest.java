@@ -13,7 +13,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFac
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
 
 public abstract class AbstractAdapterTest {
-    protected BindingToNormalizedNodeCodec codec;
+    protected AdapterContext codec;
 
     @Before
     public void before() {

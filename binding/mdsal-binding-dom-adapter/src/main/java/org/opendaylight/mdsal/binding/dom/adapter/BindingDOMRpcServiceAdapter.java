@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
@@ -19,14 +20,14 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
+@VisibleForTesting
 public class BindingDOMRpcServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMRpcService, Class<? extends RpcService>, RpcServiceAdapter>
         implements RpcConsumerRegistry {
+    static final Factory<RpcConsumerRegistry> BUILDER_FACTORY = Builder::new;
 
-    protected static final Factory<RpcConsumerRegistry> BUILDER_FACTORY = Builder::new;
-
-    public BindingDOMRpcServiceAdapter(final DOMRpcService domService, final BindingToNormalizedNodeCodec codec) {
-        super(codec, domService);
+    public BindingDOMRpcServiceAdapter(final AdapterContext adapterContext, final DOMRpcService domService) {
+        super(adapterContext, domService);
     }
 
     @SuppressWarnings("unchecked")
@@ -40,20 +41,22 @@ public class BindingDOMRpcServiceAdapter
     RpcServiceAdapter loadAdapter(final Class<? extends RpcService> key) {
         checkArgument(BindingReflections.isBindingClass(key));
         checkArgument(key.isInterface(), "Supplied RPC service type must be interface.");
-        return new RpcServiceAdapter(key, getCodec(), getDelegate());
+        return new RpcServiceAdapter(key, adapterContext(), getDelegate());
     }
 
     private static final class Builder extends BindingDOMAdapterBuilder<RpcConsumerRegistry> {
-        @Override
-        protected RpcConsumerRegistry createInstance(final BindingToNormalizedNodeCodec codec,
-                final ClassToInstanceMap<DOMService> delegates) {
-            final DOMRpcService domRpc = delegates.getInstance(DOMRpcService.class);
-            return new BindingDOMRpcServiceAdapter(domRpc  , codec);
+        Builder(final AdapterContext adapterContext) {
+            super(adapterContext);
         }
 
         @Override
         public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
             return ImmutableSet.of(DOMRpcService.class);
+        }
+
+        @Override
+        protected RpcConsumerRegistry createInstance(final ClassToInstanceMap<DOMService> delegates) {
+            return new BindingDOMRpcServiceAdapter(adapterContext(), delegates.getInstance(DOMRpcService.class));
         }
     }
 }

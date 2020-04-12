@@ -6,7 +6,7 @@
 
   <reference id="domEntityOwnershipService" interface="org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService"/>
 
-  <reference id="conversionCodec" interface="org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer"/>
+  <reference id="conversionCodec" interface="org.opendaylight.mdsal.binding.dom.adapter.AdapterContext"/>
 
   <bean id="bindingEntityOwnershipService" class="org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter"
           destroy-method="close">

@@ -7,41 +7,37 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
+@VisibleForTesting
 public class BindingDOMNotificationServiceAdapter implements NotificationService {
-
     public static final Factory<NotificationService> BUILDER_FACTORY = Builder::new;
 
-    private final BindingNormalizedNodeSerializer codec;
+    private final AdapterContext adapterContext;
     private final DOMNotificationService domNotifService;
 
-    public BindingDOMNotificationServiceAdapter(final DOMNotificationService domNotifService,
-            final BindingNormalizedNodeSerializer codec) {
-        this.codec = codec;
-        this.domNotifService = domNotifService;
-    }
-
-    @Deprecated
-    public BindingDOMNotificationServiceAdapter(final BindingNormalizedNodeSerializer codec,
+    public BindingDOMNotificationServiceAdapter(final AdapterContext adapterContext,
             final DOMNotificationService domNotifService) {
-        this(domNotifService, codec);
+        this.adapterContext = requireNonNull(adapterContext);
+        this.domNotifService = domNotifService;
     }
 
     @Override
     public <T extends NotificationListener> ListenerRegistration<T> registerNotificationListener(final T listener) {
         final BindingDOMNotificationListenerAdapter domListener
-                = new BindingDOMNotificationListenerAdapter(codec, listener);
+                = new BindingDOMNotificationListenerAdapter(adapterContext, listener);
         final ListenerRegistration<BindingDOMNotificationListenerAdapter> domRegistration =
                 domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications());
         return new ListenerRegistrationImpl<>(listener, domRegistration);
@@ -63,12 +59,14 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
     }
 
     private static class Builder extends BindingDOMAdapterBuilder<NotificationService> {
+        Builder(final AdapterContext adapterContext) {
+            super(adapterContext);
+        }
 
         @Override
-        protected NotificationService createInstance(final BindingToNormalizedNodeCodec codec,
-                final ClassToInstanceMap<DOMService> delegates) {
+        protected NotificationService createInstance(final ClassToInstanceMap<DOMService> delegates) {
             final DOMNotificationService domNotification = delegates.getInstance(DOMNotificationService.class);
-            return new BindingDOMNotificationServiceAdapter(codec.getCodecRegistry(), domNotification);
+            return new BindingDOMNotificationServiceAdapter(adapterContext(), domNotification);
         }
 
         @Override

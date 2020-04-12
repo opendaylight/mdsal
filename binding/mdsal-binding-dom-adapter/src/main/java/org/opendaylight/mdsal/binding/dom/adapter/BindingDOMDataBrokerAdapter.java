@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
@@ -36,60 +37,60 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * Besides this the DataBrokerImpl and it's collaborators also cache data that is already transformed from the binding
  * independent to binding aware format.
  */
+@VisibleForTesting
 public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull DOMDataBroker> implements DataBroker,
         DataTreeChangeService {
 
     static final Factory<DataBroker> BUILDER_FACTORY = Builder::new;
     private final DataTreeChangeService treeChangeService;
 
-    public BindingDOMDataBrokerAdapter(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
-        super(codec, domDataBroker);
+    public BindingDOMDataBrokerAdapter(final AdapterContext adapterContext, final DOMDataBroker domDataBroker) {
+        super(adapterContext, domDataBroker);
         final DOMDataTreeChangeService domTreeChange = domDataBroker.getExtensions()
                 .getInstance(DOMDataTreeChangeService.class);
-        if (domTreeChange != null) {
-            treeChangeService = BindingDOMDataTreeChangeServiceAdapter.create(codec, domTreeChange);
-        } else {
-            treeChangeService = null;
-        }
+        treeChangeService = domTreeChange == null ? null
+                : new BindingDOMDataTreeChangeServiceAdapter(adapterContext, domTreeChange);
     }
 
     @Override
     public ReadTransaction newReadOnlyTransaction() {
-        return new BindingDOMReadTransactionAdapter(getDelegate().newReadOnlyTransaction(), getCodec());
+        return new BindingDOMReadTransactionAdapter(adapterContext(), getDelegate().newReadOnlyTransaction());
     }
 
     @Override
     public WriteTransaction newWriteOnlyTransaction() {
-        return new BindingDOMWriteTransactionAdapter<>(getDelegate().newWriteOnlyTransaction(), getCodec());
+        return new BindingDOMWriteTransactionAdapter<>(adapterContext(), getDelegate().newWriteOnlyTransaction());
     }
 
     @Override
     public ReadWriteTransaction newReadWriteTransaction() {
-        return new BindingDOMReadWriteTransactionAdapter(getDelegate().newReadWriteTransaction(), getCodec());
+        return new BindingDOMReadWriteTransactionAdapter(adapterContext(), getDelegate().newReadWriteTransaction());
     }
 
     @Override
     public TransactionChain createTransactionChain(final TransactionChainListener listener) {
-        return new BindingDOMTransactionChainAdapter(getDelegate()::createTransactionChain, getCodec(), listener);
+        return new BindingDOMTransactionChainAdapter(getDelegate()::createTransactionChain, adapterContext(), listener);
     }
 
     @Override
     public TransactionChain createMergingTransactionChain(final TransactionChainListener listener) {
-        return new BindingDOMTransactionChainAdapter(getDelegate()::createMergingTransactionChain, getCodec(),
+        return new BindingDOMTransactionChainAdapter(getDelegate()::createMergingTransactionChain, adapterContext(),
             listener);
     }
 
     private static class Builder extends BindingDOMAdapterBuilder<DataBroker> {
+        Builder(final AdapterContext adapterContext) {
+            super(adapterContext);
+        }
+
         @Override
         public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
             return ImmutableSet.of(DOMDataBroker.class);
         }
 
         @Override
-        protected DataBroker createInstance(final BindingToNormalizedNodeCodec codec,
-                final ClassToInstanceMap<DOMService> delegates) {
-            final DOMDataBroker domDataBroker = delegates.getInstance(DOMDataBroker.class);
-            return new BindingDOMDataBrokerAdapter(domDataBroker, codec);
+        protected DataBroker createInstance(final ClassToInstanceMap<DOMService> delegates) {
+            return new BindingDOMDataBrokerAdapter(adapterContext(), delegates.getInstance(DOMDataBroker.class));
         }
     }
 

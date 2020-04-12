@@ -16,10 +16,8 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
 import org.junit.Test;
-import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -29,15 +27,13 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 public class BindingDOMMountPointServiceAdapterTest {
     @Test
     public void basicTest() throws Exception {
-        final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
-        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
-            new DefaultBindingRuntimeGenerator(), GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-            registry);
+        final BindingDOMCodecServices registry = mock(BindingDOMCodecServices.class);
+        final AdapterContext codec = new ConstantAdapterContext(registry);
         doReturn(YangInstanceIdentifier.empty()).when(registry).toYangInstanceIdentifier(any());
         final DOMMountPointService mountPointService = mock(DOMMountPointService.class);
 
         final BindingDOMMountPointServiceAdapter adapter =
-                new BindingDOMMountPointServiceAdapter(mountPointService, codec);
+                new BindingDOMMountPointServiceAdapter(codec, mountPointService);
 
         doReturn(Optional.empty()).when(mountPointService).getMountPoint(any());
         assertFalse(adapter.getMountPoint(InstanceIdentifier.create(DataObject.class)).isPresent());

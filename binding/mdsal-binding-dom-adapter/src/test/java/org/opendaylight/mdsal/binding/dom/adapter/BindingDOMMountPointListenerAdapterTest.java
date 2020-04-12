@@ -29,7 +29,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 public class BindingDOMMountPointListenerAdapterTest {
 
     private BindingDOMMountPointListenerAdapter<?> bindingDOMMountPointListenerAdapter;
-    private BindingToNormalizedNodeCodec codec;
+    private AdapterContext codec;
 
     @Mock private MountPointListener listener;
     @Mock private DOMMountPointService mountPointService;

@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -21,20 +20,20 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCursor>
+final class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCursor>
         extends AbstractBindingAdapter<T> implements DataTreeWriteCursor {
     private final Deque<PathArgument> stack = new ArrayDeque<>();
 
-    public BindingDOMDataTreeWriteCursorAdapter(final DataTreeIdentifier<?> path, final T delegate,
-            final BindingToNormalizedNodeCodec codec) {
-        super(codec, delegate);
+    BindingDOMDataTreeWriteCursorAdapter(final AdapterContext adapterContext, final T delegate,
+            final DataTreeIdentifier<?> path) {
+        super(adapterContext, delegate);
         path.getRootIdentifier().getPathArguments().forEach(stack::push);
     }
 
     private YangInstanceIdentifier.PathArgument convertToNormalized(final PathArgument child) {
         stack.push(child);
         final InstanceIdentifier<?> iid = InstanceIdentifier.create(stack);
-        final YangInstanceIdentifier ret = getCodec().toYangInstanceIdentifier(iid);
+        final YangInstanceIdentifier ret = currentSerializer().toYangInstanceIdentifier(iid);
         stack.pop();
         return ret.getLastPathArgument();
     }
@@ -44,7 +43,7 @@ public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurs
         stack.push(child);
         final InstanceIdentifier<?> iid = InstanceIdentifier.create(stack);
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = getCodec().toNormalizedNode(
+        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = currentSerializer().toNormalizedNode(
             (InstanceIdentifier) iid, data);
         stack.pop();
         return entry;
