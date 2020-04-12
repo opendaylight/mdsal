@@ -23,8 +23,8 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
 class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> extends AbstractForwardedTransaction<T>
         implements WriteTransaction {
-    BindingDOMWriteTransactionAdapter(final T delegateTx, final BindingToNormalizedNodeCodec codec) {
-        super(delegateTx, codec);
+    BindingDOMWriteTransactionAdapter(final AdapterContext adapterContext, final T delegateTx) {
+        super(adapterContext, delegateTx);
     }
 
     @Override
@@ -37,9 +37,10 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     @Override
     public final <U extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
             final InstanceIdentifier<U> path, final U data) {
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> normalized = toNormalized("put",
-            path, data);
-        ensureParentsByMerge(store, normalized.getKey(), path);
+        final CurrentAdapterSerializer serializer = adapterContext().currentSerializer();
+        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> normalized = toNormalized(serializer, "put", path,
+            data);
+        ensureParentsByMerge(serializer, store, normalized.getKey(), path);
         getDelegate().put(store, normalized.getKey(), normalized.getValue());
     }
 
@@ -53,17 +54,17 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     @Override
     public final <U extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
             final InstanceIdentifier<U> path, final U data) {
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> normalized = toNormalized("merge", path, data);
-        ensureParentsByMerge(store, normalized.getKey(), path);
+        final CurrentAdapterSerializer serializer = adapterContext().currentSerializer();
+        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> normalized = toNormalized(serializer, "merge", path,
+            data);
+        ensureParentsByMerge(serializer, store, normalized.getKey(), path);
         getDelegate().merge(store, normalized.getKey(), normalized.getValue());
     }
 
     @Override
     public final void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         checkArgument(!path.isWildcarded(), "Cannot delete wildcarded path %s", path);
-
-        final YangInstanceIdentifier normalized = getCodec().toYangInstanceIdentifierBlocking(path);
-        getDelegate().delete(store, normalized);
+        getDelegate().delete(store, adapterContext().currentSerializer().toYangInstanceIdentifier(path));
     }
 
     @Override
@@ -84,19 +85,25 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
      * @param domPath an instance of YangInstanceIdentifier
      * @param path an instance of InstanceIdentifier
      */
-    private void ensureParentsByMerge(final LogicalDatastoreType store, final YangInstanceIdentifier domPath,
-            final InstanceIdentifier<?> path) {
+    private void ensureParentsByMerge(final CurrentAdapterSerializer serializer, final LogicalDatastoreType store,
+            final YangInstanceIdentifier domPath, final InstanceIdentifier<?> path) {
         final YangInstanceIdentifier parentPath = domPath.getParent();
         if (parentPath != null && !parentPath.isEmpty()) {
             final NormalizedNode<?, ?> parentNode = ImmutableNodes.fromInstanceId(
-                getCodec().runtimeContext().getSchemaContext(), parentPath);
+                serializer.getRuntimeContext().getSchemaContext(), parentPath);
             getDelegate().merge(store, YangInstanceIdentifier.create(parentNode.getIdentifier()), parentNode);
         }
     }
 
     private <U extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> toNormalized(
             final String operation, final InstanceIdentifier<U> path, final U data) {
+        return toNormalized(adapterContext().currentSerializer(), operation, path, data);
+    }
+
+    private static <U extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> toNormalized(
+            final CurrentAdapterSerializer serializer, final String operation, final InstanceIdentifier<U> path,
+            final U data) {
         checkArgument(!path.isWildcarded(), "Cannot %s data into wildcarded path %s", operation, path);
-        return getCodec().toNormalizedNode(path, data);
+        return serializer.toNormalizedNode(path, data);
     }
 }

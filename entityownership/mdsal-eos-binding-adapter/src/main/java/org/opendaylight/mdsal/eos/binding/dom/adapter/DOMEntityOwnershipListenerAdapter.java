@@ -11,7 +11,7 @@ import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
@@ -28,16 +28,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thomas Pantelis
  */
-class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
+final class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
     private static final Logger LOG = LoggerFactory.getLogger(DOMEntityOwnershipListenerAdapter.class);
 
-    private final BindingNormalizedNodeSerializer conversionCodec;
     private final EntityOwnershipListener bindingListener;
+    private final AdapterContext adapterContext;
 
     DOMEntityOwnershipListenerAdapter(final EntityOwnershipListener bindingListener,
-            final BindingNormalizedNodeSerializer conversionCodec) {
+            final AdapterContext adapterContext) {
         this.bindingListener = requireNonNull(bindingListener);
-        this.conversionCodec = requireNonNull(conversionCodec);
+        this.adapterContext = requireNonNull(adapterContext);
     }
 
     @Override
@@ -48,7 +48,7 @@ class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
         final YangInstanceIdentifier domId = domEntity.getIdentifier();
         final InstanceIdentifier<?> bindingId;
         try {
-            bindingId = verifyNotNull(conversionCodec.fromYangInstanceIdentifier(domId));
+            bindingId = verifyNotNull(adapterContext.currentSerializer().fromYangInstanceIdentifier(domId));
         } catch (RuntimeException e) {
             LOG.error("Error converting DOM entity ID {} to binding InstanceIdentifier", domId, e);
             return;

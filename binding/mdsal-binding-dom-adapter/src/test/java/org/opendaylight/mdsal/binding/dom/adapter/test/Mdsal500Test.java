@@ -100,8 +100,8 @@ public class Mdsal500Test {
         SwitchOutput baSwitchOutput = new SwitchOutputBuilder().build();
 
         biRpcProviderService.registerRpcImplementation((rpc, input) ->
-            FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec()
-                    .getCodecRegistry().toNormalizedNodeRpcData(baSwitchOutput))),
+            FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec().currentSerializer()
+                    .toNormalizedNodeRpcData(baSwitchOutput))),
             DOMRpcIdentifier.create(SWITCH_PATH));
 
         final Mdsal500Service baSwitchService =
@@ -130,20 +130,17 @@ public class Mdsal500Test {
     }
 
     private static ListenableFuture<RpcResult<SwitchOutput>> switchResult(final boolean success) {
-        SwitchOutput output = new SwitchOutputBuilder().build();
-        RpcResult<SwitchOutput> result = RpcResultBuilder.<SwitchOutput>status(success).withResult(output)
-                .build();
-        return Futures.immediateFuture(result);
+        return Futures.immediateFuture(RpcResultBuilder.<SwitchOutput>status(success)
+            .withResult(new SwitchOutputBuilder().build())
+            .build());
     }
 
     private static SwitchInputBuilder switchBuilder(final String foo) {
-        SwitchInputBuilder builder = new SwitchInputBuilder();
-        builder.setFoo(foo);
-        return builder;
+        return new SwitchInputBuilder().setFoo(foo);
     }
 
     private ContainerNode toDOMSwitchInput(final SwitchInput from) {
-        return testContext.getCodec().getCodecRegistry().toNormalizedNodeRpcData(from);
+        return testContext.getCodec().currentSerializer().toNormalizedNodeRpcData(from);
     }
 
     private static class Mdsal500ServiceImpl implements Mdsal500Service {
@@ -167,7 +164,7 @@ public class Mdsal500Test {
         }
 
         @Override
-        public ListenableFuture<RpcResult<SwitchOutput>> switch$(SwitchInput switchInput) {
+        public ListenableFuture<RpcResult<SwitchOutput>> switch$(final SwitchInput switchInput) {
             receivedSwitch.put(switchInput.getFoo(), switchInput);
             return switchResult;
         }

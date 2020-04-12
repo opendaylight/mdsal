@@ -19,19 +19,18 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-public class BindingDOMCursorAwareWriteTransactionAdapter<T extends DOMDataTreeCursorAwareTransaction>
+final class BindingDOMCursorAwareWriteTransactionAdapter<T extends DOMDataTreeCursorAwareTransaction>
         extends AbstractBindingAdapter<T> implements CursorAwareWriteTransaction {
-
-    public BindingDOMCursorAwareWriteTransactionAdapter(final T delegate, final BindingToNormalizedNodeCodec codec) {
-        super(codec, delegate);
+    BindingDOMCursorAwareWriteTransactionAdapter(final AdapterContext adapterContext, final T delegate) {
+        super(adapterContext, delegate);
     }
 
     @Override
     public <P extends DataObject> DataTreeWriteCursor createCursor(final DataTreeIdentifier<P> path) {
-        final YangInstanceIdentifier yPath = getCodec().toYangInstanceIdentifier(path.getRootIdentifier());
+        final YangInstanceIdentifier yPath = currentSerializer().toYangInstanceIdentifier(path.getRootIdentifier());
         final DOMDataTreeWriteCursor cursor = getDelegate().createCursor(
                 new DOMDataTreeIdentifier(path.getDatastoreType(), yPath));
-        return new BindingDOMDataTreeWriteCursorAdapter<>(path, cursor, getCodec());
+        return new BindingDOMDataTreeWriteCursorAdapter<>(adapterContext(), cursor, path);
     }
 
     @Override

@@ -18,13 +18,12 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
@@ -34,15 +33,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMDataTreeCommitCohortAdapterTest {
 
     @Test
-    public void canCommitTest() throws Exception {
+    public void canCommitTest() {
         final DataTreeCommitCohort<?> cohort = mock(DataTreeCommitCohort.class);
-        final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
-        final BindingToNormalizedNodeCodec codec = new BindingToNormalizedNodeCodec(
-            new DefaultBindingRuntimeGenerator(), GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-            registry);
+        final BindingDOMCodecServices registry = mock(BindingDOMCodecServices.class);
+        final AdapterContext codec = new ConstantAdapterContext(registry);
 
         final BindingDOMDataTreeCommitCohortAdapter<?> adapter =
                 new BindingDOMDataTreeCommitCohortAdapter<>(codec, cohort);
@@ -52,13 +50,11 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
         final DOMDataTreeIdentifier domDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
         doReturn(InstanceIdentifier.create(DataObject.class)).when(registry).fromYangInstanceIdentifier(any());
-        final BindingCodecTree bindingCodecTree = mock(BindingCodecTree.class);
         final BindingDataObjectCodecTreeNode<?> bindingCodecTreeNode = mock(BindingDataObjectCodecTreeNode.class);
-        doReturn(bindingCodecTreeNode).when(bindingCodecTree).getSubtreeCodec(any(InstanceIdentifier.class));
-        doReturn(bindingCodecTree).when(registry).getCodecContext();
+        doReturn(bindingCodecTreeNode).when(registry).getSubtreeCodec(any(InstanceIdentifier.class));
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
         doReturn(mock(DataTreeCandidateNode.class)).when(domDataTreeCandidate).getRootNode();
-        assertNotNull(LazyDataTreeModification.create(codec, domDataTreeCandidate));
+        assertNotNull(LazyDataTreeModification.create(codec.currentSerializer(), domDataTreeCandidate));
 
         final Object txId = new Object();
 

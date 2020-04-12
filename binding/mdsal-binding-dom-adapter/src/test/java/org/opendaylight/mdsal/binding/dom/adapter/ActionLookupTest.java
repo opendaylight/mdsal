@@ -9,10 +9,9 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.binding.runtime.spi.BindingRuntimeHelpers;
+import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Grpcont;
@@ -22,24 +21,14 @@ import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.grpcont.Bar;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class ActionLookupTest {
-    private static BindingToNormalizedNodeCodec CODEC;
-
-    @BeforeClass
-    public static void beforeClass() {
-        CODEC = new BindingToNormalizedNodeCodec(
-            BindingRuntimeHelpers.createRuntimeContext(new DefaultBindingRuntimeGenerator()));
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        CODEC = null;
-    }
-
     @Test
     public void testActionSchemaPath() {
-        assertEquals(SchemaPath.create(true, Cont.QNAME, Foo.QNAME), CODEC.getActionPath(Foo.class));
-        assertEquals(SchemaPath.create(true, Grpcont.QNAME, Bar.QNAME), CODEC.getActionPath(Bar.class));
+        CurrentAdapterSerializer codec = new CurrentAdapterSerializer(new BindingCodecContext(
+            BindingRuntimeHelpers.createRuntimeContext(new DefaultBindingRuntimeGenerator())));
+
+        assertEquals(SchemaPath.create(true, Cont.QNAME, Foo.QNAME), codec.getActionPath(Foo.class));
+        assertEquals(SchemaPath.create(true, Grpcont.QNAME, Bar.QNAME), codec.getActionPath(Bar.class));
         assertEquals(SchemaPath.create(true, Othercont.QNAME, Bar.QNAME),
-            CODEC.getActionPath(org.opendaylight.yang.gen.v1.urn.odl.actions.norev.othercont.Bar.class));
+            codec.getActionPath(org.opendaylight.yang.gen.v1.urn.odl.actions.norev.othercont.Bar.class));
     }
 }

@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
@@ -29,12 +29,12 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
  */
 public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipService, AutoCloseable {
     private final @NonNull DOMEntityOwnershipService domService;
-    private final @NonNull BindingNormalizedNodeSerializer conversionCodec;
+    private final @NonNull AdapterContext adapterContext;
 
     public BindingDOMEntityOwnershipServiceAdapter(final @NonNull DOMEntityOwnershipService domService,
-            @NonNull final BindingNormalizedNodeSerializer conversionCodec) {
+            final @NonNull AdapterContext adapterContext) {
         this.domService = requireNonNull(domService);
-        this.conversionCodec = requireNonNull(conversionCodec);
+        this.adapterContext = requireNonNull(adapterContext);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipS
     public EntityOwnershipListenerRegistration registerListener(final String entityType,
             final EntityOwnershipListener listener) {
         return new BindingEntityOwnershipListenerRegistration(entityType, listener,
-            domService.registerListener(entityType, new DOMEntityOwnershipListenerAdapter(listener, conversionCodec)));
+            domService.registerListener(entityType, new DOMEntityOwnershipListenerAdapter(listener, adapterContext)));
     }
 
     @Override
@@ -62,7 +62,8 @@ public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipS
     }
 
     private @NonNull DOMEntity toDOMEntity(final Entity entity) {
-        return new DOMEntity(entity.getType(), conversionCodec.toYangInstanceIdentifier(entity.getIdentifier()));
+        return new DOMEntity(entity.getType(),
+            adapterContext.currentSerializer().toYangInstanceIdentifier(entity.getIdentifier()));
     }
 
     @Override

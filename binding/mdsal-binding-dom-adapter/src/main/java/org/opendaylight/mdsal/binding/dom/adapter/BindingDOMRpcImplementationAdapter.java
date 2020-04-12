@@ -20,7 +20,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.RpcServiceInvoker;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
@@ -34,19 +33,19 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
+final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     private static final Cache<Class<?>, RpcServiceInvoker> SERVICE_INVOKERS = CacheBuilder.newBuilder().weakKeys()
             .build();
 
     // Default implementations are 0, we need to perform some translation, hence we have a slightly higher cost
     private static final int COST = 1;
 
-    private final BindingNormalizedNodeSerializer codec;
+    private final AdapterContext adapterContext;
     private final RpcServiceInvoker invoker;
     private final RpcService delegate;
     private final QName inputQname;
 
-    <T extends RpcService> BindingDOMRpcImplementationAdapter(final BindingNormalizedNodeSerializer codec,
+    <T extends RpcService> BindingDOMRpcImplementationAdapter(final AdapterContext adapterContext,
             final Class<T> type, final Map<SchemaPath, Method> localNameToMethod, final T delegate) {
         try {
             this.invoker = SERVICE_INVOKERS.get(type, () -> {
@@ -61,7 +60,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
             throw new IllegalArgumentException("Failed to create invokers for type " + type, e);
         }
 
-        this.codec = requireNonNull(codec);
+        this.adapterContext = requireNonNull(adapterContext);
         this.delegate = requireNonNull(delegate);
         inputQname = YangConstants.operationInputQName(BindingReflections.getQNameModule(type)).intern();
     }
@@ -69,9 +68,10 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
     @Override
     public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
         final SchemaPath schemaPath = rpc.getType();
-        final DataObject bindingInput = input != null ? deserialize(rpc.getType(), input) : null;
+        final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
+        final DataObject bindingInput = input != null ? deserialize(serializer, schemaPath, input) : null;
         final ListenableFuture<RpcResult<?>> bindingResult = invoke(schemaPath, bindingInput);
-        return LazyDOMRpcResultFuture.create(codec, bindingResult);
+        return LazyDOMRpcResultFuture.create(serializer, bindingResult);
     }
 
     @Override
@@ -79,12 +79,13 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
         return COST;
     }
 
-    private DataObject deserialize(final SchemaPath rpcPath, final NormalizedNode<?, ?> input) {
+    private DataObject deserialize(final CurrentAdapterSerializer serializer, final SchemaPath rpcPath,
+            final NormalizedNode<?, ?> input) {
         if (ENABLE_CODEC_SHORTCUT && input instanceof BindingLazyContainerNode) {
             return ((BindingLazyContainerNode<?>) input).getDataObject();
         }
         final SchemaPath inputSchemaPath = rpcPath.createChild(inputQname);
-        return codec.fromNormalizedNodeRpcData(inputSchemaPath, (ContainerNode) input);
+        return serializer.fromNormalizedNodeRpcData(inputSchemaPath, (ContainerNode) input);
     }
 
     private ListenableFuture<RpcResult<?>> invoke(final SchemaPath schemaPath, final DataObject input) {

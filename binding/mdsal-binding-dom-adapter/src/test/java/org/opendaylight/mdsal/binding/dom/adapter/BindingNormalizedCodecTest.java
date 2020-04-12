@@ -7,28 +7,21 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.SetMultimap;
-import com.google.common.util.concurrent.Uninterruptibles;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import org.junit.Test;
-import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractSchemaAwareTest;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.dom.adapter.test.util.MockAdapterContext;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeLeafOnlyAugment;
@@ -43,7 +36,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.Augmentat
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.AbstractSchemaContext;
 
@@ -61,107 +53,40 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
     private static final YangInstanceIdentifier BI_TOP_LEVEL_LIST = YangInstanceIdentifier.builder().node(Top.QNAME)
         .node(TopLevelList.QNAME).nodeWithKey(TopLevelList.QNAME, NAME_QNAME, TOP_FOO_KEY.getName()).build();
 
-    private BindingToNormalizedNodeCodec codec;
+    private MockAdapterContext codec;
     private EffectiveModelContext context;
 
     @Override
     protected void setupWithSchema(final EffectiveModelContext schemaContext) {
         this.context = schemaContext;
-        this.codec = new BindingToNormalizedNodeCodec(new DefaultBindingRuntimeGenerator(),
-            GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry(),
-            true);
+        this.codec = new MockAdapterContext();
     }
 
     @Test
     public void testComplexAugmentationSerialization() {
-        this.codec.onModelContextUpdated(this.context);
-        final PathArgument lastArg = this.codec.toYangInstanceIdentifier(BA_TREE_COMPLEX_USES).getLastPathArgument();
+        codec.onModelContextUpdated(context);
+        final PathArgument lastArg = codec.currentSerializer().toYangInstanceIdentifier(BA_TREE_COMPLEX_USES)
+                .getLastPathArgument();
         assertTrue(lastArg instanceof AugmentationIdentifier);
     }
 
-
     @Test
     public void testLeafOnlyAugmentationSerialization() {
-        this.codec.onModelContextUpdated(this.context);
-        final PathArgument leafOnlyLastArg = this.codec.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY)
+        codec.onModelContextUpdated(context);
+        final PathArgument leafOnlyLastArg = codec.currentSerializer().toYangInstanceIdentifier(BA_TREE_LEAF_ONLY)
             .getLastPathArgument();
         assertTrue(leafOnlyLastArg instanceof AugmentationIdentifier);
         assertTrue(((AugmentationIdentifier) leafOnlyLastArg).getPossibleChildNames().contains(SIMPLE_VALUE_QNAME));
     }
 
     @Test
-    @SuppressWarnings("checkstyle:illegalCatch")
-    public void testToYangInstanceIdentifierBlocking() {
-        this.codec.onModelContextUpdated(new EmptyEffectiveModelContext());
-
-        final CountDownLatch done = new CountDownLatch(1);
-        final AtomicReference<YangInstanceIdentifier> yangId = new AtomicReference<>();
-        final AtomicReference<RuntimeException> error = new AtomicReference<>();
-        new Thread(() -> {
-            try {
-                yangId.set(BindingNormalizedCodecTest.this.codec.toYangInstanceIdentifierBlocking(BA_TOP_LEVEL_LIST));
-            } catch (final RuntimeException e) {
-                error.set(e);
-            } finally {
-                done.countDown();
-            }
-        }).start();
-
-        Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-        this.codec.onModelContextUpdated(this.context);
-
-        assertTrue("toYangInstanceIdentifierBlocking completed",
-                Uninterruptibles.awaitUninterruptibly(done, 3, TimeUnit.SECONDS));
-        if (error.get() != null) {
-            throw error.get();
-        }
-
-        assertEquals("toYangInstanceIdentifierBlocking", BI_TOP_LEVEL_LIST, yangId.get());
-    }
-
-    @Test
-    public void testGetRpcMethodToSchemaPathWithNoInitialSchemaContext() {
-        testGetRpcMethodToSchemaPath();
-    }
-
-    @Test
-    public void testGetRpcMethodToSchemaPathBlocking() {
-        this.codec.onModelContextUpdated(new EmptyEffectiveModelContext());
-        testGetRpcMethodToSchemaPath();
-    }
-
-    @SuppressWarnings("checkstyle:illegalCatch")
-    private void testGetRpcMethodToSchemaPath() {
-        final CountDownLatch done = new CountDownLatch(1);
-        final AtomicReference<ImmutableBiMap<Method, SchemaPath>> retMap = new AtomicReference<>();
-        final AtomicReference<RuntimeException> error = new AtomicReference<>();
-        new Thread(() -> {
-            try {
-                retMap.set(BindingNormalizedCodecTest.this.codec.getRpcMethodToSchemaPath(
-                            OpendaylightTestRpcServiceService.class));
-            } catch (final RuntimeException e) {
-                error.set(e);
-            } finally {
-                done.countDown();
-            }
-        }).start();
-
-        Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
-        this.codec.onModelContextUpdated(this.context);
-
-        assertTrue("getRpcMethodToSchemaPath completed",
-                Uninterruptibles.awaitUninterruptibly(done, 3, TimeUnit.SECONDS));
-        if (error.get() != null) {
-            throw error.get();
-        }
-
-        for (final Method method : retMap.get().keySet()) {
-            if (method.getName().equals("rockTheHouse")) {
-                return;
-            }
-        }
-
-        fail("rockTheHouse RPC method not found");
+    public void testGetRpcMethodToSchemaPath() {
+        codec.onModelContextUpdated(context);
+        final List<String> retMap = codec.currentSerializer()
+                .getRpcMethodToSchemaPath(OpendaylightTestRpcServiceService.class).keySet().stream()
+                .map(Method::getName)
+                .collect(Collectors.toList());
+        assertTrue(retMap.contains("rockTheHouse"));
     }
 
     static class EmptyEffectiveModelContext extends AbstractSchemaContext implements EffectiveModelContext {

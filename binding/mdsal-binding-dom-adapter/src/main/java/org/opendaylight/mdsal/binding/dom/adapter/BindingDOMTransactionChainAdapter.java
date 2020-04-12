@@ -18,7 +18,6 @@ import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.TransactionChain;
@@ -41,17 +40,17 @@ final class BindingDOMTransactionChainAdapter implements TransactionChain, Deleg
     private static final Logger LOG = LoggerFactory.getLogger(BindingDOMTransactionChainAdapter.class);
 
     private final DOMTransactionChain delegate;
-    private final BindingToNormalizedNodeCodec codec;
+    private final AdapterContext adapterContext;
     private final DelegateChainListener domListener;
     private final TransactionChainListener bindingListener;
 
     BindingDOMTransactionChainAdapter(final Function<DOMTransactionChainListener, DOMTransactionChain> chainFactory,
-            final BindingToNormalizedNodeCodec codec, final TransactionChainListener listener) {
+            final AdapterContext codec, final TransactionChainListener listener) {
         requireNonNull(chainFactory, "DOM Transaction chain factory must not be null");
         this.domListener = new DelegateChainListener();
         this.bindingListener = listener;
         this.delegate = chainFactory.apply(domListener);
-        this.codec = codec;
+        this.adapterContext = requireNonNull(codec);
     }
 
     @Override
@@ -61,15 +60,16 @@ final class BindingDOMTransactionChainAdapter implements TransactionChain, Deleg
 
     @Override
     public ReadTransaction newReadOnlyTransaction() {
-        return new BindingDOMReadTransactionAdapter(createTransaction(delegate::newReadOnlyTransaction), codec);
+        return new BindingDOMReadTransactionAdapter(adapterContext,
+            createTransaction(delegate::newReadOnlyTransaction));
     }
 
     @Override
     public WriteTransaction newWriteOnlyTransaction() {
         final DOMDataTreeWriteTransaction delegateTx = createTransaction(delegate::newWriteOnlyTransaction);
-        return new BindingDOMWriteTransactionAdapter<DOMDataTreeWriteTransaction>(delegateTx, codec) {
+        return new BindingDOMWriteTransactionAdapter<>(adapterContext, delegateTx) {
             @Override
-            public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+            public FluentFuture<? extends CommitInfo> commit() {
                 return listenForFailure(this, super.commit());
             }
         };
@@ -78,9 +78,9 @@ final class BindingDOMTransactionChainAdapter implements TransactionChain, Deleg
     @Override
     public ReadWriteTransaction newReadWriteTransaction() {
         final DOMDataTreeReadWriteTransaction delegateTx = createTransaction(delegate::newReadWriteTransaction);
-        return new BindingDOMReadWriteTransactionAdapter(delegateTx, codec) {
+        return new BindingDOMReadWriteTransactionAdapter(adapterContext, delegateTx) {
             @Override
-            public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+            public FluentFuture<? extends CommitInfo> commit() {
                 return listenForFailure(this, super.commit());
             }
         };
@@ -141,7 +141,6 @@ final class BindingDOMTransactionChainAdapter implements TransactionChain, Deleg
              * of this transaction chain), instead of DOM transaction
              * which is known only to this chain, binding transaction implementation
              * and underlying transaction chain.
-             *
              */
             LOG.debug("Transaction chain {} failed. Failed DOM Transaction {}",this,transaction,cause);
         }

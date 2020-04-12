@@ -11,7 +11,9 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -44,17 +46,20 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 class RpcServiceAdapter implements InvocationHandler {
     private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
     private final Class<? extends RpcService> type;
-    private final BindingToNormalizedNodeCodec codec;
+    private final AdapterContext adapterContext;
     private final DOMRpcService delegate;
     private final RpcService proxy;
 
-    RpcServiceAdapter(final Class<? extends RpcService> type, final BindingToNormalizedNodeCodec codec,
+    RpcServiceAdapter(final Class<? extends RpcService> type, final AdapterContext adapterContext,
             final DOMRpcService domService) {
         this.type = requireNonNull(type);
-        this.codec = requireNonNull(codec);
+        this.adapterContext = requireNonNull(adapterContext);
         this.delegate = requireNonNull(domService);
-        final ImmutableMap.Builder<Method, RpcInvocationStrategy> rpcBuilder = ImmutableMap.builder();
-        for (final Entry<Method, RpcDefinition> rpc : codec.getRpcMethodToSchema(type).entrySet()) {
+
+        final ImmutableBiMap<Method, RpcDefinition> methods = adapterContext.currentSerializer()
+                .getRpcMethodToSchema(type);
+        final Builder<Method, RpcInvocationStrategy> rpcBuilder = ImmutableMap.builderWithExpectedSize(methods.size());
+        for (final Entry<Method, RpcDefinition> rpc : methods.entrySet()) {
             rpcBuilder.put(rpc.getKey(), createStrategy(rpc.getKey(), rpc.getValue()));
         }
         rpcNames = rpcBuilder.build();
@@ -113,10 +118,9 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private abstract class RpcInvocationStrategy {
-
         private final SchemaPath rpcName;
 
-        protected RpcInvocationStrategy(final SchemaPath path) {
+        RpcInvocationStrategy(final SchemaPath path) {
             rpcName = path;
         }
 
@@ -140,7 +144,7 @@ class RpcServiceAdapter implements InvocationHandler {
                 return ((BindingRpcFutureAware) result).getBindingFuture();
             }
 
-            return transformFuture(schemaPath, result, codec.getCodecRegistry());
+            return transformFuture(schemaPath, result, adapterContext.currentSerializer());
         }
 
         private ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
@@ -162,24 +166,21 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private final class NonRoutedStrategy extends RpcInvocationStrategy {
-
-        protected NonRoutedStrategy(final SchemaPath path) {
+        NonRoutedStrategy(final SchemaPath path) {
             super(path);
         }
 
         @Override
         ContainerNode serialize(final DataObject input) {
-            return LazySerializedContainerNode.create(getRpcName(), input, codec.getCodecRegistry());
+            return LazySerializedContainerNode.create(getRpcName(), input, adapterContext.currentSerializer());
         }
-
     }
 
     private final class RoutedStrategy extends RpcInvocationStrategy {
-
         private final ContextReferenceExtractor refExtractor;
         private final NodeIdentifier contextName;
 
-        protected RoutedStrategy(final SchemaPath path, final Method rpcMethod, final QName leafName) {
+        RoutedStrategy(final SchemaPath path, final Method rpcMethod, final QName leafName) {
             super(path);
             final Optional<Class<? extends DataContainer>> maybeInputType =
                     BindingReflections.resolveRpcInputClass(rpcMethod);
@@ -192,13 +193,14 @@ class RpcServiceAdapter implements InvocationHandler {
         @Override
         ContainerNode serialize(final DataObject input) {
             final InstanceIdentifier<?> bindingII = refExtractor.extract(input);
+            final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
+
             if (bindingII != null) {
-                final YangInstanceIdentifier yangII = codec.toYangInstanceIdentifierCached(bindingII);
+                final YangInstanceIdentifier yangII = serializer.toCachedYangInstanceIdentifier(bindingII);
                 final LeafNode<?> contextRef = ImmutableNodes.leafNode(contextName, yangII);
-                return LazySerializedContainerNode.withContextRef(getRpcName(), input, contextRef,
-                        codec.getCodecRegistry());
+                return LazySerializedContainerNode.withContextRef(getRpcName(), input, contextRef, serializer);
             }
-            return LazySerializedContainerNode.create(getRpcName(), input, codec.getCodecRegistry());
+            return LazySerializedContainerNode.create(getRpcName(), input, serializer);
         }
 
     }

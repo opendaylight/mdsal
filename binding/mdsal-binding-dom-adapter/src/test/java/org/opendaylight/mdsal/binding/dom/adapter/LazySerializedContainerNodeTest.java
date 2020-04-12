@@ -21,7 +21,7 @@ import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -34,12 +34,11 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class LazySerializedContainerNodeTest {
-
     @Test
     public void basicTest() throws Exception {
         final SchemaPath rpcName;
         final DataObject dataObject = mock(DataObject.class);
-        final BindingNormalizedNodeCodecRegistry codec = mock(BindingNormalizedNodeCodecRegistry.class);
+        final BindingNormalizedNodeSerializer codec = mock(BindingNormalizedNodeSerializer.class);
         final ContainerNode containerNode = mock(ContainerNode.class);
         doReturn(containerNode).when(codec).toNormalizedNodeRpcData(any());
         doReturn(Optional.empty()).when(containerNode).getChild(any());
@@ -49,8 +48,8 @@ public class LazySerializedContainerNodeTest {
         final BindingTestContext bindingTestContext = bindingBrokerTestFactory.getTestContext();
         bindingTestContext.start();
 
-        final ImmutableBiMap<?, ?> biMap =
-                bindingTestContext.getCodec().getRpcMethodToSchema(OpendaylightTestRpcServiceService.class);
+        final ImmutableBiMap<?, ?> biMap = bindingTestContext.getCodec().currentSerializer()
+                .getRpcMethodToSchema(OpendaylightTestRpcServiceService.class);
         rpcName = ((RpcDefinition) biMap.values().iterator().next()).getPath();
         final LeafNode<?> leafNode = ImmutableLeafNodeBuilder.create().withNodeIdentifier(NodeIdentifier
                 .create(QName.create("", "test"))).withValue("").build();
