@@ -7,7 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ClassToInstanceMap;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.BindingService;
@@ -21,18 +23,18 @@ abstract class BindingDOMAdapterBuilder<T extends BindingService> extends Adapte
         BindingDOMAdapterBuilder<T> newBuilder();
     }
 
-    private BindingToNormalizedNodeCodec codec;
+    private AdapterContext codec;
 
-    void setCodec(final BindingToNormalizedNodeCodec codec) {
-        this.codec = codec;
+    void setCodec(final AdapterContext codec) {
+        this.codec = requireNonNull(codec);
     }
 
     @Override
     protected final T createInstance(final ClassToInstanceMap<DOMService> delegates) {
-        Preconditions.checkState(codec != null);
+        checkState(codec != null);
         return createInstance(codec, delegates);
     }
 
-    abstract T createInstance(BindingToNormalizedNodeCodec myCodec,
+    abstract @NonNull T createInstance(@NonNull AdapterContext myCodec,
             @NonNull ClassToInstanceMap<@NonNull DOMService> delegates);
 }

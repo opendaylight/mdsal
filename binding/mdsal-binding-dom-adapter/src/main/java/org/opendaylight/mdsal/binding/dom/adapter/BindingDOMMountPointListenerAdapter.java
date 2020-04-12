@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
@@ -25,12 +27,12 @@ final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> im
 
     private final T listener;
     private final ListenerRegistration<DOMMountPointListener> registration;
-    private final BindingToNormalizedNodeCodec codec;
+    private final AdapterContext codec;
 
-    BindingDOMMountPointListenerAdapter(final T listener, final BindingToNormalizedNodeCodec codec,
+    BindingDOMMountPointListenerAdapter(final T listener, final AdapterContext codec,
             final DOMMountPointService mountService) {
-        this.listener = listener;
-        this.codec = codec;
+        this.listener = requireNonNull(listener);
+        this.codec = requireNonNull(codec);
         this.registration = mountService.registerProvisionListener(this);
     }
 

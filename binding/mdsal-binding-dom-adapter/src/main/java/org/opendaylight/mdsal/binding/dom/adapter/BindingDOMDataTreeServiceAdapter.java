@@ -20,13 +20,12 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 public final class BindingDOMDataTreeServiceAdapter extends AbstractBindingAdapter<DOMDataTreeService>
         implements DataTreeService {
-    private BindingDOMDataTreeServiceAdapter(final BindingToNormalizedNodeCodec codec,
-            final DOMDataTreeService delegate) {
+    private BindingDOMDataTreeServiceAdapter(final AdapterContext codec, final DOMDataTreeService delegate) {
         super(codec, delegate);
     }
 
     public static BindingDOMDataTreeServiceAdapter create(final DOMDataTreeService domService,
-            final BindingToNormalizedNodeCodec codec) {
+            final AdapterContext codec) {
         return new BindingDOMDataTreeServiceAdapter(codec, domService);
     }
 

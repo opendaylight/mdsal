@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.NotificationListenerInvoker;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMEvent;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
@@ -27,12 +26,11 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
 
-    private final BindingNormalizedNodeSerializer codec;
+    private final AdapterContext codec;
     private final NotificationListener delegate;
     private final ImmutableMap<SchemaPath, NotificationListenerInvoker> invokers;
 
-    BindingDOMNotificationListenerAdapter(final BindingNormalizedNodeSerializer codec,
-            final NotificationListener delegate) {
+    BindingDOMNotificationListenerAdapter(final AdapterContext codec, final NotificationListener delegate) {
         this.codec = codec;
         this.delegate = delegate;
         this.invokers = createInvokerMapFor(delegate.getClass());

@@ -42,7 +42,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static <T extends DataObject> DataTreeModification<T> create(final BindingToNormalizedNodeCodec codec,
+    static <T extends DataObject> DataTreeModification<T> create(final AdapterContext codec,
             final DataTreeCandidate domChange, final LogicalDatastoreType datastoreType) {
         final Entry<InstanceIdentifier<?>, BindingDataObjectCodecTreeNode<?>> codecCtx = codec.getSubtreeCodec(
             domChange.getRootPath());
@@ -53,7 +53,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static <T extends DataObject> DataTreeModification<T> create(final BindingToNormalizedNodeCodec codec,
+    static <T extends DataObject> DataTreeModification<T> create(final AdapterContext codec,
             final DOMDataTreeCandidate candidate) {
         final Entry<InstanceIdentifier<?>, BindingDataObjectCodecTreeNode<?>> codecCtx = codec.getSubtreeCodec(
             candidate.getRootPath().getRootIdentifier());
@@ -65,7 +65,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     }
 
     static <T extends DataObject> @NonNull Collection<DataTreeModification<T>> from(
-            final BindingToNormalizedNodeCodec codec, final Collection<DataTreeCandidate> domChanges,
+            final AdapterContext codec, final Collection<DataTreeCandidate> domChanges,
             final LogicalDatastoreType datastoreType) {
         final List<DataTreeModification<T>> result = new ArrayList<>(domChanges.size());
         for (final DataTreeCandidate domChange : domChanges) {

@@ -19,8 +19,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 public class BindingDOMMountPointServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMMountPointService, DOMMountPoint, BindingMountPointAdapter>
         implements MountPointService {
-    public BindingDOMMountPointServiceAdapter(final DOMMountPointService mountService,
-            final BindingToNormalizedNodeCodec codec) {
+    public BindingDOMMountPointServiceAdapter(final DOMMountPointService mountService, final AdapterContext codec) {
         super(codec, mountService);
     }
 

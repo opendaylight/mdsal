@@ -15,11 +15,9 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransaction<DOMDataTreeReadTransaction> implements
-        ReadTransaction {
-
-    protected BindingDOMReadTransactionAdapter(final DOMDataTreeReadTransaction delegate,
-            final BindingToNormalizedNodeCodec codec) {
+final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransaction<DOMDataTreeReadTransaction>
+        implements ReadTransaction {
+    BindingDOMReadTransactionAdapter(final DOMDataTreeReadTransaction delegate, final AdapterContext codec) {
         super(delegate, codec);
     }
 
@@ -38,5 +36,4 @@ final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransactio
     public void close() {
         getDelegate().close();
     }
-
 }

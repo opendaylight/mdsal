@@ -14,7 +14,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.ExecutionException;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.yangtools.yang.binding.Action;
@@ -28,11 +27,11 @@ final class BindingOperationFluentFuture<O extends RpcOutput> extends AbstractFu
     private final Class<? extends Action<?, ?, O>> action;
     private final NodeIdentifier identifier;
 
-    private BindingNormalizedNodeSerializer codec;
+    private AdapterContext codec;
 
     BindingOperationFluentFuture(final ListenableFuture<RpcResult<O>> userFuture,
             final Class<? extends Action<?, ?, O>> action, final NodeIdentifier identifier,
-            final BindingNormalizedNodeSerializer codec) {
+            final AdapterContext codec) {
         this.userFuture = requireNonNull(userFuture);
         this.action = requireNonNull(action);
         this.identifier = requireNonNull(identifier);

@@ -28,18 +28,14 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
     static final Factory<NotificationPublishService> BUILDER_FACTORY = Builder::new;
 
     public BindingDOMNotificationPublishServiceAdapter(final DOMNotificationPublishService domPublishService,
-            final BindingToNormalizedNodeCodec codec) {
+            final AdapterContext codec) {
         super(codec, domPublishService);
     }
 
     @Deprecated
-    public BindingDOMNotificationPublishServiceAdapter(final BindingToNormalizedNodeCodec codec,
+    public BindingDOMNotificationPublishServiceAdapter(final AdapterContext codec,
             final DOMNotificationPublishService domPublishService) {
         this(domPublishService, codec);
-    }
-
-    public BindingToNormalizedNodeCodec getCodecRegistry() {
-        return getCodec();
     }
 
     public DOMNotificationPublishService getDomPublishService() {
@@ -82,7 +78,7 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
         }
 
         @Override
-        protected NotificationPublishService createInstance(final BindingToNormalizedNodeCodec codec,
+        protected NotificationPublishService createInstance(final AdapterContext codec,
                 final ClassToInstanceMap<DOMService> delegates) {
             final DOMNotificationPublishService domPublish = delegates.getInstance(DOMNotificationPublishService.class);
             return new BindingDOMNotificationPublishServiceAdapter(codec, domPublish);

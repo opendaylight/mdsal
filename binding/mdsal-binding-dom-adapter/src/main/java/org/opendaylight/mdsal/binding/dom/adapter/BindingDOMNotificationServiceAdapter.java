@@ -7,12 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
@@ -20,20 +21,19 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
 public class BindingDOMNotificationServiceAdapter implements NotificationService {
-
     public static final Factory<NotificationService> BUILDER_FACTORY = Builder::new;
 
-    private final BindingNormalizedNodeSerializer codec;
+    private final AdapterContext codec;
     private final DOMNotificationService domNotifService;
 
     public BindingDOMNotificationServiceAdapter(final DOMNotificationService domNotifService,
-            final BindingNormalizedNodeSerializer codec) {
-        this.codec = codec;
+            final AdapterContext codec) {
+        this.codec = requireNonNull(codec);
         this.domNotifService = domNotifService;
     }
 
     @Deprecated
-    public BindingDOMNotificationServiceAdapter(final BindingNormalizedNodeSerializer codec,
+    public BindingDOMNotificationServiceAdapter(final AdapterContext codec,
             final DOMNotificationService domNotifService) {
         this(domNotifService, codec);
     }
@@ -63,9 +63,8 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
     }
 
     private static class Builder extends BindingDOMAdapterBuilder<NotificationService> {
-
         @Override
-        protected NotificationService createInstance(final BindingToNormalizedNodeCodec codec,
+        protected NotificationService createInstance(final AdapterContext codec,
                 final ClassToInstanceMap<DOMService> delegates) {
             final DOMNotificationService domNotification = delegates.getInstance(DOMNotificationService.class);
             return new BindingDOMNotificationServiceAdapter(codec.getCodecRegistry(), domNotification);

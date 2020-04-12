@@ -28,12 +28,12 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapter<DOMDataTreeChangeService>
         implements DataTreeChangeService {
 
-    private BindingDOMDataTreeChangeServiceAdapter(final BindingToNormalizedNodeCodec codec,
+    private BindingDOMDataTreeChangeServiceAdapter(final AdapterContext codec,
             final DOMDataTreeChangeService dataTreeChangeService) {
         super(codec, dataTreeChangeService);
     }
 
-    static DataTreeChangeService create(final BindingToNormalizedNodeCodec codec,
+    static DataTreeChangeService create(final AdapterContext codec,
             final DOMDataTreeChangeService dataTreeChangeService) {
         return new BindingDOMDataTreeChangeServiceAdapter(codec, dataTreeChangeService);
     }

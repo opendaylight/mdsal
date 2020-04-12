@@ -138,7 +138,7 @@ final class BindingCodecContext extends AbstractBindingNormalizedNodeSerializer 
     private final @NonNull CodecClassLoader loader = CodecClassLoader.create();
     private final @NonNull InstanceIdentifierCodec instanceIdentifierCodec;
     private final @NonNull IdentityCodec identityCodec;
-    private final BindingRuntimeContext context;
+    private final @NonNull BindingRuntimeContext context;
     private final SchemaRootCodecContext<?> root;
 
     BindingCodecContext(final BindingRuntimeContext context) {
