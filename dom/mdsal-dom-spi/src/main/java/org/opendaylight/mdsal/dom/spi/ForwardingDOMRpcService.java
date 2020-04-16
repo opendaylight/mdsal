@@ -30,8 +30,7 @@ public abstract class ForwardingDOMRpcService extends ForwardingObject implement
     }
 
     @Override
-    public <T extends DOMRpcAvailabilityListener>
-            ListenerRegistration<T> registerRpcListener(final T listener) {
+    public <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(final T listener) {
         return delegate().registerRpcListener(listener);
     }
 }

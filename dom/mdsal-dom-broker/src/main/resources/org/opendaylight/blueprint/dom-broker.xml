@@ -12,10 +12,6 @@
     </cm:default-properties>
   </cm:property-placeholder>
 
-  <!-- Schema Service -->
-
-  <odl:static-reference id="schemaService" interface="org.opendaylight.mdsal.dom.api.DOMSchemaService"/>
-
   <!-- DOM Notification Service -->
 
   <bean id="domNotificationRouter" class="org.opendaylight.mdsal.dom.broker.DOMNotificationRouter"
@@ -31,41 +27,6 @@
       <value>org.opendaylight.mdsal.dom.api.DOMNotificationService</value>
       <value>org.opendaylight.mdsal.dom.api.DOMNotificationPublishService</value>
       <value>org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry</value>
-    </interfaces>
-  </service>
-
-  <!-- DOM RPC Service -->
-
-  <bean id="domRpcRouter" class="org.opendaylight.mdsal.dom.broker.DOMRpcRouter"
-          factory-method="newInstance" destroy-method="close">
-    <argument ref="schemaService"/>
-  </bean>
-
-  <bean id="domRpcService" factory-ref="domRpcRouter" factory-method="getRpcService"/>
-  <service ref="domRpcService" odl:type="default">
-    <interfaces>
-      <value>org.opendaylight.mdsal.dom.api.DOMRpcService</value>
-    </interfaces>
-  </service>
-
-  <bean id="domRpcProviderService" factory-ref="domRpcRouter" factory-method="getRpcProviderService"/>
-  <service ref="domRpcProviderService" odl:type="default">
-    <interfaces>
-      <value>org.opendaylight.mdsal.dom.api.DOMRpcProviderService</value>
-    </interfaces>
-  </service>
-
-  <bean id="domActionService" factory-ref="domRpcRouter" factory-method="getActionService"/>
-  <service ref="domActionService" odl:type="default">
-    <interfaces>
-      <value>org.opendaylight.mdsal.dom.api.DOMActionService</value>
-    </interfaces>
-  </service>
-
-  <bean id="domActionProviderService" factory-ref="domRpcRouter" factory-method="getActionProviderService"/>
-  <service ref="domActionProviderService" odl:type="default">
-    <interfaces>
-      <value>org.opendaylight.mdsal.dom.api.DOMActionProviderService</value>
     </interfaces>
   </service>
 </blueprint>
