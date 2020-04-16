@@ -37,7 +37,10 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.checkerframework.checker.lock.qual.GuardedBy;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
@@ -75,15 +78,17 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class DOMRpcRouter extends AbstractRegistration implements EffectiveModelContextListener {
+@Singleton
+public final class DOMRpcRouter extends AbstractRegistration
+        implements DOMRpcRouterServices, EffectiveModelContextListener {
     private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat(
             "DOMRpcRouter-listener-%s").setDaemon(true).build();
 
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
-    private final DOMActionProviderService actionProviderService = new ActionProviderServiceFacade();
-    private final DOMActionService actionService = new ActionServiceFacade();
-    private final DOMRpcProviderService rpcProviderService = new RpcProviderServiceFacade();
-    private final DOMRpcService rpcService = new RpcServiceFacade();
+    private final @NonNull DOMActionProviderService actionProviderService = new ActionProviderServiceFacade();
+    private final @NonNull DOMActionService actionService = new ActionServiceFacade();
+    private final @NonNull DOMRpcProviderService rpcProviderService = new RpcProviderServiceFacade();
+    private final @NonNull DOMRpcService rpcService = new RpcServiceFacade();
 
     @GuardedBy("this")
     private Collection<Registration<?>> listeners = Collections.emptyList();
@@ -97,24 +102,29 @@ public final class DOMRpcRouter extends AbstractRegistration implements Effectiv
 
     private ListenerRegistration<?> listenerRegistration;
 
+    @Inject
     public static DOMRpcRouter newInstance(final DOMSchemaService schemaService) {
         final DOMRpcRouter rpcRouter = new DOMRpcRouter();
         rpcRouter.listenerRegistration = schemaService.registerSchemaContextListener(rpcRouter);
         return rpcRouter;
     }
 
+    @Override
     public DOMActionService getActionService() {
         return actionService;
     }
 
+    @Override
     public DOMActionProviderService getActionProviderService() {
         return actionProviderService;
     }
 
+    @Override
     public DOMRpcService getRpcService() {
         return rpcService;
     }
 
+    @Override
     public DOMRpcProviderService getRpcProviderService() {
         return rpcProviderService;
     }
