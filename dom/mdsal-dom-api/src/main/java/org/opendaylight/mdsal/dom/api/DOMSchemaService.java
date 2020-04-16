@@ -18,7 +18,7 @@ public interface DOMSchemaService extends DOMExtensibleService<DOMSchemaService,
      * @return schemaContext
      * @deprecated This method never fully materialized, use {@link #getGlobalContext()} instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     default EffectiveModelContext getSessionContext() {
         throw new UnsupportedOperationException("getSessionContext() is not specified nor implemented");
     }
