@@ -414,15 +414,6 @@
             <artifactId>ietf-topology-ospf</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-packet-fields</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-access-control-list</artifactId>
-        </dependency>
-
         <!-- Also add dependencies we are using -->
         <dependency>
             <groupId>javax.inject</groupId>
