@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.yang.types;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +50,9 @@ public class GroupingDefinitionDependencySort {
     public List<GroupingDefinition> sort(final Collection<GroupingDefinition> groupingDefinitions) {
         if (groupingDefinitions == null) {
             throw new IllegalArgumentException("Set of Type Definitions cannot be NULL!");
+        }
+        if (groupingDefinitions.isEmpty()) {
+            return Collections.emptyList();
         }
 
         final List<GroupingDefinition> resultGroupingDefinitions = new ArrayList<>();
