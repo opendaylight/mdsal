@@ -746,13 +746,6 @@
                 <version>0.16.0-SNAPSHOT</version>
             </dependency>
 
-            <!-- draft-ietf-netmod-iana-afn-safi-00, expired -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>iana-afn-safi</artifactId>
-                <version>2013.07.04.18.0-SNAPSHOT</version>
-            </dependency>
-
             <!-- Features -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
@@ -926,13 +919,6 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-ietf-netmod-acl-model-07</artifactId>
-                <version>6.0.0-SNAPSHOT</version>
-                <classifier>features</classifier>
-                <type>xml</type>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>odl-mdsal-model-draft-ietf-netmod-iana-afn-safi-00</artifactId>
                 <version>6.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>

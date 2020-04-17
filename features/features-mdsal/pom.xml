@@ -296,12 +296,6 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>odl-mdsal-model-draft-ietf-netmod-iana-afn-safi-00</artifactId>
-            <classifier>features</classifier>
-            <type>xml</type>
-        </dependency>
 
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
