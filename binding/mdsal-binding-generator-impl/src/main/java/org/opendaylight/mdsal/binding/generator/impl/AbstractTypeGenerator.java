@@ -1963,7 +1963,7 @@ abstract class AbstractTypeGenerator {
             final GeneratedTypeBuilder genType = findGrouping(usesNode.getSourceGrouping());
             if (genType == null) {
                 throw new IllegalStateException("Grouping " + usesNode.getSourceGrouping().getQName()
-                    + " is not resolved for " + builder.getName());
+                    + " is not resolved for " + builder.getFullyQualifiedName());
             }
 
             builder.addImplementsType(genType.build());
