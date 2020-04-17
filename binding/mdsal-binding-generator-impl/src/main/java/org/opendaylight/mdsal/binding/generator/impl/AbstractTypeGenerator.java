@@ -1952,8 +1952,8 @@ abstract class AbstractTypeGenerator {
         for (final UsesNode usesNode : dataNodeContainer.getUses()) {
             final GeneratedTypeBuilder genType = findGroupingByPath(usesNode.getGroupingPath());
             if (genType == null) {
-                throw new IllegalStateException("Grouping " + usesNode.getGroupingPath() + "is not resolved for "
-                        + builder.getName());
+                throw new IllegalStateException("Grouping " + usesNode.getGroupingPath() + " is not resolved for "
+                        + builder.getFullyQualifiedName());
             }
 
             builder.addImplementsType(genType.build());
