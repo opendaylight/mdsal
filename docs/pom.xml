@@ -413,10 +413,6 @@
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-topology-ospf</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-lisp-address-types-2015-11-05</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
@@ -692,10 +688,6 @@
                         <group>
                             <title>Java Bindings for ietf-ip.yang</title>
                             <packages>org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.ip.rev*</packages>
-                        </group>
-                        <group>
-                            <title>Java Bindings for ietf-lisp-address-types.yang</title>
-                            <packages>org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.lisp.address.types.*</packages>
                         </group>
                         <group>
                             <title>Java Bindings for ietf-network.yang</title>
