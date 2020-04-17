@@ -34,9 +34,6 @@
 
         <!-- RFC8348 and updates -->
         <module>iana-hardware</module>
-
-        <!-- drafts -->
-        <module>iana-afn-safi</module>
     </modules>
 
     <properties>

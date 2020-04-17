@@ -422,10 +422,6 @@
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-access-control-list</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>iana-afn-safi</artifactId>
-        </dependency>
 
         <!-- Also add dependencies we are using -->
         <dependency>
@@ -648,10 +644,6 @@
                         <group>
                             <title>Baseline utilities for interacting with RFC6991 models</title>
                             <packages>org.opendaylight.mdsal.model.ietf.util</packages>
-                        </group>
-                        <group>
-                            <title>Java Bindings for iana-afn-safi.yang</title>
-                            <packages>org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana.afn.safi*</packages>
                         </group>
                         <group>
                             <title>Java Bindings for iana-hardware.yang</title>
