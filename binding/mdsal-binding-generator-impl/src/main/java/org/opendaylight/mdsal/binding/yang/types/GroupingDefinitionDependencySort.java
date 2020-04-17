@@ -50,9 +50,8 @@ public class GroupingDefinitionDependencySort {
             throw new IllegalArgumentException("Set of Type Definitions cannot be NULL!");
         }
 
-        final List<GroupingDefinition> resultGroupingDefinitions = new ArrayList<>();
-        final Set<Node> unsorted = groupingDefinitionsToNodes(groupingDefinitions);
-        final List<Node> sortedNodes = TopologicalSort.sort(unsorted);
+        final List<Node> sortedNodes = TopologicalSort.sort(groupingDefinitionsToNodes(groupingDefinitions));
+        final List<GroupingDefinition> resultGroupingDefinitions = new ArrayList<>(sortedNodes.size());
         for (Node node : sortedNodes) {
             NodeWrappedType nodeWrappedType = (NodeWrappedType) node;
             resultGroupingDefinitions.add((GroupingDefinition) nodeWrappedType.getWrappedType());
@@ -67,7 +66,7 @@ public class GroupingDefinitionDependencySort {
      * For every uses node is found its wrapping node (next as <i>nodeTo</i>). This dependency relationship between
      * nodeFrom and all found nodesTo is modeled with creating of one edge from nodeFrom to nodeTo.
      *
-     * @param groupingDefinitions set of goruping definition which will be wrapped to nodes
+     * @param groupingDefinitions set of grouping definition which will be wrapped to nodes
      * @return set of nodes where every one contains wrapped grouping definition
      */
     private Set<Node> groupingDefinitionsToNodes(final Collection<? extends GroupingDefinition> groupingDefinitions) {
