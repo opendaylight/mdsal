@@ -107,10 +107,6 @@
         <module>rfc8542-ietf-dc-fabric-topology</module>
         <module>rfc8542-ietf-dc-fabric-types</module>
 
-        <!-- Legacy Network Access Control Lists -->
-        <module>ietf-packet-fields</module>
-        <module>ietf-access-control-list</module>
-
         <!-- Legacy IETF topology models -->
         <module>ietf-ted</module>
         <module>ietf-topology</module>

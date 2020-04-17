@@ -732,20 +732,6 @@
                 <version>2013.10.21.18.0-SNAPSHOT</version>
             </dependency>
 
-            <!-- draft-ietf-netmod-acl-model-07 -->
-            <!-- FIXME: figure out the upgrade path towards
-                        draft-ietf-netmod-acl-model-18 -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-packet-fields</artifactId>
-                <version>0.16.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-access-control-list</artifactId>
-                <version>0.16.0-SNAPSHOT</version>
-            </dependency>
-
             <!-- Features -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
@@ -912,13 +898,6 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</artifactId>
-                <version>6.0.0-SNAPSHOT</version>
-                <classifier>features</classifier>
-                <type>xml</type>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>odl-mdsal-model-draft-ietf-netmod-acl-model-07</artifactId>
                 <version>6.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
