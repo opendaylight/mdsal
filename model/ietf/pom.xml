@@ -111,8 +111,6 @@
         <module>ietf-packet-fields</module>
         <module>ietf-access-control-list</module>
 
-        <module>ietf-lisp-address-types</module>
-
         <!-- Legacy IETF topology models -->
         <module>ietf-ted</module>
         <module>ietf-topology</module>
