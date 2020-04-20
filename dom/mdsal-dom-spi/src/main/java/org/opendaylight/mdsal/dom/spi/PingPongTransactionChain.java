@@ -442,7 +442,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
             public FluentFuture<? extends CommitInfo> commit() {
                 readyTransaction(tx);
                 isOpen = false;
-                return tx.getCommitFuture().transform(ignored -> CommitInfo.empty(), MoreExecutors.directExecutor());
+                return tx.completionFuture();
             }
 
             @Override
@@ -454,6 +454,11 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
                 }
 
                 return false;
+            }
+
+            @Override
+            public FluentFuture<?> completionFuture() {
+                return tx.completionFuture();
             }
         };
 
