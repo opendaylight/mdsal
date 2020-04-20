@@ -32,6 +32,10 @@ public class TransactionChainWriteTransaction implements DOMDataTreeWriteTransac
         this.txChain = requireNonNull(txChain);
     }
 
+    @Override
+    public Object getIdentifier() {
+        return identifier;
+    }
 
     @Override
     public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path,
@@ -76,7 +80,7 @@ public class TransactionChainWriteTransaction implements DOMDataTreeWriteTransac
     }
 
     @Override
-    public Object getIdentifier() {
-        return identifier;
+    public FluentFuture<?> completionFuture() {
+        return delegateTx.completionFuture();
     }
 }
