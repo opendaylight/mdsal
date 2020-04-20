@@ -84,4 +84,9 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
     public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         delegate.delete(store, path);
     }
+
+    @Override
+    public FluentFuture<?> completionFuture() {
+        return delegate.completionFuture();
+    }
 }

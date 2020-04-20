@@ -12,15 +12,16 @@ import static java.util.Objects.requireNonNull;
 import static org.opendaylight.yangtools.util.concurrent.FluentFutures.immediateFailedFluentFuture;
 
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
-import java.util.concurrent.Future;
+import com.google.common.util.concurrent.SettableFuture;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.mdsal.dom.spi.UncancellableListenableFuture;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
@@ -50,10 +51,14 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
         AbstractDOMForwardedTransactionFactory> IMPL_UPDATER = AtomicReferenceFieldUpdater.newUpdater(
                 DOMForwardedWriteTransaction.class, AbstractDOMForwardedTransactionFactory.class, "commitImpl");
     @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<DOMForwardedWriteTransaction, Future> FUTURE_UPDATER =
-            AtomicReferenceFieldUpdater.newUpdater(DOMForwardedWriteTransaction.class, Future.class, "commitFuture");
+    private static final AtomicReferenceFieldUpdater<DOMForwardedWriteTransaction, FluentFuture> FUTURE_UPDATER =
+            AtomicReferenceFieldUpdater.newUpdater(DOMForwardedWriteTransaction.class, FluentFuture.class,
+                "commitFuture");
     private static final Logger LOG = LoggerFactory.getLogger(DOMForwardedWriteTransaction.class);
-    private static final Future<?> CANCELLED_FUTURE = Futures.immediateCancelledFuture();
+
+    private final @NonNull SettableFuture<@NonNull CommitInfo> settableCompletion = SettableFuture.create();
+    private final @NonNull FluentFuture<? extends @NonNull CommitInfo> completionFuture = FluentFuture.from(
+        new UncancellableListenableFuture<>(settableCompletion));
 
     /*
      * Implementation of real commit. It also acts as an indication that the transaction is running -- which we flip
@@ -69,7 +74,7 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
      * busy-wait for it. The fast path gets the benefit of a store-store barrier instead of the usual store-load
      * barrier.
      */
-    private volatile Future<?> commitFuture;
+    private volatile FluentFuture<?> commitFuture;
 
     protected DOMForwardedWriteTransaction(final Object identifier,
             final Function<LogicalDatastoreType, T> backingTxFactory,
@@ -79,46 +84,47 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
     }
 
     @Override
-    public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode data) {
+    public final void put(final LogicalDatastoreType store, final YangInstanceIdentifier path,
+            final NormalizedNode data) {
         checkRunning(commitImpl);
         getSubtransaction(store).write(path, data);
     }
 
     @Override
-    public void delete(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
+    public final void delete(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         checkRunning(commitImpl);
         getSubtransaction(store).delete(path);
     }
 
     @Override
-    public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode data) {
+    public final void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path,
+            final NormalizedNode data) {
         checkRunning(commitImpl);
         getSubtransaction(store).merge(path, data);
     }
 
     @Override
-    public boolean cancel() {
+    public final boolean cancel() {
         final AbstractDOMForwardedTransactionFactory<?> impl = IMPL_UPDATER.getAndSet(this, null);
         if (impl != null) {
             LOG.trace("Transaction {} cancelled before submit", getIdentifier());
-            FUTURE_UPDATER.lazySet(this, CANCELLED_FUTURE);
+            FUTURE_UPDATER.lazySet(this, FluentFutures.immediateCancelledFluentFuture());
             closeSubtransactions();
             return true;
         }
 
-        // The transaction is in process of being submitted or cancelled. Busy-wait
-        // for the corresponding future.
-        Future<?> future;
+        // The transaction is in process of being submitted or cancelled. Busy-wait for the corresponding future.
+        FluentFuture<?> future;
         do {
             future = commitFuture;
         } while (future == null);
 
-        return future.cancel(false);
+        return future.isCancelled();
     }
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+    public final FluentFuture<? extends CommitInfo> commit() {
         final AbstractDOMForwardedTransactionFactory<?> impl = IMPL_UPDATER.getAndSet(this, null);
         checkRunning(impl);
 
@@ -134,8 +140,14 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
             }
         }
 
+        settableCompletion.setFuture(ret);
         FUTURE_UPDATER.lazySet(this, ret);
-        return ret;
+        return completionFuture;
+    }
+
+    @Override
+    public final FluentFuture<?> completionFuture() {
+        return completionFuture;
     }
 
     private void checkRunning(final AbstractDOMForwardedTransactionFactory<?> impl) {

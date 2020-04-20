@@ -73,4 +73,9 @@ public class ForwardingWriteTransaction extends ForwardingTransaction implements
     public FluentFuture<? extends CommitInfo> commit() {
         return delegate.commit();
     }
+
+    @Override
+    public FluentFuture<?> completionFuture() {
+        return delegate.completionFuture();
+    }
 }

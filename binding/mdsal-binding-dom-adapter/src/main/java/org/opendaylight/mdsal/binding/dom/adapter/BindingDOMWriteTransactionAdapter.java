@@ -133,6 +133,11 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         return getDelegate().cancel();
     }
 
+    @Override
+    public FluentFuture<?> completionFuture() {
+        return getDelegate().completionFuture();
+    }
+
     /**
      * Subclasses of this class are required to implement creation of parent nodes based on behaviour of their
      * underlying transaction.

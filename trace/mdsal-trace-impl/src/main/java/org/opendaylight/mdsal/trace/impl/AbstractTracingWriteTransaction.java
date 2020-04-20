@@ -106,6 +106,11 @@ abstract class AbstractTracingWriteTransaction implements DOMDataTreeWriteTransa
         return delegate.getIdentifier();
     }
 
+    @Override
+    public final FluentFuture<?> completionFuture() {
+        return delegate.completionFuture();
+    }
+
     // https://jira.opendaylight.org/browse/CONTROLLER-1792
 
     @Override
