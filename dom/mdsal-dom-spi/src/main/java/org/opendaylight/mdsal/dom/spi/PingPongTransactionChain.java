@@ -431,6 +431,8 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
     public DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
         final PingPongTransaction tx = allocateTransaction();
         final DOMDataTreeReadWriteTransaction ret = new ForwardingDOMDataReadWriteTransaction() {
+            private final @NonNull FluentFuture<? extends CommitInfo> completionFuture = tx.getCommitFuture()
+                    .transform(ignored -> CommitInfo.empty(), MoreExecutors.directExecutor());
             private boolean isOpen = true;
 
             @Override
@@ -442,7 +444,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
             public FluentFuture<? extends CommitInfo> commit() {
                 readyTransaction(tx);
                 isOpen = false;
-                return tx.getCommitFuture().transform(ignored -> CommitInfo.empty(), MoreExecutors.directExecutor());
+                return completionFuture;
             }
 
             @Override
@@ -454,6 +456,11 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
                 }
 
                 return false;
+            }
+
+            @Override
+            public FluentFuture<?> completionFuture() {
+                return completionFuture;
             }
         };
 
