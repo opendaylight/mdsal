@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -30,8 +29,8 @@ public interface DOMRpcService extends DOMService {
      * @return A {@link ListenableFuture} which will return either a result structure, or report a subclass
      *         of {@link DOMRpcException} reporting a transport error.
      */
-    // FIXME: 6.0.0: do not allow null input
-    @NonNull ListenableFuture<DOMRpcResult> invokeRpc(@NonNull SchemaPath type, @Nullable NormalizedNode<?, ?> input);
+    @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull SchemaPath type,
+            @NonNull NormalizedNode<?, ?> input);
 
     /**
      * Register a {@link DOMRpcAvailabilityListener} with this service to receive notifications

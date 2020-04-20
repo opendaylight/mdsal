@@ -401,7 +401,7 @@ public final class DOMRpcRouter extends AbstractRegistration
                     new DOMActionNotAvailableException("No implementation of Action %s available", type));
             }
 
-            return OperationInvocation.invoke(entry, type, path, input);
+            return OperationInvocation.invoke(entry, type, path, requireNonNull(input));
         }
     }
 
@@ -435,14 +435,15 @@ public final class DOMRpcRouter extends AbstractRegistration
 
     private final class RpcServiceFacade implements DOMRpcService {
         @Override
-        public ListenableFuture<DOMRpcResult> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {
+        public ListenableFuture<? extends DOMRpcResult> invokeRpc(final SchemaPath type,
+                final NormalizedNode<?, ?> input) {
             final AbstractDOMRpcRoutingTableEntry entry = (AbstractDOMRpcRoutingTableEntry) routingTable.getEntry(type);
             if (entry == null) {
                 return Futures.immediateFailedFuture(
                     new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
             }
 
-            return OperationInvocation.invoke(entry, input);
+            return OperationInvocation.invoke(entry, requireNonNull(input));
         }
 
         @Override
@@ -497,7 +498,7 @@ public final class DOMRpcRouter extends AbstractRegistration
             return entry.getImplementations(path).get(0).invokeAction(type, path, input);
         }
 
-        static ListenableFuture<DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
+        static ListenableFuture<? extends DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
                 final NormalizedNode<?, ?> input) {
             if (entry instanceof UnknownDOMRpcRoutingTableEntry) {
                 return Futures.immediateFailedFuture(
@@ -513,8 +514,8 @@ public final class DOMRpcRouter extends AbstractRegistration
                 new DOMRpcImplementationNotAvailableException("Unsupported RPC entry."));
         }
 
-        private static ListenableFuture<DOMRpcResult> invokeRoutedRpc(final RoutedDOMRpcRoutingTableEntry entry,
-                final NormalizedNode<?, ?> input) {
+        private static ListenableFuture<? extends DOMRpcResult> invokeRoutedRpc(
+                final RoutedDOMRpcRoutingTableEntry entry, final NormalizedNode<?, ?> input) {
             final Optional<NormalizedNode<?, ?>> maybeKey = NormalizedNodes.findNode(input,
                 entry.getRpcId().getContextReference());
 
@@ -559,8 +560,8 @@ public final class DOMRpcRouter extends AbstractRegistration
                     entry.getType()));
         }
 
-        private static ListenableFuture<DOMRpcResult> invokeGlobalRpc(final GlobalDOMRpcRoutingTableEntry entry,
-                final NormalizedNode<?, ?> input) {
+        private static ListenableFuture<? extends DOMRpcResult> invokeGlobalRpc(
+                final GlobalDOMRpcRoutingTableEntry entry, final NormalizedNode<?, ?> input) {
             return entry.getImplementations(YangInstanceIdentifier.empty()).get(0).invokeRpc(entry.getRpcId(), input);
         }
     }
