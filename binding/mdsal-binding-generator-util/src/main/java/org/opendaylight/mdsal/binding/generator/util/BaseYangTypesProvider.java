@@ -13,6 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.util.BaseYangTypes;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -53,7 +54,8 @@ public final class BaseYangTypesProvider implements TypeProvider {
         final String typeName = type.getQName().getLocalName();
         switch (typeName) {
             case "binary":
-                return restrictions == null ? Types.BYTE_ARRAY : Types.typeForClass(byte[].class, restrictions);
+                return restrictions == null ? BaseYangTypes.BINARY_TYPE
+                        : Types.typeForClass(byte[].class, restrictions);
             case "decimal64":
                 return Types.typeForClass(BigDecimal.class, restrictions);
             case "enumeration":
