@@ -11,6 +11,7 @@ import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,11 +29,16 @@ import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.yangtools.yang.binding.CodeHelpers;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * Base Java file template. Contains a non-null type and imports which the generated code refers to.
  */
 class JavaFileTemplate {
+    /**
+     * {@code java.lang.Boolean} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName BOOLEAN = JavaTypeName.create(Boolean.class);
     /**
      * {@code java.lang.Class} as a JavaTypeName.
      */
@@ -41,6 +47,10 @@ class JavaFileTemplate {
      * {@code java.lang.Deprecated} as a JavaTypeName.
      */
     static final @NonNull JavaTypeName DEPRECATED = JavaTypeName.create(Deprecated.class);
+    /**
+     * {@code java.lang.Object} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName OBJECT = JavaTypeName.create(Object.class);
     /**
      * {@code java.lang.Override} as a JavaTypeName.
      */
@@ -55,6 +65,10 @@ class JavaFileTemplate {
      * {@code java.util.Arrays} as a JavaTypeName.
      */
     static final @NonNull JavaTypeName JU_ARRAYS = JavaTypeName.create(Arrays.class);
+    /**
+     * {@code java.util.HashMap} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName JU_HASHMAP = JavaTypeName.create(HashMap.class);
     /**
      * {@code java.util.List} as a JavaTypeName.
      */
@@ -85,6 +99,10 @@ class JavaFileTemplate {
      * {@code org.opendaylight.yangtools.yang.binding.CodeHelpers} as a JavaTypeName.
      */
     static final @NonNull JavaTypeName CODEHELPERS = JavaTypeName.create(CodeHelpers.class);
+    /**
+     * {@code org.opendaylight.yangtools.yang.binding.DataObject} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName DATAOBJECT = JavaTypeName.create(DataObject.class);
 
     private final AbstractJavaGeneratedType javaType;
     private final GeneratedType type;

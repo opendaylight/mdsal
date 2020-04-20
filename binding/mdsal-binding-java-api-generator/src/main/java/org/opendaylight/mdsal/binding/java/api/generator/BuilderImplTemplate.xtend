@@ -92,14 +92,14 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
     def protected generateEquals() '''
         «IF !properties.empty || augmentType !== null»
             @«OVERRIDE.importedName»
-            public boolean equals(«Object.importedName» obj) {
+            public boolean equals(«OBJECT.importedName» obj) {
                 if (this == obj) {
                     return true;
                 }
-                if (!(obj instanceof «DataObject.importedName»)) {
+                if (!(obj instanceof «DATAOBJECT.importedName»)) {
                     return false;
                 }
-                if (!«targetType.importedName».class.equals(((«DataObject.importedName»)obj).«DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME»())) {
+                if (!«targetType.importedName».class.equals(((«DATAOBJECT.importedName»)obj).«DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME»())) {
                     return false;
                 }
                 «targetType.importedName» other = («targetType.importedName»)obj;
