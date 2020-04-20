@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes.leafNode;
 
 import com.google.common.util.concurrent.FluentFuture;
@@ -67,13 +68,14 @@ abstract class TestUtils {
     private static final class TestRpcImplementation implements DOMRpcImplementation {
         private final FluentFuture<DOMRpcResult> unknownRpc;
 
-        private TestRpcImplementation() {
+        TestRpcImplementation() {
             unknownRpc = FluentFutures.immediateFailedFluentFuture(
                     new DOMRpcImplementationNotAvailableException(EXCEPTION_TEXT));
         }
 
         @Override
         public FluentFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
+            requireNonNull(input);
             return unknownRpc;
         }
     }

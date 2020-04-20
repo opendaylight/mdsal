@@ -80,13 +80,9 @@ class RpcServiceAdapter implements InvocationHandler {
 
     @Override
     @SuppressWarnings("checkstyle:hiddenField")
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-
+    public Object invoke(final Object proxy, final Method method, final Object[] args) {
         final RpcInvocationStrategy rpc = rpcNames.get(method);
         if (rpc != null) {
-            if (method.getParameterCount() == 0) {
-                return rpc.invokeEmpty();
-            }
             if (args.length != 1) {
                 throw new IllegalArgumentException("Input must be provided.");
             }
@@ -130,16 +126,12 @@ class RpcServiceAdapter implements InvocationHandler {
 
         abstract ContainerNode serialize(DataObject input);
 
-        final ListenableFuture<RpcResult<?>> invokeEmpty() {
-            return invoke0(rpcName, null);
-        }
-
         final SchemaPath getRpcName() {
             return rpcName;
         }
 
         ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final ContainerNode input) {
-            final ListenableFuture<DOMRpcResult> result = delegate.invokeRpc(schemaPath, input);
+            final ListenableFuture<? extends DOMRpcResult> result = delegate.invokeRpc(schemaPath, input);
             if (ENABLE_CODEC_SHORTCUT && result instanceof BindingRpcFutureAware) {
                 return ((BindingRpcFutureAware) result).getBindingFuture();
             }
@@ -148,7 +140,8 @@ class RpcServiceAdapter implements InvocationHandler {
         }
 
         private ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
-                final ListenableFuture<DOMRpcResult> domFuture, final BindingNormalizedNodeSerializer resultCodec) {
+                final ListenableFuture<? extends DOMRpcResult> domFuture,
+                final BindingNormalizedNodeSerializer resultCodec) {
             return Futures.transform(domFuture, input -> {
                 final NormalizedNode<?, ?> domData = input.getResult();
                 final DataObject bindingResult;
