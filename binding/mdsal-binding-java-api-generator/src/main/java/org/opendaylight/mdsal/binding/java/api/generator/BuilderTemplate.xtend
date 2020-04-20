@@ -40,9 +40,10 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     /**
      * Constant used as suffix for builder name.
      */
-    public static val BUILDER = "Builder";
+    package static val BUILDER_STR = "Builder";
 
     static val AUGMENTATION_FIELD_UPPER = AUGMENTATION_FIELD.toFirstUpper
+    static val BUILDER = JavaTypeName.create(Builder)
 
     /**
      * Constructs new instance of this class.
@@ -66,7 +67,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     override body() '''
         «wrapToDocumentation(formatDataForJavaDoc(targetType))»
         «targetType.annotations.generateDeprecatedAnnotation»
-        public class «type.name» implements «Builder.importedName»<«targetType.importedName»> {
+        public class «type.name» implements «BUILDER.importedName»<«targetType.importedName»> {
 
             «generateFields(false)»
 
@@ -158,7 +159,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             «IF targetType.hasImplementsFromUses»
                 «val List<Type> done = targetType.getBaseIfcs»
                 «generateMethodFieldsFromComment(targetType)»
-                public void fieldsFrom(«DataObject.importedName» arg) {
+                public void fieldsFrom(«DATAOBJECT.importedName» arg) {
                     boolean isValidArg = false;
                     «FOR impl : targetType.getAllIfcs»
                         «generateIfCheck(impl, done)»
@@ -340,13 +341,14 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «IF augmentType !== null»
             «val augmentTypeRef = augmentType.importedName»
             «val jlClassRef = CLASS.importedName»
+            «val hashMapRef = JU_HASHMAP.importedName»
             public «type.name» add«AUGMENTATION_FIELD_UPPER»(«jlClassRef»<? extends «augmentTypeRef»> augmentationType, «augmentTypeRef» augmentationValue) {
                 if (augmentationValue == null) {
                     return remove«AUGMENTATION_FIELD_UPPER»(augmentationType);
                 }
 
-                if (!(this.«AUGMENTATION_FIELD» instanceof «HashMap.importedName»)) {
-                    this.«AUGMENTATION_FIELD» = new «HashMap.importedName»<>();
+                if (!(this.«AUGMENTATION_FIELD» instanceof «hashMapRef»)) {
+                    this.«AUGMENTATION_FIELD» = new «hashMapRef»<>();
                 }
 
                 this.«AUGMENTATION_FIELD».put(augmentationType, augmentationValue);
@@ -354,7 +356,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             }
 
             public «type.name» remove«AUGMENTATION_FIELD_UPPER»(«jlClassRef»<? extends «augmentTypeRef»> augmentationType) {
-                if (this.«AUGMENTATION_FIELD» instanceof «HashMap.importedName») {
+                if (this.«AUGMENTATION_FIELD» instanceof «hashMapRef») {
                     this.«AUGMENTATION_FIELD».remove(augmentationType);
                 }
                 return this;
@@ -400,7 +402,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         </ul>
 
         @see «target»
-        @see «Builder.importedName»
+        @see «BUILDER.importedName»
     '''
     }
 
@@ -431,7 +433,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     override protected generateCopyAugmentation(Type implType) {
         val augmentationHolderRef = AugmentationHolder.importedName
         val typeRef = targetType.importedName
-        val hashMapRef = HashMap.importedName
+        val hashMapRef = JU_HASHMAP.importedName
         val augmentTypeRef = augmentType.importedName
         return '''
             if (base instanceof «augmentationHolderRef») {

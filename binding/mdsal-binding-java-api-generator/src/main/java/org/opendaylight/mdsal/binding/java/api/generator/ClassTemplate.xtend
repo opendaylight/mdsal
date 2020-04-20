@@ -430,7 +430,7 @@ class ClassTemplate extends BaseTemplate {
         int i = 0;
         return new «genTO.name»(
         «FOR prop : allProperties SEPARATOR ","»
-            properties.get(i++).equals(defaultValue) ? «Boolean.importedName».TRUE : null
+            properties.get(i++).equals(defaultValue) ? «BOOLEAN.importedName».TRUE : null
         «ENDFOR»
         );
     '''
