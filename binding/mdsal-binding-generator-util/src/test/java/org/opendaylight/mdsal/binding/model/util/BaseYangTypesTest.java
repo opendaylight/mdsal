@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.generator.impl;
+package org.opendaylight.mdsal.binding.model.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,11 +14,8 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.util.BaseYangTypes;
-import org.opendaylight.mdsal.binding.model.util.Types;
 
-public class BaseTypeProvider {
-
+public class BaseYangTypesTest {
     @Test
     public void test() {
         Type stringType = BaseYangTypes.javaTypeForYangType("string");

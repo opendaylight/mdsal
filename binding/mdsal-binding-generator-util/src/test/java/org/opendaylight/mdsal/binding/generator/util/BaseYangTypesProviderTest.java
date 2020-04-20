@@ -42,10 +42,7 @@ import org.opendaylight.yangtools.yang.model.api.type.Uint8TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
-/**
- * Test class for testing BaseYangTypes class.
- */
-public class BaseYangTypesTest {
+public class BaseYangTypesProviderTest {
 
     private static SchemaContext schemaContext;
 
