@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.util;
 
+import com.google.common.util.concurrent.FluentFuture;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -53,6 +54,11 @@ class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction>
     public final void delete(final InstanceIdentifier<?> path) {
         delegate().delete(getDatastoreType(), path);
         postOperation();
+    }
+
+    @Override
+    public final FluentFuture<?> completionFuture() {
+        return delegate().completionFuture();
     }
 
     void postOperation() {
