@@ -52,35 +52,38 @@ public final class BaseYangTypesProvider implements TypeProvider {
     public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode,
             final Restrictions restrictions, final boolean lenientRelativeLeafrefs) {
         final String typeName = type.getQName().getLocalName();
-        switch (typeName) {
-            case "binary":
-                return restrictions == null ? BaseYangTypes.BINARY_TYPE
-                        : Types.typeForClass(byte[].class, restrictions);
-            case "decimal64":
-                return Types.typeForClass(BigDecimal.class, restrictions);
-            case "enumeration":
-                return Types.typeForClass(Enum.class, restrictions);
-            case "int8":
-                return Types.typeForClass(Byte.class, restrictions);
-            case "int16":
-                return Types.typeForClass(Short.class, restrictions);
-            case "int32":
-                return Types.typeForClass(Integer.class, restrictions);
-            case "int64":
-                return Types.typeForClass(Long.class, restrictions);
-            case "string":
-                return Types.typeForClass(String.class, restrictions);
-            case "uint8":
-                return Types.typeForClass(Uint8.class, restrictions);
-            case "uint16":
-                return Types.typeForClass(Uint16.class, restrictions);
-            case "uint32":
-                return Types.typeForClass(Uint32.class, restrictions);
-            case "uint64":
-                return Types.typeForClass(Uint64.class, restrictions);
-            default:
-                return javaTypeForSchemaDefinitionType(type, parentNode, lenientRelativeLeafrefs);
+        if (restrictions != null) {
+            switch (typeName) {
+                case "binary":
+                    return Types.typeForClass(byte[].class, restrictions);
+                case "decimal64":
+                    return Types.typeForClass(BigDecimal.class, restrictions);
+                case "enumeration":
+                    return Types.typeForClass(Enum.class, restrictions);
+                case "int8":
+                    return Types.typeForClass(Byte.class, restrictions);
+                case "int16":
+                    return Types.typeForClass(Short.class, restrictions);
+                case "int32":
+                    return Types.typeForClass(Integer.class, restrictions);
+                case "int64":
+                    return Types.typeForClass(Long.class, restrictions);
+                case "string":
+                    return Types.typeForClass(String.class, restrictions);
+                case "uint8":
+                    return Types.typeForClass(Uint8.class, restrictions);
+                case "uint16":
+                    return Types.typeForClass(Uint16.class, restrictions);
+                case "uint32":
+                    return Types.typeForClass(Uint32.class, restrictions);
+                case "uint64":
+                    return Types.typeForClass(Uint64.class, restrictions);
+                default:
+                    break;
+            }
         }
+
+        return BaseYangTypes.javaTypeForYangType(typeName);
     }
 
     @Override
