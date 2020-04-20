@@ -84,6 +84,7 @@ public final class BaseYangTypes {
      */
     public static final Type BINARY_TYPE = Types.BYTE_ARRAY;
 
+    // FIXME: why is this a ParameterizedType (vs. what BindingTypes defines?)
     public static final Type INSTANCE_IDENTIFIER = Types.parameterizedTypeFor(BindingTypes.INSTANCE_IDENTIFIER);
 
     /**
