@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.generator.util;
 
 import com.google.common.annotations.Beta;
-import java.math.BigDecimal;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
@@ -16,10 +15,6 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.BaseYangTypes;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.yangtools.yang.common.Uint16;
-import org.opendaylight.yangtools.yang.common.Uint32;
-import org.opendaylight.yangtools.yang.common.Uint64;
-import org.opendaylight.yangtools.yang.common.Uint8;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -52,38 +47,8 @@ public final class BaseYangTypesProvider implements TypeProvider {
     public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode,
             final Restrictions restrictions, final boolean lenientRelativeLeafrefs) {
         final String typeName = type.getQName().getLocalName();
-        if (restrictions != null) {
-            switch (typeName) {
-                case "binary":
-                    return Types.typeForClass(byte[].class, restrictions);
-                case "decimal64":
-                    return Types.typeForClass(BigDecimal.class, restrictions);
-                case "enumeration":
-                    return Types.typeForClass(Enum.class, restrictions);
-                case "int8":
-                    return Types.typeForClass(Byte.class, restrictions);
-                case "int16":
-                    return Types.typeForClass(Short.class, restrictions);
-                case "int32":
-                    return Types.typeForClass(Integer.class, restrictions);
-                case "int64":
-                    return Types.typeForClass(Long.class, restrictions);
-                case "string":
-                    return Types.typeForClass(String.class, restrictions);
-                case "uint8":
-                    return Types.typeForClass(Uint8.class, restrictions);
-                case "uint16":
-                    return Types.typeForClass(Uint16.class, restrictions);
-                case "uint32":
-                    return Types.typeForClass(Uint32.class, restrictions);
-                case "uint64":
-                    return Types.typeForClass(Uint64.class, restrictions);
-                default:
-                    break;
-            }
-        }
-
-        return BaseYangTypes.javaTypeForYangType(typeName);
+        final Type mapped = BaseYangTypes.javaTypeForYangType(typeName);
+        return mapped == null || restrictions == null ? mapped :  Types.restrictedType(mapped, restrictions);
     }
 
     @Override

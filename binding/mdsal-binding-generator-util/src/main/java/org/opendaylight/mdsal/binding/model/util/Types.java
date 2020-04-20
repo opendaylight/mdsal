@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.model.util;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.Beta;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -130,15 +131,18 @@ public final class Types {
 
     public static @NonNull ConcreteType typeForClass(final @NonNull Class<?> cls,
             final @Nullable Restrictions restrictions) {
-        if (restrictions == null) {
-            return typeForClass(cls);
-        }
+        return restrictions == null ? typeForClass(cls) : restrictedType(JavaTypeName.create(cls), restrictions);
+    }
 
-        final JavaTypeName identifier = JavaTypeName.create(cls);
-        if (restrictions instanceof DefaultRestrictions) {
-            return new ConcreteTypeImpl(identifier, restrictions);
-        }
-        return new BaseTypeWithRestrictionsImpl(identifier, restrictions);
+    @Beta
+    public static @NonNull ConcreteType restrictedType(final Type type, final @NonNull Restrictions restrictions) {
+        return restrictedType(type.getIdentifier(), restrictions);
+    }
+
+    private static @NonNull ConcreteType restrictedType(final JavaTypeName identifier,
+            final @NonNull Restrictions restrictions) {
+        return restrictions instanceof DefaultRestrictions ? new ConcreteTypeImpl(identifier, restrictions)
+                : new BaseTypeWithRestrictionsImpl(identifier, restrictions);
     }
 
     /**
