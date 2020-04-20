@@ -443,7 +443,7 @@ public interface DOMDataTreeWriteTransaction extends DOMDataTreeTransaction, DOM
 
     /**
      * Cancels the transaction. Transactions can only be cancelled if it was not yet committed.
-     * Invoking cancel() on failed or already canceled will have no effect, and transaction is considered cancelled.
+     * Invoking cancel() on failed or already cancelled will have no effect, and transaction is considered cancelled.
      * Invoking cancel() on finished transaction (future returned by {@link #commit()} already successfully completed)
      * will always fail (return false).
      *

@@ -7,6 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import com.google.common.annotations.Beta;
+import com.google.common.util.concurrent.FluentFuture;
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -59,4 +63,13 @@ public interface DOMDataTreeWriteOperations {
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     void delete(LogicalDatastoreType store, YangInstanceIdentifier path);
+
+    /**
+     * Return a {@link FluentFuture} which completes.
+     *
+     * @return A future which completes when the requested operations complete.
+     */
+    @Beta
+    @CheckReturnValue
+    @NonNull FluentFuture<?> completionFuture();
 }

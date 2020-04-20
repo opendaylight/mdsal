@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import com.google.common.util.concurrent.FluentFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
@@ -148,4 +149,11 @@ public interface WriteOperations {
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     void delete(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path);
+
+    /**
+     * Return a {@link FluentFuture} which completes.
+     *
+     * @return A future which completes when the requested operations complete.
+     */
+    @NonNull FluentFuture<?> completionFuture();
 }

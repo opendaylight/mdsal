@@ -51,6 +51,11 @@ public abstract class ForwardingDOMDataWriteTransaction extends ForwardingObject
     }
 
     @Override
+    public FluentFuture<?> completionFuture() {
+        return delegate().completionFuture();
+    }
+
+    @Override
     public FluentFuture<? extends CommitInfo> commit() {
         return delegate().commit();
     }

@@ -128,6 +128,11 @@ public final class TransactionAdapter {
         }
 
         @Override
+        public FluentFuture<?> completionFuture() {
+            return delegate.completionFuture();
+        }
+
+        @Override
         protected D delegate() {
             return delegate;
         }
