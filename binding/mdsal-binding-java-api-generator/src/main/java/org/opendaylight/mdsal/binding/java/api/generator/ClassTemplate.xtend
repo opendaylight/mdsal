@@ -8,9 +8,19 @@
 package org.opendaylight.mdsal.binding.java.api.generator
 
 import static java.util.Objects.requireNonNull
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.BINARY_TYPE;
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.BOOLEAN_TYPE;
 import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.EMPTY_TYPE;
-import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
-import static org.opendaylight.mdsal.binding.model.util.Types.BYTE_ARRAY;
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.INSTANCE_IDENTIFIER;
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.INT16_TYPE;
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.INT32_TYPE;
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.INT64_TYPE;
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.INT8_TYPE;
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.STRING_TYPE;
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.UINT16_TYPE;
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.UINT32_TYPE;
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.UINT64_TYPE;
+import static org.opendaylight.mdsal.binding.model.util.BaseYangTypes.UINT8_TYPE;
 import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 import static extension org.apache.commons.text.StringEscapeUtils.escapeJava
 
@@ -382,37 +392,39 @@ class ClassTemplate extends BaseTemplate {
     def protected defaultInstance() '''
         «IF genTO.typedef && !allProperties.empty && !genTO.unionType»
             «val prop = allProperties.get(0)»
-            «IF !("org.opendaylight.yangtools.yang.binding.InstanceIdentifier".equals(prop.returnType.fullyQualifiedName))»
-            public static «genTO.name» getDefaultInstance(String defaultValue) {
-                «IF BYTE_ARRAY.equals(prop.returnType)»
+            «val propType = prop.returnType»
+            ««« FIXME: refactor this check
+            «IF !("org.opendaylight.yangtools.yang.binding.InstanceIdentifier".equals(propType.fullyQualifiedName))»
+            public static «genTO.name» getDefaultInstance(final String defaultValue) {
+                «IF BINARY_TYPE.equals(propType)»
                     return new «genTO.name»(«Base64.importedName».getDecoder().decode(defaultValue));
-                «ELSEIF STRING.equals(prop.returnType)»
+                «ELSEIF STRING_TYPE.equals(propType)»
                     return new «genTO.name»(defaultValue);
-                «ELSEIF EMPTY_TYPE.equals(prop.returnType)»
+                «ELSEIF EMPTY_TYPE.equals(propType)»
                     «Preconditions.importedName».checkArgument(defaultValue.isEmpty(), "Invalid value %s", defaultValue);
                     return new «genTO.name»(«Empty.importedName».getInstance());
                 «ELSEIF allProperties.size > 1»
                     «bitsArgs»
-                «ELSEIF BOOLEAN.equals(prop.returnType)»
+                «ELSEIF BOOLEAN_TYPE.equals(propType)»
                     return new «genTO.name»(«Boolean.importedName».valueOf(defaultValue));
-                «ELSEIF "java.lang.Byte".equals(prop.returnType.fullyQualifiedName)»
+                «ELSEIF INT8_TYPE.equals(propType)»
                     return new «genTO.name»(«Byte.importedName».valueOf(defaultValue));
-                «ELSEIF "java.lang.Short".equals(prop.returnType.fullyQualifiedName)»
+                «ELSEIF INT16_TYPE.equals(propType)»
                     return new «genTO.name»(«Short.importedName».valueOf(defaultValue));
-                «ELSEIF "java.lang.Integer".equals(prop.returnType.fullyQualifiedName)»
+                «ELSEIF INT32_TYPE.equals(propType)»
                     return new «genTO.name»(«Integer.importedName».valueOf(defaultValue));
-                «ELSEIF "java.lang.Long".equals(prop.returnType.fullyQualifiedName)»
+                «ELSEIF INT64_TYPE.equals(propType)»
                     return new «genTO.name»(«Long.importedName».valueOf(defaultValue));
-                «ELSEIF "org.opendaylight.yangtools.yang.common.Uint8".equals(prop.returnType.fullyQualifiedName)»
+                «ELSEIF UINT8_TYPE.equals(propType)»
                     return new «genTO.name»(«Uint8.importedName».valueOf(defaultValue));
-                «ELSEIF "org.opendaylight.yangtools.yang.common.Uint16".equals(prop.returnType.fullyQualifiedName)»
+                «ELSEIF UINT16_TYPE.equals(propType)»
                     return new «genTO.name»(«Uint16.importedName».valueOf(defaultValue));
-                «ELSEIF "org.opendaylight.yangtools.yang.common.Uint32".equals(prop.returnType.fullyQualifiedName)»
+                «ELSEIF UINT32_TYPE.equals(propType)»
                     return new «genTO.name»(«Uint32.importedName».valueOf(defaultValue));
-                «ELSEIF "org.opendaylight.yangtools.yang.common.Uint64".equals(prop.returnType.fullyQualifiedName)»
+                «ELSEIF UINT64_TYPE.equals(propType)»
                     return new «genTO.name»(«Uint64.importedName».valueOf(defaultValue));
                 «ELSE»
-                    return new «genTO.name»(new «prop.returnType.importedName»(defaultValue));
+                    return new «genTO.name»(new «propType.importedName»(defaultValue));
                 «ENDIF»
             }
             «ENDIF»
