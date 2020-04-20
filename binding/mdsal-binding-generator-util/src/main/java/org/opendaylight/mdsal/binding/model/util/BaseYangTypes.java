@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.model.util;
 
-import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.common.Empty;
@@ -87,28 +86,6 @@ public final class BaseYangTypes {
     // FIXME: why is this a ParameterizedType (vs. what BindingTypes defines?)
     public static final Type INSTANCE_IDENTIFIER = Types.parameterizedTypeFor(BindingTypes.INSTANCE_IDENTIFIER);
 
-    /**
-     * mapping of basic built-in YANG types (keys) to JAVA {@link org.opendaylight.mdsal.binding.model.api.Type Type}.
-     * This map is filled with mapping data in static initialization block.
-     */
-    private static final ImmutableMap<String, Type> TYPE_MAP = ImmutableMap.<String, Type>builder()
-            .put("boolean", BOOLEAN_TYPE)
-            .put("empty", EMPTY_TYPE)
-            .put("enumeration", ENUM_TYPE)
-            .put("int8", INT8_TYPE)
-            .put("int16", INT16_TYPE)
-            .put("int32", INT32_TYPE)
-            .put("int64", INT64_TYPE)
-            .put("string", STRING_TYPE)
-            .put("decimal64", DECIMAL64_TYPE)
-            .put("uint8", UINT8_TYPE)
-            .put("uint16", UINT16_TYPE)
-            .put("uint32", UINT32_TYPE)
-            .put("uint64", UINT64_TYPE)
-            .put("binary", BINARY_TYPE)
-            .put("instance-identifier", INSTANCE_IDENTIFIER)
-            .build();
-
     private BaseYangTypes() {
         // Hidden on purpose
     }
@@ -118,8 +95,42 @@ public final class BaseYangTypes {
      *
      * @param type string with YANG type name
      * @return Java {@code Type} representation of {@code type}, or null if the type is not mapped.
+     * @throws NullPointerException if type is null
      */
     public static Type javaTypeForYangType(final String type) {
-        return TYPE_MAP.get(type);
+        switch (type) {
+            case "binary":
+                return BINARY_TYPE;
+            case "boolean":
+                return BOOLEAN_TYPE;
+            case "decimal64":
+                return DECIMAL64_TYPE;
+            case "empty":
+                return EMPTY_TYPE;
+            case "enumeration":
+                return ENUM_TYPE;
+            case "instance-identifier":
+                return INSTANCE_IDENTIFIER;
+            case "int8":
+                return INT8_TYPE;
+            case "int16":
+                return INT16_TYPE;
+            case "int32":
+                return INT32_TYPE;
+            case "int64":
+                return INT64_TYPE;
+            case "string":
+                return STRING_TYPE;
+            case "uint8":
+                return UINT8_TYPE;
+            case "uint16":
+                return UINT16_TYPE;
+            case "uint32":
+                return UINT32_TYPE;
+            case "uint64":
+                return UINT64_TYPE;
+            default:
+                return null;
+        }
     }
 }
