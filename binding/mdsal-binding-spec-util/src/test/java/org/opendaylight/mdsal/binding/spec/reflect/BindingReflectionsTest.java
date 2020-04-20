@@ -93,5 +93,10 @@ public class BindingReflectionsTest {
         ListenableFuture<?> rpcMethodTest2() {
             return null;
         }
+
+        @Override
+        public Class<TestImplementation> implementedInterface() {
+            return TestImplementation.class;
+        }
     }
 }

@@ -1009,10 +1009,9 @@ abstract class AbstractTypeGenerator {
         final GeneratedTypeBuilder augTypeBuilder = typeProvider.newGeneratedTypeBuilder(
             JavaTypeName.create(augmentPackageName, augTypeName));
 
-        augTypeBuilder.addImplementsType(DATA_OBJECT);
+        augTypeBuilder.addImplementsType(augmentation(targetTypeRef));
         defaultImplementedInterace(augTypeBuilder);
 
-        augTypeBuilder.addImplementsType(augmentation(targetTypeRef));
         annotateDeprecatedIfNecessary(augSchema, augTypeBuilder);
         addImplementedInterfaceFromUses(augSchema, augTypeBuilder);
 
