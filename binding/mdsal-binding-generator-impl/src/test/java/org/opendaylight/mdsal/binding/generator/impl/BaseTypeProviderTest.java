@@ -17,8 +17,7 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.BaseYangTypes;
 import org.opendaylight.mdsal.binding.model.util.Types;
 
-public class BaseTypeProvider {
-
+public class BaseTypeProviderTest {
     @Test
     public void test() {
         Type stringType = BaseYangTypes.javaTypeForYangType("string");
