@@ -11,8 +11,11 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.SettableFuture;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
@@ -27,6 +30,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.mdsal.dom.spi.UncancellableListenableFuture;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
@@ -42,6 +46,9 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     private final Map<LogicalDatastoreType, DOMDataTreeProducer> producerMap = new EnumMap<>(
             LogicalDatastoreType.class);
 
+    private final @NonNull SettableFuture<@NonNull CommitInfo> settableCompletion  = SettableFuture.create();
+    private final @NonNull FluentFuture<? extends @NonNull CommitInfo> completionFuture = FluentFuture.from(
+        new UncancellableListenableFuture<>(settableCompletion));
     private final @NonNull DOMDataTreeService treeService;
     private final @NonNull Object txIdentifier;
 
@@ -67,11 +74,12 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
                 checkState(domDataTreeCursorAwareTransaction.cancel()));
         closeProducers();
         finished = true;
+        settableCompletion.cancel(false);
         return true;
     }
 
     @Override
-    public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+    public FluentFuture<? extends CommitInfo> commit() {
         checkRunning();
         LOG.debug("{}: Submitting transaction", txIdentifier);
         if (!initialized) {
@@ -83,15 +91,32 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
         }
         // First we need to close cursors
         cursorMap.values().forEach(DOMDataTreeWriteCursor::close);
-        final FluentFuture<List<CommitInfo>> aggregatedSubmit = FluentFuture.from(Futures.allAsList(
+        final ListenableFuture<List<CommitInfo>> aggregatedSubmit = Futures.allAsList(
                 transactionMap.get(LogicalDatastoreType.CONFIGURATION).commit(),
-                transactionMap.get(LogicalDatastoreType.OPERATIONAL).commit()));
+                transactionMap.get(LogicalDatastoreType.OPERATIONAL).commit());
 
         // Now we can close producers and mark transaction as finished
         closeProducers();
         finished = true;
 
-        return aggregatedSubmit.transform(unused -> CommitInfo.empty(), MoreExecutors.directExecutor());
+        Futures.addCallback(aggregatedSubmit, new FutureCallback<List<CommitInfo>>() {
+            @Override
+            public void onSuccess(final List<CommitInfo> result) {
+                settableCompletion.set(CommitInfo.empty());
+            }
+
+            @Override
+            public void onFailure(final Throwable cause) {
+                settableCompletion.setException(cause);
+            }
+        }, MoreExecutors.directExecutor());
+
+        return completionFuture;
+    }
+
+    @Override
+    public FluentFuture<?> completionFuture() {
+        return completionFuture;
     }
 
     @Override
