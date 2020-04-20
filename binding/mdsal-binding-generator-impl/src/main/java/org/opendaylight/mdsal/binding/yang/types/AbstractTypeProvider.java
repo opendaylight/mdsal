@@ -35,6 +35,7 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.generator.util.BaseYangTypes;
+import org.opendaylight.mdsal.binding.generator.util.BaseYangTypesProvider;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -188,7 +189,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             // and generated an enclosing ExtendedType to hold any range constraints. The new parser instantiates
             // a base type which holds these constraints.
             if (typeDefinition instanceof DecimalTypeDefinition) {
-                final Type ret = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(typeDefinition,
+                final Type ret = BaseYangTypesProvider.INSTANCE.javaTypeForSchemaDefinitionType(typeDefinition,
                     parentNode, restrictions, lenientRelativeLeafrefs);
                 if (ret != null) {
                     return ret;
@@ -332,8 +333,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                         returnType = genTOs.get(typedefName);
                     }
                     if (returnType == null) {
-                        returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(
-                                baseTypeDef, typeDefinition, r, lenient);
+                        returnType = BaseYangTypesProvider.INSTANCE.javaTypeForSchemaDefinitionType(baseTypeDef,
+                            typeDefinition, r, lenient);
                     }
                 }
             }
@@ -1014,8 +1015,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
         final TypeDefinition<?> baseType = baseTypeDefForExtendedType(unionSubtype);
         if (unionTypeName.equals(baseType.getQName().getLocalName())) {
-            final Type javaType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(baseType,
-                parentNode, BindingGeneratorUtil.getRestrictions(unionSubtype));
+            final Type javaType = BaseYangTypesProvider.INSTANCE.javaTypeForSchemaDefinitionType(baseType, parentNode,
+                BindingGeneratorUtil.getRestrictions(unionSubtype));
             if (javaType != null) {
                 updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, unionTypeName);
             }

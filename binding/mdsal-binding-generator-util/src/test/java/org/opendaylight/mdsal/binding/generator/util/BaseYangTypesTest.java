@@ -133,7 +133,7 @@ public class BaseYangTypesTest {
 
     @Test
     public void javaTypeForSchemaDefinitionTypeTest() {
-        final TypeProvider typeProvider = BaseYangTypes.BASE_YANG_TYPES_PROVIDER;
+        final TypeProvider typeProvider = BaseYangTypesProvider.INSTANCE;
 
         Type javaType = typeProvider.javaTypeForSchemaDefinitionType(binary, binary);
         assertNotNull(javaType);
@@ -194,7 +194,7 @@ public class BaseYangTypesTest {
 
     @Test
     public void javaTypeForRestrictedSchemaDefinitionTypeTest() {
-        final TypeProvider typeProvider = BaseYangTypes.BASE_YANG_TYPES_PROVIDER;
+        final TypeProvider typeProvider = BaseYangTypesProvider.INSTANCE;
 
         Type javaType = typeProvider.javaTypeForSchemaDefinitionType(binary, binary,
             BindingGeneratorUtil.getRestrictions(binary));
