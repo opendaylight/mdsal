@@ -8,6 +8,8 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.annotations.Beta;
+import com.google.common.util.concurrent.FluentFuture;
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -112,4 +114,13 @@ public interface WriteOperations {
      * @throws IllegalStateException if the transaction was committed or canceled.
      */
     void delete(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path);
+
+    /**
+     * Return a {@link FluentFuture} which completes.
+     *
+     * @return A future which completes when the requested operations complete.
+     */
+    @Beta
+    @CheckReturnValue
+    @NonNull FluentFuture<?> completionFuture();
 }
