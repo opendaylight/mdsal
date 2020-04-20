@@ -25,7 +25,7 @@ public abstract class ForwardingDOMRpcService extends ForwardingObject implement
     protected abstract @NonNull DOMRpcService delegate();
 
     @Override
-    public ListenableFuture<DOMRpcResult> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {
+    public ListenableFuture<? extends DOMRpcResult> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {
         return delegate().invokeRpc(type, input);
     }
 

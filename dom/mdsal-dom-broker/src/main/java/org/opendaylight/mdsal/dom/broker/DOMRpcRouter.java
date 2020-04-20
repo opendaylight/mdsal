@@ -401,7 +401,7 @@ public final class DOMRpcRouter extends AbstractRegistration
                     new DOMActionNotAvailableException("No implementation of Action %s available", type));
             }
 
-            return OperationInvocation.invoke(entry, type, path, input);
+            return OperationInvocation.invoke(entry, type, path, requireNonNull(input));
         }
     }
 
@@ -442,7 +442,7 @@ public final class DOMRpcRouter extends AbstractRegistration
                     new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
             }
 
-            return OperationInvocation.invoke(entry, input);
+            return OperationInvocation.invoke(entry, requireNonNull(input));
         }
 
         @Override
