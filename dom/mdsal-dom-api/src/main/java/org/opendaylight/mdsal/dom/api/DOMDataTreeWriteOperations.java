@@ -7,6 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import com.google.common.annotations.Beta;
+import com.google.common.util.concurrent.FluentFuture;
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -49,4 +53,13 @@ public interface DOMDataTreeWriteOperations {
      * @throws IllegalStateException if the transaction was committed or canceled.
      */
     void delete(LogicalDatastoreType store, YangInstanceIdentifier path);
+
+    /**
+     * Return a {@link FluentFuture} which completes.
+     *
+     * @return A future which completes when the requested operations complete.
+     */
+    @Beta
+    @CheckReturnValue
+    @NonNull FluentFuture<?> completionFuture();
 }
