@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 import java.util.Objects;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
@@ -16,24 +19,27 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 
 class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature {
     private final List<Parameter> params;
+    private final ValueMechanics mechanics;
     private final boolean isAbstract;
     private final boolean isDefault;
 
+    @VisibleForTesting
     MethodSignatureImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
         final String comment, final AccessModifier accessModifier, final Type returnType,
         final List<Parameter> params, final boolean isFinal, final boolean isAbstract, final boolean isStatic) {
         this(definingType, name, annotations, comment, accessModifier, returnType, params, isFinal, isAbstract,
-            isStatic, false);
+            isStatic, false, ValueMechanics.NORMAL);
     }
 
     MethodSignatureImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
             final String comment, final AccessModifier accessModifier, final Type returnType,
             final List<Parameter> params, final boolean isFinal, final boolean isAbstract, final boolean isStatic,
-            final boolean isDefault) {
+            final boolean isDefault, final ValueMechanics mechanics) {
         super(definingType, name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
         this.params = params;
         this.isAbstract = isAbstract;
         this.isDefault = isDefault;
+        this.mechanics = requireNonNull(mechanics);
     }
 
     @Override
@@ -49,6 +55,11 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
     @Override
     public List<Parameter> getParameters() {
         return this.params;
+    }
+
+    @Override
+    public ValueMechanics getMechanics() {
+        return mechanics;
     }
 
     @Override

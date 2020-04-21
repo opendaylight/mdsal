@@ -70,6 +70,7 @@ import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -335,7 +336,7 @@ abstract class AbstractTypeGenerator {
                 listType = listTypeFor(genType);
             }
 
-            constructGetter(parent, listType, node);
+            constructGetter(parent, listType, node).setMechanics(ValueMechanics.NULLIFY_EMPTY);
             constructNonnull(parent, listType, node);
 
             actionsToGenType(context, genType, node, keyTypeBuilder, inGrouping);

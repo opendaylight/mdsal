@@ -48,6 +48,13 @@ public interface MethodSignature extends TypeMember {
     List<Parameter> getParameters();
 
     /**
+     * Return the mechanics associated with this method.
+     *
+     * @return Associated mechanics
+     */
+    ValueMechanics getMechanics();
+
+    /**
      * The Parameter interface is designed to hold the information of method
      * Parameter(s). The parameter is defined by his Name which MUST be unique
      * as java does not allow multiple parameters with same names for one method
@@ -68,5 +75,21 @@ public interface MethodSignature extends TypeMember {
          * @return Type that is bounded to parameter name.
          */
         Type getType();
+    }
+
+    /**
+     * Method return type mechanics. This is a bit of an escape hatch for various behaviors which are supported by
+     * code generation.
+     */
+    enum ValueMechanics {
+        /**
+         * Usual mechanics, nothing special is going on.
+         */
+        NORMAL,
+        /**
+         * Mechanics signaling that the method should not be returning empty collections, but rather squash tham
+         * to null.
+         */
+        NULLIFY_EMPTY,
     }
 }

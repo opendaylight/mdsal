@@ -7,7 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.model.api.type.builder;
 
+import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
 /**
@@ -41,6 +43,9 @@ public interface MethodSignatureBuilder extends TypeMemberBuilder<MethodSignatur
      * @return this builder
      */
     MethodSignatureBuilder setDefault(boolean isDefault);
+
+    @Beta
+    MethodSignatureBuilder setMechanics(ValueMechanics mechanics);
 
     /**
      * Adds Parameter into the List of method parameters. Neither the Name or Type of parameter can be {@code null}.

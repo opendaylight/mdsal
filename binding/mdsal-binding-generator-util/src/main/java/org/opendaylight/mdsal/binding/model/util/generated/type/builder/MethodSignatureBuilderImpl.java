@@ -7,11 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
@@ -21,6 +24,7 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
 
     private List<MethodSignature.Parameter> parameters = Collections.emptyList();
     private List<MethodSignature.Parameter> unmodifiableParams = Collections.emptyList();
+    private ValueMechanics mechanics = ValueMechanics.NORMAL;
     private boolean isAbstract;
     private boolean isDefault;
 
@@ -40,6 +44,13 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
         return this;
     }
 
+
+    @Override
+    public MethodSignatureBuilder setMechanics(final ValueMechanics newMechanics) {
+        this.mechanics = requireNonNull(newMechanics);
+        return this;
+    }
+
     @Override
     public MethodSignatureBuilder addParameter(final Type type, final String name) {
         this.parameters = LazyCollections.lazyAdd(this.parameters, new MethodParameterImpl(name, type));
@@ -56,7 +67,7 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
     public MethodSignature toInstance(final Type definingType) {
         final List<AnnotationType> annotations = toAnnotationTypes();
         return new MethodSignatureImpl(definingType, getName(), annotations, getComment(), getAccessModifier(),
-                getReturnType(), this.unmodifiableParams, isFinal(), this.isAbstract, isStatic(), isDefault);
+                getReturnType(), this.unmodifiableParams, isFinal(), this.isAbstract, isStatic(), isDefault, mechanics);
     }
 
     @Override
