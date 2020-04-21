@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.model.api;
 
 import java.util.List;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * The Method Signature interface contains simplified meta model for java method
@@ -91,5 +92,11 @@ public interface MethodSignature extends TypeMember {
          * to null.
          */
         NULLIFY_EMPTY,
+        /**
+         * Mechanics signaling that the method cannot legally return null. This is primarily useful for getters, where
+         * the declaration should end up having {@link NonNull} annotation attached to return type. For setters this
+         * indicates the setter should never accept a null value.
+         */
+        NONNULL,
     }
 }
