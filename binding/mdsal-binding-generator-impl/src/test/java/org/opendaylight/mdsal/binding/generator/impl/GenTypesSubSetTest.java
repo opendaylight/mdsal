@@ -16,15 +16,15 @@ import java.util.List;
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GenTypesSubSetTest {
 
     @Test
     public void genTypesFromSubsetOfTwoModulesTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(GenTypesSubSetTest.class,
+        final EffectiveModelContext context = YangParserTestUtils.parseYangResources(GenTypesSubSetTest.class,
                 "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf/ietf-interfaces.yang",
                 "/ietf/ietf-inet-types.yang", "/ietf/ietf-yang-types.yang");
         final Set<Module> toGenModules = new HashSet<>();
@@ -47,7 +47,7 @@ public class GenTypesSubSetTest {
 
     @Test
     public void genTypesFromSubsetOfThreeModulesTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(GenTypesSubSetTest.class,
+        final EffectiveModelContext context = YangParserTestUtils.parseYangResources(GenTypesSubSetTest.class,
                 "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf/ietf-interfaces.yang",
                 "/ietf/ietf-inet-types.yang", "/ietf/ietf-yang-types.yang", "/ietf/iana-if-type.yang");
         assertNotNull("Schema Context is null", context);
