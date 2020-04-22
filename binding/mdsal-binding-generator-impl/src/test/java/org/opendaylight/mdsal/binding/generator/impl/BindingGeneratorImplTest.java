@@ -17,27 +17,23 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorImplTest {
 
     @Test
     public void isisTotpologyStatementParserTest()  {
-        SchemaContext context = YangParserTestUtils.parseYangResources(BindingGeneratorImplTest.class,
+        List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+            BindingGeneratorImplTest.class,
             "/isis-topology/network-topology@2013-10-21.yang", "/isis-topology/isis-topology@2013-10-21.yang",
-            "/isis-topology/l3-unicast-igp-topology@2013-10-21.yang");
-        assertNotNull(context);
-
-        List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
+            "/isis-topology/l3-unicast-igp-topology@2013-10-21.yang"));
         assertFalse(generateTypes.isEmpty());
     }
 
     @Test
     public void choiceNodeGenerationTest() {
-        SchemaContext context = YangParserTestUtils.parseYangResource("/binding-generator-impl-test/choice-test.yang");
-
-        List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
+        List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/binding-generator-impl-test/choice-test.yang"));
 
         GeneratedType choiceTestData = null;
         GeneratedType myRootContainer = null;
@@ -130,10 +126,8 @@ public class BindingGeneratorImplTest {
 
     @Test
     public void notificationGenerationTest() {
-        SchemaContext context = YangParserTestUtils.parseYangResource(
-            "/binding-generator-impl-test/notification-test.yang");
-
-        List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
+        List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/binding-generator-impl-test/notification-test.yang"));
 
         GeneratedType foo = null;
         for (Type type : generateTypes) {

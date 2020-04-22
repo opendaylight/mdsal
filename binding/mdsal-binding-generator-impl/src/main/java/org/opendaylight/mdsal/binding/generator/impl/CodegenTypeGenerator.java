@@ -24,12 +24,12 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.mdsal.binding.model.util.TypeComments;
 import org.opendaylight.mdsal.binding.yang.types.CodegenTypeProvider;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 final class CodegenTypeGenerator extends AbstractTypeGenerator {
-    CodegenTypeGenerator(final SchemaContext context, final Map<SchemaNode, JavaTypeName> renames) {
+    CodegenTypeGenerator(final EffectiveModelContext context, final Map<SchemaNode, JavaTypeName> renames) {
         super(context, new CodegenTypeProvider(context, renames), renames);
     }
 

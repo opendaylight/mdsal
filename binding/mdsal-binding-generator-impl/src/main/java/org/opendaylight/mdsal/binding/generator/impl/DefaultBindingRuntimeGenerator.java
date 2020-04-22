@@ -15,7 +15,7 @@ import org.kohsuke.MetaInfServices;
 import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -34,7 +34,7 @@ public final class DefaultBindingRuntimeGenerator implements BindingRuntimeGener
     private static final Logger LOG = LoggerFactory.getLogger(DefaultBindingRuntimeGenerator.class);
 
     @Override
-    public BindingRuntimeTypes generateTypeMapping(final SchemaContext context) {
+    public BindingRuntimeTypes generateTypeMapping(final EffectiveModelContext context) {
         GeneratorUtils.checkContext(context);
 
         final Map<SchemaNode, JavaTypeName> renames = new IdentityHashMap<>();

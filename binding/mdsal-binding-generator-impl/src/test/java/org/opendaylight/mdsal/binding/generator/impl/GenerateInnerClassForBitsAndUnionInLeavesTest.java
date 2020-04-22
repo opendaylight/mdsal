@@ -15,17 +15,13 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GenerateInnerClassForBitsAndUnionInLeavesTest {
-
     @Test
     public void testInnerClassCreationForBitsAndUnionsInLeafes() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/bit_and_union_in_leaf.yang");
-        assertTrue(context != null);
-
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/bit_and_union_in_leaf.yang"));
         assertTrue(genTypes != null);
 
         boolean parentContainerFound = false;

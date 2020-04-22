@@ -19,18 +19,13 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesTest {
-
     @Test
     public void testMultipleModulesResolving() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(GeneratedTypesTest.class,
-            "/abstract-topology.yang", "/ietf/ietf-inet-types.yang");
-        assertNotNull(context);
-
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+            GeneratedTypesTest.class, "/abstract-topology.yang", "/ietf/ietf-inet-types.yang"));
 
         assertNotNull(genTypes);
         assertEquals(29, genTypes.size());
@@ -38,10 +33,8 @@ public class GeneratedTypesTest {
 
     @Test
     public void testContainerResolving() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-container-demo.yang");
-        assertNotNull(context);
-
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/simple-container-demo.yang"));
 
         assertNotNull(genTypes);
         assertEquals(3, genTypes.size());
@@ -121,10 +114,8 @@ public class GeneratedTypesTest {
 
     @Test
     public void testLeafListResolving() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-leaf-list-demo.yang");
-        assertNotNull(context);
-
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/simple-leaf-list-demo.yang"));
 
         assertNotNull(genTypes);
         assertEquals(3, genTypes.size());
@@ -206,10 +197,8 @@ public class GeneratedTypesTest {
 
     @Test
     public void testListResolving() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-list-demo.yang");
-        assertNotNull(context);
-
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/simple-list-demo.yang"));
 
         assertNotNull(genTypes);
         assertEquals(5, genTypes.size());
@@ -336,10 +325,8 @@ public class GeneratedTypesTest {
 
     @Test
     public void testListCompositeKeyResolving() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/list-composite-key.yang");
-        assertNotNull(context);
-
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/list-composite-key.yang"));
 
         assertNotNull(genTypes);
         assertEquals(7, genTypes.size());
@@ -386,10 +373,8 @@ public class GeneratedTypesTest {
 
     @Test
     public void testGeneratedTypes() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/demo-topology.yang");
-        assertNotNull(context);
-
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/demo-topology.yang"));
 
         assertNotNull(genTypes);
         assertEquals(14, genTypes.size());

@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -18,17 +17,13 @@ import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesStringTest {
-
     @Test
     public void constantGenerationTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-string-demo.yang");
-
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/simple-string-demo.yang"));
 
         boolean typedefStringFound = false;
         boolean constantRegExListFound = false;
@@ -104,7 +99,5 @@ public class GeneratedTypesStringTest {
         assertTrue("Constant PATTERN_CONSTANTS doesn't have correct generic type", constantRegExListTypeGeneric);
         assertTrue("Constant PATTERN_CONSTANTS doesn't contain List object", constantRegExListValueOK);
         assertTrue("In list found other type than String", !noStringInReqExListFound);
-
     }
-
 }
