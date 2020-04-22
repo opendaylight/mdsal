@@ -17,14 +17,14 @@ import com.google.common.collect.ImmutableClassToInstanceMap;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class SimpleDOMMountPointTest {
 
     @Test
     public void basicTest() throws Exception {
         final YangInstanceIdentifier yangInstanceIdentifier = mock(YangInstanceIdentifier.class);
-        final SchemaContext schemaContext = mock(SchemaContext.class);
+        final EffectiveModelContext schemaContext = mock(EffectiveModelContext.class);
         final DOMService domService = mock(DOMService.class);
         final ClassToInstanceMap<DOMService> classToInstanceMap =
                 ImmutableClassToInstanceMap.<DOMService>builder().put(DOMService.class, domService).build();

@@ -7,29 +7,31 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public final class SimpleDOMMountPoint implements DOMMountPoint {
 
     private final YangInstanceIdentifier identifier;
     private final ClassToInstanceMap<DOMService> services;
-    private final SchemaContext schemaContext;
+    private final EffectiveModelContext schemaContext;
 
     private SimpleDOMMountPoint(final YangInstanceIdentifier identifier,
-            final ClassToInstanceMap<DOMService> services, final SchemaContext ctx) {
-        this.identifier = identifier;
+            final ClassToInstanceMap<DOMService> services, final EffectiveModelContext ctx) {
+        this.identifier =  requireNonNull(identifier);
         this.services = ImmutableClassToInstanceMap.copyOf(services);
-        this.schemaContext = ctx;
+        this.schemaContext = requireNonNull(ctx);
     }
 
     public static SimpleDOMMountPoint create(final YangInstanceIdentifier identifier,
-            final ClassToInstanceMap<DOMService> services, final SchemaContext ctx) {
+            final ClassToInstanceMap<DOMService> services, final EffectiveModelContext ctx) {
         return new SimpleDOMMountPoint(identifier, services, ctx);
     }
 
@@ -39,7 +41,7 @@ public final class SimpleDOMMountPoint implements DOMMountPoint {
     }
 
     @Override
-    public SchemaContext getSchemaContext() {
+    public EffectiveModelContext getEffectiveModelContext() {
         return schemaContext;
     }
 

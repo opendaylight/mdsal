@@ -27,7 +27,7 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -121,7 +121,7 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
 
         private final MutableClassToInstanceMap<DOMService> services = MutableClassToInstanceMap.create();
         private final YangInstanceIdentifier path;
-        private SchemaContext schemaContext;
+        private EffectiveModelContext schemaContext;
 
         private SimpleDOMMountPoint mountPoint;
 
@@ -136,7 +136,7 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
         }
 
         @Override
-        public DOMMountPointBuilder addInitialSchemaContext(final SchemaContext ctx) {
+        public DOMMountPointBuilder addInitialSchemaContext(final EffectiveModelContext ctx) {
             schemaContext = requireNonNull(ctx);
             return this;
         }
