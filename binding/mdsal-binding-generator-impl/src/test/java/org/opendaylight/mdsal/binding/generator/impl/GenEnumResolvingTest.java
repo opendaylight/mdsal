@@ -17,18 +17,14 @@ import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GenEnumResolvingTest {
-
     @Test
     public void testLeafEnumResolving() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(GenEnumResolvingTest.class,
-            "/enum-test-models/ietf-interfaces@2012-11-15.yang", "/ietf/iana-if-type.yang");
-        assertTrue(context != null);
-
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+            GenEnumResolvingTest.class,
+            "/enum-test-models/ietf-interfaces@2012-11-15.yang", "/ietf/iana-if-type.yang"));
         assertTrue(genTypes != null);
 
         assertEquals("Expected count of all Generated Types", 6, genTypes.size());
@@ -85,9 +81,8 @@ public class GenEnumResolvingTest {
 
     @Test
     public void testTypedefEnumResolving() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/ietf/iana-if-type.yang");
-        assertTrue(context != null);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/ietf/iana-if-type.yang"));
         assertTrue(genTypes != null);
         assertEquals(1, genTypes.size());
 
@@ -100,11 +95,10 @@ public class GenEnumResolvingTest {
 
     @Test
     public void testLeafrefEnumResolving() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(GenEnumResolvingTest.class,
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+            GenEnumResolvingTest.class,
             "/enum-test-models/abstract-topology@2013-02-08.yang", "/enum-test-models/ietf-interfaces@2012-11-15.yang",
-            "/ietf/iana-if-type.yang");
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+            "/ietf/iana-if-type.yang"));
         assertNotNull(genTypes);
         assertTrue(!genTypes.isEmpty());
 
@@ -145,5 +139,4 @@ public class GenEnumResolvingTest {
             "org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev121115.interfaces.Interface",
             operStatus.getIdentifier().immediatelyEnclosingClass().get().toString());
     }
-
 }

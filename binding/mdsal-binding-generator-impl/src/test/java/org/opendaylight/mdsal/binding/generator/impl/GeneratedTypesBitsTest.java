@@ -20,17 +20,13 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.Parameter;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesBitsTest {
-
     @Test
     public void testGeneretedTypesBitsTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-bits-demo.yang");
-        assertTrue(context != null);
-
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/simple-bits-demo.yang"));
         assertTrue(genTypes != null);
 
         List<MethodSignature> methodSignaturesList = null;
@@ -111,5 +107,4 @@ public class GeneratedTypesBitsTest {
         assertFalse(setByteLeafMethodFound);
         assertEquals(0, setByteLeafMethodParamNum);
     }
-
 }

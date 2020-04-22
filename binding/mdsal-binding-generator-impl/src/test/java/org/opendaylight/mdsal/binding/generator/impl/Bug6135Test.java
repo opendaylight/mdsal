@@ -16,17 +16,13 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Bug6135Test {
-
     @Test
     public void bug6135Test() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/bug-6135/foo.yang");
-        assertNotNull(context);
-
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/bug-6135/foo.yang"));
         assertFalse(generateTypes.isEmpty());
 
         GeneratedType genInterface = null;

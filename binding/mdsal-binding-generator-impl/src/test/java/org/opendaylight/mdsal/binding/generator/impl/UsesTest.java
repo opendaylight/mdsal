@@ -17,18 +17,13 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class UsesTest {
-
     @Test
     public void usesInGroupingDependenciesTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource(
-            "/uses-of-grouping/uses-of-grouping-dependencies.yang");
-
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/uses-of-grouping/uses-of-grouping-dependencies.yang"));
         GeneratedType groupingU = null;
         GeneratedType groupingX = null;
         GeneratedType groupingV = null;
@@ -77,11 +72,8 @@ public class UsesTest {
 
     @Test
     public void usesInCaseTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource(
-            "/uses-of-grouping/uses-of-grouping-case.yang");
-
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/uses-of-grouping/uses-of-grouping-case.yang"));
 
         GeneratedType groupingCaseTest = null;
         int groupingCaseTestCounter = 0;
@@ -123,11 +115,8 @@ public class UsesTest {
 
     @Test
     public void usesInContainerTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource(
-            "/uses-of-grouping/uses-of-grouping-container.yang");
-
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/uses-of-grouping/uses-of-grouping-container.yang"));
 
         int containerTestCount = 0;
         int groupingContainerTestCounter = 0;
@@ -174,11 +163,8 @@ public class UsesTest {
 
     @Test
     public void usesInGroupingTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource(
-            "/uses-of-grouping/uses-of-grouping-grouping.yang");
-
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/uses-of-grouping/uses-of-grouping-grouping.yang"));
 
         int groupingTestCount = 0;
         int groupingGroupingTestCounter = 0;
@@ -223,11 +209,8 @@ public class UsesTest {
 
     @Test
     public void usesInListTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource(
-            "/uses-of-grouping/uses-of-grouping-list.yang");
-
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/uses-of-grouping/uses-of-grouping-list.yang"));
 
         int listTestCounter = 0;
         int groupingListTestCounter = 0;
@@ -303,11 +286,8 @@ public class UsesTest {
 
     @Test
     public void usesInModulTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource(
-            "/uses-of-grouping/uses-of-grouping-modul.yang");
-
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/uses-of-grouping/uses-of-grouping-modul.yang"));
 
         int groupingModulTestCounter = 0;
         int groupingUsesModulDataCounter = 0;
@@ -352,11 +332,8 @@ public class UsesTest {
 
     @Test
     public void usesInRpcTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource(
-            "/uses-of-grouping/uses-of-grouping-rpc.yang");
-
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/uses-of-grouping/uses-of-grouping-rpc.yang"));
 
         int rpcTestInputCounter = 0;
         int rpcTestOutputCounter = 0;
@@ -443,11 +420,8 @@ public class UsesTest {
 
     @Test
     public void usesInAugmentTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource(
-            "/uses-of-grouping/uses-of-grouping-augment.yang");
-
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/uses-of-grouping/uses-of-grouping-augment.yang"));
 
         GeneratedType containerAugment1 = null;
         GeneratedType groupingAugmentTest = null;
@@ -494,11 +468,8 @@ public class UsesTest {
 
     @Test
     public void usesInNotification() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource(
-            "/uses-of-grouping/uses-of-grouping-notification.yang");
-
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/uses-of-grouping/uses-of-grouping-notification.yang"));
 
         GeneratedType notificationTest = null;
         GeneratedType groupingNotificationTest = null;

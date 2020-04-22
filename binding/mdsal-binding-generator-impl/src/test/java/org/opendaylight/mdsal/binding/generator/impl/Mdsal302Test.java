@@ -13,15 +13,13 @@ import static org.junit.Assert.assertNotNull;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal302Test {
     @Test
     public void bug4145Test() {
-        SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal-302/mdsal-302.yang");
-
-        List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
+        List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/mdsal-302/mdsal-302.yang"));
         assertNotNull(generateTypes);
         assertEquals(15, generateTypes.size());
     }

@@ -17,14 +17,14 @@ import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal448Test {
     @Test
     public void groupingSortIncludesActions() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal448.yang");
+        final EffectiveModelContext context = YangParserTestUtils.parseYangResource("/mdsal448.yang");
         final Collection<? extends GroupingDefinition> groupings = context.findModule("mdsal448").get().getGroupings();
         assertEquals(2, groupings.size());
 

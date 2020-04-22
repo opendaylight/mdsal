@@ -33,8 +33,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class CurrentAdapterSerializerTest {
@@ -50,7 +50,7 @@ public class CurrentAdapterSerializerTest {
      */
     @Test
     public void fromNormalizedNodeTest() throws Exception {
-        final SchemaContext schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
+        final EffectiveModelContext schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
         final NormalizedNode<?, ?> data = prepareData(schemaCtx, Uint16.valueOf(42));
         final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
 
@@ -81,7 +81,7 @@ public class CurrentAdapterSerializerTest {
      */
     @Test
     public void fromNormalizedNodeWithAnotherInputDataTest() throws Exception {
-        final SchemaContext schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
+        final EffectiveModelContext schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
         final NormalizedNode<?, ?> data = prepareData(schemaCtx, "42");
 
         final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
@@ -96,7 +96,7 @@ public class CurrentAdapterSerializerTest {
         assertThat(ex.getCause(), instanceOf(IllegalArgumentException.class));
     }
 
-    private static NormalizedNode<?, ?> prepareData(final SchemaContext schemaCtx, final Object value) {
+    private static NormalizedNode<?, ?> prepareData(final EffectiveModelContext schemaCtx, final Object value) {
         final DataSchemaNode dataChildByName =
                 schemaCtx.getDataChildByName(QName.create("urn:test", "2017-01-01", "cont"));
         final DataSchemaNode leaf = ((ContainerSchemaNode) dataChildByName)
@@ -109,7 +109,7 @@ public class CurrentAdapterSerializerTest {
     }
 
     private static Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final NormalizedNode<?, ?> data,
-            final SchemaContext schemaCtx) {
+            final EffectiveModelContext schemaCtx) {
         final CurrentAdapterSerializer codec = new CurrentAdapterSerializer(new BindingCodecContext(
             DefaultBindingRuntimeContext.create(new DefaultBindingRuntimeGenerator().generateTypeMapping(schemaCtx),
                 GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy())));
