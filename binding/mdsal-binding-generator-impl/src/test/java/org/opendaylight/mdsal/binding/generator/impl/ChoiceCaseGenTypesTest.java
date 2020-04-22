@@ -18,7 +18,6 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
@@ -54,10 +53,7 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
 
     @Test
     public void choiceCaseResolvingTypeTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
-
-        assertNotNull("context is null", context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangFiles(testModels));
 
         assertNotNull("genTypes is null", genTypes);
         assertFalse("genTypes is empty", genTypes.isEmpty());

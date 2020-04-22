@@ -17,18 +17,13 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.Types;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class UnionTypeDefTest {
-
     @Test
     public void unionTypeResolvingTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(UnionTypeDefTest.class,
-            "/union-test-models/abstract-topology.yang", "/ietf/ietf-inet-types.yang");
-
-        assertNotNull("context is null", context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+            UnionTypeDefTest.class, "/union-test-models/abstract-topology.yang", "/ietf/ietf-inet-types.yang"));
 
         assertNotNull("genTypes is null", genTypes);
         assertFalse("genTypes is empty", genTypes.isEmpty());
@@ -38,10 +33,8 @@ public class UnionTypeDefTest {
 
     @Test
     public void unionTypedefLeafrefTest() {
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(
-            "/leafref_typedef_union/bug8449.yang");
-        assertNotNull(schemaContext);
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(schemaContext);
+        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+                "/leafref_typedef_union/bug8449.yang"));
         assertNotNull(generateTypes);
         for (final Type type : generateTypes) {
             if (type.getName().equals("Cont")) {

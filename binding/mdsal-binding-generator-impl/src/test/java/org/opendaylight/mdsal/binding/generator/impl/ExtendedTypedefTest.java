@@ -18,18 +18,14 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.BaseYangTypes;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class ExtendedTypedefTest {
-
     @Test
     public void constantGenerationTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(ExtendedTypedefTest.class,
-            "/typedef-of-typedef/typedef_of_typedef.yang", "/ietf/ietf-inet-types.yang");
-        assertNotNull("Schema Context is null", context);
-
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+            ExtendedTypedefTest.class,
+            "/typedef-of-typedef/typedef_of_typedef.yang", "/ietf/ietf-inet-types.yang"));
 
         GeneratedTransferObject simpleTypedef4 = null;
         GeneratedTransferObject extendedTypedefUnion = null;
@@ -126,5 +122,4 @@ public class ExtendedTypedefTest {
         assertEquals("Incorrect type for property typedefEnumFruit.", "TypedefEnumFruit", typedefEnumFruitProperty
                 .getReturnType().getName());
     }
-
 }

@@ -21,7 +21,6 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class IdentityrefTypeTest {
@@ -51,10 +50,7 @@ public class IdentityrefTypeTest {
      */
     @Test
     public void testIdentityrefYangBuiltInType() {
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
-
-        assertNotNull(context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangFiles(testModels));
 
         GeneratedType moduleGenType = null;
         for (Type type : genTypes) {
