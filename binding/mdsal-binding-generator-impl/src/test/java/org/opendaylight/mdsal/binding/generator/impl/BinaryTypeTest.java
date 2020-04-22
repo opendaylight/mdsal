@@ -18,7 +18,7 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BinaryTypeTest {
@@ -37,7 +37,7 @@ public class BinaryTypeTest {
 
     @Test
     public void binaryTypeTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(YANG_MODELS);
+        final EffectiveModelContext context = YangParserTestUtils.parseYangFiles(YANG_MODELS);
 
         assertNotNull("context is null", context);
         final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);

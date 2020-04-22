@@ -29,12 +29,12 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 final class RuntimeTypeGenerator extends AbstractTypeGenerator {
-    RuntimeTypeGenerator(final SchemaContext context, final Map<SchemaNode, JavaTypeName> renames) {
+    RuntimeTypeGenerator(final EffectiveModelContext context, final Map<SchemaNode, JavaTypeName> renames) {
         super(context, new RuntimeTypeProvider(context, renames), renames);
     }
 

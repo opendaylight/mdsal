@@ -20,15 +20,13 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal320Test {
     @Test
     public void mdsal320Test() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal320.yang");
-
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/mdsal320.yang"));
         assertNotNull(generateTypes);
         assertEquals(4, generateTypes.size());
 

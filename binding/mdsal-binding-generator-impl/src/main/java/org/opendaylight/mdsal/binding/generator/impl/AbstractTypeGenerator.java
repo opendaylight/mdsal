@@ -105,6 +105,7 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DerivableSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
@@ -115,7 +116,6 @@ import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -187,14 +187,14 @@ abstract class AbstractTypeGenerator {
     /**
      * Holds reference to schema context to resolve data of augmented element when creating augmentation builder.
      */
-    private final @NonNull SchemaContext schemaContext;
+    private final @NonNull EffectiveModelContext schemaContext;
 
     /**
      * Holds renamed elements.
      */
     private final Map<SchemaNode, JavaTypeName> renames;
 
-    AbstractTypeGenerator(final SchemaContext context, final AbstractTypeProvider typeProvider,
+    AbstractTypeGenerator(final EffectiveModelContext context, final AbstractTypeProvider typeProvider,
             final Map<SchemaNode, JavaTypeName> renames) {
         this.schemaContext = requireNonNull(context);
         this.typeProvider = requireNonNull(typeProvider);
@@ -209,7 +209,7 @@ abstract class AbstractTypeGenerator {
         contexts.forEach(this::allAugmentsToGenTypes);
     }
 
-    final @NonNull SchemaContext schemaContext() {
+    final @NonNull EffectiveModelContext schemaContext() {
         return schemaContext;
     }
 

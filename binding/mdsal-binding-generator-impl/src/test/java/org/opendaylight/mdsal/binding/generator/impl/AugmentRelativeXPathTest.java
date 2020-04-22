@@ -19,7 +19,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AugmentRelativeXPathTest extends AbstractTypesTest {
@@ -31,7 +31,7 @@ public class AugmentRelativeXPathTest extends AbstractTypesTest {
     @Test
     public void testAugmentationWithRelativeXPath() {
 
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
+        final EffectiveModelContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull("context is null", context);
         final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);

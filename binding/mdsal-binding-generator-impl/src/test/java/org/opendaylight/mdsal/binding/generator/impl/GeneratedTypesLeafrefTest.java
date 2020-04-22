@@ -21,17 +21,16 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesLeafrefTest {
 
     @Test
     public void testLeafrefResolving() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(GeneratedTypesLeafrefTest.class,
+        final EffectiveModelContext context = YangParserTestUtils.parseYangResources(GeneratedTypesLeafrefTest.class,
             "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf/ietf-interfaces.yang",
             "/ietf/ietf-inet-types.yang", "/ietf/ietf-yang-types.yang");
-        assertNotNull(context);
         assertEquals(4, context.getModules().size());
 
         final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
@@ -213,8 +212,8 @@ public class GeneratedTypesLeafrefTest {
 
     @Test
     public void testLeafrefInvalidPathResolving() {
-        final SchemaContext context =  YangParserTestUtils.parseYangResource("/leafref-test-invalid-model/foo.yang");
-        assertNotNull(context);
+        final EffectiveModelContext context =  YangParserTestUtils.parseYangResource(
+            "/leafref-test-invalid-model/foo.yang");
         assertEquals(1, context.getModules().size());
 
         try {

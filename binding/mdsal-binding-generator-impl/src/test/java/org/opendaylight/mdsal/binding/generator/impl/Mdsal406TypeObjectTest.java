@@ -18,16 +18,13 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.mdsal.binding.model.util.Types;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal406TypeObjectTest {
     @Test
     public void typeObjectTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(ExtendedTypedefTest.class,
-                "/type-provider/test.yang", "/ietf/ietf-inet-types.yang");
-
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+            ExtendedTypedefTest.class, "/type-provider/test.yang", "/ietf/ietf-inet-types.yang"));
         assertNotNull(generateTypes);
 
         final Type typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
@@ -43,10 +40,8 @@ public class Mdsal406TypeObjectTest {
 
     @Test
     public void typeObjectForBitsTypedefTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(ExtendedTypedefTest.class,
-                "/type-provider/test.yang", "/ietf/ietf-inet-types.yang");
-
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+            ExtendedTypedefTest.class, "/type-provider/test.yang", "/ietf/ietf-inet-types.yang"));
         assertNotNull(generateTypes);
 
         final Type typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
@@ -62,10 +57,8 @@ public class Mdsal406TypeObjectTest {
 
     @Test
     public void typeObjectForUnionTypedefTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(ExtendedTypedefTest.class,
-                "/type-provider/test.yang", "/ietf/ietf-inet-types.yang");
-
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(context);
+        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+            ExtendedTypedefTest.class, "/type-provider/test.yang", "/ietf/ietf-inet-types.yang"));
         assertNotNull(generateTypes);
 
         final Type typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()

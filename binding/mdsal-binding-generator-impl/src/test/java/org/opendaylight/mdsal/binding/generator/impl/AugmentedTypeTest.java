@@ -19,14 +19,14 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AugmentedTypeTest {
 
     @Test
     public void augmentedAbstractTopologyTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResources(AugmentedTypeTest.class,
+        final EffectiveModelContext context = YangParserTestUtils.parseYangResources(AugmentedTypeTest.class,
             "/augment-test-models/abstract-topology@2013-02-08.yang",
             "/augment-test-models/augment-abstract-topology@2013-05-03.yang",
             "/augment-test-models/augment-network-link-attributes@2013-05-03.yang",
