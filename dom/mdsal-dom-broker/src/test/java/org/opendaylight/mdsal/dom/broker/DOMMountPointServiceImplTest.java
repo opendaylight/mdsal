@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.dom.broker;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -25,7 +25,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class DOMMountPointServiceImplTest {
 
@@ -49,7 +49,7 @@ public class DOMMountPointServiceImplTest {
         // Create a mount point with schema context and a DOMService
         final DOMMountPointBuilder mountPointBuilder = mountPointService.createMountPoint(PATH);
 
-        final SchemaContext schemaContext = mock(SchemaContext.class);
+        final EffectiveModelContext schemaContext = mock(EffectiveModelContext.class);
         mountPointBuilder.addInitialSchemaContext(schemaContext);
 
         final DOMRpcService rpcService = mock(DOMRpcService.class);

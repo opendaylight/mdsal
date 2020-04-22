@@ -12,8 +12,7 @@ import java.util.Optional;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public interface DOMMountPointService extends DOMService {
 
@@ -27,7 +26,7 @@ public interface DOMMountPointService extends DOMService {
 
         <T extends DOMService> DOMMountPointBuilder addService(Class<T> type,T impl);
 
-        DOMMountPointBuilder addInitialSchemaContext(SchemaContext ctx);
+        DOMMountPointBuilder addInitialSchemaContext(EffectiveModelContext ctx);
 
         ObjectRegistration<DOMMountPoint> register();
     }
