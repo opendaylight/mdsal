@@ -16,15 +16,13 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 final class GeneratedPropertyImpl extends AbstractTypeMember implements GeneratedProperty {
     private final String value;
     private final boolean readOnly;
-    private final boolean nullifyEmpty;
 
     GeneratedPropertyImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
             final String comment, final AccessModifier accessModifier, final Type returnType, final boolean isFinal,
-            final boolean isStatic, final boolean isReadOnly, final boolean nullifyEmpty, final String value) {
+            final boolean isStatic, final boolean isReadOnly, final String value) {
         super(definingType, name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
         this.value = value;
         this.readOnly = isReadOnly;
-        this.nullifyEmpty = nullifyEmpty;
     }
 
     @Override
@@ -35,11 +33,6 @@ final class GeneratedPropertyImpl extends AbstractTypeMember implements Generate
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
-    }
-
-    @Override
-    public boolean nullifyEmpty() {
-        return this.nullifyEmpty;
     }
 
     @Override

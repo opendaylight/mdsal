@@ -16,8 +16,6 @@ package org.opendaylight.mdsal.binding.model.api;
 // FIXME: 7.0.0: this interface (and others) need to be refactored:
 //               - getValue() is pretty much unused and its semantics are undefined
 //               - isReadOnly() is not related to getValue() and is not used together
-//               - nullifyEmpty() is applicable only to collection types and implies non-read-only and without value
-//               - this is misused by Builder spec :(
 public interface GeneratedProperty extends TypeMember {
 
     String getValue();
@@ -29,12 +27,4 @@ public interface GeneratedProperty extends TypeMember {
      * @return {@code true<} if the property is declared as read-only.
      */
     boolean isReadOnly();
-
-    /**
-     * Returns indication whether the value should be squashed from empty collection to a null. This property is valid
-     * only if {@link #getReturnType()} results in a well-known collection type: List or Map.
-     *
-     * @return True if empty collections should be turned to nulls
-     */
-    boolean nullifyEmpty();
 }

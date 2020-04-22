@@ -17,12 +17,10 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
         implements GeneratedPropertyBuilder {
     private String value;
     private boolean readOnly;
-    private boolean nullifyEmpty;
 
     public GeneratedPropertyBuilderImpl(final String name) {
         super(name);
         this.readOnly = true;
-        this.nullifyEmpty = false;
     }
 
     @Override
@@ -38,12 +36,6 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
     }
 
     @Override
-    public GeneratedPropertyBuilderImpl setNullifyEmpty(final boolean flag) {
-        this.nullifyEmpty = flag;
-        return this;
-    }
-
-    @Override
     protected GeneratedPropertyBuilderImpl thisInstance() {
         return this;
     }
@@ -52,7 +44,7 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
     public GeneratedProperty toInstance(final Type definingType) {
         final List<AnnotationType> annotations = toAnnotationTypes();
         return new GeneratedPropertyImpl(definingType, getName(), annotations, getComment(), getAccessModifier(),
-                getReturnType(), isFinal(), isStatic(), this.readOnly, this.nullifyEmpty, this.value);
+                getReturnType(), isFinal(), isStatic(), this.readOnly, this.value);
     }
 
     @Override

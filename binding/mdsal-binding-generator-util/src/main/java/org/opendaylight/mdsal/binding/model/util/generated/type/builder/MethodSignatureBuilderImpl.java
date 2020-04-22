@@ -44,7 +44,6 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
         return this;
     }
 
-
     @Override
     public MethodSignatureBuilder setMechanics(final ValueMechanics newMechanics) {
         this.mechanics = requireNonNull(newMechanics);

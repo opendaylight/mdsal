@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 import java.util.Objects;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
@@ -19,7 +20,7 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 
 class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature {
     private final List<Parameter> params;
-    private final ValueMechanics mechanics;
+    private final @NonNull ValueMechanics mechanics;
     private final boolean isAbstract;
     private final boolean isDefault;
 
