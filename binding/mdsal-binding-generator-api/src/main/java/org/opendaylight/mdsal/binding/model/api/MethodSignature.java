@@ -53,7 +53,7 @@ public interface MethodSignature extends TypeMember {
      *
      * @return Associated mechanics
      */
-    ValueMechanics getMechanics();
+    @NonNull ValueMechanics getMechanics();
 
     /**
      * The Parameter interface is designed to hold the information of method

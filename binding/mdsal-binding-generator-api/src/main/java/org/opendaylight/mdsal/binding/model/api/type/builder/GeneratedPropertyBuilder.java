@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.model.api.type.builder;
 
-import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
@@ -27,9 +26,6 @@ public interface GeneratedPropertyBuilder extends TypeMemberBuilder<GeneratedPro
      * @param isReadOnly Read Only property flag.
      */
     GeneratedPropertyBuilder setReadOnly(boolean isReadOnly);
-
-    @Beta
-    GeneratedPropertyBuilder setNullifyEmpty(boolean flag);
 
     /**
      * Returns <code>new</code> <i>immutable</i> instance of Generated Property. <br>
