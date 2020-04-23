@@ -22,6 +22,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
  * Utility class implementing {@link DefaultDOMRpcResult}.
@@ -67,7 +68,7 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
     }
 
     @Override
-    public @Nullable ContainerNode getResult() {
+    public @Nullable NormalizedNode<?, ?> getResult() {
         return result;
     }
 
