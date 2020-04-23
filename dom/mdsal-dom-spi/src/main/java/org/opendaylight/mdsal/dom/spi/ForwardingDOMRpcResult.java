@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.common.RpcError;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 /**
  * Utility class which implements {@link DOMRpcResult} by forwarding all methods
@@ -30,7 +30,7 @@ public abstract class ForwardingDOMRpcResult extends ForwardingObject implements
     }
 
     @Override
-    public @Nullable NormalizedNode<?, ?> getResult() {
+    public @Nullable ContainerNode getResult() {
         return delegate().getResult();
     }
 }

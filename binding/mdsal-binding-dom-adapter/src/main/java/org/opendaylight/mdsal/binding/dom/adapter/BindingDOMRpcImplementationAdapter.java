@@ -30,7 +30,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
@@ -66,7 +65,7 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
+    public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final ContainerNode input) {
         final SchemaPath schemaPath = rpc.getType();
         final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
         final DataObject bindingInput = input != null ? deserialize(serializer, schemaPath, input) : null;
@@ -80,12 +79,12 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     }
 
     private DataObject deserialize(final CurrentAdapterSerializer serializer, final SchemaPath rpcPath,
-            final NormalizedNode<?, ?> input) {
+            final ContainerNode input) {
         if (ENABLE_CODEC_SHORTCUT && input instanceof BindingLazyContainerNode) {
             return ((BindingLazyContainerNode<?>) input).getDataObject();
         }
         final SchemaPath inputSchemaPath = rpcPath.createChild(inputQname);
-        return serializer.fromNormalizedNodeRpcData(inputSchemaPath, (ContainerNode) input);
+        return serializer.fromNormalizedNodeRpcData(inputSchemaPath, input);
     }
 
     private ListenableFuture<RpcResult<?>> invoke(final SchemaPath schemaPath, final DataObject input) {

@@ -15,14 +15,13 @@ import static org.mockito.Mockito.mock;
 import java.util.Collections;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.common.RpcError;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 public class DefaultDOMRpcResultTest {
-
     @Test
     public void basicTest() throws Exception {
         RpcError rpcError = mock(RpcError.class);
-        NormalizedNode<?, ?> normalizedNode = mock(NormalizedNode.class);
+        ContainerNode normalizedNode = mock(ContainerNode.class);
         DefaultDOMRpcResult defaultDOMRpcResult = new DefaultDOMRpcResult(normalizedNode, rpcError);
         assertEquals(normalizedNode, defaultDOMRpcResult.getResult());
         assertTrue(defaultDOMRpcResult.getErrors().contains(rpcError));
