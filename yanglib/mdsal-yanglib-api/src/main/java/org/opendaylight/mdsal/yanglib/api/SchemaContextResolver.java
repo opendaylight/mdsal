@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.yanglib.api;
 import com.google.common.annotations.Beta;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 
 /**
@@ -26,6 +26,6 @@ import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 @NonNullByDefault
 public interface SchemaContextResolver {
 
-    SchemaContext resolveSchemaContext(List<SourceReference> librarySources, List<SourceReference> requiredSources)
-            throws YangParserException;
+    EffectiveModelContext resolveSchemaContext(List<SourceReference> librarySources,
+            List<SourceReference> requiredSources) throws YangParserException;
 }

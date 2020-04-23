@@ -50,7 +50,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
@@ -87,7 +86,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     }
 
     @Override
-    protected Optional<SchemaContext> findSchemaForLibrary(final ContainerName containerName) {
+    protected Optional<EffectiveModelContext> findSchemaForLibrary(final ContainerName containerName) {
         switch (containerName) {
             case RFC7895:
             case RFC8525:
@@ -99,7 +98,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     }
 
     @Override
-    protected SchemaContext bindLibrary(final ContainerName containerName, final ContainerNode libData)
+    protected EffectiveModelContext bindLibrary(final ContainerName containerName, final ContainerNode libData)
             throws YangParserException {
         switch (containerName) {
             case RFC7895:
@@ -111,7 +110,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
         }
     }
 
-    private @NonNull SchemaContext bindLibrary(final @NonNull YangLibrary yangLib) throws YangParserException {
+    private @NonNull EffectiveModelContext bindLibrary(final @NonNull YangLibrary yangLib) throws YangParserException {
         final Map<DatastoreKey, Datastore> datastores = yangLib.nonnullDatastore();
         checkArgument(!datastores.isEmpty(), "No datastore defined");
 
@@ -129,7 +128,8 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     }
 
     @SuppressWarnings("deprecation")
-    private @NonNull SchemaContext bindLibrary(final @NonNull ModulesState modState) throws YangParserException {
+    private @NonNull EffectiveModelContext bindLibrary(final @NonNull ModulesState modState)
+            throws YangParserException {
         final List<SourceReference> requiredSources = new ArrayList<>();
         final List<SourceReference> librarySources = new ArrayList<>();
 
