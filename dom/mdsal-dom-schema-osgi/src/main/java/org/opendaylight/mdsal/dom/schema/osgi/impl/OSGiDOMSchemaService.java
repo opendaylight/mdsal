@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.dom.schema.osgi.impl;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.jdt.annotation.NonNull;
@@ -19,6 +20,8 @@ import org.opendaylight.mdsal.dom.spi.AbstractDOMSchemaService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
+import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
+import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -36,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * OSGi Service Registry-backed implementation of {@link DOMSchemaService}.
  */
 @Component(service = DOMSchemaService.class, immediate = true)
-public final class OSGiDOMSchemaService extends AbstractDOMSchemaService {
+public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYangTextSources {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiDOMSchemaService.class);
 
     @Reference(target = "(component.factory=" + EffectiveModelContextImpl.FACTORY_NAME + ")")
@@ -55,6 +58,11 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService {
     public ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener(
             final EffectiveModelContextListener listener) {
         return registerListener(requireNonNull(listener));
+    }
+
+    @Override
+    public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
+        return currentSnapshot.getSource(sourceIdentifier);
     }
 
     @Reference(fieldOption = FieldOption.REPLACE)
