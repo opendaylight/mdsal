@@ -33,7 +33,6 @@ import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.rfc8528.data.api.YangLibraryConstants.ContainerName;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
@@ -62,7 +61,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     }
 
     @Override
-    protected Optional<SchemaContext> findSchemaForLibrary(final ContainerName containerName) {
+    protected Optional<EffectiveModelContext> findSchemaForLibrary(final ContainerName containerName) {
         switch (containerName) {
             case RFC7895:
                 return Optional.of(yangLibContext);
@@ -73,7 +72,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     }
 
     @Override
-    protected SchemaContext bindLibrary(final ContainerName containerName, final ContainerNode libData)
+    protected EffectiveModelContext bindLibrary(final ContainerName containerName, final ContainerNode libData)
             throws YangParserException {
         checkArgument(containerName == ContainerName.RFC7895, "Unsupported container type %s", containerName);
         checkArgument(ModulesState.QNAME.equals(libData.getNodeType()), "Unexpected container %s", libData);
@@ -82,7 +81,8 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
         return bindLibrary(verifyNotNull(codec.deserialize(libData)));
     }
 
-    private @NonNull SchemaContext bindLibrary(final @NonNull ModulesState modState) throws YangParserException {
+    private @NonNull EffectiveModelContext bindLibrary(final @NonNull ModulesState modState)
+            throws YangParserException {
         final List<SourceReference> requiredSources = new ArrayList<>();
         final List<SourceReference> librarySources = new ArrayList<>();
 
