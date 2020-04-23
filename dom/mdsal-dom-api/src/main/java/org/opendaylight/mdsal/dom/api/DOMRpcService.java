@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.api;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
@@ -30,14 +30,14 @@ public interface DOMRpcService extends DOMService {
      *         of {@link DOMRpcException} reporting a transport error.
      */
     @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull SchemaPath type,
-            @NonNull ContainerNode input);
+            @NonNull NormalizedNode<?, ?> input);
 
     /**
      * Register a {@link DOMRpcAvailabilityListener} with this service to receive notifications
      * about RPC implementations becoming (un)available. The listener will be invoked with the
      * current implementations reported and will be kept uptodate as implementations come and go.
      * Users should note that using a listener does not necessarily mean that
-     * {@link #invokeRpc(SchemaPath, ContainerNode)} will not report a failure due to
+     * {@link #invokeRpc(SchemaPath, NormalizedNode)} will not report a failure due to
      * {@link DOMRpcImplementationNotAvailableException} and need to be ready to handle it.
      * Implementations are encouraged to take reasonable precautions to prevent this scenario from
      * occurring.

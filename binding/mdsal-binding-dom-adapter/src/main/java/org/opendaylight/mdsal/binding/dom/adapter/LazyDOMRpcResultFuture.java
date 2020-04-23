@@ -24,7 +24,7 @@ import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.common.RpcResult;
-import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implements BindingRpcFutureAware {
     private static final ExceptionMapper<DOMRpcException> DOM_RPC_EX_MAPPER = new ExceptionMapper<>("rpc",
@@ -117,7 +117,7 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
                 return new DefaultDOMRpcResult(codec.toNormalizedNodeRpcData((DataContainer) inputData));
             }
 
-            return new DefaultDOMRpcResult((ContainerNode) null);
+            return new DefaultDOMRpcResult((NormalizedNode<?, ?>) null);
         }
         return new DefaultDOMRpcResult(input.getErrors());
     }

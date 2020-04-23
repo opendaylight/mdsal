@@ -21,7 +21,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.RpcError;
-import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
  * Utility class implementing {@link DefaultDOMRpcResult}.
@@ -32,10 +32,10 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
     private static final long serialVersionUID = 1L;
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Interfaces do not specify Serializable")
-    private final @Nullable ContainerNode result;
+    private final @Nullable NormalizedNode<?, ?> result;
     private final Collection<? extends RpcError> errors;
 
-    public DefaultDOMRpcResult(final ContainerNode result, final RpcError... errors) {
+    public DefaultDOMRpcResult(final NormalizedNode<?, ?> result, final RpcError... errors) {
         this(result, asCollection(errors));
     }
 
@@ -43,11 +43,11 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
         this(null, asCollection(errors));
     }
 
-    public DefaultDOMRpcResult(final @Nullable ContainerNode result) {
+    public DefaultDOMRpcResult(final @Nullable NormalizedNode<?, ?> result) {
         this(result, Collections.emptyList());
     }
 
-    public DefaultDOMRpcResult(final @Nullable ContainerNode result,
+    public DefaultDOMRpcResult(final @Nullable NormalizedNode<?, ?> result,
             final Collection<? extends RpcError> errors) {
         this.result = result;
         this.errors = requireNonNull(errors);
@@ -67,7 +67,7 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
     }
 
     @Override
-    public @Nullable ContainerNode getResult() {
+    public @Nullable NormalizedNode<?, ?> getResult() {
         return result;
     }
 
