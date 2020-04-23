@@ -15,7 +15,6 @@ import org.opendaylight.mdsal.binding.api.query.QueryFactory;
 import org.opendaylight.mdsal.binding.api.query.QueryStructureException;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.impl.DefaultBindingCodecTreeFactory;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.top.level.list.NestedList;
@@ -28,8 +27,7 @@ public class QueryBuilderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        CODEC = new DefaultBindingCodecTreeFactory().create(BindingRuntimeHelpers.createRuntimeContext(
-            new DefaultBindingRuntimeGenerator()));
+        CODEC = new DefaultBindingCodecTreeFactory().create(BindingRuntimeHelpers.createRuntimeContext());
     }
 
     @Test
