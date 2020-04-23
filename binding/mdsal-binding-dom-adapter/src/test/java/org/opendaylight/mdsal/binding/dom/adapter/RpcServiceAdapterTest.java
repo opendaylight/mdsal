@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFac
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.OpendaylightTestRoutedRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.RoutedSimpleRouteInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.RoutedSimpleRouteInputBuilder;
@@ -52,7 +53,8 @@ public class RpcServiceAdapterTest {
                 method, new Object[]{ }));
 
         method = OpendaylightTestRpcServiceService.class.getMethod("rockTheHouse", RockTheHouseInput.class);
-        assertNotNull(rpcServiceAdapter.invoke(rpcServiceAdapter.getProxy(), method, new Object[]{ null }));
+        assertNotNull(rpcServiceAdapter.invoke(rpcServiceAdapter.getProxy(), method,
+            new Object[]{ new RockTheHouseInputBuilder().build() }));
 
         rpcServiceAdapter = new RpcServiceAdapter(OpendaylightTestRoutedRpcService.class,
                 bindingTestContext.getCodec(), bindingTestContext.getDomRpcInvoker());
@@ -63,10 +65,13 @@ public class RpcServiceAdapterTest {
 
     private interface TestRpcService extends RpcService {
 
+        @Override
         String toString();
 
+        @Override
         int hashCode();
 
+        @Override
         boolean equals(Object object);
     }
 }
