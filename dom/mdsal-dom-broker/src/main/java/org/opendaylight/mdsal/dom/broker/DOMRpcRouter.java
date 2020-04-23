@@ -435,8 +435,7 @@ public final class DOMRpcRouter extends AbstractRegistration
 
     private final class RpcServiceFacade implements DOMRpcService {
         @Override
-        public ListenableFuture<? extends DOMRpcResult> invokeRpc(final SchemaPath type,
-                final NormalizedNode<?, ?> input) {
+        public ListenableFuture<? extends DOMRpcResult> invokeRpc(final SchemaPath type, final ContainerNode input) {
             final AbstractDOMRpcRoutingTableEntry entry = (AbstractDOMRpcRoutingTableEntry) routingTable.getEntry(type);
             if (entry == null) {
                 return Futures.immediateFailedFuture(
@@ -499,7 +498,7 @@ public final class DOMRpcRouter extends AbstractRegistration
         }
 
         static ListenableFuture<? extends DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
-                final NormalizedNode<?, ?> input) {
+                final ContainerNode input) {
             if (entry instanceof UnknownDOMRpcRoutingTableEntry) {
                 return Futures.immediateFailedFuture(
                     new DOMRpcImplementationNotAvailableException("SchemaPath %s is not resolved to an RPC",
@@ -515,7 +514,7 @@ public final class DOMRpcRouter extends AbstractRegistration
         }
 
         private static ListenableFuture<? extends DOMRpcResult> invokeRoutedRpc(
-                final RoutedDOMRpcRoutingTableEntry entry, final NormalizedNode<?, ?> input) {
+                final RoutedDOMRpcRoutingTableEntry entry, final ContainerNode input) {
             final Optional<NormalizedNode<?, ?>> maybeKey = NormalizedNodes.findNode(input,
                 entry.getRpcId().getContextReference());
 
@@ -561,7 +560,7 @@ public final class DOMRpcRouter extends AbstractRegistration
         }
 
         private static ListenableFuture<? extends DOMRpcResult> invokeGlobalRpc(
-                final GlobalDOMRpcRoutingTableEntry entry, final NormalizedNode<?, ?> input) {
+                final GlobalDOMRpcRoutingTableEntry entry, final ContainerNode input) {
             return entry.getImplementations(YangInstanceIdentifier.empty()).get(0).invokeRpc(entry.getRpcId(), input);
         }
     }

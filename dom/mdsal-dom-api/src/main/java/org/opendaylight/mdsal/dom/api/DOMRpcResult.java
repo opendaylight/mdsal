@@ -11,7 +11,7 @@ import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.common.RpcError;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 /**
  * Interface defining a result of an RPC call.
@@ -33,5 +33,5 @@ public interface DOMRpcResult {
      * @return Invocation result, null if the operation has not produced a result. This might
      *         be the case if the operation does not produce a result, or if it failed.
      */
-    @Nullable NormalizedNode<?, ?> getResult();
+    @Nullable ContainerNode getResult();
 }

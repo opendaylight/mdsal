@@ -20,9 +20,9 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
@@ -49,12 +49,12 @@ abstract class TestUtils {
             .withChild(TOP_LEVEL_LIST_NODE)
             .build();
 
-    static final NormalizedNode<?, ?> TEST_CONTAINER = Builders.containerBuilder()
+    static final ContainerNode TEST_CONTAINER = Builders.containerBuilder()
             .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
             .withChild(OUTER_LIST)
             .build();
 
-    static final NormalizedNode<?, ?> TEST_CHILD = Builders.containerBuilder()
+    static final ContainerNode TEST_CHILD = Builders.containerBuilder()
             .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
             .withChild(CHILD_LIST)
             .build();
@@ -74,7 +74,7 @@ abstract class TestUtils {
         }
 
         @Override
-        public FluentFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
+        public FluentFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final ContainerNode input) {
             requireNonNull(input);
             return unknownRpc;
         }
