@@ -86,7 +86,7 @@ class RpcServiceAdapter implements InvocationHandler {
             if (args.length != 1) {
                 throw new IllegalArgumentException("Input must be provided.");
             }
-            return rpc.invoke((DataObject) args[0]);
+            return rpc.invoke((DataObject) requireNonNull(args[0]));
         }
 
         switch (method.getName()) {
