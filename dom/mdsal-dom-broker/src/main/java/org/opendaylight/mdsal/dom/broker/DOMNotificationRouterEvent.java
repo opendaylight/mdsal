@@ -18,8 +18,7 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 /**
- * A single notification event in the disruptor ringbuffer. These objects are reused,
- * so they do have mutable state.
+ * A single notification event in the notification router.
  */
 final class DOMNotificationRouterEvent {
     static final EventFactory<DOMNotificationRouterEvent> FACTORY = DOMNotificationRouterEvent::new;
@@ -48,9 +47,10 @@ final class DOMNotificationRouterEvent {
                 l.onNotification(notification);
             }
         }
+        setFuture();
     }
 
-    void setFuture() {
+    private void setFuture() {
         future.set(null);
     }
 

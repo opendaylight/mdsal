@@ -38,10 +38,6 @@ public final class OSGiDOMNotificationRouter implements DOMNotificationService, 
     public @interface Config {
         @AttributeDefinition(name = "notification-queue-depth")
         int queueDepth() default 65536;
-        @AttributeDefinition(name = "notification-queue-spin")
-        long spinTime() default 0;
-        @AttributeDefinition(name = "notification-queue-park")
-        long parkTime() default 0;
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(OSGiDOMNotificationRouter.class);
@@ -50,8 +46,7 @@ public final class OSGiDOMNotificationRouter implements DOMNotificationService, 
 
     @Activate
     void activate(final Config config) {
-        router = DOMNotificationRouter.create(config.queueDepth(), config.spinTime(), config.parkTime(),
-            TimeUnit.MILLISECONDS);
+        router = DOMNotificationRouter.create(config.queueDepth());
         LOG.info("DOM Notification Router started");
     }
 
