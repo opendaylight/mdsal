@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
@@ -17,12 +16,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.lmax.disruptor.EventHandler;
-import com.lmax.disruptor.InsufficientCapacityException;
-import com.lmax.disruptor.PhasedBackoffWaitStrategy;
-import com.lmax.disruptor.WaitStrategy;
-import com.lmax.disruptor.dsl.Disruptor;
-import com.lmax.disruptor.dsl.ProducerType;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -42,6 +35,7 @@ import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
+import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,34 +45,18 @@ import org.slf4j.LoggerFactory;
  * routing of notifications from publishers to subscribers.
  *
  *<p>
- * Internal implementation works by allocating a two-handler Disruptor. The first handler delivers notifications
- * to subscribed listeners and the second one notifies whoever may be listening on the returned future. Registration
- * state tracking is performed by a simple immutable multimap -- when a registration or unregistration occurs we
- * re-generate the entire map from scratch and set it atomically. While registrations/unregistrations synchronize
- * on this instance, notifications do not take any locks here.
- *
- *<p>
- * The fully-blocking {@link #publish(long, DOMNotification, Collection)}
- * and non-blocking {@link #offerNotification(DOMNotification)}
- * are realized using the Disruptor's native operations. The bounded-blocking {@link
- * #offerNotification(DOMNotification, long, TimeUnit)}
- * is realized by arming a background wakeup interrupt.
+ * Internal implementation one by using a {@link QueuedNotificationManager}.
+ *</p>
  */
 public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPublishService,
         DOMNotificationService, DOMNotificationSubscriptionListenerRegistry {
 
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouter.class);
     private static final ListenableFuture<Void> NO_LISTENERS = FluentFutures.immediateNullFluentFuture();
-    private static final WaitStrategy DEFAULT_STRATEGY = PhasedBackoffWaitStrategy.withLock(
-            1L, 30L, TimeUnit.MILLISECONDS);
-    private static final EventHandler<DOMNotificationRouterEvent> DISPATCH_NOTIFICATIONS =
-        (event, sequence, endOfBatch) -> event.deliverNotification();
-    private static final EventHandler<DOMNotificationRouterEvent> NOTIFY_FUTURE =
-        (event, sequence, endOfBatch) -> event.setFuture();
 
     private final ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners =
             ListenerRegistry.create();
-    private final Disruptor<DOMNotificationRouterEvent> disruptor;
+    private final QueuedNotificationManager<SchemaPath, DOMNotificationRouterEvent> queueNotificationManager;
     private final ScheduledThreadPoolExecutor observer;
     private final ExecutorService executor;
 
@@ -86,28 +64,18 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
             ImmutableMultimap.of();
 
     @VisibleForTesting
-    DOMNotificationRouter(final int queueDepth, final WaitStrategy strategy) {
+    DOMNotificationRouter(int maxQueueCapacity) {
         observer = new ScheduledThreadPoolExecutor(1,
             new ThreadFactoryBuilder().setDaemon(true).setNameFormat("DOMNotificationRouter-observer-%d").build());
         executor = Executors.newCachedThreadPool(
             new ThreadFactoryBuilder().setDaemon(true).setNameFormat("DOMNotificationRouter-listeners-%d").build());
-        disruptor = new Disruptor<>(DOMNotificationRouterEvent.FACTORY, queueDepth,
-                new ThreadFactoryBuilder().setNameFormat("DOMNotificationRouter-disruptor-%d").build(),
-                ProducerType.MULTI, strategy);
-        disruptor.handleEventsWith(DISPATCH_NOTIFICATIONS);
-        disruptor.after(DISPATCH_NOTIFICATIONS).handleEventsWith(NOTIFY_FUTURE);
-        disruptor.start();
+        queueNotificationManager = QueuedNotificationManager.create(executor, (key, events) ->
+                events.forEach(DOMNotificationRouterEvent::deliverNotification), maxQueueCapacity,
+                "DOMNotificationRouter");
     }
 
-    public static DOMNotificationRouter create(final int queueDepth) {
-        return new DOMNotificationRouter(queueDepth, DEFAULT_STRATEGY);
-    }
-
-    public static DOMNotificationRouter create(final int queueDepth, final long spinTime, final long parkTime,
-            final TimeUnit unit) {
-        checkArgument(Long.lowestOneBit(queueDepth) == Long.highestOneBit(queueDepth),
-                "Queue depth %s is not power-of-two", queueDepth);
-        return new DOMNotificationRouter(queueDepth, PhasedBackoffWaitStrategy.withLock(spinTime, parkTime, unit));
+    public static DOMNotificationRouter create(int maxQueueCapacity) {
+        return new DOMNotificationRouter(maxQueueCapacity);
     }
 
     @Override
@@ -178,11 +146,12 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         return subscriptionListeners.register(listener);
     }
 
-    private ListenableFuture<Void> publish(final long seq, final DOMNotification notification,
+    @VisibleForTesting
+    ListenableFuture<? extends Object> publish(DOMNotification notification,
             final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers) {
-        final DOMNotificationRouterEvent event = disruptor.get(seq);
+        final DOMNotificationRouterEvent event = DOMNotificationRouterEvent.FACTORY.newInstance();
         final ListenableFuture<Void> future = event.initialize(notification, subscribers);
-        disruptor.getRingBuffer().publish(seq);
+        queueNotificationManager.submitNotification(notification.getType(), event);
         return future;
     }
 
@@ -195,22 +164,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
             return NO_LISTENERS;
         }
 
-        final long seq = disruptor.getRingBuffer().next();
-        return publish(seq, notification, subscribers);
-    }
-
-    @SuppressWarnings("checkstyle:IllegalCatch")
-    @VisibleForTesting
-    ListenableFuture<? extends Object> tryPublish(final DOMNotification notification,
-            final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers) {
-        final long seq;
-        try {
-            seq = disruptor.getRingBuffer().tryNext();
-        } catch (final InsufficientCapacityException e) {
-            return DOMNotificationPublishService.REJECTED;
-        }
-
-        return publish(seq, notification, subscribers);
+        return publish(notification, subscribers);
     }
 
     @Override
@@ -221,7 +175,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
             return NO_LISTENERS;
         }
 
-        return tryPublish(notification, subscribers);
+        return publish(notification, subscribers);
     }
 
     @Override
@@ -233,7 +187,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
             return NO_LISTENERS;
         }
         // Attempt to perform a non-blocking publish first
-        final ListenableFuture<?> noBlock = tryPublish(notification, subscribers);
+        final ListenableFuture<?> noBlock = publish(notification, subscribers);
         if (!DOMNotificationPublishService.REJECTED.equals(noBlock)) {
             return noBlock;
         }
@@ -254,7 +208,6 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
 
     @Override
     public void close() {
-        disruptor.shutdown();
         observer.shutdown();
         executor.shutdown();
     }
