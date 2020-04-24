@@ -13,13 +13,13 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.lmax.disruptor.PhasedBackoffWaitStrategy;
-import com.lmax.disruptor.WaitStrategy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -37,13 +37,9 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class DOMNotificationRouterTest extends TestUtils {
 
-    private static final WaitStrategy DEFAULT_STRATEGY = PhasedBackoffWaitStrategy.withLock(
-            1L, 30L, TimeUnit.MILLISECONDS);
-
     @Test
     public void create() throws Exception {
-        assertNotNull(DOMNotificationRouter.create(1,1,1,TimeUnit.SECONDS));
-        assertNotNull(DOMNotificationRouter.create(1));
+        assertNotNull(DOMNotificationRouter.create(1024));
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
@@ -51,9 +47,11 @@ public class DOMNotificationRouterTest extends TestUtils {
     public void complexTest() throws Exception {
         final DOMNotificationSubscriptionListener domNotificationSubscriptionListener =
                 mock(DOMNotificationSubscriptionListener.class);
+        doNothing().when(domNotificationSubscriptionListener).onSubscriptionChanged(any());
+
         final CountDownLatch latch = new CountDownLatch(1);
         final DOMNotificationListener domNotificationListener = new TestListener(latch);
-        final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1);
+        final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1024);
 
         Multimap<SchemaPath, ?> listeners = domNotificationRouter.listeners();
 
@@ -94,7 +92,7 @@ public class DOMNotificationRouterTest extends TestUtils {
 
     @Test
     public void offerNotification() throws Exception {
-        final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1);
+        final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1024);
         final DOMNotification domNotification = mock(DOMNotification.class);
         doReturn(SchemaPath.ROOT).when(domNotification).getType();
         doReturn(TEST_CHILD).when(domNotification).getBody();
@@ -122,14 +120,14 @@ public class DOMNotificationRouterTest extends TestUtils {
             assertEquals("Received notifications", 1, testListener.getReceivedNotifications().size());
 
             assertEquals(DOMNotificationPublishService.REJECTED,
-                testRouter.offerNotification(domNotification, 1, TimeUnit.SECONDS));
+                    testRouter.offerNotification(domNotification, 1, TimeUnit.SECONDS));
             assertEquals("Received notifications", 1, testListener.getReceivedNotifications().size());
         }
     }
 
     @Test
     public void close() throws Exception {
-        final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1);
+        final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1024);
         final ExecutorService executor = domNotificationRouter.executor();
         final ExecutorService observer = domNotificationRouter.observer();
 
@@ -160,14 +158,22 @@ public class DOMNotificationRouterTest extends TestUtils {
     }
 
     private static class TestRouter extends DOMNotificationRouter {
+
+        private boolean triggerRejected = false;
+
         TestRouter(final int queueDepth) {
-            super(queueDepth, DEFAULT_STRATEGY);
+            super(queueDepth);
         }
 
         @Override
-        protected ListenableFuture<? extends Object> tryPublish(final DOMNotification notification,
-                final Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers) {
-            return DOMNotificationPublishService.REJECTED;
+        ListenableFuture<? extends Object> publish(DOMNotification notification,
+                Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers) {
+            if (triggerRejected) {
+                return REJECTED;
+            }
+
+            triggerRejected = true;
+            return super.publish(notification, subscribers);
         }
 
         @Override
