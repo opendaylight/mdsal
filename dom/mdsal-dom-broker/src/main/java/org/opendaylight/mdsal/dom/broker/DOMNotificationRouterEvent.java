@@ -12,19 +12,17 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.lmax.disruptor.EventFactory;
-import java.util.Collection;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 /**
- * A single notification event in the disruptor ringbuffer. These objects are reused,
- * so they do have mutable state.
+ * A single notification event in the notification router.
  */
 final class DOMNotificationRouterEvent {
     static final EventFactory<DOMNotificationRouterEvent> FACTORY = DOMNotificationRouterEvent::new;
 
-    private Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers;
+    private ListenerRegistration<? extends DOMNotificationListener> subscriber;
     private DOMNotification notification;
     private SettableFuture<Void> future;
 
@@ -34,23 +32,22 @@ final class DOMNotificationRouterEvent {
 
     @SuppressWarnings("checkstyle:hiddenField")
     ListenableFuture<Void> initialize(final DOMNotification notification,
-            final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers) {
+            final ListenerRegistration<? extends DOMNotificationListener> subscriber) {
         this.notification = requireNonNull(notification);
-        this.subscribers = requireNonNull(subscribers);
+        this.subscriber = requireNonNull(subscriber);
         this.future = SettableFuture.create();
         return this.future;
     }
 
     void deliverNotification() {
-        for (ListenerRegistration<? extends DOMNotificationListener> r : subscribers) {
-            final DOMNotificationListener l = r.getInstance();
-            if (l != null) {
-                l.onNotification(notification);
-            }
+        final DOMNotificationListener listener = subscriber.getInstance();
+        if (listener != null) {
+            listener.onNotification(notification);
         }
+        setFuture();
     }
 
-    void setFuture() {
+    private void setFuture() {
         future.set(null);
     }
 
