@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ClassToInstanceMap;
@@ -27,7 +28,7 @@ public final class SimpleDOMMountPoint implements DOMMountPoint {
             final ClassToInstanceMap<DOMService> services, final EffectiveModelContext ctx) {
         this.identifier =  requireNonNull(identifier);
         this.services = ImmutableClassToInstanceMap.copyOf(services);
-        this.schemaContext = requireNonNull(ctx);
+        this.schemaContext = ctx;
     }
 
     public static SimpleDOMMountPoint create(final YangInstanceIdentifier identifier,
@@ -42,6 +43,7 @@ public final class SimpleDOMMountPoint implements DOMMountPoint {
 
     @Override
     public EffectiveModelContext getEffectiveModelContext() {
+        checkState(schemaContext != null, "Mount point %s does not have a model context", identifier);
         return schemaContext;
     }
 
