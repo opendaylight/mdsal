@@ -82,7 +82,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     private final ScheduledThreadPoolExecutor observer;
     private final ExecutorService executor;
 
-    private volatile Multimap<SchemaPath, ListenerRegistration<? extends DOMNotificationListener>> listeners =
+    private volatile Multimap<SchemaPath, AbstractListenerRegistration<? extends DOMNotificationListener>> listeners =
             ImmutableMultimap.of();
 
     @VisibleForTesting
@@ -113,7 +113,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     @Override
     public synchronized <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(
             final T listener, final Collection<SchemaPath> types) {
-        final ListenerRegistration<T> reg = new AbstractListenerRegistration<T>(listener) {
+        final AbstractListenerRegistration<T> reg = new AbstractListenerRegistration<T>(listener) {
             @Override
             protected void removeRegistration() {
                 synchronized (DOMNotificationRouter.this) {
@@ -124,7 +124,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         };
 
         if (!types.isEmpty()) {
-            final Builder<SchemaPath, ListenerRegistration<? extends DOMNotificationListener>> b =
+            final Builder<SchemaPath, AbstractListenerRegistration<? extends DOMNotificationListener>> b =
                     ImmutableMultimap.builder();
             b.putAll(listeners);
 
@@ -150,7 +150,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
      * @param newListeners is used to notify listenerTypes changed
      */
     private void replaceListeners(
-            final Multimap<SchemaPath, ListenerRegistration<? extends DOMNotificationListener>> newListeners) {
+            final Multimap<SchemaPath, AbstractListenerRegistration<? extends DOMNotificationListener>> newListeners) {
         listeners = newListeners;
         notifyListenerTypesChanged(newListeners.keySet());
     }
@@ -180,7 +180,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     }
 
     private ListenableFuture<Void> publish(final long seq, final DOMNotification notification,
-            final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers) {
+            final Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers) {
         final DOMNotificationRouterEvent event = disruptor.get(seq);
         final ListenableFuture<Void> future = event.initialize(notification, subscribers);
         disruptor.getRingBuffer().publish(seq);
@@ -190,7 +190,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     @Override
     public ListenableFuture<? extends Object> putNotification(final DOMNotification notification)
             throws InterruptedException {
-        final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers =
+        final Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers =
                 listeners.get(notification.getType());
         if (subscribers.isEmpty()) {
             return NO_LISTENERS;
@@ -203,7 +203,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     @SuppressWarnings("checkstyle:IllegalCatch")
     @VisibleForTesting
     ListenableFuture<? extends Object> tryPublish(final DOMNotification notification,
-            final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers) {
+            final Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers) {
         final long seq;
         try {
             seq = disruptor.getRingBuffer().tryNext();
@@ -216,7 +216,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
 
     @Override
     public ListenableFuture<? extends Object> offerNotification(final DOMNotification notification) {
-        final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers =
+        final Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers =
                 listeners.get(notification.getType());
         if (subscribers.isEmpty()) {
             return NO_LISTENERS;
@@ -228,7 +228,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     @Override
     public ListenableFuture<? extends Object> offerNotification(final DOMNotification notification, final long timeout,
             final TimeUnit unit) throws InterruptedException {
-        final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers =
+        final Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers =
                 listeners.get(notification.getType());
         if (subscribers.isEmpty()) {
             return NO_LISTENERS;
