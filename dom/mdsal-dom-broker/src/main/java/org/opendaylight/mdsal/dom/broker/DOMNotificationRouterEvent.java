@@ -16,12 +16,15 @@ import java.util.Collection;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * A single notification event in the disruptor ringbuffer. These objects are reused,
- * so they do have mutable state.
+ * A single notification event in the disruptor ringbuffer. These objects are reused, so they do have mutable state.
  */
 final class DOMNotificationRouterEvent {
+    private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouterEvent.class);
+
     static final EventFactory<DOMNotificationRouterEvent> FACTORY = DOMNotificationRouterEvent::new;
 
     private Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers;
@@ -41,10 +44,16 @@ final class DOMNotificationRouterEvent {
         return this.future;
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     void deliverNotification() {
-        for (AbstractListenerRegistration<? extends DOMNotificationListener> r : subscribers) {
-            if (r.notClosed()) {
-                r.getInstance().onNotification(notification);
+        for (AbstractListenerRegistration<? extends DOMNotificationListener> reg : subscribers) {
+            if (reg.notClosed()) {
+                final DOMNotificationListener listener = reg.getInstance();
+                try {
+                    listener.onNotification(notification);
+                } catch (Exception e) {
+                    LOG.warn("Listener {} failed during notification delivery", listener, e);
+                }
             }
         }
     }
@@ -52,5 +61,4 @@ final class DOMNotificationRouterEvent {
     void setFuture() {
         future.set(null);
     }
-
 }
