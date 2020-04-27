@@ -76,6 +76,12 @@
                 <artifactId>mdsal-dom-inmemory-datastore</artifactId>
                 <version>6.0.1-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-dom-inmemory-datastore-benchmark</artifactId>
+                <version>6.0.1-SNAPSHOT</version>
+                <scope>test</scope>
+            </dependency>
 
             <!-- Binding MD-SAL & Java Binding -->
             <dependency>
