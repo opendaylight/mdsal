@@ -15,7 +15,7 @@ import com.lmax.disruptor.EventFactory;
 import java.util.Collection;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 
 /**
  * A single notification event in the disruptor ringbuffer. These objects are reused,
@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 final class DOMNotificationRouterEvent {
     static final EventFactory<DOMNotificationRouterEvent> FACTORY = DOMNotificationRouterEvent::new;
 
-    private Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers;
+    private Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers;
     private DOMNotification notification;
     private SettableFuture<Void> future;
 
@@ -34,7 +34,7 @@ final class DOMNotificationRouterEvent {
 
     @SuppressWarnings("checkstyle:hiddenField")
     ListenableFuture<Void> initialize(final DOMNotification notification,
-            final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers) {
+            final Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers) {
         this.notification = requireNonNull(notification);
         this.subscribers = requireNonNull(subscribers);
         this.future = SettableFuture.create();
@@ -42,10 +42,9 @@ final class DOMNotificationRouterEvent {
     }
 
     void deliverNotification() {
-        for (ListenerRegistration<? extends DOMNotificationListener> r : subscribers) {
-            final DOMNotificationListener l = r.getInstance();
-            if (l != null) {
-                l.onNotification(notification);
+        for (AbstractListenerRegistration<? extends DOMNotificationListener> r : subscribers) {
+            if (r.notClosed()) {
+                r.getInstance().onNotification(notification);
             }
         }
     }
