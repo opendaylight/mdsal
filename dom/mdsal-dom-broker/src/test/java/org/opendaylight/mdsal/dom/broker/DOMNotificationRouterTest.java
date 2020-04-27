@@ -31,7 +31,7 @@ import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -166,7 +166,7 @@ public class DOMNotificationRouterTest extends TestUtils {
 
         @Override
         protected ListenableFuture<? extends Object> tryPublish(final DOMNotification notification,
-                final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers) {
+                final Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers) {
             return DOMNotificationPublishService.REJECTED;
         }
 
