@@ -130,6 +130,14 @@
             <type>xml</type>
         </dependency>
 
+        <!-- Trace -->
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-trace</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+
         <!-- uint24 support -->
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
