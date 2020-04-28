@@ -379,6 +379,15 @@
                 <type>xml</type>
             </dependency>
 
+            <!-- Trace -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>odl-mdsal-trace</artifactId>
+                <version>6.0.1-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+
             <!-- YANG Library -->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
