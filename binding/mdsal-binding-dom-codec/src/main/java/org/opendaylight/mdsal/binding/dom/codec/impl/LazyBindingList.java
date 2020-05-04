@@ -35,7 +35,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
  * @param <E> the type of elements in this list
  */
 final class LazyBindingList<E extends DataObject> extends AbstractList<E> implements Immutable, RandomAccess {
-    private static final VarHandle OBJECTS = MethodHandles.arrayElementVarHandle(Object[].class);
+    // Object array access variable handle
+    static final VarHandle OBJ_AA = MethodHandles.arrayElementVarHandle(Object[].class);
 
     private final ListNodeCodecContext<E> codec;
     private final Object[] objects;
@@ -53,7 +54,7 @@ final class LazyBindingList<E extends DataObject> extends AbstractList<E> implem
 
     @Override
     public E get(final int index) {
-        final Object obj = OBJECTS.getAcquire(objects, index);
+        final Object obj = OBJ_AA.getAcquire(objects, index);
         // Check whether the object has been converted. The object is always non-null, but it can either be in DOM form
         // (either a MapEntryNode or UnkeyedListEntryNode) or in Binding form. We know the exact class for the latter,
         // as we are creating it via codec -- hence we can perform a direct comparison.
@@ -66,7 +67,7 @@ final class LazyBindingList<E extends DataObject> extends AbstractList<E> implem
     private @NonNull E load(final int index, final NormalizedNodeContainer<?, ?, ?> node) {
         final E ret = codec.createBindingProxy(node);
         final Object witness;
-        return (witness = OBJECTS.compareAndExchangeRelease(objects, index, node, ret)) == node ? ret : (E) witness;
+        return (witness = OBJ_AA.compareAndExchangeRelease(objects, index, node, ret)) == node ? ret : (E) witness;
     }
 
     @Override
