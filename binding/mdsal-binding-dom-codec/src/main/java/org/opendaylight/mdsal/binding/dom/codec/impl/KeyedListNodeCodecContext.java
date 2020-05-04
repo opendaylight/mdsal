@@ -10,10 +10,9 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.IDENTIFIABLE_KEY_NAME;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
@@ -22,7 +21,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
-import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 
@@ -34,7 +32,7 @@ abstract class KeyedListNodeCodecContext<D extends DataObject & Identifiable<?>>
         }
     }
 
-    private static final class Unordered<D extends DataObject & Identifiable<?>> extends KeyedListNodeCodecContext<D> {
+    static final class Unordered<D extends DataObject & Identifiable<?>> extends KeyedListNodeCodecContext<D> {
         Unordered(final DataContainerCodecPrototype<ListSchemaNode> prototype, final Method keyMethod,
                 final IdentifiableItemCodec codec) {
             super(prototype, keyMethod, codec);
@@ -42,13 +40,12 @@ abstract class KeyedListNodeCodecContext<D extends DataObject & Identifiable<?>>
 
         @Override
         Object fromMap(final MapNode map, final int size) {
-            // FIXME: MDSAL-539: Make this a lazily-populated map
-            final Builder<Object, D> builder = ImmutableMap.builderWithExpectedSize(size);
-            for (MapEntryNode node : map.getValue()) {
-                final D entry = fromMapEntry(node);
-                builder.put(entry.key(), entry);
+            if (size == 1) {
+                // Do not bother with lazy instantiation in case of a singleton
+                final D entry = fromMapEntry(map.getValue().iterator().next());
+                return Map.of(entry.key(), entry);
             }
-            return builder.build();
+            return new LazyBindingMap<>(this, map);
         }
     }
 
