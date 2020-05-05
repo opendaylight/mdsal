@@ -17,11 +17,31 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<D, ListSchemaNode> {
+    private static final Logger LOG = LoggerFactory.getLogger(ListNodeCodecContext.class);
+    private static final String LAZY_CUTOFF_PROPERTY =
+            "org.opendaylight.mdsal.binding.dom.codec.impl.ListNodeCodecContext.LAZY_CUTOFF";
+    private static final int DEFAULT_LAZY_CUTOFF = 32;
+    private static final int LAZY_CUTOFF;
+
+    static {
+        final int value = Integer.getInteger(LAZY_CUTOFF_PROPERTY, DEFAULT_LAZY_CUTOFF);
+        if (value < 0) {
+            LOG.info("Using lazy population of lists disabled");
+            LAZY_CUTOFF = Integer.MAX_VALUE;
+        } else {
+            LOG.info("Using lazy population of lists larger than {} elements", value);
+            LAZY_CUTOFF = value;
+        }
+    }
+
     ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
         super(prototype);
     }
@@ -34,9 +54,9 @@ class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<
     @Override
     public D deserialize(final NormalizedNode<?, ?> node) {
         if (node instanceof MapEntryNode) {
-            return fromMapEntry((MapEntryNode) node);
+            return createBindingProxy((MapEntryNode) node);
         } else if (node instanceof UnkeyedListEntryNode) {
-            return fromUnkeyedListEntry((UnkeyedListEntryNode) node);
+            return createBindingProxy((UnkeyedListEntryNode) node);
         } else {
             throw new IllegalStateException("Unsupported data type " + node.getClass());
         }
@@ -47,14 +67,18 @@ class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<
         if (node instanceof MapNode) {
             return fromMap((MapNode) node);
         } else if (node instanceof MapEntryNode) {
-            return fromMapEntry((MapEntryNode) node);
+            return createBindingProxy((MapEntryNode) node);
         } else if (node instanceof UnkeyedListNode) {
             return fromUnkeyedList((UnkeyedListNode) node);
         } else if (node instanceof UnkeyedListEntryNode) {
-            return fromUnkeyedListEntry((UnkeyedListEntryNode) node);
+            return createBindingProxy((UnkeyedListEntryNode) node);
         } else {
             throw new IllegalStateException("Unsupported data type " + node.getClass());
         }
+    }
+
+    @NonNull Object fromMap(final MapNode map, final int size) {
+        return createList(map.getValue(), size);
     }
 
     private Object fromMap(final MapNode map) {
@@ -63,34 +87,25 @@ class ListNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<
         return (size = map.size()) == 0 ? null : fromMap(map, size);
     }
 
-    @NonNull Object fromMap(final MapNode map, final int size) {
-        // FIXME: Make this a lazily-populated list
+    private List<D> fromUnkeyedList(final UnkeyedListNode node) {
+        final int size;
+        // This should never happen, but we do need to ensure users never see an empty List
+        return (size = node.getSize()) == 0 ? null : createList(node.getValue(), size);
+    }
+
+    private @NonNull List<D> createList(final Collection<? extends NormalizedNodeContainer<?, ?, ?>> value,
+            final int size) {
+        if (size == 1) {
+            // Do not bother with lazy instantiation in case of a singleton
+            return List.of(createBindingProxy(value.iterator().next()));
+        }
+        if (size > LAZY_CUTOFF) {
+            return new LazyBindingList<>(this, value);
+        }
+
         final Builder<D> builder = ImmutableList.builderWithExpectedSize(size);
-        for (MapEntryNode node : map.getValue()) {
+        for (NormalizedNodeContainer<?, ?, ?> node : value) {
             builder.add(createBindingProxy(node));
-        }
-        return builder.build();
-    }
-
-    final @NonNull D fromMapEntry(final MapEntryNode node) {
-        return createBindingProxy(node);
-    }
-
-    private @NonNull D fromUnkeyedListEntry(final UnkeyedListEntryNode node) {
-        return createBindingProxy(node);
-    }
-
-    private List<D> fromUnkeyedList(final UnkeyedListNode nodes) {
-        final Collection<UnkeyedListEntryNode> value = nodes.getValue();
-        if (value.isEmpty()) {
-            // This should never happen, but we do need to ensure users never see an empty List
-            return null;
-        }
-
-        // FIXME: Could be this lazy transformed list?
-        final Builder<D> builder = ImmutableList.builderWithExpectedSize(value.size());
-        for (UnkeyedListEntryNode node : value) {
-            builder.add(fromUnkeyedListEntry(node));
         }
         return builder.build();
     }
