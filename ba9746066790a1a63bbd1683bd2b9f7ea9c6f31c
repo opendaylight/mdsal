@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "abc21d4c_c34c928e",
+        "filename": "binding/mdsal-binding-test-model/src/test/java/org/opendaylight/mdsal/binding/test/model/Bug552Test.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-05-06T09:07:07Z",
+      "side": 1,
+      "message": "please follow https://wiki-archive.opendaylight.org/view/General_Style_Guidelines#Java",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 7
+      },
+      "revId": "ba9746066790a1a63bbd1683bd2b9f7ea9c6f31c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f4d63cba_72678270",
         "filename": "binding/mdsal-binding-test-model/src/test/java/org/opendaylight/mdsal/binding/test/model/Bug552Test.java",
         "patchSetId": 1
@@ -45,6 +68,30 @@
       "revId": "ba9746066790a1a63bbd1683bd2b9f7ea9c6f31c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6a0ac3c8_15545d7b",
+        "filename": "binding/mdsal-binding-test-model/src/test/java/org/opendaylight/mdsal/binding/test/model/Bug552Test.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-05-06T09:07:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f4d63cba_72678270",
+      "range": {
+        "startLine": 41,
+        "startChar": 7,
+        "endLine": 41,
+        "endChar": 61
+      },
+      "revId": "ba9746066790a1a63bbd1683bd2b9f7ea9c6f31c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     },
     {
       "key": {
