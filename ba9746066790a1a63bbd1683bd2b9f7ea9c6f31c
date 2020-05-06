@@ -45,6 +45,23 @@
       "revId": "ba9746066790a1a63bbd1683bd2b9f7ea9c6f31c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6edad5f0_0f99adc5",
+        "filename": "binding/mdsal-binding-test-model/src/test/resources/yang/bug552.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-05-06T09:05:06Z",
+      "side": 1,
+      "message": "duplicate packaging -- we should only have one copy of the file in this artifact.",
+      "revId": "ba9746066790a1a63bbd1683bd2b9f7ea9c6f31c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
     }
   ]
 }
