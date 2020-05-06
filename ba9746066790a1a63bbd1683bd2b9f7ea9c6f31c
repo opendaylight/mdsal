@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "70687d94_d0920282",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/bug552.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-05-06T09:02:56Z",
+      "side": 1,
+      "message": "do not use revisions in test models, please",
+      "range": {
+        "startLine": 5,
+        "startChar": 2,
+        "endLine": 7,
+        "endChar": 3
+      },
+      "revId": "ba9746066790a1a63bbd1683bd2b9f7ea9c6f31c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4d63cba_72678270",
+        "filename": "binding/mdsal-binding-test-model/src/test/java/org/opendaylight/mdsal/binding/test/model/Bug552Test.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-05-06T09:02:56Z",
+      "side": 1,
+      "message": "jsonWriter should never see a binding object -- this particular line is illegal code.\n\nPlease provide exact steps to reproduce in the issue -- I very much suspect they involve Binding/DOM transformation.",
+      "range": {
+        "startLine": 41,
+        "startChar": 7,
+        "endLine": 41,
+        "endChar": 61
+      },
+      "revId": "ba9746066790a1a63bbd1683bd2b9f7ea9c6f31c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
