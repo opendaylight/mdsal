@@ -65,6 +65,7 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
+import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -232,15 +233,17 @@ abstract class AbstractTypeGenerator {
         genCtx.put(module.getQNameModule(), context);
         allTypeDefinitionsToGenTypes(context);
         groupingsToGenTypes(context, module.getGroupings());
-        rpcMethodsToGenType(context);
         allIdentitiesToGenTypes(context);
-        notificationsToGenType(context);
 
         if (!module.getChildNodes().isEmpty()) {
             final GeneratedTypeBuilder moduleType = moduleToDataType(context);
             context.addModuleNode(moduleType);
             resolveDataSchemaNodes(context, moduleType, moduleType, module.getChildNodes(), false);
         }
+
+        // Resolve RPCs and notifications only after we have created instantiated tree
+        rpcMethodsToGenType(context);
+        notificationsToGenType(context);
         return context;
     }
 
@@ -762,16 +765,15 @@ abstract class AbstractTypeGenerator {
      * @param module Module in which type should be generated
      * @return enumeration builder which contains data from <code>enumTypeDef</code>
      */
-    private EnumBuilder resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
+    private Enumeration resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
             final GeneratedTypeBuilder typeBuilder, final ModuleContext context) {
-        if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
-            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(BindingMapping.getClassName(enumName));
-            typeProvider.addEnumDescription(enumBuilder, enumTypeDef);
-            enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
-            context.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder);
-            return enumBuilder;
-        }
-        return null;
+        final EnumBuilder enumBuilder = typeBuilder.addEnumeration(BindingMapping.getClassName(enumName));
+        typeProvider.addEnumDescription(enumBuilder, enumTypeDef);
+        enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
+        final Enumeration ret = enumBuilder.toInstance(typeBuilder);
+        context.addTypeToSchema(ret, enumTypeDef);
+        context.addInnerTypedefType(enumTypeDef.getPath(), ret);
+        return ret;
     }
 
     /**
@@ -1402,13 +1404,8 @@ abstract class AbstractTypeGenerator {
         final TypeDefinition<?> typeDef = CompatUtils.compatType(leaf);
         if (isInnerType(leaf, typeDef)) {
             if (typeDef instanceof EnumTypeDefinition) {
-                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, inGrouping);
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
-                final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(),
-                    typeBuilder, context);
-                if (enumBuilder != null) {
-                    returnType = enumBuilder.toInstance(typeBuilder);
-                }
+                returnType = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(), typeBuilder, context);
                 typeProvider.putReferencedType(leaf.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
                 final UnionTypeDefinition unionDef = (UnionTypeDefinition)typeDef;
@@ -1598,11 +1595,8 @@ abstract class AbstractTypeGenerator {
         Type returnType = null;
         if (typeDef.getBaseType() == null) {
             if (typeDef instanceof EnumTypeDefinition) {
-                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, inGrouping);
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
-                final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, nodeName,
-                    typeBuilder, context);
-                returnType = new ReferencedTypeImpl(enumBuilder.getIdentifier());
+                returnType = resolveInnerEnumFromTypeDefinition(enumTypeDef, nodeName, typeBuilder, context);
                 typeProvider.putReferencedType(node.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
                 final UnionTypeDefinition unionDef = (UnionTypeDefinition)typeDef;
