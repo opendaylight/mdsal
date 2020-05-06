@@ -239,15 +239,17 @@ abstract class AbstractTypeGenerator {
         genCtx.put(module.getQNameModule(), context);
         allTypeDefinitionsToGenTypes(context);
         groupingsToGenTypes(context, module.getGroupings());
-        rpcMethodsToGenType(context);
         allIdentitiesToGenTypes(context);
-        notificationsToGenType(context);
 
         if (!module.getChildNodes().isEmpty()) {
             final GeneratedTypeBuilder moduleType = moduleToDataType(context);
             context.addModuleNode(moduleType);
             resolveDataSchemaNodes(context, moduleType, moduleType, module.getChildNodes(), false);
         }
+
+        // Resolve RPCs and notifications only after we have created instantiated tree
+        rpcMethodsToGenType(context);
+        notificationsToGenType(context);
         return context;
     }
 
