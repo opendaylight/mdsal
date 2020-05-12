@@ -1,0 +1,17 @@
+This module provides support for incremental backup. It is achieved by 2 objects - producer and consumer
+Producer is running on the primary site which needs to be backed-up. It is a DTCL registered on the root of CONFIG
+datastore i.e. listening for all the changes in the datastore. After receiving change, it sends it to the consumer
+via some transporting mechanism. Supported transports:
+    - Kafka (for local replication)
+    - Netty (for replication over WAN)
+For the root DTCL to work correctly, 2 Controller patches need to be used:
+    - https://git.opendaylight.org/gerrit/c/controller/+/88939
+        - this patch fixes the behaviour of DTCL registered on the root. Without it the DTCL is notified only about
+        changes in the DEFAULT shard, not the whole datastore.
+    - https://git.opendaylight.org/gerrit/c/controller/+/89516
+        - this patch fixes the way initial data are sent to DTCL registered on the root. Instead of every shard sending
+        its state as separate DataTreeCandidate, the states are collected, combined and sent to DTCL as single
+        DataTreeCandidate containing the state of the whole datastore.
+
+Consumer is running on the secondary site used to store the backup. It is listening for any modifications sent by
+producer. When change is received, it is applied to the datastore.
