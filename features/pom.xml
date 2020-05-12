@@ -27,6 +27,12 @@
         <module>features-mdsal</module>
         <module>features-mdsal-experimental</module>
 
+        <module>odl-mdsal-kafka-backup-consumer</module>
+        <module>odl-mdsal-netty-backup-consumer</module>
+
+        <module>odl-mdsal-kafka-backup-producer</module>
+        <module>odl-mdsal-netty-backup-producer</module>
+
         <!-- Binding -->
         <module>odl-mdsal-binding</module>
         <module>odl-mdsal-binding-api</module>

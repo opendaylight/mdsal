@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.opendaylight.mdsal.backup</groupId>
+    <artifactId>backup-parent</artifactId>
+    <version>5.0.11-SNAPSHOT</version>
+    <relativePath>../../backup-parent</relativePath>
+  </parent>
+
+  <groupId>org.opendaylight.mdsal.backup.consumer</groupId>
+  <artifactId>backup-consumer-common</artifactId>
+  <packaging>bundle</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.opendaylight.mdsal.backup</groupId>
+      <artifactId>backup-utils</artifactId>
+      <version>5.0.11-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+  <scm>
+    <connection>scm:git:http://git.opendaylight.org/gerrit/mdsal.git</connection>
+    <developerConnection>scm:git:ssh://git.opendaylight.org:29418/mdsal.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://wiki.opendaylight.org/view/MD-SAL:Main</url>
+  </scm>
+</project>

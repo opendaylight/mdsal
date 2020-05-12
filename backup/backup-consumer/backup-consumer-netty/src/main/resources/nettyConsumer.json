@@ -1,0 +1,6 @@
+{
+  "netty-consumer":{
+    "listening-port": 9999,
+    "enable-server-auto-restart": false
+  }
+}
