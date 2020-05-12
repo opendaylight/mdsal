@@ -28,6 +28,7 @@
 
     <modules>
         <module>mdsal-replicate-common</module>
+        <module>mdsal-replicate-kafka</module>
         <module>mdsal-replicate-netty</module>
     </modules>
 </project>

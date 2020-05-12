@@ -70,6 +70,12 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-exp-replicate-kafka</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>odl-mdsal-exp-replicate-netty</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
