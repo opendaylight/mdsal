@@ -391,6 +391,44 @@
                 <version>5.0.12-SNAPSHOT</version>
             </dependency>
 
+            <!-- Replication -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>mdsal-replicate-common</artifactId>
+                <version>5.0.12-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>mdsal-replicate-kafka</artifactId>
+                <version>5.0.12-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>mdsal-replicate-netty</artifactId>
+                <version>5.0.12-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>odl-mdsal-exp-replicate-common</artifactId>
+                <version>5.0.12-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>odl-mdsal-exp-replicate-kafka</artifactId>
+                <version>5.0.12-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>odl-mdsal-exp-replicate-netty</artifactId>
+                <version>5.0.12-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+
             <!-- MODELS -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
