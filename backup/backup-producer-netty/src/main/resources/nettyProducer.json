@@ -1,0 +1,7 @@
+{
+  "netty-connection":{
+    "consumer-address": "172.17.0.2",
+    "consumer-port": 9999,
+    "connection-retry-interval-ms": 1000
+  }
+}
