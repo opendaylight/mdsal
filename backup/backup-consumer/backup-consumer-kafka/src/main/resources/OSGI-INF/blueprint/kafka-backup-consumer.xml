@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0">
+
+  <cm:property-placeholder persistent-id="org.opendaylight.mdsal.backup" update-strategy="none">
+  </cm:property-placeholder>
+
+  <reference id="dataBroker" interface="org.opendaylight.mdsal.dom.api.DOMDataBroker"/>
+  <reference id="singletonServiceProvider" interface="org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider"/>
+
+  <bean id="kafkaBackupConsumerBean" class="org.opendaylight.mdsal.backup.consumer.KafkaBackupConsumer"
+        init-method="init" destroy-method="close">
+    <argument ref="dataBroker"/>
+    <argument ref="singletonServiceProvider"/>
+  </bean>
+
+</blueprint>
