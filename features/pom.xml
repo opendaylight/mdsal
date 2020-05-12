@@ -65,6 +65,7 @@
 
         <!-- Datastore replication -->
         <module>odl-mdsal-exp-replicate-common</module>
+        <module>odl-mdsal-exp-replicate-kafka</module>
         <module>odl-mdsal-exp-replicate-netty</module>
 
         <!-- Models -->
