@@ -96,11 +96,10 @@ public final class BuilderGenerator implements CodeGenerator {
 
     @VisibleForTesting
     static BuilderTemplate templateForType(final GeneratedType type) {
-        final GeneratedType genType = type;
-        final JavaTypeName origName = genType.getIdentifier();
+        final JavaTypeName origName = type.getIdentifier();
 
         final Set<MethodSignature> methods = new LinkedHashSet<>();
-        final Type augmentType = createMethods(genType, methods);
+        final Type augmentType = createMethods(type, methods);
         final Set<MethodSignature> sortedMethods = ImmutableSortedSet.orderedBy(METHOD_COMPARATOR)
                 .addAll(methods).build();
 
@@ -109,10 +108,10 @@ public final class BuilderGenerator implements CodeGenerator {
 
         final GeneratedTOBuilder implTypeBuilder = builderTypeBuilder.addEnclosingTransferObject(
             origName.simpleName() + "Impl");
-        implTypeBuilder.addImplementsType(genType);
+        implTypeBuilder.addImplementsType(type);
 
-        return new BuilderTemplate(builderTypeBuilder.build(), genType, propertiesFromMethods(sortedMethods),
-            augmentType, getKey(genType));
+        return new BuilderTemplate(builderTypeBuilder.build(), type, propertiesFromMethods(sortedMethods),
+            augmentType, getKey(type));
     }
 
     private static Type getKey(final GeneratedType type) {
@@ -128,7 +127,7 @@ public final class BuilderGenerator implements CodeGenerator {
      * Returns set of method signature instances which contains all the methods of the <code>genType</code>
      * and all the methods of the implemented interfaces.
      *
-     * @returns set of method signature instances
+     * @return set of method signature instances
      */
     private static ParameterizedType createMethods(final GeneratedType type, final Set<MethodSignature> methods) {
         methods.addAll(type.getMethodDefinitions());
@@ -169,8 +168,9 @@ public final class BuilderGenerator implements CodeGenerator {
     /**
      * Creates set of generated property instances from getter <code>methods</code>.
      *
-     * @param set of method signature instances which should be transformed to list of properties
+     * @param methods set of method signature instances which should be transformed to list of properties
      * @return set of generated property instances which represents the getter <code>methods</code>
+     *         sorted by type
      */
     private static Set<BuilderGeneratedProperty> propertiesFromMethods(final Collection<MethodSignature> methods) {
         if (methods == null || methods.isEmpty()) {

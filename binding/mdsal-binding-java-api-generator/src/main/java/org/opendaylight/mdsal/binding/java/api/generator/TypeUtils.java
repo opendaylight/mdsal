@@ -29,12 +29,12 @@ final class TypeUtils {
      * of its type hierarchy.
      *
      * @param type Input Type object
-     * @return Resolved {@link ConcreteType} instance.
+     * @return Resolved {@link Type} instance.
      */
-    static ConcreteType getBaseYangType(final @NonNull Type type) {
+    static Type getBaseYangType(final @NonNull Type type) {
         // Already the correct type
         if (type instanceof ConcreteType) {
-            return (ConcreteType) type;
+            return type;
         }
 
         checkArgument(type instanceof GeneratedTransferObject, "Unsupported type %s", type);
@@ -48,7 +48,7 @@ final class TypeUtils {
         // Look for the 'value' property and return its type
         for (GeneratedProperty s : rootGto.getProperties()) {
             if (TypeConstants.VALUE_PROP.equals(s.getName())) {
-                return (ConcreteType) s.getReturnType();
+                return s.getReturnType();
             }
         }
 
