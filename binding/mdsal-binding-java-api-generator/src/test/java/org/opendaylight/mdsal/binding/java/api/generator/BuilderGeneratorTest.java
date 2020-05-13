@@ -15,11 +15,14 @@ import static org.mockito.Mockito.spy;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BuilderGeneratorTest {
     private static final String TEST = "test";
@@ -93,6 +96,42 @@ public class BuilderGeneratorTest {
                 + "    CodeHelpers.appendValue(helper, \"augmentation\", augmentations().values());\n"
                 + "    return helper.toString();\n"
                 + "}\n", genToString(mockAugment(mockGenTypeMoreMeth("get" + TEST))).toString());
+    }
+
+    @Test
+    public void builderTemplateGenerateToEqualsComparingOrderTest() {
+        final EffectiveModelContext context = YangParserTestUtils.parseYangResource(
+                "/test-types.yang");
+        final List<Type> types = new DefaultBindingGenerator().generateTypes(context);
+
+        BuilderTemplate bt = BuilderGenerator.templateForType((GeneratedType) types.get(1));
+        final BuilderGeneratedProperty[] properties = bt.properties.toArray(new BuilderGeneratedProperty[] {});
+        // numeric types (boolean, byte, short, int, long, biginteger, bigdecimal), identityrefs
+        assertEquals("id16", properties[0].getName());
+        assertEquals("id32", properties[1].getName());
+        assertEquals("id64", properties[2].getName());
+        assertEquals("id8", properties[3].getName());
+        assertEquals("idBoolean", properties[4].getName());
+        assertEquals("idDecimal64", properties[5].getName());
+        assertEquals("idIdentityref", properties[6].getName());
+        assertEquals("idLeafref", properties[7].getName());
+        assertEquals("idU16", properties[8].getName());
+        assertEquals("idU32", properties[9].getName());
+        assertEquals("idU64", properties[10].getName());
+        assertEquals("idU8", properties[11].getName());
+        // string, binary, bits
+        assertEquals("idBinary", properties[12].getName());
+        assertEquals("idBits", properties[13].getName());
+        assertEquals("idLeafrefContainer1", properties[14].getName());
+        assertEquals("idString", properties[15].getName());
+        // instance identifier
+        assertEquals("idInstanceIdentifier", properties[16].getName());
+        // other types
+        assertEquals("idContainer1", properties[17].getName());
+        assertEquals("idContainer2", properties[18].getName());
+        assertEquals("idEmpty", properties[19].getName());
+        assertEquals("idEnumeration", properties[20].getName());
+        assertEquals("idUnion", properties[21].getName());
     }
 
     private static GeneratedType mockAugment(final GeneratedType genType) {
