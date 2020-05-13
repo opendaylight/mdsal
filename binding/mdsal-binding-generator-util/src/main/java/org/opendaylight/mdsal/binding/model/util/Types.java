@@ -54,9 +54,9 @@ public final class Types {
     public static final @NonNull ConcreteType STRING = typeForClass(String.class);
     public static final @NonNull ConcreteType VOID = typeForClass(Void.class);
     public static final @NonNull ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
+    public static final @NonNull ConcreteType CLASS = typeForClass(Class.class);
 
     private static final @NonNull ConcreteType BUILDER = typeForClass(Builder.class);
-    private static final @NonNull ConcreteType CLASS = typeForClass(Class.class);
     private static final @NonNull ConcreteType LIST_TYPE = typeForClass(List.class);
     private static final @NonNull ConcreteType LISTENABLE_FUTURE = typeForClass(ListenableFuture.class);
     private static final @NonNull ConcreteType MAP_TYPE = typeForClass(Map.class);
