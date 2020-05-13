@@ -58,6 +58,8 @@ public final class BindingTypes {
     public static final ConcreteType RPC_OUTPUT = typeForClass(RpcOutput.class);
     public static final ConcreteType RPC_SERVICE = typeForClass(RpcService.class);
     public static final ConcreteType SCALAR_TYPE_OBJECT = typeForClass(ScalarTypeObject.class);
+    public static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(InstanceIdentifier.class);
+    public static final ConcreteType KEYED_INSTANCE_IDENTIFIER = typeForClass(KeyedInstanceIdentifier.class);
 
     // This is an annotation, we are current just referencing the type
     public static final JavaTypeName ROUTING_CONTEXT = JavaTypeName.create(RoutingContext.class);
@@ -70,14 +72,11 @@ public final class BindingTypes {
     static final ConcreteType IDENTIFIABLE = typeForClass(Identifiable.class);
     @VisibleForTesting
     static final ConcreteType IDENTIFIER = typeForClass(Identifier.class);
-    @VisibleForTesting
-    static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(InstanceIdentifier.class);
 
     private static final ConcreteType ACTION = typeForClass(Action.class);
     private static final ConcreteType CHILD_OF = typeForClass(ChildOf.class);
     private static final ConcreteType CHOICE_IN = typeForClass(ChoiceIn.class);
     private static final ConcreteType INSTANCE_NOTIFICATION = typeForClass(InstanceNotification.class);
-    private static final ConcreteType KEYED_INSTANCE_IDENTIFIER = typeForClass(KeyedInstanceIdentifier.class);
     private static final ConcreteType KEYED_LIST_ACTION = typeForClass(KeyedListAction.class);
     private static final ConcreteType KEYED_LIST_NOTIFICATION = typeForClass(KeyedListNotification.class);
     private static final ConcreteType OPAQUE_OBJECT = typeForClass(OpaqueObject.class);
