@@ -106,7 +106,7 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
                     return false;
                 }
                 «targetType.importedName» other = («targetType.importedName»)obj;
-                «FOR property : properties»
+                «FOR property : ByTypeMemberComparator.sort(properties)»
                     «val fieldName = property.fieldName»
                     if (!«property.importedUtilClass».equals(«fieldName», other.«property.getterName»())) {
                         return false;
