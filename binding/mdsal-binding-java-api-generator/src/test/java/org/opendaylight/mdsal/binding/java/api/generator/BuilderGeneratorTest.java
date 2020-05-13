@@ -15,11 +15,14 @@ import static org.mockito.Mockito.spy;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BuilderGeneratorTest {
     private static final String TEST = "test";
@@ -93,6 +96,65 @@ public class BuilderGeneratorTest {
                 + "    CodeHelpers.appendValue(helper, \"augmentation\", augmentations().values());\n"
                 + "    return helper.toString();\n"
                 + "}\n", genToString(mockAugment(mockGenTypeMoreMeth("get" + TEST))).toString());
+    }
+
+    @Test
+    public void builderTemplateGenerateToEqualsComparingOrderTest() {
+        final EffectiveModelContext context = YangParserTestUtils.parseYangResource(
+                "/test-types.yang");
+        final List<Type> types = new DefaultBindingGenerator().generateTypes(context);
+
+        BuilderTemplate bt = BuilderGenerator.templateForType((GeneratedType) types.get(19));
+        final BuilderGeneratedProperty[] properties = bt.properties.toArray(new BuilderGeneratedProperty[] {});
+        // numeric types (boolean, byte, short, int, long, biginteger, bigdecimal), identityrefs
+        assertEquals("id16", properties[0].getName());
+        assertEquals("id16Def", properties[1].getName());
+        assertEquals("id32", properties[2].getName());
+        assertEquals("id32Def", properties[3].getName());
+        assertEquals("id64", properties[4].getName());
+        assertEquals("id64Def", properties[5].getName());
+        assertEquals("id8", properties[6].getName());
+        assertEquals("id8Def", properties[7].getName());
+        assertEquals("idBoolean", properties[8].getName());
+        assertEquals("idBooleanDef", properties[9].getName());
+        assertEquals("idDecimal64", properties[10].getName());
+        assertEquals("idDecimal64Def", properties[11].getName());
+        assertEquals("idIdentityref", properties[12].getName());
+        assertEquals("idIdentityrefDef", properties[13].getName());
+        assertEquals("idLeafref", properties[14].getName());
+        assertEquals("idLeafrefDef", properties[15].getName());
+        assertEquals("idU16", properties[16].getName());
+        assertEquals("idU16Def", properties[17].getName());
+        assertEquals("idU32", properties[18].getName());
+        assertEquals("idU32Def", properties[19].getName());
+        assertEquals("idU64", properties[20].getName());
+        assertEquals("idU64Def", properties[21].getName());
+        assertEquals("idU8", properties[22].getName());
+        assertEquals("idU8Def", properties[23].getName());
+        // string, binary, bits
+        assertEquals("idBinary", properties[24].getName());
+        assertEquals("idBinaryDef", properties[25].getName());
+        assertEquals("idBits", properties[26].getName());
+        assertEquals("idBitsDef", properties[27].getName());
+        assertEquals("idGroupLeafString", properties[28].getName());
+        assertEquals("idLeafrefContainer1", properties[29].getName());
+        assertEquals("idLeafrefContainer1Def", properties[30].getName());
+        assertEquals("idString", properties[31].getName());
+        assertEquals("idStringDef", properties[32].getName());
+        // instance identifier
+        assertEquals("idInstanceIdentifier", properties[33].getName());
+        assertEquals("idInstanceIdentifierDef", properties[34].getName());
+        // other types
+        assertEquals("idContainer1", properties[35].getName());
+        assertEquals("idContainer2", properties[36].getName());
+        assertEquals("idEmpty", properties[37].getName());
+        assertEquals("idEmptyDef", properties[38].getName());
+        assertEquals("idEnumeration", properties[39].getName());
+        assertEquals("idEnumerationDef", properties[40].getName());
+        assertEquals("idGroupContainer", properties[41].getName());
+        assertEquals("idList", properties[42].getName());
+        assertEquals("idUnion", properties[43].getName());
+        assertEquals("idUnionDef", properties[44].getName());
     }
 
     private static GeneratedType mockAugment(final GeneratedType genType) {
