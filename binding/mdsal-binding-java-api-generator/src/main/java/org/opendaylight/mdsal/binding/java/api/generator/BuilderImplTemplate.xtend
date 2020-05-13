@@ -12,6 +12,7 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTA
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
+import com.google.common.collect.ImmutableSortedSet;
 import java.util.Collection
 import java.util.List
 import org.opendaylight.mdsal.binding.model.api.AnnotationType
@@ -106,7 +107,8 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
                     return false;
                 }
                 «targetType.importedName» other = («targetType.importedName»)obj;
-                «FOR property : properties»
+                «val sortedProperties = ImmutableSortedSet.orderedBy(new ByTypeMemberComparator())»
+                «FOR property : sortedProperties.addAll(properties).build»
                     «val fieldName = property.fieldName»
                     if (!«property.importedUtilClass».equals(«fieldName», other.«property.getterName»())) {
                         return false;
