@@ -32,6 +32,7 @@ import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Restrictions
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.api.TypeMember
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition.Single
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition.Multiple
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil
@@ -102,7 +103,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
         "_" + property.name
     }
 
-    final protected def propertyNameFromGetter(MethodSignature getter) {
+    final protected static def propertyNameFromGetter(MethodSignature getter) {
         var String prefix;
         if (getter.name.startsWith(BindingMapping.BOOLEAN_GETTER_PREFIX)) {
             prefix = BindingMapping.BOOLEAN_GETTER_PREFIX
@@ -193,13 +194,17 @@ abstract class BaseTemplate extends JavaFileTemplate {
      * @param comment string with the comment for whole JAVA class
      * @return string with comment in JAVA format
      */
-    def protected CharSequence asJavadoc(String comment) {
+    def final protected asJavadoc(TypeMemberComment comment) {
         if (comment === null) {
             return ''
         }
-        return '''
-            «wrapToDocumentation(formatToParagraph(comment.trim))»
-        '''
+        return wrapToDocumentation('''
+           «comment.contractDescription.formatJavadocString»
+
+           «comment.referenceDescription.formatReference»
+
+           «comment.typeSignature.formatJavadocString»
+        ''')
     }
 
     def static String wrapToDocumentation(String text) {
@@ -338,24 +343,22 @@ abstract class BaseTemplate extends JavaFileTemplate {
         return sb.toString();
     }
 
-    def protected static String formatDataForJavaDoc(TypeMember type, String additionalComment) {
-        val StringBuilder typeDescriptionBuilder = new StringBuilder();
-        if (!type.comment.nullOrEmpty) {
-            typeDescriptionBuilder.append(formatToParagraph(type.comment))
-            typeDescriptionBuilder.append(NEW_LINE)
-            typeDescriptionBuilder.append(NEW_LINE)
-            typeDescriptionBuilder.append(NEW_LINE)
-        }
-        typeDescriptionBuilder.append(additionalComment)
-        var typeDescription = wrapToDocumentation(typeDescriptionBuilder.toString)
-        return '''
-            «typeDescription»
-        '''.toString
-    }
+    def private static formatJavadocString(String str) '''
+        «IF str !== null»
+            «str.formatToParagraph»
+        «ENDIF»
+    '''
 
-    def asCode(String text) {
-        return "<code>" + text + "</code>"
-    }
+    def static formatReference(String reference) '''
+        «IF reference !== null»
+            <pre>
+                <code>
+                    «reference.encodeJavadocSymbols»
+                </code>
+            </pre>
+
+        «ENDIF»
+    '''
 
     def asLink(String text) {
         val StringBuilder sb = new StringBuilder()
@@ -380,21 +383,15 @@ abstract class BaseTemplate extends JavaFileTemplate {
         return sb.toString
     }
 
-    protected static def formatToParagraph(String text) {
-        if(text === null || text.isEmpty)
-            return text
-
-        var formattedText = text
+    protected static def formatToParagraph(String inputText) {
         val StringBuilder sb = new StringBuilder();
         var StringBuilder lineBuilder = new StringBuilder();
         var boolean isFirstElementOnNewLineEmptyChar = false;
 
-        formattedText = encodeJavadocSymbols(formattedText)
-        formattedText = WS_MATCHER.replaceFrom(formattedText, SPACE)
+        var formattedText = WS_MATCHER.replaceFrom(inputText.encodeJavadocSymbols, SPACE)
         formattedText = SPACES_PATTERN.matcher(formattedText).replaceAll(" ")
 
-        val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
-
+        val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true)
         while (tokenizer.hasMoreTokens) {
             val nextElement = tokenizer.nextToken
 
@@ -413,7 +410,6 @@ abstract class BaseTemplate extends JavaFileTemplate {
                     isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar;
                 }
             }
-
             if (isFirstElementOnNewLineEmptyChar) {
                 isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar
             } else {

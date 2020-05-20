@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 
 public class GeneratedPropertyTest {
 
@@ -32,8 +33,9 @@ public class GeneratedPropertyTest {
 
     @Test
     public void testMethodsForGeneratedPropertyImpl() {
-        final GeneratedPropertyImpl propertyImpl = new GeneratedPropertyImpl(null, "Test", null, "test property",
-            AccessModifier.PRIVATE, null, true, true, true, "test value");
+        final GeneratedPropertyImpl propertyImpl = new GeneratedPropertyImpl(null, "Test", null,
+            TypeMemberComment.contractOf("test property"), AccessModifier.PRIVATE, null, true, true, true,
+            "test value");
 
         assertEquals("test value", propertyImpl.getValue());
         assertTrue(propertyImpl.isReadOnly());
