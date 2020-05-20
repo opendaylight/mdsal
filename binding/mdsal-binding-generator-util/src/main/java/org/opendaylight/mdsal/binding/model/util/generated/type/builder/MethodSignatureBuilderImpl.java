@@ -65,7 +65,7 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
     @Override
     public MethodSignature toInstance(final Type definingType) {
         final List<AnnotationType> annotations = toAnnotationTypes();
-        return new MethodSignatureImpl(definingType, getName(), annotations, getComment(), getAccessModifier(),
+        return new MethodSignatureImpl(definingType, getName(), annotations, comment(), getAccessModifier(),
                 getReturnType(), this.unmodifiableParams, isFinal(), this.isAbstract, isStatic(), isDefault, mechanics);
     }
 
@@ -99,7 +99,7 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
                 .append(", returnType=").append(getReturnType())
                 .append(", parameters=").append(this.parameters)
                 .append(", annotationBuilders=").append(getAnnotationBuilders())
-                .append(", comment=").append(getComment())
+                .append(", comment=").append(comment())
                 .append(']').toString();
     }
 }

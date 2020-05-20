@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.model.api;
 
 import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.yangtools.concepts.Immutable;
 
 /**
  * Dedicated type for holding a class comment. It exposes a javadoc-encoded string.
@@ -18,7 +19,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 @Beta
 @FunctionalInterface
 @NonNullByDefault
-public interface TypeComment {
+public interface TypeComment extends Immutable {
 
     /**
      * Return a javadoc snippet. This snippet is guaranteed to be safe for direct inclusion in a Java block comment.

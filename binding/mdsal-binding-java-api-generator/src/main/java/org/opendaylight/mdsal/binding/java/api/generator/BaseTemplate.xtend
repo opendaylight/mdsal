@@ -12,12 +12,14 @@ import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.enc
 import com.google.common.base.CharMatcher
 import com.google.common.base.Splitter
 import com.google.common.collect.ImmutableMap
+import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterables
 import java.math.BigInteger
 import java.util.Collection
 import java.util.List
 import java.util.Locale
 import java.util.Map.Entry
+import java.util.Optional
 import java.util.StringTokenizer
 import java.util.regex.Pattern
 import org.eclipse.jdt.annotation.NonNull;
@@ -32,6 +34,7 @@ import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Restrictions
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.api.TypeMember
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition.Single
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition.Multiple
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil
@@ -63,6 +66,9 @@ abstract class BaseTemplate extends JavaFileTemplate {
     static val SPACES_PATTERN = Pattern.compile(" +")
     static val NL_SPLITTER = Splitter.on(NEW_LINE)
     static val TAIL_COMMENT_PATTERN = Pattern.compile("*/", Pattern.LITERAL);
+    static val PARAM_TAG = "@param"
+    static val RETURN_TAG = "@return"
+    static val THROWS_TAG = "@throws"
     static val YANG_FORMATTER = DeclaredStatementFormatter.builder()
         .addIgnoredStatement(YangStmtMapping.CONTACT)
         .addIgnoredStatement(YangStmtMapping.DESCRIPTION)
@@ -76,6 +82,11 @@ abstract class BaseTemplate extends JavaFileTemplate {
         Types.typeForClass(Uint32), Types.typeForClass(Long),
         Types.typeForClass(Uint64), Types.typeForClass(BigInteger)
     );
+
+    static val JAVADOC_TAGS = ImmutableSet.of(PARAM_TAG, RETURN_TAG, THROWS_TAG);
+
+    static val RPC_HEADER_START = "Invoke {@code ";
+    static val RPC_HEADER_END = "} RPC.";
 
     new(GeneratedType type) {
         super(type)
@@ -193,7 +204,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
      * @param comment string with the comment for whole JAVA class
      * @return string with comment in JAVA format
      */
-    def protected CharSequence asJavadoc(String comment) {
+    def protected CharSequence asJavadoc(TypeMemberComment comment) {
         if (comment === null) {
             return ''
         }
@@ -340,12 +351,14 @@ abstract class BaseTemplate extends JavaFileTemplate {
 
     def protected static String formatDataForJavaDoc(TypeMember type, String additionalComment) {
         val StringBuilder typeDescriptionBuilder = new StringBuilder();
-        if (!type.comment.nullOrEmpty) {
-            typeDescriptionBuilder.append(formatToParagraph(type.comment))
-            typeDescriptionBuilder.append(NEW_LINE)
-            typeDescriptionBuilder.append(NEW_LINE)
-            typeDescriptionBuilder.append(NEW_LINE)
-        }
+        type.comment.ifPresent([comment |
+            comment.contractDescription.ifPresent([contract |
+                typeDescriptionBuilder.append(formatToParagraph(contract))
+                typeDescriptionBuilder.append(NEW_LINE)
+                typeDescriptionBuilder.append(NEW_LINE)
+                typeDescriptionBuilder.append(NEW_LINE)
+            ])
+        ])
         typeDescriptionBuilder.append(additionalComment)
         var typeDescription = wrapToDocumentation(typeDescriptionBuilder.toString)
         return '''
@@ -380,11 +393,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
         return sb.toString
     }
 
-    protected static def formatToParagraph(String text) {
-        if(text === null || text.isEmpty)
-            return text
-
-        var formattedText = text
+    protected static def formatToParagraph(String formattedText) {
         val StringBuilder sb = new StringBuilder();
         var StringBuilder lineBuilder = new StringBuilder();
         var boolean isFirstElementOnNewLineEmptyChar = false;
@@ -393,35 +402,134 @@ abstract class BaseTemplate extends JavaFileTemplate {
         formattedText = WS_MATCHER.replaceFrom(formattedText, SPACE)
         formattedText = SPACES_PATTERN.matcher(formattedText).replaceAll(" ")
 
-        val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
+        val rpcHeader = extractRpcHeader(formattedText)
+        if (rpcHeader !== null) {
+            sb.append(rpcHeader).append(NEW_LINE).append(NEW_LINE)
+            formattedText = formattedText.substring(rpcHeader.length)
+        }
+
+        if (formattedText.charAt(0) == SPACE) {
+            formattedText = formattedText.substring(1)
+        }
+
+        // A part of paragraph with javadoc tags and their description is formatted into two columns. Tags and their
+        // arguments(parameter name, exception name, etc.) are at the left column, description is at the right column.
+
+        val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true)
+
+        // width of the left column
+        val indent = calculateIndent(formattedText)
+        // length of tokens on the left side
+        var currentIndent = 0
+        var tokensAfterKeyword = 0
+        var tokenLimit = 0
+        var tagsPresent = false
+        var String tag = null
 
         while (tokenizer.hasMoreTokens) {
             val nextElement = tokenizer.nextToken
 
-            if (lineBuilder.length != 0 && lineBuilder.length + nextElement.length > 80) {
-                if (lineBuilder.charAt(lineBuilder.length - 1) == SPACE) {
-                    lineBuilder.setLength(lineBuilder.length - 1)
+            if (JAVADOC_TAGS.contains(nextElement) ) {
+                currentIndent = nextElement.length
+                // Number of tokens, which should be on the left side excluding tag,
+                // for @param - 2(space and parameter name), for @throws - 2(space and exception class name)
+                // for @return - 0(description is right after tag).
+                tokenLimit = nextElement.equals(RETURN_TAG) ? 0 : 2
+                tagsPresent = true
+                if (lineBuilder.length != 0) {
+                    if (lineBuilder.charAt(lineBuilder.length - 1) == SPACE) {
+                        lineBuilder.deleteCharAt(lineBuilder.length - 1)
+                    }
+                    // proceed to next line, because nextElement is javadoc tag
+                    sb.append(lineBuilder).append(NEW_LINE)
+                    // keep blocks with different tags separated
+                    if (!nextElement.equals(tag)) {
+                        sb.append(NEW_LINE)
+                        tag = nextElement
+                    }
                 }
-                if (lineBuilder.length != 0 && lineBuilder.charAt(0) == SPACE) {
-                    lineBuilder.deleteCharAt(0)
-                }
-
-                sb.append(lineBuilder).append(NEW_LINE)
                 lineBuilder.setLength(0)
-
-                if (nextElement == " ") {
-                    isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar;
-                }
-            }
-
-            if (isFirstElementOnNewLineEmptyChar) {
-                isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar
-            } else {
                 lineBuilder.append(nextElement)
-            }
+            } else {
+                if (currentIndent > 0) {
+                    if (tokensAfterKeyword < tokenLimit) {
+                        currentIndent += nextElement.length
+                        tokensAfterKeyword++
+                    } else {
+                        // all tokens of the left side are added to lineBuilder,
+                        // add spaces to proceed to the right column
+                        lineBuilder.append(" ".repeat(indent - currentIndent - 1))
+                        currentIndent = 0
+                        tokensAfterKeyword = 0
+                    }
+                }
+
+                if (lineBuilder.length != 0 && lineBuilder.length + nextElement.length > 80) {
+                    if (lineBuilder.charAt(lineBuilder.length - 1) == SPACE) {
+                        lineBuilder.deleteCharAt(lineBuilder.length - 1)
+                    }
+                    sb.append(lineBuilder).append(NEW_LINE)
+                    if (tagsPresent) {
+                        sb.append(" ".repeat(indent))
+                    }
+                    lineBuilder.setLength(0)
+
+                    if (nextElement.equals(" ")) {
+                        isFirstElementOnNewLineEmptyChar = true
+                    }
+                }
+
+                if (isFirstElementOnNewLineEmptyChar) {
+                    isFirstElementOnNewLineEmptyChar = false
+                } else {
+                    lineBuilder.append(nextElement)
+                }
+             }
         }
 
         return sb.append(lineBuilder).append(NEW_LINE).toString
+    }
+
+    private static def calculateIndent(String text) {
+        val tokenizer = new StringTokenizer(text, " ", true)
+        var indent = 0
+        var currentIndent = 0
+        var tokensAfterKeyword = 0
+        var tokenLimit = 0
+        while (tokenizer.hasMoreTokens) {
+            val String token = tokenizer.nextToken
+            if (JAVADOC_TAGS.contains(token) ) {
+                currentIndent = token.length
+                tokenLimit = token.equals(RETURN_TAG) ? 0 : 2
+            } else {
+                if (currentIndent > 0) {
+                    if (tokensAfterKeyword < tokenLimit) {
+                        currentIndent += token.length
+                        tokensAfterKeyword++
+                    } else {
+                        if (currentIndent > indent) {
+                            indent = currentIndent
+                        }
+                        currentIndent = 0
+                        tokensAfterKeyword = 0
+                    }
+                }
+            }
+        }
+        return indent + 2
+    }
+
+    private static def String extractRpcHeader(String text) {
+        val firstSentence = text.substring(0, text.indexOf('.') + 1);
+
+        val rpcNameEnd = firstSentence.indexOf(RPC_HEADER_END);
+        if (firstSentence.startsWith(RPC_HEADER_START)
+                && rpcNameEnd > 0
+                && !firstSentence.substring(RPC_HEADER_START.length, rpcNameEnd).contains(" ")) {
+            return firstSentence;
+        }
+
+        return null;
     }
 
     /**

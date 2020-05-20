@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.Parameter;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 import org.opendaylight.mdsal.binding.model.util.Types;
 
 public class MethodSignatureImplTest {
@@ -35,7 +36,7 @@ public class MethodSignatureImplTest {
         Type type = Types.STRING;
         String name = "customMethod";
         List<AnnotationType> annotations = new ArrayList<>();
-        String comment = "This is just a comment";
+        TypeMemberComment comment = TypeMemberComment.contractOf("This is just a comment");
         AccessModifier accessModifier = AccessModifier.PUBLIC;
         Type returnType = Types.STRING;
         List<Parameter> params = new ArrayList<>();
@@ -71,7 +72,7 @@ public class MethodSignatureImplTest {
     @Test
     public void testHashCode() {
         assertEquals(hash1, hash1);
-        assertTrue(!(hash1 == hash4));
+        assertTrue((hash1 != hash4));
     }
 
     @Test
