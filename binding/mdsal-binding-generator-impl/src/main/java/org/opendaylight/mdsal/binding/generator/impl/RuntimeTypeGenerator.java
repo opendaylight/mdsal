@@ -31,6 +31,7 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 final class RuntimeTypeGenerator extends AbstractTypeGenerator {
@@ -100,6 +101,11 @@ final class RuntimeTypeGenerator extends AbstractTypeGenerator {
 
     @Override
     void addComment(final TypeMemberBuilder<?> genType, final DocumentedNode node) {
+        // No-op
+    }
+
+    @Override
+    void addRpcMethodComment(final TypeMemberBuilder<?> genType, final RpcDefinition node) {
         // No-op
     }
 }
