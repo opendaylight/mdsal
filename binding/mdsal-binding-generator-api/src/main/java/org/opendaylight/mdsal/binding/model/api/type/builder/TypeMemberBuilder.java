@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.model.api.type.builder;
 
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 
 public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> extends AnnotableTypeBuilder {
     /**
@@ -39,9 +40,9 @@ public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> extends Annot
      * Adds String definition of comment into Method Signature definition. The comment String MUST NOT contain any
      * comment specific chars (i.e. "/**" or "//") just plain String text description.
      *
-     * @param comment Comment String.
+     * @param comment Structured comment
      */
-    T setComment(String comment);
+    T setComment(TypeMemberComment comment);
 
     /**
      * Sets the flag final for method signature. If this is set the method will be prohibited from overriding. This
