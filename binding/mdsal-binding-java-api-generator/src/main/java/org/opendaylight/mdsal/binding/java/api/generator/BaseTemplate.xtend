@@ -32,6 +32,7 @@ import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Restrictions
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.api.TypeMember
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition.Single
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition.Multiple
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil
@@ -193,7 +194,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
      * @param comment string with the comment for whole JAVA class
      * @return string with comment in JAVA format
      */
-    def protected CharSequence asJavadoc(String comment) {
+    def protected CharSequence asJavadoc(TypeMemberComment comment) {
         if (comment === null) {
             return ''
         }
@@ -339,19 +340,34 @@ abstract class BaseTemplate extends JavaFileTemplate {
     }
 
     def protected static String formatDataForJavaDoc(TypeMember type, String additionalComment) {
-        val StringBuilder typeDescriptionBuilder = new StringBuilder();
-        if (!type.comment.nullOrEmpty) {
-            typeDescriptionBuilder.append(formatToParagraph(type.comment))
-            typeDescriptionBuilder.append(NEW_LINE)
-            typeDescriptionBuilder.append(NEW_LINE)
-            typeDescriptionBuilder.append(NEW_LINE)
+        val comment = type.comment
+        if (comment === null) {
+            return ""
         }
-        typeDescriptionBuilder.append(additionalComment)
-        var typeDescription = wrapToDocumentation(typeDescriptionBuilder.toString)
-        return '''
-            «typeDescription»
-        '''.toString
+        return wrapToDocumentation('''
+           «comment.contractDescription.formatJavadocString»
+
+           «comment.referenceDescription.formatReference»
+
+           «comment.typeSignature.formatJavadocString»
+        ''')
     }
+
+    def private static formatJavadocString(String str) '''
+        «IF str !== null»
+            «formatToParagraph(str)»
+        «ENDIF»
+    '''
+
+    def private static formatReference(String reference) '''
+        «IF reference !== null»
+            <pre>
+                <code>
+                    «reference.encodeJavadocSymbols»
+                </code>
+            </pre>
+        «ENDIF»
+    '''
 
     def asCode(String text) {
         return "<code>" + text + "</code>"
@@ -380,21 +396,15 @@ abstract class BaseTemplate extends JavaFileTemplate {
         return sb.toString
     }
 
-    protected static def formatToParagraph(String text) {
-        if(text === null || text.isEmpty)
-            return text
-
-        var formattedText = text
+    protected static def formatToParagraph(String inputText) {
         val StringBuilder sb = new StringBuilder();
         var StringBuilder lineBuilder = new StringBuilder();
         var boolean isFirstElementOnNewLineEmptyChar = false;
 
-        formattedText = encodeJavadocSymbols(formattedText)
-        formattedText = WS_MATCHER.replaceFrom(formattedText, SPACE)
+        var formattedText = WS_MATCHER.replaceFrom(inputText.encodeJavadocSymbols, SPACE)
         formattedText = SPACES_PATTERN.matcher(formattedText).replaceAll(" ")
 
-        val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
-
+        val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true)
         while (tokenizer.hasMoreTokens) {
             val nextElement = tokenizer.nextToken
 
@@ -413,7 +423,6 @@ abstract class BaseTemplate extends JavaFileTemplate {
                     isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar;
                 }
             }
-
             if (isFirstElementOnNewLineEmptyChar) {
                 isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar
             } else {

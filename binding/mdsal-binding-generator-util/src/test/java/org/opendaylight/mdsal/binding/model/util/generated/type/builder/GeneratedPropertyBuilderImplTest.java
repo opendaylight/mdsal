@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class GeneratedPropertyBuilderImplTest {
         assertTrue(instance.isStatic());
         assertFalse(instance.isReadOnly());
         assertEquals("myValue", instance.getValue());
-        assertEquals(null, instance.getComment());
+        assertNull(instance.getComment());
         assertEquals(AccessModifier.PUBLIC, instance.getAccessModifier());
         assertEquals(Types.BOOLEAN, instance.getReturnType());
 
