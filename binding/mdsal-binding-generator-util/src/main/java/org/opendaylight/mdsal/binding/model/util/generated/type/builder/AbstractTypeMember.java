@@ -13,11 +13,12 @@ import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeMember;
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 
 abstract class AbstractTypeMember implements TypeMember {
 
     private final String name;
-    private final String comment;
+    private final TypeMemberComment comment;
     private final Type definingType;
     private final Type returnType;
     private final List<AnnotationType> annotations;
@@ -26,7 +27,7 @@ abstract class AbstractTypeMember implements TypeMember {
     private final AccessModifier accessModifier;
 
     protected AbstractTypeMember(final Type definingType, final String name,  final List<AnnotationType> annotations,
-            final String comment, final AccessModifier accessModifier, final Type returnType,
+            final TypeMemberComment comment, final AccessModifier accessModifier, final Type returnType,
             final boolean isFinal, final boolean isStatic) {
         this.definingType = definingType;
         this.name = name;
@@ -49,8 +50,8 @@ abstract class AbstractTypeMember implements TypeMember {
     }
 
     @Override
-    public String getComment() {
-        return this.comment;
+    public TypeMemberComment getComment() {
+        return comment;
     }
 
     @Override
@@ -82,8 +83,8 @@ abstract class AbstractTypeMember implements TypeMember {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + Objects.hashCode(getName());
-        result = (prime * result) + Objects.hashCode(getReturnType());
+        result = prime * result + Objects.hashCode(getName());
+        result = prime * result + Objects.hashCode(getReturnType());
         return result;
     }
 
@@ -104,24 +105,17 @@ abstract class AbstractTypeMember implements TypeMember {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("AbstractTypeMember [name=");
-        builder.append(getName());
-        builder.append(", comment=");
-        builder.append(getComment());
+        final StringBuilder builder = new StringBuilder()
+            .append("AbstractTypeMember [name=").append(getName())
+            .append(", comment=").append(getComment().map(TypeMemberComment::toString).orElse(null))
+            .append(", definingType=");
         if (getDefiningType() != null) {
-            builder.append(", definingType=");
-            builder.append(getDefiningType().getPackageName());
-            builder.append(".");
-            builder.append(getDefiningType().getName());
+            builder.append(getDefiningType().getPackageName()).append('.').append(getDefiningType().getName());
         } else {
-            builder.append(", definingType= null");
+            builder.append(" null");
         }
-        builder.append(", returnType=");
-        builder.append(getReturnType());
-        builder.append(", annotations=");
-        builder.append(getAnnotations());
-        builder.append("]");
-        return builder.toString();
+        return builder.append(", returnType=").append(getReturnType())
+            .append(", annotations=").append(getAnnotations())
+            .append(']').toString();
     }
 }
