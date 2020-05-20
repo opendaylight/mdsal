@@ -7,13 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.encodeAngleBrackets;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -21,11 +18,13 @@ import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
+import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.TypeComments;
 import org.opendaylight.mdsal.binding.yang.types.CodegenTypeProvider;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 final class CodegenTypeGenerator extends AbstractTypeGenerator {
@@ -72,9 +71,22 @@ final class CodegenTypeGenerator extends AbstractTypeGenerator {
 
     @Override
     void addComment(final TypeMemberBuilder<?> genType, final DocumentedNode node) {
-        final Optional<String> optDesc = node.getDescription();
-        if (optDesc.isPresent()) {
-            genType.setComment(encodeAngleBrackets(optDesc.get()));
-        }
+        node.getDescription().map(BindingGeneratorUtil::encodeAngleBrackets).ifPresent(genType::setComment);
+    }
+
+    @Override
+    void addRpcMethodComment(final TypeMemberBuilder<?> genType, final RpcDefinition node) {
+        final String rpcName = node.getQName().getLocalName();
+
+        final StringBuilder sb = new StringBuilder("Invoke {@code ").append(rpcName).append("} RPC.\n");
+        node.getDescription().ifPresent(descString -> {
+            sb.append("\n<p><pre>\n").append(BindingGeneratorUtil.encodeAngleBrackets(descString)).append("\n</pre>\n");
+        });
+
+        sb.append('\n')
+            .append("@param input of {@code ").append(rpcName).append("}\n")
+            .append("@return output of {@code ").append(rpcName).append('}');
+
+        genType.setComment(sb.toString());
     }
 }
