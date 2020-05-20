@@ -239,6 +239,8 @@ abstract class AbstractTypeGenerator {
 
     abstract void addComment(TypeMemberBuilder<?> genType, DocumentedNode node);
 
+    abstract void addRpcMethodComment(TypeMemberBuilder<?> genType, RpcDefinition node);
+
     private ModuleContext moduleToGenTypes(final Module module) {
         final ModuleContext context = new ModuleContext(module);
         genCtx.put(module.getQNameModule(), context);
@@ -553,7 +555,7 @@ abstract class AbstractTypeGenerator {
 
                 // Do not refer to annotation class, as it may not be available at runtime
                 method.addAnnotation("edu.umd.cs.findbugs.annotations", "CheckReturnValue");
-                addComment(method, rpc);
+                addRpcMethodComment(method, rpc);
                 method.addParameter(
                     createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getInput()), RPC_INPUT), "input");
                 method.setReturnType(listenableFutureTypeFor(
