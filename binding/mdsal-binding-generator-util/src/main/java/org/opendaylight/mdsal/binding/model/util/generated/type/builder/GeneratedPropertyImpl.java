@@ -12,14 +12,15 @@ import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 
 final class GeneratedPropertyImpl extends AbstractTypeMember implements GeneratedProperty {
     private final String value;
     private final boolean readOnly;
 
     GeneratedPropertyImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
-            final String comment, final AccessModifier accessModifier, final Type returnType, final boolean isFinal,
-            final boolean isStatic, final boolean isReadOnly, final String value) {
+            final TypeMemberComment comment, final AccessModifier accessModifier, final Type returnType,
+            final boolean isFinal, final boolean isStatic, final boolean isReadOnly, final String value) {
         super(definingType, name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
         this.value = value;
         this.readOnly = isReadOnly;
@@ -37,30 +38,20 @@ final class GeneratedPropertyImpl extends AbstractTypeMember implements Generate
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("GeneratedPropertyImpl [name=");
-        builder.append(getName());
-        builder.append(", annotations=");
-        builder.append(getAnnotations());
-        builder.append(", comment=");
-        builder.append(getComment());
+        final StringBuilder builder = new StringBuilder()
+            .append("GeneratedPropertyImpl [name=").append(getName())
+            .append(", annotations=").append(getAnnotations())
+            .append(", comment=").append(getComment())
+            .append(", parent=");
         if (getDefiningType() != null) {
-            builder.append(", parent=");
-            builder.append(getDefiningType().getPackageName());
-            builder.append(".");
-            builder.append(getDefiningType().getName());
+            builder.append(getDefiningType().getPackageName()).append(".").append(getDefiningType().getName());
         } else {
-            builder.append(", parent=null");
+            builder.append("null");
         }
-        builder.append(", returnType=");
-        builder.append(getReturnType());
-        builder.append(", isFinal=");
-        builder.append(isFinal());
-        builder.append(", isReadOnly=");
-        builder.append(this.readOnly);
-        builder.append(", modifier=");
-        builder.append(getAccessModifier());
-        builder.append("]");
-        return builder.toString();
+        return builder.append(", returnType=").append(getReturnType())
+            .append(", isFinal=").append(isFinal())
+            .append(", isReadOnly=").append(readOnly)
+            .append(", modifier=").append(getAccessModifier())
+            .append(']').toString();
     }
 }

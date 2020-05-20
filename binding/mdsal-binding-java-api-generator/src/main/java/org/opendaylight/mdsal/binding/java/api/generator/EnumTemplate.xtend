@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
-import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.encodeAngleBrackets
+import static extension org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.encodeAngleBrackets
 import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 
 import com.google.common.collect.ImmutableMap
@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableMap.Builder
 import java.util.Optional
 import org.opendaylight.mdsal.binding.model.api.Enumeration
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment
 
 /**
  * Template for generating JAVA enumeration type.
@@ -54,8 +55,10 @@ class EnumTemplate extends BaseTemplate {
         return body
     }
 
-    def writeEnumItem(String name, String mappedName, int value, String description) '''
-        «asJavadoc(encodeAngleBrackets(description))»
+    def writeEnumItem(String name, String mappedName, int value, TypeMemberComment comment) '''
+        «IF comment.contractDescription !== null»
+            «comment.contractDescription.encodeAngleBrackets.wrapToDocumentation»
+        «ENDIF»
         «mappedName»(«value», "«name»")
     '''
 
@@ -128,7 +131,7 @@ class EnumTemplate extends BaseTemplate {
     def writeEnumeration(Enumeration enumeration)
     '''
     «FOR v : enumeration.values SEPARATOR ",\n" AFTER ";"»
-    «writeEnumItem(v.name, v.mappedName, v.value, v.description.orElse(null))»«
+    «writeEnumItem(v.name, v.mappedName, v.value, v.description.map([desc | TypeMemberComment.referenceOf(desc) ]).orElse(null))»«
     ENDFOR»
     '''
 }

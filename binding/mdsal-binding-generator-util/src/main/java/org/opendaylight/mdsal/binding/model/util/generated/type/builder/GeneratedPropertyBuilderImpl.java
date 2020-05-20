@@ -49,22 +49,14 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("GeneratedPropertyImpl [name=");
-        builder.append(getName());
-        builder.append(", annotations=");
-        builder.append(getAnnotationBuilders());
-        builder.append(", comment=");
-        builder.append(getComment());
-        builder.append(", returnType=");
-        builder.append(getReturnType());
-        builder.append(", isFinal=");
-        builder.append(isFinal());
-        builder.append(", isReadOnly=");
-        builder.append(this.readOnly);
-        builder.append(", modifier=");
-        builder.append(getAccessModifier());
-        builder.append("]");
-        return builder.toString();
+        return new StringBuilder()
+            .append("GeneratedPropertyImpl [name=").append(getName())
+            .append(", annotations=").append(getAnnotationBuilders())
+            .append(", comment=").append(getComment())
+            .append(", returnType=").append(getReturnType())
+            .append(", isFinal=").append(isFinal())
+            .append(", isReadOnly=").append(this.readOnly)
+            .append(", modifier=").append(getAccessModifier())
+            .append(']').toString();
     }
 }
