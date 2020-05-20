@@ -12,10 +12,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 import org.opendaylight.mdsal.binding.model.util.Types;
 
 public class GeneratedPropertyImplTest {
@@ -26,7 +28,7 @@ public class GeneratedPropertyImplTest {
         generatedPropertyBuilderImpl.setValue("myValue");
         generatedPropertyBuilderImpl.setReadOnly(false);
         generatedPropertyBuilderImpl.setStatic(true);
-        generatedPropertyBuilderImpl.setComment("myComment");
+        generatedPropertyBuilderImpl.setComment(TypeMemberComment.contractOf("myComment"));
         generatedPropertyBuilderImpl.setFinal(true);
         generatedPropertyBuilderImpl.setAccessModifier(AccessModifier.PUBLIC);
         generatedPropertyBuilderImpl.setReturnType(Types.BOOLEAN);
@@ -40,13 +42,14 @@ public class GeneratedPropertyImplTest {
         assertTrue(instance.isStatic());
         assertFalse(instance.isReadOnly());
         assertEquals("myValue", instance.getValue());
-        assertEquals("myComment", instance.getComment());
+        assertEquals(Optional.of(TypeMemberComment.contractOf("myComment")), instance.getComment());
         assertEquals(AccessModifier.PUBLIC, instance.getAccessModifier());
         assertEquals(Types.BOOLEAN, instance.getReturnType());
 
-        assertEquals("GeneratedPropertyImpl [name=myPropertyName, annotations=[], comment=myComment, "
-                + "parent=my.package.myTypeName, returnType=Type (java.lang.Boolean), isFinal=true, isReadOnly=false, "
-                + "modifier=PUBLIC]", instance.toString());
+        assertEquals("GeneratedPropertyImpl [name=myPropertyName, annotations=[], "
+            + "comment=TypeMemberComment{contractDescription=myComment}, "
+            + "parent=my.package.myTypeName, returnType=Type (java.lang.Boolean), isFinal=true, isReadOnly=false, "
+            + "modifier=PUBLIC]", instance.toString());
     }
 
     @Test

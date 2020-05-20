@@ -11,32 +11,32 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
- * The Method Signature interface contains simplified meta model for java method
- * definition. Each method MUST be defined by name, return type, parameters and
- * access modifier. <br>
- * Additionally method MAY contain associated annotations and comment. By
- * contract if method does not contain any comments or annotation definitions
- * the {@link #getComment()} SHOULD rather return empty string and
- * {@link #getAnnotations()} SHOULD rather return empty list than
- * <code>null</code> values. <br>
- * The defining Type contains the reference to Generated Type that declares
- * Method Signature.
+ * The Method Signature interface contains simplified meta model for java method definition. Each method MUST be defined
+ * by name, return type, parameters and access modifier. Additionally method MAY contain associated annotations and a
+ * comment. By contract if method does not contain any comments or annotation definitions the {@link #getComment()}
+ * SHOULD rather return empty string and {@link #getAnnotations()} SHOULD rather return empty list than {@code null}
+ * values.
+ *
+ * <p>
+ * The defining Type contains the reference to Generated Type that declares Method Signature.
  */
 public interface MethodSignature extends TypeMember {
     /**
-     * Returns <code>true</code> if the method signature is defined as abstract. <br>
-     * By default in java all method declarations in interface are defined as abstract, but the user does not need
-     * necessarily to declare abstract keyword in front of each method. <br>
-     * The abstract methods are allowed in Class definitions but only when the class is declared as abstract.
+     * Returns {@code true} if the method signature is defined as abstract.
      *
-     * @return <code>true</code> if the method signature is defined as abstract.
+     * <p>
+     * By default in java all method declarations in interface are defined as abstract, but the user does not need
+     * necessarily to declare abstract keyword in front of each method. The abstract methods are allowed in Class
+     * definitions but only when the class is declared as abstract.
+     *
+     * @return {@code true} if the method signature is defined as abstract.
      */
     boolean isAbstract();
 
     /**
      * Returns {@code true} if this method is a {@code interface default} method.
      *
-     * @return <code>true</code> if the method signature is defined as default.
+     * @return {@code true} if the method signature is defined as default.
      */
     boolean isDefault();
 

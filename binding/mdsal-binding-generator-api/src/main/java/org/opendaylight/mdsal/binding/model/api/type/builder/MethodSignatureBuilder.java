@@ -11,6 +11,7 @@ import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 
 /**
  * Method Signature Builder serves solely for building Method Signature and
@@ -21,7 +22,7 @@ import org.opendaylight.mdsal.binding.model.api.Type;
  * addName due to enforce reason that MethodSignatureBuilder SHOULD be
  * instantiated only once with defined method name. <br>
  * The methods as {@link #addAnnotation(String, String)} and
- * {@link #setComment(String)} can be used as optional because not all methods
+ * {@link #setComment(TypeMemberComment)} can be used as optional because not all methods
  * MUST contain annotation or comment definitions.
  *
  * @see MethodSignature

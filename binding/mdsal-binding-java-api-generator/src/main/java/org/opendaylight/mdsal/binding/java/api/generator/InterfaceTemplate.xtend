@@ -202,7 +202,7 @@ class InterfaceTemplate extends BaseTemplate {
     }
 
     def private generateMethod(MethodSignature method) '''
-        «method.comment.asJavadoc»
+        «method.comment.ifPresent[comment | comment.asJavadoc]»
         «method.annotations.generateAnnotations»
         «method.returnType.importedName» «method.name»(«method.parameters.generateParameters»);
     '''

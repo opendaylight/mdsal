@@ -12,9 +12,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 
 public class AbstractTypeMemberTest {
 
@@ -25,13 +27,13 @@ public class AbstractTypeMemberTest {
             JavaTypeName.create("org.opendaylight.yangtools.test", "TestType"));
         final CodegenGeneratedTypeBuilder typeBuilderImpl2 = new CodegenGeneratedTypeBuilder(
             JavaTypeName.create("org.opendaylight.yangtools.test", "TestType2"));
-        methodSignatureBuilderImpl.setComment("test comment");
+        methodSignatureBuilderImpl.setComment(TypeMemberComment.contractOf("test comment"));
         methodSignatureBuilderImpl.setFinal(true);
         methodSignatureBuilderImpl.setStatic(true);
 
         final MethodSignature genProperty = methodSignatureBuilderImpl.toInstance(typeBuilderImpl);
         final MethodSignature genProperty2 = methodSignatureBuilderImpl.toInstance(typeBuilderImpl2);
-        assertEquals("test comment", genProperty.getComment());
+        assertEquals(Optional.of(TypeMemberComment.contractOf("test comment")), genProperty.getComment());
         assertTrue(genProperty.isFinal());
         assertTrue(genProperty.isStatic());
         assertEquals(genProperty.hashCode(), genProperty2.hashCode());
@@ -39,6 +41,5 @@ public class AbstractTypeMemberTest {
         assertNotNull(genProperty.toString());
         assertTrue(genProperty.equals(genProperty2));
         assertFalse(genProperty.equals(null));
-
     }
 }
