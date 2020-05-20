@@ -202,17 +202,23 @@ class InterfaceTemplate extends BaseTemplate {
     }
 
     def private generateMethod(MethodSignature method) '''
-        «method.comment.asJavadoc»
+        «method.comment.ifPresent[comment | comment.asJavadoc]»
         «method.annotations.generateAnnotations»
         «method.returnType.importedName» «method.name»(«method.parameters.generateParameters»);
     '''
 
-    def private generateAccessorMethod(MethodSignature method) '''
-        «val ret = method.returnType»
-        «formatDataForJavaDoc(method, "@return " + asCode(ret.fullyQualifiedName) + " " + asCode(propertyNameFromGetter(method)) + ", or " + asCode("null") + " if not present")»
-        «method.annotations.generateAnnotations»
-        «nullableType(ret)» «method.name»();
-    '''
+    def private generateAccessorMethod(MethodSignature method) {
+        val ret = method.returnType
+        val signature = formatDataForJavaDoc(method, '''
+            @return «ret.fullyQualifiedName.asCode» «asCode(propertyNameFromGetter(method))», or {@code null} if not present")
+        ''')
+
+       return '''
+            «signature»
+            «method.annotations.generateAnnotations»
+            «nullableType(ret)» «method.name»();
+        '''
+    }
 
     def private generateDefaultImplementedInterface() '''
         @«OVERRIDE.importedName»

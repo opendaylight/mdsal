@@ -8,18 +8,18 @@
 package org.opendaylight.mdsal.binding.model.api;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Common interface for variables and methods in class.
  */
 public interface TypeMember {
-
     /**
      * Returns comment string associated with member.
      *
      * @return comment string associated with member.
      */
-    String getComment();
+    Optional<TypeMemberComment> getComment();
 
     /**
      * Returns List of annotation definitions associated with generated type.
@@ -69,5 +69,4 @@ public interface TypeMember {
      * @return the Type that declares member.
      */
     Type getDefiningType();
-
 }

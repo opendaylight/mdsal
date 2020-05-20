@@ -10,12 +10,14 @@ package org.opendaylight.mdsal.binding.java.api.generator;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 
 final class BuilderGeneratedProperty implements GeneratedProperty {
     private final MethodSignature getter;
@@ -62,7 +64,7 @@ final class BuilderGeneratedProperty implements GeneratedProperty {
     }
 
     @Override
-    public String getComment() {
+    public Optional<TypeMemberComment> getComment() {
         throw uoe();
     }
 

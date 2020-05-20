@@ -18,6 +18,7 @@ import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
@@ -26,7 +27,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     private final String name;
     private Type returnType;
     private List<AnnotationTypeBuilder> annotationBuilders = Collections.emptyList();
-    private String comment = "";
+    private TypeMemberComment comment;
     private boolean isFinal;
     private boolean isStatic;
     private AccessModifier accessModifier;
@@ -50,7 +51,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
         return this.annotationBuilders;
     }
 
-    protected String getComment() {
+    protected TypeMemberComment comment() {
         return this.comment;
     }
 
@@ -89,7 +90,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     }
 
     @Override
-    public T setComment(final String newComment) {
+    public T setComment(final TypeMemberComment newComment) {
         this.comment = newComment;
         return thisInstance();
     }
@@ -142,7 +143,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     public String toString() {
         return new StringBuilder().append("GeneratedPropertyImpl [name=").append(getName())
                 .append(", annotations=").append(getAnnotationBuilders())
-                .append(", comment=").append(getComment())
+                .append(", comment=").append(comment())
                 .append(", returnType=").append(getReturnType())
                 .append(", isFinal=").append(isFinal())
                 .append(", modifier=").append(getAccessModifier())
