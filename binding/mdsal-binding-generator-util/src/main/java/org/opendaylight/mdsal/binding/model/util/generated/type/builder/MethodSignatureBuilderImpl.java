@@ -21,7 +21,6 @@ import org.opendaylight.yangtools.util.LazyCollections;
 
 final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodSignatureBuilder>
         implements MethodSignatureBuilder {
-
     private List<MethodSignature.Parameter> parameters = Collections.emptyList();
     private List<MethodSignature.Parameter> unmodifiableParams = Collections.emptyList();
     private ValueMechanics mechanics = ValueMechanics.NORMAL;
@@ -71,12 +70,7 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Objects.hashCode(getName());
-        result = prime * result + Objects.hashCode(this.parameters);
-        result = prime * result + Objects.hashCode(getReturnType());
-        return result;
+        return Objects.hash(getName(), parameters, getReturnType());
     }
 
     @Override
