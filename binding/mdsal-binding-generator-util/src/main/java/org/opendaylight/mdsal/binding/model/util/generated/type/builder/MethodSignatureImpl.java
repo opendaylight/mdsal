@@ -17,6 +17,7 @@ import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 
 class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature {
     private final List<Parameter> params;
@@ -26,14 +27,14 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
 
     @VisibleForTesting
     MethodSignatureImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
-        final String comment, final AccessModifier accessModifier, final Type returnType,
+        final TypeMemberComment comment, final AccessModifier accessModifier, final Type returnType,
         final List<Parameter> params, final boolean isFinal, final boolean isAbstract, final boolean isStatic) {
         this(definingType, name, annotations, comment, accessModifier, returnType, params, isFinal, isAbstract,
             isStatic, false, ValueMechanics.NORMAL);
     }
 
     MethodSignatureImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
-            final String comment, final AccessModifier accessModifier, final Type returnType,
+            final TypeMemberComment comment, final AccessModifier accessModifier, final Type returnType,
             final List<Parameter> params, final boolean isFinal, final boolean isAbstract, final boolean isStatic,
             final boolean isDefault, final ValueMechanics mechanics) {
         super(definingType, name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
@@ -89,9 +90,10 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder().append("MethodSignatureImpl [name=").append(getName())
-                .append(", comment=").append(getComment())
-                .append(", definingType=");
+        final StringBuilder builder = new StringBuilder()
+            .append("MethodSignatureImpl [name=").append(getName())
+            .append(", comment=").append(getComment())
+            .append(", definingType=");
 
         final Type defType = getDefiningType();
         if (defType != null) {
@@ -100,9 +102,10 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
             builder.append(" null");
         }
 
-        return builder.append(", returnType=").append(getReturnType())
-                .append(", params=").append(this.params)
-                .append(", annotations=").append(getAnnotations())
-                .append(']').toString();
+        return builder
+            .append(", returnType=").append(getReturnType())
+            .append(", params=").append(this.params)
+            .append(", annotations=").append(getAnnotations())
+            .append(']').toString();
     }
 }

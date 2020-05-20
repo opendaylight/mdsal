@@ -8,18 +8,18 @@
 package org.opendaylight.mdsal.binding.model.api;
 
 import java.util.List;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Common interface for variables and methods in class.
  */
 public interface TypeMember {
-
     /**
      * Returns comment string associated with member.
      *
      * @return comment string associated with member.
      */
-    String getComment();
+    @Nullable TypeMemberComment getComment();
 
     /**
      * Returns List of annotation definitions associated with generated type.
@@ -69,5 +69,4 @@ public interface TypeMember {
      * @return the Type that declares member.
      */
     Type getDefiningType();
-
 }
