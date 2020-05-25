@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "f5b1e555_886b7599",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderGenerator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-05-25T13:10:55Z",
+      "side": 1,
+      "message": "I think this affects hashCode computation, too, doesn\u0027t it?",
+      "range": {
+        "startLine": 188,
+        "startChar": 15,
+        "endLine": 188,
+        "endChar": 29
+      },
+      "revId": "36ae961468ed35708bcf4f38400e5a5511b36a94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "34255d26_5c2a06d7",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
         "patchSetId": 1
