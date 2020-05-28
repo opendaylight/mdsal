@@ -22,6 +22,30 @@
       "revId": "c0d3f7f56536caa927b6944826dff86625d822e2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1f7cddb_6425005a",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/TypeUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-05-28T13:28:14Z",
+      "side": 1,
+      "message": "We can have ParameterizedType object when looking for the \u0027value\u0027 property and return its type. And then have ClassCastException in this case",
+      "parentUuid": "b1203585_e95f7b79",
+      "range": {
+        "startLine": 34,
+        "startChar": 11,
+        "endLine": 34,
+        "endChar": 15
+      },
+      "revId": "c0d3f7f56536caa927b6944826dff86625d822e2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
     }
   ]
 }
