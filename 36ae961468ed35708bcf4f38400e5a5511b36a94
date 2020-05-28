@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "2965a39a_99f7b129",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderGenerator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-05-28T12:15:02Z",
+      "side": 1,
+      "message": "Yes, because that has a counterpart in runtime types. I think the best approach would be to move this sort to the actual equals() generator. That way we reduce the scope of impact to exactly what we want to do.",
+      "parentUuid": "ae3aecae_78849aa7",
+      "range": {
+        "startLine": 188,
+        "startChar": 15,
+        "endLine": 188,
+        "endChar": 29
+      },
+      "revId": "36ae961468ed35708bcf4f38400e5a5511b36a94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "34255d26_5c2a06d7",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
         "patchSetId": 1
