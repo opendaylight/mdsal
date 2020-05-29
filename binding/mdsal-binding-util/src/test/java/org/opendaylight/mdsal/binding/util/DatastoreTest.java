@@ -7,33 +7,24 @@
  */
 package org.opendaylight.mdsal.binding.util;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
 public class DatastoreTest {
-
     @Test
-    public void testDatastore() {
-        assertThat(Datastore.toType(Datastore.CONFIGURATION)).isEqualTo(LogicalDatastoreType.CONFIGURATION);
-        assertThat(Datastore.toType(Datastore.OPERATIONAL)).isEqualTo(LogicalDatastoreType.OPERATIONAL);
-        try {
-            Datastore.toType(null);
-            Assert.fail("Expected Datastore.toType(null) to throw NullPointerException");
-        } catch (NullPointerException e) {
-            // OK, this is what we're expecting
-        }
-
-        assertThat(Datastore.toClass(LogicalDatastoreType.CONFIGURATION)).isEqualTo(Datastore.CONFIGURATION);
-        assertThat(Datastore.toClass(LogicalDatastoreType.OPERATIONAL)).isEqualTo(Datastore.OPERATIONAL);
-        try {
-            Datastore.toClass(null);
-            Assert.fail("Expected Datastore.toClass(null) to throw NullPointerException");
-        } catch (NullPointerException e) {
-            // OK, this is what we're expecting
-        }
+    public void testDatastoreToType() {
+        assertEquals(LogicalDatastoreType.CONFIGURATION, Datastore.toType(Datastore.CONFIGURATION));
+        assertEquals(LogicalDatastoreType.OPERATIONAL, Datastore.toType(Datastore.OPERATIONAL));
+        assertThrows(NullPointerException.class, () -> Datastore.toType(null));
     }
 
+    @Test
+    public void testDatastoreToClass() {
+        assertEquals(Datastore.CONFIGURATION, Datastore.toClass(LogicalDatastoreType.CONFIGURATION));
+        assertEquals(Datastore.OPERATIONAL, Datastore.toClass(LogicalDatastoreType.OPERATIONAL));
+        assertThrows(NullPointerException.class, () -> Datastore.toClass(null));
+    }
 }
