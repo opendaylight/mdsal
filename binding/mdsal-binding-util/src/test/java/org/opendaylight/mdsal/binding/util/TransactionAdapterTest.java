@@ -7,10 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.util;
 
-import static com.google.common.truth.Truth8.assertThat;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.path;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
@@ -18,6 +18,7 @@ import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -35,8 +36,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 /**
  * Test for {@link TransactionAdapter}.
  */
-// This is a test for a deprecated class
-@SuppressWarnings("deprecation")
+@Deprecated
 public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
 
     private static final InstanceIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY);
@@ -44,7 +44,7 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
     private ManagedNewTransactionRunner managedNewTransactionRunner;
     private DataBrokerFailuresImpl testableDataBroker;
 
-    private ManagedNewTransactionRunner createManagedNewTransactionRunnerToTest(DataBroker dataBroker) {
+    private ManagedNewTransactionRunner createManagedNewTransactionRunnerToTest(final DataBroker dataBroker) {
         return new ManagedNewTransactionRunnerImpl(dataBroker);
     }
 
@@ -75,28 +75,22 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
 
     @Test
     public void testAdaptedWriteTransactionFailsOnInvalidDatastore() throws Exception {
-        try {
-            managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
-                writeTx -> TransactionAdapter.toWriteTransaction(writeTx).put(LogicalDatastoreType.CONFIGURATION,
-                    TEST_PATH, newTestDataObject())).get();
-            fail("This should have led to an ExecutionException!");
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause() instanceof IllegalArgumentException);
-        }
-        assertThat(syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isEmpty();
+        Future<?> future = managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+            writeTx -> TransactionAdapter.toWriteTransaction(writeTx).put(LogicalDatastoreType.CONFIGURATION,
+                    TEST_PATH, newTestDataObject()));
+        ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get());
+        assertThat(ex.getCause(), instanceOf(IllegalArgumentException.class));
+        assertEquals(Optional.empty(), syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
     @Test
     public void testAdaptedReadWriteTransactionFailsOnInvalidDatastore() throws Exception {
-        try {
-            managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
-                writeTx -> TransactionAdapter.toReadWriteTransaction(writeTx).put(LogicalDatastoreType.CONFIGURATION,
-                    TEST_PATH, newTestDataObject())).get();
-            fail("This should have led to an ExecutionException!");
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause() instanceof IllegalArgumentException);
-        }
-        assertThat(syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isEmpty();
+        Future<?> future = managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+            writeTx -> TransactionAdapter.toReadWriteTransaction(writeTx).put(LogicalDatastoreType.CONFIGURATION,
+                TEST_PATH, newTestDataObject()));
+        ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get());
+        assertThat(ex.getCause(), instanceOf(IllegalArgumentException.class));
+        assertEquals(Optional.empty(), syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
     @Test(expected = ExecutionException.class)
@@ -129,15 +123,15 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
         return topLevelList(TOP_FOO_KEY, fooAugment);
     }
 
-    private <T extends DataObject> Optional<T> syncReadOptional(LogicalDatastoreType datastoreType,
-            InstanceIdentifier<T> path) throws ExecutionException, InterruptedException {
+    private <T extends DataObject> Optional<T> syncReadOptional(final LogicalDatastoreType datastoreType,
+            final InstanceIdentifier<T> path) throws ExecutionException, InterruptedException {
         try (ReadTransaction tx = getDataBroker().newReadOnlyTransaction()) {
             return tx.read(datastoreType, path).get();
         }
     }
 
-    private <T extends DataObject> T syncRead(LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
-            throws ExecutionException, InterruptedException {
+    private <T extends DataObject> T syncRead(final LogicalDatastoreType datastoreType,
+            final InstanceIdentifier<T> path) throws ExecutionException, InterruptedException {
         return syncReadOptional(datastoreType, path).get();
     }
 }
