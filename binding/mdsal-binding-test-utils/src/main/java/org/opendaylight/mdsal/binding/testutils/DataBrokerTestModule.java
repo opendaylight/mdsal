@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.testutils;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Throwables;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.dom.adapter.CurrentAdapterSerializer;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
@@ -31,8 +32,8 @@ public class DataBrokerTestModule {
     }
 
     // Suppress IllegalCatch because of AbstractDataBrokerTest (change later)
-    @SuppressWarnings({ "checkstyle:IllegalCatch", "checkstyle:IllegalThrows" })
-    public DataBroker getDataBroker() throws RuntimeException {
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    public DataBroker getDataBroker() {
         try {
             // This is a little bit "upside down" - in the future,
             // we should probably put what is in AbstractDataBrokerTest
@@ -43,7 +44,8 @@ public class DataBrokerTestModule {
             dataBrokerTest.setup();
             return dataBrokerTest.getDataBroker();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Throwables.throwIfUnchecked(e);
+            throw new IllegalStateException(e);
         }
     }
 
