@@ -92,12 +92,12 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-test-model</artifactId>
+            <artifactId>mdsal-dom-inmemory-datastore</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-            <!-- scope=compile to make test-jar work -->
+            <artifactId>mdsal-binding-test-model</artifactId>
         </dependency>
     </dependencies>
 
