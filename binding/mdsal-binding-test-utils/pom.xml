@@ -52,7 +52,7 @@
         <dependency>
             <groupId>io.github.java-diff-utils</groupId>
             <artifactId>java-diff-utils</artifactId>
-            <version>4.0</version>
+            <version>4.4</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
@@ -83,16 +83,15 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-dom-broker</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-dom-inmemory-datastore</artifactId>
+        </dependency>
 
         <!-- The following, contrary to the above, ARE <scope>test,
              because they are only required by the test utilities
              self test code in src/test, but not (necessarily)
              by a downstream consumer of the test utilities.   -->
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-test-model</artifactId>
