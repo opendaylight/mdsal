@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding.dom.adapter.test;
+package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.BigIntContainer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.BigIntContainerBuilder;
