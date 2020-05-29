@@ -330,6 +330,13 @@
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>odl-mdsal-dom-runtime</artifactId>
+                <version>6.0.1-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
 
             <!-- COMMON -->
             <dependency>

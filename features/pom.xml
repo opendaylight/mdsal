@@ -42,6 +42,7 @@
         <module>odl-mdsal-dom</module>
         <module>odl-mdsal-dom-api</module>
         <module>odl-mdsal-dom-broker</module>
+        <module>odl-mdsal-dom-runtime</module>
 
         <!-- EOS -->
         <module>odl-mdsal-eos-binding</module>
