@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.util;
 import static org.junit.Assert.assertEquals;
 import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -27,7 +26,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransactionRunnerImplTest {
 
     @Override
-    protected ManagedNewTransactionRunner createManagedNewTransactionRunnerToTest(DataBroker dataBroker) {
+    protected ManagedNewTransactionRunner createManagedNewTransactionRunnerToTest(final DataBroker dataBroker) {
         return new RetryingManagedNewTransactionRunner(dataBroker);
     }
 
@@ -39,7 +38,7 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
         TopLevelList data = newTestDataObject();
         managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
             writeTx -> writeTx.put(TEST_PATH, data)).get();
-        Assert.assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
+        assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
     @Override
@@ -50,7 +49,7 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
         TopLevelList data = newTestDataObject();
         managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
             writeTx -> writeTx.put(TEST_PATH, data)).get();
-        Assert.assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
+        assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
     @Override
@@ -64,7 +63,7 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
                 writeTx.put(TEST_PATH, data);
                 return 1;
             }).get());
-        Assert.assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
+        assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
     @Test
@@ -74,21 +73,21 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
         managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
             tx -> {
                 tx.put(TEST_PATH, data);
-                Assert.assertEquals(data, tx.read(TEST_PATH).get().get());
+                assertEquals(data, tx.read(TEST_PATH).get().get());
             }).get();
-        Assert.assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
+        assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
     @Test
     public void testApplyWithNewReadWriteTransactionReadFailedException() throws Exception {
         testableDataBroker.failReads(2, new ReadFailedException("bada boum bam!"));
         TopLevelList data = newTestDataObject();
-        Assert.assertEquals(data, managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
+        assertEquals(data, managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
             OPERATIONAL,
             tx -> {
                 tx.put(TEST_PATH, data);
                 return tx.read(TEST_PATH).get().get();
             }).get());
-        Assert.assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
+        assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 }
