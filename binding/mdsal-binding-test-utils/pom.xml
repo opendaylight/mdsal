@@ -49,6 +49,7 @@
             <scope>compile</scope>
             <version>1.3.1</version>
         </dependency>
+
         <dependency>
             <groupId>io.github.java-diff-utils</groupId>
             <artifactId>java-diff-utils</artifactId>
@@ -74,34 +75,27 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-dom-adapter</artifactId>
             <type>test-jar</type>
+            <!-- We are building on top of abstract test classes -->
             <scope>compile</scope>
         </dependency>
-        <!-- The following are dependencies which are listed
-             as scope test in mdsal-binding-dom-adapter; we
-             wanted most of them as scope compile here...      -->
+        <!-- For testing purposes we want to bring in also implementation
+             artifacts -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-dom-broker</artifactId>
         </dependency>
-
-        <!-- The following, contrary to the above, ARE <scope>test,
-             because they are only required by the test utilities
-             self test code in src/test, but not (necessarily)
-             by a downstream consumer of the test utilities.   -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-            <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-test-model</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.truth</groupId>
             <artifactId>truth</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
