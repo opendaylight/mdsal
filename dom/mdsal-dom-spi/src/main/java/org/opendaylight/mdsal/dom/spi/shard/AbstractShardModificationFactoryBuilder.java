@@ -5,28 +5,26 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.Beta;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
-import org.opendaylight.mdsal.dom.spi.shard.ModificationContextNodeBuilder;
-import org.opendaylight.mdsal.dom.spi.shard.WriteableSubshardBoundaryNode;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
-public abstract class ShardDataModificationFactoryBuilder<T> extends ModificationContextNodeBuilder
+@Beta
+public abstract class AbstractShardModificationFactoryBuilder<T> extends ModificationContextNodeBuilder
         implements Builder<T> {
-    protected final DOMDataTreeIdentifier root;
     protected final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards = new HashMap<>();
+    protected final DOMDataTreeIdentifier root;
 
-    public ShardDataModificationFactoryBuilder(final DOMDataTreeIdentifier root) {
+    public AbstractShardModificationFactoryBuilder(final DOMDataTreeIdentifier root) {
         this.root = requireNonNull(root);
     }
 
@@ -38,6 +36,9 @@ public abstract class ShardDataModificationFactoryBuilder<T> extends Modificatio
     public void addSubshard(final DOMDataTreeIdentifier prefix, final ForeignShardModificationContext value) {
         childShards.put(prefix, value);
     }
+
+    @Override
+    public abstract T build();
 
     private void putNode(final YangInstanceIdentifier key, final WriteableSubshardBoundaryNode subshardNode) {
         final Iterator<PathArgument> toBoundary = toRelative(key).getPathArguments().iterator();
@@ -58,6 +59,4 @@ public abstract class ShardDataModificationFactoryBuilder<T> extends Modificatio
     private YangInstanceIdentifier toRelative(final YangInstanceIdentifier key) {
         return key.relativeTo(root.getRootIdentifier()).get();
     }
-
-    public abstract T build();
 }
