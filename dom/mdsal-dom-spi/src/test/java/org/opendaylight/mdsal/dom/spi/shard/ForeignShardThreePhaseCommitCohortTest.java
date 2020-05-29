@@ -5,25 +5,23 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_IDENTIFIER;
-import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_SHARD_PRODUCER;
-import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_SHARD_WRITE_TRANSACTION;
-import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_WRITE_CURSOR;
-import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.resetMocks;
+import static org.opendaylight.mdsal.dom.spi.shard.TestUtils.DOM_DATA_TREE_IDENTIFIER;
+import static org.opendaylight.mdsal.dom.spi.shard.TestUtils.DOM_DATA_TREE_SHARD_PRODUCER;
+import static org.opendaylight.mdsal.dom.spi.shard.TestUtils.DOM_DATA_TREE_SHARD_WRITE_TRANSACTION;
+import static org.opendaylight.mdsal.dom.spi.shard.TestUtils.DOM_DATA_TREE_WRITE_CURSOR;
+import static org.opendaylight.mdsal.dom.spi.shard.TestUtils.resetMocks;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
 
 public class ForeignShardThreePhaseCommitCohortTest {
-
     @Before
     public void setUp() throws Exception {
         doNothing().when(DOM_DATA_TREE_WRITE_CURSOR).close();
@@ -55,7 +53,7 @@ public class ForeignShardThreePhaseCommitCohortTest {
         foreignShardThreePhaseCommitCohort.commit();
         verify(DOM_DATA_TREE_SHARD_WRITE_TRANSACTION).commit();
 
-        assertEquals(null, foreignShardThreePhaseCommitCohort.abort().get());
+        assertNull(foreignShardThreePhaseCommitCohort.abort().get());
     }
 
     @After

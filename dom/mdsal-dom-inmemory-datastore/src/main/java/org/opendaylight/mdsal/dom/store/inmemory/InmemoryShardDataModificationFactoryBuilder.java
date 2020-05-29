@@ -9,9 +9,10 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.spi.shard.AbstractShardModificationFactoryBuilder;
 
 class InmemoryShardDataModificationFactoryBuilder
-        extends ShardDataModificationFactoryBuilder<InMemoryShardDataModificationFactory> {
+        extends AbstractShardModificationFactoryBuilder<InMemoryShardDataModificationFactory> {
 
     InmemoryShardDataModificationFactoryBuilder(final DOMDataTreeIdentifier root) {
         super(root);
