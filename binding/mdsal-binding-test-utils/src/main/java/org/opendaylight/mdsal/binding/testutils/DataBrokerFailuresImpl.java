@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
  * @author Michael Vorburger.ch
  */
 public class DataBrokerFailuresImpl extends ForwardingDataBroker implements DataBrokerFailures {
-
     private static final Logger LOG = LoggerFactory.getLogger(DataBrokerFailuresImpl.class);
 
     private final DataBroker delegate;
@@ -49,7 +48,7 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     private final AtomicInteger howManyFailingCommits = new AtomicInteger();
     private boolean commitAndThrowException = false;
 
-    public DataBrokerFailuresImpl(DataBroker delegate) {
+    public DataBrokerFailuresImpl(final DataBroker delegate) {
         this.delegate = delegate;
     }
 
@@ -59,26 +58,26 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     }
 
     @Override
-    public void failReads(ReadFailedException exception) {
+    public void failReads(final ReadFailedException exception) {
         unfailReads();
         readException = requireNonNull(exception, "exception == null");
     }
 
     @Override
-    public void failReads(int howManyTimes, ReadFailedException exception) {
+    public void failReads(final int howManyTimes, final ReadFailedException exception) {
         unfailReads();
         howManyFailingReads.set(howManyTimes);
         readException = requireNonNull(exception, "exception == null");
     }
 
     @Override
-    public void failCommits(TransactionCommitFailedException exception) {
+    public void failCommits(final TransactionCommitFailedException exception) {
         unfailCommits();
         this.commitException = requireNonNull(exception, "exception == null");
     }
 
     @Override
-    public void failCommits(int howManyTimes, TransactionCommitFailedException exception) {
+    public void failCommits(final int howManyTimes, final TransactionCommitFailedException exception) {
         howManyFailingCommits.set(howManyTimes);
         this.commitException = requireNonNull(exception, "exception == null");
     }
@@ -105,43 +104,43 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
 
     @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
             justification = "https://github.com/spotbugs/spotbugs/issues/811")
-    private FluentFuture<? extends CommitInfo> handleCommit(Supplier<FluentFuture<? extends CommitInfo>> commitMethod) {
+    private FluentFuture<? extends CommitInfo> handleCommit(
+            final Supplier<FluentFuture<? extends CommitInfo>> commitMethod) {
         if (howManyFailingCommits.decrementAndGet() == -1) {
             commitException = null;
         }
         if (commitException == null) {
             return commitMethod.get();
-        } else {
-            if (commitAndThrowException) {
-                try {
-                    commitMethod.get().get();
-                } catch (InterruptedException | ExecutionException e) {
-                    LOG.warn("Exception while waiting for committed transaction", e);
-                }
-            }
-            return FluentFuture.from(Futures.immediateFailedFuture(commitException));
         }
+
+        if (commitAndThrowException) {
+            try {
+                commitMethod.get().get();
+            } catch (InterruptedException | ExecutionException e) {
+                LOG.warn("Exception while waiting for committed transaction", e);
+            }
+        }
+        return FluentFuture.from(Futures.immediateFailedFuture(commitException));
     }
 
     public <T extends DataObject> FluentFuture<Optional<T>> handleRead(
-            BiFunction<LogicalDatastoreType, InstanceIdentifier<T>, FluentFuture<Optional<T>>> readMethod,
-            LogicalDatastoreType store, InstanceIdentifier<T> path) {
+            final BiFunction<LogicalDatastoreType, InstanceIdentifier<T>, FluentFuture<Optional<T>>> readMethod,
+            final LogicalDatastoreType store, final InstanceIdentifier<T> path) {
         if (howManyFailingReads.decrementAndGet() == -1) {
             readException = null;
         }
         if (readException == null) {
             return readMethod.apply(store, path);
-        } else {
-            return FluentFuture.from(Futures.immediateFailedFuture(readException));
         }
+        return FluentFuture.from(Futures.immediateFailedFuture(readException));
     }
 
     @Override
     public ReadWriteTransaction newReadWriteTransaction() {
         return new ForwardingReadWriteTransaction(delegate.newReadWriteTransaction()) {
             @Override
-            public <T extends DataObject> FluentFuture<Optional<T>> read(LogicalDatastoreType store,
-                    InstanceIdentifier<T> path) {
+            public <T extends DataObject> FluentFuture<Optional<T>> read(final LogicalDatastoreType store,
+                    final InstanceIdentifier<T> path) {
                 return handleRead(super::read, store, path);
             }
 

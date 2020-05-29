@@ -9,9 +9,7 @@ package org.opendaylight.mdsal.binding.testutils;
 
 import com.google.common.collect.Maps;
 import java.util.Collections;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugmentBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ContainerWithUses;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ContainerWithUsesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TopBuilder;
@@ -32,25 +30,20 @@ public final class ExpectedObjects {
     }
 
     public static TopLevelList topLevelList() {
-        TopLevelListBuilder it = new TopLevelListBuilder();
-        TopLevelListKey topLevelListKey = new TopLevelListKey("foo");
-        it.withKey(topLevelListKey);
-        it.setName("foo");
-        TreeComplexUsesAugmentBuilder treeComplexUsesAugmentBuilder = new TreeComplexUsesAugmentBuilder();
-        ContainerWithUsesBuilder containerWithUsesBuilder = new ContainerWithUsesBuilder();
-        containerWithUsesBuilder.setLeafFromGrouping("foo");
-        ContainerWithUses containerWithUses = containerWithUsesBuilder.build();
-        treeComplexUsesAugmentBuilder.setContainerWithUses(containerWithUses);
-        TreeComplexUsesAugment treeComplexUsesAugment = treeComplexUsesAugmentBuilder.build();
-        it.addAugmentation(TreeComplexUsesAugment.class, treeComplexUsesAugment);
-        return it.build();
+        return new TopLevelListBuilder()
+                .withKey(new TopLevelListKey("foo"))
+                .setName("foo")
+                .addAugmentation(new TreeComplexUsesAugmentBuilder()
+                    .setContainerWithUses(new ContainerWithUsesBuilder().setLeafFromGrouping("foo").build())
+                    .build())
+                .build();
     }
 
     public static Top top() {
         return new TopBuilder()
                 .setTopLevelList(Maps.uniqueIndex(Collections.singletonList(new TopLevelListBuilder()
                     .setName("foo")
-                    .addAugmentation(TreeComplexUsesAugment.class, new TreeComplexUsesAugmentBuilder()
+                    .addAugmentation(new TreeComplexUsesAugmentBuilder()
                         .setContainerWithUses(new ContainerWithUsesBuilder().setLeafFromGrouping("foo").build())
                         .build())
                     .build()), TopLevelList::key))
