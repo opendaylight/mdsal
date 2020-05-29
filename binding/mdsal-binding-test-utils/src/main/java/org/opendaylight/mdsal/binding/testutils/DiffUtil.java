@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.testutils;
 
 import com.github.difflib.DiffUtils;
 import com.github.difflib.UnifiedDiffUtils;
-import com.github.difflib.algorithm.DiffException;
 import com.github.difflib.patch.Patch;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -22,7 +21,6 @@ import java.util.List;
  */
 // package-local: no need to expose this, consider it an implementation detail; public API is the AssertDataObjects
 final class DiffUtil {
-
     // Configuration which we could tune as we use this more
     private static final int MAX_DIFFS = 1;
     // number of lines of context output around each difference
@@ -31,7 +29,11 @@ final class DiffUtil {
     private static final Splitter SPLITTER = Splitter.on(System.getProperty("line.separator"));
     private static final Joiner JOINER = Joiner.on(System.getProperty("line.separator"));
 
-    public static String diff(String expectedText, String actualText) throws DiffException {
+    private DiffUtil() {
+
+    }
+
+    static String diff(final String expectedText, final String actualText) {
         List<String> originalLines = SPLITTER.splitToList(expectedText);
         List<String> revisedLines = SPLITTER.splitToList(actualText);
         Patch<String> patch = DiffUtils.diff(originalLines, revisedLines);
@@ -45,9 +47,5 @@ final class DiffUtil {
             diff = diff.subList(0, MAX_DIFFS);
         }
         return header + JOINER.join(diff);
-    }
-
-    private DiffUtil() {
-
     }
 }

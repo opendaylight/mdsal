@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.testutils;
 
 import ch.vorburger.xtendbeans.AssertBeans;
-import com.github.difflib.algorithm.DiffException;
 import java.util.Objects;
 import org.junit.ComparisonFailure;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -53,7 +52,7 @@ public final class AssertDataObjects {
      *
      * @see AssertBeans#assertEqualBeans(Object, Object)
      */
-    public static void assertEqualBeans(Object expected, Object actual) throws ComparisonFailure {
+    public static void assertEqualBeans(final Object expected, final Object actual) throws ComparisonFailure {
         if (!Objects.equals(expected, actual)) {
             String expectedText = GENERATOR.getExpression(expected);
             assertEqualByText(expectedText, actual);
@@ -65,17 +64,12 @@ public final class AssertDataObjects {
     }
 
     // package local method used only in the self tests of this utility (not intended for usage by client code)
-    static void assertEqualByText(String expectedText, Object actual) throws ComparisonFailure {
+    static void assertEqualByText(final String expectedText, final Object actual) throws ComparisonFailure {
         String actualText = GENERATOR.getExpression(actual);
         if (!expectedText.equals(actualText)) {
-            try {
-                String diff = DiffUtil.diff(expectedText, actualText);
-                LOG.warn("diff for ComparisonFailure about to be thrown:\n{}", diff);
-            } catch (DiffException e) {
-                LOG.error("Error generating a comparison diff", e);
-            }
+            String diff = DiffUtil.diff(expectedText, actualText);
+            LOG.warn("diff for ComparisonFailure about to be thrown:\n{}", diff);
             throw new ComparisonFailure("Expected and actual beans do not match", expectedText, actualText);
         }
     }
-
 }
