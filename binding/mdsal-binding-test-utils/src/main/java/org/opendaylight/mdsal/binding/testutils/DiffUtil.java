@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.testutils;
 
 import com.github.difflib.DiffUtils;
 import com.github.difflib.UnifiedDiffUtils;
-import com.github.difflib.algorithm.DiffException;
 import com.github.difflib.patch.Patch;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -31,7 +30,7 @@ final class DiffUtil {
     private static final Splitter SPLITTER = Splitter.on(System.getProperty("line.separator"));
     private static final Joiner JOINER = Joiner.on(System.getProperty("line.separator"));
 
-    public static String diff(String expectedText, String actualText) throws DiffException {
+    public static String diff(final String expectedText, final String actualText) {
         List<String> originalLines = SPLITTER.splitToList(expectedText);
         List<String> revisedLines = SPLITTER.splitToList(actualText);
         Patch<String> patch = DiffUtils.diff(originalLines, revisedLines);
