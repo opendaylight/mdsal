@@ -95,6 +95,12 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-dom-runtime</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
 
         <!-- EOS -->
         <dependency>
