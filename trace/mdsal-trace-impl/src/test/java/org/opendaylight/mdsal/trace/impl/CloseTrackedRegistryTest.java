@@ -17,7 +17,7 @@ import org.junit.Test;
 public class CloseTrackedRegistryTest {
 
     private static class SomethingClosable extends AbstractCloseTracked<SomethingClosable> implements AutoCloseable {
-        SomethingClosable(CloseTrackedRegistry<SomethingClosable> transactionChainRegistry) {
+        SomethingClosable(final CloseTrackedRegistry<SomethingClosable> transactionChainRegistry) {
             super(transactionChainRegistry);
         }
 
@@ -58,7 +58,7 @@ public class CloseTrackedRegistryTest {
     }
 
     // Something like this really should be in Google Truth...
-    private <T> void assertThatIterableContains(Iterable<T> iterable, Predicate<T> predicate) {
+    private static <T> void assertThatIterableContains(final Iterable<T> iterable, final Predicate<T> predicate) {
         for (T element : iterable) {
             if (predicate.test(element)) {
                 return;
@@ -68,7 +68,7 @@ public class CloseTrackedRegistryTest {
     }
 
     @SuppressWarnings({ "resource", "unused" })
-    private void someOtherMethodWhichDoesNotClose(CloseTrackedRegistry<SomethingClosable> registry) {
+    private static void someOtherMethodWhichDoesNotClose(final CloseTrackedRegistry<SomethingClosable> registry) {
         new SomethingClosable(registry);
     }
 
