@@ -92,12 +92,12 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-dom-adapter</artifactId>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-dom-adapter</artifactId>
             <type>test-jar</type>
-            <scope>test</scope>
-        </dependency-->
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-dom-codec</artifactId>
