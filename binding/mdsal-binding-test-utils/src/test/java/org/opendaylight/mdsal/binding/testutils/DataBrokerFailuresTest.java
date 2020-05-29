@@ -7,12 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.testutils;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.junit.runners.MethodSorters.NAME_ASCENDING;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -55,7 +57,7 @@ public class DataBrokerFailuresTest {
     }
 
     @Test
-    public void testFailReadWriteTransactionCommit() throws TimeoutException, InterruptedException {
+    public void testFailReadWriteTransactionCommit() {
         dbFailures.failCommits(new OptimisticLockFailedException("bada boum bam!"));
         checkCommitFails();
         // Now make sure that it still fails, and not just once:
@@ -64,14 +66,10 @@ public class DataBrokerFailuresTest {
         checkCommitFails();
     }
 
-    private void checkCommitFails() throws TimeoutException, InterruptedException {
-        try {
-            dataBroker.newReadWriteTransaction().commit().get(5, TimeUnit.SECONDS);
-            fail("This should have led to a TransactionCommitFailedException!");
-        } catch (ExecutionException e) {
-            assertTrue("Expected TransactionCommitFailedException",
-                    e.getCause() instanceof TransactionCommitFailedException);
-        }
+    private void checkCommitFails() {
+        FluentFuture<?> future = dataBroker.newReadWriteTransaction().commit();
+        ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get(5, TimeUnit.SECONDS));
+        assertThat(ex.getCause(), instanceOf(TransactionCommitFailedException.class));
     }
 
     @Test
@@ -95,18 +93,13 @@ public class DataBrokerFailuresTest {
         dataBroker.newReadWriteTransaction().commit().get(5, TimeUnit.SECONDS);
     }
 
-    @Test(expected = OptimisticLockFailedException.class)
-    @SuppressWarnings("checkstyle:AvoidHidingCauseException")
-    public void testFailWriteTransactionCommit()
-            throws TimeoutException, InterruptedException, TransactionCommitFailedException {
+    @Test
+    public void testFailWriteTransactionCommit() {
         dbFailures.failCommits(new OptimisticLockFailedException("bada boum bam!"));
-        try {
-            dataBroker.newWriteOnlyTransaction().commit().get(5, TimeUnit.SECONDS);
-        } catch (ExecutionException e) {
-            assertTrue("Expected TransactionCommitFailedException",
-                    e.getCause() instanceof TransactionCommitFailedException);
-            throw (TransactionCommitFailedException)e.getCause();
-        }
+
+        FluentFuture<?> future = dataBroker.newWriteOnlyTransaction().commit();
+        ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get(5, TimeUnit.SECONDS));
+        assertThat(ex.getCause(), instanceOf(OptimisticLockFailedException.class));
     }
 
     @Test
