@@ -14,7 +14,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBro
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
 
 @Beta
 public class DataBrokerTestModule {
@@ -63,7 +63,7 @@ public class DataBrokerTestModule {
         return dataBrokerTest.getDataBrokerTestCustomizer().getSchemaService();
     }
 
-    public SchemaContextProvider getSchemaContextProvider() {
+    public EffectiveModelContextProvider getSchemaContextProvider() {
         return dataBrokerTest.getDataBrokerTestCustomizer().getSchemaService()::getGlobalContext;
     }
 }
