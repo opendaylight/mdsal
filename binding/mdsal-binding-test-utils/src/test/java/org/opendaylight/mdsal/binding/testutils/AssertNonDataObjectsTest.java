@@ -7,7 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.testutils;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import ch.vorburger.xtendbeans.AssertBeans;
 import org.junit.ComparisonFailure;
@@ -33,12 +36,12 @@ public class AssertNonDataObjectsTest {
             return name;
         }
 
-        public void setName(String name) {
+        public void setName(final String name) {
             this.name = name;
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             }
@@ -81,11 +84,10 @@ public class AssertNonDataObjectsTest {
         SomeBean actual = new SomeBean();
         actual.setName("hello, world 2");
 
-        try {
-            AssertDataObjects.assertEqualBeans(expected, actual);
-        } catch (ComparisonFailure e) {
-            assertThat(e.getExpected()).contains("hello, world 1");
-            assertThat(e.getActual()).contains("hello, world 2");
-        }
+        ComparisonFailure ex = assertThrows(ComparisonFailure.class,
+            () -> AssertDataObjects.assertEqualBeans(expected, actual));
+        assertThat(ex.getMessage(), startsWith("Expected and actual beans do not match"));
+        assertThat(ex.getExpected(), containsString("hello, world 1"));
+        assertThat(ex.getActual(), containsString("hello, world 2"));
     }
 }

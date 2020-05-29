@@ -93,9 +93,5 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-test-model</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.google.truth</groupId>
-            <artifactId>truth</artifactId>
-        </dependency>
     </dependencies>
 </project>
