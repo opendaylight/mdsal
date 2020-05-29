@@ -57,7 +57,7 @@ public class AugmentableExtensionTest extends AbstractDataBrokerTest {
         Top actualTop = readTx.read(OPERATIONAL, id).get().get();
         AssertBeans.assertEqualByText("#{\n}", augmentableExtension.getAugmentations(actualTop));
 
-        TopLevelList topLevelList = actualTop.getTopLevelList().values().iterator().next();
+        TopLevelList topLevelList = actualTop.nonnullTopLevelList().values().iterator().next();
         AssertDataObjects.assertEqualByText("#{\n"
                 + "    TreeComplexUsesAugment -> new TreeComplexUsesAugmentBuilder >> [\n"
                 + "        containerWithUses = new ContainerWithUsesBuilder >> [\n"
@@ -67,8 +67,8 @@ public class AugmentableExtensionTest extends AbstractDataBrokerTest {
                 + "}", augmentableExtension.getAugmentations(topLevelList));
     }
 
-    <T extends DataObject> void put(WriteTransaction tx, LogicalDatastoreType store,
-            Map.Entry<InstanceIdentifier<T>, T> obj) {
+    <T extends DataObject> void put(final WriteTransaction tx, final LogicalDatastoreType store,
+            final Map.Entry<InstanceIdentifier<T>, T> obj) {
         tx.put(OPERATIONAL, obj.getKey(), obj.getValue());
     }
 

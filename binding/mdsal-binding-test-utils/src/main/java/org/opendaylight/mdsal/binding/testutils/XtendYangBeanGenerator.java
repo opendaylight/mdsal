@@ -40,37 +40,24 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
 
     private final AugmentableExtension augmentableExtension = new AugmentableExtension();
 
-    private boolean useBuilderExtensions(final Object bean) {
-        return bean instanceof DataObject;
-    }
-
     @Override
     public String getExpression(final Object bean) {
         final String beanText = super.getExpression(bean);
         if (useBuilderExtensions(bean)) {
             return new StringBuilder("import static extension ").append(XtendBuilderExtensions.class.getName())
                     .append(".operator_doubleGreaterThan\n\n").append(beanText).toString();
-        } else {
-            return beanText;
         }
+        return beanText;
     }
 
     @Override
     protected boolean isUsingBuilder(final Object bean, final Class<?> builderClass) {
-        if (useBuilderExtensions(bean)) {
-            return false;
-        } else {
-            return super.isUsingBuilder(bean, builderClass);
-        }
+        return useBuilderExtensions(bean) ? false : super.isUsingBuilder(bean, builderClass);
     }
 
     @Override
     protected String getOperator(final Object bean, final Class<?> builderClass) {
-        if (useBuilderExtensions(bean)) {
-            return ">>";
-        } else {
-            return super.getOperator(bean, builderClass);
-        }
+        return useBuilderExtensions(bean) ? ">>" : super.getOperator(bean, builderClass);
     }
 
     @Override
@@ -79,14 +66,12 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
             DataContainer dataContainerBean = (DataContainer) bean;
             Optional<Class<?>> optBuilderClass = getOptionalBuilderClassByAppendingBuilderToClassName(
                     dataContainerBean.implementedInterface());
-            if (optBuilderClass.isPresent()) {
-                return super.getNewBeanExpression(dataContainerBean, optBuilderClass.get());
-            } else {
+            if (optBuilderClass.isEmpty()) {
                 throw new IllegalArgumentException("DataContainer has no *Builder class: " + bean.getClass());
             }
-        } else {
-            return super.getNewBeanExpression(bean);
+            return super.getNewBeanExpression(dataContainerBean, optBuilderClass.get());
         }
+        return super.getNewBeanExpression(bean);
     }
 
     @Override
@@ -120,16 +105,12 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
                 // We sort the augmentations by Class type, because the Map has unpredictable order:
                 .sorted(Comparator.comparing(e2 -> e2.getKey().getName()))
                 .forEachOrdered(e -> {
-                    sb.append("addAugmentation(");
-                    sb.append(stringify(e.getKey()));
-                    sb.append(", ");
-                    sb.append(getNewBeanExpression(e.getValue()));
-                    sb.append(")");
+                    sb.append("addAugmentation(").append(stringify(e.getKey())).append(", ")
+                        .append(getNewBeanExpression(e.getValue())).append(')');
                 });
             return sb;
-        } else {
-            return "";
         }
+        return "";
     }
 
 /*
@@ -150,4 +131,7 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
     }
  */
 
+    private static boolean useBuilderExtensions(final Object bean) {
+        return bean instanceof DataObject;
+    }
 }
