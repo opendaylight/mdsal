@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2d7cf24d_85cae0d0",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-01T05:07:46Z",
+      "side": 1,
+      "message": "wrong copyright",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 35
+      },
+      "revId": "5a93271e5872ae6637eb8928758e70cc09dd25b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5fef2706_a334653d",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-01T05:07:46Z",
+      "side": 1,
+      "message": "public classes start their life as @Beta\nshould be final\nshould have an singleton instance (and readResolve() to match)",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 6
+      },
+      "revId": "5a93271e5872ae6637eb8928758e70cc09dd25b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8bb2413a_90bf48e7",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-01T05:07:46Z",
+      "side": 1,
+      "message": "java.lang.String is final, so className.equals(\"java.lang.String\")",
+      "range": {
+        "startLine": 71,
+        "startChar": 49,
+        "endLine": 71,
+        "endChar": 104
+      },
+      "revId": "5a93271e5872ae6637eb8928758e70cc09dd25b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f408a95_84a84f21",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-01T05:07:46Z",
+      "side": 1,
+      "message": "plain return without the intermediate local variable",
+      "range": {
+        "startLine": 89,
+        "startChar": 12,
+        "endLine": 89,
+        "endChar": 24
+      },
+      "revId": "5a93271e5872ae6637eb8928758e70cc09dd25b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f64f7179_5b9db17b",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-01T05:07:46Z",
+      "side": 1,
+      "message": "how common is this?",
+      "range": {
+        "startLine": 90,
+        "startChar": 17,
+        "endLine": 90,
+        "endChar": 41
+      },
+      "revId": "5a93271e5872ae6637eb8928758e70cc09dd25b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
