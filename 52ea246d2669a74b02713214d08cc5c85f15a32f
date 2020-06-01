@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "98ca553b_e9756c09",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-01T15:08:45Z",
+      "side": 1,
+      "message": "missing space ;)",
+      "range": {
+        "startLine": 33,
+        "startChar": 36,
+        "endLine": 33,
+        "endChar": 37
+      },
+      "revId": "52ea246d2669a74b02713214d08cc5c85f15a32f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e19113f_57165e9b",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-01T15:08:45Z",
+      "side": 1,
+      "message": "so we really do not want this -- note if we are generating code, we will end up generating unoptimized code, as we won\u0027t be able to load any of it.",
+      "range": {
+        "startLine": 73,
+        "startChar": 35,
+        "endLine": 73,
+        "endChar": 60
+      },
+      "revId": "52ea246d2669a74b02713214d08cc5c85f15a32f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "19716282_b5bf600b",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-01T15:08:45Z",
+      "side": 1,
+      "message": "so this really should be a dispatch on the allowed direct types (see BaseYangTypes), or really introspection on Type (to see if any of its supertypes in java.lang.Number).",
+      "range": {
+        "startLine": 74,
+        "startChar": 19,
+        "endLine": 74,
+        "endChar": 55
+      },
+      "revId": "52ea246d2669a74b02713214d08cc5c85f15a32f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "099e97ef_7bf26bc8",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-01T15:08:45Z",
+      "side": 1,
+      "message": "same thing as String below",
+      "range": {
+        "startLine": 74,
+        "startChar": 59,
+        "endLine": 75,
+        "endChar": 55
+      },
+      "revId": "52ea246d2669a74b02713214d08cc5c85f15a32f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9559a220_2c2f5c83",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-01T15:08:45Z",
+      "side": 1,
+      "message": "and this bit is slighty annoying, as InstanceIdentifier is not final. But it is part of yang-binding, so completely in our control (it cannot be subclassed outside of yang-binding). I think open-coding to YangInstanceIdentifier and KeyedInstanceIdentifier is sufficient.",
+      "range": {
+        "startLine": 94,
+        "startChar": 19,
+        "endLine": 94,
+        "endChar": 87
+      },
+      "revId": "52ea246d2669a74b02713214d08cc5c85f15a32f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
