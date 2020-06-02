@@ -258,6 +258,30 @@
       "revId": "5a93271e5872ae6637eb8928758e70cc09dd25b2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90cd180e_b8e10f2b",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ByTypeMemberComparator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-06-02T14:28:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ca89cd73_e301eceb",
+      "range": {
+        "startLine": 90,
+        "startChar": 17,
+        "endLine": 90,
+        "endChar": 41
+      },
+      "revId": "5a93271e5872ae6637eb8928758e70cc09dd25b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
