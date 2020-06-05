@@ -1,0 +1,257 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7b8b137f_a17c241d",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/CodegenTypeGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-05T12:47:48Z",
+      "side": 1,
+      "message": "please do not change formatting here",
+      "range": {
+        "startLine": 52,
+        "startChar": 13,
+        "endLine": 52,
+        "endChar": 31
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0bd01bbf_f5e8e811",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/CodegenTypeGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-05T12:47:48Z",
+      "side": 1,
+      "message": "same here, please fix your editor setup",
+      "range": {
+        "startLine": 71,
+        "startChar": 12,
+        "endLine": 71,
+        "endChar": 16
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9b3784a4_4e8d3d26",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/CodegenTypeGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-05T12:47:48Z",
+      "side": 1,
+      "message": "these are hot paths, please do not use String.format()",
+      "range": {
+        "startLine": 94,
+        "startChar": 35,
+        "endLine": 94,
+        "endChar": 49
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4905631f_7a61b2eb",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/CodegenTypeGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-05T12:47:48Z",
+      "side": 1,
+      "message": "should also be final",
+      "range": {
+        "startLine": 105,
+        "startChar": 19,
+        "endLine": 105,
+        "endChar": 24
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2e1f02f_44cfcfa7",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/CodegenTypeGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-05T12:47:48Z",
+      "side": 1,
+      "message": "inline these constants",
+      "range": {
+        "startLine": 111,
+        "startChar": 8,
+        "endLine": 114,
+        "endChar": 46
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "33373564_d1810ccf",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/CodegenTypeGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-05T12:47:48Z",
+      "side": 1,
+      "message": "this is not needed",
+      "range": {
+        "startLine": 116,
+        "startChar": 8,
+        "endLine": 116,
+        "endChar": 28
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a2b40bd_2e4c4bc9",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/CodegenTypeGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-05T12:47:48Z",
+      "side": 1,
+      "message": "implies Builder\u003cString\u003e ?",
+      "range": {
+        "startLine": 120,
+        "startChar": 22,
+        "endLine": 120,
+        "endChar": 27
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "323a741d_72e60b9d",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/CodegenTypeGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-05T12:47:48Z",
+      "side": 1,
+      "message": "not package-protected since the class is not visible?",
+      "range": {
+        "startLine": 156,
+        "startChar": 8,
+        "endLine": 156,
+        "endChar": 14
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "244ee303_cda3eba9",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/RuntimeTypeGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-05T12:47:48Z",
+      "side": 1,
+      "message": "missjng \u0027final\u0027 qualifier",
+      "range": {
+        "startLine": 108,
+        "startChar": 29,
+        "endLine": 108,
+        "endChar": 46
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f93e872_e5acbe10",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BaseTemplate.xtend",
+        "patchSetId": 5
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-05T12:47:48Z",
+      "side": 1,
+      "message": "this is non-trivial logic, please add a commend explaining what is going on",
+      "range": {
+        "startLine": 417,
+        "startChar": 16,
+        "endLine": 417,
+        "endChar": 37
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96fa5e58_5f868133",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BaseTemplate.xtend",
+        "patchSetId": 5
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-05T12:47:48Z",
+      "side": 1,
+      "message": "especially these types of magic constants",
+      "range": {
+        "startLine": 419,
+        "startChar": 16,
+        "endLine": 419,
+        "endChar": 67
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
