@@ -186,6 +186,30 @@
     },
     {
       "key": {
+        "uuid": "79c5b464_8919aa74",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/CodegenTypeGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-06-09T07:23:42Z",
+      "side": 1,
+      "message": "maybe private since class is private or make MethodCommentBuilder class, addParam, addThrows, addReturn package-private?",
+      "parentUuid": "323a741d_72e60b9d",
+      "range": {
+        "startLine": 156,
+        "startChar": 8,
+        "endLine": 156,
+        "endChar": 14
+      },
+      "revId": "17f72ef620661087d40367e990df18de9544cc36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "244ee303_cda3eba9",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/RuntimeTypeGenerator.java",
         "patchSetId": 5
