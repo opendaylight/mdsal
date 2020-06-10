@@ -47,6 +47,7 @@ import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
@@ -122,6 +123,19 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
             }
         });
 
+    private final LoadingCache<SchemaPath, ActionCodecContext> actionsByPath = CacheBuilder.newBuilder().build(
+            new CacheLoader<SchemaPath, ActionCodecContext>() {
+                @Override
+                public ActionCodecContext load(final SchemaPath key) {
+                    final SchemaNode schema = SchemaContextUtil.findDataSchemaNode(getSchema(), key);
+                    checkArgument(schema != null && schema instanceof ActionDefinition, "No action at path: %s", key);
+                    @SuppressWarnings("unchecked")
+                    final Class<? extends Action<?, ?, ?>> cls = (Class<? extends Action<?, ?, ?>>)
+                            factory().getRuntimeContext().getClassForSchema(schema);
+                    return getAction(cls);
+                }
+            });
+
     private final LoadingCache<SchemaPath, NotificationCodecContext<?>> notificationsByPath = CacheBuilder.newBuilder()
             .build(new CacheLoader<SchemaPath, NotificationCodecContext<?>>() {
                 @Override
@@ -173,7 +187,12 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
 
     @Override
     public DataContainerCodecContext<?,?> yangPathArgumentChild(final PathArgument arg) {
-        return getOrRethrow(childrenByQName, arg.getNodeType());
+        return schemaTreeChild(arg.getNodeType());
+    }
+
+    @Override
+    DataContainerCodecContext<?,?> schemaTreeChild(final QName child) {
+        return getOrRethrow(childrenByQName, child);
     }
 
     @Override
@@ -183,6 +202,10 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
 
     ActionCodecContext getAction(final Class<? extends Action<?, ?, ?>> action) {
         return getOrRethrow(actionsByClass, action);
+    }
+
+    ActionCodecContext getAction(final SchemaPath path) {
+        return getOrRethrow(actionsByPath, path);
     }
 
     NotificationCodecContext<?> getNotification(final Class<? extends Notification> notification) {

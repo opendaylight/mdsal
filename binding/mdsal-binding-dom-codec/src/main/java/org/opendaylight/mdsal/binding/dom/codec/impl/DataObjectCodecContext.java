@@ -15,16 +15,19 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.ImmutableSet;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -66,11 +69,14 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         extends DataContainerCodecContext<D, T> {
     private static final class Augmentations implements Immutable {
         final ImmutableMap<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> byYang;
+        final ImmutableMap<QName, NodeCodecContext> byQName;
         final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStream;
 
         Augmentations(final ImmutableMap<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> byYang,
+            final ImmutableMap<QName, NodeCodecContext> byQName,
             final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStream) {
             this.byYang = requireNonNull(byYang);
+            this.byQName = requireNonNull(byQName);
             this.byStream = requireNonNull(byStream);
         }
     }
@@ -80,13 +86,16 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         DataObjectCodecContext.class, NormalizedNodeContainer.class);
     private static final MethodType DATAOBJECT_TYPE = MethodType.methodType(DataObject.class,
         DataObjectCodecContext.class, NormalizedNodeContainer.class);
-    private static final Augmentations EMPTY_AUGMENTATIONS = new Augmentations(ImmutableMap.of(), ImmutableMap.of());
+    private static final Augmentations EMPTY_AUGMENTATIONS = new Augmentations(ImmutableMap.of(), ImmutableMap.of(),
+            ImmutableMap.of());
 
     private final ImmutableMap<String, ValueNodeCodecContext> leafChild;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
+    private final ImmutableMap<QName, NodeContextSupplier> byQName;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStreamClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClass;
     private final ImmutableMap<AugmentationIdentifier, Type> possibleAugmentations;
+    private final ImmutableSet<QName> possibleAugmentedNodesNames;
     private final @NonNull Class<? extends CodecDataObject<?>> generatedClass;
     private final MethodHandle proxyConstructor;
 
@@ -113,6 +122,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         final Map<Class<?>, Method> clsToMethod = BindingReflections.getChildrenClassToMethod(bindingClass);
 
         final Map<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYangBuilder = new HashMap<>();
+        final Map<QName, NodeContextSupplier> byQNameBuilder = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byStreamClassBuilder = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClassBuilder = new HashMap<>();
 
@@ -122,7 +132,9 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         for (final Entry<Method, ValueNodeCodecContext> entry : tmpLeaves.entrySet()) {
             final ValueNodeCodecContext leaf = entry.getValue();
             leafChildBuilder.put(leaf.getSchema().getQName().getLocalName(), leaf);
-            byYangBuilder.put(leaf.getDomPathArgument(), leaf);
+            final NodeIdentifier identifier = leaf.getDomPathArgument();
+            byYangBuilder.put(identifier, leaf);
+            byQNameBuilder.put(identifier.getNodeType(), leaf);
         }
         this.leafChild = leafChildBuilder.build();
 
@@ -140,7 +152,9 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
             final DataContainerCodecPrototype<?> childProto = loadChildPrototype(retClass);
             tmpDataObjects.put(method, childProto.getBindingClass());
             byStreamClassBuilder.put(childProto.getBindingClass(), childProto);
-            byYangBuilder.put(childProto.getYangArg(), childProto);
+            final PathArgument yangArg = childProto.getYangArg();
+            byYangBuilder.put(yangArg, childProto);
+            byQNameBuilder.put(yangArg.getNodeType(), childProto);
             if (childProto.isChoice()) {
                 final ChoiceNodeCodecContext<?> choice = (ChoiceNodeCodecContext<?>) childProto.get();
                 for (final Class<?> cazeChild : choice.getCaseChildrenClasses()) {
@@ -150,6 +164,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         }
 
         this.byYang = ImmutableMap.copyOf(byYangBuilder);
+        this.byQName = ImmutableMap.copyOf(byQNameBuilder);
         this.byStreamClass = ImmutableMap.copyOf(byStreamClassBuilder);
 
         // Slight footprint optimization: we do not want to copy byStreamClass, as that would force its entrySet view
@@ -161,10 +176,17 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
 
         if (Augmentable.class.isAssignableFrom(bindingClass)) {
             this.possibleAugmentations = factory().getRuntimeContext().getAvailableAugmentationTypes(getSchema());
+            final Set<QName> qNames = new HashSet<>();
+            possibleAugmentations.keySet()
+                    .stream()
+                    .map(AugmentationIdentifier::getPossibleChildNames)
+                    .forEach(qNames::addAll);
+            this.possibleAugmentedNodesNames = ImmutableSet.copyOf(qNames);
             generatedClass = CodecDataObjectGenerator.generateAugmentable(prototype.getFactory().getLoader(),
                 bindingClass, tmpLeaves, tmpDataObjects, keyMethod);
         } else {
             this.possibleAugmentations = ImmutableMap.of();
+            this.possibleAugmentedNodesNames = ImmutableSet.of();
             generatedClass = CodecDataObjectGenerator.generate(prototype.getFactory().getLoader(), bindingClass,
                 tmpLeaves, tmpDataObjects, keyMethod);
         }
@@ -191,6 +213,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
 
         // Scratch space for additions
         final Map<PathArgument, DataContainerCodecPrototype<?>> addByYang = new HashMap<>();
+        final Map<QName, NodeCodecContext> addByQName = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> addByStream = new HashMap<>();
 
         // Iterate over all possibilities, checking for modifications.
@@ -201,6 +224,9 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
                 final Class<?> bindingClass = augProto.getBindingClass();
                 if (!oldAugmentations.byYang.containsKey(yangArg)) {
                     if (addByYang.putIfAbsent(yangArg, augProto) == null) {
+                        for (QName childName : ((AugmentationIdentifier) yangArg).getPossibleChildNames()) {
+                            addByQName.put(childName, augProto.get().schemaTreeChild(childName));
+                        }
                         LOG.trace("Discovered new YANG mapping {} -> {} in {}", yangArg, augProto, this);
                     }
                 }
@@ -220,7 +246,8 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
 
             // We have some additions, propagate them out
             final Augmentations newAugmentations = new Augmentations(concatMaps(oldAugmentations.byYang, addByYang),
-                concatMaps(oldAugmentations.byStream, addByStream));
+                    concatMaps(oldAugmentations.byQName, addByQName),
+                    concatMaps(oldAugmentations.byStream, addByStream));
             if (AUGMENTATIONS_UPDATER.compareAndSet(this, oldAugmentations, newAugmentations)) {
                 // Success, we are done
                 return;
@@ -234,6 +261,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
             // to be materialized, which we otherwise do not need. Hence we do this the other way around, instantiating
             // our temporary maps' keySets and iterating over them. That's fine as we'll be throwing those maps away.
             removeMapKeys(addByYang, oldAugmentations.byYang);
+            removeMapKeys(addByQName, oldAugmentations.byQName);
             removeMapKeys(addByStream, oldAugmentations.byStream);
         }
     }
@@ -334,6 +362,13 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         return childNonNull(childSupplier, arg, "Argument %s is not valid child of %s", arg, getSchema()).get();
     }
 
+    @Override
+    final NodeCodecContext schemaTreeChild(final QName qname) {
+        final NodeContextSupplier childSupplier = byQName.get(qname);
+        return childSupplier == null ? qnameAugmentationChild(qname)
+                : childNonNull(childSupplier, qname, "Argument %s is not valid child of %s", qname, getSchema()).get();
+    }
+
     protected final ValueNodeCodecContext getLeafChild(final String name) {
         final ValueNodeCodecContext value = leafChild.get(name);
         if (value == null) {
@@ -397,6 +432,20 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
             // again.
             reloadAllAugmentations();
             return augmentations.byYang.get(arg);
+        }
+        return null;
+    }
+
+    private NodeCodecContext qnameAugmentationChild(final QName qname) {
+        final NodeCodecContext firstTry = augmentations.byQName.get(qname);
+        if (firstTry != null) {
+            return firstTry;
+        }
+        if (possibleAugmentedNodesNames.contains(qname)) {
+            // Try to load augmentations, which will potentially update knownAugmentations, hence we re-load that field
+            // again.
+            reloadAllAugmentations();
+            return augmentations.byQName.get(qname);
         }
         return null;
     }
