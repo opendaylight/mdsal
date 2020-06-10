@@ -100,6 +100,15 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends WithSta
     public abstract NodeCodecContext yangPathArgumentChild(YangInstanceIdentifier.PathArgument arg);
 
     /**
+     * Returns nested node context looking up supplied QName in the schema tree.
+     *
+     * @param qname child QName
+     * @return Context of child
+     * @throws IllegalArgumentException If supplied argument does not represent valid child.
+     */
+    abstract @NonNull NodeCodecContext schemaTreeChild(QName qname);
+
+    /**
      * Returns nested node context using supplied Binding Instance Identifier
      * and adds YANG instance identifiers to supplied list.
      *
