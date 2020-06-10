@@ -16,6 +16,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 
@@ -69,6 +70,16 @@ public interface BindingDataObjectCodecTreeNode<T extends DataObject> extends Bi
      *             If supplied argument does not represent valid child.
      */
     @NonNull BindingCodecTreeNode yangPathArgumentChild(YangInstanceIdentifier.@NonNull PathArgument child);
+
+    /**
+     * Returns nested node context using supplied QName.
+     *
+     * @param child QName argument
+     * @return Context of child
+     * @throws IllegalArgumentException
+     *             If supplied argument does not represent valid child.
+     */
+    @NonNull BindingCodecTreeNode qNameChild(@NonNull QName child);
 
     /**
      * Returns nested node context using supplied Binding Instance Identifier and adds YANG instance identifiers to
