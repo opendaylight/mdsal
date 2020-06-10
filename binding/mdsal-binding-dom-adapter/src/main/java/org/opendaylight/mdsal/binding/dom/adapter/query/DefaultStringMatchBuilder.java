@@ -5,16 +5,16 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.query.binding.adapter;
+package org.opendaylight.mdsal.binding.dom.adapter.query;
 
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.api.query.StringMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.ValueMatch;
+import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundMethod;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Contains;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.EndsWith;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.MatchesPattern;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.StartsWith;
-import org.opendaylight.mdsal.query.binding.adapter.QueryBuilderState.BoundMethod;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
