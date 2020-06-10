@@ -81,14 +81,19 @@ import org.opendaylight.yangtools.yang.data.api.schema.ValueNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
+import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.AnydataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AnyxmlSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
@@ -97,6 +102,7 @@ import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.InstanceIdentifierTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
+import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -331,12 +337,57 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         return null;
     }
 
+    @Nullable BindingDataObjectCodecTreeNode<?> getCodecContextNode(final @NonNull Absolute path) {
+        SchemaPath schemaPath = path.asSchemaPath();
+        final EffectiveModelContext modelContext = getRuntimeContext().getEffectiveModelContext();
+        if (isRpcDataSchema(modelContext, schemaPath))  {
+            return (BindingDataObjectCodecTreeNode<?>)root.getRpc(schemaPath);
+        }
+        if (SchemaContextUtil.getNotificationSchema(modelContext, schemaPath) != null) {
+            return root.getNotification(schemaPath);
+        }
+        final SchemaPath schemaPathParent = schemaPath.getParent();
+        if (schemaPathParent != null) {
+            final SchemaNode node = SchemaContextUtil.findDataSchemaNode(modelContext, schemaPathParent);
+            if (node instanceof ActionDefinition) {
+                final ActionCodecContext actionContext = root.getAction(schemaPathParent);
+                if (schemaPath.getLastComponent().getLocalName().equals("input")) {
+                    return actionContext.input();
+                } else {
+                    return actionContext.output();
+                }
+            }
+        }
+
+        List<QName> qnames = path.getNodeIdentifiers();
+        NodeCodecContext currentNode = root;
+
+        for (final QName qname : qnames) {
+            checkArgument(currentNode instanceof DataContainerCodecContext,
+                    "Unexpected child of non-container node %s", currentNode);
+            currentNode = ((DataContainerCodecContext<?, ?>)currentNode).schemaTreeChild(qname);
+        }
+
+        if (currentNode != null) {
+            verify(currentNode instanceof BindingDataObjectCodecTreeNode, "Illegal return node %s for identifier %s",
+                    currentNode, path);
+            return (BindingDataObjectCodecTreeNode<?>) currentNode;
+        }
+        return null;
+    }
+
     NotificationCodecContext<?> getNotificationContext(final SchemaPath notification) {
-        return root.getNotification(notification);
+        final BindingDataObjectCodecTreeNode<?> result = getCodecContextNode(Absolute.of(
+                (Collection<QName>)notification.getPathFromRoot()));
+        checkArgument(result instanceof NotificationCodecContext, "There is no notification by %s", notification);
+        return (NotificationCodecContext<?>)result;
     }
 
     RpcInputCodec<?> getRpcInputCodec(final SchemaPath path) {
-        return root.getRpc(path);
+        final BindingDataObjectCodecTreeNode<?> result = getCodecContextNode(Absolute.of(
+                (Collection<QName>)path.getPathFromRoot()));
+        checkArgument(result instanceof RpcInputCodec, "There is no RPC input or output by %s", path);
+        return (RpcInputCodec<?>)result;
     }
 
     ActionCodecContext getActionCodec(final Class<? extends Action<?, ?, ?>> action) {
@@ -477,7 +528,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final Absolute path) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return getCodecContextNode(path);
     }
 
     @Override
@@ -614,6 +665,16 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                 || data instanceof MapNode || data instanceof UnkeyedListNode
                 || data instanceof ChoiceNode
                 || data instanceof LeafSetNode;
+    }
+
+    private boolean isRpcDataSchema(final @NonNull SchemaContext schema,
+            final @NonNull SchemaPath path) {
+        try {
+            final ContainerSchemaNode data = SchemaContextUtil.getRpcDataSchema(schema, path);
+            return data != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     @SuppressWarnings("rawtypes")
