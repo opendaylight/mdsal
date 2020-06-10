@@ -32,6 +32,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
@@ -48,6 +49,7 @@ import org.slf4j.LoggerFactory;
 final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCodecContext<D, ChoiceSchemaNode> {
     private static final Logger LOG = LoggerFactory.getLogger(ChoiceNodeCodecContext.class);
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> byYangCaseChild;
+    private final ImmutableMap<QName, DataContainerCodecPrototype<?>> byQNameCaseChild;
 
     /*
      * This is a bit tricky. DataObject addressing does not take into account choice/case statements, and hence
@@ -103,6 +105,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
         super(prototype);
         final Map<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> byYangCaseChildBuilder =
                 new HashMap<>();
+        final Map<QName, DataContainerCodecPrototype<?>> byQNameCaseChildBuilder = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byClassBuilder = new HashMap<>();
         final SetMultimap<Class<?>, DataContainerCodecPrototype<?>> childToCase = SetMultimapBuilder.hashKeys()
                 .hashSetValues().build();
@@ -135,6 +138,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
                     }
                     byYangCaseChildBuilder.put(NodeIdentifier.create(cazeChild.getQName()), cazeDef);
                 }
+                byQNameCaseChildBuilder.put(cazeDef.getSchema().getQName(), cazeDef);
             } else {
                 /*
                  * If case definition is not available, we store it for
@@ -144,6 +148,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             }
         }
         byYangCaseChild = ImmutableMap.copyOf(byYangCaseChildBuilder);
+        byQNameCaseChild = ImmutableMap.copyOf(byQNameCaseChildBuilder);
 
         // Move unambiguous child->case mappings to byCaseChildClass, removing them from childToCase
         final ImmutableListMultimap.Builder<Class<?>, DataContainerCodecPrototype<?>> ambiguousByCaseBuilder =
@@ -232,6 +237,12 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
 
         return childNonNull(cazeProto, arg, "Argument %s is not valid child of %s", arg, getSchema()).get()
                 .yangPathArgumentChild(arg);
+    }
+
+    @Override
+    public NodeCodecContext qNameChild(QName child) {
+        return childNonNull(byQNameCaseChild.get(child), child,"Argument %s is not valid child of %s", child,
+                getSchema()).get();
     }
 
     @SuppressWarnings("unchecked")
