@@ -78,9 +78,11 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
 
     private final ImmutableMap<String, ValueNodeCodecContext> leafChild;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
+    private final ImmutableMap<QName, NodeContextSupplier> byQName;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStreamClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClass;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> augmentationByYang;
+    private final ImmutableMap<QName, NodeCodecContext> augmentationByQname;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> augmentationByStream;
     private final @NonNull Class<? extends CodecDataObject<?>> generatedClass;
     private final MethodHandle proxyConstructor;
@@ -103,6 +105,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         final Map<Class<?>, Method> clsToMethod = BindingReflections.getChildrenClassToMethod(bindingClass);
 
         final Map<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYangBuilder = new HashMap<>();
+        final Map<QName, NodeContextSupplier> byQNameBuilder = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byStreamClassBuilder = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClassBuilder = new HashMap<>();
 
@@ -113,6 +116,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
             final ValueNodeCodecContext leaf = entry.getValue();
             leafChildBuilder.put(leaf.getSchema().getQName().getLocalName(), leaf);
             byYangBuilder.put(leaf.getDomPathArgument(), leaf);
+            byQNameBuilder.put(leaf.getDomPathArgument().getNodeType(), leaf);
         }
         this.leafChild = leafChildBuilder.build();
 
@@ -130,7 +134,9 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
             final DataContainerCodecPrototype<?> childProto = loadChildPrototype(retClass);
             tmpDataObjects.put(method, childProto.getBindingClass());
             byStreamClassBuilder.put(childProto.getBindingClass(), childProto);
-            byYangBuilder.put(childProto.getYangArg(), childProto);
+            final PathArgument yangArg = childProto.getYangArg();
+            byYangBuilder.put(yangArg, childProto);
+            byQNameBuilder.put(yangArg.getNodeType(), childProto);
             if (childProto.isChoice()) {
                 final ChoiceNodeCodecContext<?> choice = (ChoiceNodeCodecContext<?>) childProto.get();
                 for (final Class<?> cazeChild : choice.getCaseChildrenClasses()) {
@@ -140,6 +146,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         }
 
         this.byYang = ImmutableMap.copyOf(byYangBuilder);
+        this.byQName = ImmutableMap.copyOf(byQNameBuilder);
         this.byStreamClass = ImmutableMap.copyOf(byStreamClassBuilder);
 
         // Slight footprint optimization: we do not want to copy byStreamClass, as that would force its entrySet view
@@ -162,11 +169,15 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
 
         // Iterate over all possible augmentations, indexing them as needed
         final Map<PathArgument, DataContainerCodecPrototype<?>> augByYang = new HashMap<>();
+        final Map<QName, NodeCodecContext> augByQName = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> augByStream = new HashMap<>();
         for (final Type augment : possibleAugmentations.values()) {
             final DataContainerCodecPrototype<?> augProto = getAugmentationPrototype(augment);
             final PathArgument augYangArg = augProto.getYangArg();
             if (augByYang.putIfAbsent(augYangArg, augProto) == null) {
+                for (QName childName : ((AugmentationIdentifier) augYangArg).getPossibleChildNames()) {
+                    augByQName.put(childName, augProto.get().schemaTreeChild(childName));
+                }
                 LOG.trace("Discovered new YANG mapping {} -> {} in {}", augYangArg, augProto, this);
             }
             final Class<?> augBindingClass = augProto.getBindingClass();
@@ -175,6 +186,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
             }
         }
         augmentationByYang = ImmutableMap.copyOf(augByYang);
+        augmentationByQname = ImmutableMap.copyOf(augByQName);
         augmentationByStream = ImmutableMap.copyOf(augByStream);
 
         final MethodHandle ctor;
@@ -261,6 +273,13 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         }
 
         return childNonNull(childSupplier, arg, "Argument %s is not valid child of %s", arg, getSchema()).get();
+    }
+
+    @Override
+    final NodeCodecContext schemaTreeChild(final QName qname) {
+        final NodeContextSupplier childSupplier = byQName.get(qname);
+        return childSupplier == null ? augmentationByQname.get(qname)
+                : childNonNull(childSupplier, qname, "Argument %s is not valid child of %s", qname, getSchema()).get();
     }
 
     protected final ValueNodeCodecContext getLeafChild(final String name) {

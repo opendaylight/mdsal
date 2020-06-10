@@ -32,6 +32,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
@@ -96,6 +97,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
     private static final Logger LOG = LoggerFactory.getLogger(ChoiceNodeCodecContext.class);
 
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> byYangCaseChild;
+    private final ImmutableMap<QName, DataContainerCodecPrototype<?>> byQNameCaseChild;
     private final ImmutableListMultimap<Class<?>, DataContainerCodecPrototype<?>> ambiguousByCaseChildClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byCaseChildClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byClass;
@@ -105,6 +107,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
         super(prototype);
         final Map<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> byYangCaseChildBuilder =
             new HashMap<>();
+        final Map<QName, DataContainerCodecPrototype<?>> byQNameCaseChildBuilder = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byClassBuilder = new HashMap<>();
         final SetMultimap<Class<?>, DataContainerCodecPrototype<?>> childToCase =
             SetMultimapBuilder.hashKeys().hashSetValues().build();
@@ -125,9 +128,10 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
                     childToCase.put(cazeChild, cazeDef);
                 }
                 // Updates collection of YANG instance identifier to case
-                for (final DataSchemaNode cazeChild : cazeDef.getSchema().getChildNodes()) {
+                final CaseSchemaNode cazeSchema = cazeDef.getSchema();
+                for (final DataSchemaNode cazeChild : cazeSchema.getChildNodes()) {
                     if (cazeChild.isAugmenting()) {
-                        final AugmentationSchemaNode augment = SchemaUtils.findCorrespondingAugment(cazeDef.getSchema(),
+                        final AugmentationSchemaNode augment = SchemaUtils.findCorrespondingAugment(cazeSchema,
                             cazeChild);
                         if (augment != null) {
                             byYangCaseChildBuilder.put(DataSchemaContextNode.augmentationIdentifierFrom(augment),
@@ -137,6 +141,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
                     }
                     byYangCaseChildBuilder.put(NodeIdentifier.create(cazeChild.getQName()), cazeDef);
                 }
+                byQNameCaseChildBuilder.put(cazeSchema.getQName(), cazeDef);
             } else {
                 /*
                  * If case definition is not available, we store it for
@@ -146,6 +151,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             }
         }
         byYangCaseChild = ImmutableMap.copyOf(byYangCaseChildBuilder);
+        byQNameCaseChild = ImmutableMap.copyOf(byQNameCaseChildBuilder);
 
         // Move unambiguous child->case mappings to byCaseChildClass, removing them from childToCase
         final ImmutableListMultimap.Builder<Class<?>, DataContainerCodecPrototype<?>> ambiguousByCaseBuilder =
@@ -234,6 +240,12 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
 
         return childNonNull(cazeProto, arg, "Argument %s is not valid child of %s", arg, getSchema()).get()
                 .yangPathArgumentChild(arg);
+    }
+
+    @Override
+    NodeCodecContext schemaTreeChild(QName qname) {
+        return childNonNull(byQNameCaseChild.get(qname), qname, "Argument %s is not valid child of %s", qname,
+                getSchema()).get();
     }
 
     @SuppressWarnings("unchecked")
