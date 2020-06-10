@@ -331,6 +331,24 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         return null;
     }
 
+    @Nullable BindingDataObjectCodecTreeNode<?> getCodecContextNode(final @NonNull Absolute path) {
+        List<QName> qnames = path.getNodeIdentifiers();
+        NodeCodecContext currentNode = root;
+
+        for (final QName qname : qnames) {
+            checkArgument(currentNode instanceof DataContainerCodecContext,
+                    "Unexpected child of non-container node %s", currentNode);
+            currentNode = ((DataContainerCodecContext<?, ?>)currentNode).qNameChild(qname);
+        }
+
+        if (currentNode != null) {
+            verify(currentNode instanceof BindingDataObjectCodecTreeNode, "Illegal return node %s for identifier %s",
+                    currentNode, path);
+            return (BindingDataObjectCodecTreeNode<?>) currentNode;
+        }
+        return null;
+    }
+
     NotificationCodecContext<?> getNotificationContext(final SchemaPath notification) {
         return root.getNotification(notification);
     }
@@ -477,7 +495,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final Absolute path) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return getCodecContextNode(path);
     }
 
     @Override

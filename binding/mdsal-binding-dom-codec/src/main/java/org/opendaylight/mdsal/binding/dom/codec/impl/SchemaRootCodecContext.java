@@ -173,7 +173,12 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
 
     @Override
     public DataContainerCodecContext<?,?> yangPathArgumentChild(final PathArgument arg) {
-        return getOrRethrow(childrenByQName, arg.getNodeType());
+        return qNameChild(arg.getNodeType());
+    }
+
+    @Override
+    public DataContainerCodecContext<?,?> qNameChild(final QName child) {
+        return getOrRethrow(childrenByQName, child);
     }
 
     @Override
