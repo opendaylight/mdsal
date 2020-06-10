@@ -8,15 +8,14 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.annotations.Beta;
+import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 /**
- * Registry of {@link DOMNotificationSubscriptionListener}
- * which listens for changes in notification types.
- *
+ * Registry of {@link DOMNotificationSubscriptionListener} which listens for changes in notification types.
  */
 @Beta
-public interface DOMNotificationSubscriptionListenerRegistry  {
+public interface DOMNotificationSubscriptionListenerRegistry extends DOMService {
 
     <L extends DOMNotificationSubscriptionListener> ListenerRegistration<L> registerSubscriptionListener(L listener);
 }
