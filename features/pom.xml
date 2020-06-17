@@ -59,6 +59,10 @@
         <module>odl-mdsal-exp-yanglib-rfc7895</module>
         <module>odl-mdsal-exp-yanglib-rfc8525</module>
 
+        <!-- Datastore replication -->
+        <module>odl-mdsal-exp-replicate-common</module>
+        <module>odl-mdsal-exp-replicate-netty</module>
+
         <!-- Models -->
         <!-- Standards -->
         <module>odl-mdsal-model-rfc6991</module>
