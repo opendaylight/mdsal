@@ -35,6 +35,9 @@
         <module>singleton-service</module>
         <module>trace</module>
 
+        <!-- Data store replicators -->
+        <module>replicate</module>
+
         <!-- IETF YANG (Module) Library -->
         <module>yanglib</module>
     </modules>
