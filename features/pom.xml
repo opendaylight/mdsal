@@ -65,6 +65,10 @@
         <module>odl-mdsal-model-odl-uint24</module>
         <module>odl-mdsal-uint24-netty</module>
 
+        <!-- Datastore replication -->
+        <module>odl-mdsal-exp-replicate-common</module>
+        <module>odl-mdsal-exp-replicate-netty</module>
+
         <!-- Models -->
         <!-- Standards -->
         <module>odl-mdsal-model-rfc6991</module>

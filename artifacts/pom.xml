@@ -445,6 +445,32 @@
                 <version>6.0.3-SNAPSHOT</version>
             </dependency>
 
+            <!-- Replication -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>mdsal-replicate-common</artifactId>
+                <version>6.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>mdsal-replicate-netty</artifactId>
+                <version>6.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>odl-mdsal-exp-replicate-common</artifactId>
+                <version>6.0.3-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>odl-mdsal-exp-replicate-netty</artifactId>
+                <version>6.0.3-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+
             <!-- MODELS -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>

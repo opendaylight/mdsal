@@ -37,6 +37,10 @@
 
         <!-- Netty integrations -->
         <module>netty</module>
+
+        <!-- Data store replicators -->
+        <module>replicate</module>
+
         <!-- IETF YANG (Module) Library -->
         <module>yanglib</module>
     </modules>
