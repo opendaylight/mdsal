@@ -53,6 +53,7 @@ final class SourceSingletonService extends ChannelInitializer<SocketChannel> imp
         this.bootstrapSupport = requireNonNull(bootstrapSupport);
         this.dtcs = requireNonNull(dtcs);
         this.listenPort = listenPort;
+        LOG.info("Replication source on port {} waiting for cluster-wide mastership", listenPort);
     }
 
     @Override
@@ -112,11 +113,12 @@ final class SourceSingletonService extends ChannelInitializer<SocketChannel> imp
         ch.pipeline()
             .addLast("frameDecoder", new MessageFrameDecoder())
             .addLast("requestHandler", new SourceRequestHandler(dtcs))
-            .addLast("dtclHandler", new DeltaEncoder(NormalizedNodeStreamVersion.current()))
-            .addLast("frameEncoder", MessageFrameEncoder.instance());
+            // Output, in reverse order
+            .addLast("frameEncoder", MessageFrameEncoder.INSTANCE)
+            .addLast("dtclHandler", new DeltaEncoder(NormalizedNodeStreamVersion.current()));
         children.add(ch);
 
-        LOG.debug("Channel {} established", ch);
+        LOG.info("Channel {} established", ch);
     }
 
     private static ListenableFuture<Void> closeChannel(final Channel ch) {
