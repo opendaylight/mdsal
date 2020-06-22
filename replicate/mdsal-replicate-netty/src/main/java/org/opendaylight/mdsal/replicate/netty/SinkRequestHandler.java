@@ -27,16 +27,21 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.replicate.common.DataTreeCandidateUtils;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.ReusableStreamReceiver;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.DataTreeCandidateInputOutput;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeDataInput;
+import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.ReusableImmutableNormalizedNodeStreamWriter;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static final Logger LOG = LoggerFactory.getLogger(SinkRequestHandler.class);
+    private static final ContainerNode EMPTY_ROOT = ImmutableNodes.containerNode(SchemaContext.NAME);
 
     private final ReusableStreamReceiver receiver = ReusableImmutableNormalizedNodeStreamWriter.create();
     private final List<ByteBuf> chunks = new ArrayList<>();
@@ -72,7 +77,12 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     private void handleEmptyData() {
         final DOMDataTreeWriteTransaction tx = chain.newWriteOnlyTransaction();
-        tx.delete(tree.getDatastoreType(), tree.getRootIdentifier());
+
+        if (tree.getRootIdentifier().isEmpty()) {
+            tx.put(tree.getDatastoreType(), YangInstanceIdentifier.empty(), EMPTY_ROOT);
+        } else {
+            tx.delete(tree.getDatastoreType(), tree.getRootIdentifier());
+        }
         commit(tx);
     }
 
