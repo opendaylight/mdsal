@@ -82,11 +82,13 @@ final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
         reg = dtcs.registerDataTreeChangeListener(dataTree, new ClusteredDOMDataTreeChangeListener() {
             @Override
             public void onInitialData() {
+                LOG.info("Channel {} tree {} has empty data", channel, dataTree);
                 channel.writeAndFlush(AbstractSourceMessage.empty());
             }
 
             @Override
             public void onDataTreeChanged(final Collection<DataTreeCandidate> changes) {
+                LOG.info("Channel {} tree {} has {} changes", channel, dataTree, changes.size());
                 channel.writeAndFlush(AbstractSourceMessage.of(changes));
             }
         });
