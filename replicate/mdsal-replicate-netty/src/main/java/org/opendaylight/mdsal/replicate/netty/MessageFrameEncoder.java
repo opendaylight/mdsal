@@ -12,13 +12,9 @@ import io.netty.handler.codec.LengthFieldPrepender;
 
 @Sharable
 final class MessageFrameEncoder extends LengthFieldPrepender {
-    private static final MessageFrameEncoder INSTANCE = new MessageFrameEncoder();
+    static final MessageFrameEncoder INSTANCE = new MessageFrameEncoder();
 
     private MessageFrameEncoder() {
         super(Constants.LENGTH_FIELD_LENGTH);
-    }
-
-    static MessageFrameEncoder instance() {
-        return INSTANCE;
     }
 }
