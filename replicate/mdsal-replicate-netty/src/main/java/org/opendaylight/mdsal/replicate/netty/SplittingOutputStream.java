@@ -15,7 +15,6 @@ import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * An OutputStream which makes sure to slice messages to a maximum size. This prevents array reallocations and
