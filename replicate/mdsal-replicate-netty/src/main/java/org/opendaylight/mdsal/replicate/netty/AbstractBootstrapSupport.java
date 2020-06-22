@@ -33,7 +33,7 @@ public abstract class AbstractBootstrapSupport implements AutoCloseable, Bootstr
         this.workerGroup = requireNonNull(workerGroup);
     }
 
-    public static @NonNull BootstrapSupport create() {
+    public static @NonNull AbstractBootstrapSupport create() {
         if (Epoll.isAvailable()) {
             return new EpollBootstrapSupport();
         }
