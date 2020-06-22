@@ -42,8 +42,9 @@ final class Constants {
      */
     static final int LENGTH_FIELD_MAX    = 1024 * 1024;
 
-    static final ByteBuf EMPTY_DATA = Unpooled.wrappedBuffer(new byte[] { MSG_EMPTY_DATA });
-    static final ByteBuf DTC_APPLY = Unpooled.wrappedBuffer(new byte[] { MSG_DTC_APPLY });
+    static final ByteBuf EMPTY_DATA = Unpooled.unreleasableBuffer(
+        Unpooled.wrappedBuffer(new byte[] { MSG_EMPTY_DATA }));
+    static final ByteBuf DTC_APPLY = Unpooled.unreleasableBuffer(Unpooled.wrappedBuffer(new byte[] { MSG_DTC_APPLY }));
 
     private Constants() {
         // Hidden on purpose
