@@ -65,7 +65,7 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
                 handleEmptyData();
                 break;
             case Constants.MSG_DTC_CHUNK:
-                chunks.add(msg);
+                chunks.add(Unpooled.wrappedBuffer(msg));
                 break;
             case Constants.MSG_DTC_APPLY:
                 handleDtcApply();
