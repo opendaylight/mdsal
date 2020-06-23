@@ -44,6 +44,7 @@ final class Constants {
 
     static final ByteBuf EMPTY_DATA = Unpooled.unreleasableBuffer(
         Unpooled.wrappedBuffer(new byte[] { MSG_EMPTY_DATA }));
+
     static final ByteBuf DTC_APPLY = Unpooled.unreleasableBuffer(Unpooled.wrappedBuffer(new byte[] { MSG_DTC_APPLY }));
 
     private Constants() {
