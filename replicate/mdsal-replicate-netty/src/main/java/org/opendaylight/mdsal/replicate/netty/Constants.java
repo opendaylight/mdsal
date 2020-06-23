@@ -38,12 +38,20 @@ final class Constants {
      */
     static final int LENGTH_FIELD_LENGTH = 4;
     /**
+     * Verify the connection is alive.
+     */
+    static final int MSG_PING = 5;
+    /**
      * Maximum frame size allowed by encoding, 1MiB.
      */
     static final int LENGTH_FIELD_MAX    = 1024 * 1024;
 
     static final ByteBuf EMPTY_DATA = Unpooled.unreleasableBuffer(
         Unpooled.wrappedBuffer(new byte[] { MSG_EMPTY_DATA }));
+
+    static final ByteBuf PING = Unpooled.unreleasableBuffer(
+        Unpooled.wrappedBuffer(new byte[] { MSG_PING }));
+
     static final ByteBuf DTC_APPLY = Unpooled.unreleasableBuffer(Unpooled.wrappedBuffer(new byte[] { MSG_DTC_APPLY }));
 
     private Constants() {
