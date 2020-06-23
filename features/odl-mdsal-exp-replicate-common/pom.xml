@@ -21,6 +21,10 @@
 
     <name>OpenDaylight :: MD-SAL :: Replicate :: Common</name>
 
+    <properties>
+        <skip.karaf.featureTest>true</skip.karaf.featureTest>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
