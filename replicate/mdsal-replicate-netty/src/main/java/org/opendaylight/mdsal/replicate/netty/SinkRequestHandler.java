@@ -31,6 +31,9 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.ReusableStreamReceiver;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidates;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.DataTreeCandidateInputOutput;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeDataInput;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
@@ -65,7 +68,7 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
                 handleEmptyData();
                 break;
             case Constants.MSG_DTC_CHUNK:
-                chunks.add(msg);
+                chunks.add(msg.retain());
                 break;
             case Constants.MSG_DTC_APPLY:
                 handleDtcApply();
@@ -98,9 +101,21 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
                 receiver);
         }
 
-        final DOMDataTreeWriteTransaction tx = chain.newWriteOnlyTransaction();
-        DataTreeCandidateUtils.applyToTransaction(tx, tree.getDatastoreType(), candidate);
-        commit(tx);
+        // if the candidate's rootNode has ModificationType WRITE, iterate through it's children and write them
+        // separately. This is necessary because WRITE transaction with path "/" is always committed on default shard.
+        if (candidate.getRootNode().getModificationType().compareTo(ModificationType.WRITE) == 0) {
+            for (DataTreeCandidateNode child : candidate.getRootNode().getChildNodes()) {
+                final DOMDataTreeWriteTransaction tx = chain.newWriteOnlyTransaction();
+                final DataTreeCandidate topCandidate = DataTreeCandidates.newDataTreeCandidate(YangInstanceIdentifier
+                    .create(child.getIdentifier()), child);
+                DataTreeCandidateUtils.applyToTransaction(tx, tree.getDatastoreType(), topCandidate);
+                commit(tx);
+            }
+        } else {
+            final DOMDataTreeWriteTransaction tx = chain.newWriteOnlyTransaction();
+            DataTreeCandidateUtils.applyToTransaction(tx, tree.getDatastoreType(), candidate);
+            commit(tx);
+        }
     }
 
     private static void commit(final DOMDataTreeWriteTransaction tx) {
