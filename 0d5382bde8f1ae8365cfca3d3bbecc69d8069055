@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2c87c02c_8114bce2",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/SinkRequestHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-23T21:58:23Z",
+      "side": 1,
+      "message": "msg.retain()?",
+      "range": {
+        "startLine": 68,
+        "startChar": 27,
+        "endLine": 68,
+        "endChar": 54
+      },
+      "revId": "0d5382bde8f1ae8365cfca3d3bbecc69d8069055",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2955ff46_65d3b025",
+        "filename": "replicate/mdsal-replicate-netty/src/test/java/org/opendaylight/mdsal/replicate/netty/IntegrationTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-06-23T21:58:23Z",
+      "side": 1,
+      "message": "this would easier be done via using the real broker at the FIXME place in above test.\nalso note, we have a binding DataBroker, so we can easily create any number of deltas by commiting a bunch of transactions...",
+      "range": {
+        "startLine": 110,
+        "startChar": 16,
+        "endLine": 110,
+        "endChar": 45
+      },
+      "revId": "0d5382bde8f1ae8365cfca3d3bbecc69d8069055",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
