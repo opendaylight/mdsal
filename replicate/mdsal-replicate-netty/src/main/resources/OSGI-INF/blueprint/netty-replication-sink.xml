@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
-           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
            xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0">
-  <cm:property-placeholder persistent-id="org.opendaylight.mdsal.replicate.netty.sink" update-strategy="reload">
+  <cm:property-placeholder persistent-id="org.opendaylight.mdsal.replicate.netty.sink" update-strategy="reload"
+                           placeholder-prefix="$(" placeholder-suffix=")">
     <cm:default-properties>
       <cm:property name="enabled" value="false"/>
       <cm:property name="source-host" value="127.0.0.1"/>
@@ -11,17 +11,12 @@
     </cm:default-properties>
   </cm:property-placeholder>
 
-  <reference id="dataBroker" interface="org.opendaylight.mdsal.dom.api.DOMDataBroker" odl:type="default"/>
-  <reference id="singletonServiceProvider" interface="org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider"
-             odl:type="default"/>
-  <reference id="bootstrapSupport" interface="org.opendaylight.mdsal.replicate.netty.BootstrapSupport"/>
-
   <bean id="reconnectDelay" class="java.time.Duration" factory-method="ofMillis">
-    <argument value="${reconnect-delay-millis}"/>
+    <argument value="$(reconnect-delay-millis)"/>
   </bean>
 
   <bean id="sourceAddress" class="java.net.InetAddress" factory-method="getByName">
-    <argument value="${source-host}"/>
+    <argument value="$(source-host)"/>
   </bean>
 
   <bean id="nettyReplicationSink" class="org.opendaylight.mdsal.replicate.netty.NettyReplication"
@@ -29,9 +24,9 @@
     <argument ref="bootstrapSupport"/>
     <argument ref="dataBroker"/>
     <argument ref="singletonServiceProvider"/>
-    <argument value="${enabled}"/>
+    <argument value="$(enabled)"/>
     <argument ref="sourceAddress"/>
-    <argument value="${source-port}"/>
+    <argument value="$(source-port)"/>
     <argument ref="reconnectDelay"/>
   </bean>
 

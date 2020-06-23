@@ -17,8 +17,12 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class NettyReplication {
+    private static final Logger LOG = LoggerFactory.getLogger(NettyReplication.class);
+
     private static final class Disabled extends AbstractRegistration {
         @Override
         protected void removeRegistration() {
@@ -33,12 +37,14 @@ public final class NettyReplication {
     public static Registration createSink(final BootstrapSupport bootstrapSupport, final DOMDataBroker dataBroker,
             final ClusterSingletonServiceProvider singletonService, final boolean enabled,
             final InetAddress sourceAddress, final int sourcePort, final Duration reconnectDelay) {
+        LOG.debug("Sink {}", enabled ? "enabled" : "disabled");
         return enabled ? singletonService.registerClusterSingletonService(new SinkSingletonService(bootstrapSupport,
             dataBroker, new InetSocketAddress(sourceAddress, sourcePort), reconnectDelay)) : new Disabled();
     }
 
     public static Registration createSource(final BootstrapSupport bootstrapSupport, final DOMDataBroker dataBroker,
             final ClusterSingletonServiceProvider singletonService, final boolean enabled, final int listenPort) {
+        LOG.debug("Source {}", enabled ? "enabled" : "disabled");
         final DOMDataTreeChangeService dtcs = dataBroker.getExtensions().getInstance(DOMDataTreeChangeService.class);
         verify(dtcs != null, "Missing DOMDataTreeChangeService in broker %s", dataBroker);
 

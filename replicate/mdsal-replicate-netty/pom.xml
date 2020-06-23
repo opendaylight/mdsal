@@ -58,8 +58,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-test-model</artifactId>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>general-entity</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
