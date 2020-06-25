@@ -19,6 +19,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.Future;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -59,16 +60,18 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
     private final DOMDataBroker dataBroker;
     private final InetSocketAddress sourceAddress;
     private final Duration reconnectDelay;
+    private final Duration keepaliveInterval;
 
     @GuardedBy("this")
     private ChannelFuture futureChannel;
 
     SinkSingletonService(final BootstrapSupport bootstrapSupport, final DOMDataBroker dataBroker,
-            final InetSocketAddress sourceAddress, final Duration reconnectDelay) {
+            final InetSocketAddress sourceAddress, final Duration reconnectDelay, final Duration keepaliveInterval) {
         this.bootstrapSupport = requireNonNull(bootstrapSupport);
         this.dataBroker = requireNonNull(dataBroker);
         this.sourceAddress = requireNonNull(sourceAddress);
         this.reconnectDelay = requireNonNull(reconnectDelay);
+        this.keepaliveInterval = requireNonNull(keepaliveInterval);
         LOG.info("Replication sink from {} waiting for cluster-wide mastership", sourceAddress);
     }
 
@@ -80,27 +83,46 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
     @Override
     public synchronized void instantiateServiceInstance() {
         LOG.info("Replication sink started with source {}", sourceAddress);
+        doConnect();
+    }
 
+    private void doConnect() {
+        LOG.info("Connecting to Source");
         final Bootstrap bs = bootstrapSupport.newBootstrap();
         final ScheduledExecutorService group = bs.config().group();
 
         futureChannel = bs
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .handler(this)
-                .connect(sourceAddress, null);
+            .option(ChannelOption.SO_KEEPALIVE, true)
+            .handler(this)
+            .connect(sourceAddress, null);
 
         futureChannel.addListener(compl -> channelResolved(compl, group));
     }
 
+    private boolean disconnect() {
+        boolean channelClosed = true;
+        if (this.futureChannel != null) {
+            channelClosed = this.futureChannel.cancel(true);
+        }
+        return channelClosed;
+    }
+
+    private void reconnect() {
+        disconnect();
+        doConnect();
+    }
+
     @Override
     public synchronized ListenableFuture<?> closeServiceInstance() {
-        // FIXME: initiate orderly shutdown
-        return FluentFutures.immediateNullFluentFuture();
+        return FluentFutures.immediateBooleanFluentFuture(disconnect());
     }
 
     @Override
     protected void initChannel(final SocketChannel ch) {
         ch.pipeline()
+            .addLast("idleStateHandler",
+                new IdleStateHandler(Long.valueOf(keepaliveInterval.getSeconds()).intValue(), 0, 0))
+            .addLast("keepaliveHandler", new KeepaliveHandler(this::reconnect))
             .addLast("frameDecoder", new MessageFrameDecoder())
             .addLast("requestHandler", new SinkRequestHandler(TREE, dataBroker.createMergingTransactionChain(
                 new SinkTransactionChainListener(ch))))
@@ -112,7 +134,7 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
         if (cause != null) {
             LOG.info("Failed to connect to source {}, reconnecting in {}", sourceAddress, reconnectDelay, cause);
             group.schedule(() -> {
-                // FIXME: perform reconnect
+                doConnect();
             }, reconnectDelay.toNanos(), TimeUnit.NANOSECONDS);
             return;
         }
