@@ -36,10 +36,12 @@ public final class NettyReplication {
 
     public static Registration createSink(final BootstrapSupport bootstrapSupport, final DOMDataBroker dataBroker,
             final ClusterSingletonServiceProvider singletonService, final boolean enabled,
-            final InetAddress sourceAddress, final int sourcePort, final Duration reconnectDelay) {
+            final InetAddress sourceAddress, final int sourcePort, final Duration reconnectDelay,
+            final Duration keepaliveInterval) {
         LOG.debug("Sink {}", enabled ? "enabled" : "disabled");
         return enabled ? singletonService.registerClusterSingletonService(new SinkSingletonService(bootstrapSupport,
-            dataBroker, new InetSocketAddress(sourceAddress, sourcePort), reconnectDelay)) : new Disabled();
+            dataBroker, new InetSocketAddress(sourceAddress, sourcePort), reconnectDelay, keepaliveInterval))
+                : new Disabled();
     }
 
     public static Registration createSource(final BootstrapSupport bootstrapSupport, final DOMDataBroker dataBroker,
