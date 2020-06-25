@@ -95,7 +95,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
 
         // Kick of the sink ...
         final Registration sink = NettyReplication.createSink(support, sinkBroker, css, true,
-            Inet4Address.getLoopbackAddress(), TEST_PORT, Duration.ZERO);
+            Inet4Address.getLoopbackAddress(), TEST_PORT, Duration.ZERO, Duration.ZERO);
         // ... and sync on it starting up
 
         // verify the connection was established and MSG_EMPTY_DATA was transferred
@@ -140,7 +140,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
 
         // Kick of the sink ...
         final Registration sink = NettyReplication.createSink(support, sinkBroker, css, true,
-            Inet4Address.getLoopbackAddress(), TEST_PORT, Duration.ZERO);
+            Inet4Address.getLoopbackAddress(), TEST_PORT, Duration.ZERO, Duration.ZERO);
         // ... and sync on it starting up
 
         // verify the connection was established and MSG_EMPTY_DATA was transferred

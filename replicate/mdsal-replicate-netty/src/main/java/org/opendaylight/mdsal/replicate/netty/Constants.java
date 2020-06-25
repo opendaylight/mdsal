@@ -32,7 +32,10 @@ final class Constants {
      * End-of-DataTreeCandidate serialization stream. The payload is empty.
      */
     static final byte MSG_DTC_APPLY     = 4;
-
+    /**
+     * Verify the connection is alive.
+     */
+    static final int MSG_PING           = 5;
     /**
      * Length of the length field in each transmitted frame.
      */
@@ -44,6 +47,9 @@ final class Constants {
 
     static final ByteBuf EMPTY_DATA = Unpooled.unreleasableBuffer(
         Unpooled.wrappedBuffer(new byte[] { MSG_EMPTY_DATA }));
+
+    static final ByteBuf PING = Unpooled.unreleasableBuffer(
+        Unpooled.wrappedBuffer(new byte[] { MSG_PING }));
 
     static final ByteBuf DTC_APPLY = Unpooled.unreleasableBuffer(Unpooled.wrappedBuffer(new byte[] { MSG_DTC_APPLY }));
 
