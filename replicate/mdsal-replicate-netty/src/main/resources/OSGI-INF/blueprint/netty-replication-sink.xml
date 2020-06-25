@@ -8,11 +8,16 @@
       <cm:property name="source-host" value="127.0.0.1"/>
       <cm:property name="source-port" value="9999"/>
       <cm:property name="reconnect-delay-millis" value="3000"/>
+      <cm:property name="keepalive-interval-seconds" value="10"/>
     </cm:default-properties>
   </cm:property-placeholder>
 
   <bean id="reconnectDelay" class="java.time.Duration" factory-method="ofMillis">
     <argument value="$(reconnect-delay-millis)"/>
+  </bean>
+
+  <bean id="keepaliveInterval" class="java.time.Duration" factory-method="ofSeconds">
+    <argument value="$(keepalive-interval-seconds)"/>
   </bean>
 
   <bean id="sourceAddress" class="java.net.InetAddress" factory-method="getByName">
@@ -28,6 +33,7 @@
     <argument ref="sourceAddress"/>
     <argument value="$(source-port)"/>
     <argument ref="reconnectDelay"/>
+    <argument ref="keepaliveInterval"/>
   </bean>
 
 </blueprint>
