@@ -19,6 +19,7 @@ import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeDataOutpu
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeStreamVersion;
 
 abstract class AbstractSourceMessage {
+
     private static final class Empty extends AbstractSourceMessage {
         @Override
         void encodeTo(final NormalizedNodeStreamVersion version, final List<Object> out) throws IOException {
