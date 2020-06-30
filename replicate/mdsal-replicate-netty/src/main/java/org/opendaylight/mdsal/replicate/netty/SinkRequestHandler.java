@@ -70,6 +70,10 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
             case Constants.MSG_DTC_APPLY:
                 handleDtcApply();
                 break;
+            case Constants.MSG_PING:
+                LOG.trace("Received PING from Source, sending PONG");
+                ctx.channel().writeAndFlush(Constants.PONG);
+                break;
             default:
                 throw new IllegalStateException("Unexpected message type " + msgType);
         }
