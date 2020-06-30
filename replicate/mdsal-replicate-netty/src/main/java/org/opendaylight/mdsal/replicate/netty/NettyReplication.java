@@ -37,20 +37,22 @@ public final class NettyReplication {
     public static Registration createSink(final BootstrapSupport bootstrapSupport, final DOMDataBroker dataBroker,
             final ClusterSingletonServiceProvider singletonService, final boolean enabled,
             final InetAddress sourceAddress, final int sourcePort, final Duration reconnectDelay,
-            final Duration keepaliveInterval) {
+        final Duration keepaliveInterval, final int maxMissedKeepalives) {
         LOG.debug("Sink {}", enabled ? "enabled" : "disabled");
+        verify(maxMissedKeepalives > 0, "max-missed-keepalives must be greater then 0");
         return enabled ? singletonService.registerClusterSingletonService(new SinkSingletonService(bootstrapSupport,
-            dataBroker, new InetSocketAddress(sourceAddress, sourcePort), reconnectDelay, keepaliveInterval))
-                : new Disabled();
+            dataBroker, new InetSocketAddress(sourceAddress, sourcePort), reconnectDelay, keepaliveInterval,
+            maxMissedKeepalives)) : new Disabled();
     }
 
     public static Registration createSource(final BootstrapSupport bootstrapSupport, final DOMDataBroker dataBroker,
-            final ClusterSingletonServiceProvider singletonService, final boolean enabled, final int listenPort) {
+            final ClusterSingletonServiceProvider singletonService, final boolean enabled, final int listenPort,
+        final Duration keepaliveInterval, final int maxMissedKeepalives) {
         LOG.debug("Source {}", enabled ? "enabled" : "disabled");
         final DOMDataTreeChangeService dtcs = dataBroker.getExtensions().getInstance(DOMDataTreeChangeService.class);
         verify(dtcs != null, "Missing DOMDataTreeChangeService in broker %s", dataBroker);
-
+        verify(maxMissedKeepalives > 0, "max-missed-keepalives must be greater then 0");
         return enabled ? singletonService.registerClusterSingletonService(new SourceSingletonService(bootstrapSupport,
-            dtcs, listenPort)) : new Disabled();
+            dtcs, listenPort, keepaliveInterval, maxMissedKeepalives)) : new Disabled();
     }
 }
