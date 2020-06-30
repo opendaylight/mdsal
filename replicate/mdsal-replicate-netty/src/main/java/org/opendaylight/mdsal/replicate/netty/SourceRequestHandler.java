@@ -43,7 +43,7 @@ final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) {
-        LOG.trace("Channel {} going inactive", ctx.channel());
+        LOG.info("Channel {} going inactive", ctx.channel());
         if (reg != null) {
             reg.close();
             reg = null;
@@ -62,9 +62,17 @@ final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
             case Constants.MSG_SUBSCRIBE_REQ:
                 subscribe(channel, msg);
                 break;
+            case Constants.MSG_PONG:
+                break;
             default:
                 throw new IllegalStateException("Unexpected message type " + msgType);
         }
+    }
+
+    @Override
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
+        LOG.warn("Closing channel {} due to an error", ctx.channel(), cause);
+        ctx.close();
     }
 
     private void subscribe(final Channel channel, final ByteBuf msg) throws IOException {
