@@ -36,6 +36,11 @@ final class Constants {
      * Verify the connection is alive.
      */
     static final int MSG_PING           = 5;
+    /**
+     * Verify the connection is alive.
+     */
+    static final int MSG_PONG           = 6;
+
 
     /**
      * Length of the length field in each transmitted frame.
@@ -53,6 +58,9 @@ final class Constants {
 
     static final ByteBuf PING = Unpooled.unreleasableBuffer(
         Unpooled.wrappedBuffer(new byte[] { MSG_PING }));
+
+    static final ByteBuf PONG = Unpooled.unreleasableBuffer(
+        Unpooled.wrappedBuffer(new byte[] { MSG_PONG }));
 
     private Constants() {
         // Hidden on purpose
