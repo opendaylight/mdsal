@@ -19,6 +19,13 @@ import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeDataOutpu
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeStreamVersion;
 
 abstract class AbstractSourceMessage {
+    private static final class Ping extends AbstractSourceMessage {
+        @Override
+        void encodeTo(final NormalizedNodeStreamVersion version, final List<Object> out) throws IOException {
+            out.add(Constants.PING);
+        }
+    }
+
     private static final class Empty extends AbstractSourceMessage {
         @Override
         void encodeTo(final NormalizedNodeStreamVersion version, final List<Object> out) throws IOException {
@@ -47,9 +54,14 @@ abstract class AbstractSourceMessage {
     }
 
     private static final AbstractSourceMessage EMPTY = new Empty();
+    private static final AbstractSourceMessage PING = new Ping();
 
     static AbstractSourceMessage empty() {
         return EMPTY;
+    }
+
+    static AbstractSourceMessage ping() {
+        return PING;
     }
 
     static AbstractSourceMessage of(final Collection<DataTreeCandidate> deltas) {

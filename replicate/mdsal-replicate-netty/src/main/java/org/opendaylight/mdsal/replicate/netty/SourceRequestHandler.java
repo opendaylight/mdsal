@@ -15,6 +15,7 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.TooLongFrameException;
 import java.io.IOException;
 import java.util.Collection;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -43,7 +44,7 @@ final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) {
-        LOG.trace("Channel {} going inactive", ctx.channel());
+        LOG.info("Channel {} going inactive", ctx.channel());
         if (reg != null) {
             reg.close();
             reg = null;
@@ -62,9 +63,21 @@ final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
             case Constants.MSG_SUBSCRIBE_REQ:
                 subscribe(channel, msg);
                 break;
+            case Constants.MSG_PONG:
+                break;
             default:
                 throw new IllegalStateException("Unexpected message type " + msgType);
         }
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if (cause instanceof TooLongFrameException) {
+            LOG.warn("Exception was caught on the channel: {}", cause, cause);
+            return;
+        }
+        LOG.warn("Exception was caught on the channel. Closing channel {} : {}", ctx.channel(), cause, cause);
+        ctx.close();
     }
 
     private void subscribe(final Channel channel, final ByteBuf msg) throws IOException {

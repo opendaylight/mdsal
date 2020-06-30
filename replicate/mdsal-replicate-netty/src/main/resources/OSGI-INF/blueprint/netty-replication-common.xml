@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
-           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0">
-
+           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0">
+    <cm:property-placeholder persistent-id="org.opendaylight.mdsal.replicate.netty.common" update-strategy="none"
+                             placeholder-prefix="$common(" placeholder-suffix=")">
+        <cm:default-properties>
+            <cm:property name="keepalive-interval-seconds" value="10"/>
+            <cm:property name="max-missed-keepalives" value="5"/>
+        </cm:default-properties>
+    </cm:property-placeholder>
     <reference id="dataBroker" interface="org.opendaylight.mdsal.dom.api.DOMDataBroker" odl:type="default"/>
 
     <reference id="singletonServiceProvider" interface="org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider"
