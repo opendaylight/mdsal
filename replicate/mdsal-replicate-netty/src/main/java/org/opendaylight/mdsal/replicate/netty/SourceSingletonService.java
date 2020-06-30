@@ -18,10 +18,13 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
@@ -45,14 +48,16 @@ final class SourceSingletonService extends ChannelInitializer<SocketChannel> imp
 
     @GuardedBy("this")
     private final Collection<SocketChannel> children = new HashSet<>();
+    private final Duration keepaliveInterval;
     @GuardedBy("this")
     private Channel serverChannel;
 
     SourceSingletonService(final BootstrapSupport bootstrapSupport, final DOMDataTreeChangeService dtcs,
-            final int listenPort) {
+            final int listenPort, final Duration keepaliveInterval) {
         this.bootstrapSupport = requireNonNull(bootstrapSupport);
         this.dtcs = requireNonNull(dtcs);
         this.listenPort = listenPort;
+        this.keepaliveInterval = keepaliveInterval;
         LOG.info("Replication source on port {} waiting for cluster-wide mastership", listenPort);
     }
 
@@ -111,11 +116,15 @@ final class SourceSingletonService extends ChannelInitializer<SocketChannel> imp
         }
 
         ch.pipeline()
+            // incominge
             .addLast("frameDecoder", new MessageFrameDecoder())
             .addLast("requestHandler", new SourceRequestHandler(dtcs))
             // Output, in reverse order
+            .addLast("idleStateHandler", new IdleStateHandler(0, keepaliveInterval.getSeconds(), 0, TimeUnit.SECONDS))
+            .addLast("keepaliveHandler", new SourceKeepaliveHandler())
             .addLast("frameEncoder", MessageFrameEncoder.INSTANCE)
             .addLast("dtclHandler", new DeltaEncoder(NormalizedNodeStreamVersion.current()));
+            // leaving
         children.add(ch);
 
         LOG.info("Channel {} established", ch);

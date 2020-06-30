@@ -5,8 +5,13 @@
     <cm:default-properties>
       <cm:property name="enabled" value="false"/>
       <cm:property name="listen-port" value="9999"/>
+      <cm:property name="keepalive-interval-seconds" value="10"/>
     </cm:default-properties>
   </cm:property-placeholder>
+
+  <bean id="keepaliveInterval" class="java.time.Duration" factory-method="ofSeconds">
+    <argument value="${keepalive-interval-seconds}"/>
+  </bean>
 
   <bean id="nettyReplicationSource" class="org.opendaylight.mdsal.replicate.netty.NettyReplication"
         factory-method="createSource" destroy-method="close">
@@ -15,5 +20,6 @@
     <argument ref="singletonServiceProvider"/>
     <argument value="${enabled}"/>
     <argument value="${listen-port}"/>
+    <argument ref="keepaliveInterval"/>
   </bean>
 </blueprint>

@@ -13,15 +13,14 @@ import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class KeepaliveHandler extends ChannelDuplexHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(KeepaliveHandler.class);
+public class SourceKeepaliveHandler extends ChannelDuplexHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(SourceKeepaliveHandler.class);
 
     @Override
     public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
-        LOG.info("userEventTriggered");
         if (evt instanceof IdleStateEvent) {
-            LOG.info("IdleStateEvent received. Closing channel");
-            ctx.close();
+            LOG.info("IdleStateEvent received. Sending PING to sink");
+            ctx.channel().writeAndFlush(Constants.PING);
         } else {
             ctx.fireUserEventTriggered(evt);
         }

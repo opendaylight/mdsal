@@ -59,7 +59,7 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
         final short msgType = msg.readUnsignedByte();
         final Channel channel = ctx.channel();
-        LOG.trace("Channel {} received message type {}", channel, msgType);
+        LOG.info("Channel {} received message TYPE {}", channel, msgType);
         switch (msgType) {
             case Constants.MSG_EMPTY_DATA:
                 handleEmptyData();
@@ -69,6 +69,9 @@ final class SinkRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
                 break;
             case Constants.MSG_DTC_APPLY:
                 handleDtcApply();
+                break;
+            case Constants.MSG_PING:
+                LOG.info("Received PING from Source");
                 break;
             default:
                 throw new IllegalStateException("Unexpected message type " + msgType);
