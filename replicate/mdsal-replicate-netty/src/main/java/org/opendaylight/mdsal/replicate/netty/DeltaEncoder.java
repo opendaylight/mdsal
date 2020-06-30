@@ -14,8 +14,11 @@ import io.netty.handler.codec.MessageToMessageEncoder;
 import java.io.IOException;
 import java.util.List;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeStreamVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class DeltaEncoder extends MessageToMessageEncoder<AbstractSourceMessage> {
+    private static final Logger LOG = LoggerFactory.getLogger(DeltaEncoder.class);
     private final NormalizedNodeStreamVersion version;
 
     DeltaEncoder(final NormalizedNodeStreamVersion version) {
