@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
@@ -378,6 +379,32 @@ public final class CodeHelpers {
     @Deprecated
     public static @Nullable Uint64 compatUint(final @Nullable BigInteger value) {
         return value == null ? null : Uint64.valueOf(value);
+    }
+
+    /**
+     * Utility method for comparing two augmentable objects' augmentations.
+     *
+     * @param <T> Augmentable type
+     * @param thisObj The object representing 'this'
+     * @param other The object representing 'obj'
+     * @return True if both object's augmentations are equal
+     * @throws NullPointerException if any argument is null
+     */
+    public static <T extends Augmentable<T>> boolean equalsAugmentations(final @NonNull AugmentationHolder<T> thisObj,
+            final @NonNull Augmentable<T> other) {
+        if (other instanceof AugmentationHolder) {
+            // Simple case: other object is also an AugmentationHolder
+            return thisObj.augmentations().equals(((AugmentationHolder<?>) other).augmentations());
+        }
+
+        // Hard case: compare our augments with presence there...
+        for (Entry<Class<? extends Augmentation<T>>, Augmentation<T>> e : thisObj.augmentations().entrySet()) {
+            if (!e.getValue().equals(other.augmentation(e.getKey()))) {
+                return false;
+            }
+        }
+        // .. and give the other one the chance to do the same
+        return other.equals(thisObj);
     }
 
     /**
