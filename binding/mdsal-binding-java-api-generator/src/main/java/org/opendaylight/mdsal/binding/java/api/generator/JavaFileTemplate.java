@@ -108,7 +108,7 @@ class JavaFileTemplate {
     static final @NonNull JavaTypeName CODEHELPERS = JavaTypeName.create(CodeHelpers.class);
 
     private static final Comparator<MethodSignature> METHOD_COMPARATOR = new AlphabeticallyTypeMemberComparator<>();
-    private static final Type AUGMENTATION_RET_TYPE;
+    static final Type AUGMENTATION_RET_TYPE;
 
     static {
         final Method m;
