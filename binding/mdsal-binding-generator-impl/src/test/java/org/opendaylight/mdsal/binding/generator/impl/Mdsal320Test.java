@@ -66,6 +66,8 @@ public class Mdsal320Test {
 
         final MethodSignature bindingHashCode = it.next();
         assertEquals(BindingMapping.BINDING_HASHCODE_NAME, bindingHashCode.getName());
+        final MethodSignature bindingEquals = it.next();
+        assertEquals(BindingMapping.BINDING_EQUALS_NAME, bindingEquals.getName());
         final MethodSignature bindingToString = it.next();
         assertEquals(BindingMapping.BINDING_TO_STRING_NAME, bindingToString.getName());
 
