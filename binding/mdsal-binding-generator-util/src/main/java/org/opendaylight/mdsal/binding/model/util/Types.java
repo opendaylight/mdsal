@@ -102,6 +102,15 @@ public final class Types {
     }
 
     /**
+     * Returns an instance of {@link ConcreteType} which represents JAVA <code>boolean</code> type.
+     *
+     * @return <code>ConcreteType</code> instance which represents JAVA <code>boolean</code>
+     */
+    public static ConcreteType primitiveBooleanType() {
+        return BOOLEAN;
+    }
+
+    /**
      * Returns an instance of {@link ConcreteType} which represents JAVA <code>void</code> type.
      *
      * @return <code>ConcreteType</code> instance which represents JAVA <code>void</code>
