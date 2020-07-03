@@ -42,6 +42,7 @@ import static org.opendaylight.mdsal.binding.model.util.Types.classType;
 import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.listenableFutureTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.mapTypeFor;
+import static org.opendaylight.mdsal.binding.model.util.Types.primitiveBooleanType;
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveIntType;
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveVoidType;
 import static org.opendaylight.mdsal.binding.model.util.Types.wildcardTypeFor;
@@ -2064,6 +2065,10 @@ abstract class AbstractTypeGenerator {
             .setAccessModifier(AccessModifier.PUBLIC)
             .setStatic(true)
             .setReturnType(primitiveIntType());
+        typeBuilder.addMethod(BindingMapping.BINDING_EQUALS_NAME)
+            .setAccessModifier(AccessModifier.PUBLIC)
+            .setStatic(true)
+            .setReturnType(primitiveBooleanType());
         typeBuilder.addMethod(BindingMapping.BINDING_TO_STRING_NAME)
             .setAccessModifier(AccessModifier.PUBLIC)
             .setStatic(true)

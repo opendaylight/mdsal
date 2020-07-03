@@ -7,11 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
-import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.getGetterMethodForNonnull
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isGetterMethodName
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isNonnullMethodName
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_OBJECT
+import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_EQUALS_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_HASHCODE_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_TO_STRING_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
@@ -27,6 +29,7 @@ import org.opendaylight.mdsal.binding.model.api.Enumeration
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Type
+import org.opendaylight.mdsal.binding.model.util.Types
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
 
 /**
@@ -192,6 +195,7 @@ class InterfaceTemplate extends BaseTemplate {
 
     def private generateStaticMethod(MethodSignature method) {
         switch method.name {
+            case BINDING_EQUALS_NAME : generateBindingEquals
             case BINDING_HASHCODE_NAME : generateBindingHashCode
             case BINDING_TO_STRING_NAME : generateBindingToString
         }
@@ -250,6 +254,38 @@ class InterfaceTemplate extends BaseTemplate {
         }
     '''
 
+    def private generateBindingEquals() {
+        analyzeType
+        val augmentType = typeAnalysis.key
+        val augmentable = augmentType !== null
+        return '''
+            «IF augmentable || !typeAnalysis.value.isEmpty»
+                «IF augmentable»
+                static <T$$ extends «type.fullyQualifiedName» & «AUGMENTATION_HOLDER.importedName»<«type.fullyQualifiedName»>> boolean «BINDING_EQUALS_NAME»(final @«NONNULL.importedName» T$$ thisObj, final «Types.objectType().importedName» obj) {
+                «ELSE»
+                static boolean «BINDING_EQUALS_NAME»(final «type.fullyQualifiedName» thisObj, final «Types.objectType().importedName» obj) {
+                «ENDIF»
+                    if (thisObj == obj) {
+                        return true;
+                    }
+                    if (!(obj instanceof «DATA_OBJECT.importedName»)) {
+                        return false;
+                    }
+                    if (!«type.fullyQualifiedName».class.equals(((«DATA_OBJECT.importedName»)obj).«DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME»())) {
+                        return false;
+                    }
+                    «type.fullyQualifiedName» other = («type.fullyQualifiedName»)obj;
+                    «FOR property : typeAnalysis.value»
+                        if (!«property.importedUtilClass».equals(thisObj.«property.getterName»(), other.«property.getterName»())) {
+                            return false;
+                        }
+                    «ENDFOR»
+                    return «IF augmentable»«CODEHELPERS.importedName».equalsAugmentations(thisObj, obj)«ELSE»true«ENDIF»;
+                }
+            «ENDIF»
+        '''
+    }
+
     def generateBindingToString() '''
         «val augmentable = analyzeType»
         /**
@@ -288,7 +324,7 @@ class InterfaceTemplate extends BaseTemplate {
         «formatDataForJavaDoc(method, "@return " + asCode(ret.fullyQualifiedName) + " " + asCode(propertyNameFromGetter(method)) + ", or an empty list if it is not present")»
         «method.annotations.generateAnnotations»
         default «ret.importedNonNull» «name»() {
-            return «CODEHELPERS.importedName».nonnull(«getGetterMethodForNonnull(name)»());
+            return «CODEHELPERS.importedName».nonnull(«name.getGetterMethodForNonnull»());
         }
     '''
 
