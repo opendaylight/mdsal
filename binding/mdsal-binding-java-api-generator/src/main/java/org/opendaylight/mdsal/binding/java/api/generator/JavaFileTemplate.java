@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -108,7 +109,7 @@ class JavaFileTemplate {
     static final @NonNull JavaTypeName CODEHELPERS = JavaTypeName.create(CodeHelpers.class);
 
     private static final Comparator<MethodSignature> METHOD_COMPARATOR = new AlphabeticallyTypeMemberComparator<>();
-    private static final Type AUGMENTATION_RET_TYPE;
+    static final Type AUGMENTATION_RET_TYPE;
 
     static {
         final Method m;
@@ -207,7 +208,11 @@ class JavaFileTemplate {
      * Run type analysis, which results in identification of the augmentable type, as well as all methods available
      * to the type, expressed as properties.
      */
+<<<<<<< HEAD
     static Map.Entry<Type, Set<BuilderGeneratedProperty>> analyzeTypeHierarchy(final GeneratedType type) {
+=======
+    static Entry<Type, Set<BuilderGeneratedProperty>> analyzeTypeHierarchy(final GeneratedType type) {
+>>>>>>> ac50231f8... Generate bindingEquals() and use it in generated implementations
         final Set<MethodSignature> methods = new LinkedHashSet<>();
         final Type augmentType = createMethods(type, methods);
         final Set<MethodSignature> sortedMethods = ImmutableSortedSet.orderedBy(METHOD_COMPARATOR).addAll(methods)
