@@ -7,20 +7,28 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
-import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.getGetterMethodForNonnull
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isGetterMethodName
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isNonnullMethodName
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_OBJECT
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_EQUALS_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
 import java.util.List
+import java.util.Map.Entry
+import java.util.Set
 import org.gaul.modernizer_maven_annotations.SuppressModernizer
 import org.opendaylight.mdsal.binding.model.api.AnnotationType
 import org.opendaylight.mdsal.binding.model.api.Constant
 import org.opendaylight.mdsal.binding.model.api.Enumeration
+import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Type
+import org.opendaylight.mdsal.binding.model.util.Types
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
+import org.opendaylight.yangtools.yang.binding.AugmentationHolder
 
 /**
  * Template for generating JAVA interfaces.
@@ -46,6 +54,8 @@ class InterfaceTemplate extends BaseTemplate {
      * List of generated types which are enclosed inside <code>genType</code>
      */
     val List<GeneratedType> enclosedGeneratedTypes
+
+    var Entry<Type, Set<BuilderGeneratedProperty>> typeAnalysis
 
     /**
      * Creates the instance of this class which is used for generating the interface file source
@@ -175,6 +185,7 @@ class InterfaceTemplate extends BaseTemplate {
         } else {
             switch method.name {
                 case DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME : generateDefaultImplementedInterface
+                case BINDING_EQUALS_NAME : generateBindingEquals
             }
         }
     }
@@ -199,6 +210,56 @@ class InterfaceTemplate extends BaseTemplate {
         }
     '''
 
+    def private generateBindingEquals() {
+        analyzeType
+        val augmentable = typeAnalysis.key !== null
+        return '''
+            «IF augmentable || !typeAnalysis.value.isEmpty»
+                «IF augmentable»
+                static <T$$ extends «type.fullyQualifiedName» & «AugmentationHolder.importedName»<«type.fullyQualifiedName»>> boolean bindingEquals(final @«NONNULL.importedName» T$$ thisObj, final «Types.objectType().importedName» obj) {
+                «ELSE»
+                static boolean bindingEquals(final «type.fullyQualifiedName» thisObj, final «Types.objectType().importedName» obj) {
+                «ENDIF»
+                    if (thisObj == obj) {
+                        return true;
+                    }
+                    if (!(obj instanceof «DATA_OBJECT.importedName»)) {
+                        return false;
+                    }
+                    if (!«type.fullyQualifiedName».class.equals(((«DATA_OBJECT.importedName»)obj).«DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME»())) {
+                        return false;
+                    }
+                    «type.fullyQualifiedName» other = («type.fullyQualifiedName»)obj;
+                    «FOR property : typeAnalysis.value»
+                        if (!«JU_OBJECTS.importedName».equals(thisObj.«property.getterName»(), other.«property.getterName»())) {
+                            return false;
+                        }
+                    «ENDFOR»
+                    «IF augmentable»
+                        if (thisObj.getClass() == obj.getClass()) {
+                            «AugmentationHolder.importedName»<?> otherImpl = («AugmentationHolder.importedName»<?>)obj;
+                            if (!«JU_OBJECTS.importedName».equals(thisObj.augmentations(), otherImpl.augmentations())) {
+                                return false;
+                            } else {
+                                // Hard case: compare our augments with presence there...
+                                for («JU_MAP.importedName».Entry<«CLASS.importedName»<? extends «AUGMENTATION_RET_TYPE.importedName»<«type.fullyQualifiedName»>>, «AUGMENTATION_RET_TYPE.importedName»<«type.fullyQualifiedName»>> e : thisObj.augmentations().entrySet()) {
+                                    if (!e.getValue().equals(other.«AUGMENTABLE_AUGMENTATION_NAME»(e.getKey()))) {
+                                        return false;
+                                    }
+                                }
+                                // .. and give the other one the chance to do the same
+                                if (!obj.equals(thisObj)) {
+                                    return false;
+                                }
+                            }
+                        }
+                    «ENDIF»
+                    return true;
+                }
+            «ENDIF»
+        '''
+    }
+
     def private generateNonnullMethod(MethodSignature method) '''
         «val ret = method.returnType»
         «val name = method.name»
@@ -219,5 +280,11 @@ class InterfaceTemplate extends BaseTemplate {
     def private static boolean isObject(Type type) {
         // The return type has a package, so it's not a primitive type
         return !type.getPackageName().isEmpty()
+    }
+
+    def private analyzeType() {
+        if (typeAnalysis === null) {
+            typeAnalysis = analyzeTypeHierarchy(type)
+        }
     }
 }

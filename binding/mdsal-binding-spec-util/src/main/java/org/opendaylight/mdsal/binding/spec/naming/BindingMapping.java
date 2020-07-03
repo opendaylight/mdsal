@@ -80,6 +80,8 @@ public final class BindingMapping {
      */
     public static final @NonNull String DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME = "implementedInterface";
 
+    public static final @NonNull String BINDING_EQUALS_NAME = "bindingEquals";
+
     /**
      * Name of {@link ScalarTypeObject#getValue()}.
      */

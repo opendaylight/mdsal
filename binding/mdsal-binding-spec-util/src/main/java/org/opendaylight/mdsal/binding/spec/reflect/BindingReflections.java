@@ -658,6 +658,9 @@ public final class BindingReflections {
         }
         for (Method potentialMethod : potential.getMethods()) {
             try {
+                if (potentialMethod.getName().equals("bindingEquals")) {
+                    continue;
+                }
                 Method targetMethod = target.getMethod(potentialMethod.getName(), potentialMethod.getParameterTypes());
                 if (!potentialMethod.getReturnType().equals(targetMethod.getReturnType())) {
                     return false;
