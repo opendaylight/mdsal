@@ -51,7 +51,6 @@ import net.bytebuddy.implementation.bytecode.constant.IntegerConstant;
 import net.bytebuddy.implementation.bytecode.constant.TextConstant;
 import net.bytebuddy.implementation.bytecode.member.MethodReturn;
 import net.bytebuddy.implementation.bytecode.member.MethodVariableAccess;
-import net.bytebuddy.jar.asm.Label;
 import net.bytebuddy.jar.asm.MethodVisitor;
 import net.bytebuddy.jar.asm.Opcodes;
 import org.eclipse.jdt.annotation.Nullable;
@@ -60,6 +59,7 @@ import org.opendaylight.mdsal.binding.dom.codec.impl.ClassGeneratorBridge.NodeCo
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.ClassGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.GeneratorResult;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -258,17 +258,13 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
 
     private static final Logger LOG = LoggerFactory.getLogger(CodecDataObjectGenerator.class);
     private static final Generic BB_BOOLEAN = TypeDefinition.Sort.describe(boolean.class);
-    private static final Generic BB_DATAOBJECT = TypeDefinition.Sort.describe(DataObject.class);
+    private static final Generic BB_OBJECT = TypeDefinition.Sort.describe(Object.class);
     private static final Generic BB_HELPER = TypeDefinition.Sort.describe(ToStringHelper.class);
     private static final Generic BB_INT = TypeDefinition.Sort.describe(int.class);
     private static final TypeDescription BB_CDO = ForLoadedType.of(CodecDataObject.class);
     private static final TypeDescription BB_ACDO = ForLoadedType.of(AugmentableCodecDataObject.class);
     private static final Comparator<Method> METHOD_BY_ALPHABET = Comparator.comparing(Method::getName);
 
-    private static final StackManipulation ARRAYS_EQUALS = invokeMethod(Arrays.class, "equals",
-        byte[].class, byte[].class);
-    private static final StackManipulation OBJECTS_EQUALS = invokeMethod(Objects.class, "equals",
-        Object.class, Object.class);
     private static final StackManipulation HELPER_ADD = invokeMethod(ToStringHelper.class, "add",
         String.class, Object.class);
 
@@ -337,8 +333,14 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
                 .defineMethod("codecHashCode", BB_INT, PROT_FINAL)
                 .intercept(new Implementation.Simple(new CodecHashCode(methods)))
                 // ... codecEquals() ...
-                .defineMethod("codecEquals", BB_BOOLEAN, PROT_FINAL).withParameter(BB_DATAOBJECT)
-                .intercept(codecEquals(methods))
+                .defineMethod("codecEquals", BB_BOOLEAN, PROT_FINAL).withParameter(BB_OBJECT)
+                .intercept(new Implementation.Simple(
+                        // return bindingEquals(this, obj);
+                        THIS,
+                        FIRST_ARG_REF,
+                        invokeMethod(bindingInterface, BindingMapping.BINDING_EQUALS_NAME, bindingInterface,
+                                Object.class),
+                        MethodReturn.INTEGER))
                 // ... and codecFillToString() ...
                 .defineMethod("codecFillToString", BB_HELPER, PROT_FINAL).withParameter(BB_HELPER)
                 .intercept(codecFillToString(methods))
@@ -349,36 +351,6 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
     abstract Builder<T> generateGetters(Builder<T> builder);
 
     abstract ArrayList<Method> getterMethods();
-
-    private static Implementation codecEquals(final ImmutableMap<StackManipulation, Method> properties) {
-        // Label for 'return false;'
-        final Label falseLabel = new Label();
-        // Condition for 'if (!...)'
-        final StackManipulation ifFalse = ByteBuddyUtils.ifEq(falseLabel);
-
-        final List<StackManipulation> manipulations = new ArrayList<>(properties.size() * 6 + 5);
-        for (Entry<StackManipulation, Method> entry : properties.entrySet()) {
-            // if (!java.util.(Objects|Arrays).equals(getFoo(), other.getFoo())) {
-            //     return false;
-            // }
-            manipulations.add(THIS);
-            manipulations.add(entry.getKey());
-            manipulations.add(FIRST_ARG_REF);
-            manipulations.add(entry.getKey());
-            manipulations.add(entry.getValue().getReturnType().isArray() ? ARRAYS_EQUALS : OBJECTS_EQUALS);
-            manipulations.add(ifFalse);
-        }
-
-        // return true;
-        manipulations.add(IntegerConstant.ONE);
-        manipulations.add(MethodReturn.INTEGER);
-        // L0: return false;
-        manipulations.add(ByteBuddyUtils.markLabel(falseLabel));
-        manipulations.add(IntegerConstant.ZERO);
-        manipulations.add(MethodReturn.INTEGER);
-
-        return new Implementation.Simple(manipulations.toArray(new StackManipulation[0]));
-    }
 
     private static Implementation codecFillToString(final ImmutableMap<StackManipulation, Method> properties) {
         final List<StackManipulation> manipulations = new ArrayList<>(properties.size() * 4 + 2);
