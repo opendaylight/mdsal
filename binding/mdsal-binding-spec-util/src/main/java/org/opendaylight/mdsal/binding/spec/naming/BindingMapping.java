@@ -80,6 +80,9 @@ public final class BindingMapping {
      */
     public static final @NonNull String DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME = "implementedInterface";
 
+    /**
+     * Name of method used for checking equality of DataObjects.
+     */
     public static final @NonNull String BINDING_EQUALS_NAME = "bindingEquals";
 
     /**
