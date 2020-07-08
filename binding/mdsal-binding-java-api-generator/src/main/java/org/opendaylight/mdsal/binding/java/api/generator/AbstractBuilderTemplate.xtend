@@ -64,13 +64,13 @@ abstract class AbstractBuilderTemplate extends BaseTemplate {
     }
 
     new(GeneratedType type, GeneratedType targetType, Type keyType) {
-            super(type)
-            this.targetType = targetType
-            this.keyType = keyType
+        super(type)
+        this.targetType = targetType
+        this.keyType = keyType
 
-            val analysis = analyzeTypeHierarchy(targetType)
-            augmentType = analysis.key
-            properties = analysis.value
+        val analysis = analyzeTypeHierarchy(targetType)
+        augmentType = analysis.key
+        properties = analysis.value
     }
 
     /**

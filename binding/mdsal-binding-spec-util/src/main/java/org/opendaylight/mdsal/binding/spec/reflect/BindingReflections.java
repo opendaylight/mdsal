@@ -657,7 +657,7 @@ public final class BindingReflections {
             return false;
         }
         for (Method potentialMethod : potential.getMethods()) {
-            if (potentialMethod.getName().equals("bindingEquals")) {
+            if (potentialMethod.getName().equals(BindingMapping.BINDING_EQUALS_NAME)) {
                 continue;
             }
             try {

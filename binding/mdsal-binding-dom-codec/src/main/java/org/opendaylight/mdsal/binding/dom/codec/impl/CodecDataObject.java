@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.util.Optional;
@@ -66,20 +65,8 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
     }
 
     @Override
-    @SuppressFBWarnings(value = "EQ_UNUSUAL", justification = "State is examined indirectly enough to confuse SpotBugs")
     public final boolean equals(final Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        final Class<? extends DataObject> iface = implementedInterface();
-        if (!iface.isInstance(obj)) {
-            return false;
-        }
-        @SuppressWarnings("unchecked")
-        final T other = (T) iface.cast(obj);
-        // Note: we do not want to compare NormalizedNode data here, as we may be looking at different instantiations
-        //       of the same grouping -- in which case normalized node will not compare as equal.
-        return codecAugmentedEquals(other);
+        return codecEquals(obj);
     }
 
     @Override
@@ -110,7 +97,7 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
 
     protected abstract int codecHashCode();
 
-    protected abstract boolean codecEquals(T other);
+    protected abstract boolean codecEquals(Object other);
 
     protected abstract ToStringHelper codecFillToString(ToStringHelper helper);
 
@@ -126,11 +113,6 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
     // Non-final to allow specialization in AugmentableCodecDataObject
     int codecAugmentedHashCode() {
         return codecHashCode();
-    }
-
-    // Non-final to allow specialization in AugmentableCodecDataObject
-    boolean codecAugmentedEquals(final T other) {
-        return codecEquals(other);
     }
 
     // Non-final to allow specialization in AugmentableCodecDataObject

@@ -61,6 +61,7 @@ public final class Types {
     private static final @NonNull ConcreteType LISTENABLE_FUTURE = typeForClass(ListenableFuture.class);
     private static final @NonNull ConcreteType MAP_TYPE = typeForClass(Map.class);
     private static final @NonNull ConcreteType OBJECT = typeForClass(Object.class);
+    private static final @NonNull ConcreteType PRIMITIVE_BOOLEAN = typeForClass(boolean.class);
     private static final @NonNull ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
     private static final @NonNull ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
     private static final @NonNull ConcreteType SET_TYPE = typeForClass(Set.class);
@@ -107,7 +108,7 @@ public final class Types {
      * @return <code>ConcreteType</code> instance which represents JAVA <code>boolean</code>
      */
     public static ConcreteType primitiveBooleanType() {
-        return BOOLEAN;
+        return PRIMITIVE_BOOLEAN;
     }
 
     /**

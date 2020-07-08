@@ -97,9 +97,6 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
         «IF !properties.empty || augmentType !== null»
             @«OVERRIDE.importedName»
             public boolean equals(«Types.objectType().importedName» obj) {
-                «IF augmentType !== null»
-                    «CODEHELPERS.importedName».verifyIsAugmentationHolder(this);
-                «ENDIF»
                 return «targetType.importedName».«BINDING_EQUALS_NAME»(this, obj);
             }
         «ENDIF»
