@@ -500,7 +500,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     '''
 
     override protected generateCopyAugmentation(Type implType) {
-        val augmentationHolderRef = AugmentationHolder.importedName
+        val augmentationHolderRef = AUGMENTATION_HOLDER.importedName
         val typeRef = targetType.importedName
         val hashMapRef = JU_HASHMAP.importedName
         val augmentTypeRef = augmentType.importedName

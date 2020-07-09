@@ -123,8 +123,7 @@ public class BuilderGeneratorTest {
     }
 
     private static CharSequence genToString(final GeneratedType genType) {
-        final BuilderTemplate bt = BuilderGenerator.templateForType(genType);
-        return bt.generateToString(bt.properties);
+        return new InterfaceTemplate(genType).generateBindingToString();
     }
 
     private static GeneratedType mockGenType(final String methodeName) {
