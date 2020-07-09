@@ -59,10 +59,13 @@ class JavaFileTemplate {
      */
     static final @NonNull JavaTypeName DEPRECATED = JavaTypeName.create(Deprecated.class);
     /**
+     * {@code java.lang.NullPointerException} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName NPE = JavaTypeName.create(NullPointerException.class);
+    /**
      * {@code java.lang.Override} as a JavaTypeName.
      */
     static final @NonNull JavaTypeName OVERRIDE = JavaTypeName.create(Override.class);
-
     /**
      * {@code java.lang.SuppressWarnings} as a JavaTypeName.
      */
