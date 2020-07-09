@@ -414,19 +414,6 @@ abstract class BaseTemplate extends JavaFileTemplate {
         return sb.append(lineBuilder).append(NEW_LINE).toString
     }
 
-    def protected generateToString(Collection<? extends GeneratedProperty> properties) '''
-        «IF !properties.empty»
-            @«OVERRIDE.importedName»
-            public «STRING.importedName» toString() {
-                final «MoreObjects.importedName».ToStringHelper helper = «MoreObjects.importedName».toStringHelper(«type.importedName».class);
-                «FOR property : properties»
-                    «CODEHELPERS.importedName».appendValue(helper, "«property.fieldName»", «property.fieldName»);
-                «ENDFOR»
-                return helper.toString();
-            }
-        «ENDIF»
-    '''
-
     /**
      * Template method which generates method parameters with their types from <code>parameters</code>.
      *
