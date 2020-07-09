@@ -7,11 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
-import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
+import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.getGetterMethodForNonnull
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isGetterMethodName
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isNonnullMethodName
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_TO_STRING_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
+import com.google.common.base.MoreObjects
 import java.util.List
 import java.util.Map.Entry
 import java.util.Set
@@ -23,6 +27,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
+import org.opendaylight.yangtools.yang.binding.AugmentationHolder
 
 /**
  * Template for generating JAVA interfaces.
@@ -179,6 +184,7 @@ class InterfaceTemplate extends BaseTemplate {
         } else {
             switch method.name {
                 case DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME : generateDefaultImplementedInterface
+                case BINDING_TO_STRING_NAME : generateBindingToString
             }
         }
     }
@@ -200,6 +206,38 @@ class InterfaceTemplate extends BaseTemplate {
         @«OVERRIDE.importedName»
         default «CLASS.importedName»<«type.fullyQualifiedName»> «DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME»() {
             return «type.fullyQualifiedName».class;
+        }
+    '''
+
+    def generateBindingToString() '''
+        «val augmentable = analyzeType»
+        /**
+         * Default implementation of {@link «Object.importedName»#toString()} contract for this interface.
+         * Implementations of this interface are encouraged to defer to this method to get consistent string
+         * representations across all implementation.
+         *
+         «IF augmentable»
+         * <p>
+         * @param <T$$> implementation type, which has to also implement «AugmentationHolder.importedName» interface
+         *              contract.
+         «ENDIF»
+         * @param obj Object for which to generate toString() result.
+         * @return {@link «STRING.importedName»} value of data modeled by this interface.
+         * @throws {@link «NPE.importedName» if {@code obj} is null
+         */
+        «IF augmentable»
+            static <T$$ extends «type.fullyQualifiedName» & «AugmentationHolder.importedName»<«type.fullyQualifiedName»>> «STRING.importedName» «BINDING_TO_STRING_NAME»(final @«NONNULL.importedName» T$$ obj) {
+        «ELSE»
+            static «STRING.importedName» «BINDING_TO_STRING_NAME»(final «type.fullyQualifiedName» obj) {
+        «ENDIF»
+            final «MoreObjects.importedName».ToStringHelper helper = «MoreObjects.importedName».toStringHelper("«type.name»");
+            «FOR property : typeAnalysis.value»
+                «CODEHELPERS.importedName».appendValue(helper, "«property.name»", obj.«property.getterName»());
+            «ENDFOR»
+            «IF augmentable»
+                «CODEHELPERS.importedName».appendValue(helper, "«AUGMENTATION_FIELD»", obj.augmentations().values());
+            «ENDIF»
+            return helper.toString();
         }
     '''
 
@@ -225,9 +263,10 @@ class InterfaceTemplate extends BaseTemplate {
         return !type.getPackageName().isEmpty()
     }
 
-    def analyzeType() {
+    private def boolean analyzeType() {
         if (typeAnalysis === null) {
             typeAnalysis = analyzeTypeHierarchy(type)
         }
+        typeAnalysis.key !== null
     }
 }
