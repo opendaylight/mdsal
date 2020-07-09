@@ -8,6 +8,7 @@
 package org.opendaylight.yangtools.yang.binding;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
@@ -294,6 +295,18 @@ public final class CodeHelpers {
     public static <K extends Identifier<V>, V extends Identifiable<K>> @Nullable Map<K, V> compatMap(
             final @Nullable List<V> list) {
         return list == null || list.isEmpty() ? null : Maps.uniqueIndex(list, Identifiable::key);
+    }
+
+    /**
+     * Verify whether the object is {@link AugmentationHolder}.
+     *
+     * @param obj object to verify
+     * @throws IllegalStateException if the object is not {@link AugmentationHolder}
+     */
+
+    public static void verifyIsAugmentationHolder(final Object obj) {
+        checkState(obj instanceof AugmentationHolder,
+                "%s must implements %s", obj.getClass(), AugmentationHolder.class);
     }
 
     /**
