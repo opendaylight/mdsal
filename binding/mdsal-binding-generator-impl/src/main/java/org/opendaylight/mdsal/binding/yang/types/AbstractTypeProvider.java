@@ -202,6 +202,13 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 return ret;
             }
 
+            if (typeDefinition instanceof UnionTypeDefinition) {
+                ret = generatedTypeForUnion(typeDefinition, parentNode, restrictions);
+                if (ret != null) {
+                    return ret;
+                }
+            }
+
             // FIXME: it looks as though we could be using the same codepath as above...
             ret = BaseYangTypes.javaTypeForYangType(typeDefinition.getQName().getLocalName());
             if (ret == null) {
@@ -225,6 +232,20 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             }
         }
         return returnType;
+    }
+
+    private GeneratedTransferObject generatedTypeForUnion(final TypeDefinition typeDefinition,
+            final SchemaNode parentNode, final Restrictions restrictions) {
+        final Module module = findParentModule(schemaContext, parentNode);
+        final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
+        final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
+                typeDefinition.getPath());
+        final String genTOName = BindingMapping.getClassName(typeDefinition.getQName().getLocalName());
+        final String name = packageName + "." + genTOName;
+        GeneratedTOBuilder builder = newGeneratedTOBuilder(JavaTypeName.create(packageName, name));
+        builder.setIsUnionBuilder(true);
+
+        return shadedTOWithRestrictions(builder.build(), restrictions);
     }
 
     private GeneratedTransferObject shadedTOWithRestrictions(final GeneratedTransferObject gto,
