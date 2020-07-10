@@ -120,11 +120,13 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
@@ -1433,13 +1435,25 @@ abstract class AbstractTypeGenerator {
                     returnType = genTOBuilder.build();
                 }
             } else {
-                // It is constrained version of already declared type (inner declared type exists,
-                // onlyfor special cases (Enum, Union, Bits), which were already checked.
-                // In order to get proper class we need to look up closest derived type
-                // and apply restrictions from leaf type
+                // It is constrained version of already declared type (inner declared type exists, only for special
+                // cases (Enum, Union, Bits), which were already checked.
+                // In order to get proper class we need to look up closest derived type and apply restrictions from leaf
+                // type
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
-                returnType = typeProvider.javaTypeForSchemaDefinitionType(getBaseOrDeclaredType(typeDef), leaf,
-                        restrictions, inGrouping);
+                final TypeDefinition<?> baseOrDeclaredType = getBaseOrDeclaredType(typeDef);
+                // we need to try to lookup an already generated type in case the leafref is targetting a generated type
+                if (baseOrDeclaredType instanceof LeafrefTypeDefinition) {
+                    final SchemaNode leafrefTarget =
+                            typeProvider.getTargetForLeafref((LeafrefTypeDefinition) baseOrDeclaredType, leaf);
+                    if (leafrefTarget instanceof TypedDataSchemaNode) {
+                        returnType = context.getInnerType(((TypedDataSchemaNode) leafrefTarget).getType().getPath());
+                    }
+                }
+                if (returnType == null) {
+                    returnType = typeProvider.javaTypeForSchemaDefinitionType(baseOrDeclaredType, leaf,
+                            restrictions, inGrouping);
+                }
+
                 addPatternConstant(typeBuilder, leaf.getQName().getLocalName(), restrictions.getPatternConstraints());
             }
         } else {
