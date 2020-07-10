@@ -227,6 +227,17 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         return returnType;
     }
 
+    public SchemaNode getTargetForLeafref(final LeafrefTypeDefinition leafrefType, final SchemaNode parentNode) {
+        final PathExpression xpath = leafrefType.getPathStatement();
+        Preconditions.checkArgument(xpath != null, "The Path Statement for Leafref Type Definition cannot be NULL!");
+
+        final Module module = findParentModule(schemaContext, parentNode);
+        Preconditions.checkArgument(module != null, "Failed to find module for parent %s", parentNode);
+
+        return xpath.isAbsolute() ? findDataTreeSchemaNode(schemaContext, module.getQNameModule(), xpath)
+                : findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
+    }
+
     private GeneratedTransferObject shadedTOWithRestrictions(final GeneratedTransferObject gto,
             final Restrictions restrictions) {
         final GeneratedTOBuilder gtob = newGeneratedTOBuilder(gto.getIdentifier());
