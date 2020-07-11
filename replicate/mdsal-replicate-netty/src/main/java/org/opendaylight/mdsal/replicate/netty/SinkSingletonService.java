@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.replicate.netty;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -67,8 +68,8 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
 
     @GuardedBy("this")
     private ChannelFuture futureChannel;
-    private boolean closingInstance;
-    private Bootstrap bs;
+    @GuardedBy("this")
+    private boolean active;
 
     SinkSingletonService(final BootstrapSupport bootstrapSupport, final DOMDataBroker dataBroker,
             final InetSocketAddress sourceAddress, final Duration reconnectDelay, final Duration keepaliveInterval,
@@ -90,13 +91,36 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
     @Override
     public synchronized void instantiateServiceInstance() {
         LOG.info("Replication sink started with source {}", sourceAddress);
-        this.bs = bootstrapSupport.newBootstrap();
-        doConnect();
+        active = true;
+        connect();
+    }
+
+    @Override
+    public synchronized ListenableFuture<?> closeServiceInstance() {
+        active = false;
+        if (futureChannel == null) {
+            return FluentFutures.immediateNullFluentFuture();
+        }
+
+        return disconnect();
+    }
+
+    @Override
+    protected void initChannel(final SocketChannel ch) {
+        ch.pipeline()
+            .addLast("frameDecoder", new MessageFrameDecoder())
+            .addLast("idleStateHandler", new IdleStateHandler(
+                keepaliveInterval.toNanos() * maxMissedKeepalives, 0, 0, TimeUnit.NANOSECONDS))
+            .addLast("keepaliveHandler", new SinkKeepaliveHandler())
+            .addLast("requestHandler", new SinkRequestHandler(TREE, dataBroker.createMergingTransactionChain(
+                new SinkTransactionChainListener(ch))))
+            .addLast("frameEncoder", MessageFrameEncoder.INSTANCE);
     }
 
     @Holding("this")
-    private void doConnect() {
+    private void connect() {
         LOG.info("Connecting to Source");
+        final Bootstrap bs = bootstrapSupport.newBootstrap();
         final ScheduledExecutorService group = bs.config().group();
 
         futureChannel = bs
@@ -106,23 +130,28 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
         futureChannel.addListener((ChannelFutureListener) future -> channelResolved(future, group));
     }
 
-    @Override
-    public synchronized ListenableFuture<?> closeServiceInstance() {
-        closingInstance = true;
-        if (futureChannel == null) {
-            return FluentFutures.immediateNullFluentFuture();
-        }
+    @Holding("this")
+    private FluentFuture<?> disconnect() {
+        LOG.info("Disconnecting source");
 
-        return FluentFutures.immediateBooleanFluentFuture(disconnect());
-    }
+        futureChannel.cancel(true);
 
-    private synchronized void reconnect() {
-        disconnect();
-        doConnect();
-    }
 
-    private synchronized boolean disconnect() {
+
+
+
+
+
+
+
+
+
+
+
         boolean shutdownSuccess = true;
+
+
+
         final Channel channel = futureChannel.channel();
         if (channel != null && channel.isActive()) {
             try {
@@ -139,20 +168,24 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
         return shutdownSuccess;
     }
 
-    @Override
-    protected void initChannel(final SocketChannel ch) {
-        ch.pipeline()
-            .addLast("frameDecoder", new MessageFrameDecoder())
-            .addLast("idleStateHandler", new IdleStateHandler(
-                keepaliveInterval.toNanos() * maxMissedKeepalives, 0, 0, TimeUnit.NANOSECONDS))
-            .addLast("keepaliveHandler", new SinkKeepaliveHandler())
-            .addLast("requestHandler", new SinkRequestHandler(TREE, dataBroker.createMergingTransactionChain(
-                new SinkTransactionChainListener(ch))))
-            .addLast("frameEncoder", MessageFrameEncoder.INSTANCE);
+    private synchronized void reconnect() {
+        disconnect();
+
+        if (active) {
+            connect();
+        } else {
+            LOG.debug("Not reconnecting stopped sink with source {}", sourceAddress);
+        }
     }
 
     private synchronized void channelResolved(final ChannelFuture completedFuture,
-        final ScheduledExecutorService group) {
+            final ScheduledExecutorService group) {
+        if (!active) {
+            LOG.debug("Sink with {} no longer active", sourceAddress);
+            return;
+        }
+
+
         if (futureChannel != null && futureChannel.channel() == completedFuture.channel()) {
             if (completedFuture.isSuccess()) {
                 final Channel ch = completedFuture.channel();
@@ -171,7 +204,7 @@ final class SinkSingletonService extends ChannelInitializer<SocketChannel> imple
 
     private synchronized void channelClosed(final ChannelFuture completedFuture, final ScheduledExecutorService group) {
         if (futureChannel != null && futureChannel.channel() == completedFuture.channel()) {
-            if (!closingInstance) {
+            if (!active) {
                 LOG.info("Channel {} lost connection to source {}, reconnecting in {}", completedFuture.channel(),
                     sourceAddress, reconnectDelay.getSeconds());
                 group.schedule(() -> {
