@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "06f24602_d482a856",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/CodecDataObjectGenerator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-13T20:28:23Z",
+      "side": 1,
+      "message": "or rather (obj)",
+      "parentUuid": "ad70fafd_421339e7",
+      "range": {
+        "startLine": 336,
+        "startChar": 47,
+        "endLine": 336,
+        "endChar": 49
+      },
+      "revId": "af7e841fc80448313847152fb291adbbdc41a632",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "38c74f6e_1dd3ab57",
         "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/CodecDataObjectGenerator.java",
         "patchSetId": 4
