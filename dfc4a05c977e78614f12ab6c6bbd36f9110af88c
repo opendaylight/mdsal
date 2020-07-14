@@ -65,6 +65,29 @@
     },
     {
       "key": {
+        "uuid": "382d31fd_2bc29df4",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 9
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-14T14:05:04Z",
+      "side": 1,
+      "message": "verifyifAugmentationHolder() should not be needed here -- note how original comparison ran obj.equals(thisObj) -- we should be doing the same.",
+      "range": {
+        "startLine": 239,
+        "startChar": 24,
+        "endLine": 239,
+        "endChar": 83
+      },
+      "revId": "dfc4a05c977e78614f12ab6c6bbd36f9110af88c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fe9e7abe_93d9c9df",
         "filename": "binding/mdsal-binding-spec-util/src/main/java/org/opendaylight/mdsal/binding/spec/naming/BindingMapping.java",
         "patchSetId": 9
