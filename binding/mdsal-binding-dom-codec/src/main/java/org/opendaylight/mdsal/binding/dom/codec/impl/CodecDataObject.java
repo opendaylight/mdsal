@@ -10,8 +10,6 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.MoreObjects.ToStringHelper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
@@ -84,8 +82,7 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
 
     @Override
     public final String toString() {
-        return codecAugmentedFillToString(MoreObjects.toStringHelper(implementedInterface()).omitNullValues())
-                .toString();
+        return codecToString();
     }
 
     protected final Object codecMember(final VarHandle handle, final String localName) {
@@ -112,7 +109,7 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
 
     protected abstract boolean codecEquals(T other);
 
-    protected abstract ToStringHelper codecFillToString(ToStringHelper helper);
+    protected abstract String codecToString();
 
     final @NonNull DataObjectCodecContext<T, ?> codecContext() {
         return context;
@@ -131,11 +128,6 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
     // Non-final to allow specialization in AugmentableCodecDataObject
     boolean codecAugmentedEquals(final T other) {
         return codecEquals(other);
-    }
-
-    // Non-final to allow specialization in AugmentableCodecDataObject
-    ToStringHelper codecAugmentedFillToString(final ToStringHelper helper) {
-        return codecFillToString(helper);
     }
 
     // Helper split out of codecMember to aid its inlining
