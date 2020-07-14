@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "083cc387_ac6d5fbd",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-07-14T21:47:49Z",
+      "side": 1,
+      "message": "Since SchemaContextUtil working with SchemaPath, RPCs, actions mapped to SchemaPath in routing tables, wiil it be ok to change getCodecContextNode argument type to SchemaPath? If not such SchemaPath -\u003e Absolute conversion as here will take place, as well as Absolute -\u003e SchemaPath: https://git.opendaylight.org/gerrit/c/mdsal/+/90267/11/binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java#340",
+      "range": {
+        "startLine": 379,
+        "startChar": 77,
+        "endLine": 380,
+        "endChar": 65
+      },
+      "revId": "f62ba783e3596493b99e6da6ffb304e2cd5ede33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
