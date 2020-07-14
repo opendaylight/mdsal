@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "69950b36_be380bd7",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/Types.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-14T14:10:24Z",
+      "side": 1,
+      "message": "missing @NonNull",
+      "range": {
+        "startLine": 110,
+        "startChar": 17,
+        "endLine": 110,
+        "endChar": 30
+      },
+      "revId": "bb41f34ea1457e95847f24eaa39d3772902281f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59218cb7_e309aa45",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 13
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-14T14:10:24Z",
+      "side": 1,
+      "message": "«BINDING_HASHCODE_NAME»",
+      "range": {
+        "startLine": 228,
+        "startChar": 102,
+        "endLine": 228,
+        "endChar": 117
+      },
+      "revId": "bb41f34ea1457e95847f24eaa39d3772902281f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ffe8e755_b1af7f5f",
+        "filename": "binding/mdsal-binding-spec-util/src/main/java/org/opendaylight/mdsal/binding/spec/reflect/BindingReflections.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 660,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-14T14:10:24Z",
+      "side": 1,
+      "message": "reference BindingMapping",
+      "range": {
+        "startLine": 660,
+        "startChar": 50,
+        "endLine": 660,
+        "endChar": 65
+      },
+      "revId": "bb41f34ea1457e95847f24eaa39d3772902281f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
