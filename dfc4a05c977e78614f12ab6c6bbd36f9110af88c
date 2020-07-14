@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b11acb53_8041b834",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/Types.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-14T14:01:07Z",
+      "side": 1,
+      "message": "this is incorrect -- it points to Boolean.class, not boolean.class. This is the same difference as VOID vs. PRIMITIVE_VOID.",
+      "range": {
+        "startLine": 110,
+        "startChar": 15,
+        "endLine": 110,
+        "endChar": 22
+      },
+      "revId": "dfc4a05c977e78614f12ab6c6bbd36f9110af88c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c797a154_199618d4",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/AbstractBuilderTemplate.xtend",
+        "patchSetId": 9
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-14T14:01:07Z",
+      "side": 1,
+      "message": "wrong whitespace",
+      "revId": "dfc4a05c977e78614f12ab6c6bbd36f9110af88c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9be152ae_074b962a",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderImplTemplate.xtend",
+        "patchSetId": 9
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-14T14:01:07Z",
+      "side": 1,
+      "message": "this is not needed: we are extending AbstractAugmentable -- see line 41",
+      "range": {
+        "startLine": 100,
+        "startChar": 16,
+        "endLine": 102,
+        "endChar": 23
+      },
+      "revId": "dfc4a05c977e78614f12ab6c6bbd36f9110af88c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe9e7abe_93d9c9df",
+        "filename": "binding/mdsal-binding-spec-util/src/main/java/org/opendaylight/mdsal/binding/spec/naming/BindingMapping.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-14T14:01:07Z",
+      "side": 1,
+      "message": "add Javadoc",
+      "range": {
+        "startLine": 83,
+        "startChar": 62,
+        "endLine": 83,
+        "endChar": 78
+      },
+      "revId": "dfc4a05c977e78614f12ab6c6bbd36f9110af88c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96d3a107_947add0f",
+        "filename": "binding/mdsal-binding-spec-util/src/main/java/org/opendaylight/mdsal/binding/spec/reflect/BindingReflections.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 660,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-14T14:01:07Z",
+      "side": 1,
+      "message": "use the BindingMapping constant",
+      "range": {
+        "startLine": 660,
+        "startChar": 49,
+        "endLine": 660,
+        "endChar": 64
+      },
+      "revId": "dfc4a05c977e78614f12ab6c6bbd36f9110af88c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
