@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "830f78a9_f679a781",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 10
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-07-15T09:34:19Z",
+      "side": 1,
+      "message": "Both compile-time generated augmentable DataObjects and runtime-time generated augmentable DataObjects are always AugmentationHolders. Why do not always cast obj to AugmentationHolder compare thisObj.augmentations() with obj .augmentations()?",
+      "range": {
+        "startLine": 240,
+        "startChar": 24,
+        "endLine": 257,
+        "endChar": 17
+      },
+      "revId": "ac50231f8f3df3044e13de0ff7da825a3f19117c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
