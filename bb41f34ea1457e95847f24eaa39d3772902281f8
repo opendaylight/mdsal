@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "026a32bc_83a4e1cd",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/Types.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-07-15T16:56:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "69950b36_be380bd7",
+      "range": {
+        "startLine": 110,
+        "startChar": 17,
+        "endLine": 110,
+        "endChar": 30
+      },
+      "revId": "bb41f34ea1457e95847f24eaa39d3772902281f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "59218cb7_e309aa45",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
         "patchSetId": 13
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "bb166495_ee35523a",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 13
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-07-15T16:56:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "59218cb7_e309aa45",
+      "range": {
+        "startLine": 228,
+        "startChar": 102,
+        "endLine": 228,
+        "endChar": 117
+      },
+      "revId": "bb41f34ea1457e95847f24eaa39d3772902281f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b1be4d41_65cc8aef",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/JavaFileTemplate.java",
         "patchSetId": 13
@@ -59,6 +107,30 @@
       "writtenOn": "2020-07-14T14:11:53Z",
       "side": 1,
       "message": "this part is at least in one another patch -- please factor it into a separate patch and then base this and the other patch(es) on top of that. Otherwise it is hard to review them",
+      "range": {
+        "startLine": 239,
+        "startChar": 5,
+        "endLine": 239,
+        "endChar": 50
+      },
+      "revId": "bb41f34ea1457e95847f24eaa39d3772902281f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "285d68fc_5d2801b3",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/JavaFileTemplate.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-07-15T16:56:52Z",
+      "side": 1,
+      "message": "Done. Link to new patch https://git.opendaylight.org/gerrit/c/mdsal/+/91335/5",
+      "parentUuid": "b1be4d41_65cc8aef",
       "range": {
         "startLine": 239,
         "startChar": 5,
@@ -91,6 +163,30 @@
       "revId": "bb41f34ea1457e95847f24eaa39d3772902281f8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "751a02b5_d7bfd8a4",
+        "filename": "binding/mdsal-binding-spec-util/src/main/java/org/opendaylight/mdsal/binding/spec/reflect/BindingReflections.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 660,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-07-15T16:56:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ffe8e755_b1af7f5f",
+      "range": {
+        "startLine": 660,
+        "startChar": 50,
+        "endLine": 660,
+        "endChar": 65
+      },
+      "revId": "bb41f34ea1457e95847f24eaa39d3772902281f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
