@@ -437,6 +437,11 @@ abstract class AbstractTypeGenerator {
         final Module module = context.module();
         addImplementedInterfaceFromUses(module, moduleDataTypeBuilder);
         moduleDataTypeBuilder.addImplementsType(DATA_ROOT);
+        // if we have more than 2 top level uses statements we need to define getImplementedInterface() on the
+        // top level DataRoot object
+        if (module.getUses().size() > 1) {
+            narrowImplementedInterface(moduleDataTypeBuilder);
+        }
 
         addCodegenInformation(moduleDataTypeBuilder, module);
         return moduleDataTypeBuilder;
