@@ -22,6 +22,30 @@
       "revId": "f62ba783e3596493b99e6da6ffb304e2cd5ede33",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b68f9f0e_51c73750",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-17T15:14:19Z",
+      "side": 1,
+      "message": "There are two things here:\n1) SchemaNode.getPath() is going away very soon and we will switch to using SchemaNodeIdentifier.Absolute for identification\n\n2) at the end of the day, if we are not going through SchemaContextUtil (as requested in the review somewhere), we will end up needing only Iterator\u003cQName\u003e during lookup -- which we can obtain from both SchemaNodeIdentifier and SchemaPath",
+      "parentUuid": "083cc387_ac6d5fbd",
+      "range": {
+        "startLine": 379,
+        "startChar": 77,
+        "endLine": 380,
+        "endChar": 65
+      },
+      "revId": "f62ba783e3596493b99e6da6ffb304e2cd5ede33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
     }
   ]
 }
