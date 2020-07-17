@@ -53,10 +53,16 @@ import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 
 final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCodecContext<D,SchemaContext> {
 
-    private final LoadingCache<Class<?>, DataContainerCodecContext<?,?>> childrenByClass = CacheBuilder.newBuilder()
-            .build(new CacheLoader<Class<?>, DataContainerCodecContext<?,?>>() {
+    private final LoadingCache<Class<? extends DataObject>, DataContainerCodecContext<?, ?>> childrenByClass = CacheBuilder.newBuilder()
+            .build(new CacheLoader<>() {
                 @Override
-                public DataContainerCodecContext<?,?> load(final Class<?> key) {
+                public DataContainerCodecContext<?, ?> load(final Class<? extends DataObject> key) {
+                    if (Notification.class.isAssignableFrom(key)) {
+                        return createNotificationDataContext(key);
+                    }
+                    if (RpcInput.class.isAssignableFrom(key) || RpcOutput.class.isAssignableFrom(key)) {
+                        return createRpcDataContext(key);
+                    }
                     return createDataTreeChildContext(key);
                 }
             });
@@ -77,14 +83,6 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
                 }
             });
 
-    private final LoadingCache<Class<?>, NotificationCodecContext<?>> notificationsByClass = CacheBuilder.newBuilder()
-            .build(new CacheLoader<Class<?>, NotificationCodecContext<?>>() {
-                @Override
-                public NotificationCodecContext<?> load(final Class<?> key) {
-                    return createNotificationDataContext(key);
-                }
-            });
-
     private final LoadingCache<Class<? extends DataObject>, ChoiceNodeCodecContext<?>> choicesByClass =
             CacheBuilder.newBuilder().build(new CacheLoader<Class<? extends DataObject>, ChoiceNodeCodecContext<?>>() {
                 @Override
@@ -93,15 +91,14 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
                 }
             });
 
-    private final LoadingCache<QName, DataContainerCodecContext<?,?>> childrenByQName = CacheBuilder.newBuilder().build(
-            new CacheLoader<QName, DataContainerCodecContext<?,?>>() {
+    private final LoadingCache<QName, DataContainerCodecContext<?, ?>> childrenByQName = CacheBuilder.newBuilder().build(
+            new CacheLoader<QName, DataContainerCodecContext<?, ?>>() {
                 @Override
-                public DataContainerCodecContext<?,?> load(final QName qname) {
+                public DataContainerCodecContext<?, ?> load(final QName qname) {
                     final DataSchemaNode childSchema = getSchema().getDataChildByName(qname);
-                    childNonNull(childSchema, qname,"Argument %s is not valid child of %s", qname,getSchema());
+                    childNonNull(childSchema, qname, "Argument %s is not valid child of %s", qname, getSchema());
                     if (childSchema instanceof DataNodeContainer || childSchema instanceof ChoiceSchemaNode) {
-                        @SuppressWarnings("unchecked")
-                        final Class<? extends DataObject> childCls = (Class<? extends DataObject>)
+                        @SuppressWarnings("unchecked") final Class<? extends DataObject> childCls = (Class<? extends DataObject>)
                                 factory().getRuntimeContext().getClassForSchema(childSchema);
                         return streamChild(childCls);
                     }
@@ -111,16 +108,15 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
             });
 
     private final LoadingCache<SchemaPath, RpcInputCodec<?>> rpcDataByPath = CacheBuilder.newBuilder().build(
-        new CacheLoader<SchemaPath, RpcInputCodec<?>>() {
-            @Override
-            public RpcInputCodec<?> load(final SchemaPath key) {
-                final ContainerSchemaNode schema = SchemaContextUtil.getRpcDataSchema(getSchema(), key);
-                @SuppressWarnings("unchecked")
-                final Class<? extends DataContainer> cls = (Class<? extends DataContainer>)
-                        factory().getRuntimeContext().getClassForSchema(schema);
-                return getRpc(cls);
-            }
-        });
+            new CacheLoader<SchemaPath, RpcInputCodec<?>>() {
+                @Override
+                public RpcInputCodec<?> load(final SchemaPath key) {
+                    final ContainerSchemaNode schema = SchemaContextUtil.getRpcDataSchema(getSchema(), key);
+                    @SuppressWarnings("unchecked") final Class<? extends DataContainer> cls = (Class<? extends DataContainer>)
+                            factory().getRuntimeContext().getClassForSchema(schema);
+                    return getRpc(cls);
+                }
+            });
 
     private final LoadingCache<SchemaPath, NotificationCodecContext<?>> notificationsByPath = CacheBuilder.newBuilder()
             .build(new CacheLoader<SchemaPath, NotificationCodecContext<?>>() {
@@ -154,15 +150,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     @SuppressWarnings("unchecked")
     @Override
     public <C extends DataObject> DataContainerCodecContext<C, ?> streamChild(final Class<C> childClass) {
-        /* FIXME: This is still not solved for RPCs
-         * TODO: Probably performance wise RPC, Data and Notification loading cache
-         *       should be merge for performance resons. Needs microbenchmark to
-         *       determine which is faster (keeping them separate or in same cache).
-         */
-        if (Notification.class.isAssignableFrom(childClass)) {
-            return (DataContainerCodecContext<C, ?>) getNotification((Class<? extends Notification>)childClass);
-        }
-        return (DataContainerCodecContext<C, ?>) getOrRethrow(childrenByClass,childClass);
+        return (DataContainerCodecContext<C, ?>) getOrRethrow(childrenByClass, childClass);
     }
 
     @Override
@@ -186,7 +174,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     }
 
     NotificationCodecContext<?> getNotification(final Class<? extends Notification> notification) {
-        return getOrRethrow(notificationsByClass, notification);
+        return (NotificationCodecContext<?>) streamChild((Class<? extends DataObject>)notification);
     }
 
     NotificationCodecContext<?> getNotification(final SchemaPath notification) {
