@@ -17,7 +17,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 import org.gaul.modernizer_maven_annotations.SuppressModernizer;
-import org.opendaylight.binding.runtime.api.ModuleInfoSnapshot;
+import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.dom.schema.osgi.ModelGenerationAware;
 import org.opendaylight.mdsal.dom.schema.osgi.OSGiModuleInfoSnapshot;
 import org.osgi.framework.Constants;
