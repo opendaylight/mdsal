@@ -121,11 +121,6 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
         return str.isEmpty() ? EMPTY_BYTES : stringToBytes(str, str.length() / 3 + 1);
     }
 
-    @Deprecated
-    public final byte @NonNull[] bytesFor(final @NonNull M macAddress) {
-        return macAddressBytes(macAddress);
-    }
-
     public final @NonNull H hexStringFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length > 0, "Hex string should have at least one byte");
         return hexFactory.newInstance(bytesToString(bytes, bytes.length * 3 - 1));
