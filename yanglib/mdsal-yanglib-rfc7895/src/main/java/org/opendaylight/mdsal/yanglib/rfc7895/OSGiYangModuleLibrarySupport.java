@@ -9,8 +9,8 @@ package org.opendaylight.mdsal.yanglib.rfc7895;
 
 import com.google.common.annotations.Beta;
 import java.io.IOException;
-import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
