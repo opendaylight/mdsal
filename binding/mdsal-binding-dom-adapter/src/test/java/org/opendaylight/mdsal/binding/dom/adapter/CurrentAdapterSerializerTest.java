@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
-import org.opendaylight.mdsal.binding.runtime.spi.GeneratedClassLoadingStrategy;
+import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -112,7 +112,7 @@ public class CurrentAdapterSerializerTest {
             final EffectiveModelContext schemaCtx) {
         final CurrentAdapterSerializer codec = new CurrentAdapterSerializer(new BindingCodecContext(
             DefaultBindingRuntimeContext.create(new DefaultBindingRuntimeGenerator().generateTypeMapping(schemaCtx),
-                GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy())));
+                ClassLoaderUtils::loadClassWithTCCL)));
 
         final YangInstanceIdentifier path = YangInstanceIdentifier.create(NodeIdentifier.create(QName.create(
             "urn:test", "2017-01-01", "cont")));
