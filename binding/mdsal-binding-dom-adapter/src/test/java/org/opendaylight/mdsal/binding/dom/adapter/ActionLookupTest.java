@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.opendaylight.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Grpcont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Othercont;

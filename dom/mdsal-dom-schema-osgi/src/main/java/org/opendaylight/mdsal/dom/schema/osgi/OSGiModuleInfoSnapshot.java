@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.schema.osgi;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.binding.runtime.api.ModuleInfoSnapshot;
+import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 
 /**
  * Combination of a {@link ModuleInfoSnapshot} with a linear generation.
