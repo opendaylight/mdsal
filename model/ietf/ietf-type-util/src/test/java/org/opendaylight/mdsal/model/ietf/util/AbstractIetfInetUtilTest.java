@@ -188,12 +188,6 @@ public class AbstractIetfInetUtilTest {
     }
 
     @Test
-    public void testIpv4AddressNoZoneForBits() {
-        assertEquals("1.2.3.4", UTIL.ipv4AddressNoZoneFor(0x01020304).getValue());
-        assertEquals("255.255.255.255", UTIL.ipv4AddressNoZoneFor(0xFFFFFFFF).getValue());
-    }
-
-    @Test
     public void testIpv4AddressBits() {
         assertEquals(0x01020304, UTIL.ipv4AddressBits(new IpClass("1.2.3.4")));
         assertEquals(0xFFFFFFFF, UTIL.ipv4AddressBits(new IpClass("255.255.255.255")));

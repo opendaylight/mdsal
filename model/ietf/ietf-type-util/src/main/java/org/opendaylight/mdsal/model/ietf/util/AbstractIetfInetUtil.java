@@ -258,46 +258,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     }
 
     /**
-     * Create an Ipv4AddressNoZone by interpreting input bytes as an IPv4 address.
-     *
-     * @param bytes 4-byte array
-     * @return An Ipv4AddressNoZone object
-     * @throws IllegalArgumentException if bytes has length different from 4
-     * @throws NullPointerException if bytes is null
-     * @deprecated Use {@link #ipv4AddressFor(byte[])} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public final @NonNull A4NZ ipv4AddressNoZoneFor(final byte @NonNull[] bytes) {
-        return ipv4AddressFor(bytes);
-    }
-
-    /**
-     * Create an Ipv4AddressNoZone by interpreting an {@link Inet4Address}.
-     *
-     * @param addr An {@link Inet4Address}
-     * @return An Ipv4AddressNoZone object
-     * @throws IllegalArgumentException if addr is not an {@link Inet4Address}
-     * @throws NullPointerException if addr is null
-     * @deprecated Use {@link #ipv4AddressFor(InetAddress)} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public final @NonNull A4NZ ipv4AddressNoZoneFor(final @NonNull InetAddress addr) {
-        return ipv4AddressFor(addr);
-    }
-
-    /**
-     * Create an Ipv4AddressNoZone by interpreting input 32 bits as an IPv4 address in big-endian format.
-     *
-     * @param bits 32 bits, big endian
-     * @return An Ipv4AddressNoZone object
-     * @deprecated Use {@link #ipv4AddressFor(int)} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public final @NonNull A4NZ ipv4AddressNoZoneFor(final int bits) {
-        return ipv4AddressFor(bits);
-    }
-
-    /**
      * Create an Ipv4AddressNoZone by interpreting an Ipv4Address.
      *
      * @param addr An Ipv4Address
@@ -491,34 +451,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      */
     public final @NonNull A6NZ ipv6AddressFor(final @NonNull InetAddress addr) {
         return address6NoZoneFactory.newInstance(addressStringV6(addr));
-    }
-
-    /**
-     * Create an Ipv6AddressNoZone by interpreting input bytes as an IPv6 address.
-     *
-     * @param bytes 16-byte array
-     * @return An Ipv6Address object
-     * @throws IllegalArgumentException if bytes has length different from 16
-     * @throws NullPointerException if bytes is null
-     * @deprecated Use {@link #ipv6AddressFor(byte[])} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public final @NonNull A6NZ ipv6AddressNoZoneFor(final byte @NonNull[] bytes) {
-        return ipv6AddressFor(bytes);
-    }
-
-    /**
-     * Create an Ipv6AddressNoZone by interpreting an {@link Inet6Address}.
-     *
-     * @param addr An {@link Inet6Address}
-     * @return An Ipv6AddressNoZone object
-     * @throws IllegalArgumentException if addr is not an {@link Inet6Address}
-     * @throws NullPointerException if addr is null
-     * @deprecated Use {@link #ipv6AddressFor(InetAddress)} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public final @NonNull A6NZ ipv6AddressNoZoneFor(final @NonNull InetAddress addr) {
-        return ipv6AddressFor(addr);
     }
 
     /**
