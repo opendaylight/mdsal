@@ -10,11 +10,9 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.junit.Before;
-import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
-import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
+import org.opendaylight.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -25,9 +23,7 @@ public abstract class AbstractSchemaAwareTest {
                 new CacheLoader<Set<YangModuleInfo>, EffectiveModelContext>() {
                     @Override
                     public EffectiveModelContext load(final Set<YangModuleInfo> key) {
-                        return ModuleInfoBackedContext.cacheContext(
-                            GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), ImmutableSet.copyOf(key))
-                                .tryToCreateModelContext().get();
+                        return BindingRuntimeHelpers.createEffectiveModel(key);
                     }
                 });
 
