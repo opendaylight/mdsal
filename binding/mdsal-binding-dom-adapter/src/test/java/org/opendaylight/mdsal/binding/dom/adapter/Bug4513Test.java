@@ -12,8 +12,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -60,7 +60,7 @@ public class Bug4513Test extends AbstractDataBrokerTest {
     private ListItem writeListItem() {
         WriteTransaction writeTransaction = getDataBroker().newWriteOnlyTransaction();
         final ListItem item = new ListItemBuilder().setSip("name").setOp(Uint32.valueOf(43)).build();
-        ListenerTestBuilder builder = new ListenerTestBuilder().setListItem(Arrays.asList(item));
+        ListenerTestBuilder builder = new ListenerTestBuilder().setListItem(Map.of(item.key(), item));
         writeTransaction.put(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.builder(
                 ListenerTest.class).build(), builder.build());
         assertCommit(writeTransaction.commit());
