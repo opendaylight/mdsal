@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import java.util.ArrayList;
+import java.util.Map;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
@@ -26,9 +26,8 @@ public class Bug4494Test extends AbstractDataBrokerTest {
     public void testDelete() throws Exception {
         DataBroker dataBroker = getDataBroker();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        ArrayList<TopLevelList> list = new ArrayList<>();
-        list.add(new TopLevelListBuilder().setName("name").build());
-        TopBuilder builder = new TopBuilder().setTopLevelList(list);
+        TopLevelList list = new TopLevelListBuilder().setName("name").build();
+        TopBuilder builder = new TopBuilder().setTopLevelList(Map.of(list.key(), list));
         writeTransaction.put(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Top.class), builder.build());
         assertCommit(writeTransaction.commit());
 

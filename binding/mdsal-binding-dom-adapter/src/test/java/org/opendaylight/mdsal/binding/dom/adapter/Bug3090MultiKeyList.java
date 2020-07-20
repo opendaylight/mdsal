@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,7 +49,7 @@ public class Bug3090MultiKeyList extends AbstractDataTreeChangeListenerTest {
             );
         }
 
-        final Root root = new RootBuilder().setListInRoot(listInRoots).build();
+        final Root root = new RootBuilder().setListInRoot(Maps.uniqueIndex(listInRoots, ListInRoot::key)).build();
 
         final TestListener<Root> listener = createListener(LogicalDatastoreType.CONFIGURATION, ROOT_PATH,
                 match(ModificationType.WRITE, ROOT_PATH, Objects::isNull,
