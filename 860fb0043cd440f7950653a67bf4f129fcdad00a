@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ebf71ac9_f418261b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-07-20T21:14:03Z",
+      "side": 1,
+      "message": "yup, and that benchmark needs to be based on JMH. -1 until we have it (see benchmarks/ directory).",
+      "range": {
+        "startLine": 10,
+        "startChar": 17,
+        "endLine": 11,
+        "endChar": 47
+      },
+      "revId": "860fb0043cd440f7950653a67bf4f129fcdad00a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
