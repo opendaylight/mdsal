@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
@@ -36,7 +37,7 @@ public class Bug2562DeserializedUnkeyedListTest extends AbstractDataTreeChangeLi
     @Test
     public void writeListToList2562Root() {
         final Barroot barRoot = new BarrootBuilder().setType(2).setValue(2).withKey(new BarrootKey(2)).build();
-        final Fooroot fooRoot = new FoorootBuilder().setBarroot(Arrays.asList(barRoot)).build();
+        final Fooroot fooRoot = new FoorootBuilder().setBarroot(Map.of(barRoot.key(), barRoot)).build();
         final Root root = new RootBuilder().setFooroot(Arrays.asList(fooRoot)).build();
 
         final TestListener<Root> listenerRoot = createListener(LogicalDatastoreType.CONFIGURATION, ROOT_PATH,
