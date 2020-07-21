@@ -23,7 +23,6 @@ import com.lmax.disruptor.PhasedBackoffWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -136,12 +135,6 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         }
 
         return reg;
-    }
-
-    @Override
-    public <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(
-            final T listener, final SchemaPath... types) {
-        return registerNotificationListener(listener, Arrays.asList(types));
     }
 
     /**
