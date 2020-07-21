@@ -33,7 +33,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 @NonNullByDefault
 public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<DOMActionProviderService>
@@ -65,10 +65,10 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
     public <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
             ObjectRegistration<S> registerImplementation(final Class<T> actionInterface, final S implementation,
                 final LogicalDatastoreType datastore, final Set<DataTreeIdentifier<O>> validNodes) {
-        final SchemaPath path = currentSerializer().getActionPath(actionInterface);
+        final Absolute path = currentSerializer().getActionPath(actionInterface);
         final ObjectRegistration<DOMActionImplementation> reg = getDelegate().registerActionImplementation(
             new Impl(adapterContext(),
-                NodeIdentifier.create(YangConstants.operationOutputQName(path.getLastComponent().getModule())),
+                NodeIdentifier.create(YangConstants.operationOutputQName(path.lastNodeIdentifier().getModule())),
                 actionInterface, implementation), ImmutableSet.of());
         return new AbstractObjectRegistration<>(implementation) {
             @Override
@@ -94,7 +94,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
 
         @Override
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        public ListenableFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
+        public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
                 final DOMDataTreeIdentifier path, final ContainerNode input) {
             final CurrentAdapterSerializer codec = adapterContext.currentSerializer();
 

@@ -26,12 +26,12 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 @Beta
@@ -96,19 +96,19 @@ public abstract class ForwardingBindingDOMCodecServices extends ForwardingObject
     }
 
     @Override
-    public Notification fromNormalizedNodeNotification(final SchemaPath path, final ContainerNode data) {
+    public Notification fromNormalizedNodeNotification(final Absolute path, final ContainerNode data) {
         return delegate().fromNormalizedNodeNotification(path, data);
     }
 
     @Override
-    public Notification fromNormalizedNodeNotification(final SchemaPath path, final ContainerNode data,
+    public Notification fromNormalizedNodeNotification(final Absolute path, final ContainerNode data,
             final Instant eventInstant) {
         return delegate().fromNormalizedNodeNotification(path, data, eventInstant);
     }
 
     @Override
-    public DataObject fromNormalizedNodeRpcData(final SchemaPath path, final ContainerNode data) {
-        return delegate().fromNormalizedNodeRpcData(path, data);
+    public DataObject fromNormalizedNodeRpcData(final QName rpcType, final ContainerNode data) {
+        return delegate().fromNormalizedNodeRpcData(rpcType, data);
     }
 
     @Override

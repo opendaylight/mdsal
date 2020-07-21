@@ -18,11 +18,9 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class Mdsal552Test extends AbstractBindingCodecTest {
-    private static final SchemaPath OUTPUT_PATH = SchemaPath.create(true, QName.create(RefTestOutput.QNAME, "ref_test"),
-        RefTestOutput.QNAME);
+    private static final QName OUTPUT_QNAME = QName.create(RefTestOutput.QNAME, "ref_test");
     private static final QName OUTPUTREF = QName.create(RefTestOutput.QNAME, "outputref");
 
     @Test
@@ -37,7 +35,7 @@ public class Mdsal552Test extends AbstractBindingCodecTest {
     @Test
     public void testLeafrefEnumerationFromNormalized() throws IOException {
         assertEquals(new RefTestOutputBuilder().setOutputref(OutputA.DownTest).build(),
-            codecContext.fromNormalizedNodeRpcData(OUTPUT_PATH, Builders.containerBuilder()
+            codecContext.fromNormalizedNodeRpcData(OUTPUT_QNAME, Builders.containerBuilder()
                 .withNodeIdentifier(new NodeIdentifier(RefTestOutput.QNAME))
                 .withChild(ImmutableNodes.leafNode(OUTPUTREF, OutputA.DownTest.getName()))
                 .build()));

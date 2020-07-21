@@ -36,6 +36,7 @@ import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
@@ -48,6 +49,7 @@ import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 
@@ -122,11 +124,13 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
             }
         });
 
-    private final LoadingCache<SchemaPath, NotificationCodecContext<?>> notificationsByPath = CacheBuilder.newBuilder()
-            .build(new CacheLoader<SchemaPath, NotificationCodecContext<?>>() {
+    private final LoadingCache<Absolute, NotificationCodecContext<?>> notificationsByPath = CacheBuilder.newBuilder()
+            .build(new CacheLoader<Absolute, NotificationCodecContext<?>>() {
                 @Override
-                public NotificationCodecContext<?> load(final SchemaPath key) {
-                    final NotificationDefinition schema = SchemaContextUtil.getNotificationSchema(getSchema(), key);
+                public NotificationCodecContext<?> load(final Absolute key) {
+                    final NotificationDefinition schema = SchemaContextUtil.getNotificationSchema(getSchema(),
+                        // FIXME: do not convert here!
+                        key.asSchemaPath());
                     @SuppressWarnings("unchecked")
                     final Class<? extends Notification> clz = (Class<? extends Notification>)
                             factory().getRuntimeContext().getClassForSchema(schema);
@@ -189,7 +193,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         return getOrRethrow(notificationsByClass, notification);
     }
 
-    NotificationCodecContext<?> getNotification(final SchemaPath notification) {
+    NotificationCodecContext<?> getNotification(final Absolute notification) {
         return getOrRethrow(notificationsByPath, notification);
     }
 
@@ -197,8 +201,10 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         return getOrRethrow(rpcDataByClass, rpcInputOrOutput);
     }
 
-    RpcInputCodec<?> getRpc(final SchemaPath notification) {
-        return getOrRethrow(rpcDataByPath, notification);
+    RpcInputCodec<?> getRpc(final QName rpcType, final NodeIdentifier containerName) {
+        return getOrRethrow(rpcDataByPath,
+            // FIXME: do not instantiate a SchemaPath here
+            SchemaPath.ROOT.createChild(rpcType).createChild(containerName.getNodeType()));
     }
 
     DataContainerCodecContext<?,?> createDataTreeChildContext(final Class<?> key) {

@@ -17,7 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Grpcont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Othercont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.grpcont.Bar;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class ActionLookupTest {
     @Test
@@ -25,9 +25,9 @@ public class ActionLookupTest {
         CurrentAdapterSerializer codec = new CurrentAdapterSerializer(new BindingCodecContext(
             BindingRuntimeHelpers.createRuntimeContext()));
 
-        assertEquals(SchemaPath.create(true, Cont.QNAME, Foo.QNAME), codec.getActionPath(Foo.class));
-        assertEquals(SchemaPath.create(true, Grpcont.QNAME, Bar.QNAME), codec.getActionPath(Bar.class));
-        assertEquals(SchemaPath.create(true, Othercont.QNAME, Bar.QNAME),
+        assertEquals(Absolute.of(Cont.QNAME, Foo.QNAME), codec.getActionPath(Foo.class));
+        assertEquals(Absolute.of(Grpcont.QNAME, Bar.QNAME), codec.getActionPath(Bar.class));
+        assertEquals(Absolute.of(Othercont.QNAME, Bar.QNAME),
             codec.getActionPath(org.opendaylight.yang.gen.v1.urn.odl.actions.norev.othercont.Bar.class));
     }
 }

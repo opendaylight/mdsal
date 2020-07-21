@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.broker;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -18,8 +19,8 @@ import java.util.concurrent.RejectedExecutionException;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class DOMRpcRouterTest extends TestUtils {
 
@@ -27,24 +28,24 @@ public class DOMRpcRouterTest extends TestUtils {
     public void registerRpcImplementation() {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
             DOMRpcRoutingTable routingTable = rpcRouter.routingTable();
-            assertFalse(routingTable.getOperations().containsKey(SchemaPath.ROOT));
+            assertFalse(routingTable.getOperations().containsKey(TestModel.TEST_QNAME));
 
             rpcRouter.getRpcProviderService().registerRpcImplementation(getTestRpcImplementation(),
-                DOMRpcIdentifier.create(SchemaPath.ROOT, null));
+                DOMRpcIdentifier.create(TestModel.TEST_QNAME, null));
             routingTable = rpcRouter.routingTable();
-            assertTrue(routingTable.getOperations().containsKey(SchemaPath.ROOT));
+            assertTrue(routingTable.getOperations().containsKey(TestModel.TEST_QNAME));
 
             rpcRouter.getRpcProviderService().registerRpcImplementation(getTestRpcImplementation(),
-                DOMRpcIdentifier.create(SchemaPath.SAME, null));
+                DOMRpcIdentifier.create(TestModel.TEST2_QNAME, null));
             routingTable = rpcRouter.routingTable();
-            assertTrue(routingTable.getOperations().containsKey(SchemaPath.SAME));
+            assertTrue(routingTable.getOperations().containsKey(TestModel.TEST2_QNAME));
         }
     }
 
     @Test
     public void invokeRpc() {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
-            assertNotNull(rpcRouter.getRpcService().invokeRpc(SchemaPath.create(false, TestModel.TEST_QNAME), null));
+            assertNotNull(rpcRouter.getRpcService().invokeRpc(TestModel.TEST_QNAME, null));
         }
     }
 
@@ -77,11 +78,13 @@ public class DOMRpcRouterTest extends TestUtils {
         }
     }
 
-    @Test(expected = RejectedExecutionException.class)
+    @Test
     public void close() {
         final DOMRpcRouter rpcRouter = new DOMRpcRouter();
         rpcRouter.close();
-        rpcRouter.getRpcProviderService().registerRpcImplementation(getTestRpcImplementation(),
-            DOMRpcIdentifier.create(SchemaPath.ROOT, null));
+
+        final DOMRpcProviderService svc = rpcRouter.getRpcProviderService();
+        assertThrows(RejectedExecutionException.class, () -> svc.registerRpcImplementation(getTestRpcImplementation(),
+            DOMRpcIdentifier.create(TestModel.TEST_QNAME, null)));
     }
 }
