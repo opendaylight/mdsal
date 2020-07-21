@@ -74,7 +74,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -218,11 +218,11 @@ public final class DOMRpcRouter extends AbstractRegistration
     private static final class Registration<T extends DOMRpcAvailabilityListener>
         extends AbstractListenerRegistration<T> {
 
-        private Map<SchemaPath, Set<YangInstanceIdentifier>> prevRpcs;
+        private Map<Absolute, Set<YangInstanceIdentifier>> prevRpcs;
         private DOMRpcRouter router;
 
         Registration(final DOMRpcRouter router, final T listener,
-                final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs) {
+                final Map<Absolute, Set<YangInstanceIdentifier>> rpcs) {
             super(listener);
             this.router = requireNonNull(router);
             this.prevRpcs = requireNonNull(rpcs);
@@ -236,7 +236,7 @@ public final class DOMRpcRouter extends AbstractRegistration
 
         void initialTable() {
             final Collection<DOMRpcIdentifier> added = new ArrayList<>();
-            for (Entry<SchemaPath, Set<YangInstanceIdentifier>> e : prevRpcs.entrySet()) {
+            for (Entry<Absolute, Set<YangInstanceIdentifier>> e : prevRpcs.entrySet()) {
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
             }
             if (!added.isEmpty()) {
@@ -250,15 +250,14 @@ public final class DOMRpcRouter extends AbstractRegistration
                 return;
             }
 
-            final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(l));
-            final MapDifference<SchemaPath, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
+            final Map<Absolute, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(l));
+            final MapDifference<Absolute, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
             final Collection<DOMRpcIdentifier> added = new ArrayList<>();
-            for (Entry<SchemaPath, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnRight().entrySet()) {
+            for (Entry<Absolute, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnRight().entrySet()) {
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
             }
-            for (Entry<SchemaPath, ValueDifference<Set<YangInstanceIdentifier>>> e :
-                    diff.entriesDiffering().entrySet()) {
+            for (Entry<Absolute, ValueDifference<Set<YangInstanceIdentifier>>> e : diff.entriesDiffering().entrySet()) {
                 for (YangInstanceIdentifier i : Sets.difference(e.getValue().rightValue(), e.getValue().leftValue())) {
                     added.add(DOMRpcIdentifier.create(e.getKey(), i));
                 }
@@ -276,15 +275,14 @@ public final class DOMRpcRouter extends AbstractRegistration
                 return;
             }
 
-            final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(l));
-            final MapDifference<SchemaPath, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
+            final Map<Absolute, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(l));
+            final MapDifference<Absolute, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
             final Collection<DOMRpcIdentifier> removed = new ArrayList<>();
-            for (Entry<SchemaPath, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnLeft().entrySet()) {
+            for (Entry<Absolute, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnLeft().entrySet()) {
                 removed.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
             }
-            for (Entry<SchemaPath, ValueDifference<Set<YangInstanceIdentifier>>> e :
-                    diff.entriesDiffering().entrySet()) {
+            for (Entry<Absolute, ValueDifference<Set<YangInstanceIdentifier>>> e : diff.entriesDiffering().entrySet()) {
                 for (YangInstanceIdentifier i : Sets.difference(e.getValue().leftValue(), e.getValue().rightValue())) {
                     removed.add(DOMRpcIdentifier.create(e.getKey(), i));
                 }
@@ -300,11 +298,11 @@ public final class DOMRpcRouter extends AbstractRegistration
     private static final class ActionRegistration<T extends AvailabilityListener>
         extends AbstractListenerRegistration<T> {
 
-        private Map<SchemaPath, Set<DOMDataTreeIdentifier>> prevActions;
+        private Map<Absolute, Set<DOMDataTreeIdentifier>> prevActions;
         private DOMRpcRouter router;
 
         ActionRegistration(final DOMRpcRouter router, final T listener,
-                final Map<SchemaPath, Set<DOMDataTreeIdentifier>> actions) {
+                final Map<Absolute, Set<DOMDataTreeIdentifier>> actions) {
             super(listener);
             this.router = requireNonNull(router);
             this.prevActions = requireNonNull(actions);
@@ -318,7 +316,7 @@ public final class DOMRpcRouter extends AbstractRegistration
 
         void initialTable() {
             final Collection<DOMActionInstance> added = new ArrayList<>();
-            for (Entry<SchemaPath, Set<DOMDataTreeIdentifier>> e : prevActions.entrySet()) {
+            for (Entry<Absolute, Set<DOMDataTreeIdentifier>> e : prevActions.entrySet()) {
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
             }
             if (!added.isEmpty()) {
@@ -332,22 +330,21 @@ public final class DOMRpcRouter extends AbstractRegistration
                 return;
             }
 
-            final Map<SchemaPath, Set<DOMDataTreeIdentifier>> actions = verifyNotNull(newTable.getOperations(l));
-            final MapDifference<SchemaPath, Set<DOMDataTreeIdentifier>> diff = Maps.difference(prevActions, actions);
+            final Map<Absolute, Set<DOMDataTreeIdentifier>> actions = verifyNotNull(newTable.getOperations(l));
+            final MapDifference<Absolute, Set<DOMDataTreeIdentifier>> diff = Maps.difference(prevActions, actions);
 
             final Set<DOMActionInstance> removed = new HashSet<>();
             final Set<DOMActionInstance> added = new HashSet<>();
 
-            for (Entry<SchemaPath, Set<DOMDataTreeIdentifier>> e : diff.entriesOnlyOnLeft().entrySet()) {
+            for (Entry<Absolute, Set<DOMDataTreeIdentifier>> e : diff.entriesOnlyOnLeft().entrySet()) {
                 removed.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
             }
 
-            for (Entry<SchemaPath, Set<DOMDataTreeIdentifier>> e : diff.entriesOnlyOnRight().entrySet()) {
+            for (Entry<Absolute, Set<DOMDataTreeIdentifier>> e : diff.entriesOnlyOnRight().entrySet()) {
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
             }
 
-            for (Entry<SchemaPath, ValueDifference<Set<DOMDataTreeIdentifier>>> e :
-                diff.entriesDiffering().entrySet()) {
+            for (Entry<Absolute, ValueDifference<Set<DOMDataTreeIdentifier>>> e : diff.entriesDiffering().entrySet()) {
                 for (DOMDataTreeIdentifier i : Sets.difference(e.getValue().leftValue(), e.getValue().rightValue())) {
                     removed.add(DOMActionInstance.of(e.getKey(), i));
                 }
@@ -393,7 +390,7 @@ public final class DOMRpcRouter extends AbstractRegistration
         }
 
         @Override
-        public ListenableFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
+        public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
                 final DOMDataTreeIdentifier path, final ContainerNode input) {
             final DOMActionRoutingTableEntry entry = (DOMActionRoutingTableEntry) actionRoutingTable.getEntry(type);
             if (entry == null) {
@@ -435,7 +432,7 @@ public final class DOMRpcRouter extends AbstractRegistration
 
     private final class RpcServiceFacade implements DOMRpcService {
         @Override
-        public ListenableFuture<? extends DOMRpcResult> invokeRpc(final SchemaPath type,
+        public ListenableFuture<? extends DOMRpcResult> invokeRpc(final Absolute type,
                 final NormalizedNode<?, ?> input) {
             final AbstractDOMRpcRoutingTableEntry entry = (AbstractDOMRpcRoutingTableEntry) routingTable.getEntry(type);
             if (entry == null) {
@@ -494,7 +491,7 @@ public final class DOMRpcRouter extends AbstractRegistration
         private static final Logger LOG = LoggerFactory.getLogger(OperationInvocation.class);
 
         static ListenableFuture<? extends DOMActionResult> invoke(final DOMActionRoutingTableEntry entry,
-                final SchemaPath type, final DOMDataTreeIdentifier path, final ContainerNode input) {
+                final Absolute type, final DOMDataTreeIdentifier path, final ContainerNode input) {
             return entry.getImplementations(path).get(0).invokeAction(type, path, input);
         }
 

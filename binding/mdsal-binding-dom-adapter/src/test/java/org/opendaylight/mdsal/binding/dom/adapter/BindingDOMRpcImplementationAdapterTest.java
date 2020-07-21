@@ -18,7 +18,7 @@ import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class BindingDOMRpcImplementationAdapterTest {
 
@@ -26,11 +26,10 @@ public class BindingDOMRpcImplementationAdapterTest {
     public void basicTest() throws Exception {
         final BindingDOMCodecServices registry = mock(BindingDOMCodecServices.class);
         final Method testMethod = this.getClass().getDeclaredMethod("testMethod");
-        final SchemaPath schemaPath = SchemaPath.create(true,
-                QName.create(QNameModule.create(new URI("tst")), "test"));
+        final Absolute rpcPath = Absolute.of(QName.create(QNameModule.create(new URI("tst")), "test"));
         final BindingDOMRpcImplementationAdapter adapter = new BindingDOMRpcImplementationAdapter(
             new ConstantAdapterContext(registry), OpendaylightTestRpcServiceService.class,
-            ImmutableMap.of(schemaPath, testMethod), mock(OpendaylightTestRpcServiceService.class));
+            ImmutableMap.of(rpcPath, testMethod), mock(OpendaylightTestRpcServiceService.class));
         assertNotNull(adapter);
     }
 

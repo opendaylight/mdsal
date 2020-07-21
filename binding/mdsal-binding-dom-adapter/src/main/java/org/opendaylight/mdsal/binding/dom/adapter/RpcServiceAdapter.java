@@ -42,6 +42,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 class RpcServiceAdapter implements InvocationHandler {
     private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
@@ -67,11 +68,10 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private RpcInvocationStrategy createStrategy(final Method method, final RpcDefinition schema) {
+        final Absolute rpcPath = Absolute.of(schema.getQName());
         final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(schema);
-        if (strategy.isContextBasedRouted()) {
-            return new RoutedStrategy(schema.getPath(), method, strategy.getLeaf());
-        }
-        return new NonRoutedStrategy(schema.getPath());
+        return strategy.isContextBasedRouted() ? new RoutedStrategy(rpcPath, method, strategy.getLeaf())
+                : new NonRoutedStrategy(rpcPath);
     }
 
     RpcService getProxy() {
@@ -114,10 +114,10 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private abstract class RpcInvocationStrategy {
-        private final SchemaPath rpcName;
+        private final Absolute rpcName;
 
-        RpcInvocationStrategy(final SchemaPath path) {
-            rpcName = path;
+        RpcInvocationStrategy(final Absolute path) {
+            rpcName = requireNonNull(path);
         }
 
         final ListenableFuture<RpcResult<?>> invoke(final DataObject input) {
@@ -126,28 +126,28 @@ class RpcServiceAdapter implements InvocationHandler {
 
         abstract ContainerNode serialize(DataObject input);
 
-        final SchemaPath getRpcName() {
+        final Absolute getRpcName() {
             return rpcName;
         }
 
-        ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final ContainerNode input) {
-            final ListenableFuture<? extends DOMRpcResult> result = delegate.invokeRpc(schemaPath, input);
+        ListenableFuture<RpcResult<?>> invoke0(final Absolute rpcPath, final ContainerNode input) {
+            final ListenableFuture<? extends DOMRpcResult> result = delegate.invokeRpc(rpcPath, input);
             if (ENABLE_CODEC_SHORTCUT && result instanceof BindingRpcFutureAware) {
                 return ((BindingRpcFutureAware) result).getBindingFuture();
             }
 
-            return transformFuture(schemaPath, result, adapterContext.currentSerializer());
+            return transformFuture(rpcPath, result, adapterContext.currentSerializer());
         }
 
-        private ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
+        private ListenableFuture<RpcResult<?>> transformFuture(final Absolute rpcPath,
                 final ListenableFuture<? extends DOMRpcResult> domFuture,
                 final BindingNormalizedNodeSerializer resultCodec) {
             return Futures.transform(domFuture, input -> {
                 final NormalizedNode<?, ?> domData = input.getResult();
                 final DataObject bindingResult;
                 if (domData != null) {
-                    final SchemaPath rpcOutput = rpc.createChild(YangConstants.operationOutputQName(
-                        rpc.getLastComponent().getModule()));
+                    final SchemaPath rpcOutput = rpcPath.createChild(YangConstants.operationOutputQName(
+                        rpcPath.getLastComponent().getModule()));
                     bindingResult = resultCodec.fromNormalizedNodeRpcData(rpcOutput, (ContainerNode) domData);
                 } else {
                     bindingResult = null;
@@ -159,7 +159,7 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private final class NonRoutedStrategy extends RpcInvocationStrategy {
-        NonRoutedStrategy(final SchemaPath path) {
+        NonRoutedStrategy(final Absolute path) {
             super(path);
         }
 
@@ -173,7 +173,7 @@ class RpcServiceAdapter implements InvocationHandler {
         private final ContextReferenceExtractor refExtractor;
         private final NodeIdentifier contextName;
 
-        RoutedStrategy(final SchemaPath path, final Method rpcMethod, final QName leafName) {
+        RoutedStrategy(final Absolute path, final Method rpcMethod, final QName leafName) {
             super(path);
             final Optional<Class<? extends DataContainer>> maybeInputType =
                     BindingReflections.resolveRpcInputClass(rpcMethod);

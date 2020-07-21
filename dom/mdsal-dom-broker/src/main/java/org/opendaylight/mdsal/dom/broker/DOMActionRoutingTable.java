@@ -24,8 +24,8 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-
 
 /**
  * Definition of Action routing table.
@@ -35,21 +35,21 @@ final class DOMActionRoutingTable extends AbstractDOMRoutingTable<DOMActionInsta
         DOMActionImplementation, AvailabilityListener, DOMActionRoutingTableEntry> {
     static final DOMActionRoutingTable EMPTY = new DOMActionRoutingTable(ImmutableMap.of(), null);
 
-    private DOMActionRoutingTable(final Map<SchemaPath, DOMActionRoutingTableEntry> actions,
+    private DOMActionRoutingTable(final Map<Absolute, DOMActionRoutingTableEntry> actions,
             final EffectiveModelContext schemaContext) {
         super(actions, schemaContext);
     }
 
     @Override
-    protected DOMActionRoutingTable newInstance(final Map<SchemaPath, DOMActionRoutingTableEntry> operations,
+    protected DOMActionRoutingTable newInstance(final Map<Absolute, DOMActionRoutingTableEntry> operations,
             final EffectiveModelContext schemaContext) {
         return new DOMActionRoutingTable(operations, schemaContext);
     }
 
     @Override
-    protected ListMultimap<SchemaPath, DOMDataTreeIdentifier> decomposeIdentifiers(
+    protected ListMultimap<Absolute, DOMDataTreeIdentifier> decomposeIdentifiers(
             final Set<DOMActionInstance> instances) {
-        final ListMultimap<SchemaPath, DOMDataTreeIdentifier> ret = LinkedListMultimap.create();
+        final ListMultimap<Absolute, DOMDataTreeIdentifier> ret = LinkedListMultimap.create();
         for (DOMActionInstance instance : instances) {
             instance.getDataTrees().forEach(id -> ret.put(instance.getType(), id));
         }
@@ -58,7 +58,7 @@ final class DOMActionRoutingTable extends AbstractDOMRoutingTable<DOMActionInsta
 
     @Override
     protected DOMActionRoutingTableEntry createOperationEntry(final EffectiveModelContext context,
-            final SchemaPath type, final Map<DOMDataTreeIdentifier, List<DOMActionImplementation>> implementations) {
+            final Absolute type, final Map<DOMDataTreeIdentifier, List<DOMActionImplementation>> implementations) {
         final ActionDefinition actionDef = findActionDefinition(context, type);
         if (actionDef == null) {
             //FIXME: return null directly instead of providing kind of unknown entry.
@@ -68,10 +68,12 @@ final class DOMActionRoutingTable extends AbstractDOMRoutingTable<DOMActionInsta
         return new DOMActionRoutingTableEntry(type, implementations);
     }
 
-    private static ActionDefinition findActionDefinition(final SchemaContext context, final SchemaPath path) {
-        final SchemaNode node = SchemaContextUtil.findDataSchemaNode(context, path.getParent());
+    private static ActionDefinition findActionDefinition(final SchemaContext context, final Absolute path) {
+        // FIXME: use direct search
+        final SchemaPath legacy = path.asSchemaPath();
+        final SchemaNode node = SchemaContextUtil.findDataSchemaNode(context, legacy.getParent());
         if (node instanceof ActionNodeContainer) {
-            return ((ActionNodeContainer) node).findAction(path.getLastComponent()).orElse(null);
+            return ((ActionNodeContainer) node).findAction(legacy.getLastComponent()).orElse(null);
         }
         return null;
     }

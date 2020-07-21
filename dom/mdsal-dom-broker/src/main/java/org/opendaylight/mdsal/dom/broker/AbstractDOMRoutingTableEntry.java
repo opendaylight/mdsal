@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * Abstract routing table entry definition for Action and RPC.
@@ -31,14 +31,14 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 @Beta
 abstract class AbstractDOMRoutingTableEntry<D, M, L extends EventListener> {
     private final Map<D, List<M>> implementations;
-    private final SchemaPath type;
+    private final Absolute type;
 
-    AbstractDOMRoutingTableEntry(final SchemaPath type, final Map<D, List<M>> implementations) {
+    AbstractDOMRoutingTableEntry(final Absolute type, final Map<D, List<M>> implementations) {
         this.type = requireNonNull(type);
         this.implementations = requireNonNull(implementations);
     }
 
-    SchemaPath getType() {
+    Absolute getType() {
         return type;
     }
 

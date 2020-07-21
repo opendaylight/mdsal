@@ -11,7 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * A {@link DOMService} which allows clients to invoke RPCs. The conceptual model of this service is that of a dynamic
@@ -24,12 +24,12 @@ public interface DOMRpcService extends DOMService {
      * Initiate invocation of an RPC. This method is guaranteed to not block on any external
      * resources.
      *
-     * @param type SchemaPath of the RPC to be invoked
+     * @param type Schema node identifier of the RPC to be invoked
      * @param input Input arguments, null if the RPC does not take any.
      * @return A {@link ListenableFuture} which will return either a result structure, or report a subclass
      *         of {@link DOMRpcException} reporting a transport error.
      */
-    @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull SchemaPath type,
+    @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull Absolute type,
             @NonNull NormalizedNode<?, ?> input);
 
     /**
@@ -37,7 +37,7 @@ public interface DOMRpcService extends DOMService {
      * about RPC implementations becoming (un)available. The listener will be invoked with the
      * current implementations reported and will be kept uptodate as implementations come and go.
      * Users should note that using a listener does not necessarily mean that
-     * {@link #invokeRpc(SchemaPath, NormalizedNode)} will not report a failure due to
+     * {@link #invokeRpc(Absolute, NormalizedNode)} will not report a failure due to
      * {@link DOMRpcImplementationNotAvailableException} and need to be ready to handle it.
      * Implementations are encouraged to take reasonable precautions to prevent this scenario from
      * occurring.

@@ -20,7 +20,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.OperationInvocation;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class UnknownDOMRpcRoutingTableEntryTest extends TestUtils {
     private static final List<DOMRpcImplementation> TEST_LIST = new ArrayList<>();
@@ -31,7 +31,8 @@ public class UnknownDOMRpcRoutingTableEntryTest extends TestUtils {
         final List<YangInstanceIdentifier> addList1 = new ArrayList<>();
         final List<YangInstanceIdentifier> addList2 = new ArrayList<>();
         final DOMRpcImplementation testClass = getTestRpcImplementation();
-        final UnknownDOMRpcRoutingTableEntry test = new UnknownDOMRpcRoutingTableEntry(SchemaPath.ROOT, emptyImpls);
+        final UnknownDOMRpcRoutingTableEntry test =
+                new UnknownDOMRpcRoutingTableEntry(Absolute.of(TestModel.TEST_QNAME), emptyImpls);
 
         TEST_LIST.add(testClass);
         emptyImpls.put(YangInstanceIdentifier.empty(), TEST_LIST);

@@ -27,7 +27,7 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * Abstract routing table definition for Action and RPC.
@@ -40,20 +40,19 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 @Beta
 abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
         E extends AbstractDOMRoutingTableEntry<D, M, L>> {
-    private final Map<SchemaPath, E> operations;
+    private final Map<Absolute, E> operations;
     private final EffectiveModelContext schemaContext;
 
-    AbstractDOMRoutingTable(final Map<SchemaPath, E> operations, final EffectiveModelContext schemaContext) {
+    AbstractDOMRoutingTable(final Map<Absolute, E> operations, final EffectiveModelContext schemaContext) {
         this.operations = requireNonNull(operations);
         this.schemaContext = schemaContext;
     }
 
     AbstractDOMRoutingTable<I, D, M, L, E> setSchemaContext(final EffectiveModelContext context) {
-        final Builder<SchemaPath, E> b = ImmutableMap.builder();
+        final Builder<Absolute, E> b = ImmutableMap.builder();
 
-        for (Entry<SchemaPath, E> e : operations.entrySet()) {
-            final E entry = createOperationEntry(context, e.getKey(),
-                e.getValue().getImplementations());
+        for (Entry<Absolute, E> e : operations.entrySet()) {
+            final E entry = createOperationEntry(context, e.getKey(), e.getValue().getImplementations());
             if (entry != null) {
                 b.put(e.getKey(), entry);
             }
@@ -68,11 +67,11 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
         }
 
         // First decompose the identifiers to a multimap
-        final ListMultimap<SchemaPath, D> toAdd = decomposeIdentifiers(oprsToAdd);
+        final ListMultimap<Absolute, D> toAdd = decomposeIdentifiers(oprsToAdd);
 
         // Now iterate over existing entries, modifying them as appropriate...
-        final Builder<SchemaPath, E> mb = ImmutableMap.builder();
-        for (Entry<SchemaPath, E> re : this.operations.entrySet()) {
+        final Builder<Absolute, E> mb = ImmutableMap.builder();
+        for (Entry<Absolute, E> re : this.operations.entrySet()) {
             List<D> newOperations = new ArrayList<>(toAdd.removeAll(re.getKey()));
             if (!newOperations.isEmpty()) {
                 final E ne = (E) re.getValue().add(implementation, newOperations);
@@ -83,7 +82,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
         }
 
         // Finally add whatever is left in the decomposed multimap
-        for (Entry<SchemaPath, Collection<D>> e : toAdd.asMap().entrySet()) {
+        for (Entry<Absolute, Collection<D>> e : toAdd.asMap().entrySet()) {
             final Builder<D, List<M>> vb = ImmutableMap.builder();
             final List<M> v = ImmutableList.of(implementation);
             for (D i : e.getValue()) {
@@ -106,11 +105,11 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
         }
 
         // First decompose the identifiers to a multimap
-        final ListMultimap<SchemaPath, D> toRemove = decomposeIdentifiers(instances);
+        final ListMultimap<Absolute, D> toRemove = decomposeIdentifiers(instances);
 
         // Now iterate over existing entries, modifying them as appropriate...
-        final Builder<SchemaPath, E> b = ImmutableMap.builder();
-        for (Entry<SchemaPath, E> e : this.operations.entrySet()) {
+        final Builder<Absolute, E> b = ImmutableMap.builder();
+        for (Entry<Absolute, E> e : this.operations.entrySet()) {
             final List<D> removed = new ArrayList<>(toRemove.removeAll(e.getKey()));
             if (!removed.isEmpty()) {
                 final E ne = (E) e.getValue().remove(implementation, removed);
@@ -127,13 +126,13 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
     }
 
     @VisibleForTesting
-    Map<SchemaPath, Set<D>> getOperations() {
+    Map<Absolute, Set<D>> getOperations() {
         return Maps.transformValues(operations, AbstractDOMRoutingTableEntry::registeredIdentifiers);
     }
 
-    Map<SchemaPath, Set<D>> getOperations(final L listener) {
-        final Map<SchemaPath, Set<D>> ret = new HashMap<>(operations.size());
-        for (Entry<SchemaPath, E> e : operations.entrySet()) {
+    Map<Absolute, Set<D>> getOperations(final L listener) {
+        final Map<Absolute, Set<D>> ret = new HashMap<>(operations.size());
+        for (Entry<Absolute, E> e : operations.entrySet()) {
             final Set<D> ids = e.getValue().registeredIdentifiers(listener);
             if (!ids.isEmpty()) {
                 ret.put(e.getKey(), ids);
@@ -143,14 +142,14 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener,
         return ret;
     }
 
-    @Nullable AbstractDOMRoutingTableEntry<D, M, L> getEntry(final @NonNull SchemaPath type) {
+    @Nullable AbstractDOMRoutingTableEntry<D, M, L> getEntry(final @NonNull Absolute type) {
         return operations.get(type);
     }
 
-    protected abstract AbstractDOMRoutingTable<I, D, M, L, E> newInstance(Map<SchemaPath, E> operations,
+    protected abstract AbstractDOMRoutingTable<I, D, M, L, E> newInstance(Map<Absolute, E> operations,
             EffectiveModelContext schemaContext);
 
-    abstract ListMultimap<SchemaPath, D> decomposeIdentifiers(Set<I> instances);
+    abstract ListMultimap<Absolute, D> decomposeIdentifiers(Set<I> instances);
 
-    abstract E createOperationEntry(EffectiveModelContext context, SchemaPath key, Map<D, List<M>> implementations);
+    abstract E createOperationEntry(EffectiveModelContext context, Absolute key, Map<D, List<M>> implementations);
 }

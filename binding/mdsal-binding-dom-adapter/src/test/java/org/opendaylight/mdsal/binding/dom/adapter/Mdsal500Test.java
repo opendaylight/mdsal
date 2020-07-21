@@ -46,13 +46,13 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class Mdsal500Test {
     private static final String FOO = "foo";
 
     private static final QName SWITCH_QNAME = QName.create(SwitchOutput.QNAME, "switch");
-    private static final SchemaPath SWITCH_PATH = SchemaPath.create(true, SWITCH_QNAME);
+    private static final Absolute SWITCH_PATH = Absolute.of(SWITCH_QNAME);
 
     private RpcProviderService baRpcProviderService;
     private RpcConsumerRegistry baRpcConsumerService;

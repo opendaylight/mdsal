@@ -50,14 +50,14 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class BindingDOMRpcIntegrationTest {
     private static final InstanceIdentifier<TopLevelList> BA_NODE_ID = InstanceIdentifier.create(Top.class)
             .child(TopLevelList.class, new TopLevelListKey("a"));
 
     private static final QName KNOCK_KNOCK_QNAME = QName.create(KnockKnockOutput.QNAME, "knock-knock");
-    private static final SchemaPath KNOCK_KNOCK_PATH = SchemaPath.create(true, KNOCK_KNOCK_QNAME);
+    private static final Absolute KNOCK_KNOCK_PATH = Absolute.of(KNOCK_KNOCK_QNAME);
 
     private RpcProviderService baRpcProviderService;
     private RpcConsumerRegistry baRpcConsumerService;

@@ -13,9 +13,9 @@ import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 final class RoutedDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntry {
-
     private RoutedDOMRpcRoutingTableEntry(final DOMRpcIdentifier routedRpcId,
             final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
         super(routedRpcId, impls);
@@ -23,7 +23,7 @@ final class RoutedDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
 
     RoutedDOMRpcRoutingTableEntry(final RpcDefinition def, final YangInstanceIdentifier keyId,
             final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
-        super(DOMRpcIdentifier.create(def.getPath(), keyId), impls);
+        super(DOMRpcIdentifier.create(Absolute.of(def.getQName()), keyId), impls);
     }
 
     @Override

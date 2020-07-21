@@ -23,13 +23,13 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier, YangInstanceIdentifier,
         DOMRpcImplementation, DOMRpcAvailabilityListener, AbstractDOMRpcRoutingTableEntry> {
     static final DOMRpcRoutingTable EMPTY = new DOMRpcRoutingTable(ImmutableMap.of(), null);
 
-    private DOMRpcRoutingTable(final Map<SchemaPath, AbstractDOMRpcRoutingTableEntry> rpcs,
+    private DOMRpcRoutingTable(final Map<Absolute, AbstractDOMRpcRoutingTableEntry> rpcs,
             final EffectiveModelContext schemaContext) {
         super(rpcs, schemaContext);
     }
@@ -40,15 +40,14 @@ final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier,
     }
 
     @Override
-    protected DOMRpcRoutingTable newInstance(final Map<SchemaPath, AbstractDOMRpcRoutingTableEntry> operations,
+    protected DOMRpcRoutingTable newInstance(final Map<Absolute, AbstractDOMRpcRoutingTableEntry> operations,
             final EffectiveModelContext schemaContext) {
         return new DOMRpcRoutingTable(operations, schemaContext);
     }
 
     @Override
-    protected ListMultimap<SchemaPath, YangInstanceIdentifier> decomposeIdentifiers(
-            final Set<DOMRpcIdentifier> rpcs) {
-        final ListMultimap<SchemaPath, YangInstanceIdentifier> ret = LinkedListMultimap.create();
+    protected ListMultimap<Absolute, YangInstanceIdentifier> decomposeIdentifiers(final Set<DOMRpcIdentifier> rpcs) {
+        final ListMultimap<Absolute, YangInstanceIdentifier> ret = LinkedListMultimap.create();
         for (DOMRpcIdentifier i : rpcs) {
             ret.put(i.getType(), i.getContextReference());
         }
@@ -56,7 +55,7 @@ final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier,
     }
 
     @Override
-    AbstractDOMRpcRoutingTableEntry createOperationEntry(final EffectiveModelContext context, final SchemaPath key,
+    AbstractDOMRpcRoutingTableEntry createOperationEntry(final EffectiveModelContext context, final Absolute key,
             final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> implementations) {
         final RpcDefinition rpcDef = findRpcDefinition(context, key);
         if (rpcDef == null) {
@@ -72,9 +71,9 @@ final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier,
         return new GlobalDOMRpcRoutingTableEntry(rpcDef, implementations);
     }
 
-    private static RpcDefinition findRpcDefinition(final SchemaContext context, final SchemaPath schemaPath) {
+    private static RpcDefinition findRpcDefinition(final SchemaContext context, final Absolute schemaPath) {
         if (context != null) {
-            final QName qname = schemaPath.getPathFromRoot().iterator().next();
+            final QName qname = schemaPath.getNodeIdentifiers().get(0);
             final Module module = context.findModule(qname.getModule()).orElse(null);
             if (module != null && module.getRpcs() != null) {
                 for (RpcDefinition rpc : module.getRpcs()) {

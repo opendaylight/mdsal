@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.api;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * A single YANG notification. This interface captures the data portion of a notification. Implementations may choose
@@ -23,7 +23,7 @@ public interface DOMNotification {
      *
      * @return Notification type.
      */
-    @NonNull SchemaPath getType();
+    @NonNull Absolute getType();
 
     /**
      * Return the body of this notification.
