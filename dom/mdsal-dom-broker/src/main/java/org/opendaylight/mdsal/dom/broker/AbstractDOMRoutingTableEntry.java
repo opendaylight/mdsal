@@ -20,25 +20,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
  * Abstract routing table entry definition for Action and RPC.
  * @param <D> identifier type of RPC or Acton
  * @param <M> implementation type of RPC or Acton
  * @param <L> listener type of RPC or Acton
+ * @param <K> routing key type
  */
 @Beta
-abstract class AbstractDOMRoutingTableEntry<D, M, L extends EventListener> {
+abstract class AbstractDOMRoutingTableEntry<D, M, L extends EventListener, K> {
     private final Map<D, List<M>> implementations;
-    private final SchemaPath type;
+    private final K type;
 
-    AbstractDOMRoutingTableEntry(final SchemaPath type, final Map<D, List<M>> implementations) {
+    AbstractDOMRoutingTableEntry(final K type, final Map<D, List<M>> implementations) {
         this.type = requireNonNull(type);
         this.implementations = requireNonNull(implementations);
     }
 
-    SchemaPath getType() {
+    K getType() {
         return type;
     }
 
@@ -64,7 +64,7 @@ abstract class AbstractDOMRoutingTableEntry<D, M, L extends EventListener> {
      * @param newOprs  the List of new RPCs/Actions that the DOMOperationImplementation provides, must be mutable
      * @return a new instance of DOMActionRoutingTableEntry with the additions
      */
-    AbstractDOMRoutingTableEntry<D, M, L> add(final M implementation, final List<D> newOprs) {
+    AbstractDOMRoutingTableEntry<D, M, L, K> add(final M implementation, final List<D> newOprs) {
         final Builder<D, List<M>> vb = ImmutableMap.builder();
         for (final Entry<D, List<M>> ve : implementations.entrySet()) {
             if (newOprs.remove(ve.getKey())) {
@@ -89,7 +89,7 @@ abstract class AbstractDOMRoutingTableEntry<D, M, L extends EventListener> {
         return newInstance(vb.build());
     }
 
-    AbstractDOMRoutingTableEntry<D, M, L> remove(final M implementation, final List<D> removed) {
+    AbstractDOMRoutingTableEntry<D, M, L, K> remove(final M implementation, final List<D> removed) {
         final Builder<D, List<M>> vb = ImmutableMap.builder();
         for (final Entry<D, List<M>> ve : implementations.entrySet()) {
             if (removed.remove(ve.getKey())) {
@@ -111,5 +111,5 @@ abstract class AbstractDOMRoutingTableEntry<D, M, L extends EventListener> {
 
     protected abstract Comparator<M> implComparator();
 
-    protected abstract AbstractDOMRoutingTableEntry<D, M, L> newInstance(Map<D, List<M>> impls);
+    protected abstract AbstractDOMRoutingTableEntry<D, M, L, K> newInstance(Map<D, List<M>> impls);
 }
