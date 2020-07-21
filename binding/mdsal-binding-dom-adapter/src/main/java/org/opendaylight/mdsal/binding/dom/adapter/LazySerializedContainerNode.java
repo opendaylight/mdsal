@@ -19,7 +19,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /*
  * FIXME: This is a bit of functionality which should really live in binding-dom-codec, but for to happen we need
@@ -37,14 +36,14 @@ class LazySerializedContainerNode
         super(NodeIdentifier.create(identifier), binding, requireNonNull(codec));
     }
 
-    static ContainerNode create(final SchemaPath rpcName, final DataObject data,
+    static ContainerNode create(final QName rpcName, final DataObject data,
             final BindingNormalizedNodeSerializer codec) {
-        return data == null ? null : new LazySerializedContainerNode(rpcName.getLastComponent(), data, codec);
+        return data == null ? null : new LazySerializedContainerNode(rpcName, data, codec);
     }
 
-    static ContainerNode withContextRef(final SchemaPath rpcName, final DataObject data,
+    static ContainerNode withContextRef(final QName rpcName, final DataObject data,
             final LeafNode<?> contextRef, final BindingNormalizedNodeSerializer serializer) {
-        return new WithContextRef(rpcName.getLastComponent(), data, contextRef, serializer);
+        return new WithContextRef(rpcName, data, contextRef, serializer);
     }
 
     @Override

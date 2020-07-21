@@ -13,7 +13,7 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * An {@link DOMActionServiceExtension} exposed by {@link DOMActionService}s which allow their users to listen
@@ -31,7 +31,7 @@ public interface DOMActionAvailabilityExtension extends DOMActionServiceExtensio
      *
      * <p>
      * Users should note that using a listener does not necessarily mean that
-     * {@link DOMActionService#invokeAction(SchemaPath, DOMDataTreeIdentifier, ContainerNode)} will not report
+     * {@link DOMActionService#invokeAction(Absolute, DOMDataTreeIdentifier, ContainerNode)} will not report
      * a failure due to {@link DOMActionNotAvailableException} and need to be ready to handle it.
      *
      * <p>
