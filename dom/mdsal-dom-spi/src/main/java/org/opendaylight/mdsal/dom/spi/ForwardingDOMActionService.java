@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMActionServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 @Beta
 public abstract class ForwardingDOMActionService extends ForwardingObject implements DOMActionService {
@@ -27,7 +27,7 @@ public abstract class ForwardingDOMActionService extends ForwardingObject implem
     }
 
     @Override
-    public ListenableFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
+    public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
             final DOMDataTreeIdentifier path, final ContainerNode input) {
         return delegate().invokeAction(type, path, input);
     }

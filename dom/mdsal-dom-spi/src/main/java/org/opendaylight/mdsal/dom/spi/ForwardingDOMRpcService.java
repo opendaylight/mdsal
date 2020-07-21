@@ -14,8 +14,8 @@ import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
  * Utility {@link DOMRpcService} which forwards all requests to a backing delegate instance.
@@ -25,7 +25,7 @@ public abstract class ForwardingDOMRpcService extends ForwardingObject implement
     protected abstract @NonNull DOMRpcService delegate();
 
     @Override
-    public ListenableFuture<? extends DOMRpcResult> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {
+    public ListenableFuture<? extends DOMRpcResult> invokeRpc(final QName type, final NormalizedNode<?, ?> input) {
         return delegate().invokeRpc(type, input);
     }
 
