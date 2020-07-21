@@ -90,10 +90,4 @@ public final class OSGiDOMNotificationRouter implements DOMNotificationService, 
             final Collection<SchemaPath> types) {
         return router.registerNotificationListener(listener, types);
     }
-
-    @Override
-    public <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(final T listener,
-            final SchemaPath... types) {
-        return router.registerNotificationListener(listener, types);
-    }
 }
