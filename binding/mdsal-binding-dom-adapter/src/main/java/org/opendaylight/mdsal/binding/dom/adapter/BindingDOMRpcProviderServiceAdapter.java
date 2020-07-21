@@ -22,8 +22,8 @@ import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcService;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 @VisibleForTesting
 public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<DOMRpcProviderService>
@@ -49,7 +49,7 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
 
     private <S extends RpcService, T extends S> ObjectRegistration<T> register(final Class<S> type,
             final T implementation, final Collection<YangInstanceIdentifier> rpcContextPaths) {
-        final Map<SchemaPath, Method> rpcs = currentSerializer().getRpcMethodToSchemaPath(type).inverse();
+        final Map<QName, Method> rpcs = currentSerializer().getRpcMethodToSchemaPath(type).inverse();
 
         final BindingDOMRpcImplementationAdapter adapter = new BindingDOMRpcImplementationAdapter(adapterContext(),
             type, rpcs, implementation);
@@ -58,11 +58,11 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
         return new BindingRpcAdapterRegistration<>(implementation, domReg);
     }
 
-    private static Set<DOMRpcIdentifier> createDomRpcIdentifiers(final Set<SchemaPath> rpcs,
+    private static Set<DOMRpcIdentifier> createDomRpcIdentifiers(final Set<QName> rpcs,
             final Collection<YangInstanceIdentifier> paths) {
         final Set<DOMRpcIdentifier> ret = new HashSet<>();
         for (final YangInstanceIdentifier path : paths) {
-            for (final SchemaPath rpc : rpcs) {
+            for (final QName rpc : rpcs) {
                 ret.add(DOMRpcIdentifier.create(rpc, path));
             }
         }

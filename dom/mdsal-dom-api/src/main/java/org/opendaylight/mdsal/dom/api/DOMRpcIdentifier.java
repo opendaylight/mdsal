@@ -13,8 +13,8 @@ import com.google.common.base.MoreObjects;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
  * Identifier of a RPC context. This is an extension of the YANG RPC, which always has global context. It allows an RPC
@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 @NonNullByDefault
 public abstract class DOMRpcIdentifier {
     private static final class Global extends DOMRpcIdentifier {
-        private Global(final SchemaPath type) {
+        private Global(final QName type) {
             super(type);
         }
 
@@ -37,7 +37,7 @@ public abstract class DOMRpcIdentifier {
     private static final class Local extends DOMRpcIdentifier {
         private final YangInstanceIdentifier contextReference;
 
-        private Local(final SchemaPath type, final YangInstanceIdentifier contextReference) {
+        private Local(final QName type, final YangInstanceIdentifier contextReference) {
             super(type);
             this.contextReference = requireNonNull(contextReference);
         }
@@ -48,31 +48,30 @@ public abstract class DOMRpcIdentifier {
         }
     }
 
-    private final SchemaPath type;
+    private final QName type;
 
-    private DOMRpcIdentifier(final SchemaPath type) {
+    private DOMRpcIdentifier(final QName type) {
         this.type = requireNonNull(type);
     }
 
     /**
      * Create a global RPC identifier.
      *
-     * @param type RPC type, SchemaPath of its definition, may not be null
+     * @param type RPC type, schema node identifier of its definition, may not be null
      * @return A global RPC identifier, guaranteed to be non-null.
      */
-    public static DOMRpcIdentifier create(final SchemaPath type) {
+    public static DOMRpcIdentifier create(final QName type) {
         return new Global(type);
     }
 
     /**
      * Create an RPC identifier with a particular context reference.
      *
-     * @param type RPC type, SchemaPath of its definition, may not be null
+     * @param type RPC type, schema node identifier of its definition, may not be null
      * @param contextReference Context reference, null means a global RPC identifier.
      * @return A global RPC identifier, guaranteed to be non-null.
      */
-    public static DOMRpcIdentifier create(final SchemaPath type,
-            final @Nullable YangInstanceIdentifier contextReference) {
+    public static DOMRpcIdentifier create(final QName type, final @Nullable YangInstanceIdentifier contextReference) {
         if (contextReference == null || contextReference.isEmpty()) {
             return new Global(type);
         }
@@ -85,7 +84,7 @@ public abstract class DOMRpcIdentifier {
      *
      * @return RPC type.
      */
-    public final SchemaPath getType() {
+    public final QName getType() {
         return type;
     }
 

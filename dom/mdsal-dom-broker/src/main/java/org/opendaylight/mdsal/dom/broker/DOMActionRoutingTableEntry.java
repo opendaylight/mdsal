@@ -16,15 +16,15 @@ import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * Definition of Action routing table entry.
  */
 @Beta
 final class DOMActionRoutingTableEntry extends AbstractDOMRoutingTableEntry<DOMDataTreeIdentifier,
-        DOMActionImplementation, AvailabilityListener> {
-    DOMActionRoutingTableEntry(final SchemaPath type,
+        DOMActionImplementation, AvailabilityListener, Absolute> {
+    DOMActionRoutingTableEntry(final Absolute type,
             final Map<DOMDataTreeIdentifier, List<DOMActionImplementation>> implementations) {
         super(type, implementations);
     }
@@ -42,7 +42,7 @@ final class DOMActionRoutingTableEntry extends AbstractDOMRoutingTableEntry<DOMD
 
     @Override
     protected DOMActionRoutingTableEntry newInstance(
-        Map<DOMDataTreeIdentifier, List<DOMActionImplementation>> impls) {
+            final Map<DOMDataTreeIdentifier, List<DOMActionImplementation>> impls) {
         return new DOMActionRoutingTableEntry(getType(), impls);
     }
 }
