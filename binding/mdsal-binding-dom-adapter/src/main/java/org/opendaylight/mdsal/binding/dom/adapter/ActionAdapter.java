@@ -26,20 +26,20 @@ import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 @NonNullByDefault
 final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> implements InvocationHandler {
     private final Class<? extends Action<?, ?, ?>> type;
     private final NodeIdentifier inputName;
-    private final SchemaPath schemaPath;
+    private final Absolute actionPath;
 
     ActionAdapter(final AdapterContext codec, final DOMActionService delegate,
             final Class<? extends Action<?, ?, ?>> type) {
         super(codec, delegate);
         this.type = requireNonNull(type);
-        this.schemaPath = currentSerializer().getActionPath(type);
-        this.inputName = NodeIdentifier.create(operationInputQName(schemaPath.getLastComponent().getModule()));
+        this.actionPath = currentSerializer().getActionPath(type);
+        this.inputName = NodeIdentifier.create(operationInputQName(actionPath.lastNodeIdentifier().getModule()));
     }
 
     @Override
@@ -66,7 +66,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                     final InstanceIdentifier<?> path = (InstanceIdentifier<?>) requireNonNull(args[0]);
                     final RpcInput input = (RpcInput) requireNonNull(args[1]);
                     final CurrentAdapterSerializer serializer = currentSerializer();
-                    final ListenableFuture<? extends DOMActionResult> future = getDelegate().invokeAction(schemaPath,
+                    final ListenableFuture<? extends DOMActionResult> future = getDelegate().invokeAction(actionPath,
                         new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
                             serializer.toYangInstanceIdentifier(path)),
                         serializer.toLazyNormalizedNodeActionInput(type, inputName, input));

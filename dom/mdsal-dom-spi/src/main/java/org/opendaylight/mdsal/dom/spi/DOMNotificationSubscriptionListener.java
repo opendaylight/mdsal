@@ -10,20 +10,18 @@ package org.opendaylight.mdsal.dom.spi;
 import com.google.common.annotations.Beta;
 import java.util.EventListener;
 import java.util.Set;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
- * Listener which is notified when subscriptions changes and
- * provides set of notification types for which currently
+ * Listener which is notified when subscriptions changes and provides set of notification types for which currently
  * subscriptions are in place.
  */
 @Beta
 public interface DOMNotificationSubscriptionListener extends EventListener {
-
     /**
      * Invoked when notification subscription changed.
      *
      * @param currentTypes Set of notification types for which listeners are registered.
      */
-    void onSubscriptionChanged(Set<SchemaPath> currentTypes);
+    void onSubscriptionChanged(Set<Absolute> currentTypes);
 }

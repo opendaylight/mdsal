@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map.Entry;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -41,7 +42,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 class RpcServiceAdapter implements InvocationHandler {
     private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
@@ -67,11 +68,10 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private RpcInvocationStrategy createStrategy(final Method method, final RpcDefinition schema) {
+        final QName rpcType = schema.getQName();
         final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(schema);
-        if (strategy.isContextBasedRouted()) {
-            return new RoutedStrategy(schema.getPath(), method, strategy.getLeaf());
-        }
-        return new NonRoutedStrategy(schema.getPath());
+        return strategy.isContextBasedRouted() ? new RoutedStrategy(rpcType, method, strategy.getLeaf())
+                : new NonRoutedStrategy(rpcType);
     }
 
     RpcService getProxy() {
@@ -114,41 +114,39 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private abstract class RpcInvocationStrategy {
-        private final SchemaPath rpcName;
+        private final @NonNull Absolute outputPath;
 
-        RpcInvocationStrategy(final SchemaPath path) {
-            rpcName = path;
+        RpcInvocationStrategy(final QName rpcName) {
+            this.outputPath = Absolute.of(rpcName, YangConstants.operationOutputQName(rpcName.getModule())).intern();
         }
 
         final ListenableFuture<RpcResult<?>> invoke(final DataObject input) {
-            return invoke0(rpcName, serialize(input));
+            return invoke0(serialize(input));
         }
 
         abstract ContainerNode serialize(DataObject input);
 
-        final SchemaPath getRpcName() {
-            return rpcName;
+        final QName getRpcName() {
+            return outputPath.firstNodeIdentifier();
         }
 
-        ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final ContainerNode input) {
-            final ListenableFuture<? extends DOMRpcResult> result = delegate.invokeRpc(schemaPath, input);
+        ListenableFuture<RpcResult<?>> invoke0(final ContainerNode input) {
+            final ListenableFuture<? extends DOMRpcResult> result =
+                    delegate.invokeRpc(outputPath.firstNodeIdentifier(), input);
             if (ENABLE_CODEC_SHORTCUT && result instanceof BindingRpcFutureAware) {
                 return ((BindingRpcFutureAware) result).getBindingFuture();
             }
 
-            return transformFuture(schemaPath, result, adapterContext.currentSerializer());
+            return transformFuture(result, adapterContext.currentSerializer());
         }
 
-        private ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
-                final ListenableFuture<? extends DOMRpcResult> domFuture,
+        private ListenableFuture<RpcResult<?>> transformFuture(final ListenableFuture<? extends DOMRpcResult> domFuture,
                 final BindingNormalizedNodeSerializer resultCodec) {
             return Futures.transform(domFuture, input -> {
                 final NormalizedNode<?, ?> domData = input.getResult();
                 final DataObject bindingResult;
                 if (domData != null) {
-                    final SchemaPath rpcOutput = rpc.createChild(YangConstants.operationOutputQName(
-                        rpc.getLastComponent().getModule()));
-                    bindingResult = resultCodec.fromNormalizedNodeRpcData(rpcOutput, (ContainerNode) domData);
+                    bindingResult = resultCodec.fromNormalizedNodeRpcData(outputPath, (ContainerNode) domData);
                 } else {
                     bindingResult = null;
                 }
@@ -159,8 +157,8 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private final class NonRoutedStrategy extends RpcInvocationStrategy {
-        NonRoutedStrategy(final SchemaPath path) {
-            super(path);
+        NonRoutedStrategy(final QName rpcName) {
+            super(rpcName);
         }
 
         @Override
@@ -173,8 +171,8 @@ class RpcServiceAdapter implements InvocationHandler {
         private final ContextReferenceExtractor refExtractor;
         private final NodeIdentifier contextName;
 
-        RoutedStrategy(final SchemaPath path, final Method rpcMethod, final QName leafName) {
-            super(path);
+        RoutedStrategy(final QName rpcName, final Method rpcMethod, final QName leafName) {
+            super(rpcName);
             final Optional<Class<? extends DataContainer>> maybeInputType =
                     BindingReflections.resolveRpcInputClass(rpcMethod);
             checkState(maybeInputType.isPresent(), "RPC method %s has no input", rpcMethod.getName());

@@ -17,14 +17,15 @@ import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 abstract class AbstractDOMRpcRoutingTableEntry extends AbstractDOMRoutingTableEntry<YangInstanceIdentifier,
-        DOMRpcImplementation, DOMRpcAvailabilityListener> {
+        DOMRpcImplementation, DOMRpcAvailabilityListener, QName> {
     private final DOMRpcIdentifier rpcId;
 
-    AbstractDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId, final Map<YangInstanceIdentifier,
-        List<DOMRpcImplementation>> implementations) {
+    AbstractDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId,
+            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> implementations) {
         super(rpcId.getType(), implementations);
         this.rpcId = requireNonNull(rpcId);
     }

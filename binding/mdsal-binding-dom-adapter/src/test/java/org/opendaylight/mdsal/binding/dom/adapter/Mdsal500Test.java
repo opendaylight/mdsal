@@ -46,13 +46,11 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class Mdsal500Test {
     private static final String FOO = "foo";
 
     private static final QName SWITCH_QNAME = QName.create(SwitchOutput.QNAME, "switch");
-    private static final SchemaPath SWITCH_PATH = SchemaPath.create(true, SWITCH_QNAME);
 
     private RpcProviderService baRpcProviderService;
     private RpcConsumerRegistry baRpcConsumerService;
@@ -86,7 +84,7 @@ public class Mdsal500Test {
         SwitchInput baSwitchInput = switchBuilder(FOO).build();
 
         ContainerNode biSwitchInput = toDOMSwitchInput(baSwitchInput);
-        DOMRpcResult domResult = biRpcService.invokeRpc(SWITCH_PATH, biSwitchInput).get(5, TimeUnit.SECONDS);
+        DOMRpcResult domResult = biRpcService.invokeRpc(SWITCH_QNAME, biSwitchInput).get(5, TimeUnit.SECONDS);
         assertNotNull(domResult);
         assertNotNull(domResult.getResult());
         assertTrue("Binding KnockKnock service was not invoked",
@@ -102,7 +100,7 @@ public class Mdsal500Test {
         biRpcProviderService.registerRpcImplementation((rpc, input) ->
             FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec().currentSerializer()
                     .toNormalizedNodeRpcData(baSwitchOutput))),
-            DOMRpcIdentifier.create(SWITCH_PATH));
+            DOMRpcIdentifier.create(SWITCH_QNAME));
 
         final Mdsal500Service baSwitchService =
                 baRpcConsumerService.getRpcService(Mdsal500Service.class);
