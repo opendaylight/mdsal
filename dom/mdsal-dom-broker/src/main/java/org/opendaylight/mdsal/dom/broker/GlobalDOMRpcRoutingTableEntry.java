@@ -15,9 +15,8 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 
 final class GlobalDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntry {
-
-    private GlobalDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId, final Map<YangInstanceIdentifier,
-            List<DOMRpcImplementation>> impls) {
+    private GlobalDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId,
+            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
         super(rpcId, impls);
     }
 
@@ -25,7 +24,7 @@ final class GlobalDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
     // forward something we don't know to be an RPC.
     GlobalDOMRpcRoutingTableEntry(final RpcDefinition def, final Map<YangInstanceIdentifier,
             List<DOMRpcImplementation>> impls) {
-        super(DOMRpcIdentifier.create(def.getPath()), impls);
+        super(DOMRpcIdentifier.create(def.getQName()), impls);
     }
 
     @Override

@@ -31,12 +31,10 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class LazySerializedContainerNodeTest {
     @Test
     public void basicTest() throws Exception {
-        final SchemaPath rpcName;
         final DataObject dataObject = mock(DataObject.class);
         final BindingNormalizedNodeSerializer codec = mock(BindingNormalizedNodeSerializer.class);
         final ContainerNode containerNode = mock(ContainerNode.class);
@@ -50,7 +48,7 @@ public class LazySerializedContainerNodeTest {
 
         final ImmutableBiMap<?, ?> biMap = bindingTestContext.getCodec().currentSerializer()
                 .getRpcMethodToSchema(OpendaylightTestRpcServiceService.class);
-        rpcName = ((RpcDefinition) biMap.values().iterator().next()).getPath();
+        final QName rpcName = ((RpcDefinition) biMap.values().iterator().next()).getQName();
         final LeafNode<?> leafNode = ImmutableLeafNodeBuilder.create().withNodeIdentifier(NodeIdentifier
                 .create(QName.create("", "test"))).withValue("").build();
         final ContainerNode normalizedNode = LazySerializedContainerNode.create(rpcName, dataObject, codec);
@@ -65,7 +63,7 @@ public class LazySerializedContainerNodeTest {
         assertTrue(lazySerializedContainerNode.getValue().isEmpty());
         assertEquals(lazySerializedContainerNode.getIdentifier().getNodeType(),
                 lazySerializedContainerNode.getNodeType());
-        assertEquals(rpcName.getLastComponent(), lazySerializedContainerNode.getIdentifier().getNodeType());
+        assertEquals(rpcName, lazySerializedContainerNode.getIdentifier().getNodeType());
         assertEquals(dataObject, lazySerializedContainerNode.getDataObject());
     }
 }

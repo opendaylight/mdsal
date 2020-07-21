@@ -7,39 +7,35 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.OperationInvocation;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class RoutedDOMRpcRoutingTableEntryTest extends TestUtils {
-
-    @SuppressWarnings("checkstyle:IllegalCatch")
     @Test
-    public void basicTest() throws InterruptedException, TimeoutException {
+    public void basicTest()  {
         final RpcDefinition rpcDefinition = mock(RpcDefinition.class);
-        doReturn(SchemaPath.ROOT).when(rpcDefinition).getPath();
+        doReturn(TestModel.TEST2_QNAME).when(rpcDefinition).getQName();
 
         final RoutedDOMRpcRoutingTableEntry routedDOMRpcRoutingTableEntry =
                 new RoutedDOMRpcRoutingTableEntry(rpcDefinition, TestModel.TEST_PATH, new HashMap<>());
         assertNotNull(routedDOMRpcRoutingTableEntry.newInstance(new HashMap<>()));
 
-        try {
-            OperationInvocation.invoke(routedDOMRpcRoutingTableEntry, TEST_CHILD).get();
-            fail("Expected DOMRpcImplementationNotAvailableException");
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause() instanceof DOMRpcImplementationNotAvailableException);
-        }
+        final ListenableFuture<?> future = OperationInvocation.invoke(routedDOMRpcRoutingTableEntry, TEST_CHILD);
+        final ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get(5, TimeUnit.SECONDS));
+        assertThat(ex.getCause(), instanceOf(DOMRpcImplementationNotAvailableException.class));
     }
 }

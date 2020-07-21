@@ -30,10 +30,11 @@ import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
+import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class DOMNotificationRouterTest extends TestUtils {
 
@@ -55,11 +56,13 @@ public class DOMNotificationRouterTest extends TestUtils {
         final DOMNotificationListener domNotificationListener = new TestListener(latch);
         final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1);
 
-        Multimap<SchemaPath, ?> listeners = domNotificationRouter.listeners();
+        Multimap<Absolute, ?> listeners = domNotificationRouter.listeners();
 
         assertTrue(listeners.isEmpty());
-        assertNotNull(domNotificationRouter.registerNotificationListener(domNotificationListener, SchemaPath.ROOT));
-        assertNotNull(domNotificationRouter.registerNotificationListener(domNotificationListener, SchemaPath.SAME));
+        assertNotNull(domNotificationRouter.registerNotificationListener(domNotificationListener,
+            Absolute.of(TestModel.TEST_QNAME)));
+        assertNotNull(domNotificationRouter.registerNotificationListener(domNotificationListener,
+            Absolute.of(TestModel.TEST2_QNAME)));
 
         listeners = domNotificationRouter.listeners();
 
@@ -77,7 +80,7 @@ public class DOMNotificationRouterTest extends TestUtils {
 
         final DOMNotification domNotification = mock(DOMNotification.class);
         doReturn("test").when(domNotification).toString();
-        doReturn(SchemaPath.ROOT).when(domNotification).getType();
+        doReturn(Absolute.of(TestModel.TEST_QNAME)).when(domNotification).getType();
         doReturn(TEST_CHILD).when(domNotification).getBody();
 
         assertNotNull(domNotificationRouter.offerNotification(domNotification));
@@ -86,6 +89,7 @@ public class DOMNotificationRouterTest extends TestUtils {
             assertNotNull(domNotificationRouter.offerNotification(domNotification, 1, TimeUnit.SECONDS));
             assertNotNull(domNotificationRouter.offerNotification(domNotification, 1, TimeUnit.SECONDS));
         } catch (Exception e) {
+            // FIXME: what is the point here?!
             assertTrue(e instanceof UnsupportedOperationException);
         }
 
@@ -96,7 +100,7 @@ public class DOMNotificationRouterTest extends TestUtils {
     public void offerNotification() throws Exception {
         final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1);
         final DOMNotification domNotification = mock(DOMNotification.class);
-        doReturn(SchemaPath.ROOT).when(domNotification).getType();
+        doReturn(Absolute.of(TestModel.TEST_QNAME)).when(domNotification).getType();
         doReturn(TEST_CHILD).when(domNotification).getBody();
         assertNotNull(domNotificationRouter.putNotification(domNotification));
         assertNotNull(domNotificationRouter.offerNotification(domNotification));
@@ -109,12 +113,12 @@ public class DOMNotificationRouterTest extends TestUtils {
         final TestListener testListener = new TestListener(latch);
         final DOMNotification domNotification = mock(DOMNotification.class);
         doReturn("test").when(domNotification).toString();
-        doReturn(SchemaPath.ROOT).when(domNotification).getType();
+        doReturn(Absolute.of(TestModel.TEST_QNAME)).when(domNotification).getType();
         doReturn(TEST_CHILD).when(domNotification).getBody();
 
         try (TestRouter testRouter = new TestRouter(1)) {
-            assertNotNull(testRouter.registerNotificationListener(testListener, SchemaPath.ROOT));
-            assertNotNull(testRouter.registerNotificationListener(testListener, SchemaPath.SAME));
+            assertNotNull(testRouter.registerNotificationListener(testListener, Absolute.of(TestModel.TEST_QNAME)));
+            assertNotNull(testRouter.registerNotificationListener(testListener, Absolute.of(TestModel.TEST2_QNAME)));
 
             assertNotEquals(DOMNotificationPublishService.REJECTED,
                 testRouter.offerNotification(domNotification, 3, TimeUnit.SECONDS));

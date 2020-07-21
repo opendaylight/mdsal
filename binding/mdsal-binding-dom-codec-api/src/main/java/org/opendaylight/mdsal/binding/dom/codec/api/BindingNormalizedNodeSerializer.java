@@ -20,12 +20,13 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * Serialization service, which provides two-way serialization between Java
@@ -80,7 +81,7 @@ public interface BindingNormalizedNodeSerializer {
      * @param data NormalizedNode representing data
      * @return Binding representation of Notification
      */
-    @Nullable Notification fromNormalizedNodeNotification(@NonNull SchemaPath path, @NonNull ContainerNode data);
+    @Nullable Notification fromNormalizedNodeNotification(@NonNull Absolute path, @NonNull ContainerNode data);
 
     /**
      * Translates supplied NormalizedNode Notification into Binding data, optionally taking an instant
@@ -92,17 +93,17 @@ public interface BindingNormalizedNodeSerializer {
      * @return Binding representation of Notification
      */
     @Beta
-    @Nullable Notification fromNormalizedNodeNotification(@NonNull SchemaPath path, @NonNull ContainerNode data,
+    @Nullable Notification fromNormalizedNodeNotification(@NonNull Absolute path, @NonNull ContainerNode data,
             @Nullable Instant eventInstant);
 
     /**
      * Translates supplied NormalizedNode RPC input or output into Binding data.
      *
-     * @param path Schema path of RPC data, Schema path consists of rpc QName and input / output QName.
+     * @param rpcType RPC type, identifying the RPC
      * @param data NormalizedNode representing data
      * @return Binding representation of RPC data
      */
-    @Nullable DataObject fromNormalizedNodeRpcData(@NonNull SchemaPath path, @NonNull ContainerNode data);
+    @Nullable DataObject fromNormalizedNodeRpcData(@NonNull QName rpcType, @NonNull ContainerNode data);
 
     /**
      * Translates supplied ContainerNode action input.
