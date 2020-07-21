@@ -23,8 +23,8 @@ abstract class AbstractDOMRpcRoutingTableEntry extends AbstractDOMRoutingTableEn
         DOMRpcImplementation, DOMRpcAvailabilityListener> {
     private final DOMRpcIdentifier rpcId;
 
-    AbstractDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId, final Map<YangInstanceIdentifier,
-        List<DOMRpcImplementation>> implementations) {
+    AbstractDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId,
+            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> implementations) {
         super(rpcId.getType(), implementations);
         this.rpcId = requireNonNull(rpcId);
     }

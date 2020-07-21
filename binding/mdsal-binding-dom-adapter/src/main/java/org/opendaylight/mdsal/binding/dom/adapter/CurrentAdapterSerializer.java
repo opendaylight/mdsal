@@ -17,6 +17,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableList;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,10 +82,11 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         return subtrees.stream().map(this::toDOMDataTreeIdentifier).collect(Collectors.toSet());
     }
 
-    @NonNull SchemaPath getActionPath(final @NonNull Class<? extends Action<?, ?, ?>> type) {
+    @NonNull Absolute getActionPath(final @NonNull Class<? extends Action<?, ?, ?>> type) {
+        // FIXME: we really just want a SchemaNodeIdentifier.Absolute here
         final ActionDefinition schema = getRuntimeContext().getActionDefinition(type);
         checkArgument(schema != null, "Failed to find schema for %s", type);
-        return schema.getPath();
+        return Absolute.of(ImmutableList.copyOf(schema.getPath().getPathFromRoot()));
     }
 
     // FIXME: This should be probably part of Binding Runtime context
@@ -103,13 +105,13 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     }
 
     // FIXME: This should be probably part of Binding Runtime context
-    ImmutableBiMap<Method, SchemaPath> getRpcMethodToSchemaPath(final Class<? extends RpcService> key) {
+    ImmutableBiMap<Method, Absolute> getRpcMethodToSchemaPath(final Class<? extends RpcService> key) {
         final Module module = getModule(key);
-        final ImmutableBiMap.Builder<Method, SchemaPath> ret = ImmutableBiMap.builder();
+        final ImmutableBiMap.Builder<Method, Absolute> ret = ImmutableBiMap.builder();
         try {
             for (final RpcDefinition rpcDef : module.getRpcs()) {
                 final Method method = findRpcMethod(key, rpcDef);
-                ret.put(method, rpcDef.getPath());
+                ret.put(method, Absolute.of(rpcDef.getQName()));
             }
         } catch (final NoSuchMethodException e) {
             throw new IllegalStateException("Rpc defined in model does not have representation in generated class.", e);

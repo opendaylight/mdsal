@@ -18,30 +18,30 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * An action which is subject to availability.
  */
 public final class DOMActionInstance implements Immutable {
     private final Set<DOMDataTreeIdentifier> dataTrees;
-    private final SchemaPath type;
+    private final Absolute type;
 
-    DOMActionInstance(final SchemaPath type, final Set<DOMDataTreeIdentifier> dataTrees) {
+    DOMActionInstance(final Absolute type, final Set<DOMDataTreeIdentifier> dataTrees) {
         this.type = requireNonNull(type);
         this.dataTrees = ImmutableSet.copyOf(dataTrees);
         checkArgument(!dataTrees.isEmpty());
     }
 
-    public static DOMActionInstance of(final SchemaPath type, final Set<DOMDataTreeIdentifier> dataTrees) {
+    public static DOMActionInstance of(final Absolute type, final Set<DOMDataTreeIdentifier> dataTrees) {
         return new DOMActionInstance(type, dataTrees);
     }
 
-    public static DOMActionInstance of(final SchemaPath type, final DOMDataTreeIdentifier... dataTrees) {
+    public static DOMActionInstance of(final Absolute type, final DOMDataTreeIdentifier... dataTrees) {
         return of(type, ImmutableSet.copyOf(dataTrees));
     }
 
-    public static DOMActionInstance of(final SchemaPath type, final LogicalDatastoreType datastore,
+    public static DOMActionInstance of(final Absolute type, final LogicalDatastoreType datastore,
             final YangInstanceIdentifier path) {
         return of(type, ImmutableSet.of(new DOMDataTreeIdentifier(datastore, path)));
     }
@@ -61,7 +61,7 @@ public final class DOMActionInstance implements Immutable {
      *
      * @return operation type.
      */
-    public SchemaPath getType() {
+    public Absolute getType() {
         return type;
     }
 

@@ -12,17 +12,17 @@ import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 final class UnknownDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntry {
-    UnknownDOMRpcRoutingTableEntry(final SchemaPath schemaPath, final Map<YangInstanceIdentifier,
-            List<DOMRpcImplementation>> impls) {
-        super(DOMRpcIdentifier.create(schemaPath), impls);
+    UnknownDOMRpcRoutingTableEntry(final Absolute type,
+            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
+        super(DOMRpcIdentifier.create(type), impls);
     }
 
     @Override
-    protected UnknownDOMRpcRoutingTableEntry newInstance(final Map<YangInstanceIdentifier,
-            List<DOMRpcImplementation>> impls) {
+    protected UnknownDOMRpcRoutingTableEntry newInstance(
+            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
         return new UnknownDOMRpcRoutingTableEntry(getType(), impls);
     }
 }

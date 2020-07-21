@@ -18,15 +18,17 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class DOMRpcIdentifierTest {
     private static final String LOCAL_IDENT = "local";
     private static final QNameModule TEST_MODULE = QNameModule.create(URI.create(
             "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
-    private static final DOMRpcIdentifier GLOBAL = DOMRpcIdentifier.create(SchemaPath.SAME, null);
-    private static final DOMRpcIdentifier LOCAL = DOMRpcIdentifier.create(SchemaPath.ROOT,YangInstanceIdentifier.create(
-            new NodeIdentifier(QName.create(TEST_MODULE, LOCAL_IDENT))));
+    private static final QName LOCAL_QNAME = QName.create(TEST_MODULE, LOCAL_IDENT);
+
+    private static final DOMRpcIdentifier GLOBAL = DOMRpcIdentifier.create(Absolute.of(LOCAL_QNAME), null);
+    private static final DOMRpcIdentifier LOCAL = DOMRpcIdentifier.create(Absolute.of(LOCAL_QNAME),
+        YangInstanceIdentifier.create(new NodeIdentifier(LOCAL_QNAME)));
 
     @Test
     public void createTest() {
@@ -36,13 +38,13 @@ public class DOMRpcIdentifierTest {
 
     @Test
     public void hashCodeTest() {
-        assertEquals("hashCode", GLOBAL.hashCode(), DOMRpcIdentifier.create(SchemaPath.ROOT).hashCode());
+        assertEquals("hashCode", GLOBAL.hashCode(), DOMRpcIdentifier.create(Absolute.of(LOCAL_QNAME)).hashCode());
         assertNotEquals("hashCode", GLOBAL.hashCode(), LOCAL.hashCode());
     }
 
     @Test
     public void equalsTest() {
-        assertTrue("Equals same", GLOBAL.equals(DOMRpcIdentifier.create(SchemaPath.SAME)));
+        assertTrue("Equals same", GLOBAL.equals(DOMRpcIdentifier.create(Absolute.of(LOCAL_QNAME))));
         assertTrue("Equals same instance", GLOBAL.equals(GLOBAL));
         assertFalse("Different object", GLOBAL.equals(new Object()));
         assertFalse("Different instance", GLOBAL.equals(LOCAL));

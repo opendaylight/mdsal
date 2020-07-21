@@ -15,6 +15,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
@@ -32,6 +33,7 @@ import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     private static final Cache<Class<?>, RpcServiceInvoker> SERVICE_INVOKERS = CacheBuilder.newBuilder().weakKeys()
@@ -46,11 +48,11 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     private final QName inputQname;
 
     <T extends RpcService> BindingDOMRpcImplementationAdapter(final AdapterContext adapterContext,
-            final Class<T> type, final Map<SchemaPath, Method> localNameToMethod, final T delegate) {
+            final Class<T> type, final Map<Absolute, Method> localNameToMethod, final T delegate) {
         try {
             this.invoker = SERVICE_INVOKERS.get(type, () -> {
                 final Map<QName, Method> map = new HashMap<>();
-                for (Entry<SchemaPath, Method> e : localNameToMethod.entrySet()) {
+                for (Entry<Absolute, Method> e : localNameToMethod.entrySet()) {
                     map.put(e.getKey().getLastComponent(), e.getValue());
                 }
 
@@ -67,10 +69,10 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
 
     @Override
     public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
-        final SchemaPath schemaPath = rpc.getType();
+        final Absolute rpcPath = rpc.getType();
         final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
-        final DataObject bindingInput = input != null ? deserialize(serializer, schemaPath, input) : null;
-        final ListenableFuture<RpcResult<?>> bindingResult = invoke(schemaPath, bindingInput);
+        final DataObject bindingInput = input != null ? deserialize(serializer, rpcPath, input) : null;
+        final ListenableFuture<RpcResult<?>> bindingResult = invoke(rpcPath, bindingInput);
         return LazyDOMRpcResultFuture.create(serializer, bindingResult);
     }
 
@@ -79,16 +81,18 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
         return COST;
     }
 
-    private DataObject deserialize(final CurrentAdapterSerializer serializer, final SchemaPath rpcPath,
+    private DataObject deserialize(final CurrentAdapterSerializer serializer, final Absolute rpcPath,
             final NormalizedNode<?, ?> input) {
         if (ENABLE_CODEC_SHORTCUT && input instanceof BindingLazyContainerNode) {
             return ((BindingLazyContainerNode<?>) input).getDataObject();
         }
-        final SchemaPath inputSchemaPath = rpcPath.createChild(inputQname);
+        // FIXME: do not use intermediate SchemaPath here
+        final SchemaPath inputSchemaPath = rpcPath.asSchemaPath().createChild(inputQname);
         return serializer.fromNormalizedNodeRpcData(inputSchemaPath, (ContainerNode) input);
     }
 
-    private ListenableFuture<RpcResult<?>> invoke(final SchemaPath schemaPath, final DataObject input) {
-        return invoker.invokeRpc(delegate, schemaPath.getLastComponent(), input);
+    private ListenableFuture<RpcResult<?>> invoke(final Absolute rpcPath, final DataObject input) {
+        final List<QName> nodeIds = rpcPath.getNodeIdentifiers();
+        return invoker.invokeRpc(delegate, nodeIds.get(nodeIds.size() - 1), input);
     }
 }
