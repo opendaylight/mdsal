@@ -7,12 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
+import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.getGetterMethodForNonnull
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isGetterMethodName
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isNonnullMethodName
-import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
-import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_EQUALS_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_HASHCODE_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_TO_STRING_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
@@ -29,7 +28,6 @@ import org.opendaylight.mdsal.binding.model.api.Enumeration
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Type
-import org.opendaylight.mdsal.binding.model.util.Types
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
 
 /**
@@ -195,7 +193,6 @@ class InterfaceTemplate extends BaseTemplate {
 
     def private generateStaticMethod(MethodSignature method) {
         switch method.name {
-            case BINDING_EQUALS_NAME : generateBindingEquals
             case BINDING_HASHCODE_NAME : generateBindingHashCode
             case BINDING_TO_STRING_NAME : generateBindingToString
         }
@@ -222,73 +219,36 @@ class InterfaceTemplate extends BaseTemplate {
     '''
 
     @VisibleForTesting
-    def generateBindingHashCode() '''
+    def public generateBindingHashCode() '''
         «val augmentable = analyzeType»
-        /**
-         * Default implementation of {@link «Object.importedName»#hashCode()} contract for this interface.
-         * Implementations of this interface are encouraged to defer to this method to get consistent hashing
-         * results across all implementations.
-         *
-         «IF augmentable»
-         * @param <T$$> implementation type, which has to also implement «AUGMENTATION_HOLDER.importedName» interface
-         *              contract.
-         «ENDIF»
-         * @param obj Object for which to generate hashCode() result.
-         * @return Hash code value of data modeled by this interface.
-         * @throws «NPE.importedName» if {@code obj} is null
-         */
-        «IF augmentable»
-        static <T$$ extends «type.fullyQualifiedName» & «AUGMENTATION_HOLDER.importedName»<?>> int «BINDING_HASHCODE_NAME»(final @«NONNULL.importedName» T$$ obj) {
-        «ELSE»
-        static int «BINDING_HASHCODE_NAME»(final «type.fullyQualifiedName» obj) {
-        «ENDIF»
-            final int prime = 31;
-            int result = 1;
-            «FOR property : typeAnalysis.value»
-                result = prime * result + «property.importedUtilClass».hashCode(obj.«property.getterMethodName»());
-            «ENDFOR»
-            «IF augmentable»
-                result = prime * result + «CODEHELPERS.importedName».hashAugmentations(obj);
-            «ENDIF»
-            return result;
-        }
-    '''
-
-    def private generateBindingEquals() '''
-        «val augmentable = analyzeType»
-        «IF augmentable || !typeAnalysis.value.isEmpty»
+        «IF augmentable || !typeAnalysis.value.empty»
             /**
-             * Default implementation of {@link «Object.importedName»#equals(«Object.importedName»)} contract for this interface.
-             * Implementations of this interface are encouraged to defer to this method to get consistent equality
+             * Default implementation of {@link «Object.importedName»#hashCode()} contract for this interface.
+             * Implementations of this interface are encouraged to defer to this method to get consistent hashing
              * results across all implementations.
              *
              «IF augmentable»
              * @param <T$$> implementation type, which has to also implement «AUGMENTATION_HOLDER.importedName» interface
              *              contract.
              «ENDIF»
-             * @param thisObj Object acting as the receiver of equals invocation
-             * @param obj Object acting as argument to equals invocation
-             * @return True if thisObj and obj are considered equal
-             * @throws «NPE.importedName» if {@code thisObj} is null
+             * @param obj Object for which to generate hashCode() result.
+             * @return Hash code value of data modeled by this interface.
+             * @throws «NPE.importedName» if {@code obj} is null
              */
             «IF augmentable»
-            static <T$$ extends «type.fullyQualifiedName» & «AUGMENTATION_HOLDER.importedName»<«type.fullyQualifiedName»>> boolean «BINDING_EQUALS_NAME»(final @«NONNULL.importedName» T$$ thisObj, final «Types.objectType().importedName» obj) {
+                static <T$$ extends «type.fullyQualifiedName» & «AUGMENTATION_HOLDER.importedName»<?>> int «BINDING_HASHCODE_NAME»(final @«NONNULL.importedName» T$$ obj) {
             «ELSE»
-            static boolean «BINDING_EQUALS_NAME»(final «type.fullyQualifiedName» thisObj, final «Types.objectType().importedName» obj) {
+                static int «BINDING_HASHCODE_NAME»(final «type.fullyQualifiedName» obj) {
             «ENDIF»
-                if (thisObj == obj) {
-                    return true;
-                }
-                final «type.fullyQualifiedName» other = «CODEHELPERS.importedName».checkCast(«type.fullyQualifiedName».class, obj);
-                if (other == null) {
-                    return false;
-                }
-                «FOR property : ByTypeMemberComparator.sort(typeAnalysis.value)»
-                    if (!«property.importedUtilClass».equals(thisObj.«property.getterName»(), other.«property.getterName»())) {
-                        return false;
-                    }
+                final int prime = 31;
+                int result = 1;
+                «FOR property : typeAnalysis.value»
+                    result = prime * result + «property.importedUtilClass».hashCode(obj.«property.getterMethodName»());
                 «ENDFOR»
-                return «IF augmentable»«CODEHELPERS.importedName».equalsAugmentations(thisObj, other)«ELSE»true«ENDIF»;
+                «IF augmentable»
+                    result = prime * result + «CODEHELPERS.importedName».hashAugmentations(obj);
+                «ENDIF»
+                return result;
             }
         «ENDIF»
     '''
