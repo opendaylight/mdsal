@@ -67,11 +67,10 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private RpcInvocationStrategy createStrategy(final Method method, final RpcDefinition schema) {
+        final QName rpcType = schema.getQName();
         final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(schema);
-        if (strategy.isContextBasedRouted()) {
-            return new RoutedStrategy(schema.getPath(), method, strategy.getLeaf());
-        }
-        return new NonRoutedStrategy(schema.getPath());
+        return strategy.isContextBasedRouted() ? new RoutedStrategy(rpcType, method, strategy.getLeaf())
+                : new NonRoutedStrategy(rpcType);
     }
 
     RpcService getProxy() {
@@ -114,10 +113,10 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private abstract class RpcInvocationStrategy {
-        private final SchemaPath rpcName;
+        private final QName rpcName;
 
-        RpcInvocationStrategy(final SchemaPath path) {
-            rpcName = path;
+        RpcInvocationStrategy(final QName rpcName) {
+            this.rpcName = requireNonNull(rpcName);
         }
 
         final ListenableFuture<RpcResult<?>> invoke(final DataObject input) {
@@ -126,28 +125,29 @@ class RpcServiceAdapter implements InvocationHandler {
 
         abstract ContainerNode serialize(DataObject input);
 
-        final SchemaPath getRpcName() {
+        final QName getRpcName() {
             return rpcName;
         }
 
-        ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final ContainerNode input) {
-            final ListenableFuture<? extends DOMRpcResult> result = delegate.invokeRpc(schemaPath, input);
+        ListenableFuture<RpcResult<?>> invoke0(final QName rpcType, final ContainerNode input) {
+            final ListenableFuture<? extends DOMRpcResult> result = delegate.invokeRpc(rpcType, input);
             if (ENABLE_CODEC_SHORTCUT && result instanceof BindingRpcFutureAware) {
                 return ((BindingRpcFutureAware) result).getBindingFuture();
             }
 
-            return transformFuture(schemaPath, result, adapterContext.currentSerializer());
+            return transformFuture(rpcType, result, adapterContext.currentSerializer());
         }
 
-        private ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
+        private ListenableFuture<RpcResult<?>> transformFuture(final QName rpcType,
                 final ListenableFuture<? extends DOMRpcResult> domFuture,
                 final BindingNormalizedNodeSerializer resultCodec) {
             return Futures.transform(domFuture, input -> {
                 final NormalizedNode<?, ?> domData = input.getResult();
                 final DataObject bindingResult;
                 if (domData != null) {
-                    final SchemaPath rpcOutput = rpc.createChild(YangConstants.operationOutputQName(
-                        rpc.getLastComponent().getModule()));
+                    // FIXME: do not create intermediate SchemaPath
+                    final SchemaPath rpcOutput = SchemaPath.ROOT.createChild(rpcType)
+                            .createChild(YangConstants.operationOutputQName(rpcType.getModule()));
                     bindingResult = resultCodec.fromNormalizedNodeRpcData(rpcOutput, (ContainerNode) domData);
                 } else {
                     bindingResult = null;
@@ -159,8 +159,8 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private final class NonRoutedStrategy extends RpcInvocationStrategy {
-        NonRoutedStrategy(final SchemaPath path) {
-            super(path);
+        NonRoutedStrategy(final QName rpcName) {
+            super(rpcName);
         }
 
         @Override
@@ -173,8 +173,8 @@ class RpcServiceAdapter implements InvocationHandler {
         private final ContextReferenceExtractor refExtractor;
         private final NodeIdentifier contextName;
 
-        RoutedStrategy(final SchemaPath path, final Method rpcMethod, final QName leafName) {
-            super(path);
+        RoutedStrategy(final QName rpcName, final Method rpcMethod, final QName leafName) {
+            super(rpcName);
             final Optional<Class<? extends DataContainer>> maybeInputType =
                     BindingReflections.resolveRpcInputClass(rpcMethod);
             checkState(maybeInputType.isPresent(), "RPC method %s has no input", rpcMethod.getName());

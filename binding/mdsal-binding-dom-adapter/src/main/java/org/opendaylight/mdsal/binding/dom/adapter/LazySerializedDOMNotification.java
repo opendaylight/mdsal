@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.dom.api.DOMEvent;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * Lazy serialized implementation of DOM Notification.
@@ -29,13 +29,13 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 public final class LazySerializedDOMNotification implements DOMNotification, DOMEvent {
     private final @NonNull BindingNormalizedNodeSerializer codec;
     private final @NonNull Notification data;
-    private final @NonNull SchemaPath type;
+    private final @NonNull Absolute type;
     private final @NonNull Instant eventInstant;
 
     private volatile ContainerNode domBody;
 
     LazySerializedDOMNotification(final BindingNormalizedNodeSerializer codec, final Notification data,
-            final SchemaPath type, final Instant eventInstant) {
+            final Absolute type, final Instant eventInstant) {
         this.codec = requireNonNull(codec);
         this.data = requireNonNull(data);
         this.type = requireNonNull(type);
@@ -47,12 +47,12 @@ public final class LazySerializedDOMNotification implements DOMNotification, DOM
         // TODO: for nested (YANG 1.1) notifications we will need the SchemaPath where the notification is being invoked
         //       and use that instead of ROOT. How Binding users will refer to it is TBD (but probably
         //       InstanceIdentifier, which means we will need to do some lifting to find the SchemaPath)
-        final SchemaPath type = SchemaPath.ROOT.createChild(BindingReflections.findQName(data.implementedInterface()));
+        final Absolute type = Absolute.of(BindingReflections.findQName(data.implementedInterface()));
         return new LazySerializedDOMNotification(codec, data, type, eventInstant);
     }
 
     @Override
-    public SchemaPath getType() {
+    public Absolute getType() {
         return type;
     }
 

@@ -25,12 +25,13 @@ import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
 
     private final AdapterContext adapterContext;
     private final NotificationListener delegate;
-    private final ImmutableMap<SchemaPath, NotificationListenerInvoker> invokers;
+    private final ImmutableMap<Absolute, NotificationListenerInvoker> invokers;
 
     BindingDOMNotificationListenerAdapter(final AdapterContext adapterContext, final NotificationListener delegate) {
         this.adapterContext = requireNonNull(adapterContext);
@@ -41,7 +42,7 @@ class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
     @Override
     public void onNotification(final DOMNotification notification) {
         final Notification baNotification = deserialize(notification);
-        final QName notificationQName = notification.getType().getLastComponent();
+        final QName notificationQName = notification.getType().lastNodeIdentifier();
         getInvoker(notification.getType()).invokeNotification(delegate, notificationQName, baNotification);
     }
 
@@ -53,22 +54,24 @@ class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
         }
 
         final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
-        return notification instanceof DOMEvent ? serializer.fromNormalizedNodeNotification(notification.getType(),
+        // FIXME: do not instantiana a SchemaPath
+        final SchemaPath notifPath = notification.getType().asSchemaPath();
+        return notification instanceof DOMEvent ? serializer.fromNormalizedNodeNotification(notifPath,
             notification.getBody(), ((DOMEvent) notification).getEventInstant())
-                : serializer.fromNormalizedNodeNotification(notification.getType(), notification.getBody());
+                : serializer.fromNormalizedNodeNotification(notifPath, notification.getBody());
     }
 
-    private NotificationListenerInvoker getInvoker(final SchemaPath type) {
+    private NotificationListenerInvoker getInvoker(final Absolute type) {
         return invokers.get(type);
     }
 
-    protected Set<SchemaPath> getSupportedNotifications() {
+    protected Set<Absolute> getSupportedNotifications() {
         return invokers.keySet();
     }
 
-    private static ImmutableMap<SchemaPath, NotificationListenerInvoker> createInvokerMapFor(
+    private static ImmutableMap<Absolute, NotificationListenerInvoker> createInvokerMapFor(
             final Class<? extends NotificationListener> implClz) {
-        final Map<SchemaPath, NotificationListenerInvoker> builder = new HashMap<>();
+        final Map<Absolute, NotificationListenerInvoker> builder = new HashMap<>();
         for (final TypeToken<?> ifaceToken : TypeToken.of(implClz).getTypes().interfaces()) {
             Class<?> iface = ifaceToken.getRawType();
             if (NotificationListener.class.isAssignableFrom(iface) && BindingReflections.isBindingClass(iface)) {
@@ -76,7 +79,7 @@ class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
                 final Class<? extends NotificationListener> listenerType
                         = (Class<? extends NotificationListener>) iface;
                 final NotificationListenerInvoker invoker = NotificationListenerInvoker.from(listenerType);
-                for (final SchemaPath path : getNotificationTypes(listenerType)) {
+                for (final Absolute path : getNotificationTypes(listenerType)) {
                     builder.put(path, invoker);
                 }
             }
@@ -84,15 +87,14 @@ class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
         return ImmutableMap.copyOf(builder);
     }
 
-    private static Set<SchemaPath> getNotificationTypes(final Class<? extends NotificationListener> type) {
+    private static Set<Absolute> getNotificationTypes(final Class<? extends NotificationListener> type) {
         // TODO: Investigate possibility and performance impact if we cache this or expose
         // it from NotificationListenerInvoker
-        final Set<SchemaPath> ret = new HashSet<>();
+        final Set<Absolute> ret = new HashSet<>();
         for (final Method method : type.getMethods()) {
             if (BindingReflections.isNotificationCallback(method)) {
                 final Class<?> notification = method.getParameterTypes()[0];
-                final QName name = BindingReflections.findQName(notification);
-                ret.add(SchemaPath.create(true, name));
+                ret.add(Absolute.of(BindingReflections.findQName(notification)));
             }
         }
         return ret;

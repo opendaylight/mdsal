@@ -46,12 +46,12 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     private final QName inputQname;
 
     <T extends RpcService> BindingDOMRpcImplementationAdapter(final AdapterContext adapterContext,
-            final Class<T> type, final Map<SchemaPath, Method> localNameToMethod, final T delegate) {
+            final Class<T> type, final Map<QName, Method> localNameToMethod, final T delegate) {
         try {
             this.invoker = SERVICE_INVOKERS.get(type, () -> {
                 final Map<QName, Method> map = new HashMap<>();
-                for (Entry<SchemaPath, Method> e : localNameToMethod.entrySet()) {
-                    map.put(e.getKey().getLastComponent(), e.getValue());
+                for (Entry<QName, Method> e : localNameToMethod.entrySet()) {
+                    map.put(e.getKey(), e.getValue());
                 }
 
                 return RpcServiceInvoker.from(map);
@@ -67,10 +67,10 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
 
     @Override
     public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
-        final SchemaPath schemaPath = rpc.getType();
+        final QName rpcType = rpc.getType();
         final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
-        final DataObject bindingInput = input != null ? deserialize(serializer, schemaPath, input) : null;
-        final ListenableFuture<RpcResult<?>> bindingResult = invoke(schemaPath, bindingInput);
+        final DataObject bindingInput = input != null ? deserialize(serializer, rpcType, input) : null;
+        final ListenableFuture<RpcResult<?>> bindingResult = invoke(rpcType, bindingInput);
         return LazyDOMRpcResultFuture.create(serializer, bindingResult);
     }
 
@@ -79,16 +79,17 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
         return COST;
     }
 
-    private DataObject deserialize(final CurrentAdapterSerializer serializer, final SchemaPath rpcPath,
+    private DataObject deserialize(final CurrentAdapterSerializer serializer, final QName rpcType,
             final NormalizedNode<?, ?> input) {
         if (ENABLE_CODEC_SHORTCUT && input instanceof BindingLazyContainerNode) {
             return ((BindingLazyContainerNode<?>) input).getDataObject();
         }
-        final SchemaPath inputSchemaPath = rpcPath.createChild(inputQname);
+        // FIXME: do not use intermediate SchemaPath here
+        final SchemaPath inputSchemaPath = SchemaPath.ROOT.createChild(rpcType).createChild(inputQname);
         return serializer.fromNormalizedNodeRpcData(inputSchemaPath, (ContainerNode) input);
     }
 
-    private ListenableFuture<RpcResult<?>> invoke(final SchemaPath schemaPath, final DataObject input) {
-        return invoker.invokeRpc(delegate, schemaPath.getLastComponent(), input);
+    private ListenableFuture<RpcResult<?>> invoke(final QName rpcType, final DataObject input) {
+        return invoker.invokeRpc(delegate, rpcType, input);
     }
 }
