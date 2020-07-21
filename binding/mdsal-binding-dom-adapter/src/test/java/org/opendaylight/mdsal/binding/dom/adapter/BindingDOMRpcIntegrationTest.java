@@ -50,14 +50,12 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class BindingDOMRpcIntegrationTest {
     private static final InstanceIdentifier<TopLevelList> BA_NODE_ID = InstanceIdentifier.create(Top.class)
             .child(TopLevelList.class, new TopLevelListKey("a"));
 
     private static final QName KNOCK_KNOCK_QNAME = QName.create(KnockKnockOutput.QNAME, "knock-knock");
-    private static final SchemaPath KNOCK_KNOCK_PATH = SchemaPath.create(true, KNOCK_KNOCK_QNAME);
 
     private RpcProviderService baRpcProviderService;
     private RpcConsumerRegistry baRpcConsumerService;
@@ -94,7 +92,7 @@ public class BindingDOMRpcIntegrationTest {
         KnockKnockInput baKnockKnockInput = knockKnock(BA_NODE_ID).setQuestion("who's there?").build();
 
         ContainerNode biKnockKnockInput = toDOMKnockKnockInput(baKnockKnockInput);
-        DOMRpcResult domResult = biRpcService.invokeRpc(KNOCK_KNOCK_PATH, biKnockKnockInput).get(5, TimeUnit.SECONDS);
+        DOMRpcResult domResult = biRpcService.invokeRpc(KNOCK_KNOCK_QNAME, biKnockKnockInput).get(5, TimeUnit.SECONDS);
         assertNotNull(domResult);
         assertNotNull(domResult.getResult());
         assertTrue("Binding KnockKnock service was not invoked",
@@ -110,7 +108,7 @@ public class BindingDOMRpcIntegrationTest {
         biRpcProviderService.registerRpcImplementation((rpc, input) ->
             FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec()
                     .currentSerializer().toNormalizedNodeRpcData(baKnockKnockOutput))),
-            DOMRpcIdentifier.create(KNOCK_KNOCK_PATH, testContext.getCodec().currentSerializer()
+            DOMRpcIdentifier.create(KNOCK_KNOCK_QNAME, testContext.getCodec().currentSerializer()
                 .toYangInstanceIdentifier(BA_NODE_ID)));
 
         final OpendaylightKnockKnockRpcService baKnockService =

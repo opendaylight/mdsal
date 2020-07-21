@@ -12,7 +12,7 @@ import java.util.Collection;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * Utility implementation of a {@link DOMNotificationService} which forwards all requests
@@ -24,13 +24,13 @@ public abstract class ForwardingDOMNotificationService extends ForwardingObject 
 
     @Override
     public <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(final T listener,
-            final Collection<SchemaPath> types) {
+            final Collection<Absolute> types) {
         return delegate().registerNotificationListener(listener, types);
     }
 
     @Override
     public <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(final T listener,
-            final SchemaPath... types) {
+            final Absolute... types) {
         return delegate().registerNotificationListener(listener, types);
     }
 }

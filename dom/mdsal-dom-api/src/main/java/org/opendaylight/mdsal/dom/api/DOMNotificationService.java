@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * A {@link DOMService} which allows its users to subscribe to receive
@@ -29,11 +29,11 @@ public interface DOMNotificationService extends DOMService {
      * @return Registration handle. Invoking {@link ListenerRegistration#close()} will stop the
      *         delivery of notifications to the listener
      * @throws IllegalArgumentException if types is empty or contains an invalid element, such as
-     *         null or a SchemaPath which does not represent a valid {@link DOMNotification} type.
+     *         null or a schema node identifier which does not represent a valid {@link DOMNotification} type.
      * @throws NullPointerException if either of the arguments is null
      */
     <T extends DOMNotificationListener> ListenerRegistration<T>
-            registerNotificationListener(@NonNull T listener, @NonNull Collection<SchemaPath> types);
+            registerNotificationListener(@NonNull T listener, @NonNull Collection<Absolute> types);
 
     /**
      * Register a {@link DOMNotificationListener} to receive a set of notifications. As with other
@@ -46,11 +46,11 @@ public interface DOMNotificationService extends DOMService {
      * @return Registration handle. Invoking {@link ListenerRegistration#close()} will stop the
      *         delivery of notifications to the listener
      * @throws IllegalArgumentException if types is empty or contains an invalid element, such as
-     *         null or a SchemaPath which does not represent a valid {@link DOMNotification} type.
+     *         null or a schema node identifier which does not represent a valid {@link DOMNotification} type.
      * @throws NullPointerException if listener is null
      */
     default <T extends DOMNotificationListener> ListenerRegistration<T>
-            registerNotificationListener(@NonNull final T listener, final SchemaPath... types) {
+            registerNotificationListener(@NonNull final T listener, final Absolute... types) {
         return registerNotificationListener(listener, Arrays.asList(types));
     }
 }

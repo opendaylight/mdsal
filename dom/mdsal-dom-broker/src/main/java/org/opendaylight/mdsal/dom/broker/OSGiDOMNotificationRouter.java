@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -87,7 +87,7 @@ public final class OSGiDOMNotificationRouter implements DOMNotificationService, 
 
     @Override
     public <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(final T listener,
-            final Collection<SchemaPath> types) {
+            final Collection<Absolute> types) {
         return router.registerNotificationListener(listener, types);
     }
 }

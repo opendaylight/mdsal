@@ -41,7 +41,7 @@ import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +81,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     private final ScheduledThreadPoolExecutor observer;
     private final ExecutorService executor;
 
-    private volatile Multimap<SchemaPath, AbstractListenerRegistration<? extends DOMNotificationListener>> listeners =
+    private volatile Multimap<Absolute, AbstractListenerRegistration<? extends DOMNotificationListener>> listeners =
             ImmutableMultimap.of();
 
     @VisibleForTesting
@@ -111,7 +111,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
 
     @Override
     public synchronized <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(
-            final T listener, final Collection<SchemaPath> types) {
+            final T listener, final Collection<Absolute> types) {
         final AbstractListenerRegistration<T> reg = new AbstractListenerRegistration<>(listener) {
             @Override
             protected void removeRegistration() {
@@ -123,11 +123,11 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         };
 
         if (!types.isEmpty()) {
-            final Builder<SchemaPath, AbstractListenerRegistration<? extends DOMNotificationListener>> b =
+            final Builder<Absolute, AbstractListenerRegistration<? extends DOMNotificationListener>> b =
                     ImmutableMultimap.builder();
             b.putAll(listeners);
 
-            for (final SchemaPath t : types) {
+            for (final Absolute t : types) {
                 b.put(t, reg);
             }
 
@@ -143,13 +143,13 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
      * @param newListeners is used to notify listenerTypes changed
      */
     private void replaceListeners(
-            final Multimap<SchemaPath, AbstractListenerRegistration<? extends DOMNotificationListener>> newListeners) {
+            final Multimap<Absolute, AbstractListenerRegistration<? extends DOMNotificationListener>> newListeners) {
         listeners = newListeners;
         notifyListenerTypesChanged(newListeners.keySet());
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    private void notifyListenerTypesChanged(final Set<SchemaPath> typesAfter) {
+    private void notifyListenerTypesChanged(final Set<Absolute> typesAfter) {
         final List<? extends DOMNotificationSubscriptionListener> listenersAfter =
                 subscriptionListeners.streamListeners().collect(ImmutableList.toImmutableList());
         executor.execute(() -> {
@@ -166,7 +166,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     @Override
     public <L extends DOMNotificationSubscriptionListener> ListenerRegistration<L> registerSubscriptionListener(
             final L listener) {
-        final Set<SchemaPath> initialTypes = listeners.keySet();
+        final Set<Absolute> initialTypes = listeners.keySet();
         executor.execute(() -> listener.onSubscriptionChanged(initialTypes));
         return subscriptionListeners.register(listener);
     }
@@ -263,7 +263,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     }
 
     @VisibleForTesting
-    Multimap<SchemaPath, ?> listeners() {
+    Multimap<Absolute, ?> listeners() {
         return listeners;
     }
 

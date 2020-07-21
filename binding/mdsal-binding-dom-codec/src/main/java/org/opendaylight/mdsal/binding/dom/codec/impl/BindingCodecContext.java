@@ -71,6 +71,7 @@ import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
@@ -89,7 +90,6 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
@@ -331,12 +331,12 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         return null;
     }
 
-    NotificationCodecContext<?> getNotificationContext(final SchemaPath notification) {
+    NotificationCodecContext<?> getNotificationContext(final Absolute notification) {
         return root.getNotification(notification);
     }
 
-    RpcInputCodec<?> getRpcInputCodec(final SchemaPath path) {
-        return root.getRpc(path);
+    RpcInputCodec<?> getRpcInputCodec(final QName rpcType, final NodeIdentifier containerName) {
+        return root.getRpc(rpcType, containerName);
     }
 
     ActionCodecContext getActionCodec(final Class<? extends Action<?, ?, ?>> action) {
@@ -534,12 +534,12 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     @Override
-    public Notification fromNormalizedNodeNotification(final SchemaPath path, final ContainerNode data) {
+    public Notification fromNormalizedNodeNotification(final Absolute path, final ContainerNode data) {
         return getNotificationContext(path).deserialize(data);
     }
 
     @Override
-    public Notification fromNormalizedNodeNotification(final SchemaPath path, final ContainerNode data,
+    public Notification fromNormalizedNodeNotification(final Absolute path, final ContainerNode data,
             final Instant eventInstant) {
         return eventInstant == null ? fromNormalizedNodeNotification(path, data)
                 : getNotificationContext(path).deserialize(data, eventInstant);
@@ -547,8 +547,8 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     @Override
-    public DataObject fromNormalizedNodeRpcData(final SchemaPath path, final ContainerNode data) {
-        return getRpcInputCodec(path).deserialize(data);
+    public DataObject fromNormalizedNodeRpcData(final QName rpcType, final ContainerNode data) {
+        return getRpcInputCodec(rpcType, data.getIdentifier()).deserialize(data);
     }
 
     @Override
