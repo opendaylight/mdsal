@@ -13,6 +13,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -27,6 +28,8 @@ import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * The result of BindingGenerator run. Contains mapping between Types and SchemaNodes.
@@ -65,6 +68,15 @@ public final class BindingRuntimeTypes implements EffectiveModelContextProvider,
 
     public Optional<WithStatus> findSchema(final Type type) {
         return Optional.ofNullable(typeToSchema.get(type));
+    }
+
+    public Optional<Absolute> findSchemaNodeIdentifier(final Type type) {
+        final WithStatus schema = typeToSchema.get(type);
+        if (schema instanceof SchemaNode) {
+            // TODO: do not rely on getPath() here
+            return Optional.of(Absolute.of(ImmutableList.copyOf(((SchemaNode) schema).getPath().getPathFromRoot())));
+        }
+        return Optional.empty();
     }
 
     public Optional<Type> findType(final WithStatus schema) {
