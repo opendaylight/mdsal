@@ -17,7 +17,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableList;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -36,7 +35,6 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
@@ -84,10 +82,9 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     }
 
     @NonNull Absolute getActionPath(final @NonNull Class<? extends Action<?, ?, ?>> type) {
-        // FIXME: we really just want a SchemaNodeIdentifier.Absolute here
-        final ActionDefinition schema = getRuntimeContext().getActionDefinition(type);
-        checkArgument(schema != null, "Failed to find schema for %s", type);
-        return Absolute.of(ImmutableList.copyOf(schema.getPath().getPathFromRoot()));
+        final Absolute identifier = getRuntimeContext().getActionIdentifier(type);
+        checkArgument(identifier != null, "Failed to find schema for %s", type);
+        return identifier;
     }
 
     // FIXME: This should be probably part of Binding Runtime context
