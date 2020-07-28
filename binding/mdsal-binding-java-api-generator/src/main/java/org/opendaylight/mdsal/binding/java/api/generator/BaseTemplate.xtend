@@ -158,12 +158,34 @@ abstract class BaseTemplate extends JavaFileTemplate {
     /**
      * Template method which generates method parameters with their types from <code>parameters</code>.
      *
-     * @param parameters
-     * group of generated property instances which are transformed to the method parameters
+     * @param parameters group of generated property instances which are transformed to the method parameters
+     * @param isNonNull if <code>true</code> all parameters will be annotated with {@link «NONNULL.importedName»}
      * @return string with the list of the method parameters with their types in JAVA format
      */
-    def final protected asArgumentsDeclaration(Iterable<GeneratedProperty> parameters) '''«IF !parameters.empty»«FOR parameter : parameters SEPARATOR ", "»«parameter.
-        returnType.importedName» «parameter.fieldName»«ENDFOR»«ENDIF»'''
+    def final private asArgumentsDeclaration(Iterable<GeneratedProperty> parameters, boolean isNonNull) '''
+        «IF !parameters.empty»«FOR parameter : parameters SEPARATOR ", "»«annotateIfPossible(parameter.returnType,
+        NONNULL)» «parameter.fieldName»«ENDFOR»«ENDIF»'''
+
+    /**
+     * Template method which generates method parameters with their types from <code>parameters</code>.
+     *
+     * @param parameters group of generated property instances which are transformed to the method parameters
+     * @return string with the list of the method parameters with their types in JAVA format
+     */
+    def final protected asArgumentsDeclaration(Iterable<GeneratedProperty> parameters) {
+        return asArgumentsDeclaration(parameters, false);
+    }
+
+    /**
+     * Template method which generates method parameters with their types from <code>parameters</code>, annotating them
+     * with {@link «NONNULL.importedName»}.
+     *
+     * @param parameters group of generated property instances which are transformed to the method parameters
+     * @return string with the list of the method parameters with their types in JAVA format
+     */
+    def final protected asNonNullArgumentsDeclaration(Iterable<GeneratedProperty> parameters) {
+        return asArgumentsDeclaration(parameters, true);
+    }
 
     /**
      * Template method which generates sequence of the names of the class attributes from <code>parameters</code>.
@@ -490,4 +512,13 @@ abstract class BaseTemplate extends JavaFileTemplate {
         )
         «ENDIF»
     '''
+
+    def final String annotateIfPossible(Type returnType, JavaTypeName annotation) {
+        val String importedName = returnType.importedName;
+        if (importedName.contains('.')) {
+            return importedName;
+        } else {
+            return '''@«annotation.importedName» «importedName»'''
+        }
+    }
 }
