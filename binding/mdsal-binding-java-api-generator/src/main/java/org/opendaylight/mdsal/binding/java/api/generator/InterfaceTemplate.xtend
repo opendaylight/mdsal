@@ -239,7 +239,7 @@ class InterfaceTemplate extends BaseTemplate {
              * @throws «NPE.importedName» if {@code obj} is null
              */
             «IF augmentable»
-                static <T$$ extends «type.fullyQualifiedName» & «AUGMENTATION_HOLDER.importedName»<?>> int «BINDING_HASHCODE_NAME»(final @«NONNULL.importedName» T$$ obj) {
+                static <T$$ extends «type.fullyQualifiedNonNull» & «AUGMENTATION_HOLDER.importedName»<?>> int «BINDING_HASHCODE_NAME»(final @«NONNULL.importedName» T$$ obj) {
             «ELSE»
                 static int «BINDING_HASHCODE_NAME»(final «type.fullyQualifiedName» obj) {
             «ENDIF»
@@ -276,7 +276,7 @@ class InterfaceTemplate extends BaseTemplate {
             «IF augmentable»
             static <T$$ extends «type.fullyQualifiedName» & «AUGMENTATION_HOLDER.importedName»<«type.fullyQualifiedName»>> boolean «BINDING_EQUALS_NAME»(final @«NONNULL.importedName» T$$ thisObj, final «Types.objectType().importedName» obj) {
             «ELSE»
-            static boolean «BINDING_EQUALS_NAME»(final «type.fullyQualifiedName» thisObj, final «Types.objectType().importedName» obj) {
+            static boolean «BINDING_EQUALS_NAME»(final «type.fullyQualifiedNonNull» thisObj, final «Types.objectType().importedName» obj) {
             «ENDIF»
                 if (thisObj == obj) {
                     return true;
@@ -313,7 +313,7 @@ class InterfaceTemplate extends BaseTemplate {
         «IF augmentable»
         static <T$$ extends «type.fullyQualifiedName» & «AUGMENTATION_HOLDER.importedName»<«type.fullyQualifiedName»>> «STRING.importedName» «BINDING_TO_STRING_NAME»(final @«NONNULL.importedName» T$$ obj) {
         «ELSE»
-        static «STRING.importedName» «BINDING_TO_STRING_NAME»(final «type.fullyQualifiedName» obj) {
+        static «STRING.importedName» «BINDING_TO_STRING_NAME»(final «type.fullyQualifiedNonNull» obj) {
         «ENDIF»
             final «MoreObjects.importedName».ToStringHelper helper = «MoreObjects.importedName».toStringHelper("«type.name»");
             «FOR property : typeAnalysis.value»
