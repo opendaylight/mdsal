@@ -60,6 +60,10 @@ public final class DynamicBindingAdapter {
     ComponentFactory actionProviderServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiMountPointService.FACTORY_NAME + ")")
     ComponentFactory mountPointServiceFactory = null;
+    @Reference(target = "(component.factory=" + OSGiNotificationService.FACTORY_NAME + ")")
+    ComponentFactory notificationServiceFactory = null;
+    @Reference(target = "(component.factory=" + OSGiNotificationPublishService.FACTORY_NAME + ")")
+    ComponentFactory notificationPublishServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiRpcConsumerRegistry.FACTORY_NAME + ")")
     ComponentFactory rpcConsumerRegistryFactory = null;
     @Reference(target = "(component.factory=" + OSGiRpcProviderService.FACTORY_NAME + ")")
@@ -72,10 +76,10 @@ public final class DynamicBindingAdapter {
             new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, factory::createDataTreeService),
             new AdaptingComponentTracker<>(ctx, DOMMountPointService.class, MountPointService.class,
                     factory::createMountPointService, mountPointServiceFactory),
-            new AdaptingTracker<>(ctx, DOMNotificationService.class, NotificationService.class,
-                    factory::createNotificationService),
-            new AdaptingTracker<>(ctx, DOMNotificationPublishService.class, NotificationPublishService.class,
-                    factory::createNotificationPublishService),
+            new AdaptingComponentTracker<>(ctx, DOMNotificationService.class, NotificationService.class,
+                    factory::createNotificationService, notificationServiceFactory),
+            new AdaptingComponentTracker<>(ctx, DOMNotificationPublishService.class, NotificationPublishService.class,
+                    factory::createNotificationPublishService, notificationPublishServiceFactory),
             new AdaptingComponentTracker<>(ctx, DOMRpcService.class, RpcConsumerRegistry.class,
                     factory::createRpcConsumerRegistry, rpcConsumerRegistryFactory),
             new AdaptingComponentTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class,
