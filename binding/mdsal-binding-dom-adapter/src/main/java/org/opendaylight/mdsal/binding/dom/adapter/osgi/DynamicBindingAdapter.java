@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 public final class DynamicBindingAdapter {
     private static final Logger LOG = LoggerFactory.getLogger(DynamicBindingAdapter.class);
 
-    private List<AbstractAdaptingTracker<?, ?, ?>> trackers = ImmutableList.of();
+    private List<AdaptingTracker<?, ?>> trackers = ImmutableList.of();
 
     @Reference
     AdapterFactory factory = null;
@@ -58,6 +58,10 @@ public final class DynamicBindingAdapter {
     ComponentFactory actionServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiActionProviderService.FACTORY_NAME + ")")
     ComponentFactory actionProviderServiceFactory = null;
+    @Reference(target = "(component.factory=" + OSGiDataBroker.FACTORY_NAME + ")")
+    ComponentFactory dataBrokerFactory = null;
+    @Reference(target = "(component.factory=" + OSGiDataTreeService.FACTORY_NAME + ")")
+    ComponentFactory dataTreeServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiMountPointService.FACTORY_NAME + ")")
     ComponentFactory mountPointServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiNotificationService.FACTORY_NAME + ")")
@@ -72,22 +76,24 @@ public final class DynamicBindingAdapter {
     @Activate
     void activate(final BundleContext ctx) {
         trackers = ImmutableList.of(
-            new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker),
-            new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, factory::createDataTreeService),
-            new AdaptingComponentTracker<>(ctx, DOMMountPointService.class, MountPointService.class,
+            new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker,
+                    dataBrokerFactory),
+            new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, factory::createDataTreeService,
+                    dataTreeServiceFactory),
+            new AdaptingTracker<>(ctx, DOMMountPointService.class, MountPointService.class,
                     factory::createMountPointService, mountPointServiceFactory),
-            new AdaptingComponentTracker<>(ctx, DOMNotificationService.class, NotificationService.class,
+            new AdaptingTracker<>(ctx, DOMNotificationService.class, NotificationService.class,
                     factory::createNotificationService, notificationServiceFactory),
-            new AdaptingComponentTracker<>(ctx, DOMNotificationPublishService.class, NotificationPublishService.class,
+            new AdaptingTracker<>(ctx, DOMNotificationPublishService.class, NotificationPublishService.class,
                     factory::createNotificationPublishService, notificationPublishServiceFactory),
-            new AdaptingComponentTracker<>(ctx, DOMRpcService.class, RpcConsumerRegistry.class,
+            new AdaptingTracker<>(ctx, DOMRpcService.class, RpcConsumerRegistry.class,
                     factory::createRpcConsumerRegistry, rpcConsumerRegistryFactory),
-            new AdaptingComponentTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class,
+            new AdaptingTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class,
                     factory::createRpcProviderService, rpcProviderServiceFactory),
-            new AdaptingComponentTracker<>(ctx, DOMActionService.class, ActionService.class,
-                    factory::createActionService, actionServiceFactory),
-            new AdaptingComponentTracker<>(ctx, DOMActionProviderService.class, ActionProviderService.class,
-                factory::createActionProviderService, actionProviderServiceFactory));
+            new AdaptingTracker<>(ctx, DOMActionService.class, ActionService.class, factory::createActionService,
+                    actionServiceFactory),
+            new AdaptingTracker<>(ctx, DOMActionProviderService.class, ActionProviderService.class,
+                    factory::createActionProviderService, actionProviderServiceFactory));
 
         LOG.debug("Starting {} DOMService trackers", trackers.size());
         trackers.forEach(ServiceTracker::open);
@@ -98,7 +104,7 @@ public final class DynamicBindingAdapter {
     void deactivate() {
         LOG.debug("Stopping {} DOMService trackers", trackers.size());
         if (!trackers.isEmpty()) {
-            trackers.forEach(AbstractAdaptingTracker::close);
+            trackers.forEach(AdaptingTracker::close);
             LOG.info("{} DOMService trackers stopped", trackers.size());
         }
         trackers = ImmutableList.of();
