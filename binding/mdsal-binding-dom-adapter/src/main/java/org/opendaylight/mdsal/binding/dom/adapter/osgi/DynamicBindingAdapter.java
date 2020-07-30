@@ -58,6 +58,8 @@ public final class DynamicBindingAdapter {
     ComponentFactory actionServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiActionProviderService.FACTORY_NAME + ")")
     ComponentFactory actionProviderServiceFactory = null;
+    @Reference(target = "(component.factory=" + OSGiDataBroker.FACTORY_NAME + ")")
+    ComponentFactory dataBrokerFactory = null;
     @Reference(target = "(component.factory=" + OSGiMountPointService.FACTORY_NAME + ")")
     ComponentFactory mountPointServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiNotificationService.FACTORY_NAME + ")")
@@ -72,7 +74,8 @@ public final class DynamicBindingAdapter {
     @Activate
     void activate(final BundleContext ctx) {
         trackers = ImmutableList.of(
-            new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker),
+            new AdaptingComponentTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker,
+                    dataBrokerFactory),
             new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, factory::createDataTreeService),
             new AdaptingComponentTracker<>(ctx, DOMMountPointService.class, MountPointService.class,
                     factory::createMountPointService, mountPointServiceFactory),
