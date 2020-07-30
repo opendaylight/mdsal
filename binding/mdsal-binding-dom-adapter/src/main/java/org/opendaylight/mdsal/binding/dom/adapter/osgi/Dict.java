@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 @NonNullByDefault
 final class Dict extends Dictionary<String, Object> {
     private static final Logger LOG = LoggerFactory.getLogger(Dict.class);
-    private static final Dict EMPTY = new Dict(ImmutableMap.of());
 
     private final Map<String, Object> map;
 
@@ -31,24 +30,9 @@ final class Dict extends Dictionary<String, Object> {
         this.map = ImmutableMap.copyOf(map);
     }
 
-    static Dict fromReference(final ServiceReference<?> ref) {
-        final String[] keys = ref.getPropertyKeys();
-        if (keys.length == 0) {
-            return EMPTY;
-        }
-
-        return new Dict(populateProperties(ref, keys, 0));
-    }
-
     static Dict fromReference(final ServiceReference<?> ref, final BindingService service) {
-        final Map<String, Object> props = populateProperties(ref, ref.getPropertyKeys(), 1);
-        props.put(AbstractAdaptedService.DELEGATE, service);
-        return new Dict(props);
-    }
-
-    private static Map<String, Object> populateProperties(final ServiceReference<?> ref, final String[] keys,
-            final int extra) {
-        final Map<String, Object> props = Maps.newHashMapWithExpectedSize(keys.length + extra);
+        final String[] keys = ref.getPropertyKeys();
+        final Map<String, Object> props = Maps.newHashMapWithExpectedSize(keys.length + 1);
         for (String key : keys) {
             // Ignore properties with our prefix: we are not exporting those
             if (!key.startsWith(ServiceProperties.PREFIX)) {
@@ -73,7 +57,8 @@ final class Dict extends Dictionary<String, Object> {
             }
         }
 
-        return props;
+        props.put(AbstractAdaptedService.DELEGATE, service);
+        return new Dict(props);
     }
 
     @Override
