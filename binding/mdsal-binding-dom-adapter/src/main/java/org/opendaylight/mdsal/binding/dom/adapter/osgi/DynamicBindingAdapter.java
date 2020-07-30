@@ -31,6 +31,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -49,10 +50,14 @@ import org.slf4j.LoggerFactory;
 public final class DynamicBindingAdapter {
     private static final Logger LOG = LoggerFactory.getLogger(DynamicBindingAdapter.class);
 
-    private List<AdaptingTracker<?, ?>> trackers = ImmutableList.of();
+    private List<AbstractAdaptingTracker<?, ?, ?>> trackers = ImmutableList.of();
 
     @Reference
     AdapterFactory factory = null;
+    @Reference(target = "(component.factory=" + OSGiRpcConsumerRegistry.FACTORY_NAME + ")")
+    ComponentFactory rpcConsumerRegistryFactory = null;
+    @Reference(target = "(component.factory=" + OSGiRpcProviderService.FACTORY_NAME + ")")
+    ComponentFactory rpcProviderServiceFactory = null;
 
     @Activate
     void activate(final BundleContext ctx) {
@@ -65,10 +70,10 @@ public final class DynamicBindingAdapter {
                     factory::createNotificationService),
             new AdaptingTracker<>(ctx, DOMNotificationPublishService.class, NotificationPublishService.class,
                     factory::createNotificationPublishService),
-            new AdaptingTracker<>(ctx, DOMRpcService.class, RpcConsumerRegistry.class,
-                    factory::createRpcConsumerRegistry),
-            new AdaptingTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class,
-                    factory::createRpcProviderService),
+            new AdaptingComponentTracker<>(ctx, DOMRpcService.class, RpcConsumerRegistry.class,
+                    factory::createRpcConsumerRegistry, rpcConsumerRegistryFactory),
+            new AdaptingComponentTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class,
+                    factory::createRpcProviderService, rpcProviderServiceFactory),
             new AdaptingTracker<>(ctx, DOMActionService.class, ActionService.class, factory::createActionService),
             new AdaptingTracker<>(ctx, DOMActionProviderService.class, ActionProviderService.class,
                 factory::createActionProviderService));
@@ -82,7 +87,7 @@ public final class DynamicBindingAdapter {
     void deactivate() {
         LOG.debug("Stopping {} DOMService trackers", trackers.size());
         if (!trackers.isEmpty()) {
-            trackers.forEach(AdaptingTracker::close);
+            trackers.forEach(AbstractAdaptingTracker::close);
             LOG.info("{} DOMService trackers stopped", trackers.size());
         }
         trackers = ImmutableList.of();
