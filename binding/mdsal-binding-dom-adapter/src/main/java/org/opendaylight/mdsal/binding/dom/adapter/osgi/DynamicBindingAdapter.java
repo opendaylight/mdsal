@@ -54,6 +54,8 @@ public final class DynamicBindingAdapter {
 
     @Reference
     AdapterFactory factory = null;
+    @Reference(target = "(component.factory=" + OSGiMountPointService.FACTORY_NAME + ")")
+    ComponentFactory mountPointServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiRpcConsumerRegistry.FACTORY_NAME + ")")
     ComponentFactory rpcConsumerRegistryFactory = null;
     @Reference(target = "(component.factory=" + OSGiRpcProviderService.FACTORY_NAME + ")")
@@ -64,8 +66,8 @@ public final class DynamicBindingAdapter {
         trackers = ImmutableList.of(
             new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker),
             new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, factory::createDataTreeService),
-            new AdaptingTracker<>(ctx, DOMMountPointService.class, MountPointService.class,
-                    factory::createMountPointService),
+            new AdaptingComponentTracker<>(ctx, DOMMountPointService.class, MountPointService.class,
+                    factory::createMountPointService, mountPointServiceFactory),
             new AdaptingTracker<>(ctx, DOMNotificationService.class, NotificationService.class,
                     factory::createNotificationService),
             new AdaptingTracker<>(ctx, DOMNotificationPublishService.class, NotificationPublishService.class,
