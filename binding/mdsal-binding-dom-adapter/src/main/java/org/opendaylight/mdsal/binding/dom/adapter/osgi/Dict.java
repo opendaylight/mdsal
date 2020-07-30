@@ -15,6 +15,7 @@ import java.util.Enumeration;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.api.BindingService;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,18 @@ final class Dict extends Dictionary<String, Object> {
             return EMPTY;
         }
 
-        final Map<String, Object> props = Maps.newHashMapWithExpectedSize(keys.length);
+        return new Dict(populateProperties(ref, keys, 0));
+    }
+
+    static Dict fromReference(final ServiceReference<?> ref, final BindingService service) {
+        final Map<String, Object> props = populateProperties(ref, ref.getPropertyKeys(), 1);
+        props.put(AbstractAdaptedService.DELEGATE, service);
+        return new Dict(props);
+    }
+
+    private static Map<String, Object> populateProperties(final ServiceReference<?> ref, final String[] keys,
+            final int extra) {
+        final Map<String, Object> props = Maps.newHashMapWithExpectedSize(keys.length + extra);
         for (String key : keys) {
             // Ignore properties with our prefix: we are not exporting those
             if (!key.startsWith(ServiceProperties.PREFIX)) {
@@ -61,7 +73,7 @@ final class Dict extends Dictionary<String, Object> {
             }
         }
 
-        return new Dict(props);
+        return props;
     }
 
     @Override
