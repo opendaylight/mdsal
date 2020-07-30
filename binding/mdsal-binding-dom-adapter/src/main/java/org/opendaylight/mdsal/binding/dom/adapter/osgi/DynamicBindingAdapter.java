@@ -54,6 +54,10 @@ public final class DynamicBindingAdapter {
 
     @Reference
     AdapterFactory factory = null;
+    @Reference(target = "(component.factory=" + OSGiActionService.FACTORY_NAME + ")")
+    ComponentFactory actionServiceFactory = null;
+    @Reference(target = "(component.factory=" + OSGiActionProviderService.FACTORY_NAME + ")")
+    ComponentFactory actionProviderServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiMountPointService.FACTORY_NAME + ")")
     ComponentFactory mountPointServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiRpcConsumerRegistry.FACTORY_NAME + ")")
@@ -76,9 +80,10 @@ public final class DynamicBindingAdapter {
                     factory::createRpcConsumerRegistry, rpcConsumerRegistryFactory),
             new AdaptingComponentTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class,
                     factory::createRpcProviderService, rpcProviderServiceFactory),
-            new AdaptingTracker<>(ctx, DOMActionService.class, ActionService.class, factory::createActionService),
-            new AdaptingTracker<>(ctx, DOMActionProviderService.class, ActionProviderService.class,
-                factory::createActionProviderService));
+            new AdaptingComponentTracker<>(ctx, DOMActionService.class, ActionService.class,
+                    factory::createActionService, actionServiceFactory),
+            new AdaptingComponentTracker<>(ctx, DOMActionProviderService.class, ActionProviderService.class,
+                factory::createActionProviderService, actionProviderServiceFactory));
 
         LOG.debug("Starting {} DOMService trackers", trackers.size());
         trackers.forEach(ServiceTracker::open);
