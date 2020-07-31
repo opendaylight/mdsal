@@ -20,6 +20,11 @@
     <name>OpenDaylight :: MD-SAL :: EOS :: Binding</name>
     <description>Entity Ownership Service Binding support</description>
 
+    <properties>
+        <!-- FIXME: remove this once we can plug in a testing dependency -->
+        <skip.karaf.featureTest>true</skip.karaf.featureTest>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
