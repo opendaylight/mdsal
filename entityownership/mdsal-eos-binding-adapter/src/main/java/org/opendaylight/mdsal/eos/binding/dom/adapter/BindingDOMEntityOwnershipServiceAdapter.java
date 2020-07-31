@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.eos.binding.dom.adapter;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
@@ -27,10 +29,12 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
  *
  * @author Thomas Pantelis
  */
+@Singleton
 public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipService, AutoCloseable {
     private final @NonNull DOMEntityOwnershipService domService;
     private final @NonNull AdapterContext adapterContext;
 
+    @Inject
     public BindingDOMEntityOwnershipServiceAdapter(final @NonNull DOMEntityOwnershipService domService,
             final @NonNull AdapterContext adapterContext) {
         this.domService = requireNonNull(domService);
