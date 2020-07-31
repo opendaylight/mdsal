@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.singleton.dom.impl;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
@@ -19,6 +21,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 /**
  * Binding version of {@link AbstractClusterSingletonServiceProviderImpl}.
  */
+@Singleton
 public final class DOMClusterSingletonServiceProviderImpl extends
         AbstractClusterSingletonServiceProviderImpl<YangInstanceIdentifier, DOMEntity,
                                                     DOMEntityOwnershipChange,
@@ -32,6 +35,7 @@ public final class DOMClusterSingletonServiceProviderImpl extends
      *
      * @param entityOwnershipService - we need only {@link GenericEntityOwnershipService}
      */
+    @Inject
     public DOMClusterSingletonServiceProviderImpl(final DOMEntityOwnershipService entityOwnershipService) {
         super(entityOwnershipService);
     }

@@ -20,6 +20,11 @@
     <name>OpenDaylight :: MD-SAL :: Singleton :: DOM</name>
     <description>MD-SAL Cluster Singleton Service implementation</description>
 
+    <properties>
+        <!-- FIXME: remove this once we can plug in a testing dependency -->
+        <skip.karaf.featureTest>true</skip.karaf.featureTest>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
