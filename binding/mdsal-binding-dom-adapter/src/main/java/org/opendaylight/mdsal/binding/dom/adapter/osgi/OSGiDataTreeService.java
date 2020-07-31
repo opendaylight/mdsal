@@ -48,7 +48,7 @@ public final class OSGiDataTreeService extends AbstractAdaptedService<DataTreeSe
     }
 
     @Deactivate
-    void deactivate() {
-        stop();
+    void deactivate(final int reason) {
+        stop(reason);
     }
 }

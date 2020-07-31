@@ -41,7 +41,7 @@ public final class OSGiActionService extends AbstractAdaptedService<ActionServic
     }
 
     @Deactivate
-    void deactivate() {
-        stop();
+    void deactivate(final int reason) {
+        stop(reason);
     }
 }

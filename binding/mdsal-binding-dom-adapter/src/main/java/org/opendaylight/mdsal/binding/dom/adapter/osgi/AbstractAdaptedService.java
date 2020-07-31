@@ -35,9 +35,9 @@ abstract class AbstractAdaptedService<B extends BindingService> {
         LOG.info("Binding/DOM adapter for {} activated", bindingService.getSimpleName());
     }
 
-    final void stop() {
+    final void stop(final int reason) {
         delegate = null;
-        LOG.info("Binding/DOM adapter for {} deactivated", bindingService.getSimpleName());
+        LOG.info("Binding/DOM adapter for {} deactivated (reason {})", bindingService.getSimpleName(), reason);
     }
 
     final @NonNull B delegate() {
