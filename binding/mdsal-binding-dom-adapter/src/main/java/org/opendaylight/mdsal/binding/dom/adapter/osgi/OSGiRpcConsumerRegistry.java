@@ -37,7 +37,7 @@ public final class OSGiRpcConsumerRegistry extends AbstractAdaptedService<RpcCon
     }
 
     @Deactivate
-    void deactivate() {
-        stop();
+    void deactivate(final int reason) {
+        stop(reason);
     }
 }

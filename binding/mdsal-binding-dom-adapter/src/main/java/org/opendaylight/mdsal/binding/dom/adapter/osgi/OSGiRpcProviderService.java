@@ -47,7 +47,7 @@ public final class OSGiRpcProviderService extends AbstractAdaptedService<RpcProv
     }
 
     @Deactivate
-    void deactivate() {
-        stop();
+    void deactivate(final int reason) {
+        stop(reason);
     }
 }

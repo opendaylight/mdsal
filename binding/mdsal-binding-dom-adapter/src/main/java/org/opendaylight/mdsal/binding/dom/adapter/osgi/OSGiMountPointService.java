@@ -47,7 +47,7 @@ public final class OSGiMountPointService extends AbstractAdaptedService<MountPoi
     }
 
     @Deactivate
-    void deactivate() {
-        stop();
+    void deactivate(final int reason) {
+        stop(reason);
     }
 }

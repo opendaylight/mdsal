@@ -72,7 +72,7 @@ public final class OSGiDataBroker extends AbstractAdaptedService<DataBroker> imp
     }
 
     @Deactivate
-    void deactivate() {
-        stop();
+    void deactivate(final int reason) {
+        stop(reason);
     }
 }
