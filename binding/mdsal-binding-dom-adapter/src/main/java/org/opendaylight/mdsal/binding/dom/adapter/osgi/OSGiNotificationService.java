@@ -38,7 +38,7 @@ public final class OSGiNotificationService extends AbstractAdaptedService<Notifi
     }
 
     @Deactivate
-    void deactivate() {
-        stop();
+    void deactivate(final int reason) {
+        stop(reason);
     }
 }
