@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.testutils;
 
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.Iterables;
 import java.util.Comparator;
 import java.util.Optional;
@@ -37,8 +38,6 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  */
 // package-local: no need to expose this, consider it an implementation detail; public API is the AssertDataObjects
 class XtendYangBeanGenerator extends XtendBeanGenerator {
-
-    private final AugmentableExtension augmentableExtension = new AugmentableExtension();
 
     @Override
     public String getExpression(final Object bean) {
@@ -85,15 +84,18 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
         return Iterables.filter(properties, property -> !property.getName().equals("key"));
     }
 
-    private Optional<ClassToInstanceMap<Augmentation<?>>> getAugmentations(final Object bean) {
+    private static Optional<ClassToInstanceMap<Augmentation<?>>> getAugmentations(final Object bean) {
         if (bean instanceof Augmentable<?>) {
-            Augmentable<?> augmentable = (Augmentable<?>) bean;
-            ClassToInstanceMap<Augmentation<?>> augmentables = augmentableExtension.getAugmentations(augmentable);
+            ClassToInstanceMap<Augmentation<?>> augmentables = augmentations((Augmentable<?>) bean);
             if (!augmentables.isEmpty()) {
                 return Optional.of(augmentables);
             }
         }
         return Optional.empty();
+    }
+
+    private static ClassToInstanceMap<Augmentation<?>> augmentations(final Augmentable<?> augmentable) {
+        return ImmutableClassToInstanceMap.copyOf(augmentable.augmentations());
     }
 
     @Override

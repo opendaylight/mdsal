@@ -22,7 +22,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * @param <T> Augmentable type
  */
 @Beta
-public abstract class AbstractAugmentable<T extends Augmentable<T>> implements Augmentable<T>, AugmentationHolder<T> {
+public abstract class AbstractAugmentable<T extends Augmentable<T>> implements Augmentable<T> {
     private final @NonNull ImmutableMap<Class<? extends Augmentation<T>>, Augmentation<T>> augmentations;
 
     protected AbstractAugmentable() {
