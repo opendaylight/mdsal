@@ -25,7 +25,6 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class DOMMountPointServiceImplTest {
 
@@ -49,9 +48,6 @@ public class DOMMountPointServiceImplTest {
         // Create a mount point with schema context and a DOMService
         final DOMMountPointBuilder mountPointBuilder = mountPointService.createMountPoint(PATH);
 
-        final EffectiveModelContext schemaContext = mock(EffectiveModelContext.class);
-        mountPointBuilder.addInitialSchemaContext(schemaContext);
-
         final DOMRpcService rpcService = mock(DOMRpcService.class);
         mountPointBuilder.addService(DOMRpcService.class, rpcService);
 
@@ -65,8 +61,6 @@ public class DOMMountPointServiceImplTest {
         final DOMMountPoint mountPoint = mountPointService.getMountPoint(PATH).get();
         assertTrue(mountPoint.getService(DOMRpcService.class).isPresent());
         assertEquals(rpcService, mountPoint.getService(DOMRpcService.class).get());
-
-        assertEquals(schemaContext, mountPoint.getSchemaContext());
     }
 
     @Test
@@ -75,8 +69,7 @@ public class DOMMountPointServiceImplTest {
         doNothing().when(mountPointListener).onMountPointRemoved(PATH);
 
         final ObjectRegistration<DOMMountPoint> mountPointRegistration =
-                mountPointService.createMountPoint(PATH).addInitialSchemaContext(mock(EffectiveModelContext.class))
-                .register();
+                mountPointService.createMountPoint(PATH).register();
 
         mountPointService.registerProvisionListener(mountPointListener);
 
