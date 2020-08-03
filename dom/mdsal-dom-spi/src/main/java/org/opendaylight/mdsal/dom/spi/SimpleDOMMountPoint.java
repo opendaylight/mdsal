@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ClassToInstanceMap;
@@ -16,35 +15,26 @@ import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public final class SimpleDOMMountPoint implements DOMMountPoint {
 
     private final YangInstanceIdentifier identifier;
     private final ClassToInstanceMap<DOMService> services;
-    private final EffectiveModelContext schemaContext;
 
     private SimpleDOMMountPoint(final YangInstanceIdentifier identifier,
-            final ClassToInstanceMap<DOMService> services, final EffectiveModelContext ctx) {
+            final ClassToInstanceMap<DOMService> services) {
         this.identifier =  requireNonNull(identifier);
         this.services = ImmutableClassToInstanceMap.copyOf(services);
-        this.schemaContext = ctx;
     }
 
     public static SimpleDOMMountPoint create(final YangInstanceIdentifier identifier,
-            final ClassToInstanceMap<DOMService> services, final EffectiveModelContext ctx) {
-        return new SimpleDOMMountPoint(identifier, services, ctx);
+            final ClassToInstanceMap<DOMService> services) {
+        return new SimpleDOMMountPoint(identifier, services);
     }
 
     @Override
     public YangInstanceIdentifier getIdentifier() {
         return identifier;
-    }
-
-    @Override
-    public EffectiveModelContext getEffectiveModelContext() {
-        checkState(schemaContext != null, "Mount point %s does not have a model context", identifier);
-        return schemaContext;
     }
 
     @Override
