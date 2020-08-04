@@ -117,7 +117,7 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
             tx -> TransactionAdapter.toReadWriteTransaction(tx).cancel()).get();
     }
 
-    private TopLevelList newTestDataObject() {
+    private static TopLevelList newTestDataObject() {
         TreeComplexUsesAugment fooAugment = new TreeComplexUsesAugmentBuilder()
             .setContainerWithUses(new ContainerWithUsesBuilder().setLeafFromGrouping("foo").build()).build();
         return topLevelList(TOP_FOO_KEY, fooAugment);
