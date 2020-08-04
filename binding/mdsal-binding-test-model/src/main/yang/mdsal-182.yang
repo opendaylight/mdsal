@@ -5,7 +5,7 @@ module mdsal-182 {
     grouping foo {
         leaf foo {
             type leafref {
-                path "../../bar";
+                path "../bar";
             }
         }
     }
