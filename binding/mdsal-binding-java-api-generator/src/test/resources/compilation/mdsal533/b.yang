@@ -1,0 +1,42 @@
+module b {
+  yang-version 1;
+  namespace "b";
+  prefix "b";
+
+  import a {
+    prefix "a";
+  }
+
+  grouping other_module_grp {
+    leaf key_leaf1 {
+      type leafref {
+        path "../../../a:foo_list/a:name";
+      }
+    }
+    leaf key_leaf2 {
+      type string;
+    }
+    leaf key_leaf3 {
+      type string;
+    }
+  }
+
+  augment "/a:foo_cont" {
+    list foreign {
+      key "name";
+      leaf name {
+        type string {
+          length "1..255";
+        }
+      }
+    }
+  }
+
+  augment "/a:foo_cont" {
+    leaf foreign_leaf {
+      type leafref {
+        path "../a:foo_list/a:name";
+      }
+    }
+  }
+}

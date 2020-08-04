@@ -1,0 +1,111 @@
+From d5f65f79e74d60a42479045f312e431199ee5f96 Mon Sep 17 00:00:00 2001
+From: "miroslav.kovac" <miroslav.kovac@pantheon.tech>
+Date: Wed, 11 Mar 2020 16:42:29 +0100
+Subject: [PATCH] Generate classes with compatible types
+
+Make GeneratedType properties produced from added by uses leafref
+leaves be same as type of corresponding property of GeneratedType
+created from grouping, where leafref declared.
+
+JIRA: MDSAL-533
+Change-Id: I5004f0579778527511b4b028e00f7ab9c3051731
+Signed-off-by: miroslav.kovac <miroslav.kovac@pantheon.tech>
+Signed-off-by: illia.ihushev <illia.ihushev@pantheon.tech>
+---
+ .../yang/types/AbstractTypeProvider.java      |  5 +++
+ .../api/generator/test/CompilationTest.java   |  9 ++++
+ .../resources/compilation/mdsal533/a.yang     | 45 +++++++++++++++++++
+ 3 files changed, 59 insertions(+)
+ create mode 100644 binding/mdsal-binding-java-api-generator/src/test/resources/compilation/mdsal533/a.yang
+
+diff --git a/binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/yang/types/AbstractTypeProvider.java b/binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/yang/types/AbstractTypeProvider.java
+index 6a08bfed6..23d9d9545 100644
+--- a/binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/yang/types/AbstractTypeProvider.java
++++ b/binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/yang/types/AbstractTypeProvider.java
+@@ -532,6 +532,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
+         if (xpath.isAbsolute()) {
+             dataNode = findDataTreeSchemaNode(schemaContext, module.getQNameModule(), xpath);
+         } else {
++            if (parentNode instanceof LeafSchemaNode && ((LeafSchemaNode)parentNode).isAddedByUses()) {
++                final SchemaNode original = SchemaContextUtil.findDataSchemaNode(schemaContext,
++                        leafrefType.getPath().getParent());
++                return provideTypeForLeafref(leafrefType, original, true);
++            }
+             dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
+             if (dataNode == null && inGrouping) {
+                 // Relative path within a grouping may end up being unresolvable because it may refer outside
+diff --git a/binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/test/CompilationTest.java b/binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/test/CompilationTest.java
+index 9c3531bf0..7cd5eb7c5 100644
+--- a/binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/test/CompilationTest.java
++++ b/binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/test/CompilationTest.java
+@@ -693,6 +693,15 @@ public class CompilationTest extends BaseCompilationTest {
+         CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
+     }
+ 
++    @Test
++    public void testMdsal533() throws Exception {
++        final File sourcesOutputDir = CompilationTestUtils.generatorOutput("mdsal533");
++        final File compiledOutputDir = CompilationTestUtils.compilerOutput("mdsal533");
++        generateTestSources("/compilation/mdsal533", sourcesOutputDir);
++        CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
++        CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
++    }
++
+     private static void testReturnTypeIdentityref(final Class<?> clazz, final String methodName,
+             final String returnTypeStr) throws NoSuchMethodException {
+         Method method = clazz.getMethod(methodName);
+diff --git a/binding/mdsal-binding-java-api-generator/src/test/resources/compilation/mdsal533/a.yang b/binding/mdsal-binding-java-api-generator/src/test/resources/compilation/mdsal533/a.yang
+new file mode 100644
+index 000000000..ba1a1ac9d
+--- /dev/null
++++ b/binding/mdsal-binding-java-api-generator/src/test/resources/compilation/mdsal533/a.yang
+@@ -0,0 +1,45 @@
++module a {
++  yang-version 1;
++  namespace "a";
++  prefix "a";
++
++  list foo_list_2 {
++    key "name";
++    leaf name {
++      type string {
++        length "1..255";
++      }
++    }
++  }
++
++  grouping foo_grp {
++    leaf key_leaf1 {
++      type leafref {
++        path "../../../a:foo_list/a:name";
++      }
++    }
++    leaf key_leaf2 {
++      type string;
++    }
++    leaf key_leaf3 {
++      type string;
++    }
++  }
++
++  container foo_cont {
++    list foo_list {
++      key "name";
++      leaf name {
++        type string {
++          length "1..255";
++        }
++      }
++    }
++    container foo_cont2 {
++      list foo_list2 {
++        key "key_leaf1 key_leaf2 key_leaf3";
++        uses foo_grp;
++      }
++    }
++  }
++}
+\ No newline at end of file
+-- 
+2.17.1
+

@@ -1,0 +1,18 @@
+module d {
+  yang-version 1;
+  namespace "d";
+  prefix "d";
+
+  list foo-list {
+    leaf bar {
+      type leafref {
+        path "../foo-cont/qwe";
+      }
+    }
+    container foo-cont {
+      leaf "qwe" {
+       type string;
+      }
+    }
+  }
+}

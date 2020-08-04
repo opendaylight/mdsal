@@ -658,6 +658,15 @@ public class CompilationTest extends BaseCompilationTest {
     }
 
     @Test
+    public void testMdsal182() throws Exception {
+        final File sourcesOutputDir = CompilationTestUtils.generatorOutput("mdsal182");
+        final File compiledOutputDir = CompilationTestUtils.compilerOutput("mdsal182");
+        generateTestSources("/compilation/mdsal182", sourcesOutputDir);
+        CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
+        CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
+    }
+
+    @Test
     public void innerEnumerationNameCollisionTest() throws Exception {
         final File sourcesOutputDir = CompilationTestUtils.generatorOutput("mdsal321");
         final File compiledOutputDir = CompilationTestUtils.compilerOutput("mdsal321");
