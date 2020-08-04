@@ -100,6 +100,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractTypeProvider implements TypeProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTypeProvider.class);
     private static final Pattern GROUPS_PATTERN = Pattern.compile("\\[(.*?)\\]");
+    private static final JavaTypeName DEPRECATED_ANNOTATION = JavaTypeName.create(Deprecated.class);
 
     // Backwards compatibility: Union types used to be instantiated in YANG namespace, which is no longer
     // the case, as unions are emitted to their correct schema path.
@@ -883,7 +884,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         genTOBuilder.addToStringProperty(genPropBuilder);
         genTOBuilder.addImplementsType(BindingTypes.scalarTypeObject(javaType));
         if (typedef.getStatus() == Status.DEPRECATED) {
-            genTOBuilder.addAnnotation("java.lang", "Deprecated");
+            genTOBuilder.addAnnotation(DEPRECATED_ANNOTATION);
         }
         if (javaType instanceof ConcreteType && "String".equals(javaType.getName()) && typedef.getBaseType() != null) {
             addStringRegExAsConstant(genTOBuilder, resolveRegExpressionsFromTypedef(typedef));
@@ -1226,7 +1227,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         addStringRegExAsConstant(genTOBuilder, resolveRegExpressionsFromTypedef(typedef));
 
         if (typedef.getStatus() == Status.DEPRECATED) {
-            genTOBuilder.addAnnotation("java.lang", "Deprecated");
+            genTOBuilder.addAnnotation(DEPRECATED_ANNOTATION);
         }
 
         if (baseTypeDefForExtendedType(innerExtendedType) instanceof UnionTypeDefinition) {

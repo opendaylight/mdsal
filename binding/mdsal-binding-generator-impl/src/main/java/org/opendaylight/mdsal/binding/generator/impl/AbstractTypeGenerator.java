@@ -142,6 +142,9 @@ abstract class AbstractTypeGenerator {
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
     private static final JavaTypeName DEPRECATED_ANNOTATION = JavaTypeName.create(Deprecated.class);
     private static final JavaTypeName OVERRIDE_ANNOTATION = JavaTypeName.create(Override.class);
+    private static final JavaTypeName CHECK_RETURN_VALUE_ANNOTATION =
+            // Do not refer to annotation class, as it may not be available at runtime
+            JavaTypeName.create("edu.umd.cs.findbugs.annotations", "CheckReturnValue");
     private static final Type LIST_STRING_TYPE = listTypeFor(BaseYangTypes.STRING_TYPE);
 
     /**
@@ -552,7 +555,7 @@ abstract class AbstractTypeGenerator {
                 final MethodSignatureBuilder method = interfaceBuilder.addMethod(rpcMethodName);
 
                 // Do not refer to annotation class, as it may not be available at runtime
-                method.addAnnotation("edu.umd.cs.findbugs.annotations", "CheckReturnValue");
+                method.addAnnotation(CHECK_RETURN_VALUE_ANNOTATION);
                 addComment(method, rpc);
                 method.addParameter(
                     createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getInput()), RPC_INPUT), "input");
