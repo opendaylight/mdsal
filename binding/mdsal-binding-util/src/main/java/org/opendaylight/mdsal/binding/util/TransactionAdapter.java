@@ -12,7 +12,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
-import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -119,7 +118,7 @@ public final class TransactionAdapter {
         }
 
         @Override
-        public @NonNull FluentFuture<? extends CommitInfo> commit() {
+        public FluentFuture<? extends CommitInfo> commit() {
             throw new UnsupportedOperationException("Managed transactions must not be committed");
         }
 
