@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7dacbf5e_aa196ca6",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/mdsal-182.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-08-05T00:45:39Z",
+      "side": 1,
+      "message": "also fix the tabs while you\u0027re here, please",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 1
+      },
+      "revId": "371b354a23af71ecba7b207308520ca83a5e7458",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
