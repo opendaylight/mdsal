@@ -1,0 +1,31 @@
+module grouping-model {
+    yang-version 1;
+    namespace "grouping-model";
+    prefix "gm";
+
+    import extension-model { prefix "ex"; }
+
+    revision "2020-08-13" { }
+
+    grouping grouping1 {
+
+        container g1-container {
+            uses inner-groung;
+        }
+
+        grouping inner-groung {
+            list list1 {
+                key id;
+
+                leaf id {
+                    type string;
+                }
+
+                leaf leaf1 {
+                    type string;
+                    ex:custom-ex;
+                }
+            }
+        }
+    }
+}
