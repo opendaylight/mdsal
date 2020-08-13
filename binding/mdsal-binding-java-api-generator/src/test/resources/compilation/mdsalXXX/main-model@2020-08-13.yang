@@ -1,0 +1,15 @@
+module main-model {
+    yang-version 1;
+    namespace "main-model";
+    prefix "main";
+
+    import grouping-model { prefix gm; }
+    //import extension-model { prefix "ex"; }
+
+    revision "2020-08-13" { }
+
+    container root-contaner {
+        uses gm:grouping1;
+    }
+}
+
