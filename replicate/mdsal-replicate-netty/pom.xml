@@ -59,6 +59,51 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <propertyExpansion>checkstyle.violationSeverity=error</propertyExpansion>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <failOnError>true</failOnError>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/classes/config/org.opendaylight.mdsal.replicate.netty.sink.cfg</file>
+                                    <type>config</type>
+                                    <classifier>sink</classifier>
+                                </artifact>
+                                <artifact>
+                                    <file>${project.build.directory}/classes/config/org.opendaylight.mdsal.replicate.netty.source.cfg</file>
+                                    <type>config</type>
+                                    <classifier>source</classifier>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
     <scm>
         <connection>scm:git:http://git.opendaylight.org/gerrit/mdsal.git</connection>
         <developerConnection>scm:git:ssh://git.opendaylight.org:29418/mdsal.git</developerConnection>
