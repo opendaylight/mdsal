@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="odl-mdsal-exp-replicate-netty-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+    <feature name="odl-mdsal-exp-replicate-netty" version="${project.version}">
+        <configfile finalname="etc/org.opendaylight.mdsal.replicate.netty.sink.cfg">mvn:org.opendaylight.mdsal/mdsal-replicate-netty/${project.version}/config/sink</configfile>
+        <configfile finalname="etc/org.opendaylight.mdsal.replicate.netty.source.cfg">mvn:org.opendaylight.mdsal/mdsal-replicate-netty/${project.version}/config/source</configfile>
+    </feature>
+</features>
