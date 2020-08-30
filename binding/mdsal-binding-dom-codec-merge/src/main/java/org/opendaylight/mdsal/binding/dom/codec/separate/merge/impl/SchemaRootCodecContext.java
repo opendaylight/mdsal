@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.dom.codec.impl;
+package org.opendaylight.mdsal.binding.dom.codec.separate.merge.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -21,6 +21,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
+import org.opendaylight.mdsal.binding.dom.codec.separate.merge.SchemaRootContext;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
@@ -55,13 +56,20 @@ import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 public final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCodecContext<D,SchemaContext>
         implements SchemaRootContext {
 
-    private final LoadingCache<Class<?>, DataContainerCodecContext<?,?>> childrenByClass = CacheBuilder.newBuilder()
-            .build(new CacheLoader<Class<?>, DataContainerCodecContext<?,?>>() {
-                @Override
-                public DataContainerCodecContext<?,?> load(final Class<?> key) {
-                    return createDataTreeChildContext(key);
-                }
-            });
+    private final LoadingCache<Class<? extends DataObject>, DataContainerCodecContext<?, ?>> childrenByClass =
+            CacheBuilder.newBuilder()
+                    .build(new CacheLoader<>() {
+                        @Override
+                        public DataContainerCodecContext<?, ?> load(final Class<? extends DataObject> key) {
+                            if (Notification.class.isAssignableFrom(key)) {
+                                return createNotificationDataContext(key);
+                            }
+                            if (RpcInput.class.isAssignableFrom(key) || RpcOutput.class.isAssignableFrom(key)) {
+                                return createRpcDataContext(key);
+                            }
+                            return createDataTreeChildContext(key);
+                        }
+                    });
 
     private final LoadingCache<Class<? extends Action<?, ?, ?>>, ActionCodecContext> actionsByClass = CacheBuilder
             .newBuilder().build(new CacheLoader<Class<? extends Action<?, ?, ?>>, ActionCodecContext>() {
@@ -76,14 +84,6 @@ public final class SchemaRootCodecContext<D extends DataObject> extends DataCont
                 @Override
                 public ContainerNodeCodecContext<?> load(final Class<?> key) {
                     return createRpcDataContext(key);
-                }
-            });
-
-    private final LoadingCache<Class<?>, NotificationCodecContext<?>> notificationsByClass = CacheBuilder.newBuilder()
-            .build(new CacheLoader<Class<?>, NotificationCodecContext<?>>() {
-                @Override
-                public NotificationCodecContext<?> load(final Class<?> key) {
-                    return createNotificationDataContext(key);
                 }
             });
 
@@ -158,15 +158,7 @@ public final class SchemaRootCodecContext<D extends DataObject> extends DataCont
     @SuppressWarnings("unchecked")
     @Override
     public <C extends DataObject> DataContainerCodecContext<C, ?> streamChild(final Class<C> childClass) {
-        /* FIXME: This is still not solved for RPCs
-         * TODO: Probably performance wise RPC, Data and Notification loading cache
-         *       should be merge for performance resons. Needs microbenchmark to
-         *       determine which is faster (keeping them separate or in same cache).
-         */
-        if (Notification.class.isAssignableFrom(childClass)) {
-            return (DataContainerCodecContext<C, ?>) getNotification((Class<? extends Notification>)childClass);
-        }
-        return (DataContainerCodecContext<C, ?>) getOrRethrow(childrenByClass,childClass);
+        return (DataContainerCodecContext<C, ?>) getOrRethrow(childrenByClass, childClass);
     }
 
     @Override
@@ -190,7 +182,7 @@ public final class SchemaRootCodecContext<D extends DataObject> extends DataCont
     }
 
     NotificationCodecContext<?> getNotification(final Class<? extends Notification> notification) {
-        return getOrRethrow(notificationsByClass, notification);
+        return (NotificationCodecContext<?>) streamChild((Class<? extends DataObject>)notification);
     }
 
     NotificationCodecContext<?> getNotification(final Absolute notification) {
