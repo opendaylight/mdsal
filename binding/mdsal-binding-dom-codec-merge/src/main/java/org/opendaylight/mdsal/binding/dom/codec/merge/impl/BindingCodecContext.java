@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.dom.codec.impl;
+package org.opendaylight.mdsal.binding.dom.codec.merge.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -46,8 +46,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNo
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
-import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
-import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
+import org.opendaylight.mdsal.binding.dom.codec.merge.loader.CodecClassLoader;
 import org.opendaylight.mdsal.binding.dom.codec.separate.merge.parent.BindingContext;
 import org.opendaylight.mdsal.binding.dom.codec.separate.merge.parent.SchemaRootContext;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingNormalizedNodeSerializer;
@@ -105,7 +104,8 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(value = BindingDOMCodecServices.class)
 @Singleton
 public final class BindingCodecContext extends AbstractBindingNormalizedNodeSerializer
-        implements BindingContext, BindingDOMCodecServices, Immutable, CodecContextFactory, DataObjectSerializerRegistry {
+        implements BindingContext, BindingDOMCodecServices, Immutable, NodeCodecContext.CodecContextFactory,
+        DataObjectSerializerRegistry {
     private final class DataObjectSerializerProxy implements DataObjectSerializer, Delegator<DataObjectStreamer<?>> {
         private final @NonNull DataObjectStreamer<?> delegate;
 
@@ -163,7 +163,6 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         this.instanceIdentifierCodec = new InstanceIdentifierCodec(this);
     }
 
-    @Override
     public final SchemaRootContext getRoot() {
         return root;
     }
