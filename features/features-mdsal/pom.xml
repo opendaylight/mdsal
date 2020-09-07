@@ -298,12 +298,6 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01</artifactId>
-            <classifier>features</classifier>
-            <type>xml</type>
-        </dependency>
 
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>

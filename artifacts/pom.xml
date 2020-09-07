@@ -749,34 +749,9 @@
             </dependency>
 
             <!-- draft-clemm-netmod-yang-network-topo-01 -->
-            <!-- FIXME: figure out migration path towads:
-                        RFC8345
-                        RFC8346
-                        draft-ietf-teas-yang-te-topo-15 (?)
-                        draft-ietf-teas-yang-l3-te-topo-01 (?) -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-ted</artifactId>
-                <version>2013.10.21.19.0-SNAPSHOT</version>
-            </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-topology</artifactId>
-                <version>2013.10.21.19.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-topology-isis</artifactId>
-                <version>2013.10.21.19.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-topology-l3-unicast-igp</artifactId>
-                <version>2013.10.21.19.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-topology-ospf</artifactId>
                 <version>2013.10.21.19.0-SNAPSHOT</version>
             </dependency>
 
@@ -936,13 +911,6 @@
                 <type>xml</type>
             </dependency>
 
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01</artifactId>
-                <version>7.0.0-SNAPSHOT</version>
-                <classifier>features</classifier>
-                <type>xml</type>
-            </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</artifactId>
