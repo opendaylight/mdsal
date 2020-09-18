@@ -52,7 +52,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 
-final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCodecContext<D,SchemaContext> {
+public final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCodecContext<D,SchemaContext> {
 
     private final LoadingCache<Class<?>, DataContainerCodecContext<?,?>> childrenByClass = CacheBuilder.newBuilder()
             .build(new CacheLoader<Class<?>, DataContainerCodecContext<?,?>>() {
@@ -196,7 +196,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         return getOrRethrow(notificationsByPath, notification);
     }
 
-    ContainerNodeCodecContext<?> getRpc(final Class<? extends DataContainer> rpcInputOrOutput) {
+    public ContainerNodeCodecContext<?> getRpc(final Class<? extends DataContainer> rpcInputOrOutput) {
         return getOrRethrow(rpcDataByClass, rpcInputOrOutput);
     }
 

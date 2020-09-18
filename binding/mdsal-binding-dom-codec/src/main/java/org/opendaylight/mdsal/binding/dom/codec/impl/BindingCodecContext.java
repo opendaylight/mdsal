@@ -124,6 +124,10 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     private static final Logger LOG = LoggerFactory.getLogger(BindingCodecContext.class);
 
+    public SchemaRootCodecContext<?> getRoot() {
+        return root;
+    }
+
     private final LoadingCache<Class<?>, DataObjectStreamer<?>> streamers = CacheBuilder.newBuilder().build(
         new CacheLoader<Class<?>, DataObjectStreamer<?>>() {
             @Override
