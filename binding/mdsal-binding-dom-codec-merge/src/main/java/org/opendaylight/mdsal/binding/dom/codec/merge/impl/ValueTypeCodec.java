@@ -1,0 +1,101 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.opendaylight.mdsal.binding.dom.codec.merge.impl;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
+import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+
+/**
+ * Value codec, which serializes / deserializes values from DOM simple values.
+ */
+// FIXME: IllegalArgumentCodec is perhaps not appropriate here due to null behavior
+abstract class ValueTypeCodec implements IllegalArgumentCodec<Object, Object> {
+    /*
+     * Use identity comparison for keys and allow classes to be GCd themselves.
+     *
+     * Since codecs can (and typically do) hold a direct or indirect strong reference to the class, they need to be also
+     * accessed via reference. Using a weak reference could be problematic, because the codec would quite often be only
+     * weakly reachable. We therefore use a soft reference, whose implementation guidance is suitable to our use case:
+     *
+     *     "Virtual machine implementations are, however, encouraged to bias against clearing recently-created or
+     *      recently-used soft references."
+     */
+    private static final Cache<Class<?>, SchemaUnawareCodec> STATIC_CODECS = CacheBuilder.newBuilder()
+            .weakKeys().softValues().build();
+
+    /**
+     * Marker interface for codecs, which functionality will not be affected by schema change (introduction of new YANG
+     * modules) they may have one static instance generated when first time needed.
+     */
+    // FIXME: IllegalArgumentCodec is perhaps not appropriate here due to null behavior
+    interface SchemaUnawareCodec extends IllegalArgumentCodec<Object, Object> {
+
+    }
+
+    /**
+     * No-op Codec, Java YANG Binding uses same types as NormalizedNode model for base YANG types, representing numbers,
+     * binary, strings and empty.
+     */
+    public static final SchemaUnawareCodec NOOP_CODEC = new SchemaUnawareCodec() {
+        @Override
+        public Object serialize(final Object input) {
+            return input;
+        }
+
+        @Override
+        public Object deserialize(final Object input) {
+            return input;
+        }
+    };
+
+    public static SchemaUnawareCodec getCodecFor(final Class<?> typeClz, final TypeDefinition<?> def) {
+        if (BindingReflections.isBindingClass(typeClz)) {
+            return getCachedSchemaUnawareCodec(typeClz, getCodecLoader(typeClz, def));
+        }
+        return NOOP_CODEC;
+    }
+
+    private static SchemaUnawareCodec getCachedSchemaUnawareCodec(final Class<?> typeClz,
+            final Callable<? extends SchemaUnawareCodec> loader) {
+        try {
+            return STATIC_CODECS.get(typeClz, loader);
+        } catch (ExecutionException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static Callable<? extends SchemaUnawareCodec> getCodecLoader(final Class<?> typeClz,
+            final TypeDefinition<?> def) {
+
+        TypeDefinition<?> rootType = def;
+        while (rootType.getBaseType() != null) {
+            rootType = rootType.getBaseType();
+        }
+        if (rootType instanceof EnumTypeDefinition) {
+            return EnumerationCodec.loader(typeClz, (EnumTypeDefinition) rootType);
+        } else if (rootType instanceof BitsTypeDefinition) {
+            return BitsCodec.loader(typeClz, (BitsTypeDefinition) rootType);
+        }
+        return EncapsulatedValueCodec.loader(typeClz, def);
+    }
+
+    @SuppressWarnings("rawtypes")
+    static ValueTypeCodec encapsulatedValueCodecFor(final Class<?> typeClz, final TypeDefinition<?> typeDef,
+             final IllegalArgumentCodec delegate) {
+        SchemaUnawareCodec extractor = getCachedSchemaUnawareCodec(typeClz,
+            EncapsulatedValueCodec.loader(typeClz, typeDef));
+        return new CompositeValueCodec(extractor, delegate);
+    }
+}
