@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.dom.codec.impl;
+package org.opendaylight.mdsal.binding.dom.codec.merge.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -21,7 +21,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
-import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
@@ -41,26 +40,34 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.ContainerLike;
+import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 
 public final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCodecContext<D,SchemaContext> {
 
-    private final LoadingCache<Class<?>, DataContainerCodecContext<?,?>> childrenByClass = CacheBuilder.newBuilder()
-            .build(new CacheLoader<Class<?>, DataContainerCodecContext<?,?>>() {
-                @Override
-                public DataContainerCodecContext<?,?> load(final Class<?> key) {
-                    return createDataTreeChildContext(key);
-                }
-            });
+    private final LoadingCache<Class<? extends DataObject>, DataContainerCodecContext<?, ?>> childrenByClass =
+            CacheBuilder.newBuilder()
+                    .build(new CacheLoader<>() {
+                        @Override
+                        public DataContainerCodecContext<?, ?> load(final Class<? extends DataObject> key) {
+                            if (Notification.class.isAssignableFrom(key)) {
+                                return createNotificationDataContext(key);
+                            }
+                            if (RpcInput.class.isAssignableFrom(key) || RpcOutput.class.isAssignableFrom(key)) {
+                                return createRpcDataContext(key);
+                            }
+                            return createDataTreeChildContext(key);
+                        }
+                    });
 
     private final LoadingCache<Class<? extends Action<?, ?, ?>>, ActionCodecContext> actionsByClass = CacheBuilder
             .newBuilder().build(new CacheLoader<Class<? extends Action<?, ?, ?>>, ActionCodecContext>() {
@@ -75,14 +82,6 @@ public final class SchemaRootCodecContext<D extends DataObject> extends DataCont
                 @Override
                 public ContainerNodeCodecContext<?> load(final Class<?> key) {
                     return createRpcDataContext(key);
-                }
-            });
-
-    private final LoadingCache<Class<?>, NotificationCodecContext<?>> notificationsByClass = CacheBuilder.newBuilder()
-            .build(new CacheLoader<Class<?>, NotificationCodecContext<?>>() {
-                @Override
-                public NotificationCodecContext<?> load(final Class<?> key) {
-                    return createNotificationDataContext(key);
                 }
             });
 
@@ -115,7 +114,7 @@ public final class SchemaRootCodecContext<D extends DataObject> extends DataCont
         new CacheLoader<Absolute, RpcInputCodec<?>>() {
             @Override
             public RpcInputCodec<?> load(final Absolute key) {
-                final ContainerLike schema = SchemaContextUtil.getRpcDataSchema(getSchema(), key.asSchemaPath());
+                final ContainerSchemaNode schema = SchemaContextUtil.getRpcDataSchema(getSchema(), key.asSchemaPath());
                 @SuppressWarnings("unchecked")
                 final Class<? extends DataContainer> cls = (Class<? extends DataContainer>)
                         factory().getRuntimeContext().getClassForSchema(schema);
@@ -157,15 +156,7 @@ public final class SchemaRootCodecContext<D extends DataObject> extends DataCont
     @SuppressWarnings("unchecked")
     @Override
     public <C extends DataObject> DataContainerCodecContext<C, ?> streamChild(final Class<C> childClass) {
-        /* FIXME: This is still not solved for RPCs
-         * TODO: Probably performance wise RPC, Data and Notification loading cache
-         *       should be merge for performance resons. Needs microbenchmark to
-         *       determine which is faster (keeping them separate or in same cache).
-         */
-        if (Notification.class.isAssignableFrom(childClass)) {
-            return (DataContainerCodecContext<C, ?>) getNotification((Class<? extends Notification>)childClass);
-        }
-        return (DataContainerCodecContext<C, ?>) getOrRethrow(childrenByClass,childClass);
+        return (DataContainerCodecContext<C, ?>) getOrRethrow(childrenByClass, childClass);
     }
 
     @Override
@@ -189,7 +180,7 @@ public final class SchemaRootCodecContext<D extends DataObject> extends DataCont
     }
 
     NotificationCodecContext<?> getNotification(final Class<? extends Notification> notification) {
-        return getOrRethrow(notificationsByClass, notification);
+        return (NotificationCodecContext<?>) streamChild((Class<? extends DataObject>)notification);
     }
 
     NotificationCodecContext<?> getNotification(final Absolute notification) {
@@ -258,7 +249,7 @@ public final class SchemaRootCodecContext<D extends DataObject> extends DataCont
              * FIXME: Rework this to have more precise logic regarding Binding Specification.
              */
             if (key.getSimpleName().equals(BindingMapping.getClassName(potentialQName) + className)) {
-                final ContainerLike schema = SchemaNodeUtils.getRpcDataSchema(potential, qname);
+                final ContainerSchemaNode schema = SchemaNodeUtils.getRpcDataSchema(potential, qname);
                 checkArgument(schema != null, "Schema for %s does not define input / output.", potential.getQName());
                 return (ContainerNodeCodecContext<?>) DataContainerCodecPrototype.from(key, schema, factory()).get();
             }
@@ -271,8 +262,14 @@ public final class SchemaRootCodecContext<D extends DataObject> extends DataCont
         checkArgument(Notification.class.isAssignableFrom(notificationType));
         checkArgument(notificationType.isInterface(), "Supplied class must be interface.");
         final QName qname = BindingReflections.findQName(notificationType);
-        final NotificationDefinition schema = getSchema().findNotification(qname).orElseThrow(
-            () -> new IllegalArgumentException("Supplied " + notificationType + " is not valid notification"));
+        /**
+         *  FIXME: After Lithium cleanup of yang-model-api, use direct call on schema context
+         *  to retrieve notification via index.
+         */
+        final NotificationDefinition schema = SchemaContextUtil.getNotificationSchema(getSchema(),
+                SchemaPath.create(true, qname));
+        checkArgument(schema != null, "Supplied %s is not valid notification", notificationType);
+
         return new NotificationCodecContext<>(notificationType, schema, factory());
     }
 
@@ -310,10 +307,11 @@ public final class SchemaRootCodecContext<D extends DataObject> extends DataCont
             final List<PathArgument> builder) {
         final Optional<? extends Class<? extends DataObject>> caseType = arg.getCaseType();
         if (caseType.isPresent()) {
-            final @NonNull Class<? extends DataObject> type = caseType.orElseThrow();
-            final ChoiceNodeCodecContext<?> choice = choicesByClass.getUnchecked(type);
+            // XXX: we use two caseType.get()s because of https://bugs.openjdk.java.net/browse/JDK-8144185,
+            //      which makes JaCoCo blow up if we try using @NonNull on the local variable.
+            final ChoiceNodeCodecContext<?> choice = choicesByClass.getUnchecked(caseType.get());
             choice.addYangPathArgument(arg, builder);
-            final DataContainerCodecContext<?, ?> caze = choice.streamChild(type);
+            final DataContainerCodecContext<?, ?> caze = choice.streamChild(caseType.get());
             caze.addYangPathArgument(arg, builder);
             return caze.bindingPathArgumentChild(arg, builder);
         }
