@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.dom.codec.impl;
+package org.opendaylight.mdsal.binding.dom.codec.merge.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -46,8 +46,8 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNo
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
-import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
-import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
+import org.opendaylight.mdsal.binding.dom.codec.merge.impl.NodeCodecContext.CodecContextFactory;
+import org.opendaylight.mdsal.binding.dom.codec.merge.loader.CodecClassLoader;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingSchemaMapping;
@@ -122,11 +122,11 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         }
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(BindingCodecContext.class);
-
     public SchemaRootCodecContext<?> getRoot() {
         return root;
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(BindingCodecContext.class);
 
     private final LoadingCache<Class<?>, DataObjectStreamer<?>> streamers = CacheBuilder.newBuilder().build(
         new CacheLoader<Class<?>, DataObjectStreamer<?>>() {
@@ -373,7 +373,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                     final Class<?> valueType = method.getReturnType();
                     final IllegalArgumentCodec<Object, Object> codec = getCodec(valueType, leafSchema.getType());
                     valueNode = LeafNodeCodecContext.of(leafSchema, codec, method.getName(), valueType,
-                        context.getEffectiveModelContext());
+                        context.getSchemaContext());
                 } else if (schema instanceof LeafListSchemaNode) {
                     final Optional<Type> optType = ClassLoaderUtils.getFirstGenericParameter(
                         method.getGenericReturnType());
@@ -578,7 +578,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST")
     public ContainerNode toNormalizedNodeRpcData(final DataContainer data) {
         // FIXME: Should the cast to DataObject be necessary?
-        return serializeDataObject((DataObject) data, BindingNormalizedNodeWriterFactory::newRpcWriter);
+        return serializeDataObject((DataObject) data, (ctx, iface, domWriter) -> ctx.newRpcWriter(iface, domWriter));
     }
 
     @Override
