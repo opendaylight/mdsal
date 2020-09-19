@@ -5,18 +5,18 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.uint24.netty;
+package org.opendaylight.mdsal.rfc8294.netty;
 
 import com.google.common.annotations.Beta;
 import io.netty.buffer.ByteBuf;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.uint24.rev200104.Uint24;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.routing.types.rev171204.Uint24;
 import org.opendaylight.yangtools.yang.common.Uint32;
 
 @Beta
-public final class Uint24ByteBufUtils {
-    private Uint24ByteBufUtils() {
+public final class RFC8294ByteBufUtils {
+    private RFC8294ByteBufUtils() {
         // Hidden on purpose
     }
 
