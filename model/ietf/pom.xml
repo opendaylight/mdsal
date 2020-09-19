@@ -107,6 +107,11 @@
         <module>rfc8542-ietf-dc-fabric-topology</module>
         <module>rfc8542-ietf-dc-fabric-types</module>
 
+        <!-- RFC8776 Common YANG Data Types for Traffic Engineering -->
+        <module>rfc8776</module>
+        <module>rfc8776-ietf-te-types</module>
+        <module>rfc8776-ietf-te-packet-types</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>
