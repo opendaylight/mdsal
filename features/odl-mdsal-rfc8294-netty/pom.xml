@@ -15,10 +15,10 @@
         <relativePath>../feature-parent</relativePath>
     </parent>
 
-    <artifactId>odl-mdsal-uint24-netty</artifactId>
+    <artifactId>odl-mdsal-rfc8294-netty</artifactId>
     <packaging>feature</packaging>
-    <name>OpenDaylight :: MD-SAL :: uint24 :: Netty</name>
-    <description>Netty support for uint24</description>
+    <name>OpenDaylight :: MD-SAL :: RFC8294 :: Netty</name>
+    <description>Netty support for RFC8294</description>
 
     <dependencies>
         <dependency>
@@ -29,13 +29,13 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>odl-mdsal-model-odl-uint24</artifactId>
+            <artifactId>odl-mdsal-model-rfc8294</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-uint24-netty</artifactId>
+            <artifactId>mdsal-rfc8294-netty</artifactId>
         </dependency>
     </dependencies>
 </project>

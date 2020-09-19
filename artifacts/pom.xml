@@ -433,15 +433,10 @@
                 <type>xml</type>
             </dependency>
 
-            <!-- uint24 support -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>odl-uint24</artifactId>
-                <version>7.0.0-SNAPSHOT</version>
-            </dependency>
+            <!-- Netty/routing-types bridge -->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-uint24-netty</artifactId>
+                <artifactId>mdsal-rfc8294-netty</artifactId>
                 <version>7.0.0-SNAPSHOT</version>
             </dependency>
 
@@ -1012,15 +1007,8 @@
                 <type>xml</type>
             </dependency>
             <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>odl-mdsal-model-odl-uint24</artifactId>
-                <version>7.0.0-SNAPSHOT</version>
-                <classifier>features</classifier>
-                <type>xml</type>
-            </dependency>
-            <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>odl-mdsal-uint24-netty</artifactId>
+                <artifactId>odl-mdsal-rfc8294-netty</artifactId>
                 <version>7.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>

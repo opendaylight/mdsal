@@ -17,7 +17,7 @@
         <relativePath>../../dom/dom-parent</relativePath>
     </parent>
 
-    <artifactId>mdsal-uint24-netty</artifactId>
+    <artifactId>mdsal-rfc8294-netty</artifactId>
     <packaging>bundle</packaging>
 
     <dependencies>
@@ -30,8 +30,8 @@
             <artifactId>yang-binding</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>odl-uint24</artifactId>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8294-ietf-routing-types</artifactId>
         </dependency>
 
         <dependency>
@@ -47,7 +47,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.mdsal.uint24.netty</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.mdsal.rfc8294.netty</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>
