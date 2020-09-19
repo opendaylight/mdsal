@@ -84,6 +84,8 @@
         <module>odl-mdsal-model-rfc8344</module>
         <module>odl-mdsal-model-rfc8345</module>
         <module>odl-mdsal-model-rfc8345-non-nmda</module>
+        <module>odl-mdsal-model-rfc8346</module>
+        <module>odl-mdsal-model-rfc8346-non-nmda</module>
         <module>odl-mdsal-model-rfc8348</module>
         <module>odl-mdsal-model-rfc8348-non-nmda</module>
         <module>odl-mdsal-model-rfc8349</module>

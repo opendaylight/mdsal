@@ -68,6 +68,11 @@
         <module>rfc8345-ietf-network-topology</module>
         <module>rfc8345-ietf-network-topology-state</module>
 
+        <!-- RFC8346 Layer 3 Topologies -->
+        <module>rfc8346</module>
+        <module>rfc8346-ietf-l3-unicast-topology</module>
+        <module>rfc8346-ietf-l3-unicast-topology-state</module>
+
         <!-- RFC8348 Hardware Management -->
         <module>rfc8348</module>
         <module>rfc8348-ietf-hardware</module>

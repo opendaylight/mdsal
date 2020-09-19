@@ -324,6 +324,14 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8346-ietf-l3-unicast-topology</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8346-ietf-l3-unicast-topology-state</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
             <artifactId>rfc8348</artifactId>
         </dependency>
         <dependency>
