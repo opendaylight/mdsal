@@ -30,8 +30,8 @@
             <artifactId>yang-binding</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>odl-uint24</artifactId>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8294-ietf-routing-types</artifactId>
         </dependency>
 
         <dependency>
