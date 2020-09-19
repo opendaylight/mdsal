@@ -112,6 +112,11 @@
         <module>rfc8776-ietf-te-types</module>
         <module>rfc8776-ietf-te-packet-types</module>
 
+        <!-- RFC8795 YANG Data Model for Traffic Engineering (TE) Topologies -->
+        <module>rfc8795</module>
+        <module>rfc8795-ietf-te-topology</module>
+        <module>rfc8795-ietf-te-topology-state</module>
+
         <!-- Legacy IETF topology models -->
         <module>ietf-topology</module>
     </modules>
