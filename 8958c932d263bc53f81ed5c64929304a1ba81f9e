@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "1b0deae9_4a59a594",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/mdsal426/a.yang",
+        "patchSetId": 17
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-09-21T18:31:15Z",
+      "side": 1,
+      "message": "please do not use \u0027a\u0027 and similar names. Use proper metasyntactic names (https://en.wikipedia.org/wiki/Metasyntactic_variable) such as foo, bar, etc.",
+      "range": {
+        "startLine": 1,
+        "startChar": 7,
+        "endLine": 1,
+        "endChar": 8
+      },
+      "revId": "8958c932d263bc53f81ed5c64929304a1ba81f9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f28695da_cb4a3271",
         "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
         "patchSetId": 17
