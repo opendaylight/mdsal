@@ -17,8 +17,6 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +32,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -139,7 +136,6 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         LOG.debug("Parent directories created in {}", sw);
 
         // Step four: submit all code generation tasks (via parallelStream()) and wait for them to complete
-        final ListeningExecutorService service = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
         sw.reset().start();
         final List<File> result = dirs.values().parallelStream()
                 .map(GenerationTask::generateFile)
