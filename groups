@@ -2,4 +2,3 @@
 #
 3d5d4665cc72f753819e61bf25f61757d614084a                             	saml/odl-gerrit-mdsal-committers
 c9025ab9ddc1e3171919e085449f22c54f8f7b54                             	GitHub Replication
-ldap:cn=odl-gerrit-mdsal-committers,ou=Groups,dc=freestandards,dc=org	ldap/odl-gerrit-mdsal-committers
