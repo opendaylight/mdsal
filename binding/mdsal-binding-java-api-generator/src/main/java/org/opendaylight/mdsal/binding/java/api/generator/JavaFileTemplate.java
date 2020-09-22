@@ -14,18 +14,7 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTA
 
 import com.google.common.collect.ImmutableSortedSet;
 import java.lang.reflect.Method;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
@@ -75,6 +64,10 @@ class JavaFileTemplate {
      * {@code java.util.Arrays} as a JavaTypeName.
      */
     static final @NonNull JavaTypeName JU_ARRAYS = JavaTypeName.create(Arrays.class);
+    /**
+     * {@code java.util.Arrays} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName JU_ARRAYLIST = JavaTypeName.create(ArrayList.class);
     /**
      * {@code java.util.HashMap} as a JavaTypeName.
      */

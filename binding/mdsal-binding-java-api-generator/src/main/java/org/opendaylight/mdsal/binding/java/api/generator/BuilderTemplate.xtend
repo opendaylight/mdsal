@@ -13,6 +13,7 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTA
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList
 import java.util.ArrayList
 import java.util.Collection
@@ -86,7 +87,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
                 «generateAugmentation()»
             «ENDIF»
 
-            «generateSetters»
+            «fieldsSettersAddRemoveItemMethods»
 
             @«OVERRIDE.importedName»
             public «targetType.name» build() {
@@ -269,17 +270,34 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «ENDFOR»
     '''
 
-    def private generateSetter(GeneratedProperty field) {
+    def private generateSetterAddRemoveItemMethod(GeneratedProperty field) {
         val returnType = field.returnType
         if (returnType instanceof ParameterizedType) {
             if (Types.isListType(returnType)) {
-                return generateListSetter(field, returnType.actualTypeArguments.get(0))
+                return generateListMethods(field, returnType.actualTypeArguments.get(0))
             } else if (Types.isMapType(returnType)) {
-                return generateMapSetter(field, returnType.actualTypeArguments.get(1))
+                val keyValueTypes = returnType.actualTypeArguments;
+                return generateMapMethods(field, keyValueTypes.get(0), keyValueTypes.get(1))
             }
         }
         return generateSimpleSetter(field, returnType)
     }
+
+    def private generateListMethods(GeneratedProperty field, Type itemType) '''
+        «generateListSetter(field, itemType)»
+
+        «generateListAddItemMethod(field, itemType)»
+
+        «generateRemoveItemMethod(field, itemType)»
+    '''
+
+    def private generateMapMethods(GeneratedProperty field, Type keyType, Type valueType) '''
+        «generateMapSetter(field, valueType)»
+
+        «generatePutMapEntryMethod(field, keyType, valueType)»
+
+        «generateRemoveItemMethod(field, keyType)»
+    '''
 
     def private generateListSetter(GeneratedProperty field, Type actualType) '''
         «val restrictions = restrictionsForSetter(actualType)»
@@ -299,6 +317,38 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         }
 
     '''
+
+    def private generatePutMapEntryMethod(GeneratedProperty field, Type keyType, Type valueType) '''
+        public «type.name» add«field.name.toFirstUpper»(«keyType.importedName» key, «valueType.importedName» value) {
+            if (this.«field.fieldName» == null) {
+                this.«field.fieldName» = new «JU_HASHMAP.importedName»<«keyType.importedName», «valueType.importedName»>();
+            }
+            this.«field.fieldName».put(key, value);
+            return this;
+        }
+    '''
+
+    def private generateRemoveItemMethod(GeneratedProperty field, Type itemType) '''
+        public «type.name» remove«field.name.toFirstUpper»(«itemType.importedName» item) {
+            if (this.«field.fieldName» == null) {
+                return null;
+            } else {
+                this.«field.fieldName».remove(item);
+            }
+            return this;
+        }
+    '''
+
+    def private generateListAddItemMethod(GeneratedProperty field, Type itemType)  '''
+        public «type.name» add«field.name.toFirstUpper»(«itemType.importedName» item) {
+            if (this.«field.fieldName» == null) {
+                this.«field.fieldName» = new «JU_ARRAYLIST.importedName»<«itemType.importedName»>();
+            }
+            this.«field.fieldName».add(item);
+            return this;
+        }
+    '''
+
 
     // FIXME: MDSAL-540: remove the migration setter
     def private generateMapSetter(GeneratedProperty field, Type actualType) '''
@@ -374,11 +424,12 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     '''
 
     /**
-     * Template method which generates setter methods
+     * Template method which generates setter methods, if field type is {@code Map}/{@code List} generates
+     * {@link Map#put}, {@link Map#remove(Object)}/{@link List#add(Object)}, {@link List#remove(Object)} wrapper methods
      *
-     * @return string with the setter methods
+     * @return string with the setter, add/remove item methods
      */
-    def private generateSetters() '''
+    def private fieldsSettersAddRemoveItemMethods() '''
         «IF keyType !== null»
             public «type.getName» withKey(final «keyType.importedName» key) {
                 this.key = key;
@@ -386,7 +437,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             }
         «ENDIF»
         «FOR property : properties»
-            «generateSetter(property)»
+            «generateSetterAddRemoveItemMethod(property)»
         «ENDFOR»
 
         «IF augmentType !== null»
