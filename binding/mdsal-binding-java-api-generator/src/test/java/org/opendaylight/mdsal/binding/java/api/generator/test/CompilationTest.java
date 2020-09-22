@@ -513,6 +513,17 @@ public class CompilationTest extends BaseCompilationTest {
         CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
     }
 
+    @Test
+    public void testListAsChild() throws Exception {
+        final File sourcesOutputDir = CompilationTestUtils.generatorOutput("list-as-child");
+        final File compiledOutputDir = CompilationTestUtils.compilerOutput("list-as-child");
+        generateTestSources("/compilation/list-as-child", sourcesOutputDir);
+
+        // Test if sources are compilable
+        CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
+        CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
+    }
+
     /**
      * Test handling nested uses-augmentations.
      */

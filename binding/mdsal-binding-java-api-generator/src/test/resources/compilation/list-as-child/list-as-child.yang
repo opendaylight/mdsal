@@ -1,0 +1,21 @@
+module a {
+    yang-version 1;
+    namespace "a";
+    prefix "a";
+
+    container foo {
+        list keyed {
+            key name;
+            leaf name {
+                type string;
+            }
+        }
+
+        list unkeyed {
+            leaf id {
+                type int8;
+            }
+        }
+    }
+}
+

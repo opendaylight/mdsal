@@ -86,7 +86,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
                 «generateAugmentation()»
             «ENDIF»
 
-            «generateSetters»
+            «fieldsSettersAddItemMethods»
 
             @«OVERRIDE.importedName»
             public «targetType.name» build() {
@@ -269,17 +269,30 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «ENDFOR»
     '''
 
-    def private generateSetter(GeneratedProperty field) {
+    def private generateSetterAddItemMethod(GeneratedProperty field) {
         val returnType = field.returnType
         if (returnType instanceof ParameterizedType) {
             if (Types.isListType(returnType)) {
-                return generateListSetter(field, returnType.actualTypeArguments.get(0))
+                return generateListMethods(field, returnType.actualTypeArguments.get(0))
             } else if (Types.isMapType(returnType)) {
-                return generateMapSetter(field, returnType.actualTypeArguments.get(1))
+                val keyValueTypes = returnType.actualTypeArguments;
+                return generateMapMethods(field, keyValueTypes.get(0), keyValueTypes.get(1))
             }
         }
         return generateSimpleSetter(field, returnType)
     }
+
+    def private generateListMethods(GeneratedProperty field, Type itemType) '''
+        «generateListSetter(field, itemType)»
+
+        «generateListAddItemMethod(field, itemType)»
+    '''
+
+    def private generateMapMethods(GeneratedProperty field, Type keyType, Type valueType) '''
+        «generateMapSetter(field, valueType)»
+
+        «generatePutMapEntryMethod(field, keyType, valueType)»
+    '''
 
     def private generateListSetter(GeneratedProperty field, Type actualType) '''
         «val restrictions = restrictionsForSetter(actualType)»
@@ -299,6 +312,27 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         }
 
     '''
+
+    def private generatePutMapEntryMethod(GeneratedProperty field, Type keyType, Type valueType) '''
+        public «type.name» add«field.name.toFirstUpper»(«keyType.importedName» key, «valueType.importedName» value) {
+            if (this.«field.fieldName» == null) {
+                this.«field.fieldName» = new «JU_HASHMAP.importedName»<«keyType.importedName», «valueType.importedName»>();
+            }
+            this.«field.fieldName».put(key, value);
+            return this;
+        }
+    '''
+
+    def private generateListAddItemMethod(GeneratedProperty field, Type itemType)  '''
+        public «type.name» add«field.name.toFirstUpper»(«itemType.importedName» item) {
+            if (this.«field.fieldName» == null) {
+                this.«field.fieldName» = new «JU_ARRAYLIST.importedName»<«itemType.importedName»>();
+            }
+            this.«field.fieldName».add(item);
+            return this;
+        }
+    '''
+
 
     // FIXME: MDSAL-540: remove the migration setter
     def private generateMapSetter(GeneratedProperty field, Type actualType) '''
@@ -374,11 +408,12 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     '''
 
     /**
-     * Template method which generates setter methods
+     * Template method which generates setter methods, if field type is {@code Map}/{@code List} generates
+     * {@link Map#put}/{@link List#add(java.lang.Object)} wrapper method
      *
-     * @return string with the setter methods
+     * @return string with the setter, add item methods
      */
-    def private generateSetters() '''
+    def private fieldsSettersAddItemMethods() '''
         «IF keyType !== null»
             public «type.getName» withKey(final «keyType.importedName» key) {
                 this.key = key;
@@ -386,7 +421,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             }
         «ENDIF»
         «FOR property : properties»
-            «generateSetter(property)»
+            «generateSetterAddItemMethod(property)»
         «ENDFOR»
 
         «IF augmentType !== null»
