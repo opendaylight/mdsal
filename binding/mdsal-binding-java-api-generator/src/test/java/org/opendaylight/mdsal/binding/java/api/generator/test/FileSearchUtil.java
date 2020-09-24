@@ -38,7 +38,7 @@ public final class FileSearchUtil {
         final File [] dirFiles = path.listFiles();
         for (File file : dirFiles) {
             if (file.isDirectory()) {
-                return getFiles(file, files);
+                getFiles(file, files);
             }
 
             files.put(file.getName(), file);
