@@ -358,7 +358,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      */
     @SuppressWarnings("unchecked")
     public final <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
-            @NonNull KeyedInstanceIdentifier<N, K> child(final Class<N> listItem, final K listKey) {
+            @NonNull KeyedInstanceIdentifier<N, K> child(final Class<@NonNull N> listItem, final K listKey) {
         return (KeyedInstanceIdentifier<N, K>) childIdentifier(IdentifiableItem.of(listItem, listKey));
     }
 
@@ -558,7 +558,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      * @return InstanceIdentifier instance
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DataObject> @NonNull InstanceIdentifier<T> create(final Class<T> type) {
+    public static <T extends @NonNull DataObject> @NonNull InstanceIdentifier<T> create(final Class<@NonNull T> type) {
         return (InstanceIdentifier<T>) create(ImmutableList.of(Item.of(type)));
     }
 
@@ -872,7 +872,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
          * @throws NullPointerException if any argument is null
          */
         <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
-                @NonNull InstanceIdentifierBuilder<N> child(Class<N> listItem, K listKey);
+                @NonNull InstanceIdentifierBuilder<N> child(Class<@NonNull N> listItem, K listKey);
 
         /**
          * Append the specified listItem as a child of the current InstanceIdentifier referenced by the builder. This
