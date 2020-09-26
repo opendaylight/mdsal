@@ -11,9 +11,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import com.google.common.base.VerifyException;
 import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -177,7 +180,7 @@ public class InstanceIdentifierTest {
     @Test
     public void firstKeyOfTest() {
         final InstanceIdentifier<Node> instanceIdentifier =
-                InstanceIdentifier.builder(Nodes.class).child(Node.class,new NodeKey(10)).build();
+                InstanceIdentifier.builder(Nodes.class).child(Node.class, new NodeKey(10)).build();
         final InstanceIdentifier<DataObject> instanceIdentifier1 = InstanceIdentifier.create(DataObject.class);
         assertNotNull(instanceIdentifier.firstKeyOf(Node.class));
         assertNull(instanceIdentifier1.firstKeyOf(Node.class));
@@ -259,6 +262,13 @@ public class InstanceIdentifierTest {
         builder3.child(Node.class, new NodeKey(10));
 
         assertTrue(builder3.hashCode() != builder4.hashCode());
+    }
+
+    @Test
+    public void verifyTargetTest() {
+        final InstanceIdentifier<Nodes> nodeId = InstanceIdentifier.create(Nodes.class);
+        assertSame(nodeId, nodeId.verifyTarget(Nodes.class));
+        assertThrows(VerifyException.class, () -> nodeId.verifyTarget(Node.class));
     }
 
 }
