@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4887dff6_924fbb4b",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/util/BindingMap.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-09-28T09:41:52Z",
+      "side": 1,
+      "message": "\u0026lt; instead, please ;-)",
+      "range": {
+        "startLine": 46,
+        "startChar": 31,
+        "endLine": 46,
+        "endChar": 35
+      },
+      "revId": "a80481621c89c6782045fe8f00c47326e1e2c9c9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
