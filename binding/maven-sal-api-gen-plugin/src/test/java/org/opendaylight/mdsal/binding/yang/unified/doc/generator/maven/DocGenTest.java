@@ -53,7 +53,7 @@ public class DocGenTest {
         final DocumentationGeneratorImpl generator = new DocumentationGeneratorImpl();
         generator.setBuildContext(new DefaultBuildContext());
         Collection<File> generatedFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR,
-            Set.copyOf(context.getModules()), module -> Optional.empty());
+            Set.copyOf(context.getModules()), (module, representation) -> Optional.empty());
         assertEquals(4, generatedFiles.size());
     }
 

@@ -55,7 +55,7 @@ public class WadlGenTest {
         final WadlGenerator generator = new WadlGenerator();
         generator.setBuildContext(new DefaultBuildContext());
         Collection<File> generatedWadlFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR,
-            Set.copyOf(context.getModules()), module -> Optional.empty());
+            Set.copyOf(context.getModules()), (module, representation) -> Optional.empty());
         assertEquals(3, generatedWadlFiles.size());
         generatedWadlFiles.forEach(file -> assertTrue(file.exists()));
     }
@@ -67,7 +67,7 @@ public class WadlGenTest {
         final WadlGenerator generator = new WadlGenerator();
         generator.setBuildContext(new DefaultBuildContext());
         Collection<File> generatedWadlFiles = generator.generateSources(context, null, Set.copyOf(context.getModules()),
-            module -> Optional.empty());
+            (module, representation) -> Optional.empty());
         assertEquals(3, generatedWadlFiles.size());
         generatedWadlFiles.forEach(file -> {
             deleteTestDir(file);
