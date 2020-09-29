@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "978fada5_d18d9710",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 1432,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-09-29T22:48:53Z",
+      "side": 1,
+      "message": "why did we move this check?",
+      "range": {
+        "startLine": 1432,
+        "startChar": 12,
+        "endLine": 1432,
+        "endChar": 32
+      },
+      "revId": "7c8b673d51f41a1f75e4d584a3d5f8f2d26fddc9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
