@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5196d34e_3343c730",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/test/Bug5151Test.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-09-29T22:35:02Z",
+      "side": 1,
+      "message": "same package, generic names -\u003e just use FileSearchUtil.getFiles",
+      "range": {
+        "startLine": 14,
+        "startChar": 69,
+        "endLine": 14,
+        "endChar": 92
+      },
+      "revId": "332747a5063721cb45d050b7eea6f27c6fdef38f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
