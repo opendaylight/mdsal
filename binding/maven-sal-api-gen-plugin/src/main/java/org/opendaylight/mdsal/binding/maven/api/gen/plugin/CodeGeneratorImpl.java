@@ -29,10 +29,8 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.apache.maven.project.MavenProject;
@@ -45,9 +43,11 @@ import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
 import org.opendaylight.yangtools.yang2sources.spi.BuildContextAware;
 import org.opendaylight.yangtools.yang2sources.spi.MavenProjectAware;
+import org.opendaylight.yangtools.yang2sources.spi.ModuleResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
@@ -67,8 +67,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
     @Override
     public Collection<File> generateSources(final EffectiveModelContext context, final File outputDir,
-            final Set<Module> yangModules, final Function<Module, Optional<String>> moduleResourcePathResolver)
-                    throws IOException {
+            final Set<Module> yangModules, final ModuleResourceResolver moduleResourcePathResolver) throws IOException {
         final File outputBaseDir;
 
         outputBaseDir = outputDir == null ? getDefaultOutputBaseDir() : outputDir;
@@ -148,7 +147,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     }
 
     private Collection<? extends File> generateModuleInfos(final File outputBaseDir, final Set<Module> yangModules,
-            final EffectiveModelContext context, final Function<Module, Optional<String>> moduleResourcePathResolver) {
+            final EffectiveModelContext context, final ModuleResourceResolver moduleResourcePathResolver) {
         Builder<File> result = ImmutableSet.builder();
         Builder<String> bindingProviders = ImmutableSet.builder();
         for (Module module : yangModules) {
@@ -215,11 +214,12 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     }
 
     private Set<File> generateYangModuleInfo(final File outputBaseDir, final Module module,
-            final EffectiveModelContext ctx, final Function<Module, Optional<String>> moduleResourcePathResolver,
+            final EffectiveModelContext ctx, final ModuleResourceResolver moduleResourcePathResolver,
             final Builder<String> providerSourceSet) {
         Builder<File> generatedFiles = ImmutableSet.builder();
 
-        final YangModuleInfoTemplate template = new YangModuleInfoTemplate(module, ctx, moduleResourcePathResolver);
+        final YangModuleInfoTemplate template = new YangModuleInfoTemplate(module, ctx,
+            mod -> moduleResourcePathResolver.findModuleResourcePath(module, YangTextSchemaSource.class));
         String moduleInfoSource = template.generate();
         if (moduleInfoSource.isEmpty()) {
             throw new IllegalStateException("Generated code should not be empty!");

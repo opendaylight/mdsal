@@ -13,14 +13,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import org.opendaylight.mdsal.binding.yang.unified.doc.generator.GeneratorImpl;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
 import org.opendaylight.yangtools.yang2sources.spi.BuildContextAware;
+import org.opendaylight.yangtools.yang2sources.spi.ModuleResourceResolver;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 public class DocumentationGeneratorImpl extends GeneratorImpl implements BasicCodeGenerator, BuildContextAware {
@@ -43,7 +42,7 @@ public class DocumentationGeneratorImpl extends GeneratorImpl implements BasicCo
 
     @Override
     public Collection<File> generateSources(final EffectiveModelContext context, final File outputBaseDir,
-            final Set<Module> currentModules, final Function<Module, Optional<String>> moduleResourcePathResolver)
+            final Set<Module> currentModules, final ModuleResourceResolver moduleResourcePathResolver)
             throws IOException {
         return generate(buildContext, context, outputBaseDir, currentModules);
     }
