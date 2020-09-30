@@ -90,7 +90,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         final YangInstanceIdentifier parentPath = domPath.getParent();
         if (parentPath != null && !parentPath.isEmpty()) {
             final NormalizedNode<?, ?> parentNode = ImmutableNodes.fromInstanceId(
-                serializer.getRuntimeContext().getSchemaContext(), parentPath);
+                serializer.getRuntimeContext().getEffectiveModelContext(), parentPath);
             getDelegate().merge(store, YangInstanceIdentifier.create(parentNode.getIdentifier()), parentNode);
         }
     }

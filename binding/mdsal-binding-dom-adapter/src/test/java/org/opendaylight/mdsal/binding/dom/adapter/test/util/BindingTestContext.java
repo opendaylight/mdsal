@@ -44,7 +44,7 @@ import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 @Beta
 public class BindingTestContext implements AutoCloseable {
@@ -143,8 +143,8 @@ public class BindingTestContext implements AutoCloseable {
         mockSchemaService.changeSchema(BindingRuntimeHelpers.createEffectiveModel(moduleInfos));
     }
 
-    public SchemaContext getContext() {
-        return mockSchemaService.getSchemaContext();
+    public EffectiveModelContext getContext() {
+        return mockSchemaService.getEffectiveModelContext();
     }
 
     public void start() {
