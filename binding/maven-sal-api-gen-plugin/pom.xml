@@ -22,11 +22,6 @@
     <version>7.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <properties>
-        <!-- FIXME: we have some violations here -->
-        <odlparent.spotbugs.enforce>false</odlparent.spotbugs.enforce>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
