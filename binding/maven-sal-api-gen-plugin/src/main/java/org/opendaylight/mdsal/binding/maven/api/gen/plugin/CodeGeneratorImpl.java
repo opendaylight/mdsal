@@ -147,7 +147,8 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     }
 
     private Collection<? extends File> generateModuleInfos(final File outputBaseDir, final Set<Module> yangModules,
-            final EffectiveModelContext context, final ModuleResourceResolver moduleResourcePathResolver) {
+            final EffectiveModelContext context, final ModuleResourceResolver moduleResourcePathResolver)
+                throws IOException {
         Builder<File> result = ImmutableSet.builder();
         Builder<String> bindingProviders = ImmutableSet.builder();
         for (Module module : yangModules) {
@@ -166,9 +167,9 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     }
 
     private File writeMetaInfServices(final File outputBaseDir, final Class<YangModelBindingProvider> serviceClass,
-            final ImmutableSet<String> services) {
+            final ImmutableSet<String> services) throws IOException {
         File metainfServicesFolder = new File(outputBaseDir, "META-INF" + File.separator + "services");
-        metainfServicesFolder.mkdirs();
+        Files.createDirectories(metainfServicesFolder.toPath());
         File serviceFile = new File(metainfServicesFolder, serviceClass.getName());
 
         String src = Joiner.on('\n').join(services);
@@ -215,7 +216,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
     private Set<File> generateYangModuleInfo(final File outputBaseDir, final Module module,
             final EffectiveModelContext ctx, final ModuleResourceResolver moduleResourcePathResolver,
-            final Builder<String> providerSourceSet) {
+            final Builder<String> providerSourceSet) throws IOException {
         Builder<File> generatedFiles = ImmutableSet.builder();
 
         final YangModuleInfoTemplate template = new YangModuleInfoTemplate(module, ctx,
@@ -230,18 +231,17 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
             BindingMapping.getRootPackageName(module.getQNameModule()));
 
         generatedFiles.add(writeJavaSource(packageDir, BindingMapping.MODULE_INFO_CLASS_NAME, moduleInfoSource));
-        generatedFiles
-                .add(writeJavaSource(packageDir, BindingMapping.MODEL_BINDING_PROVIDER_CLASS_NAME, providerSource));
+        generatedFiles.add(writeJavaSource(packageDir, BindingMapping.MODEL_BINDING_PROVIDER_CLASS_NAME,
+            providerSource));
         providerSourceSet.add(template.getModelBindingProviderName());
 
         return generatedFiles.build();
 
     }
 
-    private File writeJavaSource(final File packageDir, final String className, final String source) {
-        if (!packageDir.exists()) {
-            packageDir.mkdirs();
-        }
+    private File writeJavaSource(final File packageDir, final String className, final String source)
+            throws IOException {
+        Files.createDirectories(packageDir.toPath());
         final File file = new File(packageDir, className + ".java");
         writeFile(file, source);
         return file;
@@ -254,10 +254,10 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
                 try (BufferedWriter bw = new BufferedWriter(fw)) {
                     bw.write(source);
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 LOG.error("Could not write file: {}", file, e);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Could not create file: {}", file, e);
         }
         return file;
