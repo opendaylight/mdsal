@@ -67,7 +67,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
     @Override
     public Collection<File> generateSources(final EffectiveModelContext context, final File outputDir,
-            final Set<Module> yangModules, final ModuleResourceResolver moduleResourcePathResolver) throws IOException {
+            final Set<Module> yangModules, final ModuleResourceResolver moduleResourcePathResolver) {
         final File outputBaseDir;
 
         outputBaseDir = outputDir == null ? getDefaultOutputBaseDir() : outputDir;
@@ -168,7 +168,11 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     private File writeMetaInfServices(final File outputBaseDir, final Class<YangModelBindingProvider> serviceClass,
             final ImmutableSet<String> services) {
         File metainfServicesFolder = new File(outputBaseDir, "META-INF" + File.separator + "services");
-        metainfServicesFolder.mkdirs();
+        try {
+            Files.createDirectories(metainfServicesFolder.getParentFile().toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         File serviceFile = new File(metainfServicesFolder, serviceClass.getName());
 
         String src = Joiner.on('\n').join(services);
@@ -239,8 +243,10 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     }
 
     private File writeJavaSource(final File packageDir, final String className, final String source) {
-        if (!packageDir.exists()) {
-            packageDir.mkdirs();
+        try {
+            Files.createDirectories(packageDir.getParentFile().toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         final File file = new File(packageDir, className + ".java");
         writeFile(file, source);
@@ -254,10 +260,10 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
                 try (BufferedWriter bw = new BufferedWriter(fw)) {
                     bw.write(source);
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 LOG.error("Could not write file: {}", file, e);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Could not create file: {}", file, e);
         }
         return file;
