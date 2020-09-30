@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
@@ -79,31 +78,8 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
             }
         });
 
-    /**
-     * Returns schema of augmentation.
-     *
-     * <p>Returned schema is schema definition from which augmentation class was generated.
-     * This schema is isolated from other augmentations. This means it contains
-     * augmentation definition as was present in original YANG module.
-     *
-     * <p>Children of returned schema does not contain any additional augmentations,
-     * which may be present in runtime for them, thus returned schema is unsuitable
-     * for use for validation of data.
-     *
-     * <p>For retrieving {@link AugmentationSchemaNode}, which will contains
-     * full model for child nodes, you should use method
-     * {@link #getResolvedAugmentationSchema(DataNodeContainer, Class)}
-     * which will return augmentation schema derived from supplied augmentation target
-     * schema.
-     *
-     * @param augClass Augmentation class
-     * @return Schema of augmentation or null if augmentaiton is not known in this context
-     * @throws IllegalArgumentException If supplied class is not an augmentation
-     */
     @Override
-    public final @Nullable AugmentationSchemaNode getAugmentationDefinition(final Class<?> augClass) {
-        checkArgument(Augmentation.class.isAssignableFrom(augClass),
-            "Class %s does not represent augmentation", augClass);
+    public final <T extends Augmentation<?>> AugmentationSchemaNode getAugmentationDefinition(final Class<T> augClass) {
         return getTypes().findAugmentation(DefaultType.of(augClass)).orElse(null);
     }
 
