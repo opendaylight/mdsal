@@ -67,7 +67,7 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
      * concurrent loads. This improves safety a bit (by forcing a synchronized() block), as we expect prototypes to be
      * long-lived.
      *
-     * In terms of safe publication, we have two volatile fields in DataObjectCodecContext to worry about, so given
+     * In terms of safe publication, we have one volatile field in DataObjectCodecContext to worry about, so given
      * above access trade-off, we opt for the additional safety.
      *
      * TODO: all we need is safe publish semantics here, we can most probably tolerate concurrent value loads -- and
