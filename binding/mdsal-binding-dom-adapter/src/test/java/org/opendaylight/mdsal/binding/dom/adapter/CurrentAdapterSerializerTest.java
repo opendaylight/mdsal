@@ -18,10 +18,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map.Entry;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.dom.adapter.test.util.TestingModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
-import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -111,8 +111,8 @@ public class CurrentAdapterSerializerTest {
     private static Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final NormalizedNode<?, ?> data,
             final EffectiveModelContext schemaCtx) {
         final CurrentAdapterSerializer codec = new CurrentAdapterSerializer(new BindingCodecContext(
-            DefaultBindingRuntimeContext.create(new DefaultBindingRuntimeGenerator().generateTypeMapping(schemaCtx),
-                ClassLoaderUtils::loadClassWithTCCL)));
+            new DefaultBindingRuntimeContext(new DefaultBindingRuntimeGenerator().generateTypeMapping(schemaCtx),
+                    TestingModuleInfoSnapshot.INSTANCE)));
 
         final YangInstanceIdentifier path = YangInstanceIdentifier.create(NodeIdentifier.create(QName.create(
             "urn:test", "2017-01-01", "cont")));
