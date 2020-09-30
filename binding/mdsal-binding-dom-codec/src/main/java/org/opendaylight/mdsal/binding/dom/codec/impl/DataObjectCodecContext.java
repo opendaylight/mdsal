@@ -12,12 +12,14 @@ import static com.google.common.base.Verify.verify;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,12 +139,17 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
                 : ImmutableMap.copyOf(byBindingArgClassBuilder);
 
         final ImmutableMap<AugmentationIdentifier, Type> possibleAugmentations;
+        final Collection<? extends Type> bindingAugmentations;
         if (Augmentable.class.isAssignableFrom(bindingClass)) {
-            possibleAugmentations = factory().getRuntimeContext().getAvailableAugmentationTypes(getSchema());
+            final BindingRuntimeContext runtimeContext = factory().getRuntimeContext();
+            possibleAugmentations = runtimeContext.getAvailableAugmentationTypes(getSchema());
+            bindingAugmentations = runtimeContext.getAllAugmentations(bindingClass.asSubclass(Augmentable.class));
             generatedClass = CodecDataObjectGenerator.generateAugmentable(prototype.getFactory().getLoader(),
                 bindingClass, tmpLeaves, tmpDataObjects, keyMethod);
+
         } else {
             possibleAugmentations = ImmutableMap.of();
+            bindingAugmentations = ImmutableList.of();
             generatedClass = CodecDataObjectGenerator.generate(prototype.getFactory().getLoader(), bindingClass,
                 tmpLeaves, tmpDataObjects, keyMethod);
         }
