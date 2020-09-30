@@ -18,7 +18,6 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
-import org.opendaylight.mdsal.binding.runtime.api.ClassLoadingStrategy;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -37,11 +36,6 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 public abstract class ForwardingBindingRuntimeContext extends ForwardingObject implements BindingRuntimeContext {
     @Override
     protected abstract BindingRuntimeContext delegate();
-
-    @Override
-    public ClassLoadingStrategy getStrategy() {
-        return delegate().getStrategy();
-    }
 
     @Override
     public BindingRuntimeTypes getTypes() {
