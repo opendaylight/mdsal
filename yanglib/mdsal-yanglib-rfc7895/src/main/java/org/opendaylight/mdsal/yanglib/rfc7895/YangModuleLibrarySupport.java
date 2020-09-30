@@ -11,7 +11,6 @@ import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.annotations.Beta;
 import java.io.IOException;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -43,9 +42,9 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
     @Inject
     public YangModuleLibrarySupport(final YangParserFactory parserFactory, final BindingRuntimeGenerator generator,
             final BindingCodecTreeFactory codecFactory) throws YangParserException, IOException {
-        final ModuleInfoSnapshotBuilder builder = new ModuleInfoSnapshotBuilder("yanglib", parserFactory);
-        builder.registerModuleInfos(List.of($YangModuleInfoImpl.getInstance()));
-        final ModuleInfoSnapshot snapshot = builder.build();
+        final ModuleInfoSnapshot snapshot = new ModuleInfoSnapshotBuilder("yanglib", parserFactory)
+                .add($YangModuleInfoImpl.getInstance())
+                .build();
         context = snapshot.getEffectiveModelContext();
 
         final BindingCodecTree codecTree = codecFactory.create(new DefaultBindingRuntimeContext(
