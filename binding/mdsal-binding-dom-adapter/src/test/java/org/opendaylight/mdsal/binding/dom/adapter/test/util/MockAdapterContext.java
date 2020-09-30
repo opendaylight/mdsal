@@ -14,7 +14,6 @@ import org.opendaylight.mdsal.binding.dom.adapter.CurrentAdapterSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
-import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 
@@ -28,8 +27,8 @@ public final class MockAdapterContext implements AdapterContext, EffectiveModelC
 
     @Override
     public void onModelContextUpdated(final EffectiveModelContext newModelContext) {
-        serializer = new CurrentAdapterSerializer(new BindingCodecContext(DefaultBindingRuntimeContext.create(
+        serializer = new CurrentAdapterSerializer(new BindingCodecContext(new DefaultBindingRuntimeContext(
             new DefaultBindingRuntimeGenerator().generateTypeMapping(newModelContext),
-            ClassLoaderUtils::loadClassWithTCCL)));
+                TestingModuleInfoSnapshot.INSTANCE)));
     }
 }
