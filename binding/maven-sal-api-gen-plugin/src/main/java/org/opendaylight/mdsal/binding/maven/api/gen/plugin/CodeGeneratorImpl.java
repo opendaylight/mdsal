@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.maven.api.gen.plugin;
 
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Joiner;
@@ -168,7 +169,9 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     private File writeMetaInfServices(final File outputBaseDir, final Class<YangModelBindingProvider> serviceClass,
             final ImmutableSet<String> services) {
         File metainfServicesFolder = new File(outputBaseDir, "META-INF" + File.separator + "services");
-        metainfServicesFolder.mkdirs();
+        if (!metainfServicesFolder.exists()) {
+            checkState(metainfServicesFolder.mkdirs(), "Unable to create services folder:  %s", metainfServicesFolder);
+        }
         File serviceFile = new File(metainfServicesFolder, serviceClass.getName());
 
         String src = Joiner.on('\n').join(services);
@@ -240,7 +243,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
     private File writeJavaSource(final File packageDir, final String className, final String source) {
         if (!packageDir.exists()) {
-            packageDir.mkdirs();
+            checkState(packageDir.mkdirs(), "Unable to create directory: %s", packageDir);
         }
         final File file = new File(packageDir, className + ".java");
         writeFile(file, source);
@@ -254,10 +257,10 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
                 try (BufferedWriter bw = new BufferedWriter(fw)) {
                     bw.write(source);
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 LOG.error("Could not write file: {}", file, e);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Could not create file: {}", file, e);
         }
         return file;
