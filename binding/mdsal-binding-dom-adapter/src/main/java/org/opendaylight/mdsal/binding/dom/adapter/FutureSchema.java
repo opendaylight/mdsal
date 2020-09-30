@@ -138,7 +138,7 @@ abstract class FutureSchema implements AutoCloseable {
             public boolean test(final BindingRuntimeContext context) {
                 return bindingClasses.stream().allMatch(clz -> {
                     if (Augmentation.class.isAssignableFrom(clz)) {
-                        return context.getAugmentationDefinition(clz) != null;
+                        return context.getAugmentationDefinition(clz.asSubclass(Augmentation.class)) != null;
                     }
 
                     return context.getSchemaDefinition(clz) != null;
