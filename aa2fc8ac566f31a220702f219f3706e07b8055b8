@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ccde2ef_a44ec4e6",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/binding/maven/api/gen/plugin/CodeGeneratorImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-09-30T22:04:49Z",
+      "side": 1,
+      "message": "checkstate() -- hence the argument should not be a string concat, but string *format*\ni.e. \"... folder %s\", metainfServicesFoler)\n\nif you think about perf. impact it makes all sense: you do not want to create an object (concat) which will go unused always (i.e. checkState() *not* firing).",
+      "range": {
+        "startLine": 172,
+        "startChar": 8,
+        "endLine": 172,
+        "endChar": 18
+      },
+      "revId": "aa2fc8ac566f31a220702f219f3706e07b8055b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
