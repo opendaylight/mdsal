@@ -33,6 +33,7 @@ import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.binding.Action;
+import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
@@ -269,8 +270,8 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
     @Override
     public final ImmutableMap<AugmentationIdentifier, Type> getAvailableAugmentationTypes(
             final DataNodeContainer container) {
-        final Map<AugmentationIdentifier, Type> identifierToType = new HashMap<>();
         if (container instanceof AugmentationTarget) {
+            final Map<AugmentationIdentifier, Type> identifierToType = new HashMap<>();
             final BindingRuntimeTypes types = getTypes();
             for (final AugmentationSchemaNode augment : ((AugmentationTarget) container).getAvailableAugmentations()) {
                 // Augmentation must have child nodes if is to be used with Binding classes
@@ -286,9 +287,15 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
                     }
                 }
             }
+            return ImmutableMap.copyOf(identifierToType);
         }
 
-        return ImmutableMap.copyOf(identifierToType);
+        return ImmutableMap.of();
+    }
+
+    @Override
+    public final <T extends Augmentable<?>> Collection<? extends Type> getAllAugmentations(Class<T> augmentable) {
+
     }
 
     @Override
