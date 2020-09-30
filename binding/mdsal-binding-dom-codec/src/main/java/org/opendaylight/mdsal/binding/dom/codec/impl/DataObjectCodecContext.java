@@ -312,7 +312,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
     }
 
     @SuppressWarnings("unchecked")
-    Item<?> createBindingArg(final Class<?> childClass, final DataSchemaNode childSchema) {
+    private static Item<?> createBindingArg(final Class<?> childClass, final DataSchemaNode childSchema) {
         return Item.of((Class<? extends DataObject>) childClass);
     }
 
