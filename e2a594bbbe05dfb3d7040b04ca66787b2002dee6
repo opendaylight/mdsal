@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f8a355b9_2680b7d1",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/CodegenTypeGenerator.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-09-30T21:59:08Z",
+      "side": 1,
+      "message": "so this is the key information which the class generator does not have: the RPC QName.\n\nI am on the fence here:\n\nit does not feel utterly wrong to expose either the QName or the RpcDefinition in the binding.model.api -- at the end of the day we are *generating* shit out of something, hence these *might* be fair game.\n\non the other hand, though, we might do well with defining a well-known structure for the comment, so that we have:\n- leading part (i.e. \"Invoke XYZ RPC.\")\n- the model-defined description (i.e. the \u003cpre/\u003e part)\n- a set of well-known javadoc instructions (i.e. @param/@return/@throws)",
+      "range": {
+        "startLine": 79,
+        "startChar": 8,
+        "endLine": 79,
+        "endChar": 62
+      },
+      "revId": "e2a594bbbe05dfb3d7040b04ca66787b2002dee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0ceb2f0c_a07b5c20",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BaseTemplate.xtend",
+        "patchSetId": 13
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-09-30T21:59:08Z",
+      "side": 1,
+      "message": "because, at the end of the day, why are we really doing this parsing? I think this is all because we want to manage formatting of the \u003cpre/\u003e section.",
+      "range": {
+        "startLine": 405,
+        "startChar": 8,
+        "endLine": 405,
+        "endChar": 55
+      },
+      "revId": "e2a594bbbe05dfb3d7040b04ca66787b2002dee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
