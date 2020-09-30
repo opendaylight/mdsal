@@ -8,18 +8,35 @@
 package org.opendaylight.mdsal.binding.runtime.spi;
 
 import com.google.common.annotations.Beta;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.yangtools.concepts.CheckedBuilder;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver;
 
 @Beta
 public final class ModuleInfoSnapshotBuilder extends AbstractModuleInfoTracker
         implements CheckedBuilder<ModuleInfoSnapshot, NoSuchElementException> {
-
     public ModuleInfoSnapshotBuilder(final String name, final YangParserFactory parserFactory) {
         super(YangTextSchemaContextResolver.create(name, parserFactory));
+    }
+
+    public @NonNull ModuleInfoSnapshotBuilder add(final YangModuleInfo info) {
+        return add(List.of(info));
+    }
+
+    public @NonNull ModuleInfoSnapshotBuilder add(final YangModuleInfo... infos) {
+        return add(Arrays.asList(infos));
+    }
+
+    public @NonNull ModuleInfoSnapshotBuilder add(final Collection<? extends YangModuleInfo> infos) {
+        registerModuleInfos(infos);
+        return this;
     }
 
     @Override
