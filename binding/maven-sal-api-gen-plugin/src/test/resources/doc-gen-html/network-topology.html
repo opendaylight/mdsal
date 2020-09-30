@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>network-topology</title>
+  </head>
+  <body>
+    <h1>network-topology</h1>
+    
+    <h2>Base Information</h2>
+    <table>
+        <tr>
+            <td><strong>prefix</strong></td>
+            <td>nt</td>
+        </tr>
+        <tr>
+            <td><strong>namespace</strong></td>
+            <td>urn:TBD:params:xml:ns:yang:network-topology</td>
+        </tr>
+        <tr>
+            <td><strong>revision</strong></td>
+            <td>2013-07-12</td>
+        </tr>
+        <tr>
+            <td><strong>description</strong></td>
+            <td>Optional.empty</td>
+        </tr>
+        <tr>
+            <td><strong>yang-version</strong></td>
+            <td>1</td>
+        </tr>
+        <tr>
+        </tr>
+    </table>
+    
+    <div>
+        <h3>Type Definitions Summary</h3>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>
+                <a href="#topology-id"><strong>topology-id</strong></a>
+                </td>
+                <td>
+                Optional[An identifier for a topology.]
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <a href="#node-id"><strong>node-id</strong></a>
+                </td>
+                <td>
+                Optional[An identifier for a node in a topology.
+                The identifier may be opaque.
+                The identifier SHOULD be chosen such that the same node in a
+                real network topology will always be identified through the
+                same identifier, even if the model is instantiated in separate
+                datastores. An implementation MAY choose to capture semantics
+                in the identifier, for example to indicate the type of node
+                and/or the type of topology that the node is a part of.]
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <a href="#link-id"><strong>link-id</strong></a>
+                </td>
+                <td>
+                Optional[An identifier for a link in a topology.
+                The identifier may be opaque.
+                The identifier SHOULD be chosen such that the same link in a
+                real network topology will always be identified through the
+                same identifier, even if the model is instantiated in separate
+                datastores. An implementation MAY choose to capture semantics
+                in the identifier, for example to indicate the type of link
+                and/or the type of topology that the link is a part of.]
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <a href="#tp-id"><strong>tp-id</strong></a>
+                </td>
+                <td>
+                Optional[An identifier for termination points on a node.
+                The identifier may be opaque.
+                The identifier SHOULD be chosen such that the same TP in a
+                real network topology will always be identified through the
+                same identifier, even if the model is instantiated in separate
+                datastores. An implementation MAY choose to capture semantics
+                in the identifier, for example to indicate the type of TP
+                and/or the type of node and topology that the TP is a part of.]
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <a href="#tp-ref"><strong>tp-ref</strong></a>
+                </td>
+                <td>
+                Optional[A type for an absolute reference to a termination point.
+                (This type should not be used for relative references.
+                In such a case, a relative path should be used instead.)]
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <a href="#topology-ref"><strong>topology-ref</strong></a>
+                </td>
+                <td>
+                Optional[A type for an absolute reference a topology instance.]
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <a href="#node-ref"><strong>node-ref</strong></a>
+                </td>
+                <td>
+                Optional[A type for an absolute reference to a node instance.
+                (This type should not be used for relative references.
+                In such a case, a relative path should be used instead.)]
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <a href="#link-ref"><strong>link-ref</strong></a>
+                </td>
+                <td>
+                Optional[A type for an absolute reference a link instance.
+                (This type should not be used for relative references.
+                In such a case, a relative path should be used instead.)]
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <a href="#x"><strong>x</strong></a>
+                </td>
+                <td>
+                Optional[x type description]
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <a href="#y"><strong>y</strong></a>
+                </td>
+                <td>
+                Optional.empty
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Identities Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#crypto-alg"><strong>crypto-alg</strong></a>
+            </td>
+            <td>
+            Optional[Base identity from which all crypto algorithms are derived.]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#des"><strong>des</strong></a>
+            </td>
+            <td>
+            Optional[DES crypto algorithm]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#des3"><strong>des3</strong></a>
+            </td>
+            <td>
+            Optional[Triple DES crypto algorithm]
+            </td>
+        </tr>
+    </table>
+    <h3>Groupings Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#tp-attributes"><strong>tp-attributes</strong></a>
+            </td>
+            <td>
+            Optional[The data objects needed to define a termination point.
+            (This only includes a single leaf at this point, used
+            to identify the termination point.)
+            Provided in a grouping so that in addition to the datastore,
+            the data can also be included in notifications.]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#node-attributes"><strong>node-attributes</strong></a>
+            </td>
+            <td>
+            Optional[The data objects needed to define a node.
+            The objects are provided in a grouping so that in addition to
+            the datastore, the data can also be included in notifications
+            as needed.]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#link-attributes"><strong>link-attributes</strong></a>
+            </td>
+            <td>
+            Optional.empty
+            </td>
+        </tr>
+    </table>
+    <h3>Augmentations Summary</h3>
+    <table>
+        <tr>
+            <th>Target</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#/network-topology:network-topology/"><strong>/network-topology:network-topology/</strong></a>
+            </td>
+            <td>
+            Optional.empty
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#/network-topology:network-topology/network-topology:topology/"><strong>/network-topology:network-topology/network-topology:topology/</strong></a>
+            </td>
+            <td>
+            Optional[description of augment 2]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#/network-topology:network-topology/network-topology:topology/network-topology:topology-types/"><strong>/network-topology:network-topology/network-topology:topology/network-topology:topology-types/</strong></a>
+            </td>
+            <td>
+            Optional.empty
+            </td>
+        </tr>
+    </table>
+    <h3>Child Nodes Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#network-topology"><strong>network-topology</strong></a>
+            </td>
+            <td>
+            Optional.empty
+            </td>
+        </tr>
+    </table>
+    <h3>Notifications Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#n1"><strong>n1</strong></a>
+            </td>
+            <td>
+            Optional[This example defines a notification 1.]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#n2"><strong>n2</strong></a>
+            </td>
+            <td>
+            Optional[This example defines a notification 2.]
+            </td>
+        </tr>
+    </table>
+    <h3>RPCs Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#rock-the-house"><strong>rock-the-house</strong></a>
+            </td>
+            <td>
+            Optional[This statement is used to define a NETCONF RPC operation.]
+            </td>
+        </tr>
+    </table>
+    <h3>Extensions Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#c-define"><strong>c-define</strong></a>
+            </td>
+            <td>
+            Optional[Takes as argument a name string.
+            Makes the code generator use the given name in the
+            #define.]
+            </td>
+        </tr>
+    </table>
+    <h3>Features Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#local-storage"><strong>local-storage</strong></a>
+            </td>
+            <td>
+            Optional[This feature means the device supports local
+            storage (memory, flash or disk) that can be used to
+            store syslog messages.]
+            </td>
+        </tr>
+    </table>
+    
+    <h2>Type Definitions</h2>
+    <ul>
+    <li>
+        <h3 id="topology-id">topology-id</h3>
+        <ul>
+        <li>
+            Description: An identifier for a topology.
+        </li>
+        <li>
+            Base type: (urn:ietf:params:xml:ns:yang:1)string
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="node-id">node-id</h3>
+        <ul>
+        <li>
+            Description: An identifier for a node in a topology.
+            The identifier may be opaque.
+            The identifier SHOULD be chosen such that the same node in a
+            real network topology will always be identified through the
+            same identifier, even if the model is instantiated in separate
+            datastores. An implementation MAY choose to capture semantics
+            in the identifier, for example to indicate the type of node
+            and/or the type of topology that the node is a part of.
+        </li>
+        <li>
+            Base type: (urn:ietf:params:xml:ns:yang:1)string
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="link-id">link-id</h3>
+        <ul>
+        <li>
+            Description: An identifier for a link in a topology.
+            The identifier may be opaque.
+            The identifier SHOULD be chosen such that the same link in a
+            real network topology will always be identified through the
+            same identifier, even if the model is instantiated in separate
+            datastores. An implementation MAY choose to capture semantics
+            in the identifier, for example to indicate the type of link
+            and/or the type of topology that the link is a part of.
+        </li>
+        <li>
+            Base type: (urn:ietf:params:xml:ns:yang:1)string
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="tp-id">tp-id</h3>
+        <ul>
+        <li>
+            Description: An identifier for termination points on a node.
+            The identifier may be opaque.
+            The identifier SHOULD be chosen such that the same TP in a
+            real network topology will always be identified through the
+            same identifier, even if the model is instantiated in separate
+            datastores. An implementation MAY choose to capture semantics
+            in the identifier, for example to indicate the type of TP
+            and/or the type of node and topology that the TP is a part of.
+        </li>
+        <li>
+            Base type: (urn:ietf:params:xml:ns:yang:1)string
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="tp-ref">tp-ref</h3>
+        <ul>
+        <li>
+            Description: A type for an absolute reference to a termination point.
+            (This type should not be used for relative references.
+            In such a case, a relative path should be used instead.)
+        </li>
+        <li>
+            Base type: <a href="#tp-ref/leafref">leafref</a>
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="topology-ref">topology-ref</h3>
+        <ul>
+        <li>
+            Description: A type for an absolute reference a topology instance.
+        </li>
+        <li>
+            Base type: <a href="#topology-ref/leafref">leafref</a>
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="node-ref">node-ref</h3>
+        <ul>
+        <li>
+            Description: A type for an absolute reference to a node instance.
+            (This type should not be used for relative references.
+            In such a case, a relative path should be used instead.)
+        </li>
+        <li>
+            Base type: <a href="#node-ref/leafref">leafref</a>
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="link-ref">link-ref</h3>
+        <ul>
+        <li>
+            Description: A type for an absolute reference a link instance.
+            (This type should not be used for relative references.
+            In such a case, a relative path should be used instead.)
+        </li>
+        <li>
+            Base type: <a href="#link-ref/leafref">leafref</a>
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="x">x</h3>
+        <ul>
+        <li>
+            Description: x type description
+        </li>
+        <li>
+            Reference: x type reference
+        </li>
+        <li>
+            Base type: (urn:ietf:params:xml:ns:yang:1)binary
+        </li>
+        <li>
+            Length restrictions:
+        </li>
+        <ul>
+        <li>
+        &lt;5, 10&gt;
+        </li>
+        <li>
+        &lt;15, 20&gt;
+        </li>
+        <li>
+        &lt;25, 30&gt;
+        </li>
+        </ul>
+        </ul>
+    </li>
+    <li>
+        <h3 id="y">y</h3>
+        <ul>
+        <li>
+            Base type: (urn:ietf:params:xml:ns:yang:1)int32
+        </li>
+        <li>
+            Range restrictions:
+        </li>
+        <ul>
+        <li>
+        &lt;5, 555&gt;
+        </li>
+        </ul>
+        </ul>
+    </li>
+    </ul>
+    
+    <h2>Identities</h2>
+    <ul>
+    <li>
+        <h3 id="crypto-alg">crypto-alg</h3>
+        <ul>
+        <li>
+            Description: Base identity from which all crypto algorithms are derived.
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="des">des</h3>
+        <ul>
+        <li>
+            Description: DES crypto algorithm
+        </li>
+        <li>
+            base: crypto-alg
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="des3">des3</h3>
+        <ul>
+        <li>
+            Description: Triple DES crypto algorithm
+        </li>
+        <li>
+            base: crypto-alg
+        </li>
+        </ul>
+    </li>
+    </ul>
+    
+    <h2>Groupings</h2>
+    <ul>
+    <li>
+        <h3 id="tp-attributes">tp-attributes</h3>
+        <ul>
+            <li>
+                Description: The data objects needed to define a termination point.
+                (This only includes a single leaf at this point, used
+                to identify the termination point.)
+                Provided in a grouping so that in addition to the datastore,
+                the data can also be included in notifications.
+            </li>
+            <ul>
+            <strong><li>
+                leaf: tp-id
+            </li>
+            </strong>
+            <ul>
+            <li>
+                type: <a href="#tp-id">tp-id</a>
+            </li>
+            </ul>
+            </ul>
+            <ul>
+            <strong><li>
+                leaf-list: tp-ref
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: The leaf list identifies any termination points that the
+                termination point is dependent on, or maps onto.
+                Those termination points will themselves be contained
+                in a supporting node.
+                This dependency information can be inferred from
+                the dependencies between links.  For this reason,
+                this item is not separately configurable.  Hence no
+                corresponding constraint needs to be articulated.
+                The corresponding information is simply provided by the
+                implementing system.
+            </li>
+            <li>
+                type: tp-ref
+            </li>
+            </ul>
+            </ul>
+        </ul>
+    </li>
+    <li>
+        <h3 id="node-attributes">node-attributes</h3>
+        <ul>
+            <li>
+                Description: The data objects needed to define a node.
+                The objects are provided in a grouping so that in addition to
+                the datastore, the data can also be included in notifications
+                as needed.
+            </li>
+            <ul>
+            <strong><li>
+                leaf: node-id
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: The identifier of a node in the topology.
+                A node is specific to a topology to which it belongs.
+            </li>
+            <li>
+                type: <a href="#node-id">node-id</a>
+            </li>
+            </ul>
+            </ul>
+            <ul>
+            <strong>
+            <li id="node-attributes/supporting-node">
+                list: supporting-node
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: This list defines vertical layering information for nodes.
+                It allows to capture for any given node, which node (or nodes)
+                in the corresponding underlay topology it maps onto.
+                A node can map to zero, one, or more nodes below it;
+                accordingly there can be zero, one, or more elements in the list.
+                If there are specific layering requirements, for example
+                specific to a particular type of topology that only allows
+                for certain layering relationships, the choice
+                below can be augmented with additional cases.
+                A list has been chosen rather than a leaf-list in order
+                to provide room for augmentations, e.g. for
+                statistics or priorization information associated with
+                supporting nodes.
+            </li>
+            <li>
+                key definition: node-ref
+            </li>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            <ul>
+            <strong><li>
+                leaf: node-ref
+            </li>
+            </strong>
+            <ul>
+            <li>
+                type: <a href="#node-ref">node-ref</a>
+            </li>
+            </ul>
+            </ul>
+            </ul>
+            </ul>
+        </ul>
+    </li>
+    <li>
+        <h3 id="link-attributes">link-attributes</h3>
+        <ul>
+            <ul>
+            <strong><li>
+                leaf: link-id
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: The identifier of a link in the topology.
+                A link is specific to a topology to which it belongs.
+            </li>
+            <li>
+                type: <a href="#link-id">link-id</a>
+            </li>
+            </ul>
+            </ul>
+            <ul>
+            <strong>
+            <li id="link-attributes/source">
+                container: source
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: XYZ
+            </li>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            <ul>
+            <strong><li>
+                leaf: source-node
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: Source node identifier, must be in same topology.
+            </li>
+            <li>
+                type: <a href="#node-ref">node-ref</a>
+            </li>
+            </ul>
+            </ul>
+            <ul>
+            <strong><li>
+                leaf: source-tp
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: Termination point within source node that terminates the link.
+            </li>
+            <li>
+                type: <a href="#tp-ref">tp-ref</a>
+            </li>
+            </ul>
+            </ul>
+            </ul>
+            </ul>
+            <ul>
+            <strong>
+            <li id="link-attributes/destination">
+                container: destination
+            </li>
+            </strong>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            <ul>
+            <strong><li>
+                leaf: dest-node
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: Destination node identifier, must be in same topology.
+            </li>
+            <li>
+                type: <a href="#node-ref">node-ref</a>
+            </li>
+            </ul>
+            </ul>
+            <ul>
+            <strong><li>
+                leaf: dest-tp
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: Termination point within destination node that terminates the link.
+            </li>
+            <li>
+                type: <a href="#tp-ref">tp-ref</a>
+            </li>
+            </ul>
+            </ul>
+            </ul>
+            </ul>
+            <ul>
+            <strong>
+            <li id="link-attributes/supporting-link">
+                list: supporting-link
+            </li>
+            </strong>
+            <ul>
+            <li>
+                key definition: link-ref
+            </li>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            <ul>
+            <strong><li>
+                leaf: link-ref
+            </li>
+            </strong>
+            <ul>
+            <li>
+                type: <a href="#link-ref">link-ref</a>
+            </li>
+            </ul>
+            </ul>
+            </ul>
+            </ul>
+        </ul>
+    </li>
+    </ul>
+    
+    <h2>Datastore Structure</h2>
+    <strong>network-topology</strong>
+    <ul>
+    <li>
+        <a href="#network-topology"><strong>network-topology</strong>
+        </a>
+        <ul>
+        <li>
+            <a href="#network-topology/topology"><strong>topology</strong> [topology-id]
+            </a>
+            <ul>
+            <li>
+                topology-id
+            </li>
+            <li>
+                <a href="#network-topology/topology/topology-types"><strong>topology-types</strong>
+                </a>
+                <ul>
+                <li>
+                    node-type (choice)
+                    <ul>
+                    <li>
+                    type1
+                    <ul>
+                    <li>
+                        <a href="#network-topology/topology/topology-types/c1"><strong>c1</strong>
+                        </a>
+                        <ul>
+                        <li>
+                            id
+                        </li>
+                        </ul>
+                    </li>
+                    </ul>
+                    </li>
+                    <li>
+                    type2
+                    <ul>
+                    <li>
+                        <a href="#network-topology/topology/topology-types/c2"><strong>c2</strong>
+                        </a>
+                        <ul>
+                        <li>
+                            <a href="#network-topology/topology/topology-types/c2/cc2"><strong>cc2</strong>
+                            </a>
+                        </li>
+                        </ul>
+                    </li>
+                    </ul>
+                    </li>
+                    <li>
+                    type3
+                    <ul>
+                    <li>
+                        <a href="#network-topology/topology/topology-types/c3"><strong>c3</strong> 
+                        </a>
+                        <ul>
+                        <li>
+                            <a href="#network-topology/topology/topology-types/c3/cc3"><strong>cc3</strong>
+                            </a>
+                            <ul>
+                            <li>
+                                id
+                            </li>
+                            </ul>
+                        </li>
+                        </ul>
+                    </li>
+                    </ul>
+                    </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#network-topology/topology/topology-types/container-c"><strong><i>container-c</i></strong>(A)
+                    </a>
+                    <ul>
+                    <li>
+                        <i>id</i>(A)
+                    </li>
+                    </ul>
+                </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#network-topology/topology/underlay-topology"><strong>underlay-topology</strong> [topology-ref]
+                </a>
+                <ul>
+                <li>
+                    topology-ref
+                </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#network-topology/topology/node"><strong>node</strong> [node-id]
+                </a>
+                <ul>
+                <li>
+                    <i>node-id</i>(U)
+                </li>
+                <li>
+                    <a href="#network-topology/topology/node/supporting-node"><strong><i>supporting-node</i></strong> [node-ref]
+                    (U)
+                    </a>
+                    <ul>
+                    <li>
+                        <i>node-ref</i>(U)
+                    </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#network-topology/topology/node/termination-point"><strong>termination-point</strong> [tp-id]
+                    </a>
+                    <ul>
+                    <li>
+                        <i>tp-id</i>(U)
+                    </li>
+                    <li>
+                        <i>tp-ref</i>(U)
+                    </li>
+                    </ul>
+                </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#network-topology/topology/link"><strong>link</strong> [link-id]
+                </a>
+                <ul>
+                <li>
+                    <i>link-id</i>(U)
+                </li>
+                <li>
+                    <a href="#network-topology/topology/link/source"><strong><i>source</i></strong>(U)
+                    </a>
+                    <ul>
+                    <li>
+                        <i>source-node</i>(U)
+                    </li>
+                    <li>
+                        <i>source-tp</i>(U)
+                    </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#network-topology/topology/link/destination"><strong><i>destination</i></strong>(U)
+                    </a>
+                    <ul>
+                    <li>
+                        <i>dest-node</i>(U)
+                    </li>
+                    <li>
+                        <i>dest-tp</i>(U)
+                    </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#network-topology/topology/link/supporting-link"><strong><i>supporting-link</i></strong> [link-ref]
+                    (U)
+                    </a>
+                    <ul>
+                    <li>
+                        <i>link-ref</i>(U)
+                    </li>
+                    </ul>
+                </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#network-topology/topology/list-a"><strong><i>list-a</i></strong> (A)
+                </a>
+            </li>
+            <li>
+                <a href="#network-topology/topology/list-b"><strong><i>list-b</i></strong> (A)
+                </a>
+                <ul>
+                <li>
+                    <i>leaf-c</i>(A)
+                </li>
+                </ul>
+            </li>
+            </ul>
+        </li>
+        <li>
+            <i>any-a</i>(A)
+        </li>
+        <li>
+            <i>any-b</i>(A)
+        </li>
+        </ul>
+    </li>
+    </ul>
+    
+    <h2>Child nodes</h2>
+    
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong><a href="#network-topology">network-topology</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3 id="network-topology">
+        network-topology
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>any-a</strong> (anyxml)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    <li><strong>any-b</strong> (anyxml)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology">topology</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;network-topology xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- topology -->
+            &lt!-- See <a href="#network-topology/topology">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;topology xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/topology&gt;
+        <!-- any-a -->
+            <!-- noop -->
+        <!-- any-b -->
+            <!-- noop -->
+        
+        &lt;/network-topology&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology">
+        network-topology/topology
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>topology-id</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology/topology-types">topology-types</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology/underlay-topology">underlay-topology</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology/node">node</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology/link">link</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology/list-a">list-a</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology/list-b">list-b</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;topology xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- topology-id -->
+            &lt;topology-id xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/topology-id&gt;
+        <!-- topology-types -->
+            &lt!-- See <a href="#network-topology/topology/topology-types">definition</a>
+             for child nodes.  --&gt
+            &lt;topology-types xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/topology-types&gt;
+        <!-- underlay-topology -->
+            &lt!-- See <a href="#network-topology/topology/underlay-topology">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;underlay-topology xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/underlay-topology&gt;
+        <!-- node -->
+            &lt!-- See <a href="#network-topology/topology/node">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;node xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/node&gt;
+        <!-- link -->
+            &lt!-- See <a href="#network-topology/topology/link">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;link xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/link&gt;
+        <!-- list-a -->
+            &lt!-- See <a href="#network-topology/topology/list-a">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;list-a xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/list-a&gt;
+        <!-- list-b -->
+            &lt!-- See <a href="#network-topology/topology/list-b">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;list-b xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/list-b&gt;
+        
+        &lt;/topology&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/topology-types">
+        network-topology/topology/topology-types
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/topology-types</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong><a href="#network-topology/topology/topology-types/container-c">container-c</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;topology-types xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- node-type -->
+            <!-- noop -->
+        <!-- container-c -->
+            &lt!-- See <a href="#network-topology/topology/topology-types/container-c">definition</a>
+             for child nodes.  --&gt
+            &lt;container-c xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/container-c&gt;
+        
+        &lt;/topology-types&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/topology-types/container-c">
+        network-topology/topology/topology-types/container-c
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/topology-types/container-c</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>id</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;container-c xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- id -->
+            &lt;id xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/id&gt;
+        
+        &lt;/container-c&gt;
+    </pre>
+    </h3>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;topology-types xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- type1 -->
+            <!-- noop -->
+        <!-- type2 -->
+            <!-- noop -->
+        <!-- type3 -->
+            <!-- noop -->
+        
+        &lt;/topology-types&gt;
+    </pre>
+    </h3>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong><a href="#network-topology/topology/topology-types/c1">c1</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;topology-types xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- c1 -->
+            &lt!-- See <a href="#network-topology/topology/topology-types/c1">definition</a>
+             for child nodes.  --&gt
+            &lt;c1 xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/c1&gt;
+        
+        &lt;/topology-types&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/topology-types/c1">
+        network-topology/topology/topology-types/c1
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/topology-types/c1</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>id</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;c1 xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- id -->
+            &lt;id xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/id&gt;
+        
+        &lt;/c1&gt;
+    </pre>
+    </h3>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong><a href="#network-topology/topology/topology-types/c2">c2</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;topology-types xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- c2 -->
+            &lt!-- See <a href="#network-topology/topology/topology-types/c2">definition</a>
+             for child nodes.  --&gt
+            &lt;c2 xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/c2&gt;
+        
+        &lt;/topology-types&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/topology-types/c2">
+        network-topology/topology/topology-types/c2
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/topology-types/c2</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong><a href="#network-topology/topology/topology-types/c2/cc2">cc2</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;c2 xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- cc2 -->
+            &lt!-- See <a href="#network-topology/topology/topology-types/c2/cc2">definition</a>
+             for child nodes.  --&gt
+            &lt;cc2 xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/cc2&gt;
+        
+        &lt;/c2&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/topology-types/c2/cc2">
+        network-topology/topology/topology-types/c2/cc2
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/topology-types/c2/cc2</code></dd>
+    </dl>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;cc2 xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        
+        &lt;/cc2&gt;
+    </pre>
+    </h3>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong><a href="#network-topology/topology/topology-types/c3">c3</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;topology-types xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- c3 -->
+            &lt!-- See <a href="#network-topology/topology/topology-types/c3">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;c3 xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/c3&gt;
+        
+        &lt;/topology-types&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/topology-types/c3">
+        network-topology/topology/topology-types/c3
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/topology-types/c3</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong><a href="#network-topology/topology/topology-types/c3/cc3">cc3</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;c3 xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- cc3 -->
+            &lt!-- See <a href="#network-topology/topology/topology-types/c3/cc3">definition</a>
+             for child nodes.  --&gt
+            &lt;cc3 xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/cc3&gt;
+        
+        &lt;/c3&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/topology-types/c3/cc3">
+        network-topology/topology/topology-types/c3/cc3
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/topology-types/c3/cc3</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>id</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;cc3 xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- id -->
+            &lt;id xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/id&gt;
+        
+        &lt;/cc3&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/underlay-topology">
+        network-topology/topology/underlay-topology
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/underlay-topology/{topology-ref}</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>topology-ref</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;underlay-topology xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- topology-ref -->
+            &lt;topology-ref xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/topology-ref&gt;
+        
+        &lt;/underlay-topology&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/node">
+        network-topology/topology/node
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/node/{node-id}</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>node-id</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology/node/supporting-node">supporting-node</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology/node/termination-point">termination-point</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;node xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- node-id -->
+            &lt;node-id xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/node-id&gt;
+        <!-- supporting-node -->
+            &lt!-- See <a href="#network-topology/topology/node/supporting-node">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;supporting-node xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/supporting-node&gt;
+        <!-- termination-point -->
+            &lt!-- See <a href="#network-topology/topology/node/termination-point">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;termination-point xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/termination-point&gt;
+        
+        &lt;/node&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/node/supporting-node">
+        network-topology/topology/node/supporting-node
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/node/{node-id}/supporting-node/{node-ref}</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>node-ref</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;supporting-node xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- node-ref -->
+            &lt;node-ref xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/node-ref&gt;
+        
+        &lt;/supporting-node&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/node/termination-point">
+        network-topology/topology/node/termination-point
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/node/{node-id}/termination-point/{tp-id}</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>tp-id</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    <li><strong>tp-ref</strong> (leaf-list)
+    <ul>
+        <li>configuration data: <strong>false</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;termination-point xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- tp-id -->
+            &lt;tp-id xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/tp-id&gt;
+        <!-- tp-ref -->
+            &lt!-- This node could appear multiple times --&gt
+            &lt;tp-ref xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/tp-ref&gt;
+        
+        &lt;/termination-point&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/link">
+        network-topology/topology/link
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/link/{link-id}</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>link-id</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology/link/source">source</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology/link/destination">destination</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#network-topology/topology/link/supporting-link">supporting-link</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;link xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- link-id -->
+            &lt;link-id xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/link-id&gt;
+        <!-- source -->
+            &lt!-- See <a href="#network-topology/topology/link/source">definition</a>
+             for child nodes.  --&gt
+            &lt;source xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/source&gt;
+        <!-- destination -->
+            &lt!-- See <a href="#network-topology/topology/link/destination">definition</a>
+             for child nodes.  --&gt
+            &lt;destination xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/destination&gt;
+        <!-- supporting-link -->
+            &lt!-- See <a href="#network-topology/topology/link/supporting-link">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;supporting-link xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/supporting-link&gt;
+        
+        &lt;/link&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/link/source">
+        network-topology/topology/link/source
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/link/{link-id}/source</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>source-node</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong>source-tp</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;source xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- source-node -->
+            &lt;source-node xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/source-node&gt;
+        <!-- source-tp -->
+            &lt;source-tp xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/source-tp&gt;
+        
+        &lt;/source&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/link/destination">
+        network-topology/topology/link/destination
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/link/{link-id}/destination</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>dest-node</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong>dest-tp</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;destination xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- dest-node -->
+            &lt;dest-node xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/dest-node&gt;
+        <!-- dest-tp -->
+            &lt;dest-tp xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/dest-tp&gt;
+        
+        &lt;/destination&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/link/supporting-link">
+        network-topology/topology/link/supporting-link
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/link/{link-id}/supporting-link/{link-ref}</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>link-ref</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;supporting-link xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- link-ref -->
+            &lt;link-ref xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/link-ref&gt;
+        
+        &lt;/supporting-link&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/list-a">
+        network-topology/topology/list-a
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/list-a</code></dd>
+    </dl>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;list-a xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        
+        &lt;/list-a&gt;
+    </pre>
+    </h3>
+    <h3 id="network-topology/topology/list-b">
+        network-topology/topology/list-b
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>network-topology:network-topology/topology/{topology-id}/list-b</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>leaf-c</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;list-b xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;<!-- Child nodes -->
+        <!-- leaf-c -->
+            &lt;leaf-c xmlns="urn:TBD:params:xml:ns:yang:network-topology"&gt;...&lt;/leaf-c&gt;
+        
+        &lt;/list-b&gt;
+    </pre>
+    </h3>
+    
+    <h2>Notifications</h2>
+    
+    <h3 id="n1">n1</h3>
+        Optional[This example defines a notification 1.]
+        Reference Optional.empty
+        <ul>
+        <strong><li>
+            leaf: event-class
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)string
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            anyxml: reporting-entity
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        </ul>
+        <ul>
+        <strong>
+        <li id="n1/severity">
+            container: severity
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong>
+        <li id="n1/severity/links">
+            list: links
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong>
+        <li id="n1/severity/links/endpoints">
+            container: endpoints
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong><li>
+            leaf: start
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: <a href="#x">x</a>
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: end
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: <a href="#y">y</a>
+        </li>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: id
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)string
+        </li>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+    
+    <h3 id="n2">n2</h3>
+        Optional[This example defines a notification 2.]
+        Reference Optional.empty
+        <ul>
+        <strong><li>
+            leaf: event-class
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)string
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            anyxml: reporting-entity
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: severity
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)string
+        </li>
+        </ul>
+        </ul>
+    
+    <h2>Augmentations</h2>
+    
+    <ul>
+    <li>
+        <h3 id="/network-topology:network-topology/">
+        Target [<a href="#network-topology">/network-topology:network-topology/</a>]</h3>
+        Optional.empty
+            Status: <strong>CURRENT</strong>
+        Reference Optional.empty
+        When Optional.empty
+        <ul>
+        <strong><li>
+            anyxml: any-a
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            anyxml: any-b
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        </ul>
+    
+        <h3>Example</h3>
+        <pre>
+        &lt;network-topology&gt;
+            &lt;topology&gt;
+                &lt;topology-id&gt;. . .&lt;/topology-id&gt;
+                &lt;topology-types&gt;
+                    &lt;container-c&gt;
+                        &lt;id&gt;. . .&lt;/id&gt;
+                    &lt;/container-c&gt;
+                &lt;/topology-types&gt;
+                &lt;underlay-topology&gt;
+                    &lt;topology-ref&gt;. . .&lt;/topology-ref&gt;
+                &lt;/underlay-topology&gt;
+                &lt;node&gt;
+                    &lt;node-id&gt;. . .&lt;/node-id&gt;
+                    &lt;supporting-node&gt;
+                        &lt;node-ref&gt;. . .&lt;/node-ref&gt;
+                    &lt;/supporting-node&gt;
+                    &lt;termination-point&gt;
+                        &lt;tp-id&gt;. . .&lt;/tp-id&gt;
+                        &lt;tp-ref&gt;. . .&lt;/tp-ref&gt;
+                        &lt;tp-ref&gt;. . .&lt;/tp-ref&gt;
+                        &lt;tp-ref&gt;. . .&lt;/tp-ref&gt;
+                    &lt;/termination-point&gt;
+                &lt;/node&gt;
+                &lt;link&gt;
+                    &lt;link-id&gt;. . .&lt;/link-id&gt;
+                    &lt;source&gt;
+                        &lt;source-node&gt;. . .&lt;/source-node&gt;
+                        &lt;source-tp&gt;. . .&lt;/source-tp&gt;
+                    &lt;/source&gt;
+                    &lt;destination&gt;
+                        &lt;dest-node&gt;. . .&lt;/dest-node&gt;
+                        &lt;dest-tp&gt;. . .&lt;/dest-tp&gt;
+                    &lt;/destination&gt;
+                    &lt;supporting-link&gt;
+                        &lt;link-ref&gt;. . .&lt;/link-ref&gt;
+                    &lt;/supporting-link&gt;
+                &lt;/link&gt;
+                &lt;list-a&gt;
+                &lt;/list-a&gt;
+                &lt;list-b&gt;
+                    &lt;leaf-c&gt;. . .&lt;/leaf-c&gt;
+                &lt;/list-b&gt;
+            &lt;/topology&gt;
+            &lt;any-a&gt;. . .&lt;/any-a&gt;
+            &lt;any-b&gt;. . .&lt;/any-b&gt;
+        &lt;/network-topology&gt;
+        </pre>
+    </li>
+    <li>
+        <h3 id="/network-topology:network-topology/network-topology:topology/">
+        Target [<a href="#network-topology/topology">/network-topology:network-topology/network-topology:topology/</a>]</h3>
+        Optional[description of augment 2]
+            Status: <strong>CURRENT</strong>
+        Reference Optional[reference of augment 2]
+        When Optional.empty
+        <ul>
+        <strong>
+        <li id="network-topology/topology/list-a">
+            list: list-a
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        </ul>
+        <ul>
+        <strong>
+        <li id="network-topology/topology/list-b">
+            list: list-b
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong><li>
+            leaf: leaf-c
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)string
+        </li>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+    
+        <h3>Example</h3>
+        <pre>
+        &lt;topology&gt;
+            &lt;topology-id&gt;. . .&lt;/topology-id&gt;
+            &lt;topology-types&gt;
+                &lt;container-c&gt;
+                    &lt;id&gt;. . .&lt;/id&gt;
+                &lt;/container-c&gt;
+            &lt;/topology-types&gt;
+            &lt;underlay-topology&gt;
+                &lt;topology-ref&gt;. . .&lt;/topology-ref&gt;
+            &lt;/underlay-topology&gt;
+            &lt;node&gt;
+                &lt;node-id&gt;. . .&lt;/node-id&gt;
+                &lt;supporting-node&gt;
+                    &lt;node-ref&gt;. . .&lt;/node-ref&gt;
+                &lt;/supporting-node&gt;
+                &lt;termination-point&gt;
+                    &lt;tp-id&gt;. . .&lt;/tp-id&gt;
+                    &lt;tp-ref&gt;. . .&lt;/tp-ref&gt;
+                    &lt;tp-ref&gt;. . .&lt;/tp-ref&gt;
+                    &lt;tp-ref&gt;. . .&lt;/tp-ref&gt;
+                &lt;/termination-point&gt;
+            &lt;/node&gt;
+            &lt;link&gt;
+                &lt;link-id&gt;. . .&lt;/link-id&gt;
+                &lt;source&gt;
+                    &lt;source-node&gt;. . .&lt;/source-node&gt;
+                    &lt;source-tp&gt;. . .&lt;/source-tp&gt;
+                &lt;/source&gt;
+                &lt;destination&gt;
+                    &lt;dest-node&gt;. . .&lt;/dest-node&gt;
+                    &lt;dest-tp&gt;. . .&lt;/dest-tp&gt;
+                &lt;/destination&gt;
+                &lt;supporting-link&gt;
+                    &lt;link-ref&gt;. . .&lt;/link-ref&gt;
+                &lt;/supporting-link&gt;
+            &lt;/link&gt;
+            &lt;list-a&gt;
+            &lt;/list-a&gt;
+            &lt;list-b&gt;
+                &lt;leaf-c&gt;. . .&lt;/leaf-c&gt;
+            &lt;/list-b&gt;
+        &lt;/topology&gt;
+        </pre>
+    </li>
+    <li>
+        <h3 id="/network-topology:network-topology/network-topology:topology/network-topology:topology-types/">
+        Target [<a href="#network-topology/topology/topology-types">/network-topology:network-topology/network-topology:topology/network-topology:topology-types/</a>]</h3>
+        Optional.empty
+            Status: <strong>CURRENT</strong>
+        Reference Optional.empty
+        When Optional.empty
+        <ul>
+        <strong>
+        <li id="network-topology/topology/topology-types/container-c">
+            container: container-c
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong><li>
+            leaf: id
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)binary
+        </li>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+    
+        <h3>Example</h3>
+        <pre>
+        &lt;topology-types&gt;
+            &lt;container-c&gt;
+                &lt;id&gt;. . .&lt;/id&gt;
+            &lt;/container-c&gt;
+        &lt;/topology-types&gt;
+        </pre>
+    </li>
+    </ul>
+    
+    <h2>RPC Definitions</h2>
+    <h3 id="rock-the-house">rock-the-house</h3>
+        <ul>
+            <li>
+                Description: This statement is used to define a NETCONF RPC operation.
+            </li>
+            <li>
+                Reference: http://tools.ietf.org/html/rfc6020#section-7.13
+            </li>
+            <ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            <ul>
+            <strong><li>
+                leaf: zip-code
+            </li>
+            </strong>
+            <ul>
+            <li>
+                type: (urn:ietf:params:xml:ns:yang:1)string
+            </li>
+            </ul>
+            </ul>
+            </ul>
+            </ul>
+            <ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            </ul>
+            <ul>
+            <ul>
+            <strong><li>
+                leaf: number
+            </li>
+            </strong>
+            <ul>
+            <li>
+                type: (urn:ietf:params:xml:ns:yang:1)int32
+            </li>
+            </ul>
+            </ul>
+            </ul>
+            </ul>
+        </ul>
+    </ul>
+    
+    <h2>Extensions</h2>
+    <li>
+        <h3 id="c-define">c-define</h3>
+    </li>
+    <ul>
+        <li>
+            Description: Takes as argument a name string.
+            Makes the code generator use the given name in the
+            #define.
+        </li>
+        <li>
+            Argument: name
+        </li>
+    </ul>
+    
+    <h2>Features</h2>
+    
+    <ul>
+    <li>
+        <h3 id="local-storage">local-storage</h3>
+        <ul>
+            <li>
+                Description: This feature means the device supports local
+                storage (memory, flash or disk) that can be used to
+                store syslog messages.
+            </li>
+        </ul>
+    </li>
+    </ul>
+    
+  </body>
+</html>

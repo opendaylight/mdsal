@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>protocol-framework</title>
+  </head>
+  <body>
+    <h1>protocol-framework</h1>
+    
+    <h2>Base Information</h2>
+    <table>
+        <tr>
+            <td><strong>prefix</strong></td>
+            <td>pf</td>
+        </tr>
+        <tr>
+            <td><strong>namespace</strong></td>
+            <td>urn:opendaylight:params:xml:ns:yang:controller:protocol:framework</td>
+        </tr>
+        <tr>
+            <td><strong>revision</strong></td>
+            <td>2014-03-13</td>
+        </tr>
+        <tr>
+            <td><strong>description</strong></td>
+            <td>Optional[This module contains the base YANG definitions for
+            protocol framework.
+            
+            Copyright (c)2013 Cisco Systems, Inc. All rights reserved.;
+            
+            This program and the accompanying materials are made available
+            under the terms of the Eclipse Public License v1.0 which
+            accompanies this distribution, and is available at
+            http://www.eclipse.org/legal/epl-v10.html]</td>
+        </tr>
+        <tr>
+            <td><strong>yang-version</strong></td>
+            <td>1</td>
+        </tr>
+        <tr>
+    <td><strong>imports</strong></td><td>        config:config 2013-04-05;
+            netty:netty 2013-11-19;
+    </td>    </tr>
+    </table>
+    
+    <h3>Identities Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#reconnect-strategy-factory"><strong>reconnect-strategy-factory</strong></a>
+            </td>
+            <td>
+            Optional[Service representing a reconnect strategy factory.]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#never-reconnect-strategy-factory"><strong>never-reconnect-strategy-factory</strong></a>
+            </td>
+            <td>
+            Optional.empty
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#reconnect-immediately-strategy-factory"><strong>reconnect-immediately-strategy-factory</strong></a>
+            </td>
+            <td>
+            Optional.empty
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#timed-reconnect-strategy-factory"><strong>timed-reconnect-strategy-factory</strong></a>
+            </td>
+            <td>
+            Optional.empty
+            </td>
+        </tr>
+    </table>
+    <h3>Augmentations Summary</h3>
+    <table>
+        <tr>
+            <th>Target</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#/config:modules/config:module/config:configuration/(case)never-reconnect-strategy-factory"><strong>/config:modules/config:module/config:configuration/(case)never-reconnect-strategy-factory</strong></a>
+            </td>
+            <td>
+            Optional.empty
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#/config:modules/config:module/config:configuration/(case)reconnect-immediately-strategy-factory"><strong>/config:modules/config:module/config:configuration/(case)reconnect-immediately-strategy-factory</strong></a>
+            </td>
+            <td>
+            Optional.empty
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#/config:modules/config:module/config:configuration/(case)timed-reconnect-strategy-factory"><strong>/config:modules/config:module/config:configuration/(case)timed-reconnect-strategy-factory</strong></a>
+            </td>
+            <td>
+            Optional.empty
+            </td>
+        </tr>
+    </table>
+    
+    
+    <h2>Identities</h2>
+    <ul>
+    <li>
+        <h3 id="reconnect-strategy-factory">reconnect-strategy-factory</h3>
+        <ul>
+        <li>
+            Description: Service representing a reconnect strategy factory.
+        </li>
+        <li>
+            base: service-type
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="never-reconnect-strategy-factory">never-reconnect-strategy-factory</h3>
+        <ul>
+        <li>
+            base: module-type
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="reconnect-immediately-strategy-factory">reconnect-immediately-strategy-factory</h3>
+        <ul>
+        <li>
+            base: module-type
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="timed-reconnect-strategy-factory">timed-reconnect-strategy-factory</h3>
+        <ul>
+        <li>
+            base: module-type
+        </li>
+        </ul>
+    </li>
+    </ul>
+    
+    
+    
+    
+    
+    <h2>Augmentations</h2>
+    
+    <ul>
+    <li>
+        <h3 id="/config:modules/config:module/config:configuration/(case)never-reconnect-strategy-factory">
+        Target [(urn:opendaylight:params:xml:ns:yang:controller:config)/config:modules/config:module/config:configuration/(case)never-reconnect-strategy-factory]</h3>
+        Optional.empty
+            Status: <strong>CURRENT</strong>
+        Reference Optional.empty
+        When Optional.empty
+        <ul>
+        <strong>
+        <li id="modules/module/configuration/never-reconnect-strategy-factory">
+            case: never-reconnect-strategy-factory
+        </li>
+        </strong>
+        <ul>
+        <li>
+            when condition: /config:modules/config:module/config:type = 'never-reconnect-strategy-factory'
+        </li>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong><li>
+            leaf: timeout
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)int32
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong>
+        <li id="modules/module/configuration/never-reconnect-strategy-factory/executor">
+            container: executor
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        <ul>
+        <strong><li>
+            uses: (urn:opendaylight:params:xml:ns:yang:controller:config)service-ref
+        </li>
+        </strong>
+        <ul>
+        <li>refines:
+            <ul>
+            <li>
+                node name: type
+            </li>
+            </ul>
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong><li>
+            leaf: type
+        </li>
+        </strong>
+        <ul>
+        <li>
+            description: Type of the service being referenced. Users of this grouping
+            should refine this leaf with required-identity pointing to
+            the actual service-type which is actually required.
+        </li>
+        <li>
+            type: (urn:opendaylight:params:xml:ns:yang:controller:config)service-type-ref
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: name
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:opendaylight:params:xml:ns:yang:controller:config)leafref
+        </li>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+    
+        <h3>Example</h3>
+        <pre>
+        </pre>
+    </li>
+    <li>
+        <h3 id="/config:modules/config:module/config:configuration/(case)reconnect-immediately-strategy-factory">
+        Target [(urn:opendaylight:params:xml:ns:yang:controller:config)/config:modules/config:module/config:configuration/(case)reconnect-immediately-strategy-factory]</h3>
+        Optional.empty
+            Status: <strong>CURRENT</strong>
+        Reference Optional.empty
+        When Optional.empty
+        <ul>
+        <strong>
+        <li id="modules/module/configuration/reconnect-immediately-strategy-factory">
+            case: reconnect-immediately-strategy-factory
+        </li>
+        </strong>
+        <ul>
+        <li>
+            when condition: /config:modules/config:module/config:type = 'reconnect-immediately-strategy-factory'
+        </li>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong><li>
+            leaf: timeout2
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)int32
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong>
+        <li id="modules/module/configuration/reconnect-immediately-strategy-factory/executor2">
+            container: executor2
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        <ul>
+        <strong><li>
+            uses: (urn:opendaylight:params:xml:ns:yang:controller:config)service-ref
+        </li>
+        </strong>
+        <ul>
+        <li>refines:
+            <ul>
+            <li>
+                node name: type
+            </li>
+            </ul>
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong><li>
+            leaf: type
+        </li>
+        </strong>
+        <ul>
+        <li>
+            description: Type of the service being referenced. Users of this grouping
+            should refine this leaf with required-identity pointing to
+            the actual service-type which is actually required.
+        </li>
+        <li>
+            type: (urn:opendaylight:params:xml:ns:yang:controller:config)service-type-ref
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: name
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:opendaylight:params:xml:ns:yang:controller:config)leafref
+        </li>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+    
+        <h3>Example</h3>
+        <pre>
+        </pre>
+    </li>
+    <li>
+        <h3 id="/config:modules/config:module/config:configuration/(case)timed-reconnect-strategy-factory">
+        Target [(urn:opendaylight:params:xml:ns:yang:controller:config)/config:modules/config:module/config:configuration/(case)timed-reconnect-strategy-factory]</h3>
+        Optional.empty
+            Status: <strong>CURRENT</strong>
+        Reference Optional.empty
+        When Optional.empty
+        <ul>
+        <strong>
+        <li id="modules/module/configuration/timed-reconnect-strategy-factory">
+            case: timed-reconnect-strategy-factory
+        </li>
+        </strong>
+        <ul>
+        <li>
+            when condition: /config:modules/config:module/config:type = 'timed-reconnect-strategy-factory'
+        </li>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong><li>
+            leaf: deadline
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: <a href="#modules/module/configuration/timed-reconnect-strategy-factory/deadline">deadline</a>
+        </li>
+        <li>
+            units: epoch nanoseconds
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: max-attempts
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:ietf:params:xml:ns:yang:1)int64
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: max-sleep
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: <a href="#modules/module/configuration/timed-reconnect-strategy-factory/max-sleep">max-sleep</a>
+        </li>
+        <li>
+            units: milliseconds
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: min-sleep
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: <a href="#modules/module/configuration/timed-reconnect-strategy-factory/min-sleep">min-sleep</a>
+        </li>
+        <li>
+            units: milliseconds
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: sleep-factor
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: <a href="#modules/module/configuration/timed-reconnect-strategy-factory/sleep-factor/decimal64">decimal64</a>
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: connect-time
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: <a href="#modules/module/configuration/timed-reconnect-strategy-factory/connect-time">connect-time</a>
+        </li>
+        <li>
+            units: milliseconds
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong>
+        <li id="modules/module/configuration/timed-reconnect-strategy-factory/executor3">
+            container: executor3
+        </li>
+        </strong>
+        <ul>
+        </ul>
+        <ul>
+        <strong><li>
+            uses: (urn:opendaylight:params:xml:ns:yang:controller:config)service-ref
+        </li>
+        </strong>
+        <ul>
+        <li>refines:
+            <ul>
+            <li>
+                node name: type
+            </li>
+            </ul>
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        </ul>
+        <ul>
+        <ul>
+        <strong><li>
+            leaf: type
+        </li>
+        </strong>
+        <ul>
+        <li>
+            description: Type of the service being referenced. Users of this grouping
+            should refine this leaf with required-identity pointing to
+            the actual service-type which is actually required.
+        </li>
+        <li>
+            type: (urn:opendaylight:params:xml:ns:yang:controller:config)service-type-ref
+        </li>
+        </ul>
+        </ul>
+        <ul>
+        <strong><li>
+            leaf: name
+        </li>
+        </strong>
+        <ul>
+        <li>
+            type: (urn:opendaylight:params:xml:ns:yang:controller:config)leafref
+        </li>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+        </ul>
+    
+        <h3>Example</h3>
+        <pre>
+        </pre>
+    </li>
+    </ul>
+    
+    
+    
+    
+  </body>
+</html>

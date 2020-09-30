@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>config</title>
+  </head>
+  <body>
+    <h1>config</h1>
+    
+    <h2>Base Information</h2>
+    <table>
+        <tr>
+            <td><strong>prefix</strong></td>
+            <td>config</td>
+        </tr>
+        <tr>
+            <td><strong>namespace</strong></td>
+            <td>urn:opendaylight:params:xml:ns:yang:controller:config</td>
+        </tr>
+        <tr>
+            <td><strong>revision</strong></td>
+            <td>2013-04-05</td>
+        </tr>
+        <tr>
+            <td><strong>description</strong></td>
+            <td>Optional[This module contains the base YANG definitions for NS-OS
+            configuration subsystem. The system modeled revolves around two
+            major concepts: modules and services.]</td>
+        </tr>
+        <tr>
+            <td><strong>yang-version</strong></td>
+            <td>1</td>
+        </tr>
+        <tr>
+        </tr>
+    </table>
+    
+    <div>
+        <h3>Type Definitions Summary</h3>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>
+                <a href="#service-type-ref"><strong>service-type-ref</strong></a>
+                </td>
+                <td>
+                Optional[Internal type of references to service type identity.]
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Identities Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#module-type"><strong>module-type</strong></a>
+            </td>
+            <td>
+            Optional[Module identity base type. All module identities must be derived
+            from this type. A module type uniquely defines a single atomic
+            component, such as an application. Each such component is assumed
+            to have its unique, stable and versioned configuration structure.]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#service-type"><strong>service-type</strong></a>
+            </td>
+            <td>
+            Optional[Service identity base type. All service identities must be
+            derived from this type. A service type uniquely defines a single
+            atomic API contract, such as a Java interface, a set of C
+            function declarations, or similar.
+            
+            If the service type has a corresponding Java interface, the name
+            of that interface should be attached to the derived identity MUST
+            include a java-class keyword, whose name argument points to that
+            interface.]
+            </td>
+        </tr>
+    </table>
+    <h3>Groupings Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#service-ref"><strong>service-ref</strong></a>
+            </td>
+            <td>
+            Optional[Type of references to a particular service instance. This type
+            can be used when defining module configuration to refer to a
+            particular service instance. Containers using this grouping
+            should not define anything else. The run-time implementation
+            is expected to inject a reference to the service as the value
+            of the container.]
+            </td>
+        </tr>
+    </table>
+    <h3>Child Nodes Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#modules"><strong>modules</strong></a>
+            </td>
+            <td>
+            Optional[Top level container encapsulating configuration of all modules.]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#services"><strong>services</strong></a>
+            </td>
+            <td>
+            Optional.empty
+            </td>
+        </tr>
+    </table>
+    <h3>Extensions Summary</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>
+            <a href="#java-class"><strong>java-class</strong></a>
+            </td>
+            <td>
+            Optional[YANG language extension carrying the fully-qualified name of
+            a Java class. Code generation tools use the provided reference
+            to tie a specific construct to its Java representation.]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#required-identity"><strong>required-identity</strong></a>
+            </td>
+            <td>
+            Optional[YANG language extension which indicates that a particular
+            leafref, which points to a identityref, should additionally
+            require the target node is actually set to a descendant to
+            of a particular identity.
+            
+            This is a workaround to two YANG deficiencies:
+            1) not being able to leafref instances of identityref
+            2) not being able to refine an identityref
+            
+            This extension takes one argument, name, which MUST be the name
+            of an identity. Furthermore, that identity MUST be based,
+            directly or indirectly, on the identity, which is referenced by
+            the leaf reference, which is annotated with this extension.]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#inner-state-bean"><strong>inner-state-bean</strong></a>
+            </td>
+            <td>
+            Optional[YANG language extension which indicates that a particular
+            list located under module's state should be treated as a list
+            of child state beans instead of just an ordinary list attribute]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#provided-service"><strong>provided-service</strong></a>
+            </td>
+            <td>
+            Optional[YANG language extension which indicates that a particular
+            module provides certain service. This extension can be placed
+            on identities that are based on module-type. Zero or more services
+            can be provided.
+            This extension takes one argument - name - which MUST be the name
+            of an identity. Furthermore, this identity MUST be based on
+            service-type.]
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <a href="#java-name-prefix"><strong>java-name-prefix</strong></a>
+            </td>
+            <td>
+            Optional[YANG language extension carrying java simple class name prefix
+            that will be taken into account when generating java code from
+            identities that are based on module-type.]
+            </td>
+        </tr>
+    </table>
+    
+    <h2>Type Definitions</h2>
+    <ul>
+    <li>
+        <h3 id="service-type-ref">service-type-ref</h3>
+        <ul>
+        <li>
+            Description: Internal type of references to service type identity.
+        </li>
+        <li>
+            Base type: <a href="#service-type-ref/identityref">identityref</a>
+        </li>
+        </ul>
+    </li>
+    </ul>
+    
+    <h2>Identities</h2>
+    <ul>
+    <li>
+        <h3 id="module-type">module-type</h3>
+        <ul>
+        <li>
+            Description: Module identity base type. All module identities must be derived
+            from this type. A module type uniquely defines a single atomic
+            component, such as an application. Each such component is assumed
+            to have its unique, stable and versioned configuration structure.
+        </li>
+        </ul>
+    </li>
+    <li>
+        <h3 id="service-type">service-type</h3>
+        <ul>
+        <li>
+            Description: Service identity base type. All service identities must be
+            derived from this type. A service type uniquely defines a single
+            atomic API contract, such as a Java interface, a set of C
+            function declarations, or similar.
+            
+            If the service type has a corresponding Java interface, the name
+            of that interface should be attached to the derived identity MUST
+            include a java-class keyword, whose name argument points to that
+            interface.
+        </li>
+        </ul>
+    </li>
+    </ul>
+    
+    <h2>Groupings</h2>
+    <ul>
+    <li>
+        <h3 id="service-ref">service-ref</h3>
+        <ul>
+            <li>
+                Description: Type of references to a particular service instance. This type
+                can be used when defining module configuration to refer to a
+                particular service instance. Containers using this grouping
+                should not define anything else. The run-time implementation
+                is expected to inject a reference to the service as the value
+                of the container.
+            </li>
+            <ul>
+            <strong><li>
+                leaf: type
+            </li>
+            </strong>
+            <ul>
+            <li>
+                description: Type of the service being referenced. Users of this grouping
+                should refine this leaf with required-identity pointing to
+                the actual service-type which is actually required.
+            </li>
+            <li>
+                type: <a href="#service-type-ref">service-type-ref</a>
+            </li>
+            </ul>
+            </ul>
+            <ul>
+            <strong><li>
+                leaf: name
+            </li>
+            </strong>
+            <ul>
+            <li>
+                type: <a href="#service-ref/name/leafref">leafref</a>
+            </li>
+            </ul>
+            </ul>
+        </ul>
+    </li>
+    </ul>
+    
+    <h2>Datastore Structure</h2>
+    <strong>config</strong>
+    <ul>
+    <li>
+        <a href="#modules"><strong>modules</strong>
+        </a>
+        <ul>
+        <li>
+            <a href="#modules/module"><strong>module</strong> [name]
+            </a>
+            <ul>
+            <li>
+                name
+            </li>
+            <li>
+                type
+            </li>
+            <li>
+                configuration (choice)
+                <ul>
+                <li>
+                <i>reconnect-immediately-strategy-factory</i>(A)
+                <ul>
+                <li>
+                    <i>timeout2</i>(A)
+                </li>
+                <li>
+                    <a href="#modules/module/executor2"><strong><i>executor2</i></strong>(A)
+                    </a>
+                    <ul>
+                    <li>
+                        <i>type</i>(A)(U)
+                    </li>
+                    <li>
+                        <i>name</i>(A)(U)
+                    </li>
+                    </ul>
+                </li>
+                </ul>
+                </li>
+                <li>
+                <i>timed-reconnect-strategy-factory</i>(A)
+                <ul>
+                <li>
+                    <i>deadline</i>(A)
+                </li>
+                <li>
+                    <i>max-attempts</i>(A)
+                </li>
+                <li>
+                    <i>max-sleep</i>(A)
+                </li>
+                <li>
+                    <i>min-sleep</i>(A)
+                </li>
+                <li>
+                    <i>sleep-factor</i>(A)
+                </li>
+                <li>
+                    <i>connect-time</i>(A)
+                </li>
+                <li>
+                    <a href="#modules/module/executor3"><strong><i>executor3</i></strong>(A)
+                    </a>
+                    <ul>
+                    <li>
+                        <i>type</i>(A)(U)
+                    </li>
+                    <li>
+                        <i>name</i>(A)(U)
+                    </li>
+                    </ul>
+                </li>
+                </ul>
+                </li>
+                <li>
+                <i>never-reconnect-strategy-factory</i>(A)
+                <ul>
+                <li>
+                    <i>timeout</i>(A)
+                </li>
+                <li>
+                    <a href="#modules/module/executor"><strong><i>executor</i></strong>(A)
+                    </a>
+                    <ul>
+                    <li>
+                        <i>type</i>(A)(U)
+                    </li>
+                    <li>
+                        <i>name</i>(A)(U)
+                    </li>
+                    </ul>
+                </li>
+                </ul>
+                </li>
+                </ul>
+            </li>
+            <li>
+                state (choice)
+                <ul>
+                </ul>
+            </li>
+            </ul>
+        </li>
+        </ul>
+    </li>
+    <li>
+        <a href="#services"><strong>services</strong>
+        </a>
+        <ul>
+        <li>
+            <a href="#services/service"><strong>service</strong> [type]
+            </a>
+            <ul>
+            <li>
+                type
+            </li>
+            <li>
+                <a href="#services/service/instance"><strong>instance</strong> [name]
+                </a>
+                <ul>
+                <li>
+                    name
+                </li>
+                <li>
+                    provider
+                </li>
+                </ul>
+            </li>
+            </ul>
+        </li>
+        </ul>
+    </li>
+    </ul>
+    
+    <h2>Child nodes</h2>
+    
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong><a href="#modules">modules</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#services">services</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3 id="modules">
+        modules
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>config:modules</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong><a href="#modules/module">module</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;modules xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;<!-- Child nodes -->
+        <!-- module -->
+            &lt!-- See <a href="#modules/module">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;module xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;...&lt;/module&gt;
+        
+        &lt;/modules&gt;
+    </pre>
+    </h3>
+    <h3 id="modules/module">
+        modules/module
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>config:modules/module/{name}</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>name</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong>type</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;module xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;<!-- Child nodes -->
+        <!-- name -->
+            &lt;name xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;...&lt;/name&gt;
+        <!-- type -->
+            &lt;type xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;...&lt;/type&gt;
+        <!-- configuration -->
+            <!-- noop -->
+        <!-- state -->
+            <!-- noop -->
+        
+        &lt;/module&gt;
+    </pre>
+    </h3>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;module xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;<!-- Child nodes -->
+        <!-- never-reconnect-strategy-factory -->
+            <!-- noop -->
+        <!-- timed-reconnect-strategy-factory -->
+            <!-- noop -->
+        <!-- reconnect-immediately-strategy-factory -->
+            <!-- noop -->
+        
+        &lt;/module&gt;
+    </pre>
+    </h3>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>timeout</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#modules/module/executor">executor</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;module xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;<!-- Child nodes -->
+        <!-- timeout -->
+            &lt;timeout xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/timeout&gt;
+        <!-- executor -->
+            &lt!-- See <a href="#modules/module/executor">definition</a>
+             for child nodes.  --&gt
+            &lt;executor xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/executor&gt;
+        
+        &lt;/module&gt;
+    </pre>
+    </h3>
+    <h3 id="modules/module/executor">
+        modules/module/executor
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>config:modules/module/{name}/executor</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>type</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong>name</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;executor xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;<!-- Child nodes -->
+        <!-- type -->
+            &lt;type xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/type&gt;
+        <!-- name -->
+            &lt;name xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/name&gt;
+        
+        &lt;/executor&gt;
+    </pre>
+    </h3>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>deadline</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    <li><strong>max-attempts</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong>max-sleep</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong>min-sleep</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong>sleep-factor</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong>connect-time</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#modules/module/executor3">executor3</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;module xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;<!-- Child nodes -->
+        <!-- deadline -->
+            &lt;deadline xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/deadline&gt;
+        <!-- max-attempts -->
+            &lt;max-attempts xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/max-attempts&gt;
+        <!-- max-sleep -->
+            &lt;max-sleep xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/max-sleep&gt;
+        <!-- min-sleep -->
+            &lt;min-sleep xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/min-sleep&gt;
+        <!-- sleep-factor -->
+            &lt;sleep-factor xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/sleep-factor&gt;
+        <!-- connect-time -->
+            &lt;connect-time xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/connect-time&gt;
+        <!-- executor3 -->
+            &lt!-- See <a href="#modules/module/executor3">definition</a>
+             for child nodes.  --&gt
+            &lt;executor3 xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/executor3&gt;
+        
+        &lt;/module&gt;
+    </pre>
+    </h3>
+    <h3 id="modules/module/executor3">
+        modules/module/executor3
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>config:modules/module/{name}/executor3</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>type</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong>name</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;executor3 xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;<!-- Child nodes -->
+        <!-- type -->
+            &lt;type xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/type&gt;
+        <!-- name -->
+            &lt;name xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/name&gt;
+        
+        &lt;/executor3&gt;
+    </pre>
+    </h3>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>timeout2</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#modules/module/executor2">executor2</a>
+    </strong> (container)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;module xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;<!-- Child nodes -->
+        <!-- timeout2 -->
+            &lt;timeout2 xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/timeout2&gt;
+        <!-- executor2 -->
+            &lt!-- See <a href="#modules/module/executor2">definition</a>
+             for child nodes.  --&gt
+            &lt;executor2 xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/executor2&gt;
+        
+        &lt;/module&gt;
+    </pre>
+    </h3>
+    <h3 id="modules/module/executor2">
+        modules/module/executor2
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>config:modules/module/{name}/executor2</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>type</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    <li><strong>name</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;executor2 xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;<!-- Child nodes -->
+        <!-- type -->
+            &lt;type xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/type&gt;
+        <!-- name -->
+            &lt;name xmlns="urn:opendaylight:params:xml:ns:yang:controller:protocol:framework"&gt;...&lt;/name&gt;
+        
+        &lt;/executor2&gt;
+    </pre>
+    </h3>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;module xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;<!-- Child nodes -->
+        
+        &lt;/module&gt;
+    </pre>
+    </h3>
+    <h3 id="services">
+        services
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>config:services</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong><a href="#services/service">service</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;services xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;<!-- Child nodes -->
+        <!-- service -->
+            &lt!-- See <a href="#services/service">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;service xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;...&lt;/service&gt;
+        
+        &lt;/services&gt;
+    </pre>
+    </h3>
+    <h3 id="services/service">
+        services/service
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>config:services/service/{type}</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>type</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    <li><strong><a href="#services/service/instance">instance</a>
+    </strong> (list)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;service xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;<!-- Child nodes -->
+        <!-- type -->
+            &lt;type xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;...&lt;/type&gt;
+        <!-- instance -->
+            &lt!-- See <a href="#services/service/instance">definition</a>
+             for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            &lt;instance xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;...&lt;/instance&gt;
+        
+        &lt;/service&gt;
+    </pre>
+    </h3>
+    <h3 id="services/service/instance">
+        services/service/instance
+    </h3>
+    <dl>
+      <dt>XML Path</dt>
+      <dd></dd>
+      <dt>Restconf path</dt>
+      <dd><code>config:services/service/{type}/instance/{name}</code></dd>
+    </dl>
+    <h3>Direct children</h3>
+    <ul>
+    <li><strong>name</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>false</strong></li>
+    </ul>
+    </li>
+    <li><strong>provider</strong> (leaf)
+    <ul>
+        <li>configuration data: <strong>true</strong></li>
+        <li>mandatory: <strong>true</strong></li>
+    </ul>
+    </li>
+    </ul>
+    
+    <h3>XML example</h3>
+    <pre>
+        &lt;instance xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;<!-- Child nodes -->
+        <!-- name -->
+            &lt;name xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;...&lt;/name&gt;
+        <!-- provider -->
+            &lt;provider xmlns="urn:opendaylight:params:xml:ns:yang:controller:config"&gt;...&lt;/provider&gt;
+        
+        &lt;/instance&gt;
+    </pre>
+    </h3>
+    
+    
+    
+    
+    <h2>Extensions</h2>
+    <li>
+        <h3 id="java-class">java-class</h3>
+    </li>
+    <ul>
+        <li>
+            Description: YANG language extension carrying the fully-qualified name of
+            a Java class. Code generation tools use the provided reference
+            to tie a specific construct to its Java representation.
+        </li>
+        <li>
+            Argument: name
+        </li>
+    </ul>
+    <li>
+        <h3 id="required-identity">required-identity</h3>
+    </li>
+    <ul>
+        <li>
+            Description: YANG language extension which indicates that a particular
+            leafref, which points to a identityref, should additionally
+            require the target node is actually set to a descendant to
+            of a particular identity.
+            
+            This is a workaround to two YANG deficiencies:
+            1) not being able to leafref instances of identityref
+            2) not being able to refine an identityref
+            
+            This extension takes one argument, name, which MUST be the name
+            of an identity. Furthermore, that identity MUST be based,
+            directly or indirectly, on the identity, which is referenced by
+            the leaf reference, which is annotated with this extension.
+        </li>
+        <li>
+            Argument: name
+        </li>
+    </ul>
+    <li>
+        <h3 id="inner-state-bean">inner-state-bean</h3>
+    </li>
+    <ul>
+        <li>
+            Description: YANG language extension which indicates that a particular
+            list located under module's state should be treated as a list
+            of child state beans instead of just an ordinary list attribute
+        </li>
+    </ul>
+    <li>
+        <h3 id="provided-service">provided-service</h3>
+    </li>
+    <ul>
+        <li>
+            Description: YANG language extension which indicates that a particular
+            module provides certain service. This extension can be placed
+            on identities that are based on module-type. Zero or more services
+            can be provided.
+            This extension takes one argument - name - which MUST be the name
+            of an identity. Furthermore, this identity MUST be based on
+            service-type.
+        </li>
+        <li>
+            Argument: name
+        </li>
+    </ul>
+    <li>
+        <h3 id="java-name-prefix">java-name-prefix</h3>
+    </li>
+    <ul>
+        <li>
+            Description: YANG language extension carrying java simple class name prefix
+            that will be taken into account when generating java code from
+            identities that are based on module-type.
+        </li>
+        <li>
+            Argument: java-prefix
+        </li>
+    </ul>
+    
+    
+  </body>
+</html>

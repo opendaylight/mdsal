@@ -7,18 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.yang.unified.doc.generator.maven;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.function.Function;
+
+import com.google.common.collect.Maps;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +24,14 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 import org.sonatype.plexus.build.incremental.DefaultBuildContext;
 
+import static org.junit.Assert.*;
+
 public class DocGenTest {
     public static final String FS = File.separator;
     private static final String TEST_PATH = "target" + FS + "test" + FS + "site";
     private static final File GENERATOR_OUTPUT_DIR = new File(TEST_PATH);
+    private static final File HTML_PATH = new File("src" + FS + "test" + FS + "resources" + FS + "doc-gen-html");
+    private static Map<String, File> expectedHtml;
 
     @Before
     public void init() {
@@ -37,14 +39,15 @@ public class DocGenTest {
             deleteTestDir(GENERATOR_OUTPUT_DIR);
         }
         assertTrue(GENERATOR_OUTPUT_DIR.mkdirs());
+        initExpectedHtml();
     }
 
-    @After
-    public void cleanUp() {
-        if (GENERATOR_OUTPUT_DIR.exists()) {
-            deleteTestDir(GENERATOR_OUTPUT_DIR);
-        }
-    }
+//    @After
+//    public void cleanUp() {
+//        if (GENERATOR_OUTPUT_DIR.exists()) {
+//            deleteTestDir(GENERATOR_OUTPUT_DIR);
+//        }
+//    }
 
     @Test
     public void testListGeneration() throws Exception {
@@ -55,6 +58,20 @@ public class DocGenTest {
         Collection<File> generatedFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR,
             Set.copyOf(context.getModules()), (module, representation) -> Optional.empty());
         assertEquals(4, generatedFiles.size());
+        for (File generatedFile : generatedFiles) {
+            final File file = expectedHtml.get(generatedFile.getName());
+            assertNotNull(file);
+            final String actual = Files.readString(generatedFile.toPath());
+            final String expected = Files.readString(file.toPath());
+            assertEquals(actual, expected);
+        }
+    }
+
+    private static void initExpectedHtml() {
+        assertTrue(HTML_PATH.exists());
+        final File[] files = HTML_PATH.listFiles();
+        assertNotNull(files);
+        expectedHtml = Maps.uniqueIndex(Arrays.asList(files), File::getName);
     }
 
     private static List<File> getSourceFiles(final String path) throws Exception {
