@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.yanglib.rfc8525;
 import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.annotations.Beta;
-import com.google.common.collect.Collections2;
 import java.io.IOException;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -21,6 +21,8 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNo
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingIdentityCodec;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
+import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.$YangModuleInfoImpl;
@@ -29,13 +31,9 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 
 @Beta
 @NonNullByDefault
@@ -50,15 +48,13 @@ public final class YangLibrarySupport implements YangLibSupport {
     @Inject
     public YangLibrarySupport(final YangParserFactory parserFactory, final BindingRuntimeGenerator generator,
             final BindingCodecTreeFactory codecFactory) throws YangParserException, IOException {
-        final YangModuleInfo yangLibModule = $YangModuleInfoImpl.getInstance();
+        final ModuleInfoSnapshotBuilder builder = new ModuleInfoSnapshotBuilder("yanglib", parserFactory);
+        builder.registerModuleInfos(List.of($YangModuleInfoImpl.getInstance()));
+        final ModuleInfoSnapshot snapshot = builder.build();
+        context = snapshot.getEffectiveModelContext();
 
-        context = parserFactory.createParser()
-                .addLibSources(Collections2.transform(yangLibModule.getImportedModules(),
-                    YangLibrarySupport::createSource))
-                .addSource(createSource(yangLibModule))
-                .buildEffectiveModel();
-        final BindingCodecTree codecTree = codecFactory.create(DefaultBindingRuntimeContext.create(
-            generator.generateTypeMapping(context), SimpleStrategy.INSTANCE));
+        final BindingCodecTree codecTree = codecFactory.create(new DefaultBindingRuntimeContext(
+            generator.generateTypeMapping(context), snapshot));
 
         this.identityCodec = codecTree.getIdentityCodec();
         this.codec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(YangLibrary.class)));
@@ -69,11 +65,5 @@ public final class YangLibrarySupport implements YangLibSupport {
     public MountPointContextFactory createMountPointContextFactory(final MountPointIdentifier mountId,
             final SchemaContextResolver resolver) {
         return new MountPointContextFactoryImpl(mountId, resolver, context, identityCodec, codec, legacyCodec);
-    }
-
-    private static YangTextSchemaSource createSource(final YangModuleInfo info) {
-        final QName name = info.getName();
-        return YangTextSchemaSource.delegateForByteSource(
-            RevisionSourceIdentifier.create(name.getLocalName(), name.getRevision()), info.getYangTextByteSource());
     }
 }
