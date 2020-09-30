@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.lock.qual.Holding;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
-import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
+import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotResolver;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
@@ -30,7 +30,7 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
     private static final Logger LOG = LoggerFactory.getLogger(RegularYangModuleInfoRegistry.class);
 
     private final ComponentFactory contextFactory;
-    private final ModuleInfoSnapshotBuilder moduleInfoRegistry;
+    private final ModuleInfoSnapshotResolver moduleInfoRegistry;
 
     @GuardedBy("this")
     private ComponentInstance currentInstance;
@@ -43,7 +43,7 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
 
     RegularYangModuleInfoRegistry(final ComponentFactory contextFactory, final YangParserFactory factory) {
         this.contextFactory = requireNonNull(contextFactory);
-        moduleInfoRegistry = new ModuleInfoSnapshotBuilder("binding-dom-codec", factory);
+        moduleInfoRegistry = new ModuleInfoSnapshotResolver("binding-dom-codec", factory);
     }
 
     // Invocation from scanner, we may want to ignore this in order to not process partial updates
@@ -85,7 +85,7 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
     private void updateService() {
         final ModuleInfoSnapshot newSnapshot;
         try {
-            newSnapshot = moduleInfoRegistry.build();
+            newSnapshot = moduleInfoRegistry.takeSnapshot();
         } catch (NoSuchElementException e) {
             LOG.debug("No snapshot available", e);
             return;
