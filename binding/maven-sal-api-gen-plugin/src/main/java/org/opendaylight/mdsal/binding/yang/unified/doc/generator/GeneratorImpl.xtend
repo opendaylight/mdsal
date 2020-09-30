@@ -7,11 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.yang.unified.doc.generator
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.io.BufferedWriter
 import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 import java.util.ArrayList
 import java.util.Collection
 import java.util.HashMap
@@ -54,7 +57,9 @@ import org.opendaylight.yangtools.yang.model.api.type.Int16TypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.Int32TypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.Int64TypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint
+import org.opendaylight.yangtools.yang.model.api.type.LengthRestrictedTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint
+import org.opendaylight.yangtools.yang.model.api.type.RangeRestrictedTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.Uint8TypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.Uint16TypeDefinition
@@ -81,7 +86,7 @@ class GeneratorImpl {
     def generate(BuildContext buildContext, EffectiveModelContext context, File targetPath, Set<Module> modulesToGen)
             throws IOException {
         path = targetPath;
-        path.mkdirs();
+        Files.createDirectories(path.getParentFile().toPath())
         val it = new HashSet;
         for (module : modulesToGen) {
             add(generateDocumentation(buildContext, module, context));
@@ -93,15 +98,22 @@ class GeneratorImpl {
         val destination = new File(path, '''«module.name».html''')
         this.ctx = ctx;
         module.imports.forEach[importModule | this.imports.put(importModule.prefix, importModule.moduleName)]
+        var OutputStreamWriter fw
+        var BufferedWriter bw
         try {
-            val fw = new OutputStreamWriter(buildContext.newFileOutputStream(destination), StandardCharsets.UTF_8)
-            val bw = new BufferedWriter(fw)
+            fw = new OutputStreamWriter(buildContext.newFileOutputStream(destination), StandardCharsets.UTF_8)
+            bw = new BufferedWriter(fw)
             currentModule = module;
             bw.append(generate(module, ctx));
-            bw.close();
-            fw.close();
         } catch (IOException e) {
             LOG.error("Failed to emit file {}", destination, e);
+        } finally {
+            if (bw !== null) {
+                bw.close();
+            }
+            if (fw !== null) {
+                fw.close();
+            }
         }
         return destination;
     }
@@ -765,7 +777,7 @@ class GeneratorImpl {
         «module.childNodes.treeSet(YangInstanceIdentifier.builder.build())»
     '''
 
-    private def dispatch CharSequence tree(ChoiceSchemaNode node,YangInstanceIdentifier path) '''
+    private def CharSequence tree(ChoiceSchemaNode node,YangInstanceIdentifier path) '''
         «node.nodeName» (choice)
         «casesTree(node.cases, path)»
     '''
@@ -781,17 +793,26 @@ class GeneratorImpl {
         </ul>
     '''
 
-    private def dispatch CharSequence tree(DataSchemaNode node,YangInstanceIdentifier path) '''
-        «node.nodeName»
-    '''
+    private def CharSequence tree(DataSchemaNode node,YangInstanceIdentifier path) {
+        if (node instanceof ChoiceSchemaNode) {
+            return tree(node as ChoiceSchemaNode, path)
+        }
+        if (node instanceof ListSchemaNode) {
+            return tree(node as ListSchemaNode, path)
+        }
+        if (node instanceof ContainerSchemaNode) {
+            return tree(node as ContainerSchemaNode, path)
+        }
+        return node.nodeName
+    }
 
-    private def dispatch CharSequence tree(ListSchemaNode node,YangInstanceIdentifier path) '''
+    private def CharSequence tree(ListSchemaNode node,YangInstanceIdentifier path) '''
         «val newPath = path.append(node)»
         «localLink(newPath,node.nodeName)»
         «node.childNodes.treeSet(newPath)»
     '''
 
-    private def dispatch CharSequence tree(ContainerSchemaNode node,YangInstanceIdentifier path) '''
+    private def CharSequence tree(ContainerSchemaNode node,YangInstanceIdentifier path) '''
         «val newPath = path.append(node)»
         «localLink(newPath,node.nodeName)»
         «node.childNodes.treeSet(newPath)»
@@ -863,7 +884,9 @@ class GeneratorImpl {
         } else if(node instanceof LeafListSchemaNode) {
             return '''
                 «printInfo(node, "leaf-list")»
-                «listItem("type", node.type?.QName.localName)»
+                «IF node.type !== null»
+                    «listItem("type", node.type.QName.localName)»
+                «ENDIF»
                 </ul>
             '''
         } else if(node instanceof ListSchemaNode) {
@@ -1021,32 +1044,31 @@ class GeneratorImpl {
 
     '''
 
-    private def dispatch CharSequence asXmlExampleTag(LeafSchemaNode node, YangInstanceIdentifier identifier) '''
-        «node.QName.xmlExampleTag("...")»
-    '''
-
-    private def dispatch CharSequence asXmlExampleTag(LeafListSchemaNode node, YangInstanceIdentifier identifier) '''
-        &lt!-- This node could appear multiple times --&gt
-        «node.QName.xmlExampleTag("...")»
-    '''
-
-    private def dispatch CharSequence asXmlExampleTag(ContainerSchemaNode node, YangInstanceIdentifier identifier) '''
-        &lt!-- See «localLink(identifier.append(node),"definition")» for child nodes.  --&gt
-        «node.QName.xmlExampleTag("...")»
-    '''
-
-
-    private def dispatch CharSequence asXmlExampleTag(ListSchemaNode node, YangInstanceIdentifier identifier) '''
-        &lt!-- See «localLink(identifier.append(node),"definition")» for child nodes.  --&gt
-        &lt!-- This node could appear multiple times --&gt
-        «node.QName.xmlExampleTag("...")»
-    '''
-
-
-    private def dispatch CharSequence asXmlExampleTag(DataSchemaNode node, YangInstanceIdentifier identifier) '''
-        <!-- noop -->
-    '''
-
+    private def CharSequence asXmlExampleTag(DataSchemaNode node, YangInstanceIdentifier identifier) {
+        if (node instanceof LeafSchemaNode) {
+            return '''«node.QName.xmlExampleTag("...")»'''
+        }
+        if (node instanceof LeafListSchemaNode) {
+            return '''
+            &lt!-- This node could appear multiple times --&gt
+            «node.QName.xmlExampleTag("...")»
+            '''
+        }
+        if (node instanceof ContainerSchemaNode) {
+            return '''
+            &lt!-- See «localLink(identifier.append(node),"definition")» for child nodes.  --&gt
+            «node.QName.xmlExampleTag("...")»
+            '''
+        }
+        if (node instanceof ListSchemaNode) {
+            return '''
+            &lt!-- See «localLink(identifier.append(node),"definition")» for child nodes.  --&gt
+            &lt!-- This node could appear multiple times --&gt
+            «node.QName.xmlExampleTag("...")»
+            '''
+        }
+        return "<!-- noop -->"
+    }
 
     def xmlExampleTag(QName name, CharSequence data) {
         return '''&lt;«name.localName» xmlns="«name.namespace»"&gt;«data»&lt;/«name.localName»&gt;'''
@@ -1061,13 +1083,7 @@ class GeneratorImpl {
         </h«level»>
     '''
 
-
-
-    private def dispatch CharSequence printInfo(DataSchemaNode node, int level, YangInstanceIdentifier path) '''
-        «header(level+1,node.QName)»
-    '''
-
-    private def dispatch CharSequence printInfo(ContainerSchemaNode node, int level, YangInstanceIdentifier path) '''
+    private def CharSequence printInfo(ContainerSchemaNode node, int level, YangInstanceIdentifier path) '''
         «val newPath = path.append(node)»
         «header(level,newPath)»
         <dl>
@@ -1079,7 +1095,7 @@ class GeneratorImpl {
         «node.childNodes.printChildren(level,newPath)»
     '''
 
-    private def dispatch CharSequence printInfo(ListSchemaNode node, int level, YangInstanceIdentifier path) '''
+    private def CharSequence printInfo(ListSchemaNode node, int level, YangInstanceIdentifier path) '''
         «val newPath = path.append(node)»
         «header(level,newPath)»
         <dl>
@@ -1091,12 +1107,12 @@ class GeneratorImpl {
         «node.childNodes.printChildren(level,newPath)»
     '''
 
-    private def dispatch CharSequence printInfo(ChoiceSchemaNode node, int level, YangInstanceIdentifier path) '''
+    private def CharSequence printInfo(ChoiceSchemaNode node, int level, YangInstanceIdentifier path) '''
         «val Set<DataSchemaNode> choiceCases = new HashSet(node.cases)»
         «choiceCases.printChildren(level, path)»
     '''
 
-    private def dispatch CharSequence printInfo(CaseSchemaNode node, int level, YangInstanceIdentifier path) '''
+    private def CharSequence printInfo(CaseSchemaNode node, int level, YangInstanceIdentifier path) '''
         «node.childNodes.printChildren(level, path)»
     '''
 
@@ -1302,10 +1318,6 @@ class GeneratorImpl {
         </ul>
     '''
 
-    private def dispatch CharSequence tree(Void obj, YangInstanceIdentifier path) '''
-    '''
-
-
 
     /* #################### RESTRICTIONS #################### */
     private def restrictions(TypeDefinition<?> type) '''
@@ -1314,54 +1326,16 @@ class GeneratorImpl {
         «type.toRange»
     '''
 
-    private def dispatch toLength(TypeDefinition<?> type) {
-    }
-
-    private def dispatch toLength(BinaryTypeDefinition type) '''
-        «type.lengthConstraint.toLengthStmt»
+    private def toLength(TypeDefinition<?> type) '''
+        «IF type instanceof LengthRestrictedTypeDefinition»
+            «type.lengthConstraint.toLengthStmt»
+        «ENDIF»
     '''
 
-    private def dispatch toLength(StringTypeDefinition type) '''
-        «type.lengthConstraint.toLengthStmt»
-    '''
-
-    private def dispatch toRange(TypeDefinition<?> type) {
-    }
-
-    private def dispatch toRange(DecimalTypeDefinition type) '''
-        «type.rangeConstraint.toRangeStmt»
-    '''
-
-    private def dispatch toRange(Int8TypeDefinition type) '''
-        «type.rangeConstraint.toRangeStmt»
-    '''
-
-    private def dispatch toRange(Int16TypeDefinition type) '''
-        «type.rangeConstraint.toRangeStmt»
-    '''
-
-    private def dispatch toRange(Int32TypeDefinition type) '''
-        «type.rangeConstraint.toRangeStmt»
-    '''
-
-    private def dispatch toRange(Int64TypeDefinition type) '''
-        «type.rangeConstraint.toRangeStmt»
-    '''
-
-    private def dispatch toRange(Uint8TypeDefinition type) '''
-        «type.rangeConstraint.toRangeStmt»
-    '''
-
-    private def dispatch toRange(Uint16TypeDefinition type) '''
-        «type.rangeConstraint.toRangeStmt»
-    '''
-
-    private def dispatch toRange(Uint32TypeDefinition type) '''
-        «type.rangeConstraint.toRangeStmt»
-    '''
-
-    private def dispatch toRange(Uint64TypeDefinition type) '''
-        «type.rangeConstraint.toRangeStmt»
+    private def toRange(TypeDefinition<?> type) '''
+        «IF type instanceof RangeRestrictedTypeDefinition»
+            «type.rangeConstraint.toRangeStmt»
+        «ENDIF»
     '''
 
     def toLengthStmt(Optional<LengthConstraint> lengths) '''
@@ -1467,30 +1441,40 @@ class GeneratorImpl {
         return result.toString
     }
 
-    private def dispatch addedByInfo(SchemaNode node) '''
-    '''
+    private def addedByInfo(SchemaNode node) {
+        if (node instanceof DataSchemaNode) {
+            return addedByInfo(node as DataSchemaNode)
+        }
+        return ""
+    }
 
-    private def dispatch addedByInfo(DataSchemaNode node) '''
+    private def addedByInfo(DataSchemaNode node) '''
         «IF node.augmenting»(A)«ENDIF»«IF node.addedByUses»(U)«ENDIF»
     '''
 
-    private def dispatch isAddedBy(SchemaNode node) {
+    private def isAddedBy(SchemaNode node) {
+        if (node instanceof DataSchemaNode) {
+            val dataSchemaNode = node as DataSchemaNode
+            return dataSchemaNode.augmenting || dataSchemaNode.addedByUses
+        }
         return false
     }
 
-    private def dispatch isAddedBy(DataSchemaNode node) {
-        return node.augmenting || node.addedByUses
+    private def nodeName(SchemaNode node) {
+        if (node instanceof ContainerSchemaNode) {
+            return nodeName(node as ContainerSchemaNode);
+        }
+        if (node instanceof ListSchemaNode) {
+            return nodeName(node as ListSchemaNode);
+        }
+        val addedByInfo = node.addedByInfo
+        if (node.isAddedBy) {
+            return '''«italic(node.QName.localName)»«addedByInfo»'''
+        }
+        return '''«node.QName.localName»«addedByInfo»'''
     }
 
-    private def dispatch nodeName(SchemaNode node) '''
-        «IF node.isAddedBy»
-            «italic(node.QName.localName)»«node.addedByInfo»
-        «ELSE»
-            «node.QName.localName»«node.addedByInfo»
-        «ENDIF»
-    '''
-
-    private def dispatch nodeName(ContainerSchemaNode node) '''
+    private def nodeName(ContainerSchemaNode node) '''
         «IF node.isAddedBy»
             «strong(italic(node.QName.localName))»«node.addedByInfo»
         «ELSE»
@@ -1498,7 +1482,7 @@ class GeneratorImpl {
         «ENDIF»
     '''
 
-    private def dispatch nodeName(ListSchemaNode node) '''
+    private def nodeName(ListSchemaNode node) '''
         «IF node.isAddedBy»
             «strong(italic(node.QName.localName))» «IF node.keyDefinition !== null && !node.keyDefinition.empty»«node.listKeys»«ENDIF»«node.addedByInfo»
         «ELSE»
