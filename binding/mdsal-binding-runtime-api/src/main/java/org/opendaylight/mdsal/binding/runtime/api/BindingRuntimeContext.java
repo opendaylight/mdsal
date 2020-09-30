@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.runtime.api;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.binding.Action;
+import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
@@ -130,5 +132,8 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
 
     @NonNull ImmutableMap<AugmentationIdentifier, Type> getAvailableAugmentationTypes(DataNodeContainer container);
 
+    @NonNull <T extends Augmentable<?>> Collection<? extends Type> getAllAugmentations(Class<T> augmentable);
+
     @NonNull Class<?> getIdentityClass(QName input);
+
 }

@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.runtime.spi;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ForwardingObject;
 import com.google.common.collect.ImmutableMap;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.yangtools.yang.binding.Action;
+import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
@@ -96,6 +98,11 @@ public abstract class ForwardingBindingRuntimeContext extends ForwardingObject i
     @Override
     public ImmutableMap<AugmentationIdentifier, Type> getAvailableAugmentationTypes(final DataNodeContainer container) {
         return delegate().getAvailableAugmentationTypes(container);
+    }
+
+    @Override
+    public <T extends Augmentable<?>> Collection<? extends Type> getAllAugmentations(Class<T> augmentable) {
+        return delegate().getAllAugmentations(augmentable);
     }
 
     @Override
