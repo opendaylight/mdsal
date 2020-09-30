@@ -120,7 +120,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     private Module getModule(final Class<?> modeledClass) {
         final QNameModule moduleName = BindingReflections.getQNameModule(modeledClass);
         final BindingRuntimeContext localRuntimeContext = getRuntimeContext();
-        final Module module = localRuntimeContext.getSchemaContext().findModule(moduleName).orElse(null);
+        final Module module = localRuntimeContext.getEffectiveModelContext().findModule(moduleName).orElse(null);
         if (module != null) {
             return module;
         }
