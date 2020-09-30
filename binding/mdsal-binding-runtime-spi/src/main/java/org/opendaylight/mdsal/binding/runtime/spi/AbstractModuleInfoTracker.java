@@ -103,7 +103,7 @@ abstract class AbstractModuleInfoTracker implements Mutable {
         this.ctxResolver = requireNonNull(resolver);
     }
 
-    public final synchronized List<ObjectRegistration<YangModuleInfo>> registerModuleInfos(
+    final synchronized List<ObjectRegistration<YangModuleInfo>> registerModuleInfos(
             final Iterable<? extends YangModuleInfo> moduleInfos) {
         final List<ObjectRegistration<YangModuleInfo>> ret = new ArrayList<>();
         for (YangModuleInfo yangModuleInfo : moduleInfos) {
