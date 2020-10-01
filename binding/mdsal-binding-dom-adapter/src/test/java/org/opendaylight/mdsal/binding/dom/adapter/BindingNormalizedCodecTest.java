@@ -80,10 +80,10 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
     }
 
     @Test
-    public void testGetRpcMethodToSchemaPath() {
+    public void testGetRpcMethodToQName() {
         codec.onModelContextUpdated(context);
         final List<String> retMap = codec.currentSerializer()
-                .getRpcMethodToSchemaPath(OpendaylightTestRpcServiceService.class).keySet().stream()
+                .getRpcMethodToQName(OpendaylightTestRpcServiceService.class).keySet().stream()
                 .map(Method::getName)
                 .collect(Collectors.toList());
         assertTrue(retMap.contains("rockTheHouse"));
