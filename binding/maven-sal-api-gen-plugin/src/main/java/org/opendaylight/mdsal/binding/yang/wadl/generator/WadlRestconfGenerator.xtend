@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.yang.wadl.generator
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.io.BufferedWriter
 import java.io.File
 import java.io.OutputStreamWriter
@@ -37,7 +39,9 @@ class WadlRestconfGenerator {
     var List<LeafSchemaNode> pathListParams;
 
     new(BuildContext buildContext, File targetPath) {
-        if (!targetPath.exists) targetPath.mkdirs
+        if (!targetPath.exists) {
+            checkState(targetPath.mkdirs, "Unable to create directory: %s", targetPath);
+        }
         path = targetPath
         this.buildContext = buildContext
     }
@@ -61,11 +65,22 @@ class WadlRestconfGenerator {
 
                 this.module = module
                 val destination = new File(path, '''«module.name».wadl''')
-                val fw = new OutputStreamWriter(buildContext.newFileOutputStream(destination), StandardCharsets.UTF_8)
-                val bw = new BufferedWriter(fw)
-                bw.append(application);
-                bw.close();
-                fw.close();
+                var OutputStreamWriter fw
+                var BufferedWriter bw
+                try {
+                    fw = new OutputStreamWriter(buildContext.newFileOutputStream(destination), StandardCharsets.UTF_8)
+                    bw = new BufferedWriter(fw)
+                    bw.append(application);
+                } catch (IOException e) {
+                    LOG.error("Failed to emit file {}", destination, e);
+                } finally {
+                    if (bw !== null) {
+                        bw.close();
+                    }
+                    if (fw !== null) {
+                        fw.close();
+                    }
+                }
                 result.add(destination)
             }
         }
@@ -246,9 +261,5 @@ class WadlRestconfGenerator {
         <representation mediaType="application/yang.data+xml" element="«elementData»"/>
         <representation mediaType="application/yang.data+json" element="«elementData»"/>
     '''
-
-    private def boolean isListOrContainer(DataSchemaNode schemaNode) {
-        return (schemaNode instanceof ListSchemaNode || schemaNode instanceof ContainerSchemaNode)
-    }
 
 }
