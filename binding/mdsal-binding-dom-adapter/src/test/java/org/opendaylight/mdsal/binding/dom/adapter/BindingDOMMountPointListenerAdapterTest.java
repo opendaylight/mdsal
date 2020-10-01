@@ -13,12 +13,13 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.google.common.util.concurrent.MoreExecutors;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
@@ -26,6 +27,7 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMMountPointListenerAdapterTest {
 
     private BindingDOMMountPointListenerAdapter<?> bindingDOMMountPointListenerAdapter;
@@ -37,7 +39,6 @@ public class BindingDOMMountPointListenerAdapterTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
         final BindingBrokerTestFactory testFactory = new BindingBrokerTestFactory();
         testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
         final BindingTestContext testContext = testFactory.getTestContext();

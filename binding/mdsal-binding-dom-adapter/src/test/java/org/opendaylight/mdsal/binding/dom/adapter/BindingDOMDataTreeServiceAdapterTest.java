@@ -12,17 +12,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.google.common.collect.ImmutableSet;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.DataTreeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeLoopException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMDataTreeServiceAdapterTest extends AbstractAdapterTest {
 
     private BindingDOMDataTreeServiceAdapter bindingDOMDataTreeServiceAdapter;
@@ -33,7 +35,6 @@ public class BindingDOMDataTreeServiceAdapterTest extends AbstractAdapterTest {
     @Override
     @Before
     public void before() {
-        initMocks(this);
         super.before();
 
         bindingDOMDataTreeServiceAdapter = new BindingDOMDataTreeServiceAdapter(codec, delegate);

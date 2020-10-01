@@ -25,8 +25,9 @@ import com.google.common.util.concurrent.SettableFuture;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
@@ -44,6 +45,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ActionServiceAdapterTest extends AbstractAdapterTest {
     private static final NodeIdentifier FOO_INPUT = NodeIdentifier.create(operationInputQName(Foo.QNAME.getModule()));
     private static final NodeIdentifier FOO_OUTPUT = NodeIdentifier.create(operationOutputQName(Foo.QNAME.getModule()));
@@ -65,7 +67,6 @@ public class ActionServiceAdapterTest extends AbstractAdapterTest {
     @Override
     @Before
     public void before() {
-        MockitoAnnotations.initMocks(this);
         super.before();
 
         domResult = SettableFuture.create();
