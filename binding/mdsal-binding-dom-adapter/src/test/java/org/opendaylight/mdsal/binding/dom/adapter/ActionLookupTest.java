@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 
 public class ActionLookupTest {
     @Test
-    public void testActionSchemaPath() {
+    public void testActionPath() {
         CurrentAdapterSerializer codec = new CurrentAdapterSerializer(new BindingCodecContext(
             BindingRuntimeHelpers.createRuntimeContext()));
 

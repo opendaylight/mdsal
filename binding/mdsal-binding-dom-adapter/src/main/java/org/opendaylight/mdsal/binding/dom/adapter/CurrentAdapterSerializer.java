@@ -103,7 +103,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     }
 
     // FIXME: This should be probably part of Binding Runtime context
-    ImmutableBiMap<Method, QName> getRpcMethodToSchemaPath(final Class<? extends RpcService> key) {
+    ImmutableBiMap<Method, QName> getRpcMethodToQName(final Class<? extends RpcService> key) {
         final Module module = getModule(key);
         final ImmutableBiMap.Builder<Method, QName> ret = ImmutableBiMap.builder();
         try {

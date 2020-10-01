@@ -49,7 +49,7 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
 
     private <S extends RpcService, T extends S> ObjectRegistration<T> register(final Class<S> type,
             final T implementation, final Collection<YangInstanceIdentifier> rpcContextPaths) {
-        final Map<QName, Method> rpcs = currentSerializer().getRpcMethodToSchemaPath(type).inverse();
+        final Map<QName, Method> rpcs = currentSerializer().getRpcMethodToQName(type).inverse();
 
         final BindingDOMRpcImplementationAdapter adapter = new BindingDOMRpcImplementationAdapter(adapterContext(),
             type, rpcs, implementation);
