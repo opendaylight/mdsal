@@ -34,10 +34,10 @@ public final class LazySerializedDOMNotification implements DOMNotification, DOM
             .build(new CacheLoader<Class<?>, Absolute>() {
                 @Override
                 public Absolute load(final Class<?> key) {
-                    // TODO: for nested (YANG 1.1) notifications we will need the SchemaPath where the notification is
-                    //       being invoked and use that instead of ROOT. How Binding users will refer to it is TBD (but
-                    //       probably InstanceIdentifier, which means we will need to do some lifting to find the
-                    //       SchemaPath)
+                    // TODO: for nested (YANG 1.1) notifications we will need the SchemaNodeIdentifier where the
+                    //       notification is being invoked and use that instead of ROOT. How Binding users will refer to
+                    //       it is TBD (but probably InstanceIdentifier, which means we will need to do some lifting to
+                    //       find the SchemaNodeIdentifier)
                     return Absolute.of(BindingReflections.findQName(key)).intern();
                 }
             });
