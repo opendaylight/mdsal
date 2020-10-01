@@ -7,8 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.yang.wadl.generator
 
+import static com.google.common.base.Preconditions.checkState;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.BufferedWriter
 import java.io.File
+import java.io.IOException
 import java.io.OutputStreamWriter
 import java.net.URI
 import java.nio.charset.StandardCharsets
@@ -23,9 +27,13 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
 import org.opendaylight.yangtools.yang.model.api.Module
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.sonatype.plexus.build.incremental.BuildContext
 
 class WadlRestconfGenerator {
+
+    static val Logger LOG = LoggerFactory.getLogger(WadlRestconfGenerator)
 
     static val PATH_DELIMETER = '/'
     val BuildContext buildContext;
@@ -37,7 +45,9 @@ class WadlRestconfGenerator {
     var List<LeafSchemaNode> pathListParams;
 
     new(BuildContext buildContext, File targetPath) {
-        if (!targetPath.exists) targetPath.mkdirs
+        if (!targetPath.exists) {
+            checkState(targetPath.mkdirs, "Unable to create directory: %s", targetPath);
+        }
         path = targetPath
         this.buildContext = buildContext
     }
@@ -61,11 +71,22 @@ class WadlRestconfGenerator {
 
                 this.module = module
                 val destination = new File(path, '''«module.name».wadl''')
-                val fw = new OutputStreamWriter(buildContext.newFileOutputStream(destination), StandardCharsets.UTF_8)
-                val bw = new BufferedWriter(fw)
-                bw.append(application);
-                bw.close();
-                fw.close();
+                var OutputStreamWriter fw
+                var BufferedWriter bw
+                try {
+                    fw = new OutputStreamWriter(buildContext.newFileOutputStream(destination), StandardCharsets.UTF_8)
+                    bw = new BufferedWriter(fw)
+                    bw.append(application);
+                } catch (IOException e) {
+                    LOG.error("Failed to emit file {}", destination, e);
+                } finally {
+                    if (bw !== null) {
+                        bw.close();
+                    }
+                    if (fw !== null) {
+                        fw.close();
+                    }
+                }
                 result.add(destination)
             }
         }
@@ -247,6 +268,8 @@ class WadlRestconfGenerator {
         <representation mediaType="application/yang.data+json" element="«elementData»"/>
     '''
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+                justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private def boolean isListOrContainer(DataSchemaNode schemaNode) {
         return (schemaNode instanceof ListSchemaNode || schemaNode instanceof ContainerSchemaNode)
     }
