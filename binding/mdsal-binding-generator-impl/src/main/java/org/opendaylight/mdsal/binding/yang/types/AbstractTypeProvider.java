@@ -1425,25 +1425,25 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             throw new UnsupportedOperationException("Cannot get default construction for identityref type");
         } else if (base instanceof InstanceIdentifierTypeDefinition) {
             throw new UnsupportedOperationException("Cannot get default construction for instance-identifier type");
-        } else if (BaseTypes.isInt8(base)) {
+        } else if (isInt8(base)) {
             result = typeToValueOfDef(Byte.class, defaultValue);
-        } else if (BaseTypes.isInt16(base)) {
+        } else if (isInt16(base)) {
             result = typeToValueOfDef(Short.class, defaultValue);
-        } else if (BaseTypes.isInt32(base)) {
+        } else if (isInt32(base)) {
             result = typeToValueOfDef(Integer.class, defaultValue);
-        } else if (BaseTypes.isInt64(base)) {
+        } else if (isInt64(base)) {
             result = typeToValueOfDef(Long.class, defaultValue);
         } else if (base instanceof LeafrefTypeDefinition) {
             result = leafrefToDef(node, (LeafrefTypeDefinition) base, defaultValue);
         } else if (base instanceof StringTypeDefinition) {
             result = "\"" + defaultValue + "\"";
-        } else if (BaseTypes.isUint8(base)) {
+        } else if (isUint8(base)) {
             result = typeToValueOfDef(Uint8.class, defaultValue);
-        } else if (BaseTypes.isUint16(base)) {
+        } else if (isUint16(base)) {
             result = typeToValueOfDef(Uint16.class, defaultValue);
-        } else if (BaseTypes.isUint32(base)) {
+        } else if (isUint32(base)) {
             result = typeToValueOfDef(Uint32.class, defaultValue);
-        } else if (BaseTypes.isUint64(base)) {
+        } else if (isUint64(base)) {
             result = typeToValueOfDef(Uint64.class, defaultValue);
         } else if (base instanceof UnionTypeDefinition) {
             result = unionToDef(node);
@@ -1464,6 +1464,91 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         }
 
         return sb.toString();
+    }
+
+
+    /**
+     * Check if a particular type definition represents the built-in int8 type.
+     *
+     * @param type Type definition
+     * @return True if the definition is the built-in int8 type.
+     */
+    private static boolean isInt8(final TypeDefinition<?> type) {
+        return BaseTypes.int8Type().getPath().equals(type.getPath());
+    }
+
+    /**
+     * Check if a particular type definition represents the built-in int16 type.
+     *
+     * @param type Type definition
+     * @return True if the definition is the built-in int16 type.
+     */
+    private static boolean isInt16(final TypeDefinition<?> type) {
+        return BaseTypes.int16Type().getPath().equals(type.getPath());
+    }
+
+    /**
+     * Check if a particular type definition represents the built-in int32 type.
+     *
+     * @param type Type definition
+     * @return True if the definition is the built-in int32 type.
+     */
+    private static boolean isInt32(final TypeDefinition<?> type) {
+        return BaseTypes.int32Type().getPath().equals(type.getPath());
+    }
+
+    /**
+     * Check if a particular type definition represents the built-in int64 type.
+     *
+     * @param type Type definition
+     * @return True if the definition is the built-in int64 type.
+     */
+    private static boolean isInt64(final TypeDefinition<?> type) {
+        return BaseTypes.int64Type().getPath().equals(type.getPath());
+    }
+
+    /**
+     * Check if a particular type is the base type for uint8.
+     *
+     * @param type The type to check
+     * @return If the type corresponds to the base uint8 type.
+     * @throws NullPointerException if type is null
+     */
+    private static boolean isUint8(final TypeDefinition<?> type) {
+        return BaseTypes.uint8Type().getPath().equals(type.getPath());
+    }
+
+    /**
+     * Check if a particular type is the base type for uint16.
+     *
+     * @param type The type to check
+     * @return If the type corresponds to the base uint16 type.
+     * @throws NullPointerException if type is null
+     */
+    private static boolean isUint16(final TypeDefinition<?> type) {
+        return BaseTypes.uint16Type().getPath().equals(type.getPath());
+    }
+
+    /**
+     * Check if a particular type is the base type for uint32.
+     *
+     * @param type The type to check
+     * @return If the type corresponds to the base uint32 type.
+     * @throws NullPointerException if type is null
+     */
+    private static boolean isUint32(final TypeDefinition<?> type) {
+        return BaseTypes.uint32Type().getPath().equals(type.getPath());
+    }
+
+    /**
+     * Check if a particular type is the base type for uint64.
+     *
+     * @param type The type to check
+     * @return If the type corresponds to the base uint64 type.
+     * @throws NullPointerException if type is null
+     */
+    private static boolean isUint64(final TypeDefinition<?> type) {
+        return BaseTypes.uint64Type().getPath().equals(type.getPath());
     }
 
     private static String typeToDef(final Class<?> clazz, final String defaultValue) {
