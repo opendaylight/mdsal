@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.yanglib.rfc8525;
 import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.annotations.Beta;
-import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -46,8 +45,8 @@ public final class YangLibrarySupport implements YangLibSupport {
 
     @Inject
     public YangLibrarySupport(final YangParserFactory parserFactory, final BindingRuntimeGenerator generator,
-            final BindingCodecTreeFactory codecFactory) throws YangParserException, IOException {
-        final ModuleInfoSnapshot snapshot = new ModuleInfoSnapshotBuilder("yanglib", parserFactory)
+            final BindingCodecTreeFactory codecFactory) throws YangParserException {
+        final ModuleInfoSnapshot snapshot = new ModuleInfoSnapshotBuilder(parserFactory)
                 .add($YangModuleInfoImpl.getInstance())
                 .build();
         context = snapshot.getEffectiveModelContext();
