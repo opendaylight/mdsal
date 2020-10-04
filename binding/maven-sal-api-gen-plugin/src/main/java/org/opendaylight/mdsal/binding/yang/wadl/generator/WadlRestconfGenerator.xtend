@@ -161,9 +161,9 @@ class WadlRestconfGenerator {
         «ENDIF»
     '''
 
-    private def String firstResource(DataSchemaNode schemaNode, boolean config) '''
-        <resource path="«module.name»:«schemaNode.createPath»">
-            «resourceBody(schemaNode, config)»
+    private def String firstResource(DataSchemaNode node, boolean config) '''
+        <resource path="«module.name»:«node.createPath»">
+            «resourceBody(node, config)»
         </resource>
     '''
 
