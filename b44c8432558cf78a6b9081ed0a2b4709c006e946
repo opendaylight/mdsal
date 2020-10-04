@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7854005c_9ee1e915",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/binding/yang/wadl/generator/WadlRestconfGenerator.xtend",
+        "patchSetId": 4
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-04T10:35:14Z",
+      "side": 1,
+      "message": "use try-with-resources ...",
+      "range": {
+        "startLine": 74,
+        "startChar": 16,
+        "endLine": 76,
+        "endChar": 21
+      },
+      "revId": "b44c8432558cf78a6b9081ed0a2b4709c006e946",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc9cc542_99ac300c",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/binding/yang/wadl/generator/WadlRestconfGenerator.xtend",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-04T10:35:14Z",
+      "side": 1,
+      "message": "this takes care of this bit",
+      "range": {
+        "startLine": 82,
+        "startChar": 17,
+        "endLine": 89,
+        "endChar": 17
+      },
+      "revId": "b44c8432558cf78a6b9081ed0a2b4709c006e946",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
