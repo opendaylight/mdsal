@@ -35,7 +35,7 @@ import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.ContainerLike;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
@@ -166,8 +166,8 @@ public final class ModuleContext implements Mutable {
         genTOs.add(builder);
     }
 
-    @NonNull GeneratedType addAliasType(final ModuleContext sourceContext, final ContainerSchemaNode source,
-            final ContainerSchemaNode alias) {
+    @NonNull GeneratedType addAliasType(final ModuleContext sourceContext, final ContainerLike source,
+            final ContainerLike alias) {
         final GeneratedTypeBuilder builder = sourceContext.getChildNode(source.getPath());
         checkState(builder != null, "Could not find builder for %s", source);
 
