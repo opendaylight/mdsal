@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "46c3e6ba_1521a3da",
+        "filename": "binding/maven-sal-api-gen-plugin/src/main/java/org/opendaylight/mdsal/binding/maven/api/gen/plugin/CodeGeneratorImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-05T09:13:03Z",
+      "side": 1,
+      "message": "use Files.createDirectories(metainfServicesFolder.getParentFile().toPath()), which throws IOException instead",
+      "range": {
+        "startLine": 172,
+        "startChar": 8,
+        "endLine": 174,
+        "endChar": 9
+      },
+      "revId": "e77b84cb1965816c2092535e7235921867003e50",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
