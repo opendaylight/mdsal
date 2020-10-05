@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.spi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -21,8 +22,8 @@ import java.lang.reflect.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.InputSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 
@@ -36,7 +37,7 @@ public class RpcRoutingStrategyTest {
 
     @Before
     public void setUp() throws Exception {
-        final ContainerSchemaNode containerSchemaNode = mock(ContainerSchemaNode.class);
+        final InputSchemaNode containerSchemaNode = mock(InputSchemaNode.class);
 
         doReturn(containerSchemaNode).when(RPC_DEFINITION).getInput();
         doReturn(ImmutableSet.of(DATA_SCHEMA_NODE)).when(containerSchemaNode).getChildNodes();
@@ -71,13 +72,13 @@ public class RpcRoutingStrategyTest {
         assertEquals(Q_NAME, rpcRoutingStrategy.getLeaf());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void getLeafTest() throws Exception {
-        rpcRoutingStrategy.getLeaf();
+        assertThrows(UnsupportedOperationException.class, () -> rpcRoutingStrategy.getLeaf());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void getContextTest() throws Exception {
-        rpcRoutingStrategy.getContext();
+    @Test
+    public void getContextTest() {
+        assertThrows(UnsupportedOperationException.class, () -> rpcRoutingStrategy.getContext());
     }
 }
