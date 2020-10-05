@@ -46,6 +46,30 @@
       "revId": "7c8b673d51f41a1f75e4d584a3d5f8f2d26fddc9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "060b6d9c_5c0412a5",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 1432,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-05T11:41:59Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "325a559a_2ec64e49",
+      "range": {
+        "startLine": 1432,
+        "startChar": 12,
+        "endLine": 1432,
+        "endChar": 32
+      },
+      "revId": "7c8b673d51f41a1f75e4d584a3d5f8f2d26fddc9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
