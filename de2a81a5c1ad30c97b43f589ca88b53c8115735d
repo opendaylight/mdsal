@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ae41b924_c3929e25",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
+        "patchSetId": 27
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-05T11:51:14Z",
+      "side": 1,
+      "message": "this really is\n\nrequiredClass.isInstance(obj)\n\n:)",
+      "range": {
+        "startLine": 412,
+        "startChar": 22,
+        "endLine": 412,
+        "endChar": 68
+      },
+      "revId": "de2a81a5c1ad30c97b43f589ca88b53c8115735d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c5f3ea1_fc6fb7a0",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
+        "patchSetId": 27
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-05T11:51:14Z",
+      "side": 1,
+      "message": "also keep the string on one like -- it currently is missing a space",
+      "range": {
+        "startLine": 413,
+        "startChar": 18,
+        "endLine": 413,
+        "endChar": 48
+      },
+      "revId": "de2a81a5c1ad30c97b43f589ca88b53c8115735d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
