@@ -20,6 +20,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.LeafEffectiveStatement;
 
 /**
  * Mock Leaf Schema Node designated to increase branch coverage in test cases.
@@ -90,5 +91,10 @@ public class TestLeafSchemaNode implements LeafSchemaNode {
     @Override
     public Collection<MustDefinition> getMustConstraints() {
         return ImmutableSet.of();
+    }
+
+    @Override
+    public LeafEffectiveStatement asEffectiveStatement() {
+        throw new UnsupportedOperationException();
     }
 }
