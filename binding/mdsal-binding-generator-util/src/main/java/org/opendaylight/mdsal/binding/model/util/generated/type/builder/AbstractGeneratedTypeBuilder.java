@@ -40,16 +40,11 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     private final List<GeneratedTypeBuilder> enclosedTypes = Collections.emptyList();
     private List<GeneratedTOBuilder> enclosedTransferObjects = Collections.emptyList();
     private List<GeneratedPropertyBuilder> properties = Collections.emptyList();
-    private TypeComment comment;
     private boolean isAbstract;
     private YangSourceDefinition yangSourceDefinition;
 
     protected AbstractGeneratedTypeBuilder(final JavaTypeName identifier) {
         super(identifier);
-    }
-
-    protected TypeComment getComment() {
-        return this.comment;
     }
 
     protected List<AnnotationTypeBuilder> getAnnotations() {
