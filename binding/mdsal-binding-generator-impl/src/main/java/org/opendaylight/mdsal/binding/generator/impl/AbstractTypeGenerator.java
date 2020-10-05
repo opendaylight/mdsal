@@ -102,6 +102,7 @@ import org.opendaylight.yangtools.yang.model.api.AnyxmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.ContainerLike;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -111,6 +112,7 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
+import org.opendaylight.yangtools.yang.model.api.InputSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
@@ -118,6 +120,7 @@ import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
+import org.opendaylight.yangtools.yang.model.api.OutputSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -512,7 +515,7 @@ abstract class AbstractTypeGenerator {
     }
 
     private GeneratedType actionContainer(final ModuleContext context, final Type baseInterface,
-            final ContainerSchemaNode schema, final boolean inGrouping) {
+            final ContainerLike schema, final boolean inGrouping) {
         final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, schema, inGrouping);
         resolveDataSchemaNodes(context, genType, genType, schema.getChildNodes(), inGrouping);
         return genType.build();
@@ -568,7 +571,7 @@ abstract class AbstractTypeGenerator {
     }
 
     private Type createRpcContainer(final ModuleContext context, final String rpcName, final RpcDefinition rpc,
-            final ContainerSchemaNode schema, final Type type) {
+            final ContainerLike schema, final Type type) {
         processUsesAugments(schema, context, false);
         final GeneratedTypeBuilder outType = addRawInterfaceDefinition(context,
             JavaTypeName.create(context.modulePackageName(), rpcName + BindingMapping.getClassName(schema.getQName())),
@@ -954,8 +957,8 @@ abstract class AbstractTypeGenerator {
                 final ActionDefinition action = (ActionDefinition) result;
                 final QName resultNode = node.bindTo(result.getQName().getModule());
 
-                final ContainerSchemaNode input = action.getInput();
-                final ContainerSchemaNode output = action.getOutput();
+                final InputSchemaNode input = action.getInput();
+                final OutputSchemaNode output = action.getOutput();
                 if (resultNode.equals(input.getQName())) {
                     result = input;
                 } else if (resultNode.equals(output.getQName())) {
