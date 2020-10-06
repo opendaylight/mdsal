@@ -22,14 +22,13 @@ import org.opendaylight.yangtools.concepts.NoOpListenerRegistration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 
 /**
  * {@link DOMSchemaService} (and {@link DOMYangTextSourceProvider}) implementations backed by a
- * {@link SchemaContextProvider} (and {@link SchemaSourceProvider}) which are known to be fixed and never change
+ * {@link EffectiveModelContextProvider} (and {@link SchemaSourceProvider}) which are known to be fixed and never change
  * schemas.
  *
  * @author Michael Vorburger.ch

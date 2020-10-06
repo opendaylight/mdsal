@@ -58,8 +58,8 @@ public class ScanningSchemaServiceProviderTest {
     @Test
     public void initJarScanningSchemaServiceTest() throws Exception {
         assertNotNull(schemaService.getGlobalContext());
-        assertNotNull(schemaService.getSchemaContext());
-        assertEquals(schemaService.getGlobalContext(), schemaService.getSchemaContext());
+        assertNotNull(schemaService.getEffectiveModelContext());
+        assertEquals(schemaService.getGlobalContext(), schemaService.getEffectiveModelContext());
     }
 
     @Test
@@ -71,7 +71,7 @@ public class ScanningSchemaServiceProviderTest {
         final ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener =
                 schemaService.registerSchemaContextListener(listener);
         assertEquals(registerSchemaContextListener.getInstance(), listener);
-        assertEquals(schemaService.getSchemaContext(), actualSchemaCtx.getSchemaContext());
+        assertEquals(schemaService.getEffectiveModelContext(), actualSchemaCtx.getSchemaContext());
     }
 
     @Test
@@ -123,7 +123,7 @@ public class ScanningSchemaServiceProviderTest {
 
     @Test
     public void tryToUpdateSchemaCtxTest() {
-        final SchemaContext baseSchemaContext = schemaService.getSchemaContext();
+        final SchemaContext baseSchemaContext = schemaService.getEffectiveModelContext();
         assertNotNull(baseSchemaContext);
         assertTrue(baseSchemaContext.getModules().size() == 1);
 
@@ -135,7 +135,7 @@ public class ScanningSchemaServiceProviderTest {
         addYang("/empty-test1.yang");
         addYangs(schemaService);
 
-        final SchemaContext nextSchemaContext = schemaService.getSchemaContext();
+        final SchemaContext nextSchemaContext = schemaService.getEffectiveModelContext();
         assertNotNull(baseSchemaContext);
         assertTrue(baseSchemaContext.getModules().size() == 1);
 
