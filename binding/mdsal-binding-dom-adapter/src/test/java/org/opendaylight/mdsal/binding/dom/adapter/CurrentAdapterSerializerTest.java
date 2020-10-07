@@ -13,15 +13,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map.Entry;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.adapter.test.util.TestingModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -35,6 +36,8 @@ import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
+import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
+import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class CurrentAdapterSerializerTest {
@@ -117,5 +120,29 @@ public class CurrentAdapterSerializerTest {
         final YangInstanceIdentifier path = YangInstanceIdentifier.create(NodeIdentifier.create(QName.create(
             "urn:test", "2017-01-01", "cont")));
         return codec.fromNormalizedNode(path, data);
+    }
+
+    private static final class TestingModuleInfoSnapshot implements ModuleInfoSnapshot {
+        static final TestingModuleInfoSnapshot INSTANCE = new TestingModuleInfoSnapshot();
+
+        private TestingModuleInfoSnapshot() {
+            // Hidden on purpose
+        }
+
+        @Override
+        public EffectiveModelContext getEffectiveModelContext() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ListenableFuture<? extends YangTextSchemaSource> getSource(SourceIdentifier sourceIdentifier) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <T> Class<T> loadClass(String fullyQualifiedName) throws ClassNotFoundException {
+            return (Class<T>) Class.forName(fullyQualifiedName);
+        }
     }
 }

@@ -21,7 +21,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractSchemaAwareTest;
-import org.opendaylight.mdsal.binding.dom.adapter.test.util.MockAdapterContext;
+import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeLeafOnlyAugment;
@@ -53,27 +54,22 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
     private static final YangInstanceIdentifier BI_TOP_LEVEL_LIST = YangInstanceIdentifier.builder().node(Top.QNAME)
         .node(TopLevelList.QNAME).nodeWithKey(TopLevelList.QNAME, NAME_QNAME, TOP_FOO_KEY.getName()).build();
 
-    private MockAdapterContext codec;
-    private EffectiveModelContext context;
+    private CurrentAdapterSerializer serializer;
 
     @Override
-    protected void setupWithSchema(final EffectiveModelContext schemaContext) {
-        this.context = schemaContext;
-        this.codec = new MockAdapterContext();
+    protected void setupWithRuntimeContext(final BindingRuntimeContext runtimeContext) {
+        serializer = new CurrentAdapterSerializer(new BindingCodecContext(runtimeContext));
     }
 
     @Test
     public void testComplexAugmentationSerialization() {
-        codec.onModelContextUpdated(context);
-        final PathArgument lastArg = codec.currentSerializer().toYangInstanceIdentifier(BA_TREE_COMPLEX_USES)
-                .getLastPathArgument();
+        final PathArgument lastArg = serializer.toYangInstanceIdentifier(BA_TREE_COMPLEX_USES).getLastPathArgument();
         assertTrue(lastArg instanceof AugmentationIdentifier);
     }
 
     @Test
     public void testLeafOnlyAugmentationSerialization() {
-        codec.onModelContextUpdated(context);
-        final PathArgument leafOnlyLastArg = codec.currentSerializer().toYangInstanceIdentifier(BA_TREE_LEAF_ONLY)
+        final PathArgument leafOnlyLastArg = serializer.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY)
             .getLastPathArgument();
         assertTrue(leafOnlyLastArg instanceof AugmentationIdentifier);
         assertTrue(((AugmentationIdentifier) leafOnlyLastArg).getPossibleChildNames().contains(SIMPLE_VALUE_QNAME));
@@ -81,8 +77,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
 
     @Test
     public void testGetRpcMethodToQName() {
-        codec.onModelContextUpdated(context);
-        final List<String> retMap = codec.currentSerializer()
+        final List<String> retMap = serializer
                 .getRpcMethodToQName(OpendaylightTestRpcServiceService.class).keySet().stream()
                 .map(Method::getName)
                 .collect(Collectors.toList());

@@ -17,8 +17,8 @@ import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.test.util.MockAdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.MockSchemaService;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
@@ -26,28 +26,19 @@ import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractDataBrokerTestCustomizer {
+    private final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(16);
+    private final MockSchemaService schemaService = new MockSchemaService();
 
     private DOMDataBroker domDataBroker;
-    private final DOMNotificationRouter domNotificationRouter;
-    private final MockSchemaService schemaService;
     private ImmutableMap<LogicalDatastoreType, DOMStore> datastores;
-    private final MockAdapterContext adapterContext;
 
     public ImmutableMap<LogicalDatastoreType, DOMStore> createDatastores() {
         return ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
                 .put(LogicalDatastoreType.OPERATIONAL, createOperationalDatastore())
                 .put(LogicalDatastoreType.CONFIGURATION,createConfigurationDatastore())
                 .build();
-    }
-
-    public AbstractDataBrokerTestCustomizer() {
-        schemaService = new MockSchemaService();
-        adapterContext = new MockAdapterContext();
-        schemaService.registerSchemaContextListener(adapterContext);
-        domNotificationRouter = DOMNotificationRouter.create(16);
     }
 
     public DOMStore createConfigurationDatastore() {
@@ -67,11 +58,11 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public NotificationService createNotificationService() {
-        return new BindingDOMNotificationServiceAdapter(adapterContext, domNotificationRouter);
+        return new BindingDOMNotificationServiceAdapter(schemaService, domNotificationRouter);
     }
 
     public NotificationPublishService createNotificationPublishService() {
-        return new BindingDOMNotificationPublishServiceAdapter(adapterContext, domNotificationRouter);
+        return new BindingDOMNotificationPublishServiceAdapter(schemaService, domNotificationRouter);
     }
 
     public abstract ListeningExecutorService getCommitCoordinatorExecutor();
@@ -81,11 +72,11 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public DataBroker createDataBroker() {
-        return new BindingDOMDataBrokerAdapter(adapterContext, getDOMDataBroker());
+        return new BindingDOMDataBrokerAdapter(schemaService, getDOMDataBroker());
     }
 
     public AdapterContext getAdapterContext() {
-        return adapterContext;
+        return schemaService;
     }
 
     public DOMSchemaService getSchemaService() {
@@ -106,7 +97,7 @@ public abstract class AbstractDataBrokerTestCustomizer {
         return datastores;
     }
 
-    public void updateSchema(final EffectiveModelContext ctx) {
+    public void updateSchema(final BindingRuntimeContext ctx) {
         schemaService.changeSchema(ctx);
     }
 
