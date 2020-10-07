@@ -7,10 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.util.concurrent.atomic.AtomicLong;
-import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
@@ -20,18 +17,12 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.mdsal.dom.spi.PingPongMergingDOMDataBroker;
 
 public class ShardedDOMDataBrokerAdapter implements PingPongMergingDOMDataBroker {
-
-    private final DOMDataTreeService service;
-    private final AtomicLong txNum = new AtomicLong();
     private final AtomicLong chainNum = new AtomicLong();
+    private final AtomicLong txNum = new AtomicLong();
+    private final DOMDataTreeService service;
 
     public ShardedDOMDataBrokerAdapter(final DOMDataTreeService service) {
         this.service = service;
-    }
-
-    @Override
-    public ClassToInstanceMap<DOMDataBrokerExtension> getExtensions() {
-        return ImmutableClassToInstanceMap.of();
     }
 
     @Override
