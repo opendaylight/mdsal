@@ -29,18 +29,19 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
  * This implementation performs serialization of data, only if receiver of notification actually accessed data from
  * notification.
  */
-public final class LazySerializedDOMNotification implements DOMNotification, DOMEvent {
+final class LazySerializedDOMNotification implements DOMNotification, DOMEvent {
     private static final LoadingCache<Class<?>, Absolute> PATHS = CacheBuilder.newBuilder().weakKeys()
-            .build(new CacheLoader<Class<?>, Absolute>() {
-                @Override
-                public Absolute load(final Class<?> key) {
-                    // TODO: for nested (YANG 1.1) notifications we will need the SchemaNodeIdentifier where the
-                    //       notification is being invoked and use that instead of ROOT. How Binding users will refer to
-                    //       it is TBD (but probably InstanceIdentifier, which means we will need to do some lifting to
-                    //       find the SchemaNodeIdentifier)
-                    return Absolute.of(BindingReflections.findQName(key)).intern();
-                }
-            });
+        .build(new CacheLoader<Class<?>, Absolute>() {
+            @Override
+            public Absolute load(final Class<?> key) {
+                // TODO: for nested (YANG 1.1) notifications we will need the SchemaNodeIdentifier where the
+                //       notification is being invoked and use that instead of ROOT. How Binding users will refer to
+                //       it is TBD (but probably InstanceIdentifier, which means we will need to do some lifting to
+                //       find the SchemaNodeIdentifier), as we will need to deal with the same multiplicies we need
+                //       for data due to grouping-based reuse.
+                return Absolute.of(BindingReflections.findQName(key)).intern();
+            }
+        });
 
     private final @NonNull BindingNormalizedNodeSerializer codec;
     private final @NonNull Notification data;
@@ -82,7 +83,7 @@ public final class LazySerializedDOMNotification implements DOMNotification, DOM
         return eventInstant;
     }
 
-    public @NonNull Notification getBindingData() {
+    @NonNull Notification getBindingData() {
         return data;
     }
 }
