@@ -159,11 +159,6 @@ public class ScanningSchemaServiceProviderTest {
         assertEquals(schemaService.getExtensions().values().iterator().next(), schemaService);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void getSessionContextTest() {
-        schemaService.getSessionContext();
-    }
-
     private void addYangs(final ScanningSchemaServiceProvider service) {
         final List<Registration> registerAvailableYangs = service.registerAvailableYangs(yangs);
         assertTrue(!registerAvailableYangs.isEmpty());
