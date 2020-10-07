@@ -12,8 +12,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractBaseDataBrokerTest extends AbstractSchemaAwareTest {
     private static final int ASSERT_COMMIT_DEFAULT_TIMEOUT = 5000;
@@ -32,11 +32,12 @@ public abstract class AbstractBaseDataBrokerTest extends AbstractSchemaAwareTest
     }
 
     @Override
-    protected void setupWithSchema(final EffectiveModelContext context) {
+    protected void setupWithRuntimeContext(final BindingRuntimeContext runtimeContext) {
         testCustomizer = createDataBrokerTestCustomizer();
         dataBroker = testCustomizer.createDataBroker();
         domBroker = testCustomizer.getDOMDataBroker();
-        testCustomizer.updateSchema(context);
+        testCustomizer.updateSchema(runtimeContext);
+        super.setupWithRuntimeContext(runtimeContext);
     }
 
     public DataBroker getDataBroker() {

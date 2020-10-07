@@ -12,38 +12,49 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import java.util.Set;
 import org.junit.Before;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractSchemaAwareTest {
-    private static final LoadingCache<Set<YangModuleInfo>, EffectiveModelContext> SCHEMA_CONTEXT_CACHE =
+    private static final LoadingCache<Set<YangModuleInfo>, BindingRuntimeContext> RUNTIME_CONTEXT_CACHE =
             CacheBuilder.newBuilder().weakValues().build(
-                new CacheLoader<Set<YangModuleInfo>, EffectiveModelContext>() {
+                new CacheLoader<Set<YangModuleInfo>, BindingRuntimeContext>() {
                     @Override
-                    public EffectiveModelContext load(final Set<YangModuleInfo> key) {
-                        return BindingRuntimeHelpers.createEffectiveModel(key);
+                    public BindingRuntimeContext load(final Set<YangModuleInfo> key) {
+                        return BindingRuntimeHelpers.createRuntimeContext(key);
                     }
                 });
 
     @Before
     public final void setup() throws Exception {
-        setupWithSchema(getSchemaContext());
+        setupWithRuntimeContext(getRuntimeContext());
     }
 
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
         return BindingReflections.cacheModuleInfos(Thread.currentThread().getContextClassLoader());
     }
 
+    protected BindingRuntimeContext getRuntimeContext() throws Exception {
+        return RUNTIME_CONTEXT_CACHE.getUnchecked(getModuleInfos());
+    }
+
     protected EffectiveModelContext getSchemaContext() throws Exception {
-        return SCHEMA_CONTEXT_CACHE.getUnchecked(getModuleInfos());
+        return getRuntimeContext().getEffectiveModelContext();
+    }
+
+    protected void setupWithRuntimeContext(final BindingRuntimeContext runtimeContext) {
+        setupWithSchema(runtimeContext.getEffectiveModelContext());
     }
 
     /**
-     * Setups test with Schema context.
+     * Setups test with EffectiveModelContext.
      *
      * @param context schema context
      */
-    protected abstract void setupWithSchema(EffectiveModelContext context);
+    protected void setupWithSchema(final EffectiveModelContext context) {
+        // No-op
+    }
 }
