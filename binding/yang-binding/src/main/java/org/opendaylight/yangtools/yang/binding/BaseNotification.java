@@ -13,5 +13,6 @@ package org.opendaylight.yangtools.yang.binding;
  * notifications (as represented by {@link InstanceNotification}.
  */
 public interface BaseNotification extends DataContainer {
-
+    @Override
+    Class<? extends BaseNotification> implementedInterface();
 }
