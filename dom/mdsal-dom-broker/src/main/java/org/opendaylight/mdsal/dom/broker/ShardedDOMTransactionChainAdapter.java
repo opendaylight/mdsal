@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.broker;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -23,19 +22,16 @@ import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeLoopException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.mdsal.dom.spi.ForwardingDOMDataTreeService;
 
 public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
 
@@ -158,40 +154,32 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         finished = true;
     }
 
-    private static class CachedDataTreeService implements DOMDataTreeService {
-
-        private final DOMDataTreeService delegateTreeService;
+    private static final class CachedDataTreeService extends ForwardingDOMDataTreeService {
         private final Map<LogicalDatastoreType, NoopCloseDataProducer> producersMap =
-                new EnumMap<>(LogicalDatastoreType.class);
+            new EnumMap<>(LogicalDatastoreType.class);
+        private final DOMDataTreeService delegate;
 
-        CachedDataTreeService(final DOMDataTreeService delegateTreeService) {
-            this.delegateTreeService = delegateTreeService;
-        }
-
-        void closeProducers() {
-            producersMap.values().forEach(NoopCloseDataProducer::closeDelegate);
-        }
-
-        @Override
-        public <T extends DOMDataTreeListener> ListenerRegistration<T> registerListener(final T listener,
-                final Collection<DOMDataTreeIdentifier> subtrees, final boolean allowRxMerges,
-                final Collection<DOMDataTreeProducer> producers) throws DOMDataTreeLoopException {
-            return delegateTreeService.registerListener(listener, subtrees, allowRxMerges, producers);
-        }
-
-        @Override
-        public ClassToInstanceMap<DOMDataTreeServiceExtension> getExtensions() {
-            return delegateTreeService.getExtensions();
+        CachedDataTreeService(final DOMDataTreeService delegate) {
+            this.delegate = requireNonNull(delegate);
         }
 
         @Override
         public DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees) {
             checkState(subtrees.size() == 1);
             DOMDataTreeIdentifier treeId = subtrees.iterator().next();
-            NoopCloseDataProducer producer = new NoopCloseDataProducer(delegateTreeService.createProducer(
+            NoopCloseDataProducer producer = new NoopCloseDataProducer(delegate.createProducer(
                 Collections.singleton(treeId)));
             producersMap.putIfAbsent(treeId.getDatastoreType(), producer);
             return producer;
+        }
+
+        @Override
+        protected DOMDataTreeService delegate() {
+            return delegate;
+        }
+
+        void closeProducers() {
+            producersMap.values().forEach(NoopCloseDataProducer::closeDelegate);
         }
     }
 

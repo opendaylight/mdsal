@@ -7,9 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ForwardingObject;
-import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
@@ -22,11 +19,9 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
  * Utility {@link DOMDataBroker} implementation which forwards all interface
  * method invocation to a delegate instance.
  */
-public abstract class ForwardingDOMDataBroker extends ForwardingObject implements DOMDataBroker {
-
-    @Override
-    protected abstract @NonNull DOMDataBroker delegate();
-
+public abstract class ForwardingDOMDataBroker
+        extends ForwardingDOMExtensibleService<DOMDataBroker, DOMDataBrokerExtension>
+        implements DOMDataBroker {
     @Override
     public DOMDataTreeReadTransaction newReadOnlyTransaction() {
         return delegate().newReadOnlyTransaction();
@@ -50,10 +45,5 @@ public abstract class ForwardingDOMDataBroker extends ForwardingObject implement
     @Override
     public DOMTransactionChain createMergingTransactionChain(final DOMTransactionChainListener listener) {
         return delegate().createMergingTransactionChain(listener);
-    }
-
-    @Override
-    public ClassToInstanceMap<DOMDataBrokerExtension> getExtensions() {
-        return delegate().getExtensions();
     }
 }

@@ -42,9 +42,4 @@ public abstract class AbstractDOMSchemaService implements DOMSchemaService, Effe
         checkState(ret != null, "Global context is not available in %s", this);
         return ret;
     }
-
-    @Override
-    public ClassToInstanceMap<DOMSchemaServiceExtension> getExtensions() {
-        return ImmutableClassToInstanceMap.of();
-    }
 }
