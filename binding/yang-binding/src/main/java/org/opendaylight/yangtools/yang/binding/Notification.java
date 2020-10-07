@@ -12,8 +12,10 @@ package org.opendaylight.yangtools.yang.binding;
  * concrete Notification and its implementations may choose to also extend/implement the {@link EventInstantAware}
  * interface. In case they do, {@link EventInstantAware#eventInstant()} returns the time when this notification was
  * generated.
+ *
+ * @param <N> Concrete notification type
  */
-// FIXME: 6.0.0: narrow implementedInterface()
-public interface Notification extends BaseNotification {
-
+public interface Notification<N extends Notification<N>> extends BaseNotification {
+    @Override
+    @NonNull Class<N> implementedInterface();
 }
