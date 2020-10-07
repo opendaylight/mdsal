@@ -7,11 +7,14 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Marker interface for YANG-defined all notifications. This interface should never be implemented directly. It exists
  * only to tie together semantics of global notifications (as represented by {@link Notification}) and instance
  * notifications (as represented by {@link InstanceNotification}.
  */
 public interface BaseNotification extends DataContainer {
-
+    @Override
+    @NonNull Class<? extends BaseNotification> implementedInterface();
 }

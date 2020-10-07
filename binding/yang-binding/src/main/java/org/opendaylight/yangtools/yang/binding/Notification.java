@@ -7,13 +7,15 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Marker interface for YANG-defined global notifications. This interface should never be implemented directly. A
  * concrete Notification and its implementations may choose to also extend/implement the {@link EventInstantAware}
  * interface. In case they do, {@link EventInstantAware#eventInstant()} returns the time when this notification was
  * generated.
  */
-// FIXME: 6.0.0: narrow implementedInterface()
 public interface Notification extends BaseNotification {
-
+    @Override
+    @NonNull Class<? extends Notification> implementedInterface();
 }
