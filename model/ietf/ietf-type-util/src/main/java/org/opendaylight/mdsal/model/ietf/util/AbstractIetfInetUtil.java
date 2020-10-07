@@ -274,11 +274,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         return prefixToAddress(address4NoZoneFactory, ipv4PrefixString(prefix));
     }
 
-    @Deprecated(forRemoval = true)
-    public final @NonNull A4NZ ipv4AddressNoZoneFrom(final @NonNull P4 prefix) {
-        return ipv4AddressFrom(prefix);
-    }
-
     public final byte @NonNull[] ipv4AddressBytes(final @NonNull A4 addr) {
         /*
          * This implementation relies heavily on the input string having been validated to comply with
@@ -414,11 +409,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         return splitPrefix(address4NoZoneFactory, ipv4PrefixString(prefix));
     }
 
-    @Deprecated(forRemoval = true)
-    public final @NonNull Entry<A4NZ, Integer> splitIpv4PrefixNoZone(final @NonNull P4 prefix) {
-        return splitIpv4Prefix(prefix);
-    }
-
     public final byte @NonNull[] ipv4PrefixToBytes(final @NonNull P4 prefix) {
         final String str = ipv4PrefixString(prefix);
         final int slash = str.lastIndexOf('/');
@@ -468,11 +458,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
 
     public final @NonNull A6NZ ipv6AddressFrom(final @NonNull P6 prefix) {
         return prefixToAddress(address6NoZoneFactory, ipv6PrefixString(prefix));
-    }
-
-    @Deprecated(forRemoval = true)
-    public final @NonNull A6NZ ipv6AddressNoZoneFrom(final @NonNull P6 prefix) {
-        return ipv6AddressFrom(prefix);
     }
 
     public final byte @NonNull[] ipv6AddressBytes(final @NonNull A6 addr) {
@@ -594,11 +579,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
 
     public final @NonNull Entry<A6NZ, Integer> splitIpv6Prefix(final @NonNull P6 prefix) {
         return splitPrefix(address6NoZoneFactory, ipv6PrefixString(prefix));
-    }
-
-    @Deprecated(forRemoval = true)
-    public final @NonNull Entry<A6NZ, Integer> splitIpv6PrefixNoZone(final @NonNull P6 prefix) {
-        return splitIpv6Prefix(prefix);
     }
 
     private static <T> @NonNull T prefixToAddress(final StringValueObjectFactory<T> factory, final String str) {
