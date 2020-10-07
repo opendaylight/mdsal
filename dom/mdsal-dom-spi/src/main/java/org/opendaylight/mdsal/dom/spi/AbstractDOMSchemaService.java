@@ -45,9 +45,4 @@ public abstract class AbstractDOMSchemaService implements DOMSchemaService, Effe
         // This method should not be implemented
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public ClassToInstanceMap<DOMSchemaServiceExtension> getExtensions() {
-        return ImmutableClassToInstanceMap.of();
-    }
 }
