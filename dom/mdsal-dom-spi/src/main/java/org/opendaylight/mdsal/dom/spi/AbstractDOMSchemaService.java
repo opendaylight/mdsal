@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
@@ -36,14 +38,9 @@ public abstract class AbstractDOMSchemaService implements DOMSchemaService, Effe
 
     @Override
     public final EffectiveModelContext getEffectiveModelContext() {
-        // Always route context queries to a single method
-        return getGlobalContext();
-    }
-
-    @Override
-    public final EffectiveModelContext getSessionContext() {
-        // This method should not be implemented
-        throw new UnsupportedOperationException();
+        final EffectiveModelContext ret = getGlobalContext();
+        checkState(ret != null, "Global context is not available in %s", this);
+        return ret;
     }
 
     @Override
