@@ -50,7 +50,6 @@ import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
-import org.opendaylight.mdsal.dom.api.DOMActionProviderServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMActionServiceExtension;
@@ -440,11 +439,6 @@ public final class DOMRpcRouter extends AbstractRegistration
 
     @NonNullByDefault
     private final class ActionProviderServiceFacade implements DOMActionProviderService {
-        @Override
-        public ClassToInstanceMap<DOMActionProviderServiceExtension> getExtensions() {
-            return ImmutableClassToInstanceMap.of();
-        }
-
         @Override
         public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
             final T implementation, final Set<DOMActionInstance> instances) {
