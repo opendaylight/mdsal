@@ -13,17 +13,6 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 
 public interface DOMSchemaService extends DOMExtensibleService<DOMSchemaService, DOMSchemaServiceExtension> {
     /**
-     * Returns session specific YANG schema context.
-     *
-     * @return schemaContext
-     * @deprecated This method never fully materialized, use {@link #getGlobalContext()} instead.
-     */
-    @Deprecated(forRemoval = true)
-    default EffectiveModelContext getSessionContext() {
-        throw new UnsupportedOperationException("getSessionContext() is not specified nor implemented");
-    }
-
-    /**
      * Returns global schema context.
      *
      * @return schemaContext
