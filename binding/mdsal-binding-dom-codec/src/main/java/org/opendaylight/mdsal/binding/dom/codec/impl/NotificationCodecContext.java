@@ -40,8 +40,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 
-final class NotificationCodecContext<D extends DataObject & Notification>
-        extends DataObjectCodecContext<D, NotificationDefinition> {
+final class NotificationCodecContext<D extends DataObject> extends DataObjectCodecContext<D, NotificationDefinition> {
     private static final Generic EVENT_INSTANT_AWARE = TypeDefinition.Sort.describe(EventInstantAware.class);
 
     private static final String EVENT_INSTANT_NAME;
