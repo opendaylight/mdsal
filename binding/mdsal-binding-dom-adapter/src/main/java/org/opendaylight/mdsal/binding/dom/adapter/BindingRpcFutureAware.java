@@ -15,8 +15,8 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
  *
  * @author Robert Varga
  */
-@Deprecated
-public interface BindingRpcFutureAware {
+// FIXME: is this interface still useful? can we integrate it into our two implementations?
+interface BindingRpcFutureAware {
 
     ListenableFuture<RpcResult<?>> getBindingFuture();
 }
