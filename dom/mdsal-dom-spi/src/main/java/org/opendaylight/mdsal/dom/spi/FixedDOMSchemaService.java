@@ -61,6 +61,11 @@ public class FixedDOMSchemaService extends AbstractDOMSchemaService {
         this.schemaContextProvider = requireNonNull(schemaContextProvider);
     }
 
+    public static @NonNull DOMSchemaService of(final EffectiveModelContext effectiveModel) {
+        final EffectiveModelContext checked = requireNonNull(effectiveModel);
+        return of(() -> checked);
+    }
+
     public static @NonNull DOMSchemaService of(final EffectiveModelContextProvider schemaContextProvider) {
         return new FixedDOMSchemaService(schemaContextProvider);
     }
