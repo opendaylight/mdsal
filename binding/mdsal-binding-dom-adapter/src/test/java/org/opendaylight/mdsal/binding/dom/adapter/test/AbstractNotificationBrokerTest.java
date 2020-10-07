@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class AbstractNotificationBrokerTest extends AbstractSchemaAwareTest {
     private AdapterContext bindingToNormalizedNodeCodec;
@@ -21,13 +21,14 @@ public class AbstractNotificationBrokerTest extends AbstractSchemaAwareTest {
 
 
     @Override
-    protected void setupWithSchema(final EffectiveModelContext context) {
+    protected void setupWithRuntimeContext(final BindingRuntimeContext runtimeContext) {
         final DataBrokerTestCustomizer testCustomizer = createDataBrokerTestCustomizer();
         domNotificationRouter = testCustomizer.getDomNotificationRouter();
         notificationService = testCustomizer.createNotificationService();
         notificationPublishService = testCustomizer.createNotificationPublishService();
         bindingToNormalizedNodeCodec = testCustomizer.getAdapterContext();
-        testCustomizer.updateSchema(context);
+        testCustomizer.updateSchema(runtimeContext);
+        super.setupWithRuntimeContext(runtimeContext);
     }
 
     protected DataBrokerTestCustomizer createDataBrokerTestCustomizer() {
