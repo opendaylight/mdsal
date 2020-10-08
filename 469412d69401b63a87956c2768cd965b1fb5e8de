@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0352b200_98db8336",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 33
+      },
+      "lineNbr": 1127,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-08T19:29:20Z",
+      "side": 1,
+      "message": "and this is what the comment is all about. I.e. I think we not only need child here, but also its parent, so that we can examine the method generated in parent\u0027s type hierarchy and see if it is java.util.Object. If it is not, we just return false.\n\nright or am I missing something?",
+      "range": {
+        "startLine": 1126,
+        "startChar": 7,
+        "endLine": 1127,
+        "endChar": 65
+      },
+      "revId": "469412d69401b63a87956c2768cd965b1fb5e8de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91f24b8a_5794ef9d",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 33
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-08T19:29:20Z",
+      "side": 1,
+      "message": "I really *hate* passing down booleans. The thing is it is modifying the logic in non-obvious ways...",
+      "range": {
+        "startLine": 129,
+        "startChar": 52,
+        "endLine": 129,
+        "endChar": 59
+      },
+      "revId": "469412d69401b63a87956c2768cd965b1fb5e8de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab6f2a44_322034cc",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 33
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-08T19:29:20Z",
+      "side": 1,
+      "message": "so this is recursion -- and it is always false from this call site. given this is literally 15 lines of code and the boolean is in the middle, I do believe it would be much better to copy\u0026paste and specialize two methods.\n\nThe code flow will be much clearer.",
+      "range": {
+        "startLine": 156,
+        "startChar": 16,
+        "endLine": 156,
+        "endChar": 61
+      },
+      "revId": "469412d69401b63a87956c2768cd965b1fb5e8de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
