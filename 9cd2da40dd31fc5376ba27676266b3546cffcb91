@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4640f6f0_e7e7b201",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 32
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-08T19:21:25Z",
+      "side": 1,
+      "message": "start a new paragraph here",
+      "range": {
+        "startLine": 14,
+        "startChar": 15,
+        "endLine": 14,
+        "endChar": 16
+      },
+      "revId": "9cd2da40dd31fc5376ba27676266b3546cffcb91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd608c35_82ca81b3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 32
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-08T19:21:25Z",
+      "side": 1,
+      "message": "yes, and this still applies, as we have to generate the method at its original definition site. But if the type has already been determined we should not need to re-examine it, should we?\n\nWell, yes, it could be \u0027deviate replace\u0027d the hell to a *completely* different type, but we do not are about that edge case.",
+      "range": {
+        "startLine": 15,
+        "startChar": 10,
+        "endLine": 15,
+        "endChar": 43
+      },
+      "revId": "9cd2da40dd31fc5376ba27676266b3546cffcb91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc85dc19_5a78cdaa",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BaseTemplate.xtend",
+        "patchSetId": 32
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-08T19:21:25Z",
+      "side": 1,
+      "message": "extra space?",
+      "range": {
+        "startLine": 506,
+        "startChar": 4,
+        "endLine": 506,
+        "endChar": 5
+      },
+      "revId": "9cd2da40dd31fc5376ba27676266b3546cffcb91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "607dc52f_9d2c4435",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 32
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-08T19:21:25Z",
+      "side": 1,
+      "message": "prefer\n{@code true}",
+      "range": {
+        "startLine": 142,
+        "startChar": 29,
+        "endLine": 142,
+        "endChar": 35
+      },
+      "revId": "9cd2da40dd31fc5376ba27676266b3546cffcb91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
