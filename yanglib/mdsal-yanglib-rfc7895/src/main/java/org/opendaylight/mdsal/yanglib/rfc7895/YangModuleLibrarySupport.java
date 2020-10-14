@@ -27,6 +27,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
@@ -35,6 +36,8 @@ import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 @NonNullByDefault
 @Singleton
 public final class YangModuleLibrarySupport implements YangLibSupport {
+    private static final Revision REVISION = ModulesState.QNAME.getRevision().orElseThrow();
+
     private final BindingDataObjectCodecTreeNode<ModulesState> codec;
     private final EffectiveModelContext context;
 
@@ -56,5 +59,10 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
     public MountPointContextFactory createMountPointContextFactory(final MountPointIdentifier mountId,
             final SchemaContextResolver resolver) {
         return new MountPointContextFactoryImpl(mountId, resolver, context, codec);
+    }
+
+    @Override
+    public Revision implementedRevision() {
+        return REVISION;
     }
 }
