@@ -15,6 +15,7 @@ import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 import org.osgi.service.component.annotations.Activate;
@@ -42,6 +43,11 @@ public final class OSGiYangModuleLibrarySupport implements YangLibSupport {
     public MountPointContextFactory createMountPointContextFactory(final MountPointIdentifier mountId,
             final SchemaContextResolver resolver) {
         return delegate.createMountPointContextFactory(mountId, resolver);
+    }
+
+    @Override
+    public Revision implementedRevision() {
+        return delegate.implementedRevision();
     }
 
     @Activate
