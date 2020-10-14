@@ -31,6 +31,7 @@ import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
@@ -42,6 +43,8 @@ import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 @NonNullByDefault
 @Singleton
 public final class YangLibrarySupport implements YangLibSupport {
+    private static final Revision REVISION = YangLibrary.QNAME.getRevision().orElseThrow();
+
     private final BindingDataObjectCodecTreeNode<YangLibrary> codec;
     @SuppressWarnings("deprecation")
     private final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec;
@@ -71,6 +74,11 @@ public final class YangLibrarySupport implements YangLibSupport {
     public MountPointContextFactory createMountPointContextFactory(final MountPointIdentifier mountId,
             final SchemaContextResolver resolver) {
         return new MountPointContextFactoryImpl(mountId, resolver, context, identityCodec, codec, legacyCodec);
+    }
+
+    @Override
+    public Revision implementedRevision() {
+        return REVISION;
     }
 
     private static YangTextSchemaSource createSource(final YangModuleInfo info) {

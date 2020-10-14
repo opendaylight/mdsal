@@ -11,6 +11,7 @@ import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
+import org.opendaylight.yangtools.yang.common.Revision;
 
 /**
  * Main entrypoint into YANG (Module) Library support instance.
@@ -28,4 +29,12 @@ public interface YangLibSupport {
      */
     MountPointContextFactory createMountPointContextFactory(MountPointIdentifier mountId,
             SchemaContextResolver resolver);
+
+    /**
+     * Return the revision date of the model this support implements. The value returned from this method is suitable
+     * for reporting in <a href="https://tools.ietf.org/html/rfc8040#section-3.3.3">RFC8040 section 3.3.3</a>.
+     *
+     * @return A revision.
+     */
+    Revision implementedRevision();
 }
