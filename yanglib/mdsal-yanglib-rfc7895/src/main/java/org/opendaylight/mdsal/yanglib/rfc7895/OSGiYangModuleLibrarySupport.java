@@ -7,15 +7,14 @@
  */
 package org.opendaylight.mdsal.yanglib.rfc7895;
 
+import static com.google.common.base.Verify.verifyNotNull;
+
 import com.google.common.annotations.Beta;
 import java.io.IOException;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
-import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
-import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
-import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
-import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.mdsal.yanglib.spi.ForwardingYangLibSupport;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 import org.osgi.service.component.annotations.Activate;
@@ -26,8 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Beta
-@Component(immediate = true)
-public final class OSGiYangModuleLibrarySupport implements YangLibSupport {
+@Component(immediate = true, service = YangLibSupport.class)
+// FIXME: merge with YangModuleLibrarySupport once we have constructor injection
+public final class OSGiYangModuleLibrarySupport extends ForwardingYangLibSupport {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiYangModuleLibrarySupport.class);
 
     @Reference
@@ -40,14 +40,8 @@ public final class OSGiYangModuleLibrarySupport implements YangLibSupport {
     private YangModuleLibrarySupport delegate;
 
     @Override
-    public MountPointContextFactory createMountPointContextFactory(final MountPointIdentifier mountId,
-            final SchemaContextResolver resolver) {
-        return delegate.createMountPointContextFactory(mountId, resolver);
-    }
-
-    @Override
-    public Revision implementedRevision() {
-        return delegate.implementedRevision();
+    protected YangLibSupport delegate() {
+        return verifyNotNull(delegate);
     }
 
     @Activate
