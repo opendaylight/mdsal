@@ -23,7 +23,9 @@ import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
+import org.opendaylight.mdsal.yanglib.api.YangLibraryContentBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.ModulesState;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.RevisionIdentifier;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.YangLibrary;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
@@ -38,12 +40,15 @@ import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 @Singleton
 public final class YangLibrarySupport implements YangLibSupport {
     private static final Revision REVISION = YangLibrary.QNAME.getRevision().orElseThrow();
+    private static final RevisionIdentifier EMPTY_REV = new RevisionIdentifier("1970-01-01");
+    private static final String MODULE_SET_NAME = "ODL_modules";
 
     private final BindingDataObjectCodecTreeNode<YangLibrary> codec;
     @SuppressWarnings("deprecation")
     private final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec;
     private final BindingIdentityCodec identityCodec;
     private final EffectiveModelContext context;
+    private final BindingCodecTree codecTree;
 
     @Inject
     public YangLibrarySupport(final YangParserFactory parserFactory, final BindingRuntimeGenerator generator,
@@ -53,7 +58,7 @@ public final class YangLibrarySupport implements YangLibSupport {
                 .build();
         context = snapshot.getEffectiveModelContext();
 
-        final BindingCodecTree codecTree = codecFactory.create(new DefaultBindingRuntimeContext(
+        codecTree = codecFactory.create(new DefaultBindingRuntimeContext(
             generator.generateTypeMapping(context), snapshot));
 
         this.identityCodec = codecTree.getIdentityCodec();
@@ -70,5 +75,10 @@ public final class YangLibrarySupport implements YangLibSupport {
     @Override
     public Revision implementedRevision() {
         return REVISION;
+    }
+
+    @Override
+    public YangLibraryContentBuilder newContentBuilder() {
+        return new YangLibraryContentBuilderImpl(codecTree);
     }
 }
