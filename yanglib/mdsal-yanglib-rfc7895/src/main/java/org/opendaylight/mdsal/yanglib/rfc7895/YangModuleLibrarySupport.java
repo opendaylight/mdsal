@@ -22,6 +22,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
+import org.opendaylight.mdsal.yanglib.api.YangLibraryContentBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.$YangModuleInfoImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.ModulesState;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
@@ -44,6 +45,7 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
 
     private final BindingDataObjectCodecTreeNode<ModulesState> codec;
     private final EffectiveModelContext context;
+    private final BindingCodecTree codecTree;
 
     @Inject
     public YangModuleLibrarySupport(final YangParserFactory parserFactory, final BindingRuntimeGenerator generator,
@@ -55,7 +57,7 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
                     YangModuleLibrarySupport::createSource))
                 .addSource(createSource(yangLibModule))
                 .buildEffectiveModel();
-        final BindingCodecTree codecTree = codecFactory.create(DefaultBindingRuntimeContext.create(
+        codecTree = codecFactory.create(DefaultBindingRuntimeContext.create(
             generator.generateTypeMapping(context), SimpleStrategy.INSTANCE));
 
         this.codec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
@@ -70,6 +72,11 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
     @Override
     public Revision implementedRevision() {
         return REVISION;
+    }
+
+    @Override
+    public YangLibraryContentBuilder newContentBuilder() {
+        return new Rfc7895ContentBuilder(codecTree);
     }
 
     private static YangTextSchemaSource createSource(final YangModuleInfo info) {
