@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0db5c275_4e04a031",
+        "filename": "yanglib/mdsal-yanglib-rfc8525/src/main/java/org/opendaylight/mdsal/yanglib/rfc8525/OSGiYangLibrarySupport.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-15T03:28:42Z",
+      "side": 1,
+      "message": "missing service \u003d parameter",
+      "range": {
+        "startLine": 28,
+        "startChar": 23,
+        "endLine": 28,
+        "endChar": 28
+      },
+      "revId": "4a5c56ac5d2a4ff59ac5e4356f7349363513912d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
