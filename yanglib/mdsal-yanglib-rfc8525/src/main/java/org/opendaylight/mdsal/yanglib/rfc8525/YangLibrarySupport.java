@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.yanglib.rfc8525;
 import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.annotations.Beta;
+import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -24,11 +26,16 @@ import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.ModulesState;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.ModulesStateBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.YangLibrary;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.YangLibraryBuilder;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.data.api.DatastoreIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
@@ -70,5 +77,36 @@ public final class YangLibrarySupport implements YangLibSupport {
     @Override
     public Revision implementedRevision() {
         return REVISION;
+    }
+
+    @Override
+    public List<? extends ContainerNode> formatSchema(final EffectiveModelContext context,
+            final Set<DatastoreIdentifier> datastores) {
+        return List.of((ContainerNode) formatYangLibrary(context, datastores),
+            (ContainerNode) formatModulesState(context));
+    }
+
+    private NormalizedNode<?, ?> formatModulesState(final EffectiveModelContext context) {
+        // Two-step process: we first build the content and then use hashCode() to generate module-set-id
+        final ModulesState noId = new ModulesStateBuilder()
+            .setModuleSetId("")
+            // TODO Auto-generated method stub
+            .build();
+
+
+        return legacyCodec.serialize(new ModulesStateBuilder(noId)
+            .setModuleSetId(String.valueOf(noId.hashCode()))
+            .build());
+    }
+
+    private NormalizedNode<?, ?> formatYangLibrary(final EffectiveModelContext context,
+            final Set<DatastoreIdentifier> datastores) {
+        // Two-step process: we first build the content and then use hashCode() to generate content-id
+        final YangLibrary noId = new YangLibraryBuilder()
+            .setContentId("")
+            // TODO Auto-generated method stub
+            .build();
+
+        return codec.serialize(new YangLibraryBuilder(noId).setContentId(String.valueOf(noId.hashCode())).build());
     }
 }

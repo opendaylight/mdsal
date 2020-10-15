@@ -9,12 +9,17 @@ package org.opendaylight.mdsal.yanglib.spi;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ForwardingObject;
+import java.util.List;
+import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.data.api.DatastoreIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 @Beta
 public abstract class ForwardingYangLibSupport extends ForwardingObject implements YangLibSupport {
@@ -27,6 +32,12 @@ public abstract class ForwardingYangLibSupport extends ForwardingObject implemen
     @Override
     public Revision implementedRevision() {
         return delegate().implementedRevision();
+    }
+
+    @Override
+    public List<? extends ContainerNode> formatSchema(final EffectiveModelContext context,
+            final Set<DatastoreIdentifier> datastores) {
+        return delegate().formatSchema(context, datastores);
     }
 
     @Override
