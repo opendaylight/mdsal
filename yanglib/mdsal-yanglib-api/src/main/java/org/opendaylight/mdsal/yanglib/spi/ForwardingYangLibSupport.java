@@ -12,6 +12,7 @@ import com.google.common.collect.ForwardingObject;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
+import org.opendaylight.mdsal.yanglib.api.YangLibraryContentBuilder;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.yang.common.Revision;
@@ -27,6 +28,11 @@ public abstract class ForwardingYangLibSupport extends ForwardingObject implemen
     @Override
     public Revision implementedRevision() {
         return delegate().implementedRevision();
+    }
+
+    @Override
+    public YangLibraryContentBuilder newContentBuilder() {
+        return delegate().newContentBuilder();
     }
 
     @Override

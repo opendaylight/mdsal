@@ -7,20 +7,20 @@
  */
 package org.opendaylight.mdsal.yanglib.rfc7895;
 
-import java.io.IOException;
+import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupportFactory;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 
+@Beta
 @MetaInfServices
 @NonNullByDefault
 public final class YangModuleLibrarySupportFactory implements YangLibSupportFactory {
+
     @Override
-    public YangLibSupport createYangLibSupport(final YangParserFactory parserFactory)
-            throws YangParserException, IOException {
+    public YangLibSupport createYangLibSupport(final YangParserFactory parserFactory) {
         return new YangModuleLibrarySupport(parserFactory);
     }
 }
