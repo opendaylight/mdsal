@@ -22,7 +22,6 @@ import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.$YangModuleInfoImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.ModulesState;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
@@ -45,7 +44,7 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
     public YangModuleLibrarySupport(final YangParserFactory parserFactory, final BindingRuntimeGenerator generator,
             final BindingCodecTreeFactory codecFactory) throws YangParserException {
         final ModuleInfoSnapshot snapshot = new ModuleInfoSnapshotBuilder(parserFactory)
-                .add($YangModuleInfoImpl.getInstance())
+                .add(ModulesState.class)
                 .build();
         context = snapshot.getEffectiveModelContext();
 
