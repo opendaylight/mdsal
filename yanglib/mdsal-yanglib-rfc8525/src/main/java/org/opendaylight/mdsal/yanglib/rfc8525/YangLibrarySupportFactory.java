@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.yanglib.rfc8525;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
-import java.io.IOException;
 import java.util.ServiceLoader;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.kohsuke.MetaInfServices;
@@ -39,8 +38,7 @@ public final class YangLibrarySupportFactory implements YangLibSupportFactory {
     }
 
     @Override
-    public YangLibSupport createYangLibSupport(final YangParserFactory parserFactory)
-            throws YangParserException, IOException {
+    public YangLibSupport createYangLibSupport(final YangParserFactory parserFactory) throws YangParserException {
         return new YangLibrarySupport(parserFactory, generator, codecFactory);
     }
 
