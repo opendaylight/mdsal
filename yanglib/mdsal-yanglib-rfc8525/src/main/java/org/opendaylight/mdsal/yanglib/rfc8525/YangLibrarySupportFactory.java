@@ -39,9 +39,12 @@ public final class YangLibrarySupportFactory implements YangLibSupportFactory {
     }
 
     @Override
-    public YangLibSupport createYangLibSupport(final YangParserFactory parserFactory)
-            throws YangParserException, IOException {
-        return new YangLibrarySupport(parserFactory, generator, codecFactory);
+    public YangLibSupport createYangLibSupport(final YangParserFactory parserFactory) throws YangParserException {
+        try {
+            return new YangLibrarySupport(parserFactory, generator, codecFactory);
+        } catch (IOException e) {
+            throw new YangParserException("Failed to create YangLibrarySupport", e);
+        }
     }
 
     private static <T> T load(final Class<T> clazz) {

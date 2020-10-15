@@ -23,6 +23,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNo
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingIdentityCodec;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
+import org.opendaylight.mdsal.yanglib.api.YangLibraryContentBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.$YangModuleInfoImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.ModulesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.YangLibrary;
@@ -49,6 +50,7 @@ public final class YangLibrarySupport implements YangLibSupport {
     private final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec;
     private final BindingIdentityCodec identityCodec;
     private final EffectiveModelContext context;
+    private final BindingCodecTree codecTree;
 
     @Inject
     public YangLibrarySupport(final YangParserFactory parserFactory, final BindingRuntimeGenerator generator,
@@ -60,7 +62,7 @@ public final class YangLibrarySupport implements YangLibSupport {
                     YangLibrarySupport::createSource))
                 .addSource(createSource(yangLibModule))
                 .buildEffectiveModel();
-        final BindingCodecTree codecTree = codecFactory.create(DefaultBindingRuntimeContext.create(
+        codecTree = codecFactory.create(DefaultBindingRuntimeContext.create(
             generator.generateTypeMapping(context), SimpleStrategy.INSTANCE));
 
         this.identityCodec = codecTree.getIdentityCodec();
@@ -77,6 +79,11 @@ public final class YangLibrarySupport implements YangLibSupport {
     @Override
     public Revision implementedRevision() {
         return REVISION;
+    }
+
+    @Override
+    public YangLibraryContentBuilder newContentBuilder() {
+        return new YangLibraryContentBuilderImpl(codecTree);
     }
 
     private static YangTextSchemaSource createSource(final YangModuleInfo info) {
