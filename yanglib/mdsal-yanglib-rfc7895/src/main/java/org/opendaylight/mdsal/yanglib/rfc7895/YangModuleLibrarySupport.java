@@ -20,9 +20,11 @@ import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
+import org.opendaylight.mdsal.yanglib.api.LegacyYangLibraryContentBuilder;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.ModulesState;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.module.list.CommonLeafs;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -34,11 +36,13 @@ import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 @Beta
 @NonNullByDefault
 @Singleton
-public final class YangModuleLibrarySupport implements YangLibSupport {
+public final class YangModuleLibrarySupport implements YangLibSupport<LegacyYangLibraryContentBuilder> {
     private static final Revision REVISION = ModulesState.QNAME.getRevision().orElseThrow();
+    private static final CommonLeafs.Revision EMPTY_REV = new CommonLeafs.Revision("");
 
     private final BindingDataObjectCodecTreeNode<ModulesState> codec;
     private final EffectiveModelContext context;
+    private final BindingCodecTree codecTree;
 
     @Inject
     public YangModuleLibrarySupport(final YangParserFactory parserFactory, final BindingRuntimeGenerator generator,
@@ -48,7 +52,7 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
                 .build();
         context = snapshot.getEffectiveModelContext();
 
-        final BindingCodecTree codecTree = codecFactory.create(new DefaultBindingRuntimeContext(
+        codecTree = codecFactory.create(new DefaultBindingRuntimeContext(
             generator.generateTypeMapping(context), snapshot));
 
         this.codec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
@@ -63,5 +67,10 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
     @Override
     public Revision implementedRevision() {
         return REVISION;
+    }
+
+    @Override
+    public LegacyYangLibraryContentBuilder newContentBuilder() {
+        return new Rfc7895ContentBuilder(codecTree);
     }
 }

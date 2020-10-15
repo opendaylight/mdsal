@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.yanglib.api;
 
 import com.google.common.annotations.Beta;
-import java.io.IOException;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
@@ -18,7 +17,7 @@ import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
  */
 @Beta
 @NonNullByDefault
-public interface YangLibSupportFactory {
+public interface YangLibSupportFactory<T extends LegacyYangLibraryContentBuilder> {
 
-    YangLibSupport createYangLibSupport(YangParserFactory parserFactory) throws YangParserException, IOException;
+    YangLibSupport<T> createYangLibSupport(YangParserFactory parserFactory) throws YangParserException;
 }

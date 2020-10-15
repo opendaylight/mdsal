@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.yanglib.spi;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ForwardingObject;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.yanglib.api.LegacyYangLibraryContentBuilder;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
@@ -17,7 +18,8 @@ import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.yang.common.Revision;
 
 @Beta
-public abstract class ForwardingYangLibSupport extends ForwardingObject implements YangLibSupport {
+public abstract class ForwardingYangLibSupport<T extends LegacyYangLibraryContentBuilder>
+        extends ForwardingObject implements YangLibSupport<T> {
     @Override
     public MountPointContextFactory createMountPointContextFactory(final MountPointIdentifier mountId,
             final SchemaContextResolver resolver) {
@@ -30,5 +32,10 @@ public abstract class ForwardingYangLibSupport extends ForwardingObject implemen
     }
 
     @Override
-    protected abstract @NonNull YangLibSupport delegate();
+    public T newContentBuilder() {
+        return delegate().newContentBuilder();
+    }
+
+    @Override
+    protected abstract @NonNull YangLibSupport<T> delegate();
 }

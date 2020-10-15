@@ -14,11 +14,11 @@ import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.yang.common.Revision;
 
 /**
- * Main entrypoint into YANG (Module) Library support instance.
+ * Main entry point into YANG (Module) Library support instance.
  */
 @Beta
 @NonNullByDefault
-public interface YangLibSupport {
+public interface YangLibSupport<T extends LegacyYangLibraryContentBuilder> {
     /**
      * Create a MountPointContextFactory, backed by a specific SchemaContextResolver.
      *
@@ -37,4 +37,12 @@ public interface YangLibSupport {
      * @return A revision.
      */
     Revision implementedRevision();
+
+    /**
+     * Create a new content builder which is used to serialize yang library content into NormalizedNodes.
+     * This content builder has further options which can influence the resulting content.
+     *
+     * @return A new yang library content builder.
+     */
+    T newContentBuilder();
 }

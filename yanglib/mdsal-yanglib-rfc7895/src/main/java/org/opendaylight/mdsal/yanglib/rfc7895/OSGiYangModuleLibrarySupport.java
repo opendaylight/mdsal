@@ -13,6 +13,7 @@ import com.google.common.annotations.Beta;
 import java.io.IOException;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
+import org.opendaylight.mdsal.yanglib.api.LegacyYangLibraryContentBuilder;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.mdsal.yanglib.spi.ForwardingYangLibSupport;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
@@ -27,7 +28,7 @@ import org.slf4j.LoggerFactory;
 @Beta
 @Component(immediate = true, service = YangLibSupport.class)
 // FIXME: merge with YangModuleLibrarySupport once we have constructor injection
-public final class OSGiYangModuleLibrarySupport extends ForwardingYangLibSupport {
+public final class OSGiYangModuleLibrarySupport extends ForwardingYangLibSupport<LegacyYangLibraryContentBuilder> {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiYangModuleLibrarySupport.class);
 
     @Reference
@@ -40,7 +41,7 @@ public final class OSGiYangModuleLibrarySupport extends ForwardingYangLibSupport
     private YangModuleLibrarySupport delegate;
 
     @Override
-    protected YangLibSupport delegate() {
+    protected YangLibSupport<LegacyYangLibraryContentBuilder> delegate() {
         return verifyNotNull(delegate);
     }
 
