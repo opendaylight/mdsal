@@ -8,8 +8,10 @@
 package org.opendaylight.mdsal.eos.dom.api;
 
 import com.google.common.annotations.Beta;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import java.util.concurrent.Future;
 
 /**
  * DOM version of {@link GenericEntityOwnershipCandidateRegistration}.
@@ -19,4 +21,9 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 @Beta
 public interface DOMEntityOwnershipCandidateRegistration extends
         GenericEntityOwnershipCandidateRegistration<YangInstanceIdentifier, DOMEntity> {
+
+    @Nullable
+    default Future<Throwable> getRegistrationException(){
+        return null;
+    }
 }
