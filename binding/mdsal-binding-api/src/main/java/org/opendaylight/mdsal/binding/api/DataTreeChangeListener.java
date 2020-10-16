@@ -54,6 +54,7 @@ public interface DataTreeChangeListener<T extends DataObject> extends EventListe
      * Default implementation does nothing and is appropriate for users who do not care about ascertaining
      * initial state.
      */
+    // FIXME: 8.0.0: this method should be non-default
     default void onInitialData() {
         //no-op
     }

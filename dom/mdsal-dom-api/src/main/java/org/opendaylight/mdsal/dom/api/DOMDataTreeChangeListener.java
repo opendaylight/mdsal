@@ -49,6 +49,7 @@ public interface DOMDataTreeChangeListener extends EventListener {
      * Default implementation does nothing and is appropriate for users who do not care about ascertaining
      * initial stat.
      */
+    // FIXME: 8.0.0: this method should be non-default
     default void onInitialData() {
         //no-op
     }
