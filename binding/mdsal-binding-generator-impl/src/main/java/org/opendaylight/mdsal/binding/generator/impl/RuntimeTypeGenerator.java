@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import java.util.Collection;
@@ -41,21 +39,28 @@ final class RuntimeTypeGenerator extends AbstractTypeGenerator {
 
     @NonNull BindingRuntimeTypes toTypeMapping() {
         final Map<Type, AugmentationSchemaNode> augmentationToSchema = new HashMap<>();
-        final BiMap<Type, WithStatus> typeToDefiningSchema = HashBiMap.create();
+        final Map<Type, WithStatus> typeToSchema = new HashMap<>();
         final Multimap<Type, Type> choiceToCases = HashMultimap.create();
         final Map<QName, Type> identities = new HashMap<>();
 
+        // Note: we are keying through WithStatus, but these nodes compare on semantics, so equivalent schema nodes
+        //       can result in two distinct types. We certainly need to keep them separate.
+        final Map<WithStatus, Type> schemaToType = new IdentityHashMap<>();
+
         /*
-         * Fun parts are here. ModuleContext maps have Builders in them, we want plan types. We may encounter each
+         * Fun parts are here. ModuleContext maps have Builders in them, we want plain types. We may encounter each
          * builder multiple times, hence we keep a builder->instance cache.
          */
         final Map<Type, Type> builderToType = new IdentityHashMap<>();
+
         for (final ModuleContext ctx : moduleContexts()) {
             for (Entry<Type, AugmentationSchemaNode> e : ctx.getTypeToAugmentation().entrySet()) {
                 augmentationToSchema.put(builtType(builderToType, e.getKey()), e.getValue());
             }
             for (Entry<Type, WithStatus> e : ctx.getTypeToSchema().entrySet()) {
-                typeToDefiningSchema.put(builtType(builderToType, e.getKey()), e.getValue());
+                final Type type = builtType(builderToType, e.getKey());
+                typeToSchema.put(type, e.getValue());
+                schemaToType.put(e.getValue(), type);
             }
             for (Entry<Type, Type> e : ctx.getChoiceToCases().entries()) {
                 choiceToCases.put(builtType(builderToType, e.getKey()), builtType(builderToType, e.getValue()));
@@ -65,7 +70,7 @@ final class RuntimeTypeGenerator extends AbstractTypeGenerator {
             }
         }
 
-        return new BindingRuntimeTypes(schemaContext(), augmentationToSchema, typeToDefiningSchema, choiceToCases,
+        return new BindingRuntimeTypes(schemaContext(), augmentationToSchema, typeToSchema, schemaToType, choiceToCases,
             identities);
     }
 
