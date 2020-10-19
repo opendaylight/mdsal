@@ -7,6 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.runtime.spi;
 
-public class BindingRuntimeHelpersTest {
+import org.junit.Test;
+import org.opendaylight.yang.gen.v1.bytedance.dns.rev201013.BytedanceDnsService;
 
+public class BindingRuntimeHelpersTest {
+    @Test
+    public void testCreateRuntimeContextWithSubmodule() {
+        BindingRuntimeHelpers.createRuntimeContext(BytedanceDnsService.class);
+    }
 }
