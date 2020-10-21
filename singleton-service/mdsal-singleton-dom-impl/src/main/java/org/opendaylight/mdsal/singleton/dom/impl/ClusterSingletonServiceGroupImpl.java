@@ -30,6 +30,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReference;
 import org.checkerframework.checker.lock.qual.GuardedBy;
@@ -240,6 +243,10 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
 
     @Override
     void initialize() throws CandidateAlreadyRegisteredException {
+        registerCandidate(false);
+    }
+
+    private void registerCandidate(boolean retried) throws CandidateAlreadyRegisteredException {
         verify(tryLock());
         try {
             checkState(!initialized, "Singleton group %s was already initilized", identifier);
@@ -247,10 +254,32 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             synchronized (this) {
                 serviceEntityState = EntityState.REGISTERED;
                 serviceEntityReg = entityOwnershipService.registerCandidate(serviceEntity);
-                initialized = true;
+                Future<Throwable> registrationException = serviceEntityReg.getRegistrationException();
+                if (registrationException != null) {
+                    Executors.newSingleThreadExecutor().execute(() -> retryRegistration(registrationException, retried));
+                } else {
+                    initialized = true;
+                }
             }
         } finally {
             unlock();
+        }
+    }
+
+    private void retryRegistration(Future<Throwable> registrationException, boolean retried) {
+        try {
+            Throwable exception = registrationException.get();
+            if (exception != null) {
+                LOG.debug("Initializing service failed with exception {}", exception.toString());
+                initialized = false;
+                if (!retried) {
+                    LOG.debug("Retry initializing service");
+                    registerCandidate(true);
+                }
+
+            }
+        } catch (InterruptedException | ExecutionException | CandidateAlreadyRegisteredException ex) {
+            LOG.debug("Retry initializing service failed with exception {}", ex.toString());
         }
     }
 

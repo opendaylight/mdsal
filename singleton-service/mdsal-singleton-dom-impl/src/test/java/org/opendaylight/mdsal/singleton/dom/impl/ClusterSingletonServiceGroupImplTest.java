@@ -16,11 +16,13 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.opendaylight.mdsal.singleton.dom.impl.AbstractClusterSingletonServiceProviderImpl.CLOSE_SERVICE_ENTITY_TYPE;
 import static org.opendaylight.mdsal.singleton.dom.impl.AbstractClusterSingletonServiceProviderImpl.SERVICE_ENTITY_TYPE;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
@@ -501,6 +503,26 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());
         assertTrue(future.isDone());
         assertNull(future.get());
+    }
+
+    @Test
+    public void checkRegistrationRetryTestShouldRetryRegistrationIfException() throws CandidateAlreadyRegisteredException, InterruptedException {
+
+        doReturn(CompletableFuture.completedFuture(new Exception())).when(mockEntityCandReg).getRegistrationException();
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, MAIN_ENTITY, CLOSE_ENTITY,
+                mockEosService);
+        singletonServiceGroup.initialize();
+        Thread.sleep(100);
+        verify(mockEosService, times(2)).registerCandidate(MAIN_ENTITY);
+    }
+
+    @Test
+    public void checkRegistrationRetryTestShouldCallRegistrationOneTimeIfNoException() throws CandidateAlreadyRegisteredException {
+        doReturn(CompletableFuture.completedFuture(null)).when(mockEntityCandReg).getRegistrationException();
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, MAIN_ENTITY, CLOSE_ENTITY,
+                mockEosService);
+        singletonServiceGroup.initialize();
+        verify(mockEosService, times(1)).registerCandidate(MAIN_ENTITY);
     }
 
     private void initialize() throws CandidateAlreadyRegisteredException {
