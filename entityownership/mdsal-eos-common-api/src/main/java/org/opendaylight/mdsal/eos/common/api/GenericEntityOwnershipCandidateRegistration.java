@@ -7,8 +7,11 @@
  */
 package org.opendaylight.mdsal.eos.common.api;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Path;
+import java.util.concurrent.Future;
 
 /**
  * An interface that records a request to register a Candidate for a given Entity. Calling close on the
@@ -27,4 +30,9 @@ public interface GenericEntityOwnershipCandidateRegistration<P extends Path<P>, 
      */
     @Override
     void close();
+
+    @Nullable
+    default ListenableFuture<Boolean> getRegistrationResult(){
+        return null;
+    }
 }
