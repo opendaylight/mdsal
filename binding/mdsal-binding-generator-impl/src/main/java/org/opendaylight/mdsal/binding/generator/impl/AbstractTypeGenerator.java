@@ -124,6 +124,7 @@ import org.opendaylight.yangtools.yang.model.api.OutputSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
@@ -630,9 +631,16 @@ abstract class AbstractTypeGenerator {
                 resolveDataSchemaNodes(context, notificationInterface, notificationInterface,
                     notification.getChildNodes(), false);
 
-                addComment(listenerInterface.addMethod("on" + notificationInterface.getName())
+                final MethodSignatureBuilder notificationMethod =
+                    listenerInterface.addMethod("on" + notificationInterface.getName())
                     .setAccessModifier(AccessModifier.PUBLIC).addParameter(notificationInterface, "notification")
-                    .setReturnType(primitiveVoidType()), notification);
+                    .setReturnType(primitiveVoidType());
+
+                annotateDeprecatedIfNecessary(notification, notificationMethod);
+                if (notification.getStatus().equals(Status.OBSOLETE)) {
+                    notificationMethod.setDefault(true);
+                }
+                addComment(notificationMethod, notification);
             }
         }
 
