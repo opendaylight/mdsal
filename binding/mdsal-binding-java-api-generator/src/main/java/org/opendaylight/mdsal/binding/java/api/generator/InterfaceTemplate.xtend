@@ -190,6 +190,7 @@ class InterfaceTemplate extends BaseTemplate {
         } else {
             switch method.name {
                 case DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME : generateDefaultImplementedInterface
+                default : generateDefaultInterfaceMethod(method)
             }
         }
     }
@@ -206,6 +207,14 @@ class InterfaceTemplate extends BaseTemplate {
         «method.comment.asJavadoc»
         «method.annotations.generateAnnotations»
         «method.returnType.importedName» «method.name»(«method.parameters.generateParameters»);
+    '''
+
+    def private generateDefaultInterfaceMethod(MethodSignature method) '''
+        «method.comment.asJavadoc»
+        «method.annotations.generateAnnotations»
+        default «method.returnType.importedName» «method.name»(«method.parameters.generateParameters») {
+            // No-op
+        }
     '''
 
     def private static accessorJavadoc(MethodSignature method, String orString) {
