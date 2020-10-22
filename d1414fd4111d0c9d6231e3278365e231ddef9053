@@ -46,6 +46,76 @@
       "revId": "d1414fd4111d0c9d6231e3278365e231ddef9053",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c6531ca6_1a47f301",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 3
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-22T14:43:12Z",
+      "side": 1,
+      "message": "ah, but we should check for void return before dispatching",
+      "parentUuid": "2a0d7130_76c1852c",
+      "range": {
+        "startLine": 193,
+        "startChar": 15,
+        "endLine": 193,
+        "endChar": 64
+      },
+      "revId": "d1414fd4111d0c9d6231e3278365e231ddef9053",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7deee789_304522b1",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 3
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-22T14:43:12Z",
+      "side": 1,
+      "message": "\u0027NoopVoid\u0027\n\njust to make things clear",
+      "range": {
+        "startLine": 212,
+        "startChar": 24,
+        "endLine": 212,
+        "endChar": 31
+      },
+      "revId": "d1414fd4111d0c9d6231e3278365e231ddef9053",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd0476d4_e2987339",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-22T14:43:12Z",
+      "side": 1,
+      "message": "this is always void.importedName, otherwise it would not compile",
+      "range": {
+        "startLine": 215,
+        "startChar": 16,
+        "endLine": 215,
+        "endChar": 48
+      },
+      "revId": "d1414fd4111d0c9d6231e3278365e231ddef9053",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
     }
   ]
 }
