@@ -22,6 +22,30 @@
       "revId": "d1414fd4111d0c9d6231e3278365e231ddef9053",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a0d7130_76c1852c",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 3
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-10-22T13:30:05Z",
+      "side": 1,
+      "message": "Oh,excuse me, it\u0027s impossible to do here",
+      "parentUuid": "f445bede_c49ad5db",
+      "range": {
+        "startLine": 193,
+        "startChar": 15,
+        "endLine": 193,
+        "endChar": 64
+      },
+      "revId": "d1414fd4111d0c9d6231e3278365e231ddef9053",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
     }
   ]
 }
