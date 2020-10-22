@@ -190,6 +190,10 @@ class InterfaceTemplate extends BaseTemplate {
         } else {
             switch method.name {
                 case DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME : generateDefaultImplementedInterface
+                default :
+                    if (Types.voidType == method.returnType.identifier) {
+                        generateNoopVoidInterfaceMethod(method)
+                    }
             }
         }
     }
@@ -206,6 +210,14 @@ class InterfaceTemplate extends BaseTemplate {
         «method.comment.asJavadoc»
         «method.annotations.generateAnnotations»
         «method.returnType.importedName» «method.name»(«method.parameters.generateParameters»);
+    '''
+
+    def private generateNoopVoidInterfaceMethod(MethodSignature method) '''
+        «method.comment.asJavadoc»
+        «method.annotations.generateAnnotations»
+        default «VOID.importedName» «method.name»(«method.parameters.generateParameters») {
+            // No-op
+        }
     '''
 
     def private static accessorJavadoc(MethodSignature method, String orString) {
