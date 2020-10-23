@@ -14,11 +14,13 @@ import com.google.common.base.MoreObjects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.function.Function;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath.LeafReference;
 import org.opendaylight.yangtools.concepts.Immutable;
 
@@ -28,8 +30,8 @@ import org.opendaylight.yangtools.concepts.Immutable;
  * to {@link LeafReference} lambdas.
  *
  * <p>
- * We then assume runtime is following guidance around {@link SerializedLambda}, thus Serializable lambdas have a
- * {@code writeReplace()} method and that it produces {@link SerializedLambda} -- which we use to get the information
+ * We then assume runtime is following guidance around {@link SerializedLambda}, thus {@link Serializable} lambdas have
+ * a {@code writeReplace()} method and it produces a {@link SerializedLambda} -- which we use to get the information
  * about what the lambda does at least in the single case we support.
  *
  * <p>
@@ -43,8 +45,11 @@ import org.opendaylight.yangtools.concepts.Immutable;
  *   <li>it creates additional implementation of the interface, bringing the system-wide total to 3, which can hurt
  *       JIT's decisions</li>
  * </ul>
+ * While that approach would certainly be feasible and would on top of plain {@link Function}, overall it would be
+ * messier, less type-safe and a perf-killer.
  */
 final class LambdaDecoder {
+    // FIXME: when we have JDK16: this should be a record
     static final class LambdaTarget implements Immutable {
         final String targetClass;
         final String targetMethod;
