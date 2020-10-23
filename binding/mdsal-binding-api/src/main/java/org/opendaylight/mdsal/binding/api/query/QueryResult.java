@@ -7,14 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.api.query;
 
-import com.google.common.annotations.Beta;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Result of executing a {@link QueryExpression}. It is composed of one or more result values, which can be accessed via
@@ -22,8 +23,29 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  *
  * @param <T> Result object type
  */
-@Beta
+@NonNullByDefault
 public interface QueryResult<T extends DataObject> {
+    /**
+     * A single item in the result set. It is identified by its path and the corresponding object..
+     *
+     * @param <T> Result object type
+     */
+    interface Item<T extends DataObject> extends Immutable {
+        /**
+         * Return the result object.
+         *
+         * @return Result object
+         */
+        T object();
+
+        /**
+         * Return the {@link InstanceIdentifier} of the result object. This is guaranteed to be non-wildcard.
+         *
+         * @return InstanceIdentifier of the result object
+         */
+        InstanceIdentifier<T> path();
+    }
+
     /**
      * Returns a spliterator over values of the result.
      *
@@ -31,14 +53,14 @@ public interface QueryResult<T extends DataObject> {
      */
     // TODO: @throws IllegalStateException if values have been already been consumed?
     // FIXME: we really may want to wrap each entry in a CheckedValue, so that we can communicate fetch problems
-    @NonNull Spliterator<? extends T> spliterator();
+    Spliterator<? extends Item<T>> spliterator();
 
     /**
      * Returns a sequential {@link Stream} of values from the result.
      *
      * @return A stream of non-null values.
      */
-    default @NonNull Stream<? extends T> stream() {
+    default Stream<? extends Item<T>> stream() {
         return StreamSupport.stream(spliterator(), false);
     }
 
@@ -47,11 +69,15 @@ public interface QueryResult<T extends DataObject> {
      *
      * @return A stream of non-null values.
      */
-    default @NonNull Stream<? extends T> parallelStream() {
+    default Stream<? extends Item<T>> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }
 
-    default @NonNull List<? extends T> getValues() {
+    default List<? extends T> getValues() {
+        return stream().map(Item::object).collect(Collectors.toUnmodifiableList());
+    }
+
+    default List<? extends Item<T>> getItems() {
         return stream().collect(Collectors.toUnmodifiableList());
     }
 }
