@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.api.query;
 
 import com.google.common.annotations.Beta;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -16,5 +15,5 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 @NonNullByDefault
 public interface QueryExecutor {
 
-    <T extends DataObject> ListenableFuture<? extends QueryResult<T>> executeQuery(QueryExpression<T> query);
+    <T extends DataObject> QueryResult<T> executeQuery(QueryExpression<T> query);
 }
