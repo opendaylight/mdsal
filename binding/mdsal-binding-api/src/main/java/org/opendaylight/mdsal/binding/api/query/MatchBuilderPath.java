@@ -169,12 +169,14 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
     @FunctionalInterface
     public interface LeafReference<P, C> extends Serializable {
         /**
-         * Dummy method to express the method signature of a typical getter. This method
+         * Dummy method to express the method signature of a typical getter. Due to this match we can match any Java
+         * method reference which takes in {@code parent} and results in {@code child} -- expose the feature of using
+         * {@code Parent::getChild} method shorthand.
          *
          * @param parent Parent object
          * @return Leaf value
          * @deprecated This method is present only for technical realization of taking the method reference and should
-         *             never be involved directly.
+         *             never be involved directly. See {@code LambdaDecoder} for gory details.
          */
         @Deprecated(forRemoval = true)
         C dummyMethod(P parent);
