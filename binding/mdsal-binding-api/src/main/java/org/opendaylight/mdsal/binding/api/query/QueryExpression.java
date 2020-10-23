@@ -80,8 +80,6 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * The distinction here is made by selecting different root paths: the first will specify the entire {@code foo} list,
  * while the second will select a specific {@code foo} entry.
  *
- *
- *
  * @param <T> Result object type
  */
 @Beta
