@@ -78,6 +78,17 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Object> 
         }
     }
 
+    public static final class NotExists extends DOMQueryPredicate {
+        public NotExists(final YangInstanceIdentifier relativePath) {
+            super(relativePath);
+        }
+
+        @Override
+        public boolean test(final Object data) {
+            return data == null;
+        }
+    }
+
     public static final class ValueEquals<T> extends AbstractValueDOMQueryPredicate<T> {
         public ValueEquals(final YangInstanceIdentifier relativePath, final T value) {
             super(relativePath, value);
