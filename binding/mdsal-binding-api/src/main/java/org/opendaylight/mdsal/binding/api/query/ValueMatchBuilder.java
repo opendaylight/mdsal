@@ -27,6 +27,13 @@ public interface ValueMatchBuilder<T extends DataObject, V> {
     @NonNull ValueMatch<T> nonNull();
 
     /**
+     * Match when non-existent.
+     *
+     * @return A ValueMatch
+     */
+    @NonNull ValueMatch<T> isNull();
+
+    /**
      * Match exact value.
      *
      * @param value value to match
