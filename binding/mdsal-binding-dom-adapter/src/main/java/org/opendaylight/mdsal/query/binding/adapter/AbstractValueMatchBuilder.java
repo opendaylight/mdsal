@@ -14,6 +14,7 @@ import org.opendaylight.mdsal.binding.api.query.ValueMatch;
 import org.opendaylight.mdsal.binding.api.query.ValueMatchBuilder;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Exists;
+import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.NotExists;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.ValueEquals;
 import org.opendaylight.mdsal.query.binding.adapter.QueryBuilderState.BoundMethod;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -36,6 +37,11 @@ abstract class AbstractValueMatchBuilder<T extends DataObject, V> implements Val
     @Override
     public final ValueMatch<T> nonNull() {
         return withPredicate(new Exists(relativePath()));
+    }
+
+    @Override
+    public final ValueMatch<T> isNull() {
+        return withPredicate(new NotExists(relativePath()));
     }
 
     @Override
