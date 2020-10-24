@@ -18,10 +18,25 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 @Beta
-public abstract class DOMQueryPredicate implements Immutable, Predicate<Object> {
-    abstract static class AbstractValueDOMQueryPredicate<T> extends DOMQueryPredicate {
+public abstract class DOMQueryPredicate implements Immutable, Predicate<NormalizedNode<?, ?>> {
+    abstract static class AbstractLeafDOMQueryPredicate extends DOMQueryPredicate {
+        AbstractLeafDOMQueryPredicate(final YangInstanceIdentifier relativePath) {
+            super(relativePath);
+        }
+
+        @Override
+        public final boolean test(final NormalizedNode<?, ?> data) {
+            return testValue(data instanceof LeafNode ? ((LeafNode<?>) data).getValue() : null);
+        }
+
+        abstract boolean testValue(Object data);
+    }
+
+    abstract static class AbstractValueDOMQueryPredicate<T> extends AbstractLeafDOMQueryPredicate {
         private final @NonNull T value;
 
         AbstractValueDOMQueryPredicate(final YangInstanceIdentifier relativePath, final T value) {
@@ -47,7 +62,7 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Object> 
 
         @Override
         @SuppressWarnings("unchecked")
-        public final boolean test(final Object data) {
+        public final boolean testValue(final Object data) {
             return data != null && test(value().compareTo((T) data));
         }
 
@@ -60,7 +75,7 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Object> 
         }
 
         @Override
-        public final boolean test(final Object data) {
+        public final boolean testValue(final Object data) {
             return data instanceof String && test((String) data);
         }
 
@@ -73,7 +88,7 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Object> 
         }
 
         @Override
-        public boolean test(final Object data) {
+        public boolean test(final NormalizedNode<?, ?> data) {
             return data != null;
         }
     }
@@ -84,7 +99,7 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Object> 
         }
 
         @Override
-        public boolean test(final Object data) {
+        public boolean test(final NormalizedNode<?, ?> data) {
             return data == null;
         }
     }
@@ -95,7 +110,7 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Object> 
         }
 
         @Override
-        public boolean test(final Object data) {
+        public boolean testValue(final Object data) {
             return value().equals(data);
         }
     }
@@ -178,7 +193,7 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Object> 
         }
     }
 
-    public static final class MatchesPattern extends DOMQueryPredicate {
+    public static final class MatchesPattern extends AbstractLeafDOMQueryPredicate {
         private final Pattern pattern;
 
         public MatchesPattern(final YangInstanceIdentifier relativePath, final Pattern pattern) {
@@ -187,13 +202,13 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Object> 
         }
 
         @Override
-        ToStringHelper addToStringAttributes(final ToStringHelper helper) {
-            return helper.add("pattern", pattern);
+        public boolean testValue(final Object data) {
+            return data instanceof CharSequence && pattern.matcher((CharSequence) data).matches();
         }
 
         @Override
-        public boolean test(final Object data) {
-            return data instanceof CharSequence && pattern.matcher((CharSequence) data).matches();
+        ToStringHelper addToStringAttributes(final ToStringHelper helper) {
+            return helper.add("pattern", pattern);
         }
     }
 
@@ -208,7 +223,7 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Object> 
     }
 
     @Override
-    public abstract boolean test(@Nullable Object data);
+    public abstract boolean test(@Nullable NormalizedNode<?, ?> data);
 
     @Override
     public String toString() {
