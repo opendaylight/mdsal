@@ -7,17 +7,23 @@
  */
 package org.opendaylight.mdsal.dom.spi.query;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.collect.ImmutableList;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
+import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 
@@ -36,8 +42,17 @@ public final class DOMQueryEvaluator {
 
     private static List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> evalPath(
             final ArrayDeque<PathArgument> remaining, final NormalizedNode<?,?> data, final DOMQuery query) {
+        NormalizedNode<?, ?> evalRoot = data;
+        for (PathArgument arg : query.getRoot().getPathArguments()) {
+            final Optional<NormalizedNode<?, ?>> next = NormalizedNodes.findNode(data, arg);
+            if (next.isEmpty()) {
+                return ImmutableList.of();
+            }
+            evalRoot = next.orElseThrow();
+        }
+
         final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> result = new ArrayList<>();
-        evalPath(result, query.getRoot(), remaining, data, query);
+        evalPath(result, query.getRoot(), remaining, evalRoot, query);
         return result;
     }
 
@@ -47,14 +62,20 @@ public final class DOMQueryEvaluator {
         final PathArgument next = remaining.poll();
         if (next == null) {
             if (matches(data, query)) {
-                result.add(new SimpleImmutableEntry<>(query.getRoot(), data));
+                result.add(new SimpleImmutableEntry<>(path, data));
             }
             return;
         }
 
-        // TODO: this is probably insufficient
-        NormalizedNodes.findNode(data, next)
-            .ifPresent(child -> evalPath(result, path.node(next), remaining, child, query));
+        if (data instanceof MapNode && next instanceof NodeIdentifier) {
+            checkArgument(data.getIdentifier().equals(next), "Unexpected step %s", next);
+            for (MapEntryNode child : ((MapNode) data).getValue()) {
+                evalPath(result, path.node(child.getIdentifier()), remaining, child, query);
+            }
+        } else {
+            NormalizedNodes.getDirectChild(data, next).ifPresent(
+                child -> evalPath(result, path.node(next), remaining, child, query));
+        }
         remaining.push(next);
     }
 
@@ -66,7 +87,7 @@ public final class DOMQueryEvaluator {
 
     private static boolean matches(final NormalizedNode<?, ?> data, final DOMQuery query) {
         for (DOMQueryPredicate pred : query.getPredicates()) {
-            if (!pred.test(data)) {
+            if (!pred.test(NormalizedNodes.findNode(data, pred.getPath()).orElse(null))) {
                 return false;
             }
         }
