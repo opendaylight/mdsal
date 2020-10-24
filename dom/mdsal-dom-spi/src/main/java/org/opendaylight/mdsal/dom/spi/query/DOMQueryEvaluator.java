@@ -13,6 +13,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -20,6 +21,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 
+@NonNullByDefault
 public final class DOMQueryEvaluator {
     private DOMQueryEvaluator() {
 
