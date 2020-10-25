@@ -90,7 +90,7 @@ final class QueryBuilderState {
     }
 
     <T extends DataObject> @NonNull QueryExpression<T> buildQuery() {
-        return new DefaultQuery<>(new DOMQuery(root, relativeSelect, predicates));
+        return new DefaultQuery<>(codec, new DOMQuery(root, relativeSelect, predicates));
     }
 
     private @NonNull YangInstanceIdentifier fromBinding(final InstanceIdentifier<?> bindingId) {
