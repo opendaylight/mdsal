@@ -7,9 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.util;
 
+import com.google.common.util.concurrent.FluentFuture;
+import org.opendaylight.mdsal.binding.api.QueryOperations;
 import org.opendaylight.mdsal.binding.api.Transaction;
+import org.opendaylight.mdsal.binding.api.query.QueryExpression;
+import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.spi.ForwardingTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 
 abstract class TypedTransaction<D extends Datastore, X extends Transaction> extends ForwardingTransaction {
     private final LogicalDatastoreType datastoreType;
@@ -27,5 +32,12 @@ abstract class TypedTransaction<D extends Datastore, X extends Transaction> exte
 
     final LogicalDatastoreType getDatastoreType() {
         return datastoreType;
+    }
+
+    final <T extends DataObject> FluentFuture<QueryResult<T>> doExecute(final QueryExpression<T> query) {
+        if (delegate instanceof QueryOperations) {
+            return ((QueryOperations) delegate).execute(datastoreType, query);
+        }
+        throw new UnsupportedOperationException("Query execution requires backend support");
     }
 }
