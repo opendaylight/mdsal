@@ -73,6 +73,7 @@ public final class DOMQueryEvaluator {
 
     private static DOMQueryResult evalPath(final ArrayDeque<PathArgument> remaining, final NormalizedNode<?, ?> data,
             final DOMQuery query) {
+        // FIXME: this is eager evaluation, we should be doing lazy traversal
         final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> result = new ArrayList<>();
         evalPath(result, new ArrayDeque<>(query.getRoot().getPathArguments()), remaining, data, query);
         return EagerDOMQueryResult.of(result);
