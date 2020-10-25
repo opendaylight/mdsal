@@ -12,18 +12,13 @@ import static org.junit.Assert.assertEquals;
 import com.google.common.base.Stopwatch;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.query.QueryExecutor;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
-import org.opendaylight.mdsal.binding.api.query.QueryFactory;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.api.query.QueryResult.Item;
 import org.opendaylight.mdsal.binding.api.query.QueryStructureException;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
-import org.opendaylight.mdsal.binding.dom.codec.impl.DefaultBindingCodecTreeFactory;
-import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.Foo;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.FooBuilder;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.System;
@@ -41,17 +36,14 @@ import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QueryBuilderTest {
+public class QueryBuilderTest extends AbstractQueryTest {
     private static final Logger LOG = LoggerFactory.getLogger(QueryBuilderTest.class);
-    private static BindingCodecTree CODEC;
-    private static QueryExecutor EXECUTOR;
 
-    private final QueryFactory factory = new DefaultQueryFactory(CODEC);
+    private QueryExecutor executor;
 
-    @BeforeClass
-    public static void beforeClass() {
-        CODEC = new DefaultBindingCodecTreeFactory().create(BindingRuntimeHelpers.createRuntimeContext());
-        EXECUTOR = SimpleQueryExecutor.builder(CODEC)
+    @Before
+    public void before() {
+        executor = SimpleQueryExecutor.builder(CODEC)
             .add(new FooBuilder()
                 .setSystem(BindingMap.of(
                     new SystemBuilder().setName("first").setAlarms(BindingMap.of(
@@ -82,12 +74,6 @@ public class QueryBuilderTest {
                     ))
                 .build())
             .build();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        CODEC = null;
-        EXECUTOR = null;
     }
 
     @Test
@@ -150,9 +136,9 @@ public class QueryBuilderTest {
         assertEquals(2, items.size());
     }
 
-    private static <T extends @NonNull DataObject> QueryResult<T> execute(final QueryExpression<T> query) {
+    private <T extends @NonNull DataObject> QueryResult<T> execute(final QueryExpression<T> query) {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryResult<T> result = EXECUTOR.executeQuery(query);
+        final QueryResult<T> result = executor.executeQuery(query);
         LOG.info("Query executed in {}", sw);
         return result;
     }
