@@ -11,7 +11,9 @@ import com.google.common.util.concurrent.FluentFuture;
 import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeQueryReadWriteTransaction;
+import org.opendaylight.mdsal.dom.api.query.DOMQuery;
+import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -36,7 +38,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * underlying transactions.
  */
 final class DOMForwardedReadWriteTransaction extends DOMForwardedWriteTransaction<DOMStoreReadWriteTransaction>
-        implements DOMDataTreeReadWriteTransaction {
+        implements DOMDataTreeQueryReadWriteTransaction {
 
     DOMForwardedReadWriteTransaction(final Object identifier,
         final Map<LogicalDatastoreType, DOMStoreReadWriteTransaction> backingTxs,
@@ -53,5 +55,10 @@ final class DOMForwardedReadWriteTransaction extends DOMForwardedWriteTransactio
     @Override
     public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         return getSubtransaction(store).exists(path);
+    }
+
+    @Override
+    public FluentFuture<DOMQueryResult> execute(final LogicalDatastoreType store, final DOMQuery query) {
+        return getSubtransaction(store).execute(query);
     }
 }
