@@ -10,30 +10,27 @@ package org.opendaylight.mdsal.binding.dom.adapter.query;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.Function;
 import com.google.common.base.VerifyException;
-import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Spliterator;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.gaul.modernizer_maven_annotations.SuppressModernizer;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 @NonNullByDefault
-@SuppressModernizer
 final class DefaultQueryResult<T extends DataObject>
         implements QueryResult<T>, Function<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>, QueryResult.Item<T>> {
     private static final VarHandle ITEM_CODEC;
@@ -47,22 +44,21 @@ final class DefaultQueryResult<T extends DataObject>
         }
     }
 
-    private final List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> domResult;
+    private final DOMQueryResult domResult;
     private final BindingCodecTree codec;
 
     @SuppressWarnings("unused")
     @SuppressFBWarnings(value = "NP_STORE_INTO_NONNULL_FIELD", justification = "Ungrokked type annotation")
     private volatile @Nullable BindingDataObjectCodecTreeNode<T> itemCodec = null;
 
-    DefaultQueryResult(final BindingCodecTree codec,
-            final List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> domResult) {
+    DefaultQueryResult(final BindingCodecTree codec, final DOMQueryResult domResult) {
         this.codec = requireNonNull(codec);
         this.domResult = requireNonNull(domResult);
     }
 
     @Override
     public Spliterator<? extends Item<T>> spliterator() {
-        return Lists.transform(domResult, this).spliterator();
+        return new DefaultQueryResultSpliterator<>(this, domResult.spliterator());
     }
 
     @Override
