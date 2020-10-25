@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.binding.util;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.query.QueryExpression;
+import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -32,5 +34,10 @@ final class TypedReadTransactionImpl<D extends Datastore> extends TypedTransacti
     @Override
     public FluentFuture<Boolean> exists(final InstanceIdentifier<?> path) {
         return delegate().exists(getDatastoreType(), path);
+    }
+
+    @Override
+    public <T extends DataObject> FluentFuture<QueryResult<T>> execute(final QueryExpression<T> query) {
+        return doExecute(query);
     }
 }
