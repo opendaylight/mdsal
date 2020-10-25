@@ -8,9 +8,11 @@
 package org.opendaylight.mdsal.dom.api.query;
 
 import com.google.common.annotations.Beta;
-import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Spliterator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -21,24 +23,15 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  */
 @Beta
 @NonNullByDefault
-public final class DOMQueryResult implements Immutable {
-    private static final DOMQueryResult EMPTY_INSTANCE = new DOMQueryResult(ImmutableList.of());
+public interface DOMQueryResult extends Immutable {
 
-    private final ImmutableList<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items;
+    Spliterator<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> spliterator();
 
-    private DOMQueryResult(final List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items) {
-        this.items = ImmutableList.copyOf(items);
-    }
+    Stream<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> stream();
 
-    public static DOMQueryResult of() {
-        return EMPTY_INSTANCE;
-    }
+    Stream<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> parallelStream();
 
-    public static DOMQueryResult of(final List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items) {
-        return items.isEmpty() ? of() : new DOMQueryResult(items);
-    }
-
-    public List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items() {
-        return items;
+    default List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items() {
+        return stream().collect(Collectors.toUnmodifiableList());
     }
 }
