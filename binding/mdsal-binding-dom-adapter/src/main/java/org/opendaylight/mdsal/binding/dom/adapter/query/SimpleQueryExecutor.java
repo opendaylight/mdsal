@@ -18,8 +18,6 @@ import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.dom.api.query.DOMQuery;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryLike;
 import org.opendaylight.mdsal.dom.spi.query.DOMQueryEvaluator;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -45,9 +43,9 @@ public final class SimpleQueryExecutor implements QueryExecutor {
 
     @Override
     public <T extends @NonNull DataObject> QueryResult<T> executeQuery(final QueryExpression<T> query) {
-        checkArgument(query instanceof DOMQueryLike, "Unsupported expression %s", query);
-        final DOMQuery domQuery = ((DOMQueryLike) query).asDOMQuery();
-        return new DefaultQueryResult<>(codec, DOMQueryEvaluator.evaluate(domQuery, root));
+        checkArgument(query instanceof DefaultQuery, "Unsupported expression %s", query);
+        final DefaultQuery<T> defaultQuery = (DefaultQuery<T>) query;
+        return defaultQuery.toQueryResult(DOMQueryEvaluator.evaluate(defaultQuery.asDOMQuery(), root));
     }
 
     public static @NonNull Builder builder(final BindingCodecTree codec) {
