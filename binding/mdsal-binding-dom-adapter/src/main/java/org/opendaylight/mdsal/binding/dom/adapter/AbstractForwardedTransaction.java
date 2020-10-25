@@ -15,9 +15,15 @@ import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.query.QueryExpression;
+import org.opendaylight.mdsal.binding.api.query.QueryResult;
+import org.opendaylight.mdsal.binding.dom.adapter.query.DefaultQuery;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadOperations;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
+import org.opendaylight.mdsal.dom.api.query.DOMQuery;
+import org.opendaylight.mdsal.dom.spi.query.DOMQueryEvaluator;
+import org.opendaylight.mdsal.dom.spi.query.EagerDOMQueryResult;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -71,5 +77,19 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
             final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         checkArgument(!path.isWildcarded(), "Invalid exists of wildcarded path %s", path);
         return readOps.exists(store, adapterContext.currentSerializer().toYangInstanceIdentifier(path));
+    }
+
+    protected final <T extends @NonNull DataObject>  @NonNull FluentFuture<QueryResult<T>> doExecute(
+            final DOMDataTreeReadOperations readOps, final @NonNull LogicalDatastoreType store,
+            final @NonNull QueryExpression<T> query) {
+        checkArgument(query instanceof DefaultQuery, "Unsupported query type %s", query);
+        final DefaultQuery<T> defaultQuery = (DefaultQuery<T>) query;
+
+        final DOMQuery domQuery = defaultQuery.asDOMQuery();
+        return readOps.read(store, domQuery.getRoot())
+            .transform(node -> node.map(
+                data -> DOMQueryEvaluator.evaluateOn(domQuery, data)).orElse(EagerDOMQueryResult.of()),
+                MoreExecutors.directExecutor())
+            .transform(defaultQuery::toQueryResult, MoreExecutors.directExecutor());
     }
 }

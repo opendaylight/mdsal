@@ -9,14 +9,17 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
-import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.QueryReadTransaction;
+import org.opendaylight.mdsal.binding.api.query.QueryExpression;
+import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransaction<DOMDataTreeReadTransaction>
-        implements ReadTransaction {
+        implements QueryReadTransaction {
     BindingDOMReadTransactionAdapter(final AdapterContext adapterContext, final DOMDataTreeReadTransaction delegate) {
         super(adapterContext, delegate);
     }
@@ -30,6 +33,12 @@ final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransactio
     @Override
     public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         return doExists(getDelegate(), store, path);
+    }
+
+    @Override
+    public <T extends @NonNull DataObject> FluentFuture<QueryResult<T>> execute(final LogicalDatastoreType store,
+            final QueryExpression<T> query) {
+        return doExecute(getDelegate(), store, query);
     }
 
     @Override
