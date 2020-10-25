@@ -11,17 +11,14 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
-import java.util.List;
-import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryLike;
+import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 @Beta
 @NonNullByDefault
@@ -39,9 +36,8 @@ public final class DefaultQuery<T extends DataObject> implements QueryExpression
         return domQuery;
     }
 
-    public QueryResult<T> toQueryResult(
-            final List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> domResult) {
-        return new DefaultQueryResult<>(codec, domResult);
+    public QueryResult<T> toQueryResult(final DOMQueryResult domResult) {
+        return new DefaultQueryResult<>(codec, domResult.items());
     }
 
     @Override
