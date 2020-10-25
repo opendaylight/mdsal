@@ -47,7 +47,7 @@ public class QueryPerformanceTest extends AbstractQueryTest {
     }
 
     @Test
-    public void findLessThanAlarm() {
+    public void queryLessThanAlarm() {
         final String needle = "alias" + (SYSTEM_COUNT - 1);
         final QueryExecutor haystack = SimpleQueryExecutor.builder(CODEC).add(bindingData).build();
 

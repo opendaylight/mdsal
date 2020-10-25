@@ -8,8 +8,13 @@
 package org.opendaylight.mdsal.dom.spi.store;
 
 import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.dom.api.query.DOMQuery;
+import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
+import org.opendaylight.mdsal.dom.spi.query.DOMQueryEvaluator;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -55,4 +60,30 @@ public interface DOMStoreReadTransaction extends DOMStoreTransaction {
      *         </ul>
      */
     FluentFuture<Boolean> exists(YangInstanceIdentifier path);
+
+    /**
+     * Executes a query on the provided logical data store.
+     *
+     * <p>
+     * Default operation invokes {@code read(query.getRoot())} and then executes the result with
+     * {@link DOMQueryEvaluator}. Implementations are encouraged to provide a more efficient implementation as
+     * appropriate.
+     *
+     * @param query DOMQuery to execute
+     * @return a FluentFuture containing the result of the query. The Future blocks until the operation is complete.
+     *         Once complete:
+     *         <ul>
+     *           <li>The Future returns the result of the query</li>
+     *           <li>If the query execution fails, the Future will fail with a {@link ReadFailedException} or
+     *               an exception derived from ReadFailedException.
+     *            </li>
+     *         </ul>
+     * @throws NullPointerException if any of the arguments is null
+     * @throws IllegalArgumentException if the query is not supported
+     */
+    default @NonNull FluentFuture<DOMQueryResult> execute(final DOMQuery query) {
+        return read(query.getRoot()).transform(
+            node -> node.map(data -> DOMQueryEvaluator.evaluateOn(query, data)).orElse(DOMQueryResult.of()),
+            MoreExecutors.directExecutor());
+    }
 }
