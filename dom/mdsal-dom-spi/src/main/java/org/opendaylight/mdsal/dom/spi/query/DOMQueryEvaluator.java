@@ -12,6 +12,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -73,17 +74,17 @@ public final class DOMQueryEvaluator {
     private static DOMQueryResult evalPath(final ArrayDeque<PathArgument> remaining, final NormalizedNode<?, ?> data,
             final DOMQuery query) {
         final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> result = new ArrayList<>();
-        evalPath(result, query.getRoot(), remaining, data, query);
+        evalPath(result, new ArrayDeque<>(query.getRoot().getPathArguments()), remaining, data, query);
         return DOMQueryResult.of(result);
     }
 
     private static void evalPath(final List<Entry<YangInstanceIdentifier, NormalizedNode<?,?>>> result,
-            final YangInstanceIdentifier path, final ArrayDeque<PathArgument> remaining,
+            final Deque<PathArgument> path, final ArrayDeque<PathArgument> remaining,
             final NormalizedNode<?, ?> data, final DOMQuery query) {
         final PathArgument next = remaining.poll();
         if (next == null) {
             if (matches(data, query)) {
-                result.add(new SimpleImmutableEntry<>(path, data));
+                result.add(new SimpleImmutableEntry<>(YangInstanceIdentifier.create(path), data));
             }
             return;
         }
@@ -91,13 +92,21 @@ public final class DOMQueryEvaluator {
         if (data instanceof MapNode && next instanceof NodeIdentifier) {
             checkArgument(data.getIdentifier().equals(next), "Unexpected step %s", next);
             for (MapEntryNode child : ((MapNode) data).getValue()) {
-                evalPath(result, path.node(child.getIdentifier()), remaining, child, query);
+                evalChild(result, path, remaining, query, child);
             }
         } else {
             NormalizedNodes.getDirectChild(data, next).ifPresent(
-                child -> evalPath(result, path.node(next), remaining, child, query));
+                child -> evalChild(result, path, remaining, query, child));
         }
         remaining.push(next);
+    }
+
+    private static void evalChild(final List<Entry<YangInstanceIdentifier, NormalizedNode<?,?>>> result,
+            final Deque<PathArgument> path, final ArrayDeque<PathArgument> remaining, final DOMQuery query,
+            final NormalizedNode<?, ?> child) {
+        path.addLast(child.getIdentifier());
+        evalPath(result, path, remaining, child, query);
+        path.removeLast();
     }
 
     private static DOMQueryResult evalSingle(final NormalizedNode<?, ?> data, final DOMQuery query) {
