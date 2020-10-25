@@ -37,7 +37,7 @@ public final class DefaultQuery<T extends DataObject> implements QueryExpression
     }
 
     public QueryResult<T> toQueryResult(final DOMQueryResult domResult) {
-        return new DefaultQueryResult<>(codec, domResult.items());
+        return new DefaultQueryResult<>(codec, domResult);
     }
 
     @Override

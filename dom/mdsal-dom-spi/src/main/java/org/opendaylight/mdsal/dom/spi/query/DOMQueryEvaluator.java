@@ -64,7 +64,7 @@ public final class DOMQueryEvaluator {
         for (PathArgument arg : query.getRoot().getPathArguments()) {
             final Optional<NormalizedNode<?, ?>> next = NormalizedNodes.findNode(root, arg);
             if (next.isEmpty()) {
-                return DOMQueryResult.of();
+                return EagerDOMQueryResult.of();
             }
             evalRoot = next.orElseThrow();
         }
@@ -75,7 +75,7 @@ public final class DOMQueryEvaluator {
             final DOMQuery query) {
         final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> result = new ArrayList<>();
         evalPath(result, new ArrayDeque<>(query.getRoot().getPathArguments()), remaining, data, query);
-        return DOMQueryResult.of(result);
+        return EagerDOMQueryResult.of(result);
     }
 
     private static void evalPath(final List<Entry<YangInstanceIdentifier, NormalizedNode<?,?>>> result,
@@ -110,8 +110,8 @@ public final class DOMQueryEvaluator {
     }
 
     private static DOMQueryResult evalSingle(final NormalizedNode<?, ?> data, final DOMQuery query) {
-        return matches(data, query) ? DOMQueryResult.of()
-                : DOMQueryResult.of(List.of(new SimpleImmutableEntry<>(query.getRoot(), data)));
+        return matches(data, query) ? EagerDOMQueryResult.of()
+                : EagerDOMQueryResult.of(new SimpleImmutableEntry<>(query.getRoot(), data));
     }
 
     private static boolean matches(final NormalizedNode<?, ?> data, final DOMQuery query) {
