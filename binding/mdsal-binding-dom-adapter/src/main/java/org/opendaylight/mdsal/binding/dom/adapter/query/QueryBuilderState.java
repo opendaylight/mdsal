@@ -82,7 +82,7 @@ final class QueryBuilderState {
         final YangInstanceIdentifier relTarget = absTarget.relativeTo(absoluteSelect)
                 .orElseThrow(() -> new IllegalStateException(absoluteSelect + " is not an ancestor of " + absTarget));
 
-        return new BoundMethod(relTarget, targetCodec.yangPathArgumentChild(new NodeIdentifier(child.getQName())));
+        return new BoundMethod(relTarget, targetCodec.yangPathArgumentChild(NodeIdentifier.create(child.getQName())));
     }
 
     void addPredicate(final DOMQueryPredicate predicate) {
@@ -90,7 +90,7 @@ final class QueryBuilderState {
     }
 
     <T extends DataObject> @NonNull QueryExpression<T> buildQuery() {
-        return new DefaultQuery<>(new DOMQuery(root, relativeSelect, predicates));
+        return new DefaultQuery<>(codec, new DOMQuery(root, relativeSelect, predicates));
     }
 
     private @NonNull YangInstanceIdentifier fromBinding(final InstanceIdentifier<?> bindingId) {
