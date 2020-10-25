@@ -47,7 +47,7 @@ public final class SimpleQueryExecutor implements QueryExecutor {
     public <T extends @NonNull DataObject> QueryResult<T> executeQuery(final QueryExpression<T> query) {
         checkArgument(query instanceof DOMQueryLike, "Unsupported expression %s", query);
         final DOMQuery domQuery = ((DOMQueryLike) query).asDOMQuery();
-        return new DefaultQueryResult<>(codec, DOMQueryEvaluator.evaluate(domQuery, root));
+        return new DefaultQueryResult<>(codec, DOMQueryEvaluator.evaluateOnRoot(domQuery, root));
     }
 
     public static @NonNull Builder builder(final BindingCodecTree codec) {

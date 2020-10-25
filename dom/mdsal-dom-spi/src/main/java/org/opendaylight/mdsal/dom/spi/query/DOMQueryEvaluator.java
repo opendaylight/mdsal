@@ -33,26 +33,49 @@ public final class DOMQueryEvaluator {
 
     }
 
-    public static List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> evaluate(final DOMQuery query,
-            final NormalizedNode<?, ?> root) {
+    /**
+     * Evaluate {@link DOMQuery} on its data element. The element is expected to correspond to
+     * {@link DOMQuery#getRoot()}.
+     *
+     * @param query Query to execute
+     * @param queryRoot Query root object
+     * @return Result of evaluation
+     * @throws NullPointerException if any argument is null
+     */
+    public static List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> evaluateOn(final DOMQuery query,
+            final NormalizedNode<?, ?> queryRoot) {
         final YangInstanceIdentifier path = query.getSelect();
-        return path.isEmpty() ? evalSingle(root, query)
-                : evalPath(new ArrayDeque<>(path.getPathArguments()), root, query);
+        return path.isEmpty() ? evalSingle(queryRoot, query)
+            : evalPath(new ArrayDeque<>(path.getPathArguments()), queryRoot, query);
     }
 
-    private static List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> evalPath(
-            final ArrayDeque<PathArgument> remaining, final NormalizedNode<?,?> data, final DOMQuery query) {
-        NormalizedNode<?, ?> evalRoot = data;
+    /**
+     * Evaluate {@link DOMQuery} on a conceptual root. The element is expected to correspond to the conceptual data tree
+     * root. This method will first find the {@link DOMQuery#getRoot()} and then defer to
+     * {@link #evaluateOn(DOMQuery, NormalizedNode)}.
+     *
+     * @param query Query to execute
+     * @param root Conceptual root object
+     * @return Result of evaluation
+     * @throws NullPointerException if any argument is null
+     */
+    public static List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> evaluateOnRoot(
+            final DOMQuery query, final NormalizedNode<?, ?> root) {
+        NormalizedNode<?, ?> evalRoot = root;
         for (PathArgument arg : query.getRoot().getPathArguments()) {
-            final Optional<NormalizedNode<?, ?>> next = NormalizedNodes.findNode(data, arg);
+            final Optional<NormalizedNode<?, ?>> next = NormalizedNodes.findNode(root, arg);
             if (next.isEmpty()) {
                 return ImmutableList.of();
             }
             evalRoot = next.orElseThrow();
         }
+        return evaluateOn(query, evalRoot);
+    }
 
+    private static List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> evalPath(
+            final ArrayDeque<PathArgument> remaining, final NormalizedNode<?,?> data, final DOMQuery query) {
         final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> result = new ArrayList<>();
-        evalPath(result, query.getRoot(), remaining, evalRoot, query);
+        evalPath(result, query.getRoot(), remaining, data, query);
         return result;
     }
 
