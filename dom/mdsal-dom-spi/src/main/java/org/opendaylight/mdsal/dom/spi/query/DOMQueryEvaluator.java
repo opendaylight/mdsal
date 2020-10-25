@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.spi.query;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.google.common.collect.ImmutableList;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
+import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -42,8 +42,7 @@ public final class DOMQueryEvaluator {
      * @return Result of evaluation
      * @throws NullPointerException if any argument is null
      */
-    public static List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> evaluateOn(final DOMQuery query,
-            final NormalizedNode<?, ?> queryRoot) {
+    public static DOMQueryResult evaluateOn(final DOMQuery query, final NormalizedNode<?, ?> queryRoot) {
         final YangInstanceIdentifier path = query.getSelect();
         return path.isEmpty() ? evalSingle(queryRoot, query)
             : evalPath(new ArrayDeque<>(path.getPathArguments()), queryRoot, query);
@@ -59,24 +58,23 @@ public final class DOMQueryEvaluator {
      * @return Result of evaluation
      * @throws NullPointerException if any argument is null
      */
-    public static List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> evaluateOnRoot(
-            final DOMQuery query, final NormalizedNode<?, ?> root) {
+    public static DOMQueryResult evaluateOnRoot(final DOMQuery query, final NormalizedNode<?, ?> root) {
         NormalizedNode<?, ?> evalRoot = root;
         for (PathArgument arg : query.getRoot().getPathArguments()) {
             final Optional<NormalizedNode<?, ?>> next = NormalizedNodes.findNode(root, arg);
             if (next.isEmpty()) {
-                return ImmutableList.of();
+                return DOMQueryResult.of();
             }
             evalRoot = next.orElseThrow();
         }
         return evaluateOn(query, evalRoot);
     }
 
-    private static List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> evalPath(
-            final ArrayDeque<PathArgument> remaining, final NormalizedNode<?,?> data, final DOMQuery query) {
+    private static DOMQueryResult evalPath(final ArrayDeque<PathArgument> remaining, final NormalizedNode<?, ?> data,
+            final DOMQuery query) {
         final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> result = new ArrayList<>();
         evalPath(result, query.getRoot(), remaining, data, query);
-        return result;
+        return DOMQueryResult.of(result);
     }
 
     private static void evalPath(final List<Entry<YangInstanceIdentifier, NormalizedNode<?,?>>> result,
@@ -102,10 +100,9 @@ public final class DOMQueryEvaluator {
         remaining.push(next);
     }
 
-    private static List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> evalSingle(
-            final NormalizedNode<?, ?> data, final DOMQuery query) {
-        return matches(data, query) ? ImmutableList.of()
-                : ImmutableList.of(new SimpleImmutableEntry<>(query.getRoot(), data));
+    private static DOMQueryResult evalSingle(final NormalizedNode<?, ?> data, final DOMQuery query) {
+        return matches(data, query) ? DOMQueryResult.of()
+                : DOMQueryResult.of(List.of(new SimpleImmutableEntry<>(query.getRoot(), data)));
     }
 
     private static boolean matches(final NormalizedNode<?, ?> data, final DOMQuery query) {
