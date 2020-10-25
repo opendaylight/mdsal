@@ -116,7 +116,17 @@ public final class DOMQueryEvaluator {
 
     private static boolean matches(final NormalizedNode<?, ?> data, final DOMQuery query) {
         for (DOMQueryPredicate pred : query.getPredicates()) {
-            if (!pred.test(NormalizedNodes.findNode(data, pred.getPath()).orElse(null))) {
+            // Okay, now we need to deal with predicates, but do it in a smart fashion, so we do not end up iterating
+            // all over the place. Typically we will be matching just a leaf.
+            final YangInstanceIdentifier path = pred.getPath();
+            final Optional<NormalizedNode<?, ?>> node;
+            if (path.coerceParent().isEmpty()) {
+                node = NormalizedNodes.getDirectChild(data, path.getLastPathArgument());
+            } else {
+                node = NormalizedNodes.findNode(data, path);
+            }
+
+            if (!pred.test(node.orElse(null))) {
                 return false;
             }
         }
