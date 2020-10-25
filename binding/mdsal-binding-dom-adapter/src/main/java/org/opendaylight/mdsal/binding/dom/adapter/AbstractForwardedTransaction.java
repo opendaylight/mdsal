@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.dom.adapter.query.DefaultQuery;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeQueryOperations;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadOperations;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
@@ -29,9 +30,12 @@ import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> implements Delegator<T>,
         Identifiable<Object> {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractForwardedTransaction.class);
 
     private final @NonNull AdapterContext adapterContext;
     private final @NonNull T delegate;
@@ -79,16 +83,26 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
         return readOps.exists(store, adapterContext.currentSerializer().toYangInstanceIdentifier(path));
     }
 
-    protected final <T extends @NonNull DataObject>  @NonNull FluentFuture<QueryResult<T>> doExecute(
+    protected final <T extends @NonNull DataObject> @NonNull FluentFuture<QueryResult<T>> doExecute(
             final DOMDataTreeReadOperations readOps, final @NonNull LogicalDatastoreType store,
             final @NonNull QueryExpression<T> query) {
         checkArgument(query instanceof DefaultQuery, "Unsupported query type %s", query);
         final DefaultQuery<T> defaultQuery = (DefaultQuery<T>) query;
 
-        final DOMQuery domQuery = defaultQuery.asDOMQuery();
+        final FluentFuture<DOMQueryResult> domResult = readOps instanceof DOMDataTreeQueryOperations
+            ? ((DOMDataTreeQueryOperations) readOps).execute(store, defaultQuery.asDOMQuery())
+                : fallbackExecute(readOps, store, defaultQuery.asDOMQuery());
+
+        return domResult.transform(defaultQuery::toQueryResult, MoreExecutors.directExecutor());
+    }
+
+    private static FluentFuture<DOMQueryResult> fallbackExecute(final @NonNull DOMDataTreeReadOperations readOps,
+            final @NonNull LogicalDatastoreType store, final @NonNull DOMQuery domQuery) {
+        LOG.trace("Fallback evaluation of {} on {}", domQuery, readOps);
         return readOps.read(store, domQuery.getRoot())
-            .transform(node -> node.map(data -> DOMQueryEvaluator.evaluateOn(domQuery, data)).orElse(DOMQueryResult.of()),
-                MoreExecutors.directExecutor())
-            .transform(defaultQuery::toQueryResult, MoreExecutors.directExecutor());
+            .transform(
+                node -> node.map(data -> DOMQueryEvaluator.evaluateOn(domQuery, data)).orElse(DOMQueryResult.of()),
+                // TODO: execute on a dedicated thread pool
+                MoreExecutors.directExecutor());
     }
 }
