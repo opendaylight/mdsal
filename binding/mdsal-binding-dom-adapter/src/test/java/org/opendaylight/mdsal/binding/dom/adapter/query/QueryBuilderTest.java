@@ -13,6 +13,7 @@ import com.google.common.base.Stopwatch;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.query.QueryExecutor;
@@ -46,9 +47,9 @@ import org.slf4j.LoggerFactory;
 public class QueryBuilderTest {
     private static final Logger LOG = LoggerFactory.getLogger(QueryBuilderTest.class);
     private static BindingNormalizedNodeCodecRegistry CODEC;
-    private static QueryExecutor EXECUTOR;
 
     private final QueryFactory factory = new DefaultQueryFactory(CODEC);
+    private QueryExecutor executor;
 
     @BeforeClass
     public static void beforeClass() {
@@ -58,7 +59,16 @@ public class QueryBuilderTest {
 
         CODEC = new BindingNormalizedNodeCodecRegistry(
             BindingRuntimeContext.create(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), schemaContext));
-        EXECUTOR = SimpleQueryExecutor.builder(CODEC.getCodecContext())
+    }
+
+    @AfterClass
+    public static final void afterClass() {
+        CODEC = null;
+    }
+
+    @Before
+    public void before() {
+        executor = SimpleQueryExecutor.builder(CODEC.getCodecContext())
             .add(new FooBuilder()
                 .setSystem(List.of(
                     new SystemBuilder().setName("first").setAlarms(List.of(
@@ -89,12 +99,6 @@ public class QueryBuilderTest {
                     ))
                 .build())
             .build();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        CODEC = null;
-        EXECUTOR = null;
     }
 
     @Test
@@ -157,9 +161,9 @@ public class QueryBuilderTest {
         assertEquals(2, items.size());
     }
 
-    private static <T extends @NonNull DataObject> QueryResult<T> execute(final QueryExpression<T> query) {
+    private <T extends @NonNull DataObject> QueryResult<T> execute(final QueryExpression<T> query) {
         final Stopwatch sw = Stopwatch.createStarted();
-        final QueryResult<T> result = EXECUTOR.executeQuery(query);
+        final QueryResult<T> result = executor.executeQuery(query);
         LOG.info("Query executed in {}", sw);
         return result;
     }

@@ -9,16 +9,19 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
-import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.QueryReadTransaction;
+import org.opendaylight.mdsal.binding.api.query.QueryExpression;
+import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransaction<DOMDataTreeReadTransaction> implements
-        ReadTransaction {
+final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransaction<DOMDataTreeReadTransaction>
+        implements QueryReadTransaction {
 
-    protected BindingDOMReadTransactionAdapter(final DOMDataTreeReadTransaction delegate,
+    BindingDOMReadTransactionAdapter(final DOMDataTreeReadTransaction delegate,
             final BindingToNormalizedNodeCodec codec) {
         super(delegate, codec);
     }
@@ -35,8 +38,13 @@ final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransactio
     }
 
     @Override
+    public <T extends @NonNull DataObject> FluentFuture<QueryResult<T>> execute(final LogicalDatastoreType store,
+            final QueryExpression<T> query) {
+        return doExecute(getDelegate(), store, query);
+    }
+
+    @Override
     public void close() {
         getDelegate().close();
     }
-
 }
