@@ -16,12 +16,10 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath.LeafReference;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
-import org.opendaylight.mdsal.binding.api.query.QueryStructureException;
 import org.opendaylight.mdsal.binding.dom.adapter.query.LambdaDecoder.LambdaTarget;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.spi.BindingSchemaMapping;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.yangtools.concepts.Immutable;
@@ -30,7 +28,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 
 final class QueryBuilderState {
@@ -44,15 +41,17 @@ final class QueryBuilderState {
         }
     }
 
+    private final List<DOMQueryPredicate> predicates = new ArrayList<>();
+    private final DefaultQueryFactory factory;
+    private final YangInstanceIdentifier root;
     private final BindingCodecTree codec;
 
-    private final List<DOMQueryPredicate> predicates = new ArrayList<>();
-    private final YangInstanceIdentifier root;
     private YangInstanceIdentifier absoluteSelect;
     private YangInstanceIdentifier relativeSelect;
 
-    QueryBuilderState(final BindingCodecTree codec, final InstanceIdentifier<?> root) {
-        this.codec = requireNonNull(codec);
+    QueryBuilderState(final DefaultQueryFactory factory, final InstanceIdentifier<?> root) {
+        this.codec = factory.codec();
+        this.factory = factory;
         this.root = fromBinding(root);
     }
 
@@ -77,12 +76,12 @@ final class QueryBuilderState {
         final LambdaTarget targetLeaf = LambdaDecoder.resolveLambda(ref);
         verify(targetLeaf.targetClass.equals(bindingPath.getTargetType().getName()), "Mismatched target %s and path %s",
             targetLeaf, bindingPath);
-        final DataSchemaNode child = findChild((DataNodeContainer) targetSchema, targetLeaf.targetMethod);
+        final NodeIdentifier childId = factory.findChild((DataNodeContainer) targetSchema, targetLeaf.targetMethod);
         final YangInstanceIdentifier absTarget = fromBinding(bindingPath);
         final YangInstanceIdentifier relTarget = absTarget.relativeTo(absoluteSelect)
                 .orElseThrow(() -> new IllegalStateException(absoluteSelect + " is not an ancestor of " + absTarget));
 
-        return new BoundMethod(relTarget, targetCodec.yangPathArgumentChild(NodeIdentifier.create(child.getQName())));
+        return new BoundMethod(relTarget, targetCodec.yangPathArgumentChild(childId));
     }
 
     void addPredicate(final DOMQueryPredicate predicate) {
@@ -95,14 +94,5 @@ final class QueryBuilderState {
 
     private @NonNull YangInstanceIdentifier fromBinding(final InstanceIdentifier<?> bindingId) {
         return codec.getInstanceIdentifierCodec().fromBinding(bindingId);
-    }
-
-    private static DataSchemaNode findChild(final DataNodeContainer parent, final String methodName) {
-        for (DataSchemaNode child : parent.getChildNodes()) {
-            if (methodName.equals(BindingSchemaMapping.getGetterMethodName(child))) {
-                return child;
-            }
-        }
-        throw new QueryStructureException("Failed to find schema matching " + methodName + " in " + parent);
     }
 }
