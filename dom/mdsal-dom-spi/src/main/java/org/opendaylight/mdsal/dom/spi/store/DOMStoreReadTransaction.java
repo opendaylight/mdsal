@@ -15,7 +15,6 @@ import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
 import org.opendaylight.mdsal.dom.spi.query.DOMQueryEvaluator;
-import org.opendaylight.mdsal.dom.spi.query.EagerDOMQueryResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -84,7 +83,7 @@ public interface DOMStoreReadTransaction extends DOMStoreTransaction {
      */
     default @NonNull FluentFuture<DOMQueryResult> execute(final DOMQuery query) {
         return read(query.getRoot()).transform(
-            node -> node.map(data -> DOMQueryEvaluator.evaluateOn(query, data)).orElse(EagerDOMQueryResult.of()),
+            node -> node.map(data -> DOMQueryEvaluator.evaluateOn(query, data)).orElse(DOMQueryResult.of()),
             MoreExecutors.directExecutor());
     }
 }
