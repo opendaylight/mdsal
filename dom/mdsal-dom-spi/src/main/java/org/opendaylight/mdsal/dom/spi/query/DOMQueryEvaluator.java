@@ -60,7 +60,7 @@ public final class DOMQueryEvaluator {
     }
 
     private static DOMQueryResult evalSingle(final DOMQuery query, final NormalizedNode<?, ?> data) {
-        return LazyDOMQueryResultIterator.matches(data, query) ? DOMQueryResult.of()
+        return LazyDOMQueryResultIterator.matches(data, query.getPredicates()) ? DOMQueryResult.of()
                 : DOMQueryResult.of(new SimpleImmutableEntry<>(query.getRoot(), data));
     }
 }
