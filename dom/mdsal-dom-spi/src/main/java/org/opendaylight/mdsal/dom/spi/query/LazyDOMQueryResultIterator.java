@@ -7,21 +7,23 @@
  */
 package org.opendaylight.mdsal.dom.spi.query;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.collect.AbstractIterator;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
@@ -29,74 +31,229 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 
 @NonNullByDefault
-final class LazyDOMQueryResultIterator implements Iterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> {
-    // Current data item
-    private final ArrayDeque<NormalizedNode<?, ?>> currentData = new ArrayDeque<>();
+final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> {
+    private static class Frame {
+        final NormalizedNode<?, ?> data;
+
+        // Nullable is accurate, as it marks our top-level container. Once that goes out, are ending anyway.
+        final @Nullable PathArgument select;
+
+        Frame(final NormalizedNode<?, ?> data) {
+            this.data = requireNonNull(data);
+            select = null;
+        }
+
+        Frame(final NormalizedNode<?, ?> data, final PathArgument selectArg) {
+            this.data = requireNonNull(data);
+            this.select = requireNonNull(selectArg);
+        }
+
+        boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public final String toString() {
+            return addToStringAttributes(MoreObjects.toStringHelper(this).omitNullValues()).toString();
+        }
+
+        protected ToStringHelper addToStringAttributes(final ToStringHelper helper) {
+            return helper.add("data", data.getIdentifier()).add("select", select);
+        }
+    }
+
+    private static final class MapFrame extends Frame {
+        final Iterator<MapEntryNode> iter;
+
+        MapFrame(final NormalizedNode<?, ?> data, final PathArgument selectArg, final Iterator<MapEntryNode> iter) {
+            super(data, selectArg);
+            this.iter = requireNonNull(iter);
+        }
+
+        @Override
+        boolean hasNext() {
+            return iter.hasNext();
+        }
+
+        @Override
+        protected ToStringHelper addToStringAttributes(final ToStringHelper helper) {
+            return super.addToStringAttributes(helper).add("hasNext", iter.hasNext());
+        }
+    }
+
+    // Work backlog, in terms of frames that need to be processed
+    private final ArrayDeque<Frame> frames = new ArrayDeque<>();
+    // Steps remaining in the select part of the query. @Nullable helps with null analysis with Deque.poll()
+    private final ArrayDeque<@Nullable PathArgument> remainingSelect;
     // Absolute path from root of current data item
     private final ArrayDeque<PathArgument> currentPath;
-    // Steps remaining in the select part of the query
-    private final ArrayDeque<PathArgument> selectSteps;
-    // The query which needs to be executed
-    private final DOMQuery query;
-
-    // FIXME: MDSAL-610: this needs to be eliminated
-    private final Iterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> iter;
+    // The predicates which need to be evalued
+    private final List<? extends DOMQueryPredicate> predicates;
 
     LazyDOMQueryResultIterator(final DOMQuery query, final NormalizedNode<?, ?> queryRoot) {
-        this.query = requireNonNull(query);
         currentPath = new ArrayDeque<>(query.getRoot().getPathArguments());
-        selectSteps = new ArrayDeque<>(query.getSelect().getPathArguments());
-        currentData.push(queryRoot);
+        // Note: DOMQueryEvaluator has taken care of the empty case, this is always non-empty
+        remainingSelect = new ArrayDeque<>(query.getSelect().getPathArguments());
+        predicates = query.getPredicates();
+        frames.push(new Frame(queryRoot));
+    }
 
-        // FIXME: MDSAL-610: this is a recursive algo, filling provided list. Turn it around into a state mutator.
-        final List<Entry<YangInstanceIdentifier, NormalizedNode<?,?>>> result = new ArrayList<>();
-        evalPath(result);
-        this.iter = result.iterator();
+    @Override
+    protected Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> computeNext() {
+        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> next = findNext();
+        if (next != null) {
+            return next;
+        }
+
+        // Consistency check and clean up of leftover state
+        verify(frames.isEmpty());
+        verify(remainingSelect.isEmpty());
         currentPath.clear();
-        selectSteps.clear();
+        return endOfData();
     }
 
-    @Override
-    public boolean hasNext() {
-        return iter.hasNext();
-    }
+    private @Nullable Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> findNext() {
+        // We always start with non-empty frames, as we signal end of data when we reach the end
+        Frame current = frames.pop();
+        do {
+            final PathArgument next = remainingSelect.poll();
+            if (next == null) {
+                // We are matching this frame, and if we got here it must have a stashed iterator, as we deal with
+                // single match entries without using the stack. Look for first matching child and return it.
+                final Iterator<MapEntryNode> iter = ((MapFrame) current).iter;
+                while (iter.hasNext()) {
+                    final MapEntryNode child = iter.next();
+                    if (matches(child, predicates)) {
+                        return mapChildMatch(current, child);
+                    }
+                }
 
-    @Override
-    public Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> next() {
-        return iter.next();
-    }
-
-    private void evalPath(final List<Entry<YangInstanceIdentifier, NormalizedNode<?,?>>> result) {
-        final NormalizedNode<?, ?> data = currentData.pop();
-        final PathArgument next = selectSteps.poll();
-        if (next == null) {
-            if (matches(data, query)) {
-                result.add(new SimpleImmutableEntry<>(YangInstanceIdentifier.create(currentPath), data));
+                // Unwind this frame's state and select the next frame from the stack
+                current = unwindFrames(current.select);
+                continue;
             }
-            return;
-        }
 
-        if (data instanceof MapNode && next instanceof NodeIdentifier) {
-            checkArgument(data.getIdentifier().equals(next), "Unexpected step %s", next);
-            for (MapEntryNode child : ((MapNode) data).getValue()) {
-                evalChild(result, child);
+            // Alright, here we are looking for a child to select. This is where things get dicey, as there is a number
+            // of possibilities:
+
+            // 1. we are iterating a map. We are matching the next child against 'next', which can have a number of
+            //    outcomes in and of itself.
+            if (current instanceof MapFrame) {
+                final Iterator<MapEntryNode> iter = ((MapFrame) current).iter;
+                if (remainingSelect.isEmpty()) {
+                    // ... and this is the last-step map. In this case we want to find the next matching child without
+                    //     going to stack. We want to push next back, though, as we either need to resume from it
+                    //     (arriving back here), or will have dealt with it.
+                    while (iter.hasNext()) {
+                        final MapEntryNode child = iter.next();
+                        if (matches(child, predicates)) {
+                            remainingSelect.push(next);
+                            return mapChildMatch(current, child);
+                        }
+                    }
+
+                    // Unwind frames and retry
+                    current = unwindFrames(current, next);
+                    continue;
+                }
+
+                // ... and this is an intermediate step. If we have a child, we'll push the map entry and set the child
+                //     frame as current. Let the loop deal with the rest of the lookup.
+                if (iter.hasNext()) {
+                    final MapEntryNode child = iter.next();
+                    frames.push(current);
+                    currentPath.addLast(child.getIdentifier());
+                    current = new Frame(child, next);
+                    continue;
+                }
+
+                // So now, we have nothing more contribute to the conversation: we ended up with no items. Rewind the
+                // stack and continue onwards.
+                current = unwindFrames(current, next);
+                continue;
             }
-        } else {
-            NormalizedNodes.getDirectChild(data, next).ifPresent(child -> evalChild(result, child));
-        }
-        selectSteps.push(next);
+
+            // 2. we are at a normal container, where we need to resolve a child. This is also a bit involved, so now:
+            //
+            // If we do not find it, we will not find it anywhere underneath, so we end up unwinding the stack.
+            final Optional<NormalizedNode<?, ?>> optChild = NormalizedNodes.getDirectChild(current.data, next);
+            if (optChild.isEmpty()) {
+                current = unwindFrames(current, next);
+                continue;
+            }
+
+            // If we have a child see if this is the ultimate select step, if so, short circuit stack. We do not record
+            // ourselves.
+            final NormalizedNode<?, ?> child = optChild.orElseThrow();
+            if (remainingSelect.isEmpty()) {
+                if (matches(child, predicates)) {
+                    // Construct child path
+                    currentPath.addLast(child.getIdentifier());
+                    final YangInstanceIdentifier childPath = YangInstanceIdentifier.create(currentPath);
+                    currentPath.removeLast();
+
+                    // Unwind stack, as we have nothing more to add -- we can have only one match.
+                    current = unwindFrames(current, next);
+                    return new SimpleImmutableEntry<>(childPath, child);
+                }
+
+                // Unwind stack, as we have nothing more to add.
+                current = unwindFrames(current, next);
+                continue;
+            }
+
+            // Push our state back, it's just a placeholder for 'currentSelect'
+            currentPath.addLast(current.data.getIdentifier());
+            frames.push(current);
+
+            // Now decide what sort of entry to push. For maps we want to start an iterator already, so it gets
+            // picked up as a continuation.
+            current = child instanceof MapNode
+                ? new MapFrame(child, next, ((MapNode) child).getValue().iterator())
+                    : new Frame(child, next);
+        } while (current != null);
+
+        return null;
     }
 
-    private void evalChild(final List<Entry<YangInstanceIdentifier, NormalizedNode<?,?>>> result,
-            final NormalizedNode<?, ?> child) {
+    Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> mapChildMatch(final Frame parent, final MapEntryNode child) {
+        // Construct child path
         currentPath.addLast(child.getIdentifier());
-        currentData.push(child);
-        evalPath(result);
+        final YangInstanceIdentifier childPath = YangInstanceIdentifier.create(currentPath);
         currentPath.removeLast();
+
+        // Push the frame back to work, return the result
+        frames.push(parent);
+        return new SimpleImmutableEntry<>(childPath, child);
     }
 
-    static boolean matches(final NormalizedNode<?, ?> data, final DOMQuery query) {
-        for (DOMQueryPredicate pred : query.getPredicates()) {
+    @Nullable Frame unwindFrames(final Frame current, final PathArgument next) {
+        remainingSelect.push(next);
+        return unwindFrames(current.select);
+    }
+
+    @Nullable Frame unwindFrames(final @Nullable PathArgument selectArg) {
+        @Nullable PathArgument select = selectArg;
+        while (true) {
+            currentPath.removeLast();
+            if (select == null) {
+                verify(frames.isEmpty());
+                return null;
+            }
+
+            remainingSelect.push(select);
+            // pop() for its state-checking properties. Last frame should have had select == null and we would have
+            // bailed there.
+            final Frame next = frames.pop();
+            if (next.hasNext()) {
+                return next;
+            }
+            select = next.select;
+        }
+    }
+
+    static boolean matches(final NormalizedNode<?, ?> data, final List<? extends DOMQueryPredicate> predicates) {
+        for (DOMQueryPredicate pred : predicates) {
             // Okay, now we need to deal with predicates, but do it in a smart fashion, so we do not end up iterating
             // all over the place. Typically we will be matching just a leaf.
             final YangInstanceIdentifier path = pred.getPath();
