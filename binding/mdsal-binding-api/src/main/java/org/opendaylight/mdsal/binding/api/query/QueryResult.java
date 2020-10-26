@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.api.query;
 
 import java.util.List;
-import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -24,7 +23,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @param <T> Result object type
  */
 @NonNullByDefault
-public interface QueryResult<T extends DataObject> {
+public interface QueryResult<T extends DataObject> extends Iterable<QueryResult.Item<T>>, Immutable {
     /**
      * A single item in the result set. It is identified by its path and the corresponding object..
      *
@@ -47,20 +46,11 @@ public interface QueryResult<T extends DataObject> {
     }
 
     /**
-     * Returns a spliterator over values of the result.
-     *
-     * @return Returns the a spliterator which visits query results.
-     */
-    // TODO: @throws IllegalStateException if values have been already been consumed?
-    // FIXME: we really may want to wrap each entry in a CheckedValue, so that we can communicate fetch problems
-    Spliterator<? extends Item<T>> spliterator();
-
-    /**
      * Returns a sequential {@link Stream} of values from the result.
      *
      * @return A stream of non-null values.
      */
-    default Stream<? extends Item<T>> stream() {
+    default Stream<Item<T>> stream() {
         return StreamSupport.stream(spliterator(), false);
     }
 
@@ -69,7 +59,7 @@ public interface QueryResult<T extends DataObject> {
      *
      * @return A stream of non-null values.
      */
-    default Stream<? extends Item<T>> parallelStream() {
+    default Stream<Item<T>> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }
 
