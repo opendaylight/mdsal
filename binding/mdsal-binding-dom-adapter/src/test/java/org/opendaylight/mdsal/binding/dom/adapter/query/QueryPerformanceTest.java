@@ -104,7 +104,7 @@ public class QueryPerformanceTest extends AbstractDataBrokerTest {
         LOG.info("Query executed {} in {}", future, sw);
 
         assertTrue(result.stream().findAny().isPresent());
-        LOG.info("Query result {} in {}", result, sw);
+        LOG.info("Query result in {}", sw);
     }
 
     @Test
