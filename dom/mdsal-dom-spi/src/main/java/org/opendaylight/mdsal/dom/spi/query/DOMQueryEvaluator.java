@@ -45,8 +45,7 @@ public final class DOMQueryEvaluator {
      */
     public static DOMQueryResult evaluateOn(final DOMQuery query, final NormalizedNode<?, ?> queryRoot) {
         final YangInstanceIdentifier path = query.getSelect();
-        return path.isEmpty() ? evalSingle(queryRoot, query)
-            : evalPath(new ArrayDeque<>(path.getPathArguments()), queryRoot, query);
+        return path.isEmpty() ? evalSingle(queryRoot, query) : evalPath(queryRoot, query);
     }
 
     /**
@@ -71,11 +70,16 @@ public final class DOMQueryEvaluator {
         return evaluateOn(query, evalRoot);
     }
 
-    private static DOMQueryResult evalPath(final ArrayDeque<PathArgument> remaining, final NormalizedNode<?, ?> data,
-            final DOMQuery query) {
+    private static DOMQueryResult evalSingle(final NormalizedNode<?, ?> data, final DOMQuery query) {
+        return matches(data, query) ? DOMQueryResult.of()
+                : DOMQueryResult.of(new SimpleImmutableEntry<>(query.getRoot(), data));
+    }
+
+    private static DOMQueryResult evalPath(final NormalizedNode<?, ?> queryRoot, final DOMQuery query) {
         // FIXME: this is eager evaluation, we should be doing lazy traversal
         final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> result = new ArrayList<>();
-        evalPath(result, new ArrayDeque<>(query.getRoot().getPathArguments()), remaining, data, query);
+        evalPath(result, new ArrayDeque<>(query.getRoot().getPathArguments()),
+            new ArrayDeque<>(query.getSelect().getPathArguments()), queryRoot, query);
         return DOMQueryResult.of(result);
     }
 
@@ -108,11 +112,6 @@ public final class DOMQueryEvaluator {
         path.addLast(child.getIdentifier());
         evalPath(result, path, remaining, child, query);
         path.removeLast();
-    }
-
-    private static DOMQueryResult evalSingle(final NormalizedNode<?, ?> data, final DOMQuery query) {
-        return matches(data, query) ? DOMQueryResult.of()
-                : DOMQueryResult.of(new SimpleImmutableEntry<>(query.getRoot(), data));
     }
 
     private static boolean matches(final NormalizedNode<?, ?> data, final DOMQuery query) {
