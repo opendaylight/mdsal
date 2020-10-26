@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.dom.api.query;
 
 import com.google.common.annotations.Beta;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -35,5 +36,17 @@ public interface DOMQueryResult extends Iterable<Entry<YangInstanceIdentifier, N
 
     default List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items() {
         return stream().collect(Collectors.toUnmodifiableList());
+    }
+
+    static DOMQueryResult of() {
+        return SimpleDOMQueryResult.EMPTY_INSTANCE;
+    }
+
+    static DOMQueryResult of(final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> item) {
+        return new SimpleDOMQueryResult(ImmutableList.of(item));
+    }
+
+    static DOMQueryResult of(final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items) {
+        return items.isEmpty() ? of() : new SimpleDOMQueryResult(items);
     }
 }

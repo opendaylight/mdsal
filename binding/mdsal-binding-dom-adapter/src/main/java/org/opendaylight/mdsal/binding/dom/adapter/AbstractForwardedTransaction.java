@@ -25,7 +25,6 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
 import org.opendaylight.mdsal.dom.spi.query.DOMQueryEvaluator;
-import org.opendaylight.mdsal.dom.spi.query.EagerDOMQueryResult;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -102,7 +101,7 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
         LOG.trace("Fallback evaluation of {} on {}", domQuery, readOps);
         return readOps.read(store, domQuery.getRoot())
             .transform(
-                node -> node.map(data -> DOMQueryEvaluator.evaluateOn(domQuery, data)).orElse(EagerDOMQueryResult.of()),
+                node -> node.map(data -> DOMQueryEvaluator.evaluateOn(domQuery, data)).orElse(DOMQueryResult.of()),
                 // TODO: execute on a dedicated thread pool
                 MoreExecutors.directExecutor());
     }

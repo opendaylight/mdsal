@@ -5,41 +5,30 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.spi.query;
+package org.opendaylight.mdsal.dom.api.query;
 
-import com.google.common.annotations.Beta;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Spliterator;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-@Beta
 @NonNullByDefault
-public final class EagerDOMQueryResult implements DOMQueryResult {
-    private static final EagerDOMQueryResult EMPTY_INSTANCE = new EagerDOMQueryResult(ImmutableList.of());
+final class SimpleDOMQueryResult implements DOMQueryResult {
+    static final SimpleDOMQueryResult EMPTY_INSTANCE = new SimpleDOMQueryResult(ImmutableList.of());
 
     private final ImmutableList<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items;
 
-    private EagerDOMQueryResult(final List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items) {
-        this.items = ImmutableList.copyOf(items);
+    SimpleDOMQueryResult(final ImmutableList<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items) {
+        this.items = items;
     }
 
-    public static EagerDOMQueryResult of() {
-        return EMPTY_INSTANCE;
-    }
-
-    public static EagerDOMQueryResult of(final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> item) {
-        return new EagerDOMQueryResult(ImmutableList.of(item));
-    }
-
-    public static EagerDOMQueryResult of(
-            final List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items) {
-        return items.isEmpty() ? of() : new EagerDOMQueryResult(items);
+    SimpleDOMQueryResult(final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items) {
+        this(ImmutableList.copyOf(items));
     }
 
     @Override
@@ -55,5 +44,10 @@ public final class EagerDOMQueryResult implements DOMQueryResult {
     @Override
     public List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items() {
         return items;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("items", items).toString();
     }
 }
