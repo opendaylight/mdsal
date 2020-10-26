@@ -12,13 +12,14 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.collect.AbstractIterator;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
@@ -31,7 +32,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 
 @NonNullByDefault
-final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> {
+final class LazyDOMQueryResultSpliterator implements Spliterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> {
     private static class Frame {
         final NormalizedNode<?, ?> data;
 
@@ -90,7 +91,7 @@ final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstan
     // The predicates which need to be evalued
     private final List<? extends DOMQueryPredicate> predicates;
 
-    LazyDOMQueryResultIterator(final DOMQuery query, final NormalizedNode<?, ?> queryRoot) {
+    LazyDOMQueryResultSpliterator(final DOMQuery query, final NormalizedNode<?, ?> queryRoot) {
         currentPath = new ArrayDeque<>(query.getRoot().getPathArguments());
         // Note: DOMQueryEvaluator has taken care of the empty case, this is always non-empty
         remainingSelect = new ArrayDeque<>(query.getSelect().getPathArguments());
@@ -99,20 +100,26 @@ final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstan
     }
 
     @Override
-    protected Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> computeNext() {
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> next = findNext();
-        if (next != null) {
-            return next;
-        }
-
-        // Consistency check and clean up of leftover state
-        verify(frames.isEmpty());
-        verify(remainingSelect.isEmpty());
-        currentPath.clear();
-        return endOfData();
+    public @Nullable Spliterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> trySplit() {
+        // FIXME: implement this
+        return null;
     }
 
-    private @Nullable Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> findNext() {
+    @Override
+    public long estimateSize() {
+        return Long.MAX_VALUE;
+    }
+
+    @Override
+    public int characteristics() {
+        return DISTINCT | IMMUTABLE | NONNULL;
+    }
+
+    @Override
+    public boolean tryAdvance(
+            final @Nullable Consumer<? super Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> action) {
+        requireNonNull(action);
+
         // We always start with non-empty frames, as we signal end of data when we reach the end
         Frame current = frames.pop();
         do {
@@ -124,7 +131,8 @@ final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstan
                 while (iter.hasNext()) {
                     final MapEntryNode child = iter.next();
                     if (matches(child, predicates)) {
-                        return mapChildMatch(current, child);
+                        action.accept(mapChildMatch(current, child));
+                        return true;
                     }
                 }
 
@@ -148,7 +156,8 @@ final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstan
                         final MapEntryNode child = iter.next();
                         if (matches(child, predicates)) {
                             remainingSelect.push(next);
-                            return mapChildMatch(current, child);
+                            action.accept(mapChildMatch(current, child));
+                            return true;
                         }
                     }
 
@@ -194,7 +203,8 @@ final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstan
 
                     // Unwind stack, as we have nothing more to add -- we can have only one match.
                     current = unwindFrames(current, next);
-                    return new SimpleImmutableEntry<>(childPath, child);
+                    action.accept(new SimpleImmutableEntry<>(childPath, child));
+                    return true;
                 }
 
                 // Unwind stack, as we have nothing more to add.
@@ -213,7 +223,11 @@ final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstan
                     : new Frame(child, next);
         } while (current != null);
 
-        return null;
+        // Consistency check and clean up of leftover state
+        verify(frames.isEmpty());
+        verify(remainingSelect.isEmpty());
+        currentPath.clear();
+        return false;
     }
 
     Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> mapChildMatch(final Frame parent, final MapEntryNode child) {

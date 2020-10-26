@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Spliterator;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
@@ -28,7 +29,12 @@ final class LazyDOMQueryResult implements DOMQueryResult {
     }
 
     @Override
+    public Spliterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> spliterator() {
+        return new LazyDOMQueryResultSpliterator(query, queryRoot);
+    }
+
+    @Override
     public Iterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> iterator() {
-        return new LazyDOMQueryResultIterator(query, queryRoot);
+        return new SpliteratorIterator<>(spliterator());
     }
 }
