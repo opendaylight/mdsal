@@ -7,24 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.spi.query;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
-import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
-import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 
@@ -45,7 +34,7 @@ public final class DOMQueryEvaluator {
      */
     public static DOMQueryResult evaluateOn(final DOMQuery query, final NormalizedNode<?, ?> queryRoot) {
         final YangInstanceIdentifier path = query.getSelect();
-        return path.isEmpty() ? evalSingle(queryRoot, query) : evalPath(queryRoot, query);
+        return path.isEmpty() ? evalSingle(queryRoot, query) : new LazyDOMQueryResult(queryRoot, query);
     }
 
     /**
@@ -71,65 +60,7 @@ public final class DOMQueryEvaluator {
     }
 
     private static DOMQueryResult evalSingle(final NormalizedNode<?, ?> data, final DOMQuery query) {
-        return matches(data, query) ? DOMQueryResult.of()
+        return LazyDOMQueryResultIterator.matches(data, query) ? DOMQueryResult.of()
                 : DOMQueryResult.of(new SimpleImmutableEntry<>(query.getRoot(), data));
-    }
-
-    private static DOMQueryResult evalPath(final NormalizedNode<?, ?> queryRoot, final DOMQuery query) {
-        // FIXME: this is eager evaluation, we should be doing lazy traversal
-        final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> result = new ArrayList<>();
-        evalPath(result, new ArrayDeque<>(query.getRoot().getPathArguments()),
-            new ArrayDeque<>(query.getSelect().getPathArguments()), queryRoot, query);
-        return DOMQueryResult.of(result);
-    }
-
-    private static void evalPath(final List<Entry<YangInstanceIdentifier, NormalizedNode<?,?>>> result,
-            final Deque<PathArgument> path, final ArrayDeque<PathArgument> remaining,
-            final NormalizedNode<?, ?> data, final DOMQuery query) {
-        final PathArgument next = remaining.poll();
-        if (next == null) {
-            if (matches(data, query)) {
-                result.add(new SimpleImmutableEntry<>(YangInstanceIdentifier.create(path), data));
-            }
-            return;
-        }
-
-        if (data instanceof MapNode && next instanceof NodeIdentifier) {
-            checkArgument(data.getIdentifier().equals(next), "Unexpected step %s", next);
-            for (MapEntryNode child : ((MapNode) data).getValue()) {
-                evalChild(result, path, remaining, query, child);
-            }
-        } else {
-            NormalizedNodes.getDirectChild(data, next).ifPresent(
-                child -> evalChild(result, path, remaining, query, child));
-        }
-        remaining.push(next);
-    }
-
-    private static void evalChild(final List<Entry<YangInstanceIdentifier, NormalizedNode<?,?>>> result,
-            final Deque<PathArgument> path, final ArrayDeque<PathArgument> remaining, final DOMQuery query,
-            final NormalizedNode<?, ?> child) {
-        path.addLast(child.getIdentifier());
-        evalPath(result, path, remaining, child, query);
-        path.removeLast();
-    }
-
-    private static boolean matches(final NormalizedNode<?, ?> data, final DOMQuery query) {
-        for (DOMQueryPredicate pred : query.getPredicates()) {
-            // Okay, now we need to deal with predicates, but do it in a smart fashion, so we do not end up iterating
-            // all over the place. Typically we will be matching just a leaf.
-            final YangInstanceIdentifier path = pred.getPath();
-            final Optional<NormalizedNode<?, ?>> node;
-            if (path.coerceParent().isEmpty()) {
-                node = NormalizedNodes.getDirectChild(data, path.getLastPathArgument());
-            } else {
-                node = NormalizedNodes.findNode(data, path);
-            }
-
-            if (!pred.test(node.orElse(null))) {
-                return false;
-            }
-        }
-        return true;
     }
 }
