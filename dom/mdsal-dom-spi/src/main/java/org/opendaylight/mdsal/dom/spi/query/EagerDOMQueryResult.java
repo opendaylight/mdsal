@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Spliterator;
-import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -23,7 +22,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 public final class EagerDOMQueryResult implements DOMQueryResult {
     private static final EagerDOMQueryResult EMPTY_INSTANCE = new EagerDOMQueryResult(ImmutableList.of());
 
-    private final ImmutableList<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items;
+    private final ImmutableList<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items;
 
     private EagerDOMQueryResult(final List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items) {
         this.items = ImmutableList.copyOf(items);
@@ -43,18 +42,8 @@ public final class EagerDOMQueryResult implements DOMQueryResult {
     }
 
     @Override
-    public Spliterator<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> spliterator() {
+    public Spliterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> spliterator() {
         return items.spliterator();
-    }
-
-    @Override
-    public Stream<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> stream() {
-        return items.stream();
-    }
-
-    @Override
-    public Stream<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> parallelStream() {
-        return items.parallelStream();
     }
 
     @Override
