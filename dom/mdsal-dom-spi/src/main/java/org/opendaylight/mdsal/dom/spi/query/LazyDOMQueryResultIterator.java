@@ -25,6 +25,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
@@ -185,9 +186,7 @@ final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstan
                 // This is the ultimate step in lookup, process it without churning the stack by imposing a dedicated
                 // Frame. In either case we are done with this frame, unwinding it in both cases.
                 if (matches(child)) {
-                    final YangInstanceIdentifier childPath = createIdentifier(child);
-                    unwind(current, next);
-                    return new SimpleImmutableEntry<>(childPath, child);
+                    return unwindAndReturn(current, next, child);
                 }
 
                 current = unwind(current, next);
@@ -197,12 +196,46 @@ final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstan
             // Push our state back, it's just a placeholder for 'currentSelect'. Current path points at us and so does
             // the saved Frame.
             currentPath.addLast(current.data.getIdentifier());
-            frames.push(current);
 
             // Now decide what sort of entry to push. For maps we want to start an iterator already, so it gets
             // picked up as a continuation.
-            current = child instanceof MapNode ? new MapFrame(child, next, ((MapNode) child).getValue().iterator())
-                : new Frame(child, next);
+            if (child instanceof MapNode) {
+                final MapNode map = (MapNode) child;
+                final PathArgument target = remainingSelect.peek();
+                if (target instanceof NodeIdentifierWithPredicates) {
+                    final Optional<MapEntryNode> optEntry = map.getChild((NodeIdentifierWithPredicates) target);
+                    if (!optEntry.isPresent()) {
+                        final MapEntryNode entry = optEntry.orElseThrow();
+                        if (remainingSelect.size() != 1) {
+                            // We need to perform further selection push this frame, an empty frame for the map and
+                            // finally a frame for the map entry.
+                            frames.push(current);
+                            currentPath.addLast(map.getIdentifier());
+                            frames.push(new Frame(map, next));
+                            current = new Frame(entry, target);
+                            continue;
+                        }
+
+                        // We have selected entry, see it it matches. In any case rewind, potentially returning
+                        // the match
+                        if (matches(entry)) {
+                            return unwindAndReturn(current, next, entry);
+                        }
+                    }
+
+                    // We failed to find a matching entry, unwind
+                    current = unwind(current, next);
+                    continue;
+                }
+
+                // We have a wildcard, expand it
+                frames.push(current);
+                current = new MapFrame(child, next, map.getValue().iterator());
+            } else {
+                // Next step in iteration, deal with it
+                frames.push(current);
+                current = new Frame(child, next);
+            }
         }
 
         // All done, there be entries no more.
@@ -228,6 +261,14 @@ final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstan
 
         // Push the frame back to work, return the result
         frames.push(frame);
+        return new SimpleImmutableEntry<>(childPath, child);
+    }
+
+    // Unwind any leftover frames and return a matching item
+    private Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> unwindAndReturn(final Frame frame,
+            final PathArgument next, final NormalizedNode<?, ?> child) {
+        final YangInstanceIdentifier childPath = createIdentifier(child);
+        unwind(frame, next);
         return new SimpleImmutableEntry<>(childPath, child);
     }
 
