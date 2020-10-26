@@ -11,7 +11,6 @@ import org.opendaylight.mdsal.binding.api.query.DescendantQueryBuilder;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryStructureException;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -23,8 +22,8 @@ final class DefaultDescendantQueryBuilder<R extends DataObject, T extends DataOb
     private final InstanceIdentifierBuilder<T> childPath;
     private final QueryBuilderState builder;
 
-    DefaultDescendantQueryBuilder(final BindingCodecTree codec, final InstanceIdentifier<T> rootPath) {
-        this.builder = new QueryBuilderState(codec, rootPath);
+    DefaultDescendantQueryBuilder(final DefaultQueryFactory factory, final InstanceIdentifier<T> rootPath) {
+        this.builder = new QueryBuilderState(factory, rootPath);
         this.childPath = rootPath.builder();
     }
 
