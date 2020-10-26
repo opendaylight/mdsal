@@ -21,7 +21,6 @@ import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryFactory;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.api.query.QueryResult.Item;
-import org.opendaylight.mdsal.binding.api.query.QueryStructureException;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.impl.DefaultBindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
@@ -29,6 +28,7 @@ import org.opendaylight.yang.gen.v1.mdsal.query.norev.Foo;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.FooBuilder;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.System;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.SystemBuilder;
+import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.SystemKey;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.second.grp.Alarms;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.second.grp.AlarmsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
@@ -95,7 +95,7 @@ public class QueryBuilderTest {
     }
 
     @Test
-    public void bar() throws QueryStructureException {
+    public void bar() {
         final Stopwatch sw = Stopwatch.createStarted();
         final QueryExpression<TopLevelList> query = factory.querySubtree(InstanceIdentifier.create(Top.class))
                 .extractChild(TopLevelList.class)
@@ -110,7 +110,7 @@ public class QueryBuilderTest {
     }
 
     @Test
-    public void testFindCriticalAlarms() throws QueryStructureException {
+    public void testFindCriticalAlarms() {
         final Stopwatch sw = Stopwatch.createStarted();
         final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
             .extractChild(System.class)
@@ -125,7 +125,7 @@ public class QueryBuilderTest {
     }
 
     @Test
-    public void testFindNonCriticalAlarms() throws QueryStructureException {
+    public void testFindNonCriticalAlarms() {
         final Stopwatch sw = Stopwatch.createStarted();
         final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
             .extractChild(System.class)
@@ -140,7 +140,7 @@ public class QueryBuilderTest {
     }
 
     @Test
-    public void testFindZeroAlarms() throws QueryStructureException {
+    public void testFindZeroAlarms() {
         final Stopwatch sw = Stopwatch.createStarted();
         final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
             .extractChild(System.class)
@@ -153,6 +153,37 @@ public class QueryBuilderTest {
         final List<? extends Item<@NonNull Alarms>> items = execute(query).getItems();
         assertEquals(2, items.size());
     }
+
+    @Test
+    public void testFindSystemFirstAlarmOne() {
+        final Stopwatch sw = Stopwatch.createStarted();
+        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+            .extractChild(System.class, new SystemKey("first"))
+            .extractChild(Alarms.class)
+                .matching()
+                    .leaf(Alarms::getId).valueEquals(Uint64.ZERO)
+                .build();
+        LOG.info("Query built in {}", sw);
+
+        final List<? extends Item<@NonNull Alarms>> items = execute(query).getItems();
+        assertEquals(1, items.size());
+    }
+
+    @Test
+    public void testFindSystemFirstWithAlarmOne() {
+        final Stopwatch sw = Stopwatch.createStarted();
+        final QueryExpression<System> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+            .extractChild(System.class, new SystemKey("first"))
+                .matching()
+                    .childObject(Alarms.class)
+                        .leaf(Alarms::getId).valueEquals(Uint64.ZERO)
+                .build();
+        LOG.info("Query built in {}", sw);
+
+        final List<? extends Item<@NonNull System>> items = execute(query).getItems();
+        assertEquals(1, items.size());
+    }
+
 
     private <T extends @NonNull DataObject> QueryResult<T> execute(final QueryExpression<T> query) {
         final Stopwatch sw = Stopwatch.createStarted();
