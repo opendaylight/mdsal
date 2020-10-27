@@ -12,6 +12,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.Identifiable;
+import org.opendaylight.yangtools.yang.binding.Identifier;
 
 /**
  * Intermediate Query builder stage, which allows the specification of the query result type to be built up via
@@ -32,6 +34,20 @@ public interface DescendantQueryBuilder<T extends DataObject> extends Structural
      * @throws NullPointerException if childClass is null
      */
     <N extends ChildOf<? super T>> @NonNull DescendantQueryBuilder<N> extractChild(Class<N> childClass);
+
+    /**
+     * Add a child path component to the specification of what needs to be extracted, specifying an exact match in
+     * a keyed list. This method, along with its alternatives, can be used to specify which object type to select from
+     * the root path.
+     *
+     * @param <N> List type
+     * @param <K> Key type
+     * @param listKey List key
+     * @return This builder
+     * @throws NullPointerException if childClass is null
+     */
+    <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
+        @NonNull DescendantQueryBuilder<N> extractChild(final Class<@NonNull N> listItem, final K listKey);
 
     /**
      * Add a child path component to the specification of what needs to be extracted. This method, along with its

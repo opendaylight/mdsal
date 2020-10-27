@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.query;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.query.DescendantQueryBuilder;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
@@ -14,6 +15,8 @@ import org.opendaylight.mdsal.binding.api.query.QueryStructureException;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.Identifiable;
+import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 
@@ -39,6 +42,14 @@ final class DefaultDescendantQueryBuilder<R extends DataObject, T extends DataOb
     public <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>>
             DescendantQueryBuilder<N> extractChild(final Class<C> caseClass, final Class<N> childClass) {
         childPath.child(caseClass, childClass);
+        return (DefaultDescendantQueryBuilder<R, N>) this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
+            DescendantQueryBuilder<N> extractChild(final Class<@NonNull N> listItem, final K listKey) {
+        childPath.child(listItem, listKey);
         return (DefaultDescendantQueryBuilder<R, N>) this;
     }
 
