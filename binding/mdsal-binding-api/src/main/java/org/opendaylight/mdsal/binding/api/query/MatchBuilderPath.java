@@ -15,6 +15,8 @@ import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.Identifiable;
+import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -45,6 +47,20 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      */
     <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>>
         @NonNull MatchBuilderPath<O, N> extractChild(Class<C> caseClass, Class<N> childClass);
+
+    /**
+     * Add a child path component to the specification of what needs to be extracted, specifying an exact match in
+     * a keyed list. This method, along with its alternatives, can be used to specify which object type to select from
+     * the root path.
+     *
+     * @param <N> List type
+     * @param <K> Key type
+     * @param listKey List key
+     * @return This builder
+     * @throws NullPointerException if childClass is null
+     */
+    <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
+        @NonNull MatchBuilderPath<O, N> extractChild(Class<@NonNull N> listItem, K listKey);
 
     /**
      * Match an {@code empty} leaf's value.
