@@ -29,6 +29,11 @@ final class LazyDOMQueryResult implements DOMQueryResult {
 
     @Override
     public Iterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> iterator() {
-        return new DOMQueryIterator(query, queryRoot);
+        return new DOMQueryIterator(spliterator());
+    }
+
+    @Override
+    public DOMQuerySpliterator spliterator() {
+        return new DOMQuerySpliterator(query, queryRoot);
     }
 }
