@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 
 /**
- * Generalized utility for matching predicates. Split out of {@link LazyDOMQueryResultIterator} for simplicity.
+ * Generalized utility for matching predicates. Split out of {@link DOMQueryIterator} for simplicity.
  */
 final class DOMQueryMatcher {
     DOMQueryMatcher() {
