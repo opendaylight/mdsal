@@ -18,6 +18,8 @@ import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.Identifiable;
+import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
@@ -51,6 +53,14 @@ final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> 
     public <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>>
             MatchBuilderPath<O, N> extractChild(final Class<C> caseClass, final Class<N> childClass) {
         target.child(caseClass, childClass);
+        return (MatchBuilderPath<O, N>) this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
+            MatchBuilderPath<O, N> extractChild(final Class<@NonNull N> listItem, final K listKey) {
+        target.child(listItem, listKey);
         return (MatchBuilderPath<O, N>) this;
     }
 
