@@ -33,7 +33,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 
 @NonNullByDefault
-final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> {
+final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> {
     private static class Frame {
         final NormalizedNode<?, ?> data;
         final @Nullable PathArgument select;
@@ -93,7 +93,7 @@ final class LazyDOMQueryResultIterator extends AbstractIterator<Entry<YangInstan
     // The predicates which need to be evaluated
     private final List<? extends DOMQueryPredicate> predicates;
 
-    LazyDOMQueryResultIterator(final DOMQuery query, final NormalizedNode<?, ?> queryRoot) {
+    DOMQueryIterator(final DOMQuery query, final NormalizedNode<?, ?> queryRoot) {
         // Note: DOMQueryEvaluator has taken care of the empty case, this is always non-empty
         remainingSelect.addAll(query.getSelect().getPathArguments());
         currentPath.addAll(query.getRoot().getPathArguments());
