@@ -11,10 +11,12 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.MoreObjects.ToStringHelper;
-import java.util.function.Predicate;
+import com.google.common.collect.ImmutableList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -22,25 +24,408 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 @Beta
-public abstract class DOMQueryPredicate implements Immutable, Predicate<NormalizedNode<?, ?>> {
-    abstract static class AbstractLeafDOMQueryPredicate extends DOMQueryPredicate {
-        AbstractLeafDOMQueryPredicate(final YangInstanceIdentifier relativePath) {
-            super(relativePath);
+@NonNullByDefault
+public final class DOMQueryPredicate implements Immutable {
+    public abstract static class Match {
+        Match() {
+            // Hidden on purpose
+        }
+
+        public static final Match exists() {
+            return MatchExists.INSTACE;
+        }
+
+        public static final<T extends Comparable<T>> Match greaterThan(final T value) {
+            return new MatchGreaterThan<>(value);
+        }
+
+        public static final<T extends Comparable<T>> Match greaterThanOrEqual(final T value) {
+            return new MatchGreaterThanOrEqual<>(value);
+        }
+
+        public static final<T extends Comparable<T>> Match lessThan(final T value) {
+            return new MatchLessThan<>(value);
+        }
+
+        public static final<T extends Comparable<T>> Match lessThanOrEqual(final T value) {
+            return new MatchLessThanOrEqual<>(value);
+        }
+
+        public static final Match stringMatches(final Pattern pattern) {
+            return new MatchStringMatches(pattern);
+        }
+
+        public static final Match stringStartsWith(final String str) {
+            return new MatchStringStartsWith(str);
+        }
+
+        public static final Match stringEndsWith(final String str) {
+            return new MatchStringEndsWith(str);
+        }
+
+        public static final Match stringContains(final String str) {
+            return new MatchStringContains(str);
+        }
+
+        public static final <V> Match valueEquals(final V value) {
+            return new MatchValueEquals<>(value);
+        }
+
+        public Match negate() {
+            return new MatchNot(this);
+        }
+
+        public Match and(final Match other) {
+            return new MatchAll(ImmutableList.of(this, other));
+        }
+
+        public Match or(final Match other) {
+            return new MatchAny(ImmutableList.of(this, other));
+        }
+
+        public abstract boolean test(final @Nullable NormalizedNode<?, ?> data);
+
+        final void appendTo(final StringBuilder sb) {
+            sb.append(op()).append('(');
+            appendArgument(sb);
+            sb.append(')');
+        }
+
+        void appendArgument(final StringBuilder sb) {
+            // No-op by default
+        }
+
+        abstract String op();
+
+        @Override
+        public final String toString() {
+            final var sb = new StringBuilder();
+            appendTo(sb);
+            return sb.toString();
+        }
+    }
+
+    private static final class MatchAll extends CompositeMatch {
+        MatchAll(final List<Match> components) {
+            super(components);
         }
 
         @Override
-        public final boolean test(final NormalizedNode<?, ?> data) {
-            return testValue(data instanceof LeafNode ? ((LeafNode<?>) data).getValue() : null);
+        public MatchAll and(final Match other) {
+            return new MatchAll(newComponents(other));
         }
 
-        abstract boolean testValue(Object data);
+        @Override
+        public boolean test(final @Nullable NormalizedNode<?, ?> data) {
+            for (Match component : components()) {
+                if (!component.test(data)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        String op() {
+            return "allOf";
+        }
     }
 
-    abstract static class AbstractValueDOMQueryPredicate<T> extends AbstractLeafDOMQueryPredicate {
+    private static final class MatchAny extends CompositeMatch {
+        MatchAny(final List<Match> components) {
+            super(components);
+        }
+
+        @Override
+        public MatchAny or(final Match other) {
+            return new MatchAny(newComponents(other));
+        }
+
+        @Override
+        public boolean test(final @Nullable NormalizedNode<?, ?> data) {
+            for (Match component : components()) {
+                if (component.test(data)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        String op() {
+            return "anyOf";
+        }
+    }
+
+    private static final class MatchExists extends Match {
+        static final MatchExists INSTACE = new MatchExists();
+
+        private MatchExists() {
+            // Hidden on purpose
+        }
+
+        @Override
+        public boolean test(final @Nullable NormalizedNode<?, ?> data) {
+            return data != null;
+        }
+
+        @Override
+        String op() {
+            return "exists";
+        }
+    }
+
+    private static final class MatchNot extends Match {
+        private final Match match;
+
+        MatchNot(final Match match) {
+            this.match = requireNonNull(match);
+        }
+
+        @Override
+        public Match negate() {
+            return match;
+        }
+
+        @Override
+        public boolean test(final @Nullable NormalizedNode<?, ?> data) {
+            return !match.test(data);
+        }
+
+        @Override
+        String op() {
+            return "not";
+        }
+
+        @Override
+        void appendArgument(final StringBuilder sb) {
+            match.appendTo(sb);
+        }
+    }
+
+    private static final class MatchValueEquals<T> extends AbstractMatchValue<T> {
+        MatchValueEquals(final T value) {
+            super(value);
+        }
+
+        @Override
+        String op() {
+            return "eq";
+        }
+
+        @Override
+        boolean testValue(final @Nullable Object data) {
+            return value().equals(data);
+        }
+    }
+
+    private static final class MatchStringContains extends AbstractMatchString {
+        MatchStringContains(final String value) {
+            super(value);
+        }
+
+        @Override
+        String op() {
+            return "contains";
+        }
+
+        @Override
+        boolean testString(final String str) {
+            return str.contains(value());
+        }
+    }
+
+    private static final class MatchStringMatches extends AbstractMatch {
+        private final Pattern pattern;
+
+        MatchStringMatches(final Pattern pattern) {
+            this.pattern = requireNonNull(pattern);
+        }
+
+        @Override
+        String op() {
+            return "matches";
+        }
+
+        @Override
+        void appendArgument(final StringBuilder sb) {
+            sb.append(pattern);
+        }
+
+        @Override
+        boolean testValue(final @Nullable Object data) {
+            return data instanceof CharSequence && pattern.matcher((CharSequence) data).matches();
+        }
+    }
+
+    private static final class MatchStringStartsWith extends AbstractMatchString {
+        MatchStringStartsWith(final String value) {
+            super(value);
+        }
+
+        @Override
+        String op() {
+            return "startsWith";
+        }
+
+        @Override
+        boolean testString(final String str) {
+            return str.startsWith(value());
+        }
+    }
+
+    private static final class MatchStringEndsWith extends AbstractMatchString {
+        MatchStringEndsWith(final String value) {
+            super(value);
+        }
+
+        @Override
+        String op() {
+            return "endsWith";
+        }
+
+        @Override
+        boolean testString(final String str) {
+            return str.endsWith(value());
+        }
+    }
+
+    private static final class MatchGreaterThan<T extends Comparable<T>> extends AbstractMatchComparable<T> {
+        MatchGreaterThan(final T value) {
+            super(value);
+        }
+
+        @Override
+        String op() {
+            return "gt";
+        }
+
+        @Override
+        boolean testCompare(final int valueToData) {
+            return valueToData <= 0;
+        }
+    }
+
+    private static final class MatchGreaterThanOrEqual<T extends Comparable<T>> extends AbstractMatchComparable<T> {
+        MatchGreaterThanOrEqual(final T value) {
+            super(value);
+        }
+
+        @Override
+        String op() {
+            return "gte";
+        }
+
+        @Override
+        boolean testCompare(final int valueToData) {
+            return valueToData < 0;
+        }
+    }
+
+    private static final class MatchLessThan<T extends Comparable<T>> extends AbstractMatchComparable<T> {
+        MatchLessThan(final T value) {
+            super(value);
+        }
+
+        @Override
+        String op() {
+            return "lt";
+        }
+
+        @Override
+        boolean testCompare(final int valueToData) {
+            return valueToData >= 0;
+        }
+    }
+
+    private static final class MatchLessThanOrEqual<T extends Comparable<T>> extends AbstractMatchComparable<T> {
+        MatchLessThanOrEqual(final T value) {
+            super(value);
+        }
+
+        @Override
+        String op() {
+            return "lte";
+        }
+
+        @Override
+        boolean testCompare(final int valueToData) {
+            return valueToData > 0;
+        }
+    }
+
+    private abstract static class CompositeMatch extends Match {
+        private final ImmutableList<Match> components;
+
+        CompositeMatch(final List<Match> components) {
+            this.components = ImmutableList.copyOf(components);
+        }
+
+        final ImmutableList<Match> components() {
+            return components;
+        }
+
+        final ImmutableList<Match> newComponents(final Match nextComponent) {
+            return ImmutableList.<Match>builderWithExpectedSize(components.size() + 1)
+                .addAll(components)
+                .add(nextComponent)
+                .build();
+        }
+
+        @Override
+        final void appendArgument(final StringBuilder sb) {
+            final Iterator<Match> it = components.iterator();
+            sb.append(it.next());
+            while (it.hasNext()) {
+                sb.append(", ").append(it.next());
+            }
+        }
+    }
+
+    private abstract static class AbstractMatch extends Match {
+        AbstractMatch() {
+            // Hidden on purpose
+        }
+
+        @Override
+        public final boolean test(final @Nullable NormalizedNode<?, ?> data) {
+            return data instanceof LeafNode ? testValue(((LeafNode<?>) data).getValue()) : testValue(null);
+        }
+
+        abstract boolean testValue(@Nullable Object data);
+    }
+
+    private abstract static class AbstractMatchComparable<T extends Comparable<T>> extends AbstractMatchValue<T> {
+        AbstractMatchComparable(final T value) {
+            super(value);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        final boolean testValue(final @Nullable Object data) {
+            return data != null && testCompare(value().compareTo((T) data));
+        }
+
+        abstract boolean testCompare(int valueToData);
+    }
+
+    private abstract static class AbstractMatchString extends AbstractMatchValue<String> {
+        AbstractMatchString(final String value) {
+            super(value);
+        }
+
+        @Override
+        final boolean testValue(final @Nullable Object data) {
+            return data instanceof String && testString((String) data);
+        }
+
+        abstract boolean testString(String str);
+    }
+
+    private abstract static class AbstractMatchValue<T> extends AbstractMatch {
         private final @NonNull T value;
 
-        AbstractValueDOMQueryPredicate(final YangInstanceIdentifier relativePath, final T value) {
-            super(relativePath);
+        AbstractMatchValue(final T value) {
             this.value = requireNonNull(value);
         }
 
@@ -49,205 +434,33 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Normaliz
         }
 
         @Override
-        ToStringHelper addToStringAttributes(final ToStringHelper helper) {
-            return helper.add("value", value);
+        final void appendArgument(final StringBuilder sb) {
+            sb.append(value);
         }
     }
 
-    abstract static class AbstractComparableDOMQueryPredicate<T extends Comparable<T>>
-            extends AbstractValueDOMQueryPredicate<T> {
-        AbstractComparableDOMQueryPredicate(final YangInstanceIdentifier relativePath, final T value) {
-            super(relativePath, value);
-        }
+    private final YangInstanceIdentifier relativePath;
+    private final Match match;
 
-        @Override
-        @SuppressWarnings("unchecked")
-        public final boolean testValue(final Object data) {
-            return data != null && test(value().compareTo((T) data));
-        }
-
-        abstract boolean test(int valueToData);
-    }
-
-    abstract static class AbstractStringDOMQueryPredicate extends AbstractValueDOMQueryPredicate<String> {
-        AbstractStringDOMQueryPredicate(final YangInstanceIdentifier relativePath, final String value) {
-            super(relativePath, value);
-        }
-
-        @Override
-        public final boolean testValue(final Object data) {
-            return data instanceof String && test((String) data);
-        }
-
-        abstract boolean test(@NonNull String str);
-    }
-
-    public static final class Exists extends DOMQueryPredicate {
-        public Exists(final YangInstanceIdentifier relativePath) {
-            super(relativePath);
-        }
-
-        @Override
-        public boolean test(final NormalizedNode<?, ?> data) {
-            return data != null;
-        }
-    }
-
-    public static final class Not extends DOMQueryPredicate {
-        private final DOMQueryPredicate predicate;
-
-        Not(final DOMQueryPredicate predicate) {
-            super(predicate.relativePath);
-            this.predicate = predicate;
-        }
-
-        public @NonNull DOMQueryPredicate predicate() {
-            return predicate;
-        }
-
-        @Override
-        public DOMQueryPredicate negate() {
-            return predicate;
-        }
-
-        @Override
-        public boolean test(final NormalizedNode<?, ?> data) {
-            return !predicate.test(data);
-        }
-    }
-
-    public static final class ValueEquals<T> extends AbstractValueDOMQueryPredicate<T> {
-        public ValueEquals(final YangInstanceIdentifier relativePath, final T value) {
-            super(relativePath, value);
-        }
-
-        @Override
-        public boolean testValue(final Object data) {
-            return value().equals(data);
-        }
-    }
-
-    public static final class GreaterThan<T extends Comparable<T>> extends AbstractComparableDOMQueryPredicate<T> {
-        public GreaterThan(final YangInstanceIdentifier relativePath, final T value) {
-            super(relativePath, value);
-        }
-
-        @Override
-        boolean test(final int valueToData) {
-            return valueToData <= 0;
-        }
-    }
-
-    public static final class GreaterThanOrEqual<T extends Comparable<T>>
-            extends AbstractComparableDOMQueryPredicate<T> {
-        public GreaterThanOrEqual(final YangInstanceIdentifier relativePath, final T value) {
-            super(relativePath, value);
-        }
-
-        @Override
-        boolean test(final int valueToData) {
-            return valueToData < 0;
-        }
-    }
-
-    public static final class LessThan<T extends Comparable<T>> extends AbstractComparableDOMQueryPredicate<T> {
-        public LessThan(final YangInstanceIdentifier relativePath, final T value) {
-            super(relativePath, value);
-        }
-
-        @Override
-        boolean test(final int valueToData) {
-            return valueToData >= 0;
-        }
-    }
-
-    public static final class LessThanOrEqual<T extends Comparable<T>> extends AbstractComparableDOMQueryPredicate<T> {
-        public LessThanOrEqual(final YangInstanceIdentifier relativePath, final T value) {
-            super(relativePath, value);
-        }
-
-        @Override
-        boolean test(final int valueToData) {
-            return valueToData > 0;
-        }
-    }
-
-    public static final class StartsWith extends AbstractStringDOMQueryPredicate {
-        public StartsWith(final YangInstanceIdentifier relativePath, final String str) {
-            super(relativePath, str);
-        }
-
-        @Override
-        boolean test(final String str) {
-            return str.startsWith(value());
-        }
-    }
-
-    public static final class EndsWith extends AbstractStringDOMQueryPredicate {
-        public EndsWith(final YangInstanceIdentifier relativePath, final String str) {
-            super(relativePath, str);
-        }
-
-        @Override
-        boolean test(final String str) {
-            return str.endsWith(value());
-        }
-    }
-
-    public static final class Contains extends AbstractStringDOMQueryPredicate {
-        public Contains(final YangInstanceIdentifier relativePath, final String str) {
-            super(relativePath, str);
-        }
-
-        @Override
-        boolean test(final String str) {
-            return str.contains(value());
-        }
-    }
-
-    public static final class MatchesPattern extends AbstractLeafDOMQueryPredicate {
-        private final Pattern pattern;
-
-        public MatchesPattern(final YangInstanceIdentifier relativePath, final Pattern pattern) {
-            super(relativePath);
-            this.pattern = requireNonNull(pattern);
-        }
-
-        @Override
-        public boolean testValue(final Object data) {
-            return data instanceof CharSequence && pattern.matcher((CharSequence) data).matches();
-        }
-
-        @Override
-        ToStringHelper addToStringAttributes(final ToStringHelper helper) {
-            return helper.add("pattern", pattern);
-        }
-    }
-
-    private final @NonNull YangInstanceIdentifier relativePath;
-
-    DOMQueryPredicate(final YangInstanceIdentifier relativePath) {
+    private DOMQueryPredicate(final YangInstanceIdentifier relativePath, final Match match) {
         this.relativePath = requireNonNull(relativePath);
+        this.match = requireNonNull(match);
     }
 
-    public final @NonNull YangInstanceIdentifier getPath() {
+    public static DOMQueryPredicate of(final YangInstanceIdentifier relativePath, final Match match) {
+        return new DOMQueryPredicate(relativePath, match);
+    }
+
+    public YangInstanceIdentifier relativePath() {
         return relativePath;
     }
 
-    @Override
-    public @NonNull DOMQueryPredicate negate() {
-        return new Not(this);
+    public Match match() {
+        return match;
     }
-
-    @Override
-    public abstract boolean test(@Nullable NormalizedNode<?, ?> data);
 
     @Override
     public String toString() {
-        return addToStringAttributes(MoreObjects.toStringHelper(this).add("path", relativePath)).toString();
-    }
-
-    ToStringHelper addToStringAttributes(final ToStringHelper helper) {
-        return helper;
+        return MoreObjects.toStringHelper(this).add("path", relativePath).add("match", match).toString();
     }
 }
