@@ -12,6 +12,8 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
@@ -23,6 +25,262 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 @Beta
 public abstract class DOMQueryPredicate implements Immutable, Predicate<NormalizedNode<?, ?>> {
+    private abstract static class Match<T extends NormalizedNode<?, ?>, M extends Match<T, M>> {
+        abstract boolean test(final NormalizedNode<?, ?> data);
+
+        abstract M negate();
+
+        abstract M and(M other);
+
+        abstract M or(M other);
+    }
+
+    private abstract static class LeafMatch extends Match<LeafNode<?>, LeafMatch> {
+        @Override
+        public final boolean test(final NormalizedNode<?, ?> data) {
+            return testValue(data instanceof LeafNode ? ((LeafNode<?>) data).getValue() : null);
+        }
+
+        @Override
+        LeafMatch negate() {
+            return new LeafMatchNot(this);
+        }
+
+        @Override
+        LeafMatchAll and(final LeafMatch other) {
+            return new LeafMatchAll(ImmutableList.of(this, other));
+        }
+
+        @Override
+        LeafMatchAny or(final LeafMatch other) {
+            return new LeafMatchAny(ImmutableList.of(this, other));
+        }
+
+        abstract boolean testValue(Object data);
+    }
+
+    private abstract static class LeafMatchValue<T> extends LeafMatch {
+        private final @NonNull T value;
+
+        LeafMatchValue(final T value) {
+            this.value = requireNonNull(value);
+        }
+
+        final @NonNull T value() {
+            return value;
+        }
+    }
+
+    abstract static class LeafMatchComparable<T extends Comparable<T>> extends LeafMatchValue<T> {
+        LeafMatchComparable(final T value) {
+            super(value);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public final boolean testValue(final Object data) {
+            return data != null && testCompare(value().compareTo((T) data));
+        }
+
+        abstract boolean testCompare(int valueToData);
+    }
+
+    private abstract static class LeafMatchString extends LeafMatchValue<String> {
+        LeafMatchString(final String value) {
+            super(value);
+        }
+
+        @Override
+        final boolean testValue(final Object data) {
+            return data instanceof String && testString((String) data);
+        }
+
+        abstract boolean testString(String str);
+    }
+
+    private abstract static class CompositeLeafMatch extends LeafMatch {
+        private final ImmutableList<LeafMatch> components;
+
+        CompositeLeafMatch(final List<LeafMatch> components) {
+            this.components = ImmutableList.copyOf(components);
+        }
+
+        final ImmutableList<LeafMatch> components() {
+            return components;
+        }
+
+        final ImmutableList<LeafMatch> newComponents(final LeafMatch nextComponent) {
+            return ImmutableList.<LeafMatch>builderWithExpectedSize(components.size() + 1)
+                .addAll(components)
+                .add(nextComponent)
+                .build();
+        }
+    }
+
+    private static final class LeafMatchAll extends CompositeLeafMatch {
+        LeafMatchAll(final List<LeafMatch> components) {
+            super(components);
+        }
+
+        @Override
+        LeafMatchAll and(final LeafMatch other) {
+            return new LeafMatchAll(newComponents(other));
+        }
+
+        @Override
+        boolean testValue(final Object data) {
+            for (LeafMatch component : components()) {
+                if (!component.testValue(data)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    private static final class LeafMatchAny extends CompositeLeafMatch {
+        LeafMatchAny(final List<LeafMatch> components) {
+            super(components);
+        }
+
+        @Override
+        LeafMatchAny or(final LeafMatch other) {
+            return new LeafMatchAny(newComponents(other));
+        }
+
+        @Override
+        boolean testValue(final Object data) {
+            for (LeafMatch component : components()) {
+                if (component.testValue(data)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    private static final class LeafMatchNot extends LeafMatch {
+        private final LeafMatch match;
+
+        LeafMatchNot(final LeafMatch match) {
+            this.match = requireNonNull(match);
+        }
+
+        @Override
+        boolean testValue(final Object data) {
+            return !match.testValue(data);
+        }
+
+        @Override
+        LeafMatch negate() {
+            return match;
+        }
+    }
+
+    private static final class LeafMatchValueEquals<T> extends LeafMatchValue<T> {
+        LeafMatchValueEquals(final T value) {
+            super(value);
+        }
+
+        @Override
+        boolean testValue(final Object data) {
+            return value().equals(data);
+        }
+    }
+
+    private static final class LeafMatchStringContains extends LeafMatchString {
+        LeafMatchStringContains(final String value) {
+            super(value);
+        }
+
+        @Override
+        boolean testString(final String str) {
+            return str.contains(value());
+        }
+    }
+
+    private static final class LeafMatchStringStartsWith extends LeafMatchString {
+        LeafMatchStringStartsWith(final String value) {
+            super(value);
+        }
+
+        @Override
+        boolean testString(final String str) {
+            return str.startsWith(value());
+        }
+    }
+
+    private static final class LeafMatchStringEndsWith extends LeafMatchString {
+        LeafMatchStringEndsWith(final String value) {
+            super(value);
+        }
+
+        @Override
+        boolean testString(final String str) {
+            return str.endsWith(value());
+        }
+    }
+
+    private static final class LeafMatchGreaterThan<T extends Comparable<T>> extends LeafMatchComparable<T> {
+        LeafMatchGreaterThan(final T value) {
+            super(value);
+        }
+
+        @Override
+        boolean testCompare(final int valueToData) {
+            return valueToData <= 0;
+        }
+    }
+
+    private static final class LeafMatchGreaterThanOrEqual<T extends Comparable<T>> extends LeafMatchComparable<T> {
+        LeafMatchGreaterThanOrEqual(final T value) {
+            super(value);
+        }
+
+        @Override
+        boolean testCompare(final int valueToData) {
+            return valueToData < 0;
+        }
+    }
+
+    private static final class LeafMatchLessThan<T extends Comparable<T>> extends LeafMatchComparable<T> {
+        LeafMatchLessThan(final T value) {
+            super(value);
+        }
+
+        @Override
+        boolean testCompare(final int valueToData) {
+            return valueToData >= 0;
+        }
+    }
+
+    private static final class LeafMatchGreaterLessOrEqual<T extends Comparable<T>> extends LeafMatchComparable<T> {
+        LeafMatchGreaterLessOrEqual(final T value) {
+            super(value);
+        }
+
+        @Override
+        boolean testCompare(final int valueToData) {
+            return valueToData > 0;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     abstract static class AbstractLeafDOMQueryPredicate extends DOMQueryPredicate {
         AbstractLeafDOMQueryPredicate(final YangInstanceIdentifier relativePath) {
             super(relativePath);
@@ -62,7 +320,7 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Normaliz
 
         @Override
         @SuppressWarnings("unchecked")
-        public final boolean testValue(final Object data) {
+        final boolean testValue(final Object data) {
             return data != null && test(value().compareTo((T) data));
         }
 
@@ -75,7 +333,7 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Normaliz
         }
 
         @Override
-        public final boolean testValue(final Object data) {
+        final boolean testValue(final Object data) {
             return data instanceof String && test((String) data);
         }
 
@@ -122,7 +380,7 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Normaliz
         }
 
         @Override
-        public boolean testValue(final Object data) {
+        boolean testValue(final Object data) {
             return value().equals(data);
         }
     }
@@ -214,7 +472,7 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Normaliz
         }
 
         @Override
-        public boolean testValue(final Object data) {
+        boolean testValue(final Object data) {
             return data instanceof CharSequence && pattern.matcher((CharSequence) data).matches();
         }
 
