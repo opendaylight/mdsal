@@ -93,26 +93,14 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Normaliz
         }
     }
 
-    public static final class Not extends DOMQueryPredicate {
-        private final DOMQueryPredicate predicate;
-
-        Not(final DOMQueryPredicate predicate) {
-            super(predicate.relativePath);
-            this.predicate = predicate;
-        }
-
-        public @NonNull DOMQueryPredicate predicate() {
-            return predicate;
-        }
-
-        @Override
-        public DOMQueryPredicate negate() {
-            return predicate;
+    public static final class NotExists extends DOMQueryPredicate {
+        public NotExists(final YangInstanceIdentifier relativePath) {
+            super(relativePath);
         }
 
         @Override
         public boolean test(final NormalizedNode<?, ?> data) {
-            return !predicate.test(data);
+            return data == null;
         }
     }
 
@@ -232,11 +220,6 @@ public abstract class DOMQueryPredicate implements Immutable, Predicate<Normaliz
 
     public final @NonNull YangInstanceIdentifier getPath() {
         return relativePath;
-    }
-
-    @Override
-    public @NonNull DOMQueryPredicate negate() {
-        return new Not(this);
     }
 
     @Override
