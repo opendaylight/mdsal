@@ -14,8 +14,7 @@ import org.opendaylight.mdsal.binding.api.query.ValueMatch;
 import org.opendaylight.mdsal.binding.api.query.ValueMatchBuilder;
 import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundMethod;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Exists;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.ValueEquals;
+import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Match;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -35,26 +34,26 @@ abstract class AbstractValueMatchBuilder<T extends DataObject, V> implements Val
 
     @Override
     public final ValueMatch<T> nonNull() {
-        return withPredicate(new Exists(relativePath()));
+        return withMatch(Match.exists());
     }
 
     @Override
     public final ValueMatch<T> isNull() {
-        return withPredicate(new Exists(relativePath()).negate());
+        return withMatch(Match.exists().negate());
     }
 
     @Override
     public final ValueMatch<T> valueEquals(final V value) {
-        return withPredicate(new ValueEquals<>(relativePath(), value));
+        return withMatch(Match.valueEquals(value));
     }
 
     final YangInstanceIdentifier relativePath() {
         return method.parentPath.node(((DataSchemaNode) method.methodCodec.getSchema()).getQName());
     }
 
-    final @NonNull ValueMatch<T> withPredicate(final DOMQueryPredicate predicate) {
+    final @NonNull ValueMatch<T> withMatch(final Match match) {
         // FIXME: this does not quite take value codec into account :(
-        builder.addPredicate(predicate);
+        builder.addPredicate(DOMQueryPredicate.of(relativePath(), match));
         return new DefaultValueMatch<>(builder, select);
     }
 }
