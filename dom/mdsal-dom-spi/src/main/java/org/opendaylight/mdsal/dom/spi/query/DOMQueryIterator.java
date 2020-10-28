@@ -18,6 +18,7 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -262,7 +263,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
 
         // Push the frame back to work, return the result
         frames.push(frame);
-        return new SimpleImmutableEntry<>(childPath, child);
+        return Map.entry(childPath, child);
     }
 
     // Unwind any leftover frames and return a matching item
@@ -270,7 +271,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
             final PathArgument next, final NormalizedNode<?, ?> child) {
         final YangInstanceIdentifier childPath = createIdentifier(child);
         unwind(frame, next);
-        return new SimpleImmutableEntry<>(childPath, child);
+        return Map.entry(childPath, child);
     }
 
     /**
