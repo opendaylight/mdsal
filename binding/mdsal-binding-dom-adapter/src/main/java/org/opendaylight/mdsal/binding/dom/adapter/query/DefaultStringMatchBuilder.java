@@ -11,10 +11,7 @@ import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.api.query.StringMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.ValueMatch;
 import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundMethod;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Contains;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.EndsWith;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.MatchesPattern;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.StartsWith;
+import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Match;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -27,21 +24,21 @@ final class DefaultStringMatchBuilder<T extends DataObject> extends AbstractValu
 
     @Override
     public ValueMatch<T> startsWith(final String str) {
-        return withPredicate(new StartsWith(relativePath(), str));
+        return withMatch(Match.stringStartsWith(str));
     }
 
     @Override
     public ValueMatch<T> endsWith(final String str) {
-        return withPredicate(new EndsWith(relativePath(), str));
+        return withMatch(Match.stringEndsWith(str));
     }
 
     @Override
     public ValueMatch<T> contains(final String str) {
-        return withPredicate(new Contains(relativePath(), str));
+        return withMatch(Match.stringContains(str));
     }
 
     @Override
     public ValueMatch<T> matchesPattern(final Pattern pattern) {
-        return withPredicate(new MatchesPattern(relativePath(), pattern));
+        return withMatch(Match.stringMatches(pattern));
     }
 }

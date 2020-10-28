@@ -12,7 +12,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Not;
+import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Match;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -29,7 +29,7 @@ final class DOMQueryMatcher {
         // Utility class
     }
 
-    static boolean matches(final NormalizedNode<?, ?> data, final List<? extends DOMQueryPredicate> predicates) {
+    static boolean matchesAll(final NormalizedNode<?, ?> data, final List<? extends DOMQueryPredicate> predicates) {
         // TODO: it would be nice if predicates were somehow structured -- can we perhaps sort them by their
         //       InstanceIdentifier? If the predicates are sharing a common subpath. Hence if we can guarantee
         //       predicates are in a certain order, we would not end up in subsequent re-lookups of the same node.
@@ -38,13 +38,9 @@ final class DOMQueryMatcher {
             // So now, dealing with implementations: YangInstanceIdentifier.getLastPathArgument() is always cheap.
             // If its parent is YangInstanceIdentifier.ROOT (i.e. isEmpty() == true), we are dealing with a last-step
             // lookup -- in which case we forgo iteration:
-            final YangInstanceIdentifier path = pred.getPath();
+            final YangInstanceIdentifier path = pred.relativePath();
             if (path.coerceParent().isEmpty()) {
-                if (pred instanceof Not) {
-                    if (matchesChild(((Not) pred).predicate(), data, path.getLastPathArgument())) {
-                        return false;
-                    }
-                } else if (!matchesChild(pred, data, path.getLastPathArgument())) {
+                if (!matchesChild(pred.match(), data, path.getLastPathArgument())) {
                     return false;
                 }
                 continue;
@@ -57,11 +53,7 @@ final class DOMQueryMatcher {
             pathArgs.addAll(path.getPathArguments());
 
             // The stage is set, we now have to deal with potential negation.
-            if (pred instanceof Not) {
-                if (matchesAny(((Not) pred).predicate(), data, pathArgs)) {
-                    return false;
-                }
-            } else if (!matchesAny(pred, data, pathArgs)) {
+            if (!matchesAny(pred.match(), data, pathArgs)) {
                 return false;
             }
 
@@ -70,19 +62,19 @@ final class DOMQueryMatcher {
         return true;
     }
 
-    private static boolean matchesAny(final DOMQueryPredicate pred, final NormalizedNode<?, ?> data,
+    private static boolean matchesAny(final Match match, final NormalizedNode<?, ?> data,
             final Deque<PathArgument> pathArgs) {
         // Guaranteed to have at least one item
         final PathArgument pathArg = pathArgs.pop();
         // Ultimate item -- reuse lookup & match
         if (pathArgs.isEmpty()) {
             pathArgs.push(pathArg);
-            return matchesChild(pred, data, pathArg);
+            return matchesChild(match, data, pathArg);
         }
 
         final Optional<NormalizedNode<?, ?>> direct = NormalizedNodes.getDirectChild(data, pathArg);
         if (direct.isPresent()) {
-            final boolean ret = matchesAny(pred, direct.orElseThrow(), pathArgs);
+            final boolean ret = matchesAny(match, direct.orElseThrow(), pathArgs);
             pathArgs.push(pathArg);
             return ret;
         }
@@ -90,7 +82,7 @@ final class DOMQueryMatcher {
         // We may be dealing with a wildcard here. NodeIdentifier is a final class, hence this is as fast as it gets.
         if (pathArg instanceof NodeIdentifier && data instanceof MapNode) {
             for (MapEntryNode child : ((MapNode) data).getValue()) {
-                if (matchesAny(pred, child, pathArgs)) {
+                if (matchesAny(match, child, pathArgs)) {
                     pathArgs.push(pathArg);
                     return true;
                 }
@@ -101,23 +93,23 @@ final class DOMQueryMatcher {
         return false;
     }
 
-    private static boolean matchesChild(final DOMQueryPredicate pred, final NormalizedNode<?, ?> data,
+    private static boolean matchesChild(final Match match, final NormalizedNode<?, ?> data,
             final PathArgument pathArg) {
         // Try the direct approach...
         final Optional<NormalizedNode<?, ?>> direct = NormalizedNodes.getDirectChild(data, pathArg);
         if (direct.isPresent()) {
-            return pred.test(direct.orElseThrow());
+            return match.test(direct.orElseThrow());
         }
 
         // We may be dealing with a wildcard here. NodeIdentifier is a final class, hence this is as fast as it gets.
         if (pathArg instanceof NodeIdentifier && data instanceof MapNode) {
             for (MapEntryNode child : ((MapNode) data).getValue()) {
-                if (pred.test(child)) {
+                if (match.test(child)) {
                     return true;
                 }
             }
         }
 
-        return false;
+        return match.test(null);
     }
 }

@@ -329,6 +329,6 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
     }
 
     private boolean matches(final NormalizedNode<?, ?> data) {
-        return DOMQueryMatcher.matches(data, predicates);
+        return DOMQueryMatcher.matchesAll(data, predicates);
     }
 }

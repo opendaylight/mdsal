@@ -10,10 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.query;
 import org.opendaylight.mdsal.binding.api.query.ComparableMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.ValueMatch;
 import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundMethod;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.GreaterThan;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.GreaterThanOrEqual;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.LessThan;
-import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.LessThanOrEqual;
+import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Match;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -26,21 +23,21 @@ final class DefaultComparableMatchBuilder<T extends DataObject, V extends Compar
 
     @Override
     public ValueMatch<T> lessThan(final V value) {
-        return withPredicate(new LessThan<>(relativePath(), value));
+        return withMatch(Match.lessThan(value));
     }
 
     @Override
     public ValueMatch<T> lessThanOrEqual(final V value) {
-        return withPredicate(new LessThanOrEqual<>(relativePath(), value));
+        return withMatch(Match.lessThanOrEqual(value));
     }
 
     @Override
     public ValueMatch<T> greaterThan(final V value) {
-        return withPredicate(new GreaterThan<>(relativePath(), value));
+        return withMatch(Match.greaterThan(value));
     }
 
     @Override
     public ValueMatch<T> greaterThanOrEqual(final V value) {
-        return withPredicate(new GreaterThanOrEqual<>(relativePath(), value));
+        return withMatch(Match.greaterThanOrEqual(value));
     }
 }
