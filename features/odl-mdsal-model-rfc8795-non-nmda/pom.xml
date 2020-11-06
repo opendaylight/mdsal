@@ -16,8 +16,7 @@
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
-    <artifactId>odl-mdsal-model-rfc8795</artifactId>
-    <version>7.0.2-SNAPSHOT</version>
+    <artifactId>odl-mdsal-model-rfc8795-non-nmda</artifactId>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Model :: RFC8795 :: NON-NMDA</name>
     <description>Non-NMDA models from RFC8795</description>
@@ -26,6 +25,12 @@
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>odl-mdsal-model-rfc8795</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-model-rfc8345-non-nmda</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
