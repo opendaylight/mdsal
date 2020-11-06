@@ -97,6 +97,7 @@
         <module>odl-mdsal-model-rfc8542</module>
         <module>odl-mdsal-model-rfc8776</module>
         <module>odl-mdsal-model-rfc8795</module>
+        <module>odl-mdsal-model-rfc8795-non-nmda</module>
 
         <!-- IETF drafts -->
         <module>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</module>
