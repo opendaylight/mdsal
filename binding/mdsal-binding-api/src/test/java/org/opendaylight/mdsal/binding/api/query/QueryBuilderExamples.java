@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.mdsal.query.norev.third.grp.AffectedUsers;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
+@SuppressWarnings("exports")
 public class QueryBuilderExamples {
     @Mock
     private QueryFactory factory;
