@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.yang.unified.doc.generator
 
-import static com.google.common.base.Preconditions.checkState;
-
 import java.io.BufferedWriter
 import java.io.File
 import java.io.IOException
@@ -50,21 +48,10 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition
 import org.opendaylight.yangtools.yang.model.api.UsesNode
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute
-import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.DecimalTypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.Int8TypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.Int16TypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.Int32TypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.Int64TypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint
 import org.opendaylight.yangtools.yang.model.api.type.LengthRestrictedTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint
 import org.opendaylight.yangtools.yang.model.api.type.RangeRestrictedTypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.Uint8TypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.Uint16TypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.Uint32TypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.Uint64TypeDefinition
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.sonatype.plexus.build.incremental.BuildContext
@@ -777,7 +764,7 @@ class GeneratorImpl {
         «module.childNodes.treeSet(YangInstanceIdentifier.builder.build())»
     '''
 
-    private def CharSequence tree(ChoiceSchemaNode node,YangInstanceIdentifier path) '''
+    private def CharSequence tree(ChoiceSchemaNode node, YangInstanceIdentifier path) '''
         «node.nodeName» (choice)
         «casesTree(node.cases, path)»
     '''
@@ -793,20 +780,18 @@ class GeneratorImpl {
         </ul>
     '''
 
-    private def CharSequence tree(DataSchemaNode node,YangInstanceIdentifier path) {
+    private def CharSequence tree(DataSchemaNode node, YangInstanceIdentifier path) {
         if (node instanceof ChoiceSchemaNode) {
-            return tree(node as ChoiceSchemaNode, path)
-        }
-        if (node instanceof ListSchemaNode) {
-            return tree(node as ListSchemaNode, path)
-        }
-        if (node instanceof ContainerSchemaNode) {
-            return tree(node as ContainerSchemaNode, path)
+            return tree(node, path)
+        } else if (node instanceof ListSchemaNode) {
+            return tree(node, path)
+        } else if (node instanceof ContainerSchemaNode) {
+            return tree(node, path)
         }
         return node.nodeName
     }
 
-    private def CharSequence tree(ListSchemaNode node,YangInstanceIdentifier path) '''
+    private def CharSequence tree(ListSchemaNode node, YangInstanceIdentifier path) '''
         «val newPath = path.append(node)»
         «localLink(newPath,node.nodeName)»
         «node.childNodes.treeSet(newPath)»
@@ -1443,7 +1428,7 @@ class GeneratorImpl {
 
     private def addedByInfo(SchemaNode node) {
         if (node instanceof DataSchemaNode) {
-            return addedByInfo(node as DataSchemaNode)
+            return addedByInfo(node)
         }
         return ""
     }
@@ -1454,18 +1439,16 @@ class GeneratorImpl {
 
     private def isAddedBy(SchemaNode node) {
         if (node instanceof DataSchemaNode) {
-            val dataSchemaNode = node as DataSchemaNode
-            return dataSchemaNode.augmenting || dataSchemaNode.addedByUses
+            return node.augmenting || node.addedByUses
         }
         return false
     }
 
     private def nodeName(SchemaNode node) {
         if (node instanceof ContainerSchemaNode) {
-            return nodeName(node as ContainerSchemaNode);
-        }
-        if (node instanceof ListSchemaNode) {
-            return nodeName(node as ListSchemaNode);
+            return nodeName(node);
+        } else if (node instanceof ListSchemaNode) {
+            return nodeName(node);
         }
         val addedByInfo = node.addedByInfo
         if (node.isAddedBy) {
