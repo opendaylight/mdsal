@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ForwardingDOMRpcServiceTest extends ForwardingDOMRpcService {
     @Mock(name = "domRpcService")
-    private DOMRpcService domRpcService;
+    public DOMRpcService domRpcService;
 
     @Test
     public void basicTest() throws Exception {

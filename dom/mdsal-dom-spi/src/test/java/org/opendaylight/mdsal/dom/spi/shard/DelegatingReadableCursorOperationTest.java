@@ -11,40 +11,43 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
 import org.junit.After;
 import org.junit.Test;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshotCursor;
 
-public class DelegatingReadableCursorOperationTest extends DelegatingReadableCursorOperation {
-
-    private static final DataTreeSnapshotCursor MOCK_CURSOR_SNAPSHOT = mock(DataTreeSnapshotCursor.class);
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
+public class DelegatingReadableCursorOperationTest {
+    @Mock
+    public DataTreeSnapshotCursor mockCursorSnapshot;
 
     @Test
     public void basicTest() throws Exception {
-        final Optional<NormalizedNode<?, ?>> nodeOptional = Optional.empty();
-        doReturn(nodeOptional).when(MOCK_CURSOR_SNAPSHOT).readNode(TestUtils.PATH_ARGUMENT);
-        doNothing().when(MOCK_CURSOR_SNAPSHOT).exit();
-        doNothing().when(MOCK_CURSOR_SNAPSHOT).enter(TestUtils.PATH_ARGUMENT);
+        doReturn(Optional.empty()).when(mockCursorSnapshot).readNode(TestUtils.PATH_ARGUMENT);
+        doNothing().when(mockCursorSnapshot).exit();
+        doNothing().when(mockCursorSnapshot).enter(TestUtils.PATH_ARGUMENT);
         doReturn("test").when(TestUtils.PATH_ARGUMENT).toString();
 
-        assertFalse(readNode(TestUtils.PATH_ARGUMENT).isPresent());
-        verify(MOCK_CURSOR_SNAPSHOT).readNode(TestUtils.PATH_ARGUMENT);
+        final var op = new DelegatingReadableCursorOperation() {
+            @Override
+            protected DataTreeSnapshotCursor delegate() {
+                return mockCursorSnapshot;
+            }
+        };
 
-        exit();
-        verify(MOCK_CURSOR_SNAPSHOT).exit();
+        assertFalse(op.readNode(TestUtils.PATH_ARGUMENT).isPresent());
+        verify(mockCursorSnapshot).readNode(TestUtils.PATH_ARGUMENT);
 
-        assertEquals(this, enter(TestUtils.PATH_ARGUMENT));
-        verify(MOCK_CURSOR_SNAPSHOT).enter(TestUtils.PATH_ARGUMENT);
-    }
+        op.exit();
+        verify(mockCursorSnapshot).exit();
 
-    @Override
-    protected DataTreeSnapshotCursor delegate() {
-        return MOCK_CURSOR_SNAPSHOT;
+        assertEquals(op, op.enter(TestUtils.PATH_ARGUMENT));
+        verify(mockCursorSnapshot).enter(TestUtils.PATH_ARGUMENT);
     }
 
     @After

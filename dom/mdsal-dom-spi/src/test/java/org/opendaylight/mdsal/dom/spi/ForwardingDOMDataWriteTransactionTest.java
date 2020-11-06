@@ -10,21 +10,20 @@ package org.opendaylight.mdsal.dom.spi;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ForwardingDOMDataWriteTransactionTest extends ForwardingDOMDataWriteTransaction {
-
     @Mock(name = "domDataTreeWriteTransaction")
-    private DOMDataTreeWriteTransaction domDataTreeWriteTransaction;
+    public DOMDataTreeWriteTransaction domDataTreeWriteTransaction;
 
     @Test
     public void basicTest() throws Exception {
-        initMocks(this);
-
         doReturn(null).when(domDataTreeWriteTransaction).getIdentifier();
         this.getIdentifier();
         verify(domDataTreeWriteTransaction).getIdentifier();

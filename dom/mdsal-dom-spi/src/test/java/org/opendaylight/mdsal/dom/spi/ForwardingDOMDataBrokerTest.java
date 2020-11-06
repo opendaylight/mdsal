@@ -10,24 +10,22 @@ package org.opendaylight.mdsal.dom.spi;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ForwardingDOMDataBrokerTest extends ForwardingDOMDataBroker {
-
     @Mock(name = "domDataBroker")
-    private DOMDataBroker domDataBroker;
+    public DOMDataBroker domDataBroker;
 
     @Test
     public void basicTest() throws Exception {
-        initMocks(this);
-
-        Mockito.doReturn(null).when(domDataBroker).createTransactionChain(any());
+        doReturn(null).when(domDataBroker).createTransactionChain(any());
         this.createTransactionChain(null);
         verify(domDataBroker).createTransactionChain(any());
 

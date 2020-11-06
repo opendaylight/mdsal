@@ -9,21 +9,20 @@ package org.opendaylight.mdsal.dom.spi;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ForwardingDOMRpcResultTest extends ForwardingDOMRpcResult {
-
     @Mock(name = "domRpcResult")
-    private DOMRpcResult domRpcResult;
+    public DOMRpcResult domRpcResult;
 
     @Test
     public void basicTest() throws Exception {
-        initMocks(this);
-
         doReturn(null).when(domRpcResult).getErrors();
         this.getErrors();
         verify(domRpcResult).getErrors();

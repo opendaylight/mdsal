@@ -10,21 +10,20 @@ package org.opendaylight.mdsal.dom.spi;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ForwardingDOMTransactionChainTest extends ForwardingDOMTransactionChain {
-
     @Mock(name = "domTransactionChain")
-    private DOMTransactionChain domTransactionChain;
+    public DOMTransactionChain domTransactionChain;
 
     @Test
     public void basicTest() throws Exception {
-        initMocks(this);
-
         doReturn(null).when(domTransactionChain).newWriteOnlyTransaction();
         this.newWriteOnlyTransaction();
         verify(domTransactionChain).newWriteOnlyTransaction();

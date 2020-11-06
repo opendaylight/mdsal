@@ -9,25 +9,25 @@ package org.opendaylight.mdsal.dom.spi;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AbstractDOMRpcProviderServiceTest extends AbstractDOMRpcProviderService {
-
     @Mock(name = "domRpcImplementationRegistration")
-    private DOMRpcImplementationRegistration domRpcImplementationRegistration;
+    public DOMRpcImplementationRegistration<?> domRpcImplementationRegistration;
 
     @Test
     public void registerRpcImplementation() throws Exception {
-        initMocks(this);
         assertEquals(domRpcImplementationRegistration, this.registerRpcImplementation(
             mock(DOMRpcImplementation.class)));
     }
@@ -35,11 +35,11 @@ public class AbstractDOMRpcProviderServiceTest extends AbstractDOMRpcProviderSer
     @Override
     public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
             final T implementation, final Set<DOMRpcIdentifier> rpcs) {
-        return domRpcImplementationRegistration;
+        return (DOMRpcImplementationRegistration<T>) domRpcImplementationRegistration;
     }
 
     @Override
-    public Registration registerRpcImplementations(Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
+    public Registration registerRpcImplementations(final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
         throw new UnsupportedOperationException();
     }
 }
