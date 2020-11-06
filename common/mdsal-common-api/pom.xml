@@ -43,20 +43,6 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Automatic-Module-Name>org.opendaylight.mdsal.common.api</Automatic-Module-Name>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <scm>
         <connection>scm:git:http://git.opendaylight.org/gerrit/mdsal.git</connection>
         <developerConnection>scm:git:ssh://git.opendaylight.org:29418/mdsal.git</developerConnection>
