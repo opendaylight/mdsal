@@ -7,68 +7,64 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
 
-import com.google.common.base.MoreObjects;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 
-public class AbstractSnapshotBackedTransactionChainTest extends AbstractSnapshotBackedTransactionChain<Object> {
-
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
+public class AbstractSnapshotBackedTransactionChainTest {
     @Mock
-    private static DataTreeSnapshot dataTreeSnapshot;
-
+    public DataTreeSnapshot dataTreeSnapshot;
     @Mock
-    private static DOMStoreThreePhaseCommitCohort domStoreThreePhaseCommitCohort;
+    public DOMStoreThreePhaseCommitCohort domStoreThreePhaseCommitCohort;
+    @Mock
+    public DataTreeModification dataTreeModification;
+    @Mock
+    public SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
 
     @Test
     public void basicTest() throws Exception {
-        initMocks(this);
-        SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction =
-                mock(SnapshotBackedWriteTransaction.class);
-        DataTreeModification dataTreeModification = mock(DataTreeModification.class);
         doReturn(dataTreeModification).when(dataTreeSnapshot).newModification();
-        doReturn(MoreObjects.toStringHelper(this)).when(snapshotBackedWriteTransaction).addToStringAttributes(any());
 
-        this.newReadOnlyTransaction().close();
-        this.newWriteOnlyTransaction().close();
-        this.newReadWriteTransaction().close();
+        final var chain = new AbstractSnapshotBackedTransactionChain<>() {
+            @Override
+            protected Object nextTransactionIdentifier() {
+                return new Object();
+            }
 
-        this.transactionReady(snapshotBackedWriteTransaction, dataTreeModification, null);
+            @Override
+            protected boolean getDebugTransactions() {
+                return false;
+            }
 
+            @Override
+            protected DataTreeSnapshot takeSnapshot() {
+                return dataTreeSnapshot;
+            }
 
-        this.transactionAborted(snapshotBackedWriteTransaction);
-        this.close();
+            @Override
+            protected DOMStoreThreePhaseCommitCohort createCohort(
+                    final SnapshotBackedWriteTransaction<Object> transaction, final DataTreeModification modification,
+                    final Exception operationError) {
+                return domStoreThreePhaseCommitCohort;
+            }
+        };
 
-        this.onTransactionCommited(snapshotBackedWriteTransaction);
-        this.onTransactionFailed(snapshotBackedWriteTransaction, null);
+        chain.newReadOnlyTransaction().close();
+        chain.newWriteOnlyTransaction().close();
+        chain.newReadWriteTransaction().close();
 
-    }
+        chain.transactionReady(snapshotBackedWriteTransaction, dataTreeModification, null);
 
-    @Override
-    protected Object nextTransactionIdentifier() {
-        return new Object();
-    }
+        chain.transactionAborted(snapshotBackedWriteTransaction);
+        chain.close();
 
-    @Override
-    protected boolean getDebugTransactions() {
-        return false;
-    }
-
-    @Override
-    protected DataTreeSnapshot takeSnapshot() {
-        return dataTreeSnapshot;
-    }
-
-    @Override
-    protected DOMStoreThreePhaseCommitCohort createCohort(final SnapshotBackedWriteTransaction<Object> transaction,
-                                                          final DataTreeModification modification,
-                                                          final Exception operationError) {
-        return domStoreThreePhaseCommitCohort;
+        chain.onTransactionCommited(snapshotBackedWriteTransaction);
+        chain.onTransactionFailed(snapshotBackedWriteTransaction, null);
     }
 }

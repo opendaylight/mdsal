@@ -9,20 +9,19 @@ package org.opendaylight.mdsal.dom.spi.store;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ForwardingDOMStoreThreePhaseCommitCohortTest extends ForwardingDOMStoreThreePhaseCommitCohort {
-
     @Mock(name = "domStoreThreePhaseCommitCohort")
-    private DOMStoreThreePhaseCommitCohort domStoreThreePhaseCommitCohort;
+    public DOMStoreThreePhaseCommitCohort domStoreThreePhaseCommitCohort;
 
     @Test
     public void basicTest() throws Exception {
-        initMocks(this);
-
         doReturn(null).when(domStoreThreePhaseCommitCohort).canCommit();
         this.canCommit();
         verify(domStoreThreePhaseCommitCohort).canCommit();

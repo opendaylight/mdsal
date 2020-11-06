@@ -10,21 +10,20 @@ package org.opendaylight.mdsal.dom.spi;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ForwardingDOMDataReadOnlyTransactionTest extends ForwardingDOMDataReadOnlyTransaction {
-
     @Mock(name = "domDataTreeReadTransaction")
-    private DOMDataTreeReadTransaction domDataTreeReadTransaction;
+    public DOMDataTreeReadTransaction domDataTreeReadTransaction;
 
     @Test
     public void basicTest() throws Exception {
-        initMocks(this);
-
         doReturn(null).when(domDataTreeReadTransaction).read(null, null);
         this.read(null, null);
         verify(domDataTreeReadTransaction).read(null, null);

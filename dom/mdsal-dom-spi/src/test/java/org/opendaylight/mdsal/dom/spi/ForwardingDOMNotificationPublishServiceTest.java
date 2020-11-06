@@ -10,23 +10,22 @@ package org.opendaylight.mdsal.dom.spi;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ForwardingDOMNotificationPublishServiceTest extends ForwardingDOMNotificationPublishService {
-
     @Mock(name = "domNotificationPublishService")
-    private DOMNotificationPublishService domNotificationPublishService;
+    public DOMNotificationPublishService domNotificationPublishService;
 
     @Test
     public void basicTest() throws Exception {
-        initMocks(this);
-
         final DOMNotification domNotification = mock(DOMNotification.class);
 
         doReturn(null).when(domNotificationPublishService).putNotification(domNotification);
