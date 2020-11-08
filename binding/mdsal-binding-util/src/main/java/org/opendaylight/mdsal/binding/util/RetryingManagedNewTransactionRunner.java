@@ -39,9 +39,9 @@ import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
  * @author Michael Vorburger.ch &amp; Stephen Kitt
  */
 @Beta
-// Do *NOT* mark this as @Singleton, because users choose Impl; and as long as this in API, because of https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines#Nota_Bene
+// Do *NOT* mark this as @Singleton, because users choose Impl; and as long as this in API, because of
+// https://wiki-archive.opendaylight.org/view/BestPractices/DI_Guidelines#Nota_Bene
 public class RetryingManagedNewTransactionRunner extends RetryingManagedNewTransactionRunnerImpl {
-
     /**
      * Constructor.
      * Please see the class level documentation above for more details about the threading model used.
@@ -51,7 +51,7 @@ public class RetryingManagedNewTransactionRunner extends RetryingManagedNewTrans
      * @throws NullPointerException if {@code dataBroker} is {@code null}.
      */
     @Inject
-    public RetryingManagedNewTransactionRunner(DataBroker dataBroker) {
+    public RetryingManagedNewTransactionRunner(final DataBroker dataBroker) {
         super(new ManagedNewTransactionRunnerImpl(dataBroker));
     }
 
@@ -62,7 +62,7 @@ public class RetryingManagedNewTransactionRunner extends RetryingManagedNewTrans
      * @param dataBroker the {@link DataBroker} from which transactions are obtained
      * @param maxRetries the maximum number of retry attempts
      */
-    public RetryingManagedNewTransactionRunner(DataBroker dataBroker, int maxRetries) {
+    public RetryingManagedNewTransactionRunner(final DataBroker dataBroker, final int maxRetries) {
         super(new ManagedNewTransactionRunnerImpl(dataBroker), maxRetries);
     }
 
@@ -74,7 +74,8 @@ public class RetryingManagedNewTransactionRunner extends RetryingManagedNewTrans
      * @param executor the {@link Executor} to asynchronously run any retry attempts in
      * @param maxRetries the maximum number of retry attempts
      */
-    public RetryingManagedNewTransactionRunner(DataBroker dataBroker, Executor executor, int maxRetries) {
+    public RetryingManagedNewTransactionRunner(final DataBroker dataBroker, final Executor executor,
+            final int maxRetries) {
         super(new ManagedNewTransactionRunnerImpl(dataBroker), executor, maxRetries);
     }
 }
