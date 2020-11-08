@@ -29,7 +29,7 @@
             <artifactId>mdsal-binding-spi</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.inject</groupId>
+            <groupId>com.guicedee.services</groupId>
             <artifactId>javax.inject</artifactId>
             <optional>true</optional>
         </dependency>
@@ -43,20 +43,6 @@
             <artifactId>mdsal-binding-test-utils</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Automatic-Module-Name>org.opendaylight.mdsal.binding.util</Automatic-Module-Name>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <scm>
         <connection>scm:git:http://git.opendaylight.org/gerrit/controller.git</connection>
