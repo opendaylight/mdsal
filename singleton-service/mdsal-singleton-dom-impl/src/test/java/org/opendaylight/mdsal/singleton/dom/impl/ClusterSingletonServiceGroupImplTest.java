@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.singleton.dom.impl;
 
 import static org.junit.Assert.assertFalse;
@@ -24,8 +23,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
@@ -41,31 +41,32 @@ import org.opendaylight.mdsal.singleton.dom.impl.util.TestInstanceIdentifier;
 /**
  * Testing {@link ClusterSingletonServiceGroupImpl}.
  */
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ClusterSingletonServiceGroupImplTest {
-    private static final String SERVICE_IDENTIFIER = "TestServiceIdent";
-    private static final ServiceGroupIdentifier SERVICE_GROUP_IDENT = ServiceGroupIdentifier.create(SERVICE_IDENTIFIER);
+    public static final String SERVICE_IDENTIFIER = "TestServiceIdent";
+    public static final ServiceGroupIdentifier SERVICE_GROUP_IDENT = ServiceGroupIdentifier.create(SERVICE_IDENTIFIER);
 
-    private static final TestEntity MAIN_ENTITY = new TestEntity(SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
-    private static final TestEntity CLOSE_ENTITY = new TestEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
+    public static final TestEntity MAIN_ENTITY = new TestEntity(SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
+    public static final TestEntity CLOSE_ENTITY = new TestEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
 
     @Mock
-    private ClusterSingletonService mockClusterSingletonService;
+    public ClusterSingletonService mockClusterSingletonService;
     @Mock
-    private ClusterSingletonService mockClusterSingletonServiceSecond;
+    public ClusterSingletonService mockClusterSingletonServiceSecond;
     @Mock
-    private GenericEntityOwnershipCandidateRegistration<?, ?> mockEntityCandReg;
+    public GenericEntityOwnershipCandidateRegistration<?, ?> mockEntityCandReg;
     @Mock
-    private GenericEntityOwnershipCandidateRegistration<?, ?> mockCloseEntityCandReg;
+    public GenericEntityOwnershipCandidateRegistration<?, ?> mockCloseEntityCandReg;
     @Mock
-    private GenericEntityOwnershipListener<TestInstanceIdentifier,
+    public GenericEntityOwnershipListener<TestInstanceIdentifier,
         GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>> mockEosListener;
 
     @Mock
-    private GenericEntityOwnershipService<TestInstanceIdentifier,TestEntity,
+    public GenericEntityOwnershipService<TestInstanceIdentifier,TestEntity,
         GenericEntityOwnershipListener<TestInstanceIdentifier,
             GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>>> mockEosService;
 
-    private ClusterSingletonServiceGroupImpl<TestInstanceIdentifier,TestEntity,
+    public ClusterSingletonServiceGroupImpl<TestInstanceIdentifier,TestEntity,
         GenericEntityOwnershipChange<TestInstanceIdentifier,TestEntity>,
             GenericEntityOwnershipListener<TestInstanceIdentifier,
                 GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>>,
@@ -73,8 +74,8 @@ public class ClusterSingletonServiceGroupImplTest {
                         GenericEntityOwnershipListener<TestInstanceIdentifier,
                             GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>>>> singletonServiceGroup;
 
-    private ClusterSingletonServiceRegistration firstReg;
-    private ClusterSingletonServiceRegistration secondReg;
+    public ClusterSingletonServiceRegistration firstReg;
+    public ClusterSingletonServiceRegistration secondReg;
 
     /**
      * Initialization functionality for every Tests in this suite.
@@ -83,8 +84,6 @@ public class ClusterSingletonServiceGroupImplTest {
      */
     @Before
     public void setup() throws CandidateAlreadyRegisteredException {
-        MockitoAnnotations.initMocks(this);
-
         doReturn(mockEntityCandReg).when(mockEosService).registerCandidate(MAIN_ENTITY);
         doReturn(mockCloseEntityCandReg).when(mockEosService).registerCandidate(CLOSE_ENTITY);
         doNothing().when(mockEntityCandReg).close();

@@ -20,17 +20,20 @@ import java.util.TimerTask;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 
 /*
  * Testing {@link DOMClusterSingletonServiceProviderImpl} implementation
  */
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class DOMClusterSingletonServiceProviderAsyncImplTest extends AbstractDOMClusterServiceProviderTest {
     /*
      * Test implementation of {@link ClusterSingletonService}
      */
-    static class TestClusterSingletonAsyncServiceInstance extends TestClusterSingletonService {
+    public static class TestClusterSingletonAsyncServiceInstance extends TestClusterSingletonService {
         @Override
         public ListenableFuture<Void> closeServiceInstance() {
             super.closeServiceInstance();
@@ -46,8 +49,8 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest extends Abstr
         }
     }
 
-    protected static final long ASYNC_TIME_DELAY_MILLIS = 100L;
-    protected static Timer TIMER;
+    public static final long ASYNC_TIME_DELAY_MILLIS = 100L;
+    public static Timer TIMER;
 
     @BeforeClass
     public static void asyncInitTest() {

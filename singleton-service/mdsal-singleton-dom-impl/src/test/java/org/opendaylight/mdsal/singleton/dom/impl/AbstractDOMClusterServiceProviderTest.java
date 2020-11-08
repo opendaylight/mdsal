@@ -25,7 +25,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
@@ -85,29 +84,27 @@ public abstract class AbstractDOMClusterServiceProviderTest {
         }
     }
 
-    static final String SERVICE_NAME = "testServiceName";
-    static final DOMEntity ENTITY = new DOMEntity(SERVICE_ENTITY_TYPE, SERVICE_NAME);
-    static final DOMEntity DOUBLE_ENTITY = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_NAME);
+    public static final String SERVICE_NAME = "testServiceName";
+    public static final DOMEntity ENTITY = new DOMEntity(SERVICE_ENTITY_TYPE, SERVICE_NAME);
+    public static final DOMEntity DOUBLE_ENTITY = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_NAME);
 
     @Mock
-    protected DOMEntityOwnershipService mockEos;
+    public DOMEntityOwnershipService mockEos;
     @Mock
-    protected DOMEntityOwnershipCandidateRegistration mockEntityCandReg;
+    public DOMEntityOwnershipCandidateRegistration mockEntityCandReg;
     @Mock
-    protected DOMEntityOwnershipCandidateRegistration mockDoubleEntityCandReg;
+    public DOMEntityOwnershipCandidateRegistration mockDoubleEntityCandReg;
     @Mock
-    protected DOMEntityOwnershipListenerRegistration mockEosEntityListReg;
+    public DOMEntityOwnershipListenerRegistration mockEosEntityListReg;
     @Mock
-    protected DOMEntityOwnershipListenerRegistration mockEosDoubleEntityListReg;
+    public DOMEntityOwnershipListenerRegistration mockEosDoubleEntityListReg;
 
-    protected DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
-    protected TestClusterSingletonService clusterSingletonService;
-    protected TestClusterSingletonService clusterSingletonService2;
+    public DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
+    public TestClusterSingletonService clusterSingletonService;
+    public TestClusterSingletonService clusterSingletonService2;
 
     @Before
     public void setup() throws CandidateAlreadyRegisteredException {
-        MockitoAnnotations.initMocks(this);
-
         doNothing().when(mockEosEntityListReg).close();
         doNothing().when(mockEosDoubleEntityListReg).close();
         doNothing().when(mockEntityCandReg).close();
