@@ -16,13 +16,14 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
@@ -33,6 +34,7 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class SimpleDOMEntityOwnershipServiceTest {
     private static final String FOO_TYPE = "foo";
     private static final String BAR_TYPE = "bar";
@@ -88,9 +90,7 @@ public class SimpleDOMEntityOwnershipServiceTest {
 
         // Mismatched type, not triggered
         final DOMEntityOwnershipListener barListener = mock(DOMEntityOwnershipListener.class);
-        doNothing().when(barListener).ownershipChanged(any(DOMEntityOwnershipChange.class));
         final DOMEntityOwnershipListenerRegistration barReg = service.registerListener(BAR_TYPE, barListener);
-        verifyZeroInteractions(barListener);
 
         // Matching type should be triggered
         final DOMEntityOwnershipListener fooListener = mock(DOMEntityOwnershipListener.class);
@@ -107,7 +107,6 @@ public class SimpleDOMEntityOwnershipServiceTest {
         reset(fooListener);
         doNothing().when(fooListener).ownershipChanged(any(DOMEntityOwnershipChange.class));
         entityReg.close();
-        verifyZeroInteractions(barListener);
         verify(fooListener).ownershipChanged(fooCaptor.capture());
         fooChange = fooCaptor.getValue();
         assertEquals(FOO_FOO_ENTITY, fooChange.getEntity());
