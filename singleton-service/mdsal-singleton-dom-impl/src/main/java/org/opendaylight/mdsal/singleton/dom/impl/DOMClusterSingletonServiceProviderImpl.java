@@ -7,22 +7,22 @@
  */
 package org.opendaylight.mdsal.singleton.dom.impl;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
+import java.util.ServiceLoader;
+import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
+import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 
 /**
  * Binding version of {@link AbstractClusterSingletonServiceProviderImpl}.
  */
-@Singleton
-public final class DOMClusterSingletonServiceProviderImpl extends
+@MetaInfServices(value = ClusterSingletonServiceProvider.class)
+public class DOMClusterSingletonServiceProviderImpl extends
         AbstractClusterSingletonServiceProviderImpl<YangInstanceIdentifier, DOMEntity,
                                                     DOMEntityOwnershipChange,
                                                     DOMEntityOwnershipListener,
@@ -30,13 +30,12 @@ public final class DOMClusterSingletonServiceProviderImpl extends
                                                     DOMEntityOwnershipListenerRegistration>
         implements DOMEntityOwnershipListener {
 
-    /**
-     * Initialization all needed class internal property for {@link DOMClusterSingletonServiceProviderImpl}.
-     *
-     * @param entityOwnershipService - we need only {@link GenericEntityOwnershipService}
-     */
-    @Inject
-    public DOMClusterSingletonServiceProviderImpl(final DOMEntityOwnershipService entityOwnershipService) {
+    public DOMClusterSingletonServiceProviderImpl() {
+        this(ServiceLoader.load(DOMEntityOwnershipService.class).findFirst().orElseThrow(
+            () -> new IllegalStateException("Could not find DOMEntityOwnershipService")));
+    }
+
+    protected DOMClusterSingletonServiceProviderImpl(final DOMEntityOwnershipService entityOwnershipService) {
         super(entityOwnershipService);
     }
 

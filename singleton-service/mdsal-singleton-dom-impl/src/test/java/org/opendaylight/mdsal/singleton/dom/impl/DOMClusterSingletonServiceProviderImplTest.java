@@ -17,6 +17,8 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
@@ -24,6 +26,7 @@ import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegist
 /**
  * Synchronous test suite.
  */
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClusterServiceProviderTest {
     /**
      * Initialization functionality for every Tests in this suite.
