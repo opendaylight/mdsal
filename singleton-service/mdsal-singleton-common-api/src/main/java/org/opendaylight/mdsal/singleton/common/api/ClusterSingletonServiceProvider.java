@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.singleton.common.api;
 
 /**
@@ -20,7 +19,6 @@ package org.opendaylight.mdsal.singleton.common.api;
  * a service group candidate must hold ownership of both these entities.
  */
 public interface ClusterSingletonServiceProvider extends AutoCloseable {
-
     /**
      * Method registers {@link ClusterSingletonService} to Provider.
      * Method returns {@link java.lang.RuntimeException} for unexpected state, so be careful with implementation.
@@ -35,5 +33,4 @@ public interface ClusterSingletonServiceProvider extends AutoCloseable {
      * @return {@link AutoCloseable} registration
      */
     ClusterSingletonServiceRegistration registerClusterSingletonService(ClusterSingletonService service);
-
 }

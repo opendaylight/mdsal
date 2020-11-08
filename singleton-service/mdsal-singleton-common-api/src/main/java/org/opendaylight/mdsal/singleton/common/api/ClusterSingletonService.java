@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.singleton.common.api;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -33,5 +32,4 @@ public interface ClusterSingletonService extends Identifiable<ServiceGroupIdenti
      * @return a ListenableFuture that is completed when the underlying instance close operation is complete.
      */
     ListenableFuture<? extends Object> closeServiceInstance();
-
 }
