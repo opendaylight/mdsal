@@ -33,7 +33,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.eos.dom.simple.SimpleDOMEntityOwnershipService;
-import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
+import org.opendaylight.mdsal.singleton.dom.impl.di.DefaultClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.Entity;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.EntityBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.EntityKey;
@@ -59,12 +59,12 @@ public class IntegrationTest extends AbstractDataBrokerTest {
     private static final QName ENTITY_NAME_QNAME = QName.create(ENTITY_QNAME, "name");
 
     private AbstractBootstrapSupport support;
-    private DOMClusterSingletonServiceProviderImpl css;
+    private DefaultClusterSingletonServiceProvider css;
 
     @Before
     public void before() {
         support = AbstractBootstrapSupport.create();
-        css = new DOMClusterSingletonServiceProviderImpl(new SimpleDOMEntityOwnershipService());
+        css = new DefaultClusterSingletonServiceProvider(new SimpleDOMEntityOwnershipService());
         css.initializeProvider();
     }
 
