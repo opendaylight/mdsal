@@ -43,16 +43,15 @@
         <dependency>
             <groupId>org.kohsuke.metainf-services</groupId>
             <artifactId>metainf-services</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>javax.inject</groupId>
+            <groupId>com.guicedee.services</groupId>
             <artifactId>javax.inject</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>osgi.cmpn</artifactId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
         </dependency>
     </dependencies>
 
