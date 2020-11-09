@@ -21,6 +21,7 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
 @Beta
 public final class BaseYangTypesProvider implements TypeProvider {
+    // FIXME: 8.0.0: we want to expose this as a proper singleton I guess
     public static final @NonNull BaseYangTypesProvider INSTANCE = new BaseYangTypesProvider();
 
     private BaseYangTypesProvider() {
