@@ -25,8 +25,8 @@ public class GenTypesSubSetTest {
     @Test
     public void genTypesFromSubsetOfTwoModulesTest() {
         final EffectiveModelContext context = YangParserTestUtils.parseYangResources(GenTypesSubSetTest.class,
-                "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf/ietf-interfaces.yang",
-                "/ietf/ietf-inet-types.yang", "/ietf/ietf-yang-types.yang");
+                "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf-models/ietf-interfaces.yang",
+                "/ietf-models/ietf-inet-types.yang", "/ietf-models/ietf-yang-types.yang");
         final Set<Module> toGenModules = new HashSet<>();
         for (final Module module : context.getModules()) {
             if (module.getName().equals("abstract-topology")) {
@@ -48,8 +48,9 @@ public class GenTypesSubSetTest {
     @Test
     public void genTypesFromSubsetOfThreeModulesTest() {
         final EffectiveModelContext context = YangParserTestUtils.parseYangResources(GenTypesSubSetTest.class,
-                "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf/ietf-interfaces.yang",
-                "/ietf/ietf-inet-types.yang", "/ietf/ietf-yang-types.yang", "/ietf/iana-if-type.yang");
+                "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf-models/ietf-interfaces.yang",
+                "/ietf-models/ietf-inet-types.yang", "/ietf-models/ietf-yang-types.yang",
+                "/ietf-models/iana-if-type.yang");
         assertNotNull("Schema Context is null", context);
 
         final Set<Module> toGenModules = new HashSet<>();

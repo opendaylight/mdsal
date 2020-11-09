@@ -21,7 +21,7 @@ public class ControllerTest {
         final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
             ControllerTest.class,
             "/controller-models/controller-network.yang", "/controller-models/controller-openflow.yang",
-            "/ietf/ietf-inet-types.yang"));
+            "/ietf-models/ietf-inet-types.yang"));
 
         assertNotNull(genTypes);
         assertTrue(!genTypes.isEmpty());

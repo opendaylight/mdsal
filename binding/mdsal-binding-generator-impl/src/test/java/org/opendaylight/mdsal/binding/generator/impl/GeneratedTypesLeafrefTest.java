@@ -29,8 +29,8 @@ public class GeneratedTypesLeafrefTest {
     @Test
     public void testLeafrefResolving() {
         final EffectiveModelContext context = YangParserTestUtils.parseYangResources(GeneratedTypesLeafrefTest.class,
-            "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf/ietf-interfaces.yang",
-            "/ietf/ietf-inet-types.yang", "/ietf/ietf-yang-types.yang");
+            "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf-models/ietf-interfaces.yang",
+            "/ietf-models/ietf-inet-types.yang", "/ietf-models/ietf-yang-types.yang");
         assertEquals(4, context.getModules().size());
 
         final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);

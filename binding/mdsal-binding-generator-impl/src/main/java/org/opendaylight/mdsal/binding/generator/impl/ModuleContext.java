@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility class for building up Binding mapping information. This class is NOT thread-safe.
  */
+// FIXME: 8.0.0: hide this class
 public final class ModuleContext implements Mutable {
     private static final Logger LOG = LoggerFactory.getLogger(ModuleContext.class);
 

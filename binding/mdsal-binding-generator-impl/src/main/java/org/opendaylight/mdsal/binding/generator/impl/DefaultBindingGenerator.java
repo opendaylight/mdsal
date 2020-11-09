@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.kohsuke.MetaInfServices;
@@ -33,6 +34,11 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 @Singleton
 // Note: not exposed in OSGi on purpose, as this should only be needed at compile-time
 public final class DefaultBindingGenerator implements BindingGenerator {
+    @Inject
+    public DefaultBindingGenerator() {
+        // Exposed for DI
+    }
+
     @Override
     public List<Type> generateTypes(final EffectiveModelContext context, final Collection<? extends Module> modules) {
         return generateFor(context, modules);

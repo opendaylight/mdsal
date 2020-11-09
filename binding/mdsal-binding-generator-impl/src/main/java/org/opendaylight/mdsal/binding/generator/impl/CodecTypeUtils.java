@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
 
+// FIXME: 8.0.0: hide this class
 public final class CodecTypeUtils {
     private CodecTypeUtils() {
         throw new UnsupportedOperationException("Utility class should not be instantiated");

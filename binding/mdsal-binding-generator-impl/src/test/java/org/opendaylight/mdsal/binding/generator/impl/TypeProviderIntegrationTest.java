@@ -35,7 +35,7 @@ public class TypeProviderIntegrationTest {
     @BeforeClass
     public static void setup() {
         CONTEXT = YangParserTestUtils.parseYangResources(TypeProviderIntegrationTest.class, "/type-provider/test.yang",
-            "/ietf/ietf-inet-types.yang");
+            "/ietf-models/ietf-inet-types.yang");
         assertNotNull(CONTEXT);
     }
 

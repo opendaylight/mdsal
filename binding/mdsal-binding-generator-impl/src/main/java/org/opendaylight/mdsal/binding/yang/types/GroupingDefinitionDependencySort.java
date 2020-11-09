@@ -28,6 +28,7 @@ import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
 
+// FIXME: 8.0.0: this should be final
 public class GroupingDefinitionDependencySort {
     /**
      * Sorts set {@code groupingDefinitions} according to the mutual dependencies.<br>
