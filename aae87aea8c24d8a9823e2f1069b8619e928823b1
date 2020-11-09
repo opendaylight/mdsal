@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b352610b_92ff948d",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderImplTemplate.xtend",
+        "patchSetId": 60
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-11-09T13:46:48Z",
+      "side": 1,
+      "message": "\"why does not java-api-generator need to see specifiedGetters?\"\nAlso here",
+      "revId": "aae87aea8c24d8a9823e2f1069b8619e928823b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4592e07f_0f64a49d",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 60
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-11-09T13:46:48Z",
+      "side": 1,
+      "message": "and here, if we gather getters from all GeneratedType.implements we will have two getters for every specified property(one with Object or List\u003c?\u003e, another with specified retrun type). we should remember what property setters is already printed. we can do it in two ways using specifiedGetters or remember all already printed fields instantiations.",
+      "range": {
+        "startLine": 158,
+        "startChar": 75,
+        "endLine": 158,
+        "endChar": 116
+      },
+      "revId": "aae87aea8c24d8a9823e2f1069b8619e928823b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4df08ae3_7eea9d8e",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 60
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-11-09T13:46:48Z",
+      "side": 1,
+      "message": "\"why does not java-api-generator need to see specifiedGetters?\"\n\nWe use it right here, and I assume we don\u0027t want to divide type resolution with identifying specified properties: https://git.opendaylight.org/gerrit/c/mdsal/+/88401/60/binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java#1537 https://git.opendaylight.org/gerrit/c/mdsal/+/88401/60/binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java#1783",
+      "range": {
+        "startLine": 238,
+        "startChar": 12,
+        "endLine": 238,
+        "endChar": 54
+      },
+      "revId": "aae87aea8c24d8a9823e2f1069b8619e928823b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}

@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "774d2d78_fdba175c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 32
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-11-09T13:46:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4640f6f0_e7e7b201",
+      "range": {
+        "startLine": 14,
+        "startChar": 15,
+        "endLine": 14,
+        "endChar": 16
+      },
+      "revId": "9cd2da40dd31fc5376ba27676266b3546cffcb91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bd608c35_82ca81b3",
         "filename": "/COMMIT_MSG",
         "patchSetId": 32
@@ -91,6 +115,30 @@
       "revId": "9cd2da40dd31fc5376ba27676266b3546cffcb91",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "33ca7598_adfc0dfe",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 32
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-11-09T13:46:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "607dc52f_9d2c4435",
+      "range": {
+        "startLine": 142,
+        "startChar": 29,
+        "endLine": 142,
+        "endChar": 35
+      },
+      "revId": "9cd2da40dd31fc5376ba27676266b3546cffcb91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }

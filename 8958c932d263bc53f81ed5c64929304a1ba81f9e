@@ -94,6 +94,30 @@
     },
     {
       "key": {
+        "uuid": "f7743527_e7d7617b",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 8664
+      },
+      "writtenOn": "2020-11-09T13:46:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f28695da_cb4a3271",
+      "range": {
+        "startLine": 412,
+        "startChar": 89,
+        "endLine": 412,
+        "endChar": 91
+      },
+      "revId": "8958c932d263bc53f81ed5c64929304a1ba81f9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d6bd20d4_46df5275",
         "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
         "patchSetId": 17
