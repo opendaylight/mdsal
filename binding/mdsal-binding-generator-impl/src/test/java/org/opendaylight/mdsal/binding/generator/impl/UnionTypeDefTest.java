@@ -23,7 +23,7 @@ public class UnionTypeDefTest {
     @Test
     public void unionTypeResolvingTest() {
         final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
-            UnionTypeDefTest.class, "/union-test-models/abstract-topology.yang", "/ietf/ietf-inet-types.yang"));
+            UnionTypeDefTest.class, "/union-test-models/abstract-topology.yang", "/ietf-models/ietf-inet-types.yang"));
 
         assertNotNull("genTypes is null", genTypes);
         assertFalse("genTypes is empty", genTypes.isEmpty());

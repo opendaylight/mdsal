@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * considering using {@link RuntimeTypeProvider}.
  */
 @Beta
-// FIXME: make this class final after TypeProviderImpl is gone
+// FIXME: 8.0.0: make this class final
 public class CodegenTypeProvider extends AbstractTypeProvider {
     private static final Logger LOG = LoggerFactory.getLogger(CodegenTypeProvider.class);
 

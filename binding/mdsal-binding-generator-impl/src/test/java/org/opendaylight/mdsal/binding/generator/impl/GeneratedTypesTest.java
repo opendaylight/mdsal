@@ -25,7 +25,7 @@ public class GeneratedTypesTest {
     @Test
     public void testMultipleModulesResolving() {
         final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
-            GeneratedTypesTest.class, "/abstract-topology.yang", "/ietf/ietf-inet-types.yang"));
+            GeneratedTypesTest.class, "/abstract-topology.yang", "/ietf-models/ietf-inet-types.yang"));
 
         assertNotNull(genTypes);
         assertEquals(29, genTypes.size());

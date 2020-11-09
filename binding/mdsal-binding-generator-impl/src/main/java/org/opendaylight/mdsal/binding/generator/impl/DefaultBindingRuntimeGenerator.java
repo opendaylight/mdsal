@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import com.google.common.annotations.Beta;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -32,6 +33,11 @@ import org.slf4j.LoggerFactory;
 @Component(immediate = true)
 public final class DefaultBindingRuntimeGenerator implements BindingRuntimeGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultBindingRuntimeGenerator.class);
+
+    @Inject
+    public DefaultBindingRuntimeGenerator() {
+        // exposed for DI
+    }
 
     @Override
     public BindingRuntimeTypes generateTypeMapping(final EffectiveModelContext context) {

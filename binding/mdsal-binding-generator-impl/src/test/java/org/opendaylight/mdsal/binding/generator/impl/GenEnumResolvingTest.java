@@ -24,7 +24,7 @@ public class GenEnumResolvingTest {
     public void testLeafEnumResolving() {
         final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
             GenEnumResolvingTest.class,
-            "/enum-test-models/ietf-interfaces@2012-11-15.yang", "/ietf/iana-if-type.yang"));
+            "/enum-test-models/ietf-interfaces@2012-11-15.yang", "/ietf-models/iana-if-type.yang"));
         assertTrue(genTypes != null);
 
         assertEquals("Expected count of all Generated Types", 6, genTypes.size());
@@ -83,7 +83,7 @@ public class GenEnumResolvingTest {
     @Test
     public void testTypedefEnumResolving() {
         final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/ietf/iana-if-type.yang"));
+            "/ietf-models/iana-if-type.yang"));
         assertTrue(genTypes != null);
         assertEquals(1, genTypes.size());
 
@@ -99,7 +99,7 @@ public class GenEnumResolvingTest {
         final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
             GenEnumResolvingTest.class,
             "/enum-test-models/abstract-topology@2013-02-08.yang", "/enum-test-models/ietf-interfaces@2012-11-15.yang",
-            "/ietf/iana-if-type.yang"));
+            "/ietf-models/iana-if-type.yang"));
         assertNotNull(genTypes);
         assertTrue(!genTypes.isEmpty());
 

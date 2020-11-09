@@ -58,14 +58,14 @@ import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 @RunWith(MockitoJUnitRunner.class)
 public class TypeProviderTest {
 
-    private static SchemaContext SCHEMA_CONTEXT;
-    private static Module TEST_TYPE_PROVIDER;
+    public static SchemaContext SCHEMA_CONTEXT;
+    public static Module TEST_TYPE_PROVIDER;
 
     @Mock
-    private SchemaPath schemaPath;
+    public SchemaPath schemaPath;
 
     @Mock
-    private SchemaNode schemaNode;
+    public SchemaNode schemaNode;
 
     @BeforeClass
     public static void beforeClass() {

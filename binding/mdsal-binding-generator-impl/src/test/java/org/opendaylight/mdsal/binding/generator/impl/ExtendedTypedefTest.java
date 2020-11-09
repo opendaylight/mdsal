@@ -25,7 +25,7 @@ public class ExtendedTypedefTest {
     public void constantGenerationTest() {
         final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
             ExtendedTypedefTest.class,
-            "/typedef-of-typedef/typedef_of_typedef.yang", "/ietf/ietf-inet-types.yang"));
+            "/typedef-of-typedef/typedef_of_typedef.yang", "/ietf-models/ietf-inet-types.yang"));
 
         GeneratedTransferObject simpleTypedef4 = null;
         GeneratedTransferObject extendedTypedefUnion = null;
