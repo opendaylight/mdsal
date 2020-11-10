@@ -5,16 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.yang.types;
 
-import com.google.common.collect.ImmutableList;
-import java.util.List;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
-import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.Int8TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 
@@ -24,7 +20,6 @@ import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
  * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
 final class TestIntegerTypeDefinition implements Int8TypeDefinition {
-
     @Override
     public Int8TypeDefinition getBaseType() {
         return null;
@@ -46,13 +41,9 @@ final class TestIntegerTypeDefinition implements Int8TypeDefinition {
     }
 
     @Override
+    @Deprecated
     public SchemaPath getPath() {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public List<UnknownSchemaNode> getUnknownSchemaNodes() {
-        return ImmutableList.of();
     }
 
     @Override

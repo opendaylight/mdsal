@@ -7,10 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.yang.types;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
@@ -18,7 +16,6 @@ import org.opendaylight.yangtools.yang.model.api.MustDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.LeafEffectiveStatement;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathExpression.QualifiedBound;
 
@@ -34,11 +31,13 @@ public class TestLeafSchemaNode implements LeafSchemaNode {
     }
 
     @Override
+    @Deprecated
     public boolean isAugmenting() {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isAddedByUses() {
         return false;
     }
@@ -54,13 +53,9 @@ public class TestLeafSchemaNode implements LeafSchemaNode {
     }
 
     @Override
+    @Deprecated
     public SchemaPath getPath() {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public List<UnknownSchemaNode> getUnknownSchemaNodes() {
-        return ImmutableList.of();
     }
 
     @Override
