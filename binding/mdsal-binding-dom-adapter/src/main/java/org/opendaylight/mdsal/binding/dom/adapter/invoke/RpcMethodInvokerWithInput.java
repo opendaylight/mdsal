@@ -27,7 +27,7 @@ class RpcMethodInvokerWithInput extends RpcMethodInvoker {
 
     @Override
     @SuppressWarnings("checkstyle:illegalCatch")
-    ListenableFuture<RpcResult<?>> invokeOn(final RpcService impl, final DataObject input) {
+    public ListenableFuture<RpcResult<?>> invokeOn(final RpcService impl, final DataObject input) {
         try {
             return (ListenableFuture<RpcResult<?>>) handle.invokeExact(impl,input);
         } catch (Throwable e) {
