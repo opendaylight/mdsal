@@ -17,6 +17,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
@@ -55,5 +57,9 @@ abstract class AbstractMappedRpcInvoker<T> extends RpcServiceInvoker {
         RpcMethodInvoker invoker = map.get(qnameToKey(rpcName));
         checkArgument(invoker != null, "Supplied RPC is not valid for implementation %s", impl);
         return invoker.invokeOn(impl, input);
+    }
+
+    public @Nullable RpcMethodInvoker getMethodInvoker(@NonNull QName rpcName) {
+        return map.get(qnameToKey(rpcName));
     }
 }
