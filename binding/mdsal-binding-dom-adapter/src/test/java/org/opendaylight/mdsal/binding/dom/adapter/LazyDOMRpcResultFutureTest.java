@@ -25,14 +25,14 @@ import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.yangtools.yang.binding.DataContainer;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCodec;
+import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 public class LazyDOMRpcResultFutureTest {
 
     private LazyDOMRpcResultFuture lazyDOMRpcResultFuture;
-    private final BindingNormalizedNodeSerializer codec = mock(BindingNormalizedNodeSerializer.class);
+    private final BindingNormalizedNodeCodec<RpcOutput> codec = mock(BindingNormalizedNodeCodec.class);
     private final ListenableFuture<RpcResult<?>> future = mock(ListenableFuture.class);
     private final RpcResult<?> domRpcResult = mock(RpcResult.class);
 
@@ -48,7 +48,7 @@ public class LazyDOMRpcResultFutureTest {
         doReturn(true).when(future).isCancelled();
         doReturn(true).when(future).isDone();
 
-        doReturn(mock(DataContainer.class)).when(domRpcResult).getResult();
+        doReturn(mock(RpcOutput.class)).when(domRpcResult).getResult();
         doReturn(domRpcResult).when(future).get();
         doReturn(domRpcResult).when(future).get(1, TimeUnit.SECONDS);
     }
