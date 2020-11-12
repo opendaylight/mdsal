@@ -78,4 +78,7 @@ public abstract class RpcServiceInvoker {
      */
     public abstract ListenableFuture<RpcResult<?>> invokeRpc(@NonNull RpcService impl, @NonNull QName rpcName,
             @Nullable DataObject input);
+
+
+    public abstract RpcMethodInvoker getMethodInvoker(@NonNull QName key);
 }

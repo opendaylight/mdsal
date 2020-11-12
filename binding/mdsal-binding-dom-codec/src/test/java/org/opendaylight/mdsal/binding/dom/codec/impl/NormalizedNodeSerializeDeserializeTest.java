@@ -166,6 +166,7 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingCodec
         assertNotEquals(entry.getValue(), entryWithAugments.getValue());
         // Equals on other(lazy, reversed) with no augmentation should be false
         assertNotEquals(entryWithAugments.getValue(), entry.getValue());
+        assertEquals(top(), top());
 
         final Top topWithAugments = topWithAugments(Collections.<Class<? extends Augmentation<Top>>, Augmentation<Top>>
             singletonMap(Top1.class, new Top1Builder().setAugmentedString(AUGMENT_STRING_VALUE).build()));
