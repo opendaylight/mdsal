@@ -19,11 +19,11 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
-abstract class RpcMethodInvoker {
+public abstract class RpcMethodInvoker {
 
     private static final Lookup LOOKUP = MethodHandles.publicLookup();
 
-    abstract ListenableFuture<RpcResult<?>> invokeOn(RpcService impl, DataObject input);
+    public abstract ListenableFuture<RpcResult<?>> invokeOn(RpcService impl, DataObject input);
 
     protected static RpcMethodInvoker from(final Method method) {
         final MethodHandle methodHandle;
