@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
@@ -136,5 +137,10 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         final String methodName = BindingMapping.getRpcMethodName(rpcDef.getQName());
         final Class<?> inputClz = getRuntimeContext().getClassForSchema(rpcDef.getInput());
         return key.getMethod(methodName, inputClz);
+    }
+
+    @Override
+    public BindingNormalizedNodeCodec<?> getRpcInputCodec(Absolute path) {
+        return delegate().getRpcInputCodec(path);
     }
 }
