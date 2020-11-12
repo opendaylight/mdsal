@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
