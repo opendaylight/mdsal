@@ -223,4 +223,6 @@ public interface BindingNormalizedNodeSerializer {
             new NodeIdentifier(YangConstants.operationInputQName(BindingReflections.getQNameModule(action))), output)
                 .getDelegate();
     }
+
+    BindingNormalizedNodeCodec<?> getRpcInputCodec(Absolute path);
 }
