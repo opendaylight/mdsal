@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.mdsal.binding.api.query.DescendantQueryBuilder;
 import org.opendaylight.mdsal.binding.api.query.QueryFactory;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -23,9 +24,13 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public final class DefaultQueryFactory implements QueryFactory {
     private final BindingNormalizedNodeCodecRegistry registry;
 
-    @Inject
     public DefaultQueryFactory(final BindingNormalizedNodeCodecRegistry registry) {
         this.registry = requireNonNull(registry);
+    }
+
+    @Inject
+    public DefaultQueryFactory(final BindingToNormalizedNodeCodec codec) {
+        this(codec.getCodecRegistry());
     }
 
     @Override
