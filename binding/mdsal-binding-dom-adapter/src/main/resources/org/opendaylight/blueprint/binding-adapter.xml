@@ -20,7 +20,7 @@
   </service>
 
   <!-- QueryFactory based on the codec -->
-  <bean id="queryFactory" class="org.opendaylight.mdsal.query.binding.adapter.DefaultQueryFactory">
+  <bean id="queryFactory" class="org.opendaylight.mdsal.binding.adapter.query.DefaultQueryFactory">
       <argument ref="mappingCodec"/>
   </bean>
 
