@@ -26,4 +26,18 @@ public interface GeneratedTypeBuilder extends GeneratedTypeBuilderBase<Generated
     @Override
     GeneratedType build();
 
+    /**
+     * Set true if generated type is suitable for boxing, false otherwise.
+     *
+     * @param value
+     */
+    void setSuitableForBoxing(boolean value);
+
+    /**
+     * Set parent for current generated type.
+     *
+     * @param parent
+     */
+    void setParentType(GeneratedTypeBuilder parent);
+
 }
