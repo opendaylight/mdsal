@@ -31,6 +31,8 @@ import org.opendaylight.mdsal.binding.model.util.TypeConstants
 import org.opendaylight.mdsal.binding.model.util.Types
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping
 import org.opendaylight.yangtools.concepts.Builder
+import org.opendaylight.yangtools.yang.binding.ChildOf
+import org.opendaylight.yangtools.yang.binding.Identifiable
 
 /**
  * Template for generating JAVA builder classes.
@@ -42,6 +44,11 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     package static val BUILDER_STR = "Builder";
 
     static val BUILDER = JavaTypeName.create(Builder)
+
+    /**
+     * Constant with suffix for the classes which are generated from the builder classes.
+     */
+    val static IMPL = 'Impl'
 
     /**
      * Constructs new instance of this class.
@@ -87,6 +94,8 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             «ENDIF»
 
             «generateSetters»
+
+            «generateBuildBoxedMethod»
 
             @«OVERRIDE.importedName»
             public «targetType.name» build() {
@@ -245,6 +254,56 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             names.add(type.fullyQualifiedName)
         }
         return names
+    }
+
+    def private generateBuildBoxedMethod() {
+        if(targetType.suitableForBoxing && targetType.parentType !== null && isContainerAndIsNotList(targetType)) {
+            val parentTypeBuilder = createParentTypeBuilder()
+            if (countMatches(parentTypeBuilder, "org") < 2) {
+                return '''
+                    public «targetType.parentType.importedName» buildBoxed() {
+                        return new «parentTypeBuilder»().set«targetType.name»(build()).build();
+                    }
+                '''
+            }
+        }
+        return ''
+    }
+
+    def private int countMatches(String string, String subString) {
+        if (string.nullOrEmpty || subString.nullOrEmpty) {
+            return 0
+        }
+        var int count = 0;
+        var int idx = 0;
+        while ((idx = string.indexOf(subString, idx)) != -1) {
+            count = count + 1;
+            idx = idx + subString.length();
+        }
+        return count;
+    }
+
+    def private createParentTypeBuilder() {
+        return targetType.parentType.packageName + "." + targetType.parentType.importedName + "Builder"
+    }
+
+    def private boolean isContainerAndIsNotList(GeneratedType type) {
+        val isList = implementsIfc(type, Types.parameterizedTypeFor(Types.typeForClass(Identifiable), type))
+        val implementsChildOf = implementsIfc(type, Types.parameterizedTypeFor(Types.typeForClass(ChildOf), type))
+
+        if (implementsChildOf && !isList) {
+            return true
+        }
+        return false;
+    }
+
+    private def boolean implementsIfc(GeneratedType type, Type impl) {
+        for (Type ifc : type.implements) {
+            if (ifc.equals(impl)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     def private constantsDeclarations() '''
