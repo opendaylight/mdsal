@@ -28,6 +28,16 @@ public final class RuntimeGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     }
 
     @Override
+    public void setSuitableForBoxing(boolean value) {
+        // No-op
+    }
+
+    @Override
+    public void setParentType(GeneratedTypeBuilder parent) {
+        // No-op
+    }
+
+    @Override
     public void setDescription(final String description) {
         // No-op
     }
@@ -114,6 +124,11 @@ public final class RuntimeGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
 
         private static UnsupportedOperationException unsupported() {
             return new UnsupportedOperationException("Not available at runtime");
+        }
+
+        @Override
+        public boolean isSuitableForBoxing() {
+            return false;
         }
     }
 }
