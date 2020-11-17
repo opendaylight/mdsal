@@ -25,6 +25,11 @@ public final class RuntimeGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     }
 
     @Override
+    public void setBoxableParent(JavaTypeName parent) {
+        // No-op
+    }
+
+    @Override
     public void setDescription(final String description) {
         // No-op
     }

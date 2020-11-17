@@ -1,0 +1,17 @@
+module mdsal-44 {
+    namespace "mdsal-44";
+    prefix "mdsal44";
+    description "foo";
+
+    choice ch {
+        case foo-case {
+            container foo {
+                leaf name {
+                    type string;
+                }
+            }
+            description "foo";
+        }
+        description "foo";
+    }
+}

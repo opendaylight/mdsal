@@ -785,6 +785,15 @@ public class CompilationTest extends BaseCompilationTest {
     }
 
     @Test
+    public void testMdsal44() throws Exception {
+        final File sourcesOutputDir = CompilationTestUtils.generatorOutput("mdsal44");
+        final File compiledOutputDir = CompilationTestUtils.compilerOutput("mdsal44");
+        generateTestSources("/compilation/mdsal44", sourcesOutputDir);
+        CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
+        CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
+    }
+
+    @Test
     public void testUnionStringPatterns() throws Exception {
         final File sourcesOutputDir = CompilationTestUtils.generatorOutput("union-string-pattern");
         final File compiledOutputDir = CompilationTestUtils.compilerOutput("union-string-pattern");

@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import com.google.common.collect.Iterators;
 import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultContainerRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -55,12 +56,26 @@ final class ContainerGenerator extends CompositeSchemaTreeGenerator<ContainerEff
 
         addGetterMethods(builder, builderFactory);
 
+        addAutoboxingIfSuitable(builder);
         annotateDeprecatedIfNecessary(builder);
         builderFactory.addCodegenInformation(module, statement(), builder);
         builder.setModuleName(module.statement().argument().getLocalName());
 //      builder.setSchemaPath(node.getPath());
 
         return builder.build();
+    }
+
+    private void addAutoboxingIfSuitable(final GeneratedTypeBuilder builder) {
+        final var parent = getParent();
+        // Check if parent type is suitable for boxing and if this is the only child generator
+        if (boxableParentType(parent) && Iterators.size(parent.iterator()) == 1) {
+            builder.setBoxableParent(parent.typeName());
+        }
+    }
+
+    private boolean boxableParentType(final AbstractCompositeGenerator<?, ?> parent) {
+        return parent instanceof CaseGenerator || parent instanceof ContainerGenerator
+                || parent instanceof ListGenerator;
     }
 
     @Override
