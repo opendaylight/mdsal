@@ -17,6 +17,8 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     private String description;
     private String reference;
     private String moduleName;
+    private boolean suitableForBoxing;
+    private JavaTypeName parentType;
 
     public CodegenGeneratedTypeBuilder(final JavaTypeName identifier) {
         super(identifier);
@@ -39,6 +41,16 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     }
 
     @Override
+    public void setSuitableForBoxing(boolean value) {
+        this.suitableForBoxing = value;
+    }
+
+    @Override
+    public void setParentType(JavaTypeName parent) {
+        this.parentType = parent;
+    }
+
+    @Override
     public GeneratedType build() {
         return new GeneratedTypeImpl(this);
     }
@@ -52,6 +64,8 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         private final String description;
         private final String reference;
         private final String moduleName;
+        private final boolean suitableForBoxing;
+        private final JavaTypeName parentType;
 
         GeneratedTypeImpl(final CodegenGeneratedTypeBuilder builder) {
             super(builder);
@@ -59,6 +73,8 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
             description = builder.description;
             reference = builder.reference;
             moduleName = builder.moduleName;
+            suitableForBoxing = builder.suitableForBoxing;
+            parentType = builder.parentType;
         }
 
         @Override
@@ -74,6 +90,16 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         @Override
         public String getModuleName() {
             return moduleName;
+        }
+
+        @Override
+        public boolean isSuitableForBoxing() {
+            return suitableForBoxing;
+        }
+
+        @Override
+        public JavaTypeName getParentType() {
+            return parentType;
         }
     }
 }

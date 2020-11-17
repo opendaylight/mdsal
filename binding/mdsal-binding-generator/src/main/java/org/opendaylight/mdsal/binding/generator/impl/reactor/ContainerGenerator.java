@@ -43,12 +43,25 @@ final class ContainerGenerator extends CompositeSchemaTreeGenerator<ContainerEff
 
         addGetterMethods(builder, builderFactory);
 
+        addAutoboxingIfSuitable(builder);
         annotateDeprecatedIfNecessary(builder);
         builderFactory.addCodegenInformation(module, statement(), builder);
         builder.setModuleName(module.statement().argument().getLocalName());
 //      builder.setSchemaPath(node.getPath());
 
         return builder.build();
+    }
+
+    private void addAutoboxingIfSuitable(GeneratedTypeBuilder builder) {
+        if (boxablePatentType() && getParent().statement().effectiveSubstatements().size() == 1) {
+            builder.setParentType(getParent().typeName());
+            builder.setSuitableForBoxing(true);
+        }
+    }
+
+    private boolean boxablePatentType() {
+        return getParent() instanceof CaseGenerator || getParent() instanceof ContainerGenerator
+                || getParent() instanceof ListGenerator;
     }
 
     @Override

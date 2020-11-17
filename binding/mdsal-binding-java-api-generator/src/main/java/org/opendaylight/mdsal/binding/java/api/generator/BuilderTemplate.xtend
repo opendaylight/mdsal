@@ -12,6 +12,7 @@ import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.DATA_OBJECT
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_CONTRACT_IMPLEMENTED_INTERFACE_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BUILDER_SUFFIX
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.IDENTIFIABLE_KEY_NAME
 
 import com.google.common.collect.ImmutableList
@@ -102,6 +103,8 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             «ENDIF»
 
             «generateSetters»
+
+            «generateBuildBoxedMethod»
 
             /**
              * A new {@link «targetTypeName»} instance.
@@ -316,6 +319,21 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             names.add(type.importedName)
         }
         return names
+    }
+
+    def private generateBuildBoxedMethod() {
+        if(targetType.suitableForBoxing && targetType.parentType !== null) {
+            return '''
+                public «createParentTypeBuilder()» start«targetType.parentType.simpleName + BUILDER_SUFFIX»() {
+                    return new «createParentTypeBuilder()»().set«targetType.name»(this.build());
+                }
+            '''
+        }
+        return ''
+    }
+
+    def private createParentTypeBuilder() {
+        return targetType.parentType.packageName + "." + targetType.parentType.simpleName + BUILDER_SUFFIX
     }
 
     def private constantsDeclarations() '''
