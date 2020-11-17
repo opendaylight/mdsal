@@ -13,10 +13,13 @@ import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.mdsal.binding.model.api.Type;
 
 public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuilder<GeneratedTypeBuilder> implements
         GeneratedTypeBuilder {
 
+    private boolean isSuitableForBoxing;
+    private GeneratedTypeBuilder parentType;
     private String description;
     private String reference;
     private String moduleName;
@@ -25,6 +28,21 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     public CodegenGeneratedTypeBuilder(final JavaTypeName identifier) {
         super(identifier);
         setAbstract(true);
+    }
+
+    @Override
+    public void setSuitableForBoxing(boolean value) {
+        this.isSuitableForBoxing = value;
+    }
+
+    @Override
+    public void setParentType(GeneratedTypeBuilder parent) {
+        this.parentType = parent;
+    }
+
+    @Override
+    public Type getParent() {
+        return this.parentType;
     }
 
     @Override
@@ -98,6 +116,8 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         private final String reference;
         private final String moduleName;
         private final SchemaPath schemaPath;
+        private final boolean isSuitableForBoxing;
+        private final GeneratedTypeBuilder parentType;
 
         GeneratedTypeImpl(final CodegenGeneratedTypeBuilder builder) {
             super(builder);
@@ -106,6 +126,8 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
             this.reference = builder.reference;
             this.moduleName = builder.moduleName;
             this.schemaPath = builder.schemaPath;
+            this.isSuitableForBoxing = builder.isSuitableForBoxing;
+            this.parentType = builder.parentType;
         }
 
         @Override
@@ -126,6 +148,11 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         @Override
         public String getModuleName() {
             return this.moduleName;
+        }
+
+        @Override
+        public boolean isSuitableForBoxing() {
+            return isSuitableForBoxing;
         }
     }
 }
