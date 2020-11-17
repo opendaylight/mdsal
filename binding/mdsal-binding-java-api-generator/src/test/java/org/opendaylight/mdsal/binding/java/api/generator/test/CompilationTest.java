@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
 import org.opendaylight.yangtools.yang.common.Empty;
@@ -636,6 +637,15 @@ public class CompilationTest extends BaseCompilationTest {
         final File sourcesOutputDir = CompilationTestUtils.generatorOutput("mdsal365");
         final File compiledOutputDir = CompilationTestUtils.compilerOutput("mdsal365");
         generateTestSources("/compilation/mdsal365", sourcesOutputDir);
+        CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
+        CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
+    }
+
+    @Test
+    public void testMdsal44() throws Exception {
+        final File sourcesOutputDir = CompilationTestUtils.generatorOutput("mdsal44");
+        final File compiledOutputDir = CompilationTestUtils.compilerOutput("mdsal44");
+        List<Type> types = generateTestSources("/compilation/mdsal44", sourcesOutputDir);
         CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
         CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
     }
