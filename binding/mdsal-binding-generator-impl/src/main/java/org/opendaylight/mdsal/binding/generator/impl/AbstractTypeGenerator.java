@@ -313,25 +313,66 @@ abstract class AbstractTypeGenerator {
             context.addChildNodeType(node, genType);
             groupingsToGenTypes(context, ((DataNodeContainer) node).getGroupings());
             processUsesAugments((DataNodeContainer) node, context, inGrouping);
+            if (node.isAddedByUses() || node.isAugmenting()) {
+                genType.setSuitableForBoxing(false);
+            }
         }
         return genType;
     }
 
     private void containerToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
             final Type baseInterface, final ContainerSchemaNode node, final boolean inGrouping) {
-        final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, node, inGrouping);
+        Type base = (baseInterface == null) ? DATA_OBJECT : childOf(baseInterface);
+        final GeneratedTypeBuilder genType = processDataSchemaNode(context, base, node, inGrouping);
         if (genType != null) {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes(), inGrouping);
             actionsToGenType(context, genType, node, null, inGrouping);
             notificationsToGenType(context, genType, node, null, inGrouping);
+
+            String parentName = parent.getName();
+            if (parentName != null && baseInterface != null) {
+                if (!parentName.contains("Data")) {
+                    genType.setParentType(parent);
+                }
+                boolean suitableForBoxing = hasOnlyOneChild(node) && !hasWhenOrMustConstraints(node)
+                        && !parentName.equals(baseInterface.getName());
+                genType.setSuitableForBoxing(suitableForBoxing);
+            }
         }
+    }
+
+    private boolean hasOnlyOneChild(final ContainerSchemaNode contNode) {
+        if (contNode.getChildNodes() != null && contNode.getChildNodes().size() == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasWhenOrMustConstraints(final SchemaNode node) {
+        boolean hasWhenCondition;
+        boolean hasMustConstraints;
+
+        if (node instanceof ContainerSchemaNode) {
+            ContainerSchemaNode contNode = (ContainerSchemaNode) node;
+            hasWhenCondition = contNode.getWhenCondition().isPresent();
+            hasMustConstraints = contNode.getMustConstraints() != null && !contNode.getMustConstraints().isEmpty();
+            if (hasWhenCondition || hasMustConstraints) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void listToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
             final Type baseInterface, final ListSchemaNode node, final boolean inGrouping) {
-        final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, node, inGrouping);
+        final Type base = baseInterface == null ? DATA_OBJECT : childOf(baseInterface);
+        final GeneratedTypeBuilder genType = processDataSchemaNode(context, base, node, inGrouping);
         if (genType != null) {
+            if (!parent.getName().equals(baseInterface.getName()) && !parent.getName().contains("Data")) {
+                genType.setParentType(parent);
+            }
+
             final List<String> listKeys = listKeys(node);
             final GeneratedTOBuilder keyTypeBuilder;
             if (!listKeys.isEmpty()) {
@@ -920,6 +961,7 @@ abstract class AbstractTypeGenerator {
         if (targetTypeBuilder == null) {
             throw new NullPointerException("Target type not yet generated: " + targetSchemaNode);
         }
+        targetTypeBuilder.setSuitableForBoxing(false);
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             if (usesNodeParent instanceof SchemaNode) {
@@ -1111,10 +1153,9 @@ abstract class AbstractTypeGenerator {
             final @Nullable Type childOf, final Iterable<? extends DataSchemaNode> schemaNodes,
             final boolean inGrouping) {
         if (schemaNodes != null && parent != null) {
-            final Type baseInterface = childOf == null ? DATA_OBJECT : childOf(childOf);
             for (final DataSchemaNode schemaNode : schemaNodes) {
                 if (!schemaNode.isAugmenting() && !schemaNode.isAddedByUses()) {
-                    addSchemaNodeToBuilderAsMethod(context, schemaNode, parent, baseInterface, inGrouping);
+                    addSchemaNodeToBuilderAsMethod(context, schemaNode, parent, childOf, inGrouping);
                 }
             }
         }
@@ -1139,10 +1180,9 @@ abstract class AbstractTypeGenerator {
             final GeneratedTypeBuilder typeBuilder, final Iterable<? extends DataSchemaNode> schemaNodes,
             final boolean inGrouping) {
         if (schemaNodes != null && typeBuilder != null) {
-            final Type baseInterface = childOf(typeBuilder);
             for (final DataSchemaNode schemaNode : schemaNodes) {
                 if (!schemaNode.isAugmenting()) {
-                    addSchemaNodeToBuilderAsMethod(context, schemaNode, typeBuilder, baseInterface, inGrouping);
+                    addSchemaNodeToBuilderAsMethod(context, schemaNode, typeBuilder, typeBuilder, inGrouping);
                 }
             }
         }
@@ -1204,6 +1244,7 @@ abstract class AbstractTypeGenerator {
             choiceTypeBuilder.addImplementsType(choiceIn(parent));
             annotateDeprecatedIfNecessary(choiceNode, choiceTypeBuilder);
             context.addChildNodeType(choiceNode, choiceTypeBuilder);
+            choiceTypeBuilder.setParentType(parent);
 
             final GeneratedType choiceType = choiceTypeBuilder.build();
             generateTypesFromChoiceCases(context, choiceType, choiceNode, inGrouping);
@@ -1878,12 +1919,12 @@ abstract class AbstractTypeGenerator {
             if (schemaNode instanceof LeafListSchemaNode) {
                 resolveLeafListSchemaNode(typeBuilder, (LeafListSchemaNode) schemaNode, context, inGrouping);
             } else if (schemaNode instanceof ContainerSchemaNode) {
-                containerToGenType(context, typeBuilder, childOf(typeBuilder),
+                containerToGenType(context, typeBuilder, typeBuilder,
                     (ContainerSchemaNode) schemaNode, inGrouping);
             } else if (schemaNode instanceof ChoiceSchemaNode) {
                 choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) schemaNode, inGrouping);
             } else if (schemaNode instanceof ListSchemaNode) {
-                listToGenType(context, typeBuilder, childOf(typeBuilder), (ListSchemaNode) schemaNode, inGrouping);
+                listToGenType(context, typeBuilder, typeBuilder, (ListSchemaNode) schemaNode, inGrouping);
             } else if (schemaNode instanceof AnyxmlSchemaNode || schemaNode instanceof AnydataSchemaNode) {
                 opaqueToGeneratedType(context, typeBuilder, schemaNode);
             }
