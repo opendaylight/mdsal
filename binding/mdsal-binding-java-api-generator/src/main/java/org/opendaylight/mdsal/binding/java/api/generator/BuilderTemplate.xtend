@@ -14,6 +14,7 @@ import static org.opendaylight.yangtools.yang.binding.contract.Naming.AUGMENTABL
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.AUGMENTATION_FIELD
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.BINDING_CONTRACT_IMPLEMENTED_INTERFACE_NAME
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.KEY_AWARE_KEY_NAME
+import static org.opendaylight.yangtools.yang.binding.contract.Naming.BUILDER_SUFFIX
 
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
@@ -25,6 +26,7 @@ import java.util.List
 import java.util.Map
 import java.util.Set
 import org.opendaylight.mdsal.binding.model.api.AnnotationType
+import org.opendaylight.mdsal.binding.model.api.BoxableGeneratedType
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
@@ -107,6 +109,9 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             «ENDIF»
 
             «generateSetters»
+            «IF ((targetType instanceof BoxableGeneratedType))»
+                 «generateBuildBoxedMethod»
+            «ENDIF»
 
             /**
              * A new {@link «targetTypeName»} instance.
@@ -345,6 +350,20 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             names.add(type.importedName)
         }
         return names
+    }
+
+    def private generateBuildBoxedMethod() {
+        val boxable = targetType as BoxableGeneratedType
+        val parentType = boxable.parentType
+        return '''
+            public «createParentTypeBuilder(parentType)» start«parentType.simpleName + BUILDER_SUFFIX»() {
+                return new «createParentTypeBuilder(parentType)»().set«targetType.name»(this.build());
+            }
+        '''
+    }
+
+    def private createParentTypeBuilder(JavaTypeName parentType) {
+        return parentType.packageName + "." + parentType.simpleName + BUILDER_SUFFIX
     }
 
     def private constantsDeclarations() '''

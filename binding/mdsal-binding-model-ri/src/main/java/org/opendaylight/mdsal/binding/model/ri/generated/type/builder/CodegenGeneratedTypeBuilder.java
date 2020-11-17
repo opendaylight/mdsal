@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.model.ri.generated.type.builder;
 
+import static java.util.Objects.requireNonNull;
+
+import org.opendaylight.mdsal.binding.model.api.BoxableGeneratedType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
@@ -17,6 +20,7 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     private String description;
     private String reference;
     private String moduleName;
+    private JavaTypeName parentType;
 
     public CodegenGeneratedTypeBuilder(final JavaTypeName identifier) {
         super(identifier);
@@ -39,8 +43,13 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     }
 
     @Override
+    public void setBoxableParent(final JavaTypeName parent) {
+        this.parentType = requireNonNull(parent);
+    }
+
+    @Override
     public GeneratedType build() {
-        return new GeneratedTypeImpl(this);
+        return parentType == null ? new GeneratedTypeImpl(this) : new BoxableGeneratedTypeImpl(this);
     }
 
     @Override
@@ -48,7 +57,7 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         return this;
     }
 
-    private static final class GeneratedTypeImpl extends AbstractGeneratedType {
+    private static class GeneratedTypeImpl extends AbstractGeneratedType {
         private final String description;
         private final String reference;
         private final String moduleName;
@@ -74,6 +83,21 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         @Override
         public String getModuleName() {
             return moduleName;
+        }
+    }
+
+    private static final class BoxableGeneratedTypeImpl extends GeneratedTypeImpl implements BoxableGeneratedType {
+        private final JavaTypeName parentType;
+
+        BoxableGeneratedTypeImpl(final CodegenGeneratedTypeBuilder builder) {
+            super(builder);
+
+            parentType = builder.parentType;
+        }
+
+        @Override
+        public JavaTypeName getParentType() {
+            return parentType;
         }
     }
 }
