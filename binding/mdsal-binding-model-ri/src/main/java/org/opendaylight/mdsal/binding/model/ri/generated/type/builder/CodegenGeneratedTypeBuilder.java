@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.model.ri.generated.type.builder;
 
+import static java.util.Objects.requireNonNull;
+
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
@@ -17,6 +19,8 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     private String description;
     private String reference;
     private String moduleName;
+    private boolean suitableForBoxing;
+    private JavaTypeName parentType;
 
     public CodegenGeneratedTypeBuilder(final JavaTypeName identifier) {
         super(identifier);
@@ -39,6 +43,16 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     }
 
     @Override
+    public void setSuitableForBoxing() {
+        this.suitableForBoxing = true;
+    }
+
+    @Override
+    public void setParentType(JavaTypeName parent) {
+        this.parentType = requireNonNull(parent);
+    }
+
+    @Override
     public GeneratedType build() {
         return new GeneratedTypeImpl(this);
     }
@@ -52,6 +66,8 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         private final String description;
         private final String reference;
         private final String moduleName;
+        private final JavaTypeName parentType;
+        private final boolean suitableForBoxing;
 
         GeneratedTypeImpl(final CodegenGeneratedTypeBuilder builder) {
             super(builder);
@@ -59,6 +75,8 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
             description = builder.description;
             reference = builder.reference;
             moduleName = builder.moduleName;
+            suitableForBoxing = builder.suitableForBoxing;
+            parentType = builder.parentType;
         }
 
         @Override
@@ -74,6 +92,16 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         @Override
         public String getModuleName() {
             return moduleName;
+        }
+
+        @Override
+        public boolean isSuitableForBoxing() {
+            return suitableForBoxing;
+        }
+
+        @Override
+        public JavaTypeName getParentType() {
+            return parentType;
         }
     }
 }

@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.model.api.type.builder;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 
 /**
  * Generated Type Builder interface is helper interface for building and
@@ -23,4 +24,14 @@ public interface GeneratedTypeBuilder extends GeneratedTypeBuilderBase<Generated
      * @return the <code>new</code> <i>immutable</i> instance of Generated Type.
      */
     @NonNull GeneratedType build();
+
+    /**
+     * Set true if generated type is suitable for boxing.
+     */
+    void setSuitableForBoxing();
+
+    /**
+     * Set parent for current generated type.
+     */
+    void setParentType(JavaTypeName parent);
 }

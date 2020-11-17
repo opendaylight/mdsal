@@ -14,6 +14,7 @@ import static org.opendaylight.yangtools.yang.binding.contract.Naming.AUGMENTABL
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.AUGMENTATION_FIELD
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.BINDING_CONTRACT_IMPLEMENTED_INTERFACE_NAME
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.KEY_AWARE_KEY_NAME
+import static org.opendaylight.yangtools.yang.binding.contract.Naming.BUILDER_SUFFIX
 
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
@@ -107,6 +108,8 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             «ENDIF»
 
             «generateSetters»
+
+            «generateBuildBoxedMethod»
 
             /**
              * A new {@link «targetTypeName»} instance.
@@ -345,6 +348,22 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             names.add(type.importedName)
         }
         return names
+    }
+
+    def private generateBuildBoxedMethod() {
+        val parentType = targetType.parentType
+        if(targetType.suitableForBoxing && parentType !== null) {
+            return '''
+                public «createParentTypeBuilder(parentType)» start«parentType.simpleName + BUILDER_SUFFIX»() {
+                    return new «createParentTypeBuilder(parentType)»().set«targetType.name»(this.build());
+                }
+            '''
+        }
+        return ''
+    }
+
+    def private createParentTypeBuilder(JavaTypeName parentType) {
+        return parentType.packageName + "." + parentType.simpleName + BUILDER_SUFFIX
     }
 
     def private constantsDeclarations() '''
