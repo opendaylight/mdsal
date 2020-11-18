@@ -49,15 +49,15 @@ import org.sonatype.plexus.build.incremental.DefaultBuildContext;
 // TODO: most of private static methods are copied from
 // binding-java-api-generator project - reorganize compilation tests
 public class YangModuleInfoCompilationTest {
-    public static final String FS = File.separator;
+    public static final String REVISION = "rev140630";
     private static final String BASE_PKG = "org.opendaylight.yang.gen.v1";
 
-    private static final String TEST_PATH = "target" + FS + "test";
+    private static final String TEST_PATH = "target/test";
     private static final File TEST_DIR = new File(TEST_PATH);
 
-    private static final String GENERATOR_OUTPUT_PATH = TEST_PATH + FS + "src";
+    private static final String GENERATOR_OUTPUT_PATH = TEST_PATH + "/src";
     private static final File GENERATOR_OUTPUT_DIR = new File(GENERATOR_OUTPUT_PATH);
-    private static final String COMPILER_OUTPUT_PATH = TEST_PATH + FS + "bin";
+    private static final String COMPILER_OUTPUT_PATH = TEST_PATH + "/bin";
     private static final File COMPILER_OUTPUT_DIR = new File(COMPILER_OUTPUT_PATH);
 
     @BeforeClass
@@ -71,16 +71,16 @@ public class YangModuleInfoCompilationTest {
 
     @Test
     public void compilationTest() throws Exception {
-        final File sourcesOutputDir = new File(GENERATOR_OUTPUT_PATH + FS + "yang");
+        final File sourcesOutputDir = new File(GENERATOR_OUTPUT_PATH + "/yang");
         assertTrue("Failed to create test file '" + sourcesOutputDir + "'", sourcesOutputDir.mkdirs());
-        final File compiledOutputDir = new File(COMPILER_OUTPUT_PATH + FS + "yang");
+        final File compiledOutputDir = new File(COMPILER_OUTPUT_PATH + "/yang");
         assertTrue("Failed to create test file '" + compiledOutputDir + "'", compiledOutputDir.mkdirs());
 
         generateTestSources("/yang-module-info", sourcesOutputDir);
 
         // Test if $YangModuleInfoImpl.java file is generated
-        final String BASE_PATH = "org" + FS + "opendaylight" + FS + "yang" + FS + "gen" + FS + "v1";
-        final String NS_TEST = BASE_PATH + FS + "yang" + FS + "test" + FS + "main" + FS + "rev140630";
+        final String BASE_PATH = "org/opendaylight/yang/gen/v1";
+        final String NS_TEST = BASE_PATH + "/yang/test/main/" + REVISION;
         File parent = new File(sourcesOutputDir, NS_TEST);
         File keyArgs = new File(parent, "$YangModuleInfoImpl.java");
         assertTrue(keyArgs.exists());
@@ -95,8 +95,8 @@ public class YangModuleInfoCompilationTest {
         ClassLoader loader = new URLClassLoader(urls);
 
         // Load class
-        Class<?> yangModuleInfoClass = Class.forName(BASE_PKG + ".yang.test.main.rev140630.$YangModuleInfoImpl", true,
-                loader);
+        Class<?> yangModuleInfoClass = Class.forName(BASE_PKG + ".yang.test.main." + REVISION
+                        + ".$YangModuleInfoImpl", true, loader);
 
         // Test generated $YangModuleInfoImpl class
         assertFalse(yangModuleInfoClass.isInterface());
@@ -149,7 +149,7 @@ public class YangModuleInfoCompilationTest {
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
         codegen.generateSources(context, sourcesOutputDir, Set.copyOf(context.getModules()),
-            (module, representation) -> Optional.of(resourceDirPath + File.separator + module.getName()
+            (module, representation) -> Optional.of(resourceDirPath + "/" + module.getName()
             + YangConstants.RFC6020_YANG_FILE_EXTENSION));
     }
 
