@@ -25,7 +25,7 @@ public class Bug5151Test extends BaseCompilationTest {
     public void test() throws Exception {
         final File sourcesOutputDir = CompilationTestUtils.generatorOutput(BUG_ID);
         final File compiledOutputDir = CompilationTestUtils.compilerOutput(BUG_ID);
-        generateTestSources(CompilationTestUtils.FS + "compilation" + CompilationTestUtils.FS + BUG_ID,
+        generateTestSources("/compilation/" + BUG_ID,
             sourcesOutputDir);
 
         // Test if sources are compilable
