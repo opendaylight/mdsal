@@ -27,6 +27,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public class AssertDataObjectsTest extends AbstractDataBrokerTest {
 
+    private static final String LS = System.lineSeparator();
+
     private static final String HEADER = "import static extension org.opendaylight.mdsal.binding.testutils."
             + "XtendBuilderExtensions.operator_doubleGreaterThan\n\n";
 
@@ -42,17 +44,17 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
 
     @Test
     public void testAssertDataObjectsWithComplexTopWithKey() {
-        AssertDataObjects.assertEqualByText(HEADER + "new TopBuilder >> [\n"
-                + "    topLevelList = #{\n"
-                + "        new TopLevelListKey(\"foo\") -> new TopLevelListBuilder >> [\n"
-                + "            name = \"foo\"\n"
-                + "            addAugmentation(TreeComplexUsesAugment, new TreeComplexUsesAugmentBuilder >> [\n"
-                + "                containerWithUses = new ContainerWithUsesBuilder >> [\n"
-                + "                    leafFromGrouping = \"foo\"\n"
-                + "                ]\n"
-                + "            ])\n"
-                + "        ]\n"
-                + "    }\n"
+        AssertDataObjects.assertEqualByText(HEADER + "new TopBuilder >> [" + LS
+                + "    topLevelList = #{" + LS
+                + "        new TopLevelListKey(\"foo\") -> new TopLevelListBuilder >> [" + LS
+                + "            name = \"foo\"" + LS
+                + "            addAugmentation(TreeComplexUsesAugment, new TreeComplexUsesAugmentBuilder >> [" + LS
+                + "                containerWithUses = new ContainerWithUsesBuilder >> [" + LS
+                + "                    leafFromGrouping = \"foo\"" + LS
+                + "                ]" + LS
+                + "            ])" + LS
+                + "        ]" + LS
+                + "    }" + LS
                 + "]", ExpectedObjects.top());
     }
 
@@ -60,13 +62,13 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
     public void testAssertDataObjectsWithTopLevelList() {
         AssertDataObjects.assertEqualBeans(ExpectedObjects.topLevelList(),
                 ExampleYangObjects.topLevelList().getValue());
-        AssertDataObjects.assertEqualByText(HEADER + "new TopLevelListBuilder >> [\n"
-                + "    name = \"foo\"\n"
-                + "    addAugmentation(TreeComplexUsesAugment, new TreeComplexUsesAugmentBuilder >> [\n"
-                + "        containerWithUses = new ContainerWithUsesBuilder >> [\n"
-                + "            leafFromGrouping = \"foo\"\n"
-                + "        ]\n"
-                + "    ])\n"
+        AssertDataObjects.assertEqualByText(HEADER + "new TopLevelListBuilder >> [" + LS
+                + "    name = \"foo\"" + LS
+                + "    addAugmentation(TreeComplexUsesAugment, new TreeComplexUsesAugmentBuilder >> [" + LS
+                + "        containerWithUses = new ContainerWithUsesBuilder >> [" + LS
+                + "            leafFromGrouping = \"foo\"" + LS
+                + "        ]" + LS
+                + "    ])" + LS
                 + "]", ExampleYangObjects.topLevelList().getValue());
     }
 
@@ -85,17 +87,17 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
 
         String expectedTopText = "import static extension org.opendaylight.mdsal.binding.testutils."
                 + "XtendBuilderExtensions.operator_doubleGreaterThan\n\n"
-                + "new TopBuilder >> [\n"
-                + "    topLevelList = #{\n"
-                + "        new TopLevelListKey(\"foo\") -> new TopLevelListBuilder >> [\n"
-                + "            name = \"foo\"\n"
-                + "            addAugmentation(TreeComplexUsesAugment, new TreeComplexUsesAugmentBuilder >> [\n"
-                + "                containerWithUses = new ContainerWithUsesBuilder >> [\n"
-                + "                    leafFromGrouping = \"foo\"\n"
-                + "                ]\n"
-                + "            ])\n"
-                + "        ]\n"
-                + "    }\n"
+                + "new TopBuilder >> [" + LS
+                + "    topLevelList = #{" + LS
+                + "        new TopLevelListKey(\"foo\") -> new TopLevelListBuilder >> [" + LS
+                + "            name = \"foo\"" + LS
+                + "            addAugmentation(TreeComplexUsesAugment, new TreeComplexUsesAugmentBuilder >> [" + LS
+                + "                containerWithUses = new ContainerWithUsesBuilder >> [" + LS
+                + "                    leafFromGrouping = \"foo\"" + LS
+                + "                ]" + LS
+                + "            ])" + LS
+                + "        ]" + LS
+                + "    }" + LS
                 + "]";
         AssertDataObjects.assertEqualByText(expectedTopText, actualTop);
     }
