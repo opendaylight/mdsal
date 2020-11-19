@@ -148,6 +148,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     private final @NonNull BindingRuntimeContext context;
     private final SchemaRootCodecContext<?> root;
 
+    @Inject
     public BindingCodecContext() {
         this(ServiceLoader.load(BindingRuntimeContext.class).findFirst()
             .orElseThrow(() -> new IllegalStateException("Failed to load BindingRuntimeContext")));
