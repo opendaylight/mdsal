@@ -107,4 +107,9 @@ final class ListGenerator extends AbstractCompositeGenerator<ListEffectiveStatem
 
         return ret;
     }
+
+    @Override
+    void constructRequire(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+        // No-op
+    }
 }

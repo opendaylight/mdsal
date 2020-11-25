@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -65,14 +66,15 @@ public class Mdsal320Test {
         assertEquals(BindingMapping.BINDING_EQUALS_NAME, bindingEquals.getName());
         final MethodSignature bindingToString = it.next();
         assertEquals(BindingMapping.BINDING_TO_STRING_NAME, bindingToString.getName());
-
+        final MethodSignature requireBar = it.next();
+        assertThat(requireBar.getName(), startsWith(BindingMapping.REQUIRE_PREFIX));
         final MethodSignature getBar = it.next();
-        assertFalse(it.hasNext());
         final Type getBarType = getBar.getReturnType();
         assertTrue(getBarType instanceof GeneratedTransferObject);
         final GeneratedTransferObject getBarTO = (GeneratedTransferObject) getBarType;
         assertTrue(getBarTO.isUnionType());
         assertEquals(bar, getBarTO);
+        assertFalse(it.hasNext());
 
         final GeneratedProperty bar1Prop = bar.getProperties().stream().filter(prop -> "bar$1".equals(prop.getName()))
                 .findFirst().get();

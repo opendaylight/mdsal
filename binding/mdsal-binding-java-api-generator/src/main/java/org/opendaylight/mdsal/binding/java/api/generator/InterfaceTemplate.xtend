@@ -8,10 +8,13 @@
 package org.opendaylight.mdsal.binding.java.api.generator
 
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.getGetterMethodForNonnull
+import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.getGetterMethodForRequire
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isGetterMethodName
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isNonnullMethodName
+import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isRequireMethodName
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN
 import static org.opendaylight.mdsal.binding.model.util.Types.STRING
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.REQUIRE_PREFIX
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_EQUALS_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_HASHCODE_NAME
@@ -21,6 +24,7 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CON
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects
 import java.util.List
+import java.util.Locale
 import java.util.Map.Entry
 import java.util.Set
 import org.gaul.modernizer_maven_annotations.SuppressModernizer
@@ -28,6 +32,7 @@ import org.opendaylight.mdsal.binding.model.api.AnnotationType
 import org.opendaylight.mdsal.binding.model.api.Constant
 import org.opendaylight.mdsal.binding.model.api.Enumeration
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName
 import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.util.Types
@@ -199,6 +204,8 @@ class InterfaceTemplate extends BaseTemplate {
     def private generateDefaultMethod(MethodSignature method) {
         if (method.name.isNonnullMethodName) {
             generateNonnullMethod(method)
+        } else if (method.name.isRequireMethodName) {
+            generateRequireMethod(method)
         } else {
             switch method.name {
                 case DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME : generateDefaultImplementedInterface
@@ -232,7 +239,11 @@ class InterfaceTemplate extends BaseTemplate {
         }
     '''
 
-    def private static accessorJavadoc(MethodSignature method, String orString) {
+    def private accessorJavadoc(MethodSignature method, String orString) {
+        accessorJavadoc(method, orString, null)
+    }
+
+    def private accessorJavadoc(MethodSignature method, String orString, JavaTypeName exception) {
         val reference = method.comment?.referenceDescription
         val propReturn = method.propertyNameFromGetter + ", or " + orString + " if it is not present."
 
@@ -241,6 +252,9 @@ class InterfaceTemplate extends BaseTemplate {
 
             «reference.formatReference»
             @return {@code «method.returnType.fullyQualifiedName»} «propReturn»
+            «IF exception !== null»
+                @throws «exception.importedName» if object is null
+            «ENDIF»
         ''')
     }
 
@@ -347,6 +361,16 @@ class InterfaceTemplate extends BaseTemplate {
         «method.annotations.generateAnnotations»
         default «ret.importedNonNull» «name»() {
             return «CODEHELPERS.importedName».nonnull(«name.getGetterMethodForNonnull»());
+        }
+    '''
+
+    def private generateRequireMethod(MethodSignature method) '''
+        «val ret = method.returnType»
+        «val name = method.name»
+        «val fieldName = name.toLowerCase(Locale.ENGLISH).replace(REQUIRE_PREFIX,"")»
+        «accessorJavadoc(method, "throws NoSuchElementException", NSEE)»
+        default «ret.importedNonNull» «name»() {
+            return «CODEHELPERS.importedName».require(«getGetterMethodForRequire(name)»(), "«fieldName»");
         }
     '''
 
