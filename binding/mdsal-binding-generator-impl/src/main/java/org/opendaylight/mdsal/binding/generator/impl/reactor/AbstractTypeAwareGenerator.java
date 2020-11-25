@@ -84,4 +84,9 @@ abstract class AbstractTypeAwareGenerator<T extends DataTreeEffectiveStatement<?
 
         return ret;
     }
+
+    @Override
+    void constructRequire(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+        constructRequireImpl(builder, returnType);
+    }
 }

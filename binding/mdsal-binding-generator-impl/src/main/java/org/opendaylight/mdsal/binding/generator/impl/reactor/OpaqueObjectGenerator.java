@@ -8,7 +8,9 @@
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
@@ -42,5 +44,10 @@ final class OpaqueObjectGenerator<T extends DataTreeEffectiveStatement<?>> exten
 //        newType.setSchemaPath(schemaNode.getPath());
 
         return builder.build();
+    }
+
+    @Override
+    void constructRequire(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+        constructRequireImpl(builder, returnType);
     }
 }

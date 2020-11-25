@@ -15,6 +15,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotableTypeBuilder;
@@ -167,13 +168,18 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
             return;
         }
 
-        constructGetter(builder, methodReturnType(builderFactory));
+        final Type returnType = methodReturnType(builderFactory);
+        constructGetter(builder, returnType);
+        constructRequire(builder, returnType);
     }
 
     MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
-        final MethodSignatureBuilder getMethod = builder
-            .addMethod(BindingMapping.getGetterMethodName(localName().getLocalName()))
-            .setReturnType(returnType);
+        return constructGetter(builder, returnType, BindingMapping.getGetterMethodName(localName().getLocalName()));
+    }
+
+    final MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder,
+            final Type returnType, final String methodName) {
+        final MethodSignatureBuilder getMethod = builder.addMethod(methodName).setReturnType(returnType);
 
         annotateDeprecatedIfNecessary(getMethod);
 
@@ -181,6 +187,16 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
             .map(TypeMemberComment::referenceOf).ifPresent(getMethod::setComment);
 
         return getMethod;
+    }
+
+    void constructRequire(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+        // No-op in most cases
+    }
+
+    final void constructRequireImpl(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+        constructGetter(builder, returnType, BindingMapping.getRequireMethodName(localName().getLocalName()))
+            .setDefault(true)
+            .setMechanics(ValueMechanics.NONNULL);
     }
 
     void addAsGetterMethodOverride(final @NonNull GeneratedTypeBuilderBase<?> builder,
