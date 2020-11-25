@@ -66,7 +66,7 @@ public class GenEnumResolvingTest {
         assertNotNull("Generated Interface cannot contain NULL reference for Method Signature Definitions!", methods);
 
         // FIXME: split this into getter/default/static asserts
-        assertEquals(20, methods.size());
+        assertEquals(31, methods.size());
         Enumeration ianaIfType = null;
         for (final MethodSignature method : methods) {
             if (method.getName().equals("getType")) {
@@ -121,7 +121,7 @@ public class GenEnumResolvingTest {
         assertNotNull("Generated Type Interface cannot contain NULL reference to Enumeration types!", methods);
 
         // FIXME: split this into getter/default/static asserts
-        assertEquals(9, methods.size());
+        assertEquals(12, methods.size());
         for (final MethodSignature method : methods) {
             if (method.getName().equals("getLinkUpDownTrapEnable")) {
                 linkUpDownTrapEnable = method.getReturnType();
