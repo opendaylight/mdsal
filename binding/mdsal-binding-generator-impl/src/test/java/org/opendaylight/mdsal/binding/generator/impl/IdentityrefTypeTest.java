@@ -62,10 +62,11 @@ public class IdentityrefTypeTest {
             .orElseThrow();
 
         List<MethodSignature> methodSignatures = moduleGenType.getMethodDefinitions();
-        assertEquals(1, methodSignatures.size());
+        assertEquals(2, methodSignatures.size());
 
         MethodSignature methodSignature = methodSignatures.get(0);
         assertEquals("getLf", methodSignature.getName());
+        assertEquals("requireLf", methodSignatures.get(1).getName());
 
         Type returnType = methodSignature.getReturnType();
         assertThat(returnType, instanceOf(ParameterizedType.class));
