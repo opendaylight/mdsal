@@ -167,13 +167,18 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
             return;
         }
 
-        constructGetter(builder, methodReturnType(builderFactory));
+        final Type returnType = methodReturnType(builderFactory);
+        constructGetter(builder, returnType);
+        constructRequire(builder, returnType);
     }
 
     MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
-        final MethodSignatureBuilder getMethod = builder
-            .addMethod(BindingMapping.getGetterMethodName(localName().getLocalName()))
-            .setReturnType(returnType);
+        return constructGetter(builder, returnType, BindingMapping.getGetterMethodName(localName().getLocalName()));
+    }
+
+    final MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder,
+            final Type returnType, final String methodName) {
+        final MethodSignatureBuilder getMethod = builder.addMethod(methodName).setReturnType(returnType);
 
         annotateDeprecatedIfNecessary(getMethod);
 
@@ -181,6 +186,10 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
             .map(TypeMemberComment::referenceOf).ifPresent(getMethod::setComment);
 
         return getMethod;
+    }
+
+    void constructRequire(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+        // No-op in most cases
     }
 
     void addAsGetterMethodOverride(final @NonNull GeneratedTypeBuilderBase<?> builder,

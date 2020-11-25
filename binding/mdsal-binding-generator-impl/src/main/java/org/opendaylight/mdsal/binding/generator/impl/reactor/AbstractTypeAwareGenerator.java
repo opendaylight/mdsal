@@ -11,10 +11,12 @@ import static com.google.common.base.Verify.verify;
 
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.odlext.model.api.ContextReferenceEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.TypeAware;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -83,5 +85,12 @@ abstract class AbstractTypeAwareGenerator<T extends DataTreeEffectiveStatement<?
         }
 
         return ret;
+    }
+
+    @Override
+    void constructRequire(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+        constructGetter(builder, returnType, BindingMapping.getRequireMethodName(localName().getLocalName()))
+            .setDefault(true)
+            .setMechanics(ValueMechanics.NONNULL);
     }
 }
