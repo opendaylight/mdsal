@@ -1644,6 +1644,7 @@ abstract class AbstractTypeGenerator {
             typeProvider.putReferencedType(leaf.getPath(), returnType);
         }
 
+        constructRequire(typeBuilder, returnType, leaf);
         return returnType;
     }
 
@@ -1997,6 +1998,21 @@ abstract class AbstractTypeGenerator {
             final ListSchemaNode node) {
         final MethodSignatureBuilder getMethod = interfaceBuilder.addMethod(
             BindingMapping.getNonnullMethodName(node.getQName().getLocalName()));
+        getMethod.setReturnType(returnType).setDefault(true);
+        annotateDeprecatedIfNecessary(node, getMethod);
+    }
+
+    /**
+     * Costructs require method for interface.
+     *
+     * @param interfaceBuilder builder of interface
+     * @param returnType return type
+     * @param node schema node
+     */
+    private static void constructRequire(final GeneratedTypeBuilder interfaceBuilder, final Type returnType,
+            final SchemaNode node) {
+        final MethodSignatureBuilder getMethod =
+                interfaceBuilder.addMethod(BindingMapping.getRequireMethodName(node.getQName().getLocalName()));
         getMethod.setReturnType(returnType).setDefault(true);
         annotateDeprecatedIfNecessary(node, getMethod);
     }
