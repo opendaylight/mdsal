@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -62,6 +63,10 @@ class JavaFileTemplate {
      * {@code java.lang.NullPointerException} as a JavaTypeName.
      */
     static final @NonNull JavaTypeName NPE = JavaTypeName.create(NullPointerException.class);
+    /**
+     * {@code java.lang.NoSuchElementException} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName NSEE = JavaTypeName.create(NoSuchElementException.class);
     /**
      * {@code java.lang.Override} as a JavaTypeName.
      */
