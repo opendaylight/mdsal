@@ -56,7 +56,7 @@ public class AugmentRelativeXPathTest {
 
                 final List<MethodSignature> gtInterfaceMethods = gtInterface.getMethodDefinitions();
                 assertNotNull("Interface methods are null", gtInterfaceMethods);
-                assertEquals(7, gtInterfaceMethods.size());
+                assertEquals(9, gtInterfaceMethods.size());
 
                 MethodSignature getIfcKeyMethod = null;
                 for (final MethodSignature method : gtInterfaceMethods) {
@@ -76,7 +76,7 @@ public class AugmentRelativeXPathTest {
 
                 final List<MethodSignature> tunnelMethods = gtTunnel.getMethodDefinitions();
                 assertNotNull("Tunnel methods are null", tunnelMethods);
-                assertEquals(6, tunnelMethods.size());
+                assertEquals(7, tunnelMethods.size());
 
                 MethodSignature getTunnelKeyMethod = null;
                 for (MethodSignature method : tunnelMethods) {

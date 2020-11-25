@@ -51,9 +51,9 @@ public class GeneratedTypesTest {
         assertNotNull(simpleContainer);
         assertNotNull(nestedContainer);
         // FIXME: split this into getter/default/static asserts
-        assertEquals(7, simpleContainer.getMethodDefinitions().size());
+        assertEquals(10, simpleContainer.getMethodDefinitions().size());
         // FIXME: split this into getter/default/static asserts
-        assertEquals(6, nestedContainer.getMethodDefinitions().size());
+        assertEquals(8, nestedContainer.getMethodDefinitions().size());
 
         int getFooMethodCounter = 0;
         int getBarMethodCounter = 0;
@@ -134,9 +134,9 @@ public class GeneratedTypesTest {
         assertNotNull(simpleContainer);
         assertNotNull(nestedContainer);
         // FIXME: split this into getter/default/static asserts
-        assertEquals(7, simpleContainer.getMethodDefinitions().size());
+        assertEquals(10, simpleContainer.getMethodDefinitions().size());
         // FIXME: split this into getter/default/static asserts
-        assertEquals(6, nestedContainer.getMethodDefinitions().size());
+        assertEquals(8, nestedContainer.getMethodDefinitions().size());
 
         int getFooMethodCounter = 0;
         int getBarMethodCounter = 0;
@@ -286,7 +286,7 @@ public class GeneratedTypesTest {
         // FIXME: split this into getter/default/static asserts
         assertEquals(6, listParentContainerMethodsCount);
         // FIXME: split this into getter/default/static asserts
-        assertEquals(5, listChildContainerMethodsCount);
+        assertEquals(6, listChildContainerMethodsCount);
         assertEquals(1, getSimpleListKeyMethodCount);
         assertEquals(1, listKeyClassCount);
 
@@ -301,7 +301,7 @@ public class GeneratedTypesTest {
         assertEquals(1, getBarMethodCount);
 
         // FIXME: split this into getter/default/static asserts
-        assertEquals(10, simpleListMethodsCount);
+        assertEquals(15, simpleListMethodsCount);
     }
 
     @Test
