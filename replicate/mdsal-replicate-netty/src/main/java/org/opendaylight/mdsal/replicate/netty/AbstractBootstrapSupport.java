@@ -17,7 +17,11 @@ import io.netty.channel.epoll.Epoll;
 import io.netty.channel.socket.ServerSocketChannel;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 
+@Component(immediate = true, service = BootstrapSupport.class)
 public abstract class AbstractBootstrapSupport implements AutoCloseable, BootstrapSupport {
     private final Class<? extends Channel> channelClass;
     private final Class<? extends ServerSocketChannel> serverChannelClass;
@@ -33,6 +37,7 @@ public abstract class AbstractBootstrapSupport implements AutoCloseable, Bootstr
         this.workerGroup = requireNonNull(workerGroup);
     }
 
+    @Activate
     public static @NonNull AbstractBootstrapSupport create() {
         if (Epoll.isAvailable()) {
             return new EpollBootstrapSupport();
@@ -50,6 +55,7 @@ public abstract class AbstractBootstrapSupport implements AutoCloseable, Bootstr
         return new ServerBootstrap().group(bossGroup, workerGroup).channel(serverChannelClass);
     }
 
+    @Deactivate
     @Override
     public final void close() throws InterruptedException {
         bossGroup.shutdownGracefully();
