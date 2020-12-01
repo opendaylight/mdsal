@@ -81,7 +81,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
     @Test
     public void testSourceToSink() throws InterruptedException, ExecutionException {
         // Make sure to start source...
-        final Registration source = NettyReplication.createSource(support, getDomBroker(), css, true, TEST_PORT,
+        final Registration source = NettyReplicationSource.createSource(support, getDomBroker(), css, true, TEST_PORT,
             Duration.ZERO, 5);
         // ... and give it some time start up and open up the port
         Thread.sleep(1000);
@@ -95,7 +95,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
         doReturn(sinkChain).when(sinkBroker).createMergingTransactionChain(any());
 
         // Kick of the sink ...
-        final Registration sink = NettyReplication.createSink(support, sinkBroker, css, true,
+        final Registration sink = NettyReplicationSink.createSink(support, sinkBroker, css, true,
             Inet4Address.getLoopbackAddress(), TEST_PORT, Duration.ZERO, Duration.ZERO, 3);
         // ... and sync on it starting up
 
@@ -127,7 +127,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
         generateModification(getDataBroker(), deltaCount);
 
         // Make sure to start source...
-        final Registration source = NettyReplication.createSource(support, getDomBroker(), css, true, TEST_PORT,
+        final Registration source = NettyReplicationSource.createSource(support, getDomBroker(), css, true, TEST_PORT,
             Duration.ZERO, 5);
         // ... and give it some time start up and open up the port
         Thread.sleep(1000);
@@ -141,7 +141,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
         doReturn(sinkChain).when(sinkBroker).createMergingTransactionChain(any());
 
         // Kick of the sink ...
-        final Registration sink = NettyReplication.createSink(support, sinkBroker, css, true,
+        final Registration sink = NettyReplicationSink.createSink(support, sinkBroker, css, true,
             Inet4Address.getLoopbackAddress(), TEST_PORT, Duration.ZERO, Duration.ZERO, 3);
         // ... and sync on it starting up
 
