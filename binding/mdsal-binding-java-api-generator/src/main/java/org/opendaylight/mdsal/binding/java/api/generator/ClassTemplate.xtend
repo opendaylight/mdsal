@@ -150,6 +150,9 @@ class ClassTemplate extends BaseTemplate {
     def protected generateBody(boolean isInnerClass) '''
         «type.formatDataForJavaDoc.wrapToDocumentation»
         «annotationDeclaration»
+        «IF !isInnerClass»
+            «generateGeneratedAnnotation»
+        «ENDIF»
         «generateClassDeclaration(isInnerClass)» {
             «suidDeclaration»
             «innerClassesDeclarations»
