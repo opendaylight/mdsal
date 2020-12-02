@@ -81,6 +81,7 @@ class InterfaceTemplate extends BaseTemplate {
     override body() '''
         «type.formatDataForJavaDoc.wrapToDocumentation»
         «type.annotations.generateAnnotations»
+        «generateGeneratedAnnotation»
         public interface «type.name»
             «superInterfaces»
         {
@@ -95,14 +96,6 @@ class InterfaceTemplate extends BaseTemplate {
 
         }
 
-    '''
-
-    def private generateAnnotations(List<AnnotationType> annotations) '''
-        «IF annotations !== null && !annotations.empty»
-            «FOR annotation : annotations»
-                «annotation.generateAnnotation»
-            «ENDFOR»
-        «ENDIF»
     '''
 
     /**
