@@ -37,6 +37,7 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
 
     override body() '''
         «targetType.annotations.generateDeprecatedAnnotation»
+        «generateGeneratedAnnotation»
         private static final class «type.name»
             «val impIface = targetType.importedName»
             «IF augmentType !== null»

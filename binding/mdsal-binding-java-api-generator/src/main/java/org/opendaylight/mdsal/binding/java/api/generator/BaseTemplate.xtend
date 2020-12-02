@@ -482,4 +482,8 @@ abstract class BaseTemplate extends JavaFileTemplate {
         )
         «ENDIF»
     '''
+
+    def protected final generateGeneratedAnnotation() '''
+        @«GENERATED.importedName»("mdsal-binding-generator")
+    '''
 }

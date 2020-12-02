@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.annotation.processing.Generated;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
@@ -67,6 +68,10 @@ class JavaFileTemplate {
      * {@code java.lang.Override} as a JavaTypeName.
      */
     static final @NonNull JavaTypeName OVERRIDE = JavaTypeName.create(Override.class);
+    /**
+     * {@code java.lang.Generated} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName GENERATED = JavaTypeName.create(Generated.class);
     /**
      * {@code java.lang.void} as a JavaTypeName.
      */
