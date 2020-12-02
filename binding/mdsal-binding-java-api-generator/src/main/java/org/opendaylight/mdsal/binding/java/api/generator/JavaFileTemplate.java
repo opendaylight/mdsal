@@ -44,6 +44,7 @@ import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.CodeHelpers;
+import javax.annotation.processing.Generated;
 
 
 /**
@@ -66,6 +67,10 @@ class JavaFileTemplate {
      * {@code java.lang.Override} as a JavaTypeName.
      */
     static final @NonNull JavaTypeName OVERRIDE = JavaTypeName.create(Override.class);
+    /**
+     * {@code java.lang.Generated} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName GENERATED = JavaTypeName.create(Generated.class);
     /**
      * {@code java.lang.void} as a JavaTypeName.
      */

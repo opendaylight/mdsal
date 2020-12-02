@@ -489,4 +489,16 @@ abstract class BaseTemplate extends JavaFileTemplate {
         )
         «ENDIF»
     '''
+
+    def generateAnnotations(List<AnnotationType> annotations) '''
+        «IF annotations !== null && !annotations.empty»
+            «FOR annotation : annotations»
+                «annotation.generateAnnotation»
+            «ENDFOR»
+        «ENDIF»
+    '''
+
+    def protected final generateGeneratedAnnotation() '''
+        @«GENERATED.importedName»("mdsal-binding-generator")
+    '''
 }

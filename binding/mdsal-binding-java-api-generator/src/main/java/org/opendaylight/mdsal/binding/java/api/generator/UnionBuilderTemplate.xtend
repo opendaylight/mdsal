@@ -26,6 +26,7 @@ class UnionBuilderTemplate extends ClassTemplate {
 
     override body() '''
         «wrapToDocumentation(formatDataForJavaDoc(type, getClarification()))»
+        «generateGeneratedAnnotation»
         public class «type.name» {
             private «type.name»() {
                 //Exists only to defeat instantiation.
