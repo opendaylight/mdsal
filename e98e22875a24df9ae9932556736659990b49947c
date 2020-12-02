@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b4fabce4_bb4d2128",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/BoxableType.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-02T16:46:38Z",
+      "side": 1,
+      "message": "should start off as @Beta",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 6
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9dbaf9d6_5e7c00c8",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-02T16:46:38Z",
+      "side": 1,
+      "message": "unneeded parentheses",
+      "range": {
+        "startLine": 325,
+        "startChar": 20,
+        "endLine": 325,
+        "endChar": 21
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36079c5b_498ef37c",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-02T16:46:38Z",
+      "side": 1,
+      "message": "this bit requires an explanation comment. \"Data\" is defined somewhere, we need to reference that place.",
+      "range": {
+        "startLine": 333,
+        "startChar": 0,
+        "endLine": 341,
+        "endChar": 13
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85a7e16d_61465de9",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-02T16:46:38Z",
+      "side": 1,
+      "message": "usesless check",
+      "range": {
+        "startLine": 346,
+        "startChar": 21,
+        "endLine": 346,
+        "endChar": 44
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69655b70_6b55f670",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-02T16:46:38Z",
+      "side": 1,
+      "message": "this if should be a simple return of expression",
+      "range": {
+        "startLine": 347,
+        "startChar": 12,
+        "endLine": 349,
+        "endChar": 21
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e3292a4_bbffff69",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-02T16:46:38Z",
+      "side": 1,
+      "message": "these should be final in if() body, but then ...",
+      "range": {
+        "startLine": 353,
+        "startChar": 7,
+        "endLine": 354,
+        "endChar": 35
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4c2fcbb_d0fec5ae",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-02T16:46:38Z",
+      "side": 1,
+      "message": "useless check",
+      "range": {
+        "startLine": 359,
+        "startChar": 42,
+        "endLine": 359,
+        "endChar": 70
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "17d1eb80_6c9b3366",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-02T16:46:38Z",
+      "side": 1,
+      "message": "both are simple conditions: inline them without locals",
+      "range": {
+        "startLine": 360,
+        "startChar": 16,
+        "endLine": 360,
+        "endChar": 54
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d562029b_dd18b298",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 964,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-02T16:46:38Z",
+      "side": 1,
+      "message": "hmm, two places for setting suitability to false. how many places would it be if we were defaulting to false?",
+      "range": {
+        "startLine": 964,
+        "startChar": 8,
+        "endLine": 964,
+        "endChar": 54
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
