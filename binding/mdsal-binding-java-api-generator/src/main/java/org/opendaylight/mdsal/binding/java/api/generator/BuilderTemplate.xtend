@@ -64,6 +64,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     override body() '''
         «wrapToDocumentation(formatDataForJavaDoc(targetType))»
         «targetType.annotations.generateDeprecatedAnnotation»
+        «generateGeneratedAnnotation»
         public class «type.name» implements «BUILDER.importedName»<«targetType.importedName»> {
 
             «generateFields(false)»
