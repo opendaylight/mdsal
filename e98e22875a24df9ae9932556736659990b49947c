@@ -119,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "64185a0f_19050996",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 8808
+      },
+      "writtenOn": "2020-12-03T16:07:41Z",
+      "side": 1,
+      "message": "As far as I see it defined here(if it correct):\norg/opendaylight/mdsal/binding/spec/naming/BindingMapping.java:51\nAnd used raw \"Data\" string in many places without use of this constant. \nSo I believe it should be better small refactoring in separate task?",
+      "parentUuid": "36079c5b_498ef37c",
+      "range": {
+        "startLine": 333,
+        "startChar": 0,
+        "endLine": 341,
+        "endChar": 13
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "85a7e16d_61465de9",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
         "patchSetId": 8
