@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da348fd3_1a196481",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T10:46:38Z",
+      "side": 1,
+      "message": "Any body of the commit message?",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa740301_f0d4dfb3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T10:46:38Z",
+      "side": 1,
+      "message": "No need newline here",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b811b79c_7660c72e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T10:46:38Z",
+      "side": 1,
+      "message": "Signed-off-by should be last line",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0c12b82_4bbaabc8",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T10:46:38Z",
+      "side": 1,
+      "message": "Imports should be in alphabetical order",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60ca47a8_b363cb5c",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 1
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T10:46:38Z",
+      "side": 1,
+      "message": "Why don\u0027t we need static here?",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e72ceab6_6f717f68",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T10:46:38Z",
+      "side": 1,
+      "message": "Use final",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
