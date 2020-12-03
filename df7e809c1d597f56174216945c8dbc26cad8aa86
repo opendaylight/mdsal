@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "854c1bf0_3989e8f4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T13:15:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da348fd3_1a196481",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aa740301_f0d4dfb3",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e11686b_e1ee3118",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T13:15:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aa740301_f0d4dfb3",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7d4dff24_27980562",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T13:15:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b811b79c_7660c72e",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a0c12b82_4bbaabc8",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
         "patchSetId": 1
@@ -67,6 +121,24 @@
       "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "afabda80_f15b3a1b",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T13:15:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a0c12b82_4bbaabc8",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     },
     {
       "key": {
@@ -105,6 +177,24 @@
     },
     {
       "key": {
+        "uuid": "88dcee5c_2fa0ad26",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/InterfaceTemplate.xtend",
+        "patchSetId": 1
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T13:15:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d12b5c9f_ba4382bf",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e72ceab6_6f717f68",
         "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
         "patchSetId": 1
@@ -119,6 +209,24 @@
       "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "674f63d2_d9f0c1a6",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 8665
+      },
+      "writtenOn": "2020-12-03T13:15:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e72ceab6_6f717f68",
+      "revId": "df7e809c1d597f56174216945c8dbc26cad8aa86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
