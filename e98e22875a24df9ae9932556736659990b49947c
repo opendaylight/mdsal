@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1c87ae2f_4d457048",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/mdsal/binding/model/api/BoxableType.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 8808
+      },
+      "writtenOn": "2020-12-03T11:59:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4fabce4_bb4d2128",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 6
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9dbaf9d6_5e7c00c8",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
         "patchSetId": 8
@@ -45,6 +69,30 @@
       "revId": "e98e22875a24df9ae9932556736659990b49947c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69e18c89_718de770",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 8808
+      },
+      "writtenOn": "2020-12-03T11:59:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9dbaf9d6_5e7c00c8",
+      "range": {
+        "startLine": 325,
+        "startChar": 20,
+        "endLine": 325,
+        "endChar": 21
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     },
     {
       "key": {
@@ -94,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "a34f7208_ae476200",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 8808
+      },
+      "writtenOn": "2020-12-03T11:59:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "85a7e16d_61465de9",
+      "range": {
+        "startLine": 346,
+        "startChar": 21,
+        "endLine": 346,
+        "endChar": 44
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "69655b70_6b55f670",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
         "patchSetId": 8
@@ -114,6 +186,30 @@
       "revId": "e98e22875a24df9ae9932556736659990b49947c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "348ef5a9_209acf26",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 8808
+      },
+      "writtenOn": "2020-12-03T11:59:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "69655b70_6b55f670",
+      "range": {
+        "startLine": 347,
+        "startChar": 12,
+        "endLine": 349,
+        "endChar": 21
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     },
     {
       "key": {
@@ -140,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "a6e700ae_f97c97bd",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 8808
+      },
+      "writtenOn": "2020-12-03T11:59:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e3292a4_bbffff69",
+      "range": {
+        "startLine": 353,
+        "startChar": 7,
+        "endLine": 354,
+        "endChar": 35
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b4c2fcbb_d0fec5ae",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
         "patchSetId": 8
@@ -163,6 +283,30 @@
     },
     {
       "key": {
+        "uuid": "243171d9_83e148b8",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 8808
+      },
+      "writtenOn": "2020-12-03T11:59:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4c2fcbb_d0fec5ae",
+      "range": {
+        "startLine": 359,
+        "startChar": 42,
+        "endLine": 359,
+        "endChar": 70
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "17d1eb80_6c9b3366",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
         "patchSetId": 8
@@ -183,6 +327,30 @@
       "revId": "e98e22875a24df9ae9932556736659990b49947c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b91973c_967296b8",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 8808
+      },
+      "writtenOn": "2020-12-03T11:59:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "17d1eb80_6c9b3366",
+      "range": {
+        "startLine": 360,
+        "startChar": 16,
+        "endLine": 360,
+        "endChar": 54
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     },
     {
       "key": {
