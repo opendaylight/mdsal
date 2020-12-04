@@ -210,7 +210,7 @@ class InterfaceTemplate extends BaseTemplate {
     '''
 
     def private String nullableType(Type type) {
-        if (type.isObject) {
+        if (type.isObject && (Types.isMapType(type) || Types.isListType(type))) {
             return type.importedNullable
         }
         return type.importedName
