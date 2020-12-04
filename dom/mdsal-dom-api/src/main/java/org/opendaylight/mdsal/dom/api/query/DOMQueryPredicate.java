@@ -12,6 +12,8 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -19,6 +21,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.Immutable;
+import org.opendaylight.yangtools.concepts.WritableObject;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -35,7 +38,7 @@ public final class DOMQueryPredicate implements Immutable {
      * A single match. The primary entrypoint is {@link #test(NormalizedNode)}, but during composition instances may
      * be combined in a manner similar to {@link Predicate}.
      */
-    public abstract static class Match {
+    public abstract static class Match implements WritableObject {
         Match() {
             // Hidden on purpose
         }
@@ -116,6 +119,11 @@ public final class DOMQueryPredicate implements Immutable {
             final var sb = new StringBuilder();
             appendTo(sb);
             return sb.toString();
+        }
+
+        @Override
+        public void writeTo(@NonNull DataOutput out) throws IOException {
+            out.writeUTF(toString());
         }
     }
 
