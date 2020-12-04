@@ -22,6 +22,7 @@ import org.opendaylight.mdsal.binding.model.api.Enumeration
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Type
+import org.opendaylight.mdsal.binding.model.util.Types
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
 
 /**
@@ -214,7 +215,7 @@ class InterfaceTemplate extends BaseTemplate {
     '''
 
     def private String nullableType(Type type) {
-        if (type.isObject) {
+        if (type.isObject && (Types.isMapType(type) || Types.isListType(type))) {
             return type.importedNullable
         }
         return type.importedName
