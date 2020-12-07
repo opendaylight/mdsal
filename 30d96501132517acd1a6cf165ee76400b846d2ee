@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bba9f644_abf9afe6",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/module-info.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-07T12:34:03Z",
+      "side": 1,
+      "message": "this is not valid: we are shading it internally",
+      "range": {
+        "startLine": 23,
+        "startChar": 3,
+        "endLine": 23,
+        "endChar": 27
+      },
+      "revId": "30d96501132517acd1a6cf165ee76400b846d2ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
