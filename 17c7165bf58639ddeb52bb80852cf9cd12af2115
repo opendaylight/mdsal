@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d713fb64_40c15628",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/DOMQueryPredicate.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-07T12:31:49Z",
+      "side": 1,
+      "message": "this implies a static readFrom() method, which needs to be able to reconstruct the object, hence ...",
+      "range": {
+        "startLine": 41,
+        "startChar": 39,
+        "endLine": 41,
+        "endChar": 64
+      },
+      "revId": "17c7165bf58639ddeb52bb80852cf9cd12af2115",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1282ebd4_9cc20bbf",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/DOMQueryPredicate.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-07T12:31:49Z",
+      "side": 1,
+      "message": "this won\u0027t really work. note we\u0027ll also have some sort of a versioning scheme, too",
+      "range": {
+        "startLine": 126,
+        "startChar": 12,
+        "endLine": 126,
+        "endChar": 37
+      },
+      "revId": "17c7165bf58639ddeb52bb80852cf9cd12af2115",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
