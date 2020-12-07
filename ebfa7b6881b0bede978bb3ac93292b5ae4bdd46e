@@ -22,6 +22,30 @@
       "revId": "ebfa7b6881b0bede978bb3ac93292b5ae4bdd46e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a362e82f_c2dc7754",
+        "filename": "replicate/mdsal-replicate-netty/src/main/java/org/opendaylight/mdsal/replicate/netty/NettyReplicationSink.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 8548
+      },
+      "writtenOn": "2020-12-07T14:54:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "206183b5_9f6cb01c",
+      "range": {
+        "startLine": 32,
+        "startChar": 4,
+        "endLine": 32,
+        "endChar": 26
+      },
+      "revId": "ebfa7b6881b0bede978bb3ac93292b5ae4bdd46e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
