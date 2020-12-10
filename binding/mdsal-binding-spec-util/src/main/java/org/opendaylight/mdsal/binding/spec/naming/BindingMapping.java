@@ -104,11 +104,6 @@ public final class BindingMapping {
     public static final @NonNull String SCALAR_TYPE_OBJECT_GET_VALUE_NAME = "getValue";
 
     /**
-     * Prefix for getter methods working on top of boolean.
-     */
-    public static final @NonNull String BOOLEAN_GETTER_PREFIX = "is";
-
-    /**
      * Prefix for normal getter methods.
      */
     public static final @NonNull String GETTER_PREFIX = "get";
@@ -216,20 +211,20 @@ public final class BindingMapping {
         return getMethodName(name.getLocalName());
     }
 
-    public static @NonNull String getGetterPrefix(final boolean isBoolean) {
-        return isBoolean ? BOOLEAN_GETTER_PREFIX : GETTER_PREFIX;
+    public static @NonNull String getGetterPrefix() {
+        return GETTER_PREFIX;
     }
 
-    public static @NonNull String getGetterMethodName(final String localName, final boolean isBoolean) {
-        return getGetterPrefix(isBoolean) + toFirstUpper(getPropertyName(localName));
+    public static @NonNull String getGetterMethodName(final String localName) {
+        return getGetterPrefix() + toFirstUpper(getPropertyName(localName));
     }
 
-    public static @NonNull String getGetterMethodName(final QName name, final boolean isBoolean) {
-        return getGetterPrefix(isBoolean) + getGetterSuffix(name);
+    public static @NonNull String getGetterMethodName(final QName name) {
+        return getGetterPrefix() + getGetterSuffix(name);
     }
 
     public static boolean isGetterMethodName(final String methodName) {
-        return methodName.startsWith(GETTER_PREFIX) || methodName.startsWith(BOOLEAN_GETTER_PREFIX);
+        return methodName.startsWith(GETTER_PREFIX);
     }
 
     public static @NonNull String getGetterMethodForNonnull(final String methodName) {

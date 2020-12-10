@@ -22,15 +22,10 @@ public final class BindingSchemaMapping {
 
     public static String getGetterMethodName(final DataSchemaNode node) {
         return node instanceof TypedDataSchemaNode ? getGetterMethodName((TypedDataSchemaNode) node)
-                : BindingMapping.getGetterMethodName(node.getQName(), false);
+                : BindingMapping.getGetterMethodName(node.getQName());
     }
 
     public static String getGetterMethodName(final TypedDataSchemaNode node) {
-        // Bug 8903: If it is a derived type of boolean, not an inner type, then the return type
-        // of method would be the generated type of typedef not build-in types, so here it should be 'get'.
-        final TypeDefinition<?> type = node.getType();
-        return BindingMapping.getGetterMethodName(node.getQName(),
-            type instanceof BooleanTypeDefinition
-            && (type.getPath().equals(node.getPath()) || type.getBaseType() == null));
+        return BindingMapping.getGetterMethodName(node.getQName());
     }
 }

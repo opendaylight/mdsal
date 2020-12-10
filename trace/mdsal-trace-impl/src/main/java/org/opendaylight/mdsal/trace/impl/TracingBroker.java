@@ -167,8 +167,8 @@ public class TracingBroker implements TracingDOMDataBroker {
         this.codec = requireNonNull(codec, "codec");
         configure(config);
 
-        if (config.isTransactionDebugContextEnabled() != null) {
-            this.isDebugging = config.isTransactionDebugContextEnabled();
+        if (config.getTransactionDebugContextEnabled() != null) {
+            this.isDebugging = config.getTransactionDebugContextEnabled();
         } else {
             this.isDebugging = false;
         }
