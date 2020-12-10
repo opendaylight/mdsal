@@ -40,6 +40,7 @@ import java.util.List
 import java.util.Map
 import java.util.Set
 import javax.management.ConstructorParameters
+import org.apache.commons.lang3.StringUtils;
 import org.gaul.modernizer_maven_annotations.SuppressModernizer
 import org.opendaylight.mdsal.binding.model.api.ConcreteType
 import org.opendaylight.mdsal.binding.model.api.Constant
@@ -48,6 +49,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
 import org.opendaylight.mdsal.binding.model.api.Restrictions
 import org.opendaylight.mdsal.binding.model.api.Type
+import org.opendaylight.mdsal.binding.model.util.Types
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping
 import org.opendaylight.yangtools.yang.common.Empty
@@ -205,6 +207,18 @@ class ClassTemplate extends BaseTemplate {
     def private defaultProperties() '''
         «FOR field : properties SEPARATOR "\n"»
             «field.getterMethod»
+            «IF Types.BOOLEAN.equals(field.getReturnType())»
+
+                /**
+                 * Compatibility method getter method.
+                 *
+                 * @deprecated Please use {@link #«field.getterMethodName»()} instead.
+                 */
+                @«DEPRECATED.importedName»(forRemoval = true)
+                public «field.returnType.importedName» is«field.name.toFirstUpper»() {
+                    return «field.getterMethodName»();
+                }
+            «ENDIF»
             «IF !field.readOnly»
                 «field.setterMethod»
             «ENDIF»

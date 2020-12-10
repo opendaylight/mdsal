@@ -17,6 +17,7 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_TO_STRING_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
+import org.apache.commons.lang3.StringUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects
 import java.util.List
@@ -176,6 +177,9 @@ class InterfaceTemplate extends BaseTemplate {
                     «generateStaticMethod(m)»
                 «ELSEIF m.parameters.empty && m.name.isGetterMethodName»
                     «generateAccessorMethod(m)»
+                    «IF Types.BOOLEAN.equals(m.getReturnType())»
+                        «generateDefaultIsGetter(m)»
+                    «ENDIF»
                 «ELSE»
                     «generateMethod(m)»
                 «ENDIF»
@@ -236,6 +240,16 @@ class InterfaceTemplate extends BaseTemplate {
             «accessorJavadoc(method, "{@code null}")»
             «method.annotations.generateAnnotations»
             «method.returnType.nullableType» «method.name»();
+        '''
+    }
+
+    def private generateDefaultIsGetter(MethodSignature method) {
+        val methodName = "is" + StringUtils.capitalize(method.propertyNameFromGetter) + "()"
+        return '''
+
+            default «method.returnType.nullableType» «methodName»{
+                return «method.name»();
+            }
         '''
     }
 
