@@ -30,7 +30,7 @@ public final class BindingSchemaMapping {
         // of method would be the generated type of typedef not build-in types, so here it should be 'get'.
         final TypeDefinition<?> type = node.getType();
         return BindingMapping.getGetterMethodName(node.getQName(),
-            type instanceof BooleanTypeDefinition
-            && (type.getPath().equals(node.getPath()) || type.getBaseType() == null));
+                type instanceof BooleanTypeDefinition
+                        && (type.getPath().equals(node.getPath()) || type.getBaseType() == null));
     }
 }
