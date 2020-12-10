@@ -36,7 +36,6 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.keyedListAc
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.keyedListNotification;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.opaqueObject;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.rpcResult;
-import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 import static org.opendaylight.mdsal.binding.model.util.Types.classType;
 import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
@@ -1801,11 +1800,10 @@ abstract class AbstractTypeGenerator {
      * Creates the name of the getter method name from <code>localName</code>.
      *
      * @param localName string with the name of the getter method
-     * @param returnType return type
      * @return string with the name of the getter method for <code>methodName</code> in JAVA method format
      */
-    public static String getterMethodName(final String localName, final Type returnType) {
-        return BindingMapping.getGetterMethodName(localName, BOOLEAN.equals(returnType));
+    public static String getterMethodName(final String localName) {
+        return BindingMapping.getGetterMethodName(localName);
     }
 
     /**
@@ -1823,7 +1821,7 @@ abstract class AbstractTypeGenerator {
     private MethodSignatureBuilder constructGetter(final GeneratedTypeBuilder interfaceBuilder, final Type returnType,
             final SchemaNode node) {
         final MethodSignatureBuilder getMethod = interfaceBuilder.addMethod(
-            getterMethodName(node.getQName().getLocalName(), returnType));
+            getterMethodName(node.getQName().getLocalName()));
         getMethod.setReturnType(returnType);
 
         annotateDeprecatedIfNecessary(node, getMethod);
