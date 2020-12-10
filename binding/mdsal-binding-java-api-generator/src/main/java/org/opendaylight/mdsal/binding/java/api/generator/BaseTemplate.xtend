@@ -102,18 +102,20 @@ abstract class BaseTemplate extends JavaFileTemplate {
         "_" + property.name
     }
 
-    final protected static def propertyNameFromGetter(MethodSignature getter) {
+    final protected static def propertyNameFromMethodName(String methodName) {
         var String prefix;
-        if (getter.name.startsWith(BindingMapping.BOOLEAN_GETTER_PREFIX)) {
-            prefix = BindingMapping.BOOLEAN_GETTER_PREFIX
-        } else if (getter.name.startsWith(BindingMapping.GETTER_PREFIX)) {
+        if (methodName.startsWith(BindingMapping.GETTER_PREFIX)) {
             prefix = BindingMapping.GETTER_PREFIX
-        } else if (getter.name.startsWith(BindingMapping.NONNULL_PREFIX)) {
+        } else if (methodName.startsWith(BindingMapping.NONNULL_PREFIX)) {
             prefix = BindingMapping.NONNULL_PREFIX
         } else {
-            throw new IllegalArgumentException(getter + " is not a getter")
+            throw new IllegalArgumentException(methodName + " is not a getter")
         }
-        return getter.name.substring(prefix.length).toFirstLower;
+        return methodName.substring(prefix.length).toFirstLower;
+    }
+
+    final protected static def propertyNameFromGetter(MethodSignature getter) {
+        return propertyNameFromMethodName(getter.name);
     }
 
     /**
@@ -135,7 +137,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
     '''
 
     final protected def getterMethodName(GeneratedProperty field) {
-        val prefix = if(field.returnType.equals(Types.BOOLEAN)) "is" else "get"
+        val prefix = "get"
         return '''«prefix»«field.name.toFirstUpper»'''
     }
 

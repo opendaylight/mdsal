@@ -337,7 +337,7 @@ class JavaFileTemplate {
         if (method.isDefault()) {
             return null;
         }
-        final String prefix = BindingMapping.getGetterPrefix(Types.BOOLEAN.equals(method.getReturnType()));
+        final String prefix = BindingMapping.getGetterPrefix();
         if (!method.getName().startsWith(prefix)) {
             return null;
         }
