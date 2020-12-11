@@ -17,6 +17,9 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactory;
 import org.opendaylight.yangtools.concepts.Immutable;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * Implementation of AdapterFactory.
@@ -24,6 +27,7 @@ import org.opendaylight.yangtools.concepts.Immutable;
  * @author Robert Varga
  */
 @Beta
+@Component(immediate = true, service = AdapterFactory.class)
 @MetaInfServices(value = AdapterFactory.class)
 @NonNullByDefault
 @Singleton
@@ -36,7 +40,8 @@ public final class BindingAdapterFactory extends AbstractAdapterFactory implemen
     }
 
     @Inject
-    public BindingAdapterFactory(final AdapterContext codec) {
+    @Activate
+    public BindingAdapterFactory(@Reference final AdapterContext codec) {
         this.codec = requireNonNull(codec);
     }
 
