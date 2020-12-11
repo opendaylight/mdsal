@@ -98,8 +98,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher
         try {
             final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> node =
                     findNodeFor(treeId.getPathArguments());
-            final AbstractDOMDataTreeChangeListenerRegistration<L> reg =
-                    new AbstractDOMDataTreeChangeListenerRegistration<L>(listener) {
+            final var reg = new AbstractDOMDataTreeChangeListenerRegistration<>(listener) {
                 @Override
                 protected void removeRegistration() {
                     AbstractDOMStoreTreeChangePublisher.this.removeRegistration(node, this);

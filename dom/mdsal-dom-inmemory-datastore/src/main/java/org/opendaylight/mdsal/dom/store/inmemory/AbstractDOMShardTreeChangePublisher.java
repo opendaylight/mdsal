@@ -158,8 +158,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> node =
                 findNodeFor(listenerPath.getPathArguments());
         @SuppressWarnings("unchecked")
-        final AbstractDOMDataTreeChangeListenerRegistration<L> registration =
-                new AbstractDOMDataTreeChangeListenerRegistration<>((L) listener) {
+        final var registration = new AbstractDOMDataTreeChangeListenerRegistration<>((L) listener) {
             @Override
             protected void removeRegistration() {
                 listener.close();
