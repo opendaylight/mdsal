@@ -1597,11 +1597,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             sb.append('(');
         }
         for (int i = 0; i < bits.size(); i++) {
-            if (bits.get(i).getName().equals(defaultValue)) {
-                sb.append(true);
-            } else {
-                sb.append(false);
-            }
+            sb.append(bits.get(i).getName().equals(defaultValue));
             if (i != bits.size() - 1) {
                 sb.append(", ");
             }
