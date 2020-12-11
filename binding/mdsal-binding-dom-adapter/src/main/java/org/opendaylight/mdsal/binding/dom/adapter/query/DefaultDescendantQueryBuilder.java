@@ -11,7 +11,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.query.DescendantQueryBuilder;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
-import org.opendaylight.mdsal.binding.api.query.QueryStructureException;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -61,7 +60,7 @@ final class DefaultDescendantQueryBuilder<R extends DataObject, T extends DataOb
     }
 
     @Override
-    public QueryExpression<T> build() throws QueryStructureException {
+    public QueryExpression<T> build() {
         builder.setSelectPath(childPath.build());
         return builder.buildQuery();
     }
