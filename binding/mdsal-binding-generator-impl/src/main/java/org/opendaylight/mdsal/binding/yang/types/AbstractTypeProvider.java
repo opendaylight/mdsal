@@ -1592,16 +1592,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         bits.sort(BIT_NAME_COMPARATOR);
         final StringBuilder sb = new StringBuilder();
         if (!isExt) {
-            sb.append("new ");
-            sb.append(className);
-            sb.append('(');
+            sb.append("new ").append(className).append('(');
         }
         for (int i = 0; i < bits.size(); i++) {
-            if (bits.get(i).getName().equals(defaultValue)) {
-                sb.append(true);
-            } else {
-                sb.append(false);
-            }
+            sb.append(bits.get(i).getName().equals(defaultValue));
             if (i != bits.size() - 1) {
                 sb.append(", ");
             }
@@ -1693,11 +1687,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
     private static String union(final String className, final String defaultValue, final LeafSchemaNode node) {
         return new StringBuilder()
-                .append("new ")
-                .append(className)
-                .append("(\"")
-                .append(defaultValue)
-                .append("\".toCharArray())")
+                .append("new ").append(className).append("(\"").append(defaultValue).append("\".toCharArray())")
                 .toString();
     }
 
