@@ -15,8 +15,27 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.kohsuke.MetaInfServices;
+import org.opendaylight.mdsal.binding.api.ActionProviderService;
+import org.opendaylight.mdsal.binding.api.ActionService;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.MountPointService;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactory;
+import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
+import org.opendaylight.mdsal.dom.api.DOMNotificationService;
+import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.concepts.Immutable;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * Implementation of AdapterFactory.
@@ -24,10 +43,11 @@ import org.opendaylight.yangtools.concepts.Immutable;
  * @author Robert Varga
  */
 @Beta
+@Component(immediate = true, service = AdapterFactory.class)
 @MetaInfServices(value = AdapterFactory.class)
 @NonNullByDefault
 @Singleton
-public final class BindingAdapterFactory extends AbstractAdapterFactory implements Immutable {
+public final class BindingAdapterFactory implements AdapterFactory, Immutable {
     private final AdapterContext codec;
 
     public BindingAdapterFactory() {
@@ -36,12 +56,49 @@ public final class BindingAdapterFactory extends AbstractAdapterFactory implemen
     }
 
     @Inject
-    public BindingAdapterFactory(final AdapterContext codec) {
+    @Activate
+    public BindingAdapterFactory(@Reference final AdapterContext codec) {
         this.codec = requireNonNull(codec);
     }
 
     @Override
-    AdapterContext context() {
-        return codec;
+    public DataBroker createDataBroker(final DOMDataBroker domService) {
+        return new BindingDOMDataBrokerAdapter(codec, domService);
+    }
+
+    @Override
+    public MountPointService createMountPointService(final DOMMountPointService domService) {
+        return new BindingDOMMountPointServiceAdapter(codec, domService);
+    }
+
+    @Override
+    public NotificationService createNotificationService(final DOMNotificationService domService) {
+        return new BindingDOMNotificationServiceAdapter(codec, domService);
+    }
+
+    @Override
+    public NotificationPublishService createNotificationPublishService(
+            final DOMNotificationPublishService domService) {
+        return new BindingDOMNotificationPublishServiceAdapter(codec, domService);
+    }
+
+    @Override
+    public RpcConsumerRegistry createRpcConsumerRegistry(final DOMRpcService domService) {
+        return new BindingDOMRpcServiceAdapter(codec, domService);
+    }
+
+    @Override
+    public RpcProviderService createRpcProviderService(final DOMRpcProviderService domService) {
+        return new BindingDOMRpcProviderServiceAdapter(codec, domService);
+    }
+
+    @Override
+    public ActionService createActionService(final DOMActionService domService) {
+        return new ActionServiceAdapter(codec, domService);
+    }
+
+    @Override
+    public ActionProviderService createActionProviderService(final DOMActionProviderService domService) {
+        return new ActionProviderServiceAdapter(codec, domService);
     }
 }
