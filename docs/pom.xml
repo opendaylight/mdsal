@@ -612,7 +612,7 @@
                         <link>https://commons.apache.org/proper/commons-codec/apidocs/</link>
 
                         <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/6.0.12/</link>
-                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/4.0.14/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/4.0.15/</link>
                     </links>
                     <groups>
                         <group>
