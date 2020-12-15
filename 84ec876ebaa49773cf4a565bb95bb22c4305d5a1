@@ -46,6 +46,30 @@
       "revId": "84ec876ebaa49773cf4a565bb95bb22c4305d5a1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "236f12ee_408d9188",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderGeneratorTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-12-15T08:53:35Z",
+      "side": 1,
+      "message": "well, but we are always using \\n when emitting things and do not use System.out.println() or similar which would be OS-specific. So the question who is actually performing the conversion?",
+      "parentUuid": "2caaa5fd_dc479a90",
+      "range": {
+        "startLine": 29,
+        "startChar": 25,
+        "endLine": 29,
+        "endChar": 60
+      },
+      "revId": "84ec876ebaa49773cf4a565bb95bb22c4305d5a1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
