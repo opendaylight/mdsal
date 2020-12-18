@@ -167,11 +167,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         this.codec = requireNonNull(codec, "codec");
         configure(config);
 
-        if (config.isTransactionDebugContextEnabled() != null) {
-            this.isDebugging = config.isTransactionDebugContextEnabled();
-        } else {
-            this.isDebugging = false;
-        }
+        this.isDebugging = Boolean.TRUE.equals(config.getTransactionDebugContextEnabled());
         final String db = "DataBroker";
         this.transactionChainsRegistry     = new CloseTrackedRegistry<>(db, "createTransactionChain()", isDebugging);
         this.readOnlyTransactionsRegistry  = new CloseTrackedRegistry<>(db, "newReadOnlyTransaction()", isDebugging);
