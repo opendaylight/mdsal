@@ -194,8 +194,6 @@ class InterfaceTemplate extends BaseTemplate {
                 default :
                     if (VOID == method.returnType.identifier) {
                         generateNoopVoidInterfaceMethod(method)
-                    } else if (method.name.startsWith(BOOLEAN_GETTER_PREFIX)) {
-                        generateIsAccessorMethod(method)
                     }
             }
         }
@@ -220,13 +218,6 @@ class InterfaceTemplate extends BaseTemplate {
         «method.annotations.generateAnnotations»
         default «VOID.importedName» «method.name»(«method.parameters.generateParameters») {
             // No-op
-        }
-    '''
-
-    def private generateIsAccessorMethod(MethodSignature method) '''
-        @«DEPRECATED.importedName»(forRemoval = true)
-        default «method.returnType.importedName» «method.name»(«method.parameters.generateParameters») {
-            return «GETTER_PREFIX»«method.name.substring(BOOLEAN_GETTER_PREFIX.length)»();
         }
     '''
 
