@@ -1780,17 +1780,6 @@ abstract class AbstractTypeGenerator {
     }
 
     /**
-     * Creates the name of the getter method name from <code>localName</code>.
-     *
-     * @param localName string with the name of the getter method
-     * @param returnType return type
-     * @return string with the name of the getter method for <code>methodName</code> in JAVA method format
-     */
-    public static String getterMethodName(final String localName, final Type returnType) {
-        return BindingMapping.getGetterMethodName(localName, BOOLEAN.equals(returnType));
-    }
-
-    /**
      * Created a method signature builder as part of <code>interfaceBuilder</code>. The method signature builder is
      * created for the getter method of <code>schemaNodeName</code>. Also <code>comment</code>
      * and <code>returnType</code> information are added to the builder.
@@ -1805,11 +1794,19 @@ abstract class AbstractTypeGenerator {
     private MethodSignatureBuilder constructGetter(final GeneratedTypeBuilder interfaceBuilder, final Type returnType,
             final SchemaNode node) {
         final MethodSignatureBuilder getMethod = interfaceBuilder.addMethod(
-            getterMethodName(node.getQName().getLocalName(), returnType));
+            BindingMapping.getGetterMethodName(node.getQName().getLocalName()));
         getMethod.setReturnType(returnType);
 
         annotateDeprecatedIfNecessary(node, getMethod);
         addComment(getMethod, node);
+
+        if (BOOLEAN.equals(returnType)) {
+            // Construct a default 'isFoo()' method for compatibility
+            interfaceBuilder.addMethod(BindingMapping.getGetterMethodName(node.getQName().getLocalName(), true))
+                .setAccessModifier(AccessModifier.PUBLIC)
+                .setDefault(true)
+                .setReturnType(BOOLEAN);
+        }
 
         return getMethod;
     }

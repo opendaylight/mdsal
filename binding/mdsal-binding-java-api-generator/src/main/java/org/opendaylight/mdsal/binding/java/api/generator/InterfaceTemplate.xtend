@@ -7,10 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
-import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.getGetterMethodForNonnull
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isGetterMethodName
 import static extension org.opendaylight.mdsal.binding.spec.naming.BindingMapping.isNonnullMethodName
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BOOLEAN_GETTER_PREFIX
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.GETTER_PREFIX
 
 import java.util.List
 import java.util.Map.Entry
@@ -180,6 +182,10 @@ class InterfaceTemplate extends BaseTemplate {
         } else {
             switch method.name {
                 case DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME : generateDefaultImplementedInterface
+                default :
+                    if (method.name.startsWith(BOOLEAN_GETTER_PREFIX)) {
+                        generateIsAccessorMethod(method)
+                    }
             }
         }
     }
@@ -197,6 +203,13 @@ class InterfaceTemplate extends BaseTemplate {
         «nullableType(ret)» «method.name»();
     '''
 
+    def private generateIsAccessorMethod(MethodSignature method) '''
+        @«DEPRECATED.importedName»(forRemoval = true)
+        default «method.returnType.importedName» «method.name»(«method.parameters.generateParameters») {
+            return «GETTER_PREFIX»«method.name.substring(BOOLEAN_GETTER_PREFIX.length)»();
+        }
+    '''
+
     def private generateDefaultImplementedInterface() '''
         @«OVERRIDE.importedName»
         default «CLASS.importedName»<«type.fullyQualifiedName»> «DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME»() {
@@ -210,7 +223,7 @@ class InterfaceTemplate extends BaseTemplate {
         «formatDataForJavaDoc(method, "@return " + asCode(ret.fullyQualifiedName) + " " + asCode(propertyNameFromGetter(method)) + ", or an empty list if it is not present")»
         «method.annotations.generateAnnotations»
         default «ret.importedNonNull» «name»() {
-            return «CODEHELPERS.importedName».nonnull(«getGetterMethodForNonnull(name)»());
+            return «CODEHELPERS.importedName».nonnull(«name.getGetterMethodForNonnull»());
         }
     '''
 

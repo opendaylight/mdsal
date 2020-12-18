@@ -105,11 +105,9 @@ abstract class BaseTemplate extends JavaFileTemplate {
 
     final protected def propertyNameFromGetter(MethodSignature getter) {
         var String prefix;
-        if (getter.name.startsWith(BindingMapping.BOOLEAN_GETTER_PREFIX)) {
-            prefix = BindingMapping.BOOLEAN_GETTER_PREFIX
-        } else if (getter.name.startsWith(BindingMapping.GETTER_PREFIX)) {
+        if (BindingMapping.isGetterMethodName(getter.name)) {
             prefix = BindingMapping.GETTER_PREFIX
-        } else if (getter.name.startsWith(BindingMapping.NONNULL_PREFIX)) {
+        } else if (BindingMapping.isNonnullMethodName(getter.name)) {
             prefix = BindingMapping.NONNULL_PREFIX
         } else {
             throw new IllegalArgumentException(getter + " is not a getter")
@@ -124,22 +122,27 @@ abstract class BaseTemplate extends JavaFileTemplate {
      * generated property with data about field which is generated as the getter method
      * @return string with the getter method source code in JAVA format
      */
-    protected def getterMethod(GeneratedProperty field) {
-        '''
-            public «field.returnType.importedName» «field.getterMethodName»() {
-                «val fieldName = field.fieldName»
-                «IF field.returnType.name.endsWith("[]")»
-                return «fieldName» == null ? null : «fieldName».clone();
-                «ELSE»
-                return «fieldName»;
-                «ENDIF»
-            }
-        '''
-    }
+    protected def getterMethod(GeneratedProperty field) '''
+        «val methodName = field.getterMethodName»
+        public «field.returnType.importedName» «methodName»() {
+            «val fieldName = field.fieldName»
+            «IF field.returnType.name.endsWith("[]")»
+            return «fieldName» == null ? null : «fieldName».clone();
+            «ELSE»
+            return «fieldName»;
+            «ENDIF»
+        }
+        «IF field.returnType == Types.BOOLEAN»
+
+        @«DEPRECATED.importedName»(forRemoval = true)
+        public final «field.returnType.importedName» «BindingMapping.BOOLEAN_GETTER_PREFIX»«field.name.toFirstUpper»() {
+            return «methodName»();
+        }
+        «ENDIF»
+    '''
 
     final protected def getterMethodName(GeneratedProperty field) {
-        val prefix = if(field.returnType.equals(Types.BOOLEAN)) "is" else "get"
-        return '''«prefix»«field.name.toFirstUpper»'''
+        return '''«BindingMapping.GETTER_PREFIX»«field.name.toFirstUpper»'''
     }
 
     /**
