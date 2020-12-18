@@ -36,7 +36,6 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.keyedListAc
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.keyedListNotification;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.opaqueObject;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.rpcResult;
-import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.STRING;
 import static org.opendaylight.mdsal.binding.model.util.Types.classType;
 import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
@@ -1985,14 +1984,6 @@ abstract class AbstractTypeGenerator {
 
         annotateDeprecatedIfNecessary(node, getMethod);
         addComment(getMethod, node);
-
-        if (BOOLEAN.equals(returnType)) {
-            // Construct a default 'isFoo()' method for compatibility
-            interfaceBuilder.addMethod(BindingMapping.getGetterMethodName(node.getQName().getLocalName(), true))
-                .setAccessModifier(AccessModifier.PUBLIC)
-                .setDefault(true)
-                .setReturnType(BOOLEAN);
-        }
 
         return getMethod;
     }
