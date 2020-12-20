@@ -14,7 +14,10 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
  * A {@link DOMDataTreeShard} which allows registration of listeners, allowing realization of the DOMDataTreeService's
  * registerListener contract. Note that producer/consumer as well as the logical data store type are taken care of
  * by the caller, hence implementations of this interface only need to take care of communicating with their subshards.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 @Beta
 public interface ListenableDOMDataTreeShard extends DOMDataTreeShard, DOMDataTreeListenerRegistry {
 

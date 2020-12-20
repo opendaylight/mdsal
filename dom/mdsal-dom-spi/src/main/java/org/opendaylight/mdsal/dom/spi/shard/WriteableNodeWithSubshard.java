@@ -13,6 +13,7 @@ import java.util.Map;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 @Beta
+@Deprecated(forRemoval = true)
 public abstract class WriteableNodeWithSubshard extends WriteableModificationNode {
 
     private final Map<PathArgument, WriteableModificationNode> children;

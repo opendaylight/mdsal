@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.annotations.Beta;
@@ -19,10 +18,12 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * Abstract base class for {@link DOMDataTreeWriteCursor} implementations.
  *
  * @param <M> Modification type
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
 @Beta
+@Deprecated(forRemoval = true)
 public abstract class AbstractDataModificationCursor<M> implements DOMDataTreeWriteCursor {
-
     private final Deque<WriteCursorStrategy> stack = new ArrayDeque<>();
 
     public AbstractDataModificationCursor(final M root) {

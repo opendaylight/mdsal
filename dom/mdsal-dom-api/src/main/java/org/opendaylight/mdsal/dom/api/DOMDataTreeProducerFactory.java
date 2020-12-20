@@ -13,7 +13,10 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Base source of {@link DOMDataTreeProducer}s. This interface is usually not used directly,
  * but rather through one of its sub-interfaces.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeProducerFactory {
     /**
      * Create a producer, which is able to access to a set of trees.

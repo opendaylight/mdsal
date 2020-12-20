@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @deprecated This class is scheduled for removal when we remove compatibility with dom.spi.store APIs.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public final class CompatListenableDOMDataTreeShard extends ForwardingObject implements ListenableDOMDataTreeShard {
     private static final Logger LOG = LoggerFactory.getLogger(CompatListenableDOMDataTreeShard.class);
 

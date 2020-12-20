@@ -9,7 +9,10 @@ package org.opendaylight.mdsal.dom.api;
 
 /**
  * Type capture of a {@link DOMServiceExtension} applicable to {@link DOMDataTreeService} implementations.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeServiceExtension
     extends DOMServiceExtension<DOMDataTreeService, DOMDataTreeServiceExtension> {
 

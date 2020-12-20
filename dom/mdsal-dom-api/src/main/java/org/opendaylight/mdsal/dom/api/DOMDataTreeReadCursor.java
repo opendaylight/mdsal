@@ -14,6 +14,7 @@ import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeReadCursor extends DOMDataTreeCursor {
     /**
      * Read a particular node from the snapshot.

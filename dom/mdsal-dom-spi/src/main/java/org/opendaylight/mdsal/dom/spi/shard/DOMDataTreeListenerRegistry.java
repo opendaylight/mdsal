@@ -18,7 +18,10 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
  * Utility interface for objects dispatching events to {@link DOMDataTreeListener}.
  *
  * @author Robert Varga
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 @Beta
 public interface DOMDataTreeListenerRegistry {
     <T extends DOMDataTreeListener> @NonNull ListenerRegistration<T> registerListener(@NonNull T listener,

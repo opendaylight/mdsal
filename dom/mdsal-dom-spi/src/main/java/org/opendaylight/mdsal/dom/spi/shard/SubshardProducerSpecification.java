@@ -19,7 +19,10 @@ import org.opendaylight.yangtools.concepts.Mutable;
 /**
  * Specification of subshard producer context that's used for building modification factories that span into the
  * subshards. This class is not thread-safe.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 @Beta
 @NonNullByDefault
 public final class SubshardProducerSpecification implements Mutable {

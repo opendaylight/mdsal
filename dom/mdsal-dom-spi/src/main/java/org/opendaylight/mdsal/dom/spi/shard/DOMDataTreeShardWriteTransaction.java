@@ -15,6 +15,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 
 @Beta
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeShardWriteTransaction extends DOMDataTreeCursorProvider {
     /**
      * Create a new write cursor. Any previous cursors have to be {@link DOMDataTreeWriteCursor#close()}d.

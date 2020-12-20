@@ -15,7 +15,10 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshotCurs
 
 /**
  * Delegating implementation of a {@link ReadableCursorOperation}.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 abstract class DelegatingReadableCursorOperation extends ForwardingObject implements ReadableCursorOperation {
 
     @Override

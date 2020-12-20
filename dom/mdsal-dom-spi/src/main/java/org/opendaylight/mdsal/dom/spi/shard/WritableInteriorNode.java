@@ -13,6 +13,7 @@ import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
+@Deprecated(forRemoval = true)
 class WritableInteriorNode extends WriteableNodeWithSubshard {
 
     private final PathArgument identifier;

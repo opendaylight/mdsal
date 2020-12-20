@@ -14,6 +14,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
 
 @Beta
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeShardProducer extends Registration {
     /**
      * Return the collection of tree identifiers to which this producer is bound. This collection

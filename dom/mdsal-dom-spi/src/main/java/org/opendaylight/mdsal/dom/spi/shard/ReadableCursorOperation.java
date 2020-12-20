@@ -5,13 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.spi.shard;
 
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
+@Deprecated(forRemoval = true)
 interface ReadableCursorOperation extends CursorStrategy {
 
     Optional<NormalizedNode<?, ?>> readNode(PathArgument arg);

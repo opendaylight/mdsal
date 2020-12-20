@@ -15,7 +15,10 @@ import org.eclipse.jdt.annotation.NonNull;
  * a shard can receive. Each shard implementation is expected to also implement some of the
  * datastore-level APIs. Which interfaces are required depends on the {@link DOMDataTreeShardingService}
  * implementation.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeShard extends EventListener {
     /**
      * Invoked whenever a child is getting attached as a more specific prefix under this shard.

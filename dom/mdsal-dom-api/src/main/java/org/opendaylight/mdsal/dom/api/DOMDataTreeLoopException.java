@@ -12,7 +12,9 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Exception thrown when a loop is detected in the way {@link DOMDataTreeListener}
  * and {@link DOMDataTreeProducer} instances would be connected.
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval =  true)
 public class DOMDataTreeLoopException extends Exception {
     private static final long serialVersionUID = 1L;
 

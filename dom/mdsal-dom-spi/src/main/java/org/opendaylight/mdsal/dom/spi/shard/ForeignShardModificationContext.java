@@ -21,7 +21,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A handle for a transaction being done on a different shard. This class is not thread-safe.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 @Beta
 public final class ForeignShardModificationContext implements Identifiable<DOMDataTreeIdentifier>, Mutable {
     private static final Logger LOG = LoggerFactory.getLogger(ForeignShardModificationContext.class);

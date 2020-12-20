@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Beta
+@Deprecated(forRemoval = true)
 public class ForeignShardThreePhaseCommitCohort implements DOMStoreThreePhaseCommitCohort {
     private static final Logger LOG = LoggerFactory.getLogger(ForeignShardThreePhaseCommitCohort.class);
 

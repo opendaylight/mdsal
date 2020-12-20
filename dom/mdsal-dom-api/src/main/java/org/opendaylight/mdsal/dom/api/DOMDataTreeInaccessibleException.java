@@ -13,7 +13,10 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * Failure reported when a data tree is no longer accessible.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 @NonNullByDefault
 public class DOMDataTreeInaccessibleException extends DOMDataTreeListeningException {
     private static final long serialVersionUID = 1L;

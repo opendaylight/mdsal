@@ -19,8 +19,11 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
  *
  * <p>
  * Implementations of this interface are expected to be inherently not-thread-safe.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
 @Beta
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeCursor extends AutoCloseable {
     /**
      * Move the cursor to the specified child of the current position.

@@ -11,6 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModificationCursor;
 
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeCursorProvider {
     /**
      * Create a new {@link DataTreeModificationCursor} at specified path. May fail if specified path

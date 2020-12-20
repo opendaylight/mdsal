@@ -25,7 +25,10 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
  * <p>
  * Whenever a parent/child relationship is changed, the parent is notified, so it can
  * understand that a logical child has been attached.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeShardingService extends DOMService {
     /**
      * Register a shard as responsible for a particular subtree prefix.

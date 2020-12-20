@@ -10,7 +10,9 @@ package org.opendaylight.mdsal.dom.api;
 /**
  * Exception indicating that the {@link DOMDataTreeProducer} has an open user
  * transaction and cannot be closed.
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public class DOMDataTreeProducerBusyException extends DOMDataTreeProducerException {
     private static final long serialVersionUID = 1L;
 

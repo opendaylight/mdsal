@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.annotations.Beta;
@@ -16,7 +15,8 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
  *
  * @deprecated Use {@link ListenableDOMDataTreeShard} instead.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @Beta
 public interface ReadableWriteableDOMDataTreeShard extends DOMStoreTreeChangePublisher, WriteableDOMDataTreeShard {
+
 }

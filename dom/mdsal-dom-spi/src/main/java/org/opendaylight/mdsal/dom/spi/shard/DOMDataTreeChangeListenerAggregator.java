@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @author Robert Varga
  * @deprecated This class is scheduled for removal when we remove compatibility with dom.spi.store APIs.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 final class DOMDataTreeChangeListenerAggregator
         extends AbstractStateAggregator<DOMDataTreeChangeListenerAggregator.State> {
 
@@ -160,7 +160,7 @@ final class DOMDataTreeChangeListenerAggregator
             return ret;
         });
 
-        return new AbstractListenerRegistration<L>(listener) {
+        return new AbstractListenerRegistration<>(listener) {
             @Override
             protected void removeRegistration() {
                 regs.forEach(ListenerRegistration::close);

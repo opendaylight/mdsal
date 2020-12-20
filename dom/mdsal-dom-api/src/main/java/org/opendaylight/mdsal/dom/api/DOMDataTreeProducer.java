@@ -42,7 +42,10 @@ import org.eclipse.jdt.annotation.NonNull;
  * callback on that particular instance. Any transaction which is not submitted by the
  * time the callback returns will be implicitly cancelled. A producer becomes unbound
  * when the listener it is bound to becomes unregistered.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeProducer extends DOMDataTreeProducerFactory, AutoCloseable {
     /**
      * Allocate a new open transaction on this producer. Any and all transactions previously

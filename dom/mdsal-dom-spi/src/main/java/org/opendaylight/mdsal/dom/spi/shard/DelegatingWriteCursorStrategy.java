@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.annotations.Beta;
@@ -17,7 +16,10 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 
 /**
  * Delegating implementation of a {@link WriteCursorStrategy}.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 @Beta
 public abstract class DelegatingWriteCursorStrategy extends ForwardingObject implements WriteCursorStrategy {
 

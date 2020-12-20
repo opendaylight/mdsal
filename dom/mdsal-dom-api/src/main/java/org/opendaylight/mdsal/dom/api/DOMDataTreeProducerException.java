@@ -9,7 +9,10 @@ package org.opendaylight.mdsal.dom.api;
 
 /**
  * Base exception for all exceptions related to {@link DOMDataTreeProducer}s.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public class DOMDataTreeProducerException extends Exception {
     private static final long serialVersionUID = 1L;
 

@@ -12,7 +12,10 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * Exception thrown when an attempt to attach a conflicting shard to the global
  * table.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public class DOMDataTreeShardingConflictException extends Exception {
     private static final long serialVersionUID = 1L;
 

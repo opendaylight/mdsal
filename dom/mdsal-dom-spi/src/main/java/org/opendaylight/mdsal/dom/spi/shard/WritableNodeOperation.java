@@ -17,6 +17,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 
 @Beta
+@Deprecated(forRemoval = true)
 public abstract class WritableNodeOperation implements WriteCursorStrategy {
     private final WriteableModificationNode node;
     private final DOMDataTreeWriteCursor cursor;

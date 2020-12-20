@@ -15,7 +15,10 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 
 /**
  * Definition of a subshard containing the prefix and the subshard.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 @Beta
 @NonNullByDefault
 public final class ChildShardContext {

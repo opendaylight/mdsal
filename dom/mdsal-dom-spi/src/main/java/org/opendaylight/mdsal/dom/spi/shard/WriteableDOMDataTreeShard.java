@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.annotations.Beta;
@@ -15,7 +14,10 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 
 /**
  * Indicates that a shard is writable via the provided {@link #createProducer(Collection) createProducer} method.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 @Beta
 public interface WriteableDOMDataTreeShard extends DOMDataTreeShard {
 

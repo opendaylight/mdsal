@@ -26,7 +26,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * Compatibility bridge between {@link DOMDataTreeListenerRegistry} and {@link DOMStoreTreeChangePublisher}.
  */
 @Beta
-@Deprecated
+@Deprecated(forRemoval = true)
 public final class CompatDOMDataTreeListenerRegistry implements DOMDataTreeListenerRegistry {
 
     private final DOMStoreTreeChangePublisher publisher;
@@ -50,7 +50,7 @@ public final class CompatDOMDataTreeListenerRegistry implements DOMDataTreeListe
                         listener.onDataTreeChanged(changes, ImmutableMap.of());
                     }
                 });
-            return new AbstractListenerRegistration<T>(listener) {
+            return new AbstractListenerRegistration<>(listener) {
                 @Override
                 protected void removeRegistration() {
                     reg.close();

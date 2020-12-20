@@ -15,7 +15,10 @@ import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
  * Write transaction that provides cursor's with write access to the data tree.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeCursorAwareTransaction extends DOMDataTreeCursorProvider, Identifiable<Object> {
 
     /**

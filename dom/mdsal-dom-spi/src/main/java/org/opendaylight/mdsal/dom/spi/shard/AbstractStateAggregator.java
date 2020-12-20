@@ -32,8 +32,11 @@ import org.opendaylight.yangtools.concepts.Mutable;
  *
  * @param <S> State type
  * @author Robert Varga
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
 @Beta
+@Deprecated(forRemoval = true)
 public abstract class AbstractStateAggregator<S extends AbstractStateAggregator.State> {
 
     /**

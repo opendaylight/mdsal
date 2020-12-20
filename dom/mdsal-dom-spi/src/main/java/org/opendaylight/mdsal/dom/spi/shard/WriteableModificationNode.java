@@ -16,7 +16,10 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 
 /**
  * Writable node that can have subshard children somewhere on lower level.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public abstract class WriteableModificationNode implements Identifiable<PathArgument> {
 
     /**

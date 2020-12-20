@@ -17,7 +17,10 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 
 /**
  * Writable node that is located at a boundary to a subshard.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 @Beta
 public class WriteableSubshardBoundaryNode extends WriteableModificationNode {
 

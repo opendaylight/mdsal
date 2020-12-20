@@ -19,6 +19,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 @Beta
+@Deprecated(forRemoval = true)
 public abstract class AbstractShardModificationFactoryBuilder<T> extends ModificationContextNodeBuilder
         implements Builder<T> {
     protected final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards = new HashMap<>();

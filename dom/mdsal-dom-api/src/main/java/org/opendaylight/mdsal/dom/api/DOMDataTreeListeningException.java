@@ -12,7 +12,10 @@ import org.opendaylight.mdsal.common.api.ReadFailedException;
 /**
  * Base exception for various causes why and {@link DOMDataTreeListener}
  * may be terminated by the {@link DOMDataTreeService} implementation.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public class DOMDataTreeListeningException extends ReadFailedException {
     private static final long serialVersionUID = 1L;
 

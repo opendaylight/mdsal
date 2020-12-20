@@ -28,7 +28,10 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
  * not go into a feedback loop, where it is impossible to block either a producer or
  * a consumer without accumulating excess work in the backlog stemming from its previous
  * activity.
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 public interface DOMDataTreeService extends DOMDataTreeProducerFactory,
         DOMExtensibleService<DOMDataTreeService, DOMDataTreeServiceExtension> {
     /**

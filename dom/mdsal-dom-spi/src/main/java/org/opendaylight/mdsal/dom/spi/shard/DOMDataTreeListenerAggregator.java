@@ -42,7 +42,10 @@ import org.slf4j.LoggerFactory;
  * listener.
  *
  * @author Robert Varga
+ *
+ * @deprecated This interface is scheduled for removal in the next major release.
  */
+@Deprecated(forRemoval = true)
 @Beta
 public final class DOMDataTreeListenerAggregator
         extends AbstractStateAggregator<DOMDataTreeListenerAggregator.State> {
@@ -232,7 +235,7 @@ public final class DOMDataTreeListenerAggregator
 
         final Started<State> result = start(builders -> start(listener, regs, builders));
         if (result instanceof Failed) {
-            return new AbstractListenerRegistration<L>(listener) {
+            return new AbstractListenerRegistration<>(listener) {
                 @Override
                 protected void removeRegistration() {
                     // Listeners have already been closed, this is a no-op
@@ -240,7 +243,7 @@ public final class DOMDataTreeListenerAggregator
             };
         }
 
-        return new AbstractListenerRegistration<L>(listener) {
+        return new AbstractListenerRegistration<>(listener) {
             @Override
             protected void removeRegistration() {
                 regs.forEach(ListenerRegistration::close);
