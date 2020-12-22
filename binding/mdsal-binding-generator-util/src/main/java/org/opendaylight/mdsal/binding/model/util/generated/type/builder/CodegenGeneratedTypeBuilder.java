@@ -81,11 +81,6 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     }
 
     @Override
-    AbstractEnumerationBuilder newEnumerationBuilder(final JavaTypeName identifier) {
-        return new CodegenEnumerationBuilder(identifier);
-    }
-
-    @Override
     protected CodegenGeneratedTypeBuilder thisInstance() {
         return this;
     }

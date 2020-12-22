@@ -15,38 +15,38 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBu
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-public final class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
+public class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
     public RuntimeGeneratedTOBuilder(final JavaTypeName identifier) {
         super(identifier);
     }
 
     @Override
-    public void setRestrictions(final Restrictions restrictions) {
+    public final void setRestrictions(final Restrictions restrictions) {
         // No-op
     }
 
     @Override
-    public void setSUID(final GeneratedPropertyBuilder suid) {
+    public final void setSUID(final GeneratedPropertyBuilder suid) {
         // No-op
     }
 
     @Override
-    public void setDescription(final String description) {
+    public final void setDescription(final String description) {
         // No-op
     }
 
     @Override
-    public void setModuleName(final String moduleName) {
+    public final void setModuleName(final String moduleName) {
         // No-op
     }
 
     @Override
-    public void setSchemaPath(final SchemaPath schemaPath) {
+    public final void setSchemaPath(final SchemaPath schemaPath) {
         // No-op
     }
 
     @Override
-    public void setReference(final String reference) {
+    public final void setReference(final String reference) {
         // No-op
     }
 
@@ -55,43 +55,38 @@ public final class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
         return new GTO(this);
     }
 
-    @Override
-    AbstractEnumerationBuilder newEnumerationBuilder(final JavaTypeName identifier) {
-        return new RuntimeEnumerationBuilder(identifier);
-    }
-
-    private static final class GTO extends AbstractGeneratedTransferObject {
-        GTO(final RuntimeGeneratedTOBuilder builder) {
+    protected static class GTO extends AbstractGeneratedTransferObject {
+        protected GTO(final RuntimeGeneratedTOBuilder builder) {
             super(builder);
         }
 
         @Override
-        public Restrictions getRestrictions() {
+        public final Restrictions getRestrictions() {
             throw unsupported();
         }
 
         @Override
-        public GeneratedProperty getSUID() {
+        public final GeneratedProperty getSUID() {
             throw unsupported();
         }
 
         @Override
-        public String getDescription() {
+        public final String getDescription() {
             throw unsupported();
         }
 
         @Override
-        public String getReference() {
+        public final String getReference() {
             throw unsupported();
         }
 
         @Override
-        public Iterable<QName> getSchemaPath() {
+        public final Iterable<QName> getSchemaPath() {
             throw unsupported();
         }
 
         @Override
-        public String getModuleName() {
+        public final String getModuleName() {
             throw unsupported();
         }
 
