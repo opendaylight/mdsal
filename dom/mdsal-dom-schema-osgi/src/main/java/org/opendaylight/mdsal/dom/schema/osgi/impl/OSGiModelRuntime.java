@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.schema.osgi.impl;
 
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.annotations.Activate;
