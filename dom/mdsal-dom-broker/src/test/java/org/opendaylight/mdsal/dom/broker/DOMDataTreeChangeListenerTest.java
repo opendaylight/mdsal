@@ -64,7 +64,7 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
         domStore.registerTreeChangeListener(TestModel.TEST_PATH, listener);
         verify(listener, times(1)).onInitialData();
 
-        final NormalizedNode<?, ?> testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
+        final NormalizedNode testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
         writeTx.write(TestModel.TEST_PATH, testNode);
@@ -83,7 +83,7 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
         final ArgumentCaptor<Collection> candidateCapture = ArgumentCaptor.forClass(Collection.class);
         doNothing().when(listener).onDataTreeChanged(any());
 
-        final NormalizedNode<?, ?> testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
+        final NormalizedNode testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
 
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);

@@ -21,19 +21,20 @@ class TracingReadOnlyTransaction extends AbstractCloseTracked<TracingReadOnlyTra
 
     private final DOMDataTreeReadTransaction delegate;
 
-    TracingReadOnlyTransaction(DOMDataTreeReadTransaction delegate,
-            CloseTrackedRegistry<TracingReadOnlyTransaction> readOnlyTransactionsRegistry) {
+    TracingReadOnlyTransaction(final DOMDataTreeReadTransaction delegate,
+            final CloseTrackedRegistry<TracingReadOnlyTransaction> readOnlyTransactionsRegistry) {
         super(readOnlyTransactionsRegistry);
         this.delegate = requireNonNull(delegate);
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(LogicalDatastoreType store, YangInstanceIdentifier path) {
+    public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
+            final YangInstanceIdentifier path) {
         return delegate.read(store, path);
     }
 
     @Override
-    public FluentFuture<Boolean> exists(LogicalDatastoreType store, YangInstanceIdentifier path) {
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         return delegate.exists(store, path);
     }
 
@@ -51,7 +52,7 @@ class TracingReadOnlyTransaction extends AbstractCloseTracked<TracingReadOnlyTra
     // https://jira.opendaylight.org/browse/CONTROLLER-1792
 
     @Override
-    public final boolean equals(Object object) {
+    public final boolean equals(final Object object) {
         return object == this || delegate.equals(object);
     }
 
