@@ -19,16 +19,16 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 @NonNullByDefault
 final class LazyDOMQueryResult implements DOMQueryResult {
-    private final NormalizedNode<?, ?> queryRoot;
+    private final NormalizedNode queryRoot;
     private final DOMQuery query;
 
-    LazyDOMQueryResult(final DOMQuery query, final NormalizedNode<?, ?> queryRoot) {
+    LazyDOMQueryResult(final DOMQuery query, final NormalizedNode queryRoot) {
         this.query = requireNonNull(query);
         this.queryRoot = requireNonNull(queryRoot);
     }
 
     @Override
-    public Iterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> iterator() {
+    public Iterator<Entry<YangInstanceIdentifier, NormalizedNode>> iterator() {
         return new DOMQueryIterator(query, queryRoot);
     }
 }
