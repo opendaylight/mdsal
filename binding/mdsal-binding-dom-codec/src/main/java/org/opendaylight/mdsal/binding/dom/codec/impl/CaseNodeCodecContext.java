@@ -37,13 +37,13 @@ final class CaseNodeCodecContext<D extends DataObject> extends DataObjectCodecCo
     }
 
     @Override
-    public D deserialize(final NormalizedNode<?, ?> normalizedNode) {
+    public D deserialize(final NormalizedNode normalizedNode) {
         Preconditions.checkState(normalizedNode instanceof ChoiceNode);
         return createBindingProxy((ChoiceNode) normalizedNode);
     }
 
     @Override
-    protected Object deserializeObject(final NormalizedNode<?, ?> normalizedNode) {
+    protected Object deserializeObject(final NormalizedNode normalizedNode) {
         return deserialize(normalizedNode);
     }
 

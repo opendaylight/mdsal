@@ -21,13 +21,13 @@ final class ContainerNodeCodecContext<D extends DataObject> extends DataObjectCo
     }
 
     @Override
-    public D deserialize(final NormalizedNode<?, ?> data) {
+    public D deserialize(final NormalizedNode data) {
         Preconditions.checkState(data instanceof ContainerNode);
         return createBindingProxy((ContainerNode) data);
     }
 
     @Override
-    protected Object deserializeObject(final NormalizedNode<?, ?> normalizedNode) {
+    protected Object deserializeObject(final NormalizedNode normalizedNode) {
         return deserialize(normalizedNode);
     }
 }

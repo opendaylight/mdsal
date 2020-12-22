@@ -28,7 +28,7 @@ public interface DOMRpcImplementation {
      * @throws NullPointerException if any argument is null
      */
     @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull DOMRpcIdentifier rpc,
-            @NonNull NormalizedNode<?, ?> input);
+            @NonNull NormalizedNode input);
 
     /**
      * Return the relative invocation cost of this implementation. Default implementation return 0.
