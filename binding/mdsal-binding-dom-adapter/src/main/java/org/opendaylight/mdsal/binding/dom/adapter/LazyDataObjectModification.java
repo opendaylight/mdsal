@@ -296,7 +296,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
         return MoreObjects.toStringHelper(this).add("identifier", identifier).add("domData", domData).toString();
     }
 
-    private T deserialize(final Optional<NormalizedNode<?, ?>> dataAfter) {
+    private T deserialize(final Optional<NormalizedNode> dataAfter) {
         return dataAfter.map(codec::deserialize).orElse(null);
     }
 }

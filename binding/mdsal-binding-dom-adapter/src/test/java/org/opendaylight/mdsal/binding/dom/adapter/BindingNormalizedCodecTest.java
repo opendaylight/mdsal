@@ -14,7 +14,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.SetMultimap;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,13 +31,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
-import org.opendaylight.yangtools.yang.model.util.AbstractSchemaContext;
+import org.opendaylight.yangtools.yang.model.spi.AbstractSchemaContext;
 
 public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
 
@@ -96,7 +96,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
         }
 
         @Override
-        protected SetMultimap<URI, Module> getNamespaceToModules() {
+        protected SetMultimap<XMLNamespace, Module> getNamespaceToModules() {
             return ImmutableSetMultimap.of();
         }
 
