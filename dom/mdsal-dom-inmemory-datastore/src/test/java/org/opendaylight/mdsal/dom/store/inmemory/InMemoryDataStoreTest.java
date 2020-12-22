@@ -76,20 +76,20 @@ public class InMemoryDataStoreTest {
         /**
          * Writes /test in writeTx.
          */
-        NormalizedNode<?, ?> testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
+        NormalizedNode testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
         writeTx.write(TestModel.TEST_PATH, testNode);
 
         /**
          * Reads /test from writeTx Read should return container.
          */
-        ListenableFuture<Optional<NormalizedNode<?, ?>>> writeTxContainer = writeTx.read(TestModel.TEST_PATH);
+        ListenableFuture<Optional<NormalizedNode>> writeTxContainer = writeTx.read(TestModel.TEST_PATH);
         assertEquals("read: isPresent", true, writeTxContainer.get().isPresent());
         assertEquals("read: data", testNode, writeTxContainer.get().get());
 
         /**
          * Reads /test from readTx Read should return Absent.
          */
-        ListenableFuture<Optional<NormalizedNode<?, ?>>> readTxContainer = readTx.read(TestModel.TEST_PATH);
+        ListenableFuture<Optional<NormalizedNode>> readTxContainer = readTx.read(TestModel.TEST_PATH);
         assertEquals("read: isPresent", false, readTxContainer.get().isPresent());
     }
 
@@ -102,13 +102,13 @@ public class InMemoryDataStoreTest {
         /**
          * Writes /test in writeTx.
          */
-        NormalizedNode<?, ?> testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
+        NormalizedNode testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
         writeTx.write(TestModel.TEST_PATH, testNode);
 
         /**
          * Reads /test from writeTx Read should return container.
          */
-        ListenableFuture<Optional<NormalizedNode<?, ?>>> writeTxContainer = writeTx.read(TestModel.TEST_PATH);
+        ListenableFuture<Optional<NormalizedNode>> writeTxContainer = writeTx.read(TestModel.TEST_PATH);
         assertEquals("read: isPresent", true, writeTxContainer.get().isPresent());
         assertEquals("read: data", testNode, writeTxContainer.get().get());
 
@@ -116,8 +116,7 @@ public class InMemoryDataStoreTest {
 
         assertThreePhaseCommit(cohort);
 
-        Optional<NormalizedNode<?, ?>> afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH)
-                .get();
+        Optional<NormalizedNode> afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
         assertEquals("After commit read: isPresent", true, afterCommitRead.isPresent());
         assertEquals("After commit read: data", testNode, afterCommitRead.get());
     }
@@ -134,8 +133,7 @@ public class InMemoryDataStoreTest {
 
         assertThreePhaseCommit(writeTx.ready());
 
-        Optional<NormalizedNode<?, ?>> afterCommitRead =
-                domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
+        Optional<NormalizedNode> afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
         assertEquals("After commit read: isPresent", true, afterCommitRead.isPresent());
 
         // Delete /test and verify
@@ -166,7 +164,7 @@ public class InMemoryDataStoreTest {
 
         assertThreePhaseCommit(writeTx.ready());
 
-        Optional<NormalizedNode<?, ?>> afterCommitRead =
+        Optional<NormalizedNode> afterCommitRead =
                 domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
         assertEquals("After commit read: isPresent", true, afterCommitRead.isPresent());
         assertEquals("After commit read: data", containerNode, afterCommitRead.get());
@@ -351,7 +349,7 @@ public class InMemoryDataStoreTest {
     @Test
     public void testReadyWithMissingMandatoryData() throws InterruptedException {
         DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
-        NormalizedNode<?, ?> testNode = ImmutableContainerNodeBuilder.create()
+        NormalizedNode testNode = ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new NodeIdentifier(TestModel.MANDATORY_DATA_TEST_QNAME))
                 .addChild(ImmutableNodes.leafNode(TestModel.OPTIONAL_QNAME, "data"))
                 .build();
@@ -375,13 +373,11 @@ public class InMemoryDataStoreTest {
 
         DOMStoreThreePhaseCommitCohort cohort = writeTx.ready();
 
-        assertTrue(cohort.canCommit().get().booleanValue());
+        assertTrue(cohort.canCommit().get());
         cohort.preCommit().get();
         cohort.abort().get();
 
-        Optional<NormalizedNode<?, ?>> afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH)
-                .get();
-        assertFalse(afterCommitRead.isPresent());
+        assertEquals(Optional.empty(), domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get());
     }
 
     @Test
@@ -476,12 +472,12 @@ public class InMemoryDataStoreTest {
 
     private static void assertThreePhaseCommit(final DOMStoreThreePhaseCommitCohort cohort)
             throws InterruptedException, ExecutionException {
-        assertTrue(cohort.canCommit().get().booleanValue());
+        assertTrue(cohort.canCommit().get());
         cohort.preCommit().get();
         cohort.commit().get();
     }
 
-    private static Optional<NormalizedNode<?, ?>> assertTestContainerWrite(final DOMStoreReadWriteTransaction writeTx)
+    private static Optional<NormalizedNode> assertTestContainerWrite(final DOMStoreReadWriteTransaction writeTx)
             throws InterruptedException, ExecutionException {
         /**
          *
@@ -496,12 +492,11 @@ public class InMemoryDataStoreTest {
     /**
      * Reads /test from readTx Read should return container.
      */
-    private static Optional<NormalizedNode<?, ?>> assertTestContainerExists(final DOMStoreReadTransaction readTx)
+    private static Optional<NormalizedNode> assertTestContainerExists(final DOMStoreReadTransaction readTx)
             throws InterruptedException, ExecutionException {
 
-        ListenableFuture<Optional<NormalizedNode<?, ?>>> writeTxContainer = readTx.read(TestModel.TEST_PATH);
+        ListenableFuture<Optional<NormalizedNode>> writeTxContainer = readTx.read(TestModel.TEST_PATH);
         assertTrue(writeTxContainer.get().isPresent());
         return writeTxContainer.get();
     }
-
 }
