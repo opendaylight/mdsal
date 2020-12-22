@@ -34,7 +34,7 @@ class DOMForwardedReadOnlyTransaction
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(final LogicalDatastoreType store,
+    public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
             final YangInstanceIdentifier path) {
         return getSubtransaction(store).read(path);
     }
