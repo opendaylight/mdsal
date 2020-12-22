@@ -16,7 +16,8 @@ module org.opendaylight.mdsal.binding.generator.util {
     requires transitive org.opendaylight.mdsal.binding.generator.api;
     requires org.opendaylight.mdsal.binding.spec.util;
     requires org.opendaylight.yangtools.util;
-    requires org.opendaylight.yangtools.yang.model.util;
+    requires org.opendaylight.yangtools.yang.model.api;
+    requires org.opendaylight.yangtools.yang.model.ri;
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
