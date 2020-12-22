@@ -9,8 +9,8 @@ package org.opendaylight.mdsal.yanglib.api;
 
 import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 
 /**
  * Main entrypoint for instantiating YangLibSupport implementations.
