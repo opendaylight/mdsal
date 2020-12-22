@@ -26,7 +26,7 @@ public abstract class ForwardingDOMDataReadOnlyTransaction extends ForwardingObj
     protected abstract @NonNull DOMDataTreeReadTransaction delegate();
 
     @Override
-    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(final LogicalDatastoreType store,
+    public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
             final YangInstanceIdentifier path) {
         return delegate().read(store, path);
     }

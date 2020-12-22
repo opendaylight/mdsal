@@ -109,8 +109,8 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
          * Reads /test from readTx Read should return Absent.
          *
          */
-        final ListenableFuture<Optional<NormalizedNode<?, ?>>> readTxContainer = readTx
-                .read(OPERATIONAL, TestModel.TEST_PATH);
+        final ListenableFuture<Optional<NormalizedNode>> readTxContainer = readTx.read(OPERATIONAL,
+            TestModel.TEST_PATH);
         assertFalse(readTxContainer.get().isPresent());
     }
 
@@ -126,7 +126,7 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
 
         writeTx.commit().get();
 
-        final Optional<NormalizedNode<?, ?>> afterCommitRead = domBroker.newReadOnlyTransaction()
+        final Optional<NormalizedNode> afterCommitRead = domBroker.newReadOnlyTransaction()
                 .read(OPERATIONAL, TestModel.TEST_PATH).get();
         assertTrue(afterCommitRead.isPresent());
     }
@@ -170,10 +170,10 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
     @Test(expected = ReadFailedException.class)
     @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:AvoidHidingCauseException"})
     public void basicTests() throws Throwable {
-        final DataContainerChild<?, ?> outerList = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
+        final DataContainerChild outerList = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
                 .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
                 .build();
-        final NormalizedNode<?, ?> testContainer = Builders.containerBuilder()
+        final NormalizedNode testContainer = Builders.containerBuilder()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TestModel.TEST_QNAME))
                 .withChild(outerList)
                 .build();
