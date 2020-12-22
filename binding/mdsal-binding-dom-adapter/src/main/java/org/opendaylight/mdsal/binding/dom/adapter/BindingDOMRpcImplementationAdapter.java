@@ -58,7 +58,7 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
+    public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode input) {
         final QName rpcType = rpc.getType();
         final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
         final DataObject bindingInput = input != null ? deserialize(serializer, rpcType, input) : null;
@@ -72,7 +72,7 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     }
 
     private DataObject deserialize(final CurrentAdapterSerializer serializer, final QName rpcType,
-            final NormalizedNode<?, ?> input) {
+            final NormalizedNode input) {
         if (ENABLE_CODEC_SHORTCUT && input instanceof BindingLazyContainerNode) {
             return ((BindingLazyContainerNode<?>) input).getDataObject();
         }

@@ -8,16 +8,12 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import com.google.common.annotations.Beta;
-import java.util.IdentityHashMap;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.kohsuke.MetaInfServices;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -41,16 +37,7 @@ public final class DefaultBindingRuntimeGenerator implements BindingRuntimeGener
 
     @Override
     public BindingRuntimeTypes generateTypeMapping(final EffectiveModelContext context) {
-        GeneratorUtils.checkContext(context);
-
-        final Map<SchemaNode, JavaTypeName> renames = new IdentityHashMap<>();
-        for (;;) {
-            try {
-                return new RuntimeTypeGenerator(context, renames).toTypeMapping();
-            } catch (RenameMappingException e) {
-                GeneratorUtils.rename(renames, e);
-            }
-        }
+        return BindingRuntimeTypesFactory.createTypes(context);
     }
 
     @Activate
