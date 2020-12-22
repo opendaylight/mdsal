@@ -9,8 +9,6 @@ package org.opendaylight.mdsal.binding.yang.types;
 
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.TYPE_OBJECT;
-import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
-import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataTreeSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.annotations.Beta;
@@ -65,6 +63,7 @@ import org.opendaylight.yangtools.yang.common.Uint64;
 import org.opendaylight.yangtools.yang.common.Uint8;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
@@ -88,10 +87,10 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
-import org.opendaylight.yangtools.yang.model.util.PathExpressionImpl;
+import org.opendaylight.yangtools.yang.model.ri.type.BaseTypes;
+import org.opendaylight.yangtools.yang.model.spi.ModuleDependencySort;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,8 +102,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
     // Backwards compatibility: Union types used to be instantiated in YANG namespace, which is no longer
     // the case, as unions are emitted to their correct schema path.
-    private static final SchemaPath UNION_PATH = SchemaPath.create(true,
-        org.opendaylight.yangtools.yang.model.util.BaseTypes.UNION_QNAME);
+    private static final SchemaPath UNION_PATH = SchemaPath.create(true, UnionTypeDefinition.QNAME);
 
     /**
      * Contains the schema data red from YANG files.
@@ -119,6 +117,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     private final Map<SchemaPath, Type> referencedTypes = new HashMap<>();
     private final Map<Module, Set<Type>> additionalTypes = new HashMap<>();
     private final Map<SchemaNode, JavaTypeName> renames;
+    private final SchemaInferenceStack stack;
 
     /**
      * Creates new instance of class <code>TypeProviderImpl</code>.
@@ -127,10 +126,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      * @param renames renaming table
      * @throws IllegalArgumentException if <code>schemaContext</code> equal null.
      */
-    AbstractTypeProvider(final SchemaContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
-        Preconditions.checkArgument(schemaContext != null, "Schema Context cannot be null!");
-        this.schemaContext = schemaContext;
+    AbstractTypeProvider(final EffectiveModelContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
+        this.schemaContext = requireNonNull(schemaContext);
         this.renames = requireNonNull(renames);
+        this.stack = SchemaInferenceStack.of(schemaContext);
+
         resolveTypeDefsFromContext();
     }
 
@@ -225,17 +225,6 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             }
         }
         return returnType;
-    }
-
-    public SchemaNode getTargetForLeafref(final LeafrefTypeDefinition leafrefType, final SchemaNode parentNode) {
-        final PathExpression xpath = leafrefType.getPathStatement();
-        Preconditions.checkArgument(xpath != null, "The Path Statement for Leafref Type Definition cannot be NULL!");
-
-        final Module module = findParentModule(schemaContext, parentNode);
-        Preconditions.checkArgument(module != null, "Failed to find module for parent %s", parentNode);
-
-        return xpath.isAbsolute() ? findDataTreeSchemaNode(schemaContext, module.getQNameModule(), xpath)
-                : findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
     }
 
     private GeneratedTransferObject shadedTOWithRestrictions(final GeneratedTransferObject gto,
@@ -649,7 +638,6 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         addEnumDescription(enumBuilder, enumTypeDef);
         enumTypeDef.getReference().ifPresent(enumBuilder::setReference);
         enumBuilder.setModuleName(module.getName());
-        enumBuilder.setSchemaPath(enumTypeDef.getPath());
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
         return enumBuilder.toInstance(null);
     }

@@ -25,7 +25,7 @@ public interface DOMDataTreeWriteOperations {
      * @param data the data object to be written to the specified path
      * @throws IllegalStateException if the transaction has already been submitted
      */
-    void put(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode<?, ?> data);
+    void put(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode data);
 
     /**
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
@@ -39,7 +39,7 @@ public interface DOMDataTreeWriteOperations {
      * @param data the data object to be merged to the specified path
      * @throws IllegalStateException if the transaction has already been submitted
      */
-    void merge(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode<?, ?> data);
+    void merge(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode data);
 
     /**
      * Removes a piece of data from specified path. This operation does not fail if the specified path does not exist.
