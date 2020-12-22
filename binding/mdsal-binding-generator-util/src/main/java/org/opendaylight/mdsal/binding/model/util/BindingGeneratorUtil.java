@@ -268,7 +268,7 @@ public final class BindingGeneratorUtil {
             //        comparison
             if (type instanceof DecimalTypeDefinition) {
                 final DecimalTypeDefinition decimal = (DecimalTypeDefinition) type;
-                final DecimalTypeBuilder tmpBuilder = BaseTypes.decimalTypeBuilder(decimal.getPath());
+                final DecimalTypeBuilder tmpBuilder = BaseTypes.decimalTypeBuilder(decimal.getQName());
                 tmpBuilder.setFractionDigits(decimal.getFractionDigits());
                 final DecimalTypeDefinition tmp = tmpBuilder.build();
 

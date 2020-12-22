@@ -39,7 +39,6 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
-import org.opendaylight.yangtools.yang.model.util.type.IdentityrefTypeBuilder;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class TypeProviderImplTest {
@@ -155,8 +154,9 @@ public class TypeProviderImplTest {
         assertEquals("java.lang.Boolean.FALSE", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "false"));
 
         // decimal type
-        final DecimalTypeDefinition decimalType = BaseTypes.decimalTypeBuilder(refTypePath).setFractionDigits(4)
-                .build();
+        final DecimalTypeDefinition decimalType = BaseTypes.decimalTypeBuilder(refTypePath.getLastComponent())
+            .setFractionDigits(4)
+            .build();
 
         reset(leafSchemaNode);
         doReturn(decimalType).when(leafSchemaNode).getType();
@@ -178,7 +178,7 @@ public class TypeProviderImplTest {
             leafSchemaNode, "default value"));
 
         // enum type
-        final EnumTypeDefinition enumType =  BaseTypes.enumerationTypeBuilder(refTypePath).build();
+        final EnumTypeDefinition enumType =  BaseTypes.enumerationTypeBuilder(refTypePath.getLastComponent()).build();
 
         reset(leafSchemaNode);
         doReturn(enumType).when(leafSchemaNode).getType();
@@ -194,9 +194,9 @@ public class TypeProviderImplTest {
 
         // identityref type
         final IdentitySchemaNode identitySchemaNode = mock(IdentitySchemaNode.class);
-        final IdentityrefTypeBuilder identityRefBuilder = BaseTypes.identityrefTypeBuilder(refTypePath);
-        identityRefBuilder.addIdentity(identitySchemaNode);
-        final IdentityrefTypeDefinition identityRef =  identityRefBuilder.build();
+        final IdentityrefTypeDefinition identityRef =  BaseTypes.identityrefTypeBuilder(refTypePath.getLastComponent())
+            .addIdentity(identitySchemaNode)
+            .build();
 
         reset(leafSchemaNode);
         doReturn(identityRef).when(leafSchemaNode).getType();

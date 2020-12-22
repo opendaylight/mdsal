@@ -1724,13 +1724,13 @@ abstract class AbstractTypeGenerator {
             if (typeDef instanceof UnionTypeDefinition) {
                 // GeneratedType for this type definition should have be already created
                 final ModuleContext mc = moduleContext(typeDef.getQName().getModule());
-                returnType = mc.getTypedefs().get(typeDef.getPath());
+                returnType = mc.getTypedefs().get(typeDef);
                 if (returnType == null) {
                     // This may still be an inner type, try to find it
                     returnType = mc.getInnerType(typeDef.getPath());
                 }
             } else if (typeDef instanceof EnumTypeDefinition && typeDef.getBaseType() == null) {
-                // Annonymous enumeration (already generated, since it is inherited via uses).
+                // Anonymous enumeration (already generated, since it is inherited via uses).
                 LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
                 QName qname = originalLeaf.getQName();
                 returnType = moduleContext(qname.getModule()).getInnerType(originalLeaf.getType().getPath());

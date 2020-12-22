@@ -24,17 +24,17 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  */
 @Beta
 @NonNullByDefault
-public interface DOMQueryResult extends Iterable<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>>, Immutable {
+public interface DOMQueryResult extends Iterable<Entry<YangInstanceIdentifier, NormalizedNode>>, Immutable {
 
-    default Stream<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> stream() {
+    default Stream<Entry<YangInstanceIdentifier, NormalizedNode>> stream() {
         return StreamSupport.stream(spliterator(), false);
     }
 
-    default Stream<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> parallelStream() {
+    default Stream<Entry<YangInstanceIdentifier, NormalizedNode>> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }
 
-    default List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items() {
+    default List<? extends Entry<YangInstanceIdentifier, NormalizedNode>> items() {
         return stream().collect(Collectors.toUnmodifiableList());
     }
 
@@ -42,11 +42,11 @@ public interface DOMQueryResult extends Iterable<Entry<YangInstanceIdentifier, N
         return SimpleDOMQueryResult.EMPTY_INSTANCE;
     }
 
-    static DOMQueryResult of(final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> item) {
+    static DOMQueryResult of(final Entry<YangInstanceIdentifier, NormalizedNode> item) {
         return new SimpleDOMQueryResult(ImmutableList.of(item));
     }
 
-    static DOMQueryResult of(final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items) {
+    static DOMQueryResult of(final List<Entry<YangInstanceIdentifier, NormalizedNode>> items) {
         return items.isEmpty() ? of() : new SimpleDOMQueryResult(items);
     }
 }
