@@ -33,9 +33,9 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 @Beta
 public final class SimpleQueryExecutor implements QueryExecutor {
-    private final NormalizedNode<?, ?> root;
+    private final NormalizedNode root;
 
-    public SimpleQueryExecutor(final NormalizedNode<?, ?> root) {
+    public SimpleQueryExecutor(final NormalizedNode root) {
         this.root = requireNonNull(root);
     }
 
@@ -63,7 +63,7 @@ public final class SimpleQueryExecutor implements QueryExecutor {
             @SuppressWarnings("unchecked")
             final BindingDataObjectCodecTreeNode<T> dataCodec = (BindingDataObjectCodecTreeNode<T>)
                 codec.getSubtreeCodec(InstanceIdentifier.create(data.implementedInterface()));
-            rootBuilder.withChild((DataContainerChild<?, ?>) verifyNotNull(dataCodec).serialize(data));
+            rootBuilder.withChild((DataContainerChild) verifyNotNull(dataCodec).serialize(data));
             return this;
         }
 

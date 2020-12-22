@@ -29,7 +29,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -54,7 +54,7 @@ public class CurrentAdapterSerializerTest {
     @Test
     public void fromNormalizedNodeTest() throws Exception {
         final EffectiveModelContext schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
-        final NormalizedNode<?, ?> data = prepareData(schemaCtx, Uint16.valueOf(42));
+        final NormalizedNode data = prepareData(schemaCtx, Uint16.valueOf(42));
         final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
 
         final DataObject value = fromNormalizedNode.getValue();
@@ -85,7 +85,7 @@ public class CurrentAdapterSerializerTest {
     @Test
     public void fromNormalizedNodeWithAnotherInputDataTest() throws Exception {
         final EffectiveModelContext schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
-        final NormalizedNode<?, ?> data = prepareData(schemaCtx, "42");
+        final NormalizedNode data = prepareData(schemaCtx, "42");
 
         final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
         final DataObject value = fromNormalizedNode.getValue();
@@ -99,19 +99,18 @@ public class CurrentAdapterSerializerTest {
         assertThat(ex.getCause(), instanceOf(IllegalArgumentException.class));
     }
 
-    private static NormalizedNode<?, ?> prepareData(final EffectiveModelContext schemaCtx, final Object value) {
+    private static ContainerNode prepareData(final EffectiveModelContext schemaCtx, final Object value) {
         final DataSchemaNode dataChildByName =
                 schemaCtx.getDataChildByName(QName.create("urn:test", "2017-01-01", "cont"));
         final DataSchemaNode leaf = ((ContainerSchemaNode) dataChildByName)
                 .getDataChildByName(QName.create("urn:test", "2017-01-01", "vlan-id"));
 
-        final DataContainerChild<?, ?> child = Builders.leafBuilder((LeafSchemaNode) leaf).withValue(value).build();
-        final NormalizedNode<?, ?> data =
-                Builders.containerBuilder((ContainerSchemaNode) dataChildByName).withChild(child).build();
-        return data;
+        return Builders.containerBuilder((ContainerSchemaNode) dataChildByName)
+            .withChild(Builders.leafBuilder((LeafSchemaNode) leaf).withValue(value).build())
+            .build();
     }
 
-    private static Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final NormalizedNode<?, ?> data,
+    private static Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final NormalizedNode data,
             final EffectiveModelContext schemaCtx) {
         final CurrentAdapterSerializer codec = new CurrentAdapterSerializer(new BindingCodecContext(
             new DefaultBindingRuntimeContext(new DefaultBindingRuntimeGenerator().generateTypeMapping(schemaCtx),
@@ -135,13 +134,13 @@ public class CurrentAdapterSerializerTest {
         }
 
         @Override
-        public ListenableFuture<? extends YangTextSchemaSource> getSource(SourceIdentifier sourceIdentifier) {
+        public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
             throw new UnsupportedOperationException();
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public <T> Class<T> loadClass(String fullyQualifiedName) throws ClassNotFoundException {
+        public <T> Class<T> loadClass(final String fullyQualifiedName) throws ClassNotFoundException {
             return (Class<T>) Class.forName(fullyQualifiedName);
         }
     }
