@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -34,26 +36,21 @@ public class Mdsal320Test {
         final GeneratedType foo = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
             .equals("org.opendaylight.yang.gen.v1.urn.odl.yt320.norev.Foo")).findFirst().get();
 
-        GeneratedTransferObject bar = null;
-        GeneratedTransferObject bar1 = null;
-        for (GeneratedType enc : foo.getEnclosedTypes()) {
-            switch (enc.getName()) {
-                case "Bar":
-                    assertTrue(enc instanceof GeneratedTransferObject);
-                    bar = (GeneratedTransferObject) enc;
-                    break;
-                case "Bar$1":
-                    assertTrue(enc instanceof GeneratedTransferObject);
-                    bar1 = (GeneratedTransferObject) enc;
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected type " + enc);
-            }
-        }
-        assertNotNull(bar);
-        assertTrue(bar.isUnionType());
-        assertNotNull(bar1);
-        assertTrue(bar1.isUnionType());
+        final List<GeneratedType> fooTypes = foo.getEnclosedTypes();
+        assertEquals(1, fooTypes.size());
+
+        final GeneratedType bar = fooTypes.get(0);
+        assertEquals("Bar", bar.getName());
+        assertThat(bar, instanceOf(GeneratedTransferObject.class));
+        assertTrue(((GeneratedTransferObject) bar).isUnionType());
+
+        final List<GeneratedType> barTypes = bar.getEnclosedTypes();
+        assertEquals(1, barTypes.size());
+
+        final GeneratedType bar1 = barTypes.get(0);
+        assertEquals("Bar$1", bar1.getName());
+        assertThat(bar1, instanceOf(GeneratedTransferObject.class));
+        assertTrue(((GeneratedTransferObject) bar1).isUnionType());
 
         final Iterator<MethodSignature> it = foo.getMethodDefinitions().iterator();
         assertTrue(it.hasNext());

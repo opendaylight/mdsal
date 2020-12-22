@@ -39,11 +39,11 @@ public final class SnapshotBackedReadWriteTransaction<T> extends
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public FluentFuture<Optional<NormalizedNode<?,?>>> read(final YangInstanceIdentifier path) {
+    public FluentFuture<Optional<NormalizedNode>> read(final YangInstanceIdentifier path) {
         LOG.debug("Tx: {} Read: {}", getIdentifier(), path);
         requireNonNull(path, "Path must not be null.");
 
-        final Optional<NormalizedNode<?, ?>> result;
+        final Optional<NormalizedNode> result;
 
         try {
             result = readSnapshotNode(path);
