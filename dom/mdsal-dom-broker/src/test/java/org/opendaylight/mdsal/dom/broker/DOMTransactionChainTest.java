@@ -178,9 +178,8 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
 
     private static void assertTestContainerExists(final DOMDataTreeReadTransaction readTx)
             throws InterruptedException, ExecutionException {
-        final ListenableFuture<Optional<NormalizedNode<?, ?>>> readFuture =
-                readTx.read(OPERATIONAL, TestModel.TEST_PATH);
-        final Optional<NormalizedNode<?, ?>> readedData = readFuture.get();
+        final ListenableFuture<Optional<NormalizedNode>> readFuture = readTx.read(OPERATIONAL, TestModel.TEST_PATH);
+        final Optional<NormalizedNode> readedData = readFuture.get();
         assertTrue(readedData.isPresent());
     }
 

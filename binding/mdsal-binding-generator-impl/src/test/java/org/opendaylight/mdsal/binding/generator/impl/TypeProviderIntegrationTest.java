@@ -20,15 +20,15 @@ import org.opendaylight.mdsal.binding.yang.types.CodegenTypeProvider;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class TypeProviderIntegrationTest {
     private static final String PKG = "org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.";
-    private static SchemaContext CONTEXT;
+    private static EffectiveModelContext CONTEXT;
     private AbstractTypeProvider provider;
     private Module module;
 
