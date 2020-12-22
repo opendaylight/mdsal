@@ -42,17 +42,17 @@ public class BindingDOMDataTreeListenerAdapter extends AbstractBindingAdapter<Da
 
     @Override
     public void onDataTreeChanged(final Collection<DataTreeCandidate> domChanges,
-            final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> domSubtrees) {
+            final Map<DOMDataTreeIdentifier, NormalizedNode> domSubtrees) {
         final CurrentAdapterSerializer serializer = currentSerializer();
         getDelegate().onDataTreeChanged(toBinding(serializer, domChanges), toBinding(serializer, domSubtrees));
     }
 
     private Map<DataTreeIdentifier<?>, DataObject> toBinding(final BindingNormalizedNodeSerializer serializer,
-            final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> domSubtrees) {
+            final Map<DOMDataTreeIdentifier, NormalizedNode> domSubtrees) {
         // FIXME: Introduce lazy translating map
         final Map<DataTreeIdentifier<?>, DataObject> ret = Maps.newHashMapWithExpectedSize(domSubtrees.size());
 
-        for (final Entry<DOMDataTreeIdentifier, NormalizedNode<?, ?>> domEntry : domSubtrees.entrySet()) {
+        for (final Entry<DOMDataTreeIdentifier, NormalizedNode> domEntry : domSubtrees.entrySet()) {
             final Entry<InstanceIdentifier<?>, DataObject> bindingEntry =
                     serializer.fromNormalizedNode(domEntry.getKey().getRootIdentifier(), domEntry.getValue());
             ret.put(DataTreeIdentifier.create(store, bindingEntry.getKey()), bindingEntry.getValue());

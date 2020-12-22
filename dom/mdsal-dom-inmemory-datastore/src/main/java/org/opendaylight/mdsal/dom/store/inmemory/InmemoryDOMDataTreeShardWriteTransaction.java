@@ -40,30 +40,26 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     private enum SimpleCursorOperation {
         MERGE {
             @Override
-            void applyOnLeaf(final DOMDataTreeWriteCursor cur, final PathArgument child,
-                             final NormalizedNode<?, ?> data) {
+            void applyOnLeaf(final DOMDataTreeWriteCursor cur, final PathArgument child, final NormalizedNode data) {
                 cur.merge(child, data);
             }
         },
         DELETE {
             @Override
-            void applyOnLeaf(final DOMDataTreeWriteCursor cur, final PathArgument child,
-                             final NormalizedNode<?, ?> data) {
+            void applyOnLeaf(final DOMDataTreeWriteCursor cur, final PathArgument child, final NormalizedNode data) {
                 cur.delete(child);
             }
         },
         WRITE {
             @Override
-            void applyOnLeaf(final DOMDataTreeWriteCursor cur, final PathArgument child,
-                             final NormalizedNode<?, ?> data) {
+            void applyOnLeaf(final DOMDataTreeWriteCursor cur, final PathArgument child, final NormalizedNode data) {
                 cur.write(child, data);
             }
         };
 
-        abstract void applyOnLeaf(DOMDataTreeWriteCursor cur, PathArgument child, NormalizedNode<?, ?> data);
+        abstract void applyOnLeaf(DOMDataTreeWriteCursor cur, PathArgument child, NormalizedNode data);
 
-        void apply(final DOMDataTreeWriteCursor cur, final YangInstanceIdentifier path,
-                   final NormalizedNode<?, ?> data) {
+        void apply(final DOMDataTreeWriteCursor cur, final YangInstanceIdentifier path, final NormalizedNode data) {
             int enterCount = 0;
             final Iterator<PathArgument> it = path.getPathArguments().iterator();
             if (it.hasNext()) {
@@ -130,11 +126,11 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         SimpleCursorOperation.DELETE.apply(getCursor(), relativePath, null);
     }
 
-    void merge(final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
+    void merge(final YangInstanceIdentifier path, final NormalizedNode data) {
         SimpleCursorOperation.MERGE.apply(getCursor(), toRelative(path), data);
     }
 
-    void write(final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
+    void write(final YangInstanceIdentifier path, final NormalizedNode data) {
         SimpleCursorOperation.WRITE.apply(getCursor(), toRelative(path), data);
     }
 

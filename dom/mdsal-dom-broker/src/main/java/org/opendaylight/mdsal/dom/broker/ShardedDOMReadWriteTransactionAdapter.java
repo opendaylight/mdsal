@@ -26,7 +26,7 @@ final class ShardedDOMReadWriteTransactionAdapter extends ShardedDOMWriteTransac
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(final LogicalDatastoreType store,
+    public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
             final YangInstanceIdentifier path) {
         return readAdapter.read(store, path);
     }

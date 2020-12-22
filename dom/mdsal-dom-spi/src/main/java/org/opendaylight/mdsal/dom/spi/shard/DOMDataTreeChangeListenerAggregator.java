@@ -80,7 +80,7 @@ final class DOMDataTreeChangeListenerAggregator
             // We are still starting up, so all we need to do is squash reported changes to an initial write event
             final DataTreeCandidate last = Iterables.getLast(state.changes);
             changes.clear();
-            final Optional<NormalizedNode<?, ?>> lastData = last.getRootNode().getDataAfter();
+            final Optional<NormalizedNode> lastData = last.getRootNode().getDataAfter();
             if (lastData.isPresent()) {
                 changes.add(DataTreeCandidates.fromNormalizedNode(last.getRootPath(), lastData.get()));
             }
@@ -95,7 +95,7 @@ final class DOMDataTreeChangeListenerAggregator
     }
 
     private static final class Operational extends AbstractStateAggregator.Operational<State> {
-        private final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees = new HashMap<>();
+        private final Map<DOMDataTreeIdentifier, NormalizedNode> subtrees = new HashMap<>();
         private final DOMDataTreeListener listener;
 
         Operational(final Collection<AbstractStateAggregator.StateBuilder<State>> builders,
@@ -114,7 +114,7 @@ final class DOMDataTreeChangeListenerAggregator
                 if (!candidates.isEmpty()) {
                     // Update current subtree snapshot based on last candidate node
                     final DataTreeCandidateNode lastRoot = candidates.get(candidates.size() - 1).getRootNode();
-                    final Optional<NormalizedNode<?, ?>> optData = lastRoot.getDataAfter();
+                    final Optional<NormalizedNode> optData = lastRoot.getDataAfter();
                     if (optData.isPresent()) {
                         subtrees.put(state.getIdentifier(), optData.get());
                     } else {

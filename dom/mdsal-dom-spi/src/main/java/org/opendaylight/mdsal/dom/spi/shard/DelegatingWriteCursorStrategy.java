@@ -47,25 +47,25 @@ public abstract class DelegatingWriteCursorStrategy extends ForwardingObject imp
     }
 
     @Override
-    public void merge(final PathArgument arg, final NormalizedNode<?, ?> data) {
+    public void merge(final PathArgument arg, final NormalizedNode data) {
         delegate().merge(arg, data);
     }
 
     @Override
-    public void write(final PathArgument arg, final NormalizedNode<?, ?> data) {
+    public void write(final PathArgument arg, final NormalizedNode data) {
         delegate().write(arg, data);
     }
 
     @Override
-    public void mergeToCurrent(final NormalizedNodeContainer<?, ?, ?> data) {
-        for (NormalizedNode<?, ?> child : data.getValue()) {
+    public void mergeToCurrent(final NormalizedNodeContainer<?, ?> data) {
+        for (NormalizedNode child : data.body()) {
             delegate().merge(child.getIdentifier(), child);
         }
     }
 
     @Override
-    public void writeToCurrent(final NormalizedNodeContainer<?, ?, ?> data) {
-        for (NormalizedNode<?, ?> child : data.getValue()) {
+    public void writeToCurrent(final NormalizedNodeContainer<?, ?> data) {
+        for (NormalizedNode child : data.body()) {
             delegate().write(child.getIdentifier(), child);
         }
     }

@@ -37,7 +37,7 @@ final class DefaultQueryResultItem<T extends DataObject> implements QueryResult.
         }
     }
 
-    private final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> domItem;
+    private final Entry<YangInstanceIdentifier, NormalizedNode> domItem;
     private final DefaultQueryResult<T> result;
 
     @SuppressWarnings("unused")
@@ -48,7 +48,7 @@ final class DefaultQueryResultItem<T extends DataObject> implements QueryResult.
     private volatile @Nullable T object = null;
 
     DefaultQueryResultItem(final DefaultQueryResult<T> result,
-            final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> domItem) {
+            final Entry<YangInstanceIdentifier, NormalizedNode> domItem) {
         this.result = requireNonNull(result);
         this.domItem = requireNonNull(domItem);
     }
