@@ -17,10 +17,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
 
 public class BindingStructuralTypeTest {
-
     @Test
     public void basicTest() throws Exception {
-        final NormalizedNode<?, ?> normalizedNode = mock(NormalizedNode.class);
+        final NormalizedNode normalizedNode = mock(NormalizedNode.class);
         final Optional<?> optional = Optional.of(normalizedNode);
         final DataTreeCandidateNode dataTreeCandidateNode = mock(DataTreeCandidateNode.class);
         doReturn(optional).when(dataTreeCandidateNode).getDataAfter();
