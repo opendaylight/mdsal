@@ -32,7 +32,7 @@ public final class DOMQueryEvaluator {
      * @return Result of evaluation
      * @throws NullPointerException if any argument is null
      */
-    public static DOMQueryResult evaluateOn(final DOMQuery query, final NormalizedNode<?, ?> queryRoot) {
+    public static DOMQueryResult evaluateOn(final DOMQuery query, final NormalizedNode queryRoot) {
         final YangInstanceIdentifier path = query.getSelect();
         return path.isEmpty() ? evalSingle(query, queryRoot) : new LazyDOMQueryResult(query, queryRoot);
     }
@@ -47,10 +47,10 @@ public final class DOMQueryEvaluator {
      * @return Result of evaluation
      * @throws NullPointerException if any argument is null
      */
-    public static DOMQueryResult evaluateOnRoot(final DOMQuery query, final NormalizedNode<?, ?> root) {
-        NormalizedNode<?, ?> evalRoot = root;
+    public static DOMQueryResult evaluateOnRoot(final DOMQuery query, final NormalizedNode root) {
+        NormalizedNode evalRoot = root;
         for (PathArgument arg : query.getRoot().getPathArguments()) {
-            final Optional<NormalizedNode<?, ?>> next = NormalizedNodes.findNode(root, arg);
+            final Optional<NormalizedNode> next = NormalizedNodes.findNode(root, arg);
             if (next.isEmpty()) {
                 return DOMQueryResult.of();
             }
@@ -59,7 +59,7 @@ public final class DOMQueryEvaluator {
         return evaluateOn(query, evalRoot);
     }
 
-    private static DOMQueryResult evalSingle(final DOMQuery query, final NormalizedNode<?, ?> data) {
+    private static DOMQueryResult evalSingle(final DOMQuery query, final NormalizedNode data) {
         return DOMQueryMatcher.matchesAll(data, query.getPredicates()) ? DOMQueryResult.of()
                 : DOMQueryResult.of(new SimpleImmutableEntry<>(query.getRoot(), data));
     }
