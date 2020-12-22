@@ -97,7 +97,7 @@ public final class DOMQueryPredicate implements Immutable {
             return new MatchAny(ImmutableList.of(this, other));
         }
 
-        public abstract boolean test(@Nullable NormalizedNode<?, ?> data);
+        public abstract boolean test(@Nullable NormalizedNode data);
 
         final void appendTo(final StringBuilder sb) {
             sb.append(op()).append('(');
@@ -130,7 +130,7 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         @Override
-        public boolean test(final @Nullable NormalizedNode<?, ?> data) {
+        public boolean test(final @Nullable NormalizedNode data) {
             for (Match component : components()) {
                 if (!component.test(data)) {
                     return false;
@@ -156,7 +156,7 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         @Override
-        public boolean test(final @Nullable NormalizedNode<?, ?> data) {
+        public boolean test(final @Nullable NormalizedNode data) {
             for (Match component : components()) {
                 if (component.test(data)) {
                     return true;
@@ -179,7 +179,7 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         @Override
-        public boolean test(final @Nullable NormalizedNode<?, ?> data) {
+        public boolean test(final @Nullable NormalizedNode data) {
             return data != null;
         }
 
@@ -202,7 +202,7 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         @Override
-        public boolean test(final @Nullable NormalizedNode<?, ?> data) {
+        public boolean test(final @Nullable NormalizedNode data) {
             return !match.test(data);
         }
 
@@ -402,8 +402,8 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         @Override
-        public final boolean test(final @Nullable NormalizedNode<?, ?> data) {
-            return data instanceof LeafNode ? testValue(((LeafNode<?>) data).getValue()) : testValue(null);
+        public final boolean test(final @Nullable NormalizedNode data) {
+            return data instanceof LeafNode ? testValue(((LeafNode<?>) data).body()) : testValue(null);
         }
 
         abstract boolean testValue(@Nullable Object data);

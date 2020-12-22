@@ -10,9 +10,9 @@ package org.opendaylight.mdsal.dom.spi.shard;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
-import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.data.api.schema.DistinctNodeContainer;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 
@@ -44,22 +44,22 @@ public abstract class WritableNodeOperation implements WriteCursorStrategy {
     }
 
     @Override
-    public final void merge(final PathArgument arg, final NormalizedNode<?, ?> data) {
+    public final void merge(final PathArgument arg, final NormalizedNode data) {
         WriteableModificationNode potentialChild = node.getChild(arg);
         if (potentialChild == null) {
             cursor.merge(arg, data);
         } else {
-            potentialChild.createOperation(cursor).mergeToCurrent((NormalizedNodeContainer<?, ?, ?>) data);
+            potentialChild.createOperation(cursor).mergeToCurrent((NormalizedNodeContainer<?, ?>) data);
         }
     }
 
     @Override
-    public final void write(final PathArgument arg, final NormalizedNode<?, ?> data) {
+    public final void write(final PathArgument arg, final NormalizedNode data) {
         WriteableModificationNode potentialChild = node.getChild(arg);
         if (potentialChild == null) {
             cursor.write(arg, data);
         } else {
-            potentialChild.createOperation(cursor).writeToCurrent((NormalizedNodeContainer<?, ?, ?>) data);
+            potentialChild.createOperation(cursor).writeToCurrent((NormalizedNodeContainer<?, ?>) data);
         }
     }
 
@@ -79,8 +79,8 @@ public abstract class WritableNodeOperation implements WriteCursorStrategy {
     }
 
     @Override
-    public final void mergeToCurrent(final NormalizedNodeContainer<?, ?, ?> data) {
-        for (NormalizedNode<?, ?> child : data.getValue()) {
+    public final void mergeToCurrent(final NormalizedNodeContainer<?, ?> data) {
+        for (NormalizedNode child : data.body()) {
             PathArgument childId = child.getIdentifier();
             WriteableModificationNode shardChild = node.getChild(childId);
             if (shardChild != null) {
@@ -94,12 +94,12 @@ public abstract class WritableNodeOperation implements WriteCursorStrategy {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public final void writeToCurrent(final NormalizedNodeContainer<?, ?, ?> data) {
+    public final void writeToCurrent(final NormalizedNodeContainer<?, ?> data) {
         // write the entire thing into the cursor
         write(data.getIdentifier(), data);
         // write the children with subshard check and subshard write if we are going into subshard
         cursor.enter(data.getIdentifier());
-        for (NormalizedNode<?, ?> writtenChild : data.getValue()) {
+        for (NormalizedNode writtenChild : data.body()) {
             write(writtenChild.getIdentifier(), writtenChild);
         }
         // Delete step - remove subshard data that was written into current shard
@@ -107,9 +107,8 @@ public abstract class WritableNodeOperation implements WriteCursorStrategy {
         node.getChildrenWithSubshards().entrySet()
                 .stream().filter(entry -> entry.getValue() instanceof WriteableSubshardBoundaryNode).forEach(entry -> {
                     @SuppressWarnings("unchecked")
-                    Optional<NormalizedNode<?, ?>> writtenValue =
-                            ((NormalizedNodeContainer) data).getChild(entry.getKey());
-                    if (writtenValue.isPresent()) {
+                    NormalizedNode writtenValue = ((DistinctNodeContainer) data).childByArg(entry.getKey());
+                    if (writtenValue != null) {
                         // delete from current
                         cursor.delete(entry.getKey());
                     }

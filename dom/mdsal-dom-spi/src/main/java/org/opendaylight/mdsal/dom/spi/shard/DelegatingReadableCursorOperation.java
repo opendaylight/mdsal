@@ -25,7 +25,7 @@ abstract class DelegatingReadableCursorOperation extends ForwardingObject implem
     protected abstract DataTreeSnapshotCursor delegate();
 
     @Override
-    public Optional<NormalizedNode<?, ?>> readNode(final PathArgument arg) {
+    public Optional<NormalizedNode> readNode(final PathArgument arg) {
         return delegate().readNode(arg);
     }
 

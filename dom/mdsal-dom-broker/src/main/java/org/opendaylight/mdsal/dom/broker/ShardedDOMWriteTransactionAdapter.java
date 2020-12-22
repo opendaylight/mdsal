@@ -100,8 +100,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     }
 
     @Override
-    public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path,
-            final NormalizedNode<?, ?> data) {
+    public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode data) {
         checkRunning();
         LOG.debug("{}: Invoking put operation at {}:{}", txIdentifier, store, path);
         LOG.trace("{}: payload is {}", txIdentifier, data);
@@ -114,8 +113,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     }
 
     @Override
-    public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path,
-                      final NormalizedNode<?, ?> data) {
+    public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode data) {
         checkRunning();
         LOG.debug("{}: Invoking merge operation at {}:{}", txIdentifier, store, path);
         LOG.trace("{}: payload is {}", txIdentifier, data);
