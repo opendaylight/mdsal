@@ -144,7 +144,7 @@ class RpcServiceAdapter implements InvocationHandler {
         private ListenableFuture<RpcResult<?>> transformFuture(final ListenableFuture<? extends DOMRpcResult> domFuture,
                 final BindingNormalizedNodeSerializer resultCodec) {
             return Futures.transform(domFuture, input -> {
-                final NormalizedNode<?, ?> domData = input.getResult();
+                final NormalizedNode domData = input.getResult();
                 final DataObject bindingResult;
                 if (domData != null) {
                     bindingResult = resultCodec.fromNormalizedNodeRpcData(outputPath, (ContainerNode) domData);

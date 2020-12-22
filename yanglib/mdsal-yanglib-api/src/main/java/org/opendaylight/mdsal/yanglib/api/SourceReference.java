@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableList;
 import java.net.URL;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.yangtools.concepts.AbstractIdentifiable;
+import org.opendaylight.yangtools.concepts.AbstractSimpleIdentifiable;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 
@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
  */
 @Beta
 @NonNullByDefault
-public final class SourceReference extends AbstractIdentifiable<SourceIdentifier> implements Immutable {
+public final class SourceReference extends AbstractSimpleIdentifiable<SourceIdentifier> implements Immutable {
     // List vs. Set vs. Collection here is a class design decision based on use. We expect these objects to be used
     // frequently, but for a short time. Locations may end up being ignored by SchemaContextResolver, hence it does not
     // make sense to ensure a Set here just to de-duplicate URLs.
