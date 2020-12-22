@@ -11,6 +11,8 @@ module org.opendaylight.mdsal.dom.spi {
     exports org.opendaylight.mdsal.dom.spi.store;
 
     requires transitive org.opendaylight.mdsal.dom.api;
+    requires transitive org.opendaylight.yangtools.yang.repo.api;
+    requires transitive org.opendaylight.yangtools.yang.repo.spi;
     requires org.opendaylight.yangtools.util;
     requires org.slf4j;
 
@@ -18,4 +20,5 @@ module org.opendaylight.mdsal.dom.spi {
     requires static transitive org.eclipse.jdt.annotation;
     requires static com.github.spotbugs.annotations;
     requires static org.checkerframework.checker.qual;
+    requires org.opendaylight.yangtools.yang.data.api;
 }
