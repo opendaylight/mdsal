@@ -22,7 +22,7 @@ public class DefaultDOMRpcResultTest {
     @Test
     public void basicTest() throws Exception {
         RpcError rpcError = mock(RpcError.class);
-        NormalizedNode<?, ?> normalizedNode = mock(NormalizedNode.class);
+        NormalizedNode normalizedNode = mock(NormalizedNode.class);
         DefaultDOMRpcResult defaultDOMRpcResult = new DefaultDOMRpcResult(normalizedNode, rpcError);
         assertEquals(normalizedNode, defaultDOMRpcResult.getResult());
         assertTrue(defaultDOMRpcResult.getErrors().contains(rpcError));

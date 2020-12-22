@@ -34,7 +34,7 @@ public interface DOMDataTreeReadOperations {
      *         an exception derived from ReadFailedException.</li>
      *         </ul>
      */
-    FluentFuture<Optional<NormalizedNode<?,?>>> read(LogicalDatastoreType store, YangInstanceIdentifier path);
+    FluentFuture<Optional<NormalizedNode>> read(LogicalDatastoreType store, YangInstanceIdentifier path);
 
     /**
      * Checks if data is available in the logical data store located at provided path.

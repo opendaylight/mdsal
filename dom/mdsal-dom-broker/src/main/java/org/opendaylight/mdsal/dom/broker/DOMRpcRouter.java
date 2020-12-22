@@ -462,7 +462,7 @@ public final class DOMRpcRouter extends AbstractRegistration
 
     private final class RpcServiceFacade implements DOMRpcService {
         @Override
-        public ListenableFuture<? extends DOMRpcResult> invokeRpc(final QName type, final NormalizedNode<?, ?> input) {
+        public ListenableFuture<? extends DOMRpcResult> invokeRpc(final QName type, final NormalizedNode input) {
             final AbstractDOMRpcRoutingTableEntry entry = (AbstractDOMRpcRoutingTableEntry) routingTable.getEntry(type);
             if (entry == null) {
                 return Futures.immediateFailedFuture(
@@ -547,7 +547,7 @@ public final class DOMRpcRouter extends AbstractRegistration
         }
 
         static ListenableFuture<? extends DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
-                final NormalizedNode<?, ?> input) {
+                final NormalizedNode input) {
             if (entry instanceof UnknownDOMRpcRoutingTableEntry) {
                 return Futures.immediateFailedFuture(
                     new DOMRpcImplementationNotAvailableException("%s is not resolved to an RPC", entry.getType()));
@@ -562,14 +562,14 @@ public final class DOMRpcRouter extends AbstractRegistration
         }
 
         private static ListenableFuture<? extends DOMRpcResult> invokeRoutedRpc(
-                final RoutedDOMRpcRoutingTableEntry entry, final NormalizedNode<?, ?> input) {
-            final Optional<NormalizedNode<?, ?>> maybeKey = NormalizedNodes.findNode(input,
+                final RoutedDOMRpcRoutingTableEntry entry, final NormalizedNode input) {
+            final Optional<NormalizedNode> maybeKey = NormalizedNodes.findNode(input,
                 entry.getRpcId().getContextReference());
 
             // Routing key is present, attempt to deliver as a routed RPC
             if (maybeKey.isPresent()) {
-                final NormalizedNode<?, ?> key = maybeKey.get();
-                final Object value = key.getValue();
+                final NormalizedNode key = maybeKey.get();
+                final Object value = key.body();
                 if (value instanceof YangInstanceIdentifier) {
                     final YangInstanceIdentifier iid = (YangInstanceIdentifier) value;
 
@@ -608,7 +608,7 @@ public final class DOMRpcRouter extends AbstractRegistration
         }
 
         private static ListenableFuture<? extends DOMRpcResult> invokeGlobalRpc(
-                final GlobalDOMRpcRoutingTableEntry entry, final NormalizedNode<?, ?> input) {
+                final GlobalDOMRpcRoutingTableEntry entry, final NormalizedNode input) {
             return entry.getImplementations(YangInstanceIdentifier.empty()).get(0).invokeRpc(entry.getRpcId(), input);
         }
     }

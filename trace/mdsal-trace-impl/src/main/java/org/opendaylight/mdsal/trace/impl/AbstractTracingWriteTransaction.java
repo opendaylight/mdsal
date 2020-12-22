@@ -26,19 +26,19 @@ abstract class AbstractTracingWriteTransaction implements DOMDataTreeWriteTransa
     private final TracingBroker tracingBroker;
     private final List<String> logs = new ArrayList<>();
 
-    AbstractTracingWriteTransaction(DOMDataTreeWriteTransaction delegate, TracingBroker tracingBroker) {
+    AbstractTracingWriteTransaction(final DOMDataTreeWriteTransaction delegate, final TracingBroker tracingBroker) {
         this.delegate = requireNonNull(delegate);
         this.tracingBroker = requireNonNull(tracingBroker);
         recordOp(null, null, "instantiate", null);
     }
 
-    private void recordOp(LogicalDatastoreType store, YangInstanceIdentifier yiid, String method,
-            NormalizedNode<?, ?> node) {
+    private void recordOp(final LogicalDatastoreType store, final YangInstanceIdentifier yiid, final String method,
+            final NormalizedNode node) {
         if (yiid != null && !tracingBroker.isWriteWatched(yiid, store)) {
             return;
         }
 
-        final Object value = node != null ? node.getValue() : null;
+        final Object value = node != null ? node.body() : null;
 
         if (value != null && value instanceof ImmutableSet && ((Set<?>)value).isEmpty()) {
             if (TracingBroker.LOG.isDebugEnabled()) {
@@ -58,7 +58,7 @@ abstract class AbstractTracingWriteTransaction implements DOMDataTreeWriteTransa
                 // If we don’t have an id, we don’t expect data either
                 sb.append(" Data: ");
                 if (node != null) {
-                    sb.append(node.getValue());
+                    sb.append(node.body());
                 } else {
                     sb.append("null");
                 }
@@ -81,13 +81,13 @@ abstract class AbstractTracingWriteTransaction implements DOMDataTreeWriteTransa
     }
 
     @Override
-    public void put(LogicalDatastoreType store, YangInstanceIdentifier yiid, NormalizedNode<?, ?> node) {
+    public void put(final LogicalDatastoreType store, final YangInstanceIdentifier yiid, final NormalizedNode node) {
         recordOp(store, yiid, "put", node);
         delegate.put(store, yiid, node);
     }
 
     @Override
-    public void merge(LogicalDatastoreType store, YangInstanceIdentifier yiid, NormalizedNode<?, ?> node) {
+    public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier yiid, final NormalizedNode node) {
         recordOp(store, yiid, "merge", node);
         delegate.merge(store, yiid, node);
     }
@@ -101,7 +101,7 @@ abstract class AbstractTracingWriteTransaction implements DOMDataTreeWriteTransa
     }
 
     @Override
-    public void delete(LogicalDatastoreType store, YangInstanceIdentifier yiid) {
+    public void delete(final LogicalDatastoreType store, final YangInstanceIdentifier yiid) {
         recordOp(store, yiid, "delete", null);
         delegate.delete(store, yiid);
     }
@@ -121,7 +121,7 @@ abstract class AbstractTracingWriteTransaction implements DOMDataTreeWriteTransa
     // https://jira.opendaylight.org/browse/CONTROLLER-1792
 
     @Override
-    public final boolean equals(Object object) {
+    public final boolean equals(final Object object) {
         return object == this || delegate.equals(object);
     }
 

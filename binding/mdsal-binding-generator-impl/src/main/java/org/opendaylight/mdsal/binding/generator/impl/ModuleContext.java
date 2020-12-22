@@ -69,7 +69,7 @@ public final class ModuleContext implements Mutable {
     private final Map<Type, WithStatus> typeToSchema = new HashMap<>();
     private final List<GeneratedTOBuilder> genTOs = new ArrayList<>();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
-    private final Map<SchemaPath, GeneratedType> typedefs = new HashMap<>();
+    private final Map<TypeDefinition<?>, GeneratedType> typedefs = new HashMap<>();
     private final Module module;
 
     // Conflict mapping
@@ -207,7 +207,7 @@ public final class ModuleContext implements Mutable {
             LOG.debug("GeneratedType conflict between {} and {} on {}", def, existingDef, name);
         }
 
-        typedefs.put(def.getPath(), type);
+        typedefs.put(def, type);
     }
 
     public void addCaseType(final SchemaPath path, final GeneratedTypeBuilder builder) {
@@ -227,7 +227,7 @@ public final class ModuleContext implements Mutable {
         augmentations.add(builder);
     }
 
-    public Map<SchemaPath, GeneratedType> getTypedefs() {
+    public Map<TypeDefinition<?>, GeneratedType> getTypedefs() {
         return typedefs;
     }
 
