@@ -31,7 +31,7 @@ public interface DOMDataTreeReadCursor extends DOMDataTreeCursor {
      *         </ul>
      * @throws IllegalArgumentException when specified path does not identify a valid child.
      */
-    @NonNull FluentFuture<Optional<NormalizedNode<?, ?>>> readNode(@NonNull PathArgument child);
+    @NonNull FluentFuture<Optional<NormalizedNode>> readNode(@NonNull PathArgument child);
 
     /**
      * Checks if data is available in the logical data store located at provided path.

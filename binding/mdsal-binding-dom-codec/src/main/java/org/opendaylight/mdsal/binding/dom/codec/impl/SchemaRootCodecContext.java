@@ -162,7 +162,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     }
 
     @Override
-    public D deserialize(final NormalizedNode<?, ?> normalizedNode) {
+    public D deserialize(final NormalizedNode normalizedNode) {
         throw new UnsupportedOperationException("Could not create Binding data representation for root");
     }
 
@@ -271,7 +271,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     }
 
     @Override
-    protected Object deserializeObject(final NormalizedNode<?, ?> normalizedNode) {
+    protected Object deserializeObject(final NormalizedNode normalizedNode) {
         throw new UnsupportedOperationException("Unable to deserialize root");
     }
 

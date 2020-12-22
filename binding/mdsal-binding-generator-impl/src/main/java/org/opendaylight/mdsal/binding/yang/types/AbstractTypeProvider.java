@@ -650,7 +650,6 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         addEnumDescription(enumBuilder, enumTypeDef);
         enumTypeDef.getReference().ifPresent(enumBuilder::setReference);
         enumBuilder.setModuleName(module.getName());
-        enumBuilder.setSchemaPath(enumTypeDef.getPath());
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
         return enumBuilder.toInstance(null);
     }

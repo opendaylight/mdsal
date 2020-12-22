@@ -29,7 +29,7 @@ final class TransactionChainReadWriteTransaction extends TransactionChainWriteTr
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(final LogicalDatastoreType store,
+    public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
             final YangInstanceIdentifier path) {
         return readTx.read(store, path);
     }
