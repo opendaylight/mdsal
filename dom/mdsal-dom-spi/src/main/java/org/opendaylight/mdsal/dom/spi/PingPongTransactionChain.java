@@ -405,7 +405,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
 
         return new DOMDataTreeReadTransaction() {
             @Override
-            public FluentFuture<Optional<NormalizedNode<?, ?>>> read(
+            public FluentFuture<Optional<NormalizedNode>> read(
                     final LogicalDatastoreType store, final YangInstanceIdentifier path) {
                 return tx.getTransaction().read(store, path);
             }
