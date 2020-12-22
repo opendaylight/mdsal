@@ -35,8 +35,8 @@ public class SnapshotBackedReadTransactionTest {
 
     @Test
     public void basicTest() throws Exception {
-        final NormalizedNode<?, ?> testNode = mock(NormalizedNode.class);
-        final Optional<NormalizedNode<?, ?>> optional = Optional.of(testNode);
+        final NormalizedNode testNode = mock(NormalizedNode.class);
+        final Optional<NormalizedNode> optional = Optional.of(testNode);
         doReturn("testNode").when(testNode).toString();
         doReturn(Optional.of(testNode)).when(DATA_TREE_SNAPSHOT).readNode(YangInstanceIdentifier.empty());
         assertTrue(snapshotBackedReadTransaction.exists(YangInstanceIdentifier.empty()).get());
