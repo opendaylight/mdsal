@@ -14,12 +14,12 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
-import java.net.URI
 import java.nio.charset.StandardCharsets
 import java.util.ArrayList
 import java.util.Collection
 import java.util.HashSet
 import java.util.List
+import org.opendaylight.yangtools.yang.common.XMLNamespace
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
@@ -259,7 +259,7 @@ class WadlRestconfGenerator {
         <method name="DELETE" />
     '''
 
-    private def representation(URI prefix, String name) '''
+    private def representation(XMLNamespace prefix, String name) '''
         «val elementData = name»
         <representation mediaType="application/xml" element="«elementData»"/>
         <representation mediaType="text/xml" element="«elementData»"/>
