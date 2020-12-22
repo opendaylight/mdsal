@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -17,7 +17,6 @@ import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
@@ -39,7 +38,7 @@ public class LazySerializedContainerNodeTest {
         final BindingNormalizedNodeSerializer codec = mock(BindingNormalizedNodeSerializer.class);
         final ContainerNode containerNode = mock(ContainerNode.class);
         doReturn(containerNode).when(codec).toNormalizedNodeRpcData(any());
-        doReturn(Optional.empty()).when(containerNode).getChild(any());
+        doReturn(null).when(containerNode).childByArg(any());
 
         final BindingBrokerTestFactory bindingBrokerTestFactory = new BindingBrokerTestFactory();
         bindingBrokerTestFactory.setExecutor(MoreExecutors.newDirectExecutorService());
@@ -57,12 +56,10 @@ public class LazySerializedContainerNodeTest {
                 (LazySerializedContainerNode) LazySerializedContainerNode.withContextRef(rpcName, dataObject, leafNode,
                         codec);
         assertNotNull(lazySerializedContainerNode);
-        assertEquals(leafNode, lazySerializedContainerNode.getChild(leafNode.getIdentifier()).get());
-        assertFalse(lazySerializedContainerNode.getChild(mock(PathArgument.class)).isPresent());
+        assertEquals(leafNode, lazySerializedContainerNode.childByArg(leafNode.getIdentifier()));
+        assertNull(lazySerializedContainerNode.childByArg(mock(PathArgument.class)));
 
-        assertTrue(lazySerializedContainerNode.getValue().isEmpty());
-        assertEquals(lazySerializedContainerNode.getIdentifier().getNodeType(),
-                lazySerializedContainerNode.getNodeType());
+        assertTrue(lazySerializedContainerNode.body().isEmpty());
         assertEquals(rpcName, lazySerializedContainerNode.getIdentifier().getNodeType());
         assertEquals(dataObject, lazySerializedContainerNode.getDataObject());
     }

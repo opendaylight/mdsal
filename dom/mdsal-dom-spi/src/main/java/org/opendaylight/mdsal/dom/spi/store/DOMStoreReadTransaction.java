@@ -19,7 +19,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public interface DOMStoreReadTransaction extends DOMStoreTransaction {
-
     /**
      * Reads data from provided logical data store located at provided path.
      *
@@ -37,7 +36,7 @@ public interface DOMStoreReadTransaction extends DOMStoreTransaction {
      *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
      *         </ul>
      */
-    FluentFuture<Optional<NormalizedNode<?,?>>> read(YangInstanceIdentifier path);
+    FluentFuture<Optional<NormalizedNode>> read(YangInstanceIdentifier path);
 
     /**
      * Checks if data is available in the logical data store located at provided path.

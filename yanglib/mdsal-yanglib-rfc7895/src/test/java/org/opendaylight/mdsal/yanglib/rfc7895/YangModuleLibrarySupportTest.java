@@ -30,15 +30,15 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.module.list.ModuleKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 
 public class YangModuleLibrarySupportTest {
 
     private static final BindingRuntimeGenerator BINDING_RUNTIME_GENERATOR = new DefaultBindingRuntimeGenerator();
 
-    private static final YangParserFactory YANG_PARSER_FACTORY = new YangParserFactoryImpl();
+    private static final YangParserFactory YANG_PARSER_FACTORY = new DefaultYangParserFactory();
 
     private BindingRuntimeContext runtimeContext;
     private BindingCodecTree codecTree;
