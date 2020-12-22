@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang2sources.spi.BuildContextAware;
 import org.opendaylight.yangtools.yang2sources.spi.ModuleResourceResolver;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
-public class DocumentationGeneratorImpl extends GeneratorImpl implements BasicCodeGenerator, BuildContextAware {
+public class DocumentationGeneratorImpl implements BasicCodeGenerator, BuildContextAware {
     private BuildContext buildContext;
 
     @Override
@@ -44,6 +44,6 @@ public class DocumentationGeneratorImpl extends GeneratorImpl implements BasicCo
     public Collection<File> generateSources(final EffectiveModelContext context, final File outputBaseDir,
             final Set<Module> currentModules, final ModuleResourceResolver moduleResourcePathResolver)
             throws IOException {
-        return generate(buildContext, context, outputBaseDir, currentModules);
+        return new GeneratorImpl(context).generate(buildContext, outputBaseDir, currentModules);
     }
 }

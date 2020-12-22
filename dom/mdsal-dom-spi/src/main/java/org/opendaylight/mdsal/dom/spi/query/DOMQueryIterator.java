@@ -33,19 +33,19 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 
 @NonNullByDefault
-final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> {
+final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifier, NormalizedNode>> {
     private static class Frame {
-        final NormalizedNode<?, ?> data;
+        final NormalizedNode data;
         final @Nullable PathArgument select;
 
         @SuppressFBWarnings(value = "NP_STORE_INTO_NONNULL_FIELD", justification = "Ungrokked @Nullable")
-        Frame(final NormalizedNode<?, ?> data) {
+        Frame(final NormalizedNode data) {
             this.data = requireNonNull(data);
             // The only case when this can be null: if this a top-level container, as ensured by the sole caller
             select = null;
         }
 
-        Frame(final NormalizedNode<?, ?> data, final PathArgument selectArg) {
+        Frame(final NormalizedNode data, final PathArgument selectArg) {
             this.data = requireNonNull(data);
             this.select = requireNonNull(selectArg);
         }
@@ -68,7 +68,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
     private static final class MapFrame extends Frame {
         final Iterator<MapEntryNode> iter;
 
-        MapFrame(final NormalizedNode<?, ?> data, final PathArgument selectArg, final Iterator<MapEntryNode> iter) {
+        MapFrame(final NormalizedNode data, final PathArgument selectArg, final Iterator<MapEntryNode> iter) {
             super(data, selectArg);
             this.iter = requireNonNull(iter);
         }
@@ -93,7 +93,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
     // The predicates which need to be evaluated
     private final List<? extends DOMQueryPredicate> predicates;
 
-    DOMQueryIterator(final DOMQuery query, final NormalizedNode<?, ?> queryRoot) {
+    DOMQueryIterator(final DOMQuery query, final NormalizedNode queryRoot) {
         // Note: DOMQueryEvaluator has taken care of the empty case, this is always non-empty
         remainingSelect.addAll(query.getSelect().getPathArguments());
         currentPath.addAll(query.getRoot().getPathArguments());
@@ -102,15 +102,15 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
     }
 
     @Override
-    protected Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> computeNext() {
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> next = findNext();
+    protected Entry<YangInstanceIdentifier, NormalizedNode> computeNext() {
+        final Entry<YangInstanceIdentifier, NormalizedNode> next = findNext();
         return next != null ? next : endOfData();
     }
 
     @SuppressFBWarnings(value = "NP_NONNULL_RETURN_VIOLATION", justification = "Ungrokked @Nullable")
     // TODO: this is a huge method which could be restructured with hard tailcalls, alas we do not have those (yet?)
     //       Any such refactor better have some benchmarks to show non-regression.
-    private @Nullable Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> findNext() {
+    private @Nullable Entry<YangInstanceIdentifier, NormalizedNode> findNext() {
         // We always start with non-empty frames, as we signal end of data when we reach the end. 'currentPath' points
         // to the next frame to process.
 
@@ -181,7 +181,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
             }
 
             // 2. we are at a normal container, where we need to resolve a child. This is also a bit involved, so now:
-            final Optional<NormalizedNode<?, ?>> optChild = NormalizedNodes.getDirectChild(current.data, next);
+            final Optional<NormalizedNode> optChild = NormalizedNodes.getDirectChild(current.data, next);
             if (optChild.isEmpty()) {
                 // If we did not find the child, as we can have only a single match. Unwind to next possible match.
                 current = unwind(current, next);
@@ -190,7 +190,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
 
             // If we have a child see if this is the ultimate select step, if so, short circuit stack. We do not record
             // ourselves.
-            final NormalizedNode<?, ?> child = optChild.orElseThrow();
+            final NormalizedNode child = optChild.orElseThrow();
             if (remainingSelect.isEmpty()) {
                 // This is the ultimate step in lookup, process it without churning the stack by imposing a dedicated
                 // Frame. In either case we are done with this frame, unwinding it in both cases.
@@ -208,9 +208,8 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
                 final MapNode map = (MapNode) child;
                 final PathArgument target = remainingSelect.peek();
                 if (target instanceof NodeIdentifierWithPredicates) {
-                    final Optional<MapEntryNode> optEntry = map.getChild((NodeIdentifierWithPredicates) target);
-                    if (optEntry.isPresent()) {
-                        final MapEntryNode entry = optEntry.orElseThrow();
+                    final MapEntryNode entry = map.childByArg((NodeIdentifierWithPredicates) target);
+                    if (entry != null) {
                         if (remainingSelect.size() != 1) {
                             // We need to perform further selection push this frame, an empty frame for the map and
                             // finally a frame for the map entry.
@@ -238,7 +237,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
                 // We have a wildcard, expand it
                 frames.push(current);
                 currentPath.addLast(next);
-                current = new MapFrame(child, next, map.getValue().iterator());
+                current = new MapFrame(child, next, map.body().iterator());
             } else {
                 // Next step in iteration, deal with it
                 frames.push(current);
@@ -256,7 +255,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
     }
 
     // Construct child path. This concatenates currentPath and child's identifier.
-    private YangInstanceIdentifier createIdentifier(final NormalizedNode<?, ?> child) {
+    private YangInstanceIdentifier createIdentifier(final NormalizedNode child) {
         currentPath.addLast(child.getIdentifier());
         final YangInstanceIdentifier ret = YangInstanceIdentifier.create(currentPath);
         currentPath.removeLast();
@@ -264,8 +263,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
     }
 
     // Save a frame for further processing return its child as an item.
-    private Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> pushAndReturn(final Frame frame,
-            final MapEntryNode child) {
+    private Entry<YangInstanceIdentifier, NormalizedNode> pushAndReturn(final Frame frame, final MapEntryNode child) {
         final YangInstanceIdentifier childPath = createIdentifier(child);
 
         // Push the frame back to work, return the result
@@ -274,8 +272,8 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
     }
 
     // Unwind any leftover frames and return a matching item
-    private Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> unwindAndReturn(final Frame frame,
-            final PathArgument next, final NormalizedNode<?, ?> child) {
+    private Entry<YangInstanceIdentifier, NormalizedNode> unwindAndReturn(final Frame frame, final PathArgument next,
+            final NormalizedNode child) {
         final YangInstanceIdentifier childPath = createIdentifier(child);
         unwind(frame, next);
         return Map.entry(childPath, child);
@@ -336,7 +334,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
         }
     }
 
-    private boolean matches(final NormalizedNode<?, ?> data) {
+    private boolean matches(final NormalizedNode data) {
         return DOMQueryMatcher.matchesAll(data, predicates);
     }
 }

@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.util.ArrayList
 import java.util.Collection
+import java.util.IdentityHashMap
 import java.util.HashMap
 import java.util.HashSet
 import java.util.LinkedHashMap
@@ -40,12 +41,15 @@ import org.opendaylight.yangtools.yang.model.api.GroupingDefinition
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
+import org.opendaylight.yangtools.yang.model.api.MandatoryAware
 import org.opendaylight.yangtools.yang.model.api.Module
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition
 import org.opendaylight.yangtools.yang.model.api.SchemaNode
 import org.opendaylight.yangtools.yang.model.api.SchemaPath
+import org.opendaylight.yangtools.yang.model.api.TypeAware
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition
 import org.opendaylight.yangtools.yang.model.api.UsesNode
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint
@@ -61,37 +65,59 @@ class GeneratorImpl {
 
     static val Logger LOG = LoggerFactory.getLogger(GeneratorImpl)
 
-    val Map<String, String> imports = new HashMap();
-    var Module currentModule;
-    var EffectiveModelContext ctx;
+    val Map<String, String> imports = new HashMap()
+    val Map<TypeDefinition<?>, SchemaPath> types = new IdentityHashMap
+    var Module currentModule
+    var EffectiveModelContext ctx
     var File path
 
     StringBuilder augmentChildNodesAsString
 
     DataSchemaNode lastNodeInTargetPath = null
 
-    def generate(BuildContext buildContext, EffectiveModelContext context, File targetPath, Set<Module> modulesToGen)
-            throws IOException {
-        path = targetPath;
+    new(EffectiveModelContext context) {
+        this.ctx = context
+        fillTypes(SchemaPath.ROOT, context.moduleStatements.values)
+    }
+
+    private def void fillTypes(SchemaPath path, Collection<? extends EffectiveStatement<?, ?>> stmts) {
+        for (stmt : stmts) {
+            val arg = stmt.argument
+            if (arg instanceof QName) {
+                val stmtPath = path.createChild(arg)
+                if (stmt instanceof TypeDefinition) {
+                    types.putIfAbsent(stmt, stmtPath)
+                } else if (stmt instanceof TypeAware) {
+                    val type = stmt.type
+                    val typePath = stmtPath.createChild(type.QName)
+                    types.putIfAbsent(type, typePath)
+                }
+
+                fillTypes(stmtPath, stmt.effectiveSubstatements)
+            }
+        }
+    }
+
+    def generate(BuildContext buildContext, File targetPath, Set<Module> modulesToGen) throws IOException {
+        path = targetPath
         Files.createDirectories(path.getParentFile().toPath())
-        val it = new HashSet;
+        val it = new HashSet
         for (module : modulesToGen) {
-            add(generateDocumentation(buildContext, module, context));
+            add(generateDocumentation(buildContext, module))
         }
         return it;
     }
 
-    def generateDocumentation(BuildContext buildContext, Module module, EffectiveModelContext ctx) {
+    def generateDocumentation(BuildContext buildContext, Module module) {
         val destination = new File(path, '''«module.name».html''')
-        this.ctx = ctx;
         module.imports.forEach[importModule | this.imports.put(importModule.prefix, importModule.moduleName)]
         var OutputStreamWriter fw
         var BufferedWriter bw
         try {
             fw = new OutputStreamWriter(buildContext.newFileOutputStream(destination), StandardCharsets.UTF_8)
             bw = new BufferedWriter(fw)
-            currentModule = module;
-            bw.append(generate(module, ctx));
+            currentModule = module
+            bw.append(generate(module, ctx))
         } catch (IOException e) {
             LOG.error("Failed to emit file {}", destination, e);
         } finally {
@@ -102,7 +128,7 @@ class GeneratorImpl {
                 fw.close();
             }
         }
-        return destination;
+        return destination
     }
 
     def generate(Module module, EffectiveModelContext ctx) '''
@@ -861,7 +887,7 @@ class GeneratorImpl {
         if(node instanceof LeafSchemaNode) {
             return '''
                 «printInfo(node, "leaf")»
-                «listItem("type", typeAnchorLink(node.type?.path, node.type.QName.localName))»
+                «listItem("type", typeAnchorLink(types.get(node.type), node.type.QName.localName))»
                 «listItem("units", node.type.units.orElse(null))»
                 «listItem("default", node.type.defaultValue.map([ Object o | o.toString]).orElse(null))»
                 </ul>
@@ -942,7 +968,7 @@ class GeneratorImpl {
 
     def CharSequence printUses(UsesNode usesNode) {
         return '''
-            «strong(listItem("uses", typeAnchorLink(usesNode.sourceGrouping.path, usesNode.sourceGrouping.path.pathTowardsRoot.iterator.next.localName)))»
+            «strong(listItem("uses", typeAnchorLink(usesNode.sourceGrouping.path, usesNode.sourceGrouping.QName.localName)))»
             <ul>
             <li>refines:
                 <ul>
@@ -1108,7 +1134,7 @@ class GeneratorImpl {
         return '''
             <li>«strong(localLink(newPath,node.QName.localName))» (container)
             <ul>
-                <li>configuration data: «strong(String.valueOf(node.configuration))»</li>
+                «node.configurationDataItem»
             </ul>
             </li>
         '''
@@ -1119,7 +1145,7 @@ class GeneratorImpl {
         return '''
             <li>«strong(localLink(newPath,node.QName.localName))» (list)
             <ul>
-                <li>configuration data: «strong(String.valueOf(node.configuration))»</li>
+                «node.configurationDataItem»
             </ul>
             </li>
         '''
@@ -1129,8 +1155,8 @@ class GeneratorImpl {
         return '''
             <li>«strong((node.QName.localName))» (anyxml)
             <ul>
-                <li>configuration data: «strong(String.valueOf(node.configuration))»</li>
-                <li>mandatory: «strong(String.valueOf(node.mandatory))»</li>
+                «node.configurationDataItem»
+                «node.mandatoryItem»
             </ul>
             </li>
         '''
@@ -1140,8 +1166,8 @@ class GeneratorImpl {
         return '''
             <li>«strong((node.QName.localName))» (leaf)
             <ul>
-                <li>configuration data: «strong(String.valueOf(node.configuration))»</li>
-                <li>mandatory: «strong(String.valueOf(node.mandatory))»</li>
+                «node.configurationDataItem»
+                «node.mandatoryItem»
             </ul>
             </li>
         '''
@@ -1151,7 +1177,7 @@ class GeneratorImpl {
         return '''
             <li>«strong((node.QName.localName))» (leaf-list)
             <ul>
-                <li>configuration data: «strong(String.valueOf(node.configuration))»</li>
+                «node.configurationDataItem»
             </ul>
             </li>
         '''
@@ -1167,6 +1193,15 @@ class GeneratorImpl {
         <a href="#«FOR cmp : identifier.pathArguments SEPARATOR "/"»«cmp.nodeType.localName»«ENDFOR»">«text»</a>
     '''
 
+    private static def String configurationDataItem(DataSchemaNode node) {
+        return node.effectiveConfig
+            .map([config | "<li>configuration data: " + strong(String.valueOf(config)) + "</li>"])
+            .orElse("")
+    }
+
+    private static def CharSequence mandatoryItem(MandatoryAware node) '''
+        <li>mandatory: «strong(String.valueOf(node.mandatory))»</li>
+    '''
 
     private def dispatch YangInstanceIdentifier append(YangInstanceIdentifier identifier, ContainerSchemaNode node) {
         return identifier.node(node.QName);
@@ -1359,15 +1394,13 @@ class GeneratorImpl {
 
     def toBaseStmt(TypeDefinition<?> baseType) '''
         «IF baseType !== null»
-        «listItem("Base type", typeAnchorLink(baseType?.path, baseType.QName.localName))»
+        «listItem("Base type", typeAnchorLink(types.get(baseType), baseType.QName.localName))»
         «ENDIF»
     '''
 
-
-
     /* #################### UTILITY #################### */
-    private def String strong(CharSequence str) '''<strong>«str»</strong>'''
-    private def italic(CharSequence str) '''<i>«str»</i>'''
+    private def static String strong(CharSequence str) '''<strong>«str»</strong>'''
+    private def static italic(CharSequence str) '''<i>«str»</i>'''
 
     def CharSequence descAndRefLi(SchemaNode node) '''
         «listItem("Description", node.description.orElse(null))»
