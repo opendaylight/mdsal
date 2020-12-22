@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.yang.types;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.MustDefinition;
@@ -43,8 +44,8 @@ public class TestLeafSchemaNode implements LeafSchemaNode {
     }
 
     @Override
-    public boolean isConfiguration() {
-        return false;
+    public Optional<Boolean> effectiveConfig() {
+        return Optional.of(Boolean.FALSE);
     }
 
     @Override
@@ -84,7 +85,7 @@ public class TestLeafSchemaNode implements LeafSchemaNode {
     }
 
     @Override
-    public Collection<MustDefinition> getMustConstraints() {
+    public Collection<@NonNull MustDefinition> getMustConstraints() {
         return ImmutableSet.of();
     }
 

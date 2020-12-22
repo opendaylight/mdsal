@@ -26,7 +26,7 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenE
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.binding.RegexPatterns;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
@@ -51,12 +51,12 @@ public class CodegenTypeProvider extends AbstractTypeProvider {
      * @param renames renaming table
      * @throws IllegalArgumentException if <code>schemaContext</code> is null.
      */
-    public CodegenTypeProvider(final SchemaContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
+    public CodegenTypeProvider(final EffectiveModelContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
         super(schemaContext, renames);
     }
 
     @VisibleForTesting
-    CodegenTypeProvider(final SchemaContext schemaContext) {
+    CodegenTypeProvider(final EffectiveModelContext schemaContext) {
         this(schemaContext, ImmutableMap.of());
     }
 
