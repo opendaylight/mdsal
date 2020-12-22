@@ -21,7 +21,7 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.Abstract
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.RuntimeEnumerationBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.RuntimeGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.RuntimeGeneratedTypeBuilder;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
@@ -33,12 +33,12 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
  */
 @Beta
 public final class RuntimeTypeProvider extends AbstractTypeProvider {
-    public RuntimeTypeProvider(final SchemaContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
+    public RuntimeTypeProvider(final EffectiveModelContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
         super(schemaContext, renames);
     }
 
     @VisibleForTesting
-    RuntimeTypeProvider(final SchemaContext schemaContext) {
+    RuntimeTypeProvider(final EffectiveModelContext schemaContext) {
         this(schemaContext, ImmutableMap.of());
     }
 
