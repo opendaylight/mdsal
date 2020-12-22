@@ -55,13 +55,13 @@ public final class DOMDataTreeListenerAggregator
     }
 
     private static final class Aggregated extends State {
-        final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees;
+        final Map<DOMDataTreeIdentifier, NormalizedNode> subtrees;
         final Collection<DOMDataTreeListeningException> failures;
         final Collection<DataTreeCandidate> changes;
 
         Aggregated(final Collection<DataTreeCandidate> changes,
-            final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees,
-            final Collection<DOMDataTreeListeningException> failures) {
+                final Map<DOMDataTreeIdentifier, NormalizedNode> subtrees,
+                final Collection<DOMDataTreeListeningException> failures) {
             this.changes = requireNonNull(changes);
             this.subtrees = requireNonNull(subtrees);
             this.failures = requireNonNull(failures);
@@ -69,11 +69,11 @@ public final class DOMDataTreeListenerAggregator
     }
 
     private static final class Changes extends State {
-        final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees;
+        final Map<DOMDataTreeIdentifier, NormalizedNode> subtrees;
         final Collection<DataTreeCandidate> changes;
 
         Changes(final Collection<DataTreeCandidate> changes,
-            final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees) {
+                final Map<DOMDataTreeIdentifier, NormalizedNode> subtrees) {
             this.changes = requireNonNull(changes);
             this.subtrees = requireNonNull(subtrees);
         }
@@ -93,7 +93,7 @@ public final class DOMDataTreeListenerAggregator
         @GuardedBy("this")
         private final Collection<DataTreeCandidate> changes = new ArrayList<>();
         @GuardedBy("this")
-        private Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees = ImmutableMap.of();
+        private Map<DOMDataTreeIdentifier, NormalizedNode> subtrees = ImmutableMap.of();
 
         @Override
         protected synchronized void append(final State state) {
@@ -152,7 +152,7 @@ public final class DOMDataTreeListenerAggregator
             final Stopwatch clock = Stopwatch.createStarted();
             final List<DataTreeCandidate> changes = new ArrayList<>();
             final List<DOMDataTreeListeningException> failures = new ArrayList<>(0);
-            final Builder<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees = ImmutableMap.builder();
+            final Builder<DOMDataTreeIdentifier, NormalizedNode> subtrees = ImmutableMap.builder();
             while (iterator.hasNext()) {
                 collectState(iterator.next(), changes, subtrees, failures);
             }
@@ -224,7 +224,7 @@ public final class DOMDataTreeListenerAggregator
 
             @Override
             public void onDataTreeChanged(final Collection<DataTreeCandidate> changes,
-                    final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees) {
+                    final Map<DOMDataTreeIdentifier, NormalizedNode> subtrees) {
                 receiveState(builder, new Changes(changes, subtrees));
             }
         };
@@ -257,7 +257,7 @@ public final class DOMDataTreeListenerAggregator
 
         final List<DataTreeCandidate> changes = new ArrayList<>();
         final List<DOMDataTreeListeningException> failures = new ArrayList<>(0);
-        final Builder<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees = ImmutableMap.builder();
+        final Builder<DOMDataTreeIdentifier, NormalizedNode> subtrees = ImmutableMap.builder();
         for (AbstractStateAggregator.StateBuilder<State> builder : builders) {
             collectState(builder.build(), changes, subtrees, failures);
         }
@@ -276,7 +276,7 @@ public final class DOMDataTreeListenerAggregator
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     static void callListener(final DOMDataTreeListener listener, final Collection<DataTreeCandidate> changes,
-            final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees) {
+            final Map<DOMDataTreeIdentifier, NormalizedNode> subtrees) {
         try {
             listener.onDataTreeChanged(changes, subtrees);
         } catch (Exception e) {
@@ -285,7 +285,7 @@ public final class DOMDataTreeListenerAggregator
     }
 
     static void collectState(final State state, final Collection<DataTreeCandidate> changes,
-            final Builder<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees,
+            final Builder<DOMDataTreeIdentifier, NormalizedNode> subtrees,
             final Collection<DOMDataTreeListeningException> failures) {
         Verify.verify(state instanceof Aggregated, "Unexpected state %s", state);
         final Aggregated aggregated = (Aggregated) state;

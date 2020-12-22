@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,8 +57,8 @@ public class WritableNodeOperationTest extends WritableNodeOperation {
         Map<PathArgument, WriteableModificationNode> childrenWithSubShards = new HashMap<>();
         childrenWithSubShards.put(TestUtils.PATH_ARGUMENT, TestUtils.WRITEABLE_MODIFICATION_NODE);
         doReturn(childrenWithSubShards).when(TestUtils.WRITEABLE_MODIFICATION_NODE).getChildrenWithSubshards();
-        doReturn(Optional.of(TestUtils.NORMALIZED_NODE))
-                .when(TestUtils.NORMALIZED_NODE_CONTAINER).getChild(TestUtils.PATH_ARGUMENT);
+        doReturn(TestUtils.NORMALIZED_NODE)
+                .when(TestUtils.NORMALIZED_NODE_CONTAINER).childByArg(TestUtils.PATH_ARGUMENT);
         this.writeToCurrent(TestUtils.NORMALIZED_NODE_CONTAINER);
         verify(TestUtils.DOM_DATA_TREE_WRITE_CURSOR).delete(TestUtils.PATH_ARGUMENT);
         verify(TestUtils.DOM_DATA_TREE_WRITE_CURSOR).exit();
@@ -108,7 +107,7 @@ public class WritableNodeOperationTest extends WritableNodeOperation {
         returnNoNull(null);
     }
 
-    private static void returnNoNull(final NormalizedNodeContainer<?, ?, ?> normalizedNode) {
+    private static void returnNoNull(final NormalizedNodeContainer<?, ?> normalizedNode) {
         if (normalizedNode != null) {
             doNothing().when(TestUtils.WRITE_CURSOR_STRATEGY).writeToCurrent(normalizedNode);
             doNothing().when(TestUtils.WRITE_CURSOR_STRATEGY).mergeToCurrent(normalizedNode);
@@ -123,7 +122,7 @@ public class WritableNodeOperationTest extends WritableNodeOperation {
 
     @Before
     public void setUp() {
-        final Collection<NormalizedNode<?, ?>> collectionNodes = new HashSet<>();
+        final Collection<NormalizedNode> collectionNodes = new HashSet<>();
         doReturn("testArgument").when(TestUtils.PATH_ARGUMENT).toString();
         doReturn("testCursor").when(TestUtils.DOM_DATA_TREE_WRITE_CURSOR).toString();
         doReturn("testNode").when(TestUtils.NORMALIZED_NODE).toString();
@@ -141,7 +140,7 @@ public class WritableNodeOperationTest extends WritableNodeOperation {
         doNothing().when(TestUtils.DOM_DATA_TREE_WRITE_CURSOR).exit();
 
         collectionNodes.add(TestUtils.NORMALIZED_NODE);
-        doReturn(collectionNodes).when(TestUtils.NORMALIZED_NODE_CONTAINER).getValue();
+        doReturn(collectionNodes).when(TestUtils.NORMALIZED_NODE_CONTAINER).body();
         doReturn(TestUtils.PATH_ARGUMENT).when(TestUtils.NORMALIZED_NODE_CONTAINER).getIdentifier();
         doReturn(TestUtils.PATH_ARGUMENT).when(TestUtils.NORMALIZED_NODE).getIdentifier();
     }
