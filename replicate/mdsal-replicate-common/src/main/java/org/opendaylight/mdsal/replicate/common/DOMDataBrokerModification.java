@@ -38,13 +38,13 @@ final class DOMDataBrokerModification implements DataTreeModification {
     }
 
     @Override
-    public void write(final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
+    public void write(final YangInstanceIdentifier path, final NormalizedNode data) {
         LOG.trace("BackupModification - WRITE - {} - DATA: {}", path, data);
         transaction.put(datastore, path, data);
     }
 
     @Override
-    public void merge(final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
+    public void merge(final YangInstanceIdentifier path, final NormalizedNode data) {
         throw new UnsupportedOperationException();
     }
 
@@ -59,7 +59,7 @@ final class DOMDataBrokerModification implements DataTreeModification {
     }
 
     @Override
-    public Optional<NormalizedNode<?, ?>> readNode(final YangInstanceIdentifier path) {
+    public Optional<NormalizedNode> readNode(final YangInstanceIdentifier path) {
         throw new UnsupportedOperationException();
     }
 
