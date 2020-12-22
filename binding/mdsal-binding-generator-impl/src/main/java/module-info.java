@@ -23,6 +23,7 @@ module org.opendaylight.mdsal.binding.generator.impl {
     requires transitive org.opendaylight.mdsal.binding.runtime.api;
     requires org.opendaylight.mdsal.binding.spec.util;
     requires org.opendaylight.yangtools.yang.model.api;
+    requires org.opendaylight.yangtools.yang.model.spi;
     requires org.opendaylight.yangtools.yang.model.util;
     requires org.opendaylight.yangtools.util;
     requires org.slf4j;

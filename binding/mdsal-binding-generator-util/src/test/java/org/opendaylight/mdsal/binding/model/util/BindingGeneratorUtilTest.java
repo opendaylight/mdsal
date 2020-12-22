@@ -21,7 +21,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -34,23 +33,22 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.ConstraintMetaDefinition;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.stmt.ValueRange;
 import org.opendaylight.yangtools.yang.model.api.type.DecimalTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.Int16TypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.Uint16TypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
+import org.opendaylight.yangtools.yang.model.spi.type.BaseTypes;
+import org.opendaylight.yangtools.yang.model.spi.type.DerivedTypes;
+import org.opendaylight.yangtools.yang.model.spi.type.InvalidLengthConstraintException;
+import org.opendaylight.yangtools.yang.model.spi.type.RestrictedTypes;
+import org.opendaylight.yangtools.yang.model.spi.type.StringTypeBuilder;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
-import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
-import org.opendaylight.yangtools.yang.model.util.type.DerivedTypes;
-import org.opendaylight.yangtools.yang.model.util.type.InvalidLengthConstraintException;
-import org.opendaylight.yangtools.yang.model.util.type.RestrictedTypes;
-import org.opendaylight.yangtools.yang.model.util.type.StringTypeBuilder;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorUtilTest {
-    private static final SchemaPath ROOT_PATH = SchemaPath.create(true, QName.create("test", "root"));
+    private static final QName ROOT = QName.create("test", "root");
 
     /*
      * Tests methods:
@@ -201,11 +199,12 @@ public class BindingGeneratorUtilTest {
 
     @Test
     public void getRestrictionsTest() throws InvalidLengthConstraintException {
-        final Optional<String> absent = Optional.empty();
-        final StringTypeBuilder builder =
-                RestrictedTypes.newStringBuilder(BaseTypes.stringType(), ROOT_PATH);
+        final PatternConstraint constraint = mock(PatternConstraint.class);
 
-        builder.addPatternConstraint(BaseConstraints.newPatternConstraint(".*", absent, absent));
+        final StringTypeBuilder builder =
+                RestrictedTypes.newStringBuilder(BaseTypes.stringType(), ROOT);
+
+        builder.addPatternConstraint(constraint);
         builder.setLengthConstraint(mock(ConstraintMetaDefinition.class), ImmutableList.of(ValueRange.of(1, 2)));
 
         Restrictions restrictions = BindingGeneratorUtil.getRestrictions(builder.build());
@@ -217,13 +216,12 @@ public class BindingGeneratorUtilTest {
         assertEquals(1, restrictions.getPatternConstraints().size());
 
         assertFalse(restrictions.isEmpty());
-        assertTrue(restrictions.getPatternConstraints().contains(
-                BaseConstraints.newPatternConstraint(".*", absent, absent)));
+        assertTrue(restrictions.getPatternConstraints().contains(constraint));
     }
 
     @Test
     public void getEmptyRestrictionsTest() {
-        final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(BaseTypes.stringType(), ROOT_PATH).build();
+        final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(BaseTypes.stringType(), ROOT).build();
         final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(type);
 
         assertNotNull(restrictions);
@@ -232,7 +230,7 @@ public class BindingGeneratorUtilTest {
 
     @Test
     public void getDefaultIntegerRestrictionsTest() {
-        final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(BaseTypes.int16Type(), ROOT_PATH).build();
+        final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(BaseTypes.int16Type(), ROOT).build();
         final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(type);
 
         assertNotNull(restrictions);
@@ -245,7 +243,7 @@ public class BindingGeneratorUtilTest {
 
     @Test
     public void getDefaultUnsignedIntegerRestrictionsTest() {
-        final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(BaseTypes.uint16Type(), ROOT_PATH).build();
+        final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(BaseTypes.uint16Type(), ROOT).build();
         final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(type);
 
         assertNotNull(restrictions);
@@ -258,8 +256,8 @@ public class BindingGeneratorUtilTest {
 
     @Test
     public void getDefaultDecimalRestrictionsTest() {
-        final DecimalTypeDefinition base = BaseTypes.decimalTypeBuilder(ROOT_PATH).setFractionDigits(10).build();
-        final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(base, ROOT_PATH).build();
+        final DecimalTypeDefinition base = BaseTypes.decimalTypeBuilder(ROOT).setFractionDigits(10).build();
+        final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(base, ROOT).build();
 
         final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(type);
 
