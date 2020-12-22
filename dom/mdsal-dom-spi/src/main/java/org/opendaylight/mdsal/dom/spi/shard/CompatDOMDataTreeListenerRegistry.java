@@ -43,7 +43,7 @@ public final class CompatDOMDataTreeListenerRegistry implements DOMDataTreeListe
 
             final ListenerRegistration<?> reg = publisher.registerTreeChangeListener(treeId.getRootIdentifier(),
                 changes -> {
-                    final Optional<NormalizedNode<?, ?>> last = Iterables.getLast(changes).getRootNode().getDataAfter();
+                    final Optional<NormalizedNode> last = Iterables.getLast(changes).getRootNode().getDataAfter();
                     if (last.isPresent()) {
                         listener.onDataTreeChanged(changes, ImmutableMap.of(treeId, last.get()));
                     } else {

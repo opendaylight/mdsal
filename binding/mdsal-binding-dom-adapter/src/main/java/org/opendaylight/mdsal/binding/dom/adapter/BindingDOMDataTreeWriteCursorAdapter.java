@@ -38,12 +38,12 @@ final class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurso
         return ret.getLastPathArgument();
     }
 
-    private <P extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalized(
+    private <P extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode> convertToNormalized(
             final PathArgument child, final P data) {
         stack.push(child);
         final InstanceIdentifier<?> iid = InstanceIdentifier.create(stack);
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = currentSerializer().toNormalizedNode(
+        final Entry<YangInstanceIdentifier, NormalizedNode> entry = currentSerializer().toNormalizedNode(
             (InstanceIdentifier) iid, data);
         stack.pop();
         return entry;
@@ -56,13 +56,13 @@ final class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurso
 
     @Override
     public <P extends DataObject> void merge(final PathArgument child, final P data) {
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = convertToNormalized(child, data);
+        final Entry<YangInstanceIdentifier, NormalizedNode> entry = convertToNormalized(child, data);
         getDelegate().merge(entry.getKey().getLastPathArgument(), entry.getValue());
     }
 
     @Override
     public <P extends DataObject> void write(final PathArgument child, final P data) {
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = convertToNormalized(child, data);
+        final Entry<YangInstanceIdentifier, NormalizedNode> entry = convertToNormalized(child, data);
         getDelegate().write(entry.getKey().getLastPathArgument(), entry.getValue());
     }
 

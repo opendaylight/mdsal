@@ -78,12 +78,12 @@ public abstract class AbstractDataModificationCursor<M> implements DOMDataTreeWr
     }
 
     @Override
-    public void merge(final PathArgument child, final NormalizedNode<?, ?> data) {
+    public void merge(final PathArgument child, final NormalizedNode data) {
         getCurrent().merge(child, data);
     }
 
     @Override
-    public void write(final PathArgument child, final NormalizedNode<?, ?> data) {
+    public void write(final PathArgument child, final NormalizedNode data) {
         getCurrent().write(child, data);
     }
 

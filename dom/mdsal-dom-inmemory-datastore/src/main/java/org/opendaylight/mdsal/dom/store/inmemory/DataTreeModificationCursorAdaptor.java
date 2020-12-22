@@ -54,12 +54,12 @@ final class DataTreeModificationCursorAdaptor extends ForwardingObject implement
     }
 
     @Override
-    public void merge(final PathArgument child, final NormalizedNode<?, ?> data) {
+    public void merge(final PathArgument child, final NormalizedNode data) {
         delegate.merge(child, data);
     }
 
     @Override
-    public void write(final PathArgument child, final NormalizedNode<?, ?> data) {
+    public void write(final PathArgument child, final NormalizedNode data) {
         delegate.write(child, data);
     }
 
@@ -73,7 +73,7 @@ final class DataTreeModificationCursorAdaptor extends ForwardingObject implement
         delegate.exit(depth);
     }
 
-    public Optional<NormalizedNode<?, ?>> readNode(final PathArgument child) {
+    public Optional<NormalizedNode> readNode(final PathArgument child) {
         return delegate.readNode(child);
     }
 

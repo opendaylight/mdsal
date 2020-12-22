@@ -35,7 +35,7 @@ final class TestUtils {
 
     static final PathArgument PATH_ARGUMENT = mock(PathArgument.class);
 
-    static final NormalizedNode<?, ?> NORMALIZED_NODE = mock(NormalizedNode.class);
+    static final NormalizedNode NORMALIZED_NODE = mock(NormalizedNode.class);
 
     static final NormalizedNodeContainer NORMALIZED_NODE_CONTAINER = mock(NormalizedNodeContainer.class);
 
