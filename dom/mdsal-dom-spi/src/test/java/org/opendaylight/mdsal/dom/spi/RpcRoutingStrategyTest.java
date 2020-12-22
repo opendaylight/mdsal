@@ -22,8 +22,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.extension.yang.ext.rev
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.repo.api.StatementParserMode;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.parser.api.YangParserConfiguration;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class RpcRoutingStrategyTest {
@@ -31,7 +31,7 @@ public class RpcRoutingStrategyTest {
 
     @BeforeClass
     public static void beforeClass() {
-        final EffectiveModelContext ctx = YangParserTestUtils.parseYangSources(StatementParserMode.DEFAULT_MODE, null,
+        final EffectiveModelContext ctx = YangParserTestUtils.parseYangSources(YangParserConfiguration.DEFAULT, null,
             YangTextSchemaSource.delegateForByteSource("yang-ext.yang",
                 $YangModuleInfoImpl.getInstance().getYangTextByteSource()),
             YangTextSchemaSource.forResource(RpcRoutingStrategy.class, "/rpc-routing-strategy.yang"));
