@@ -11,7 +11,7 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentFactory;
 
