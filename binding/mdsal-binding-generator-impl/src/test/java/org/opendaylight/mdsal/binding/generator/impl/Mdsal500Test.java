@@ -31,6 +31,5 @@ public class Mdsal500Test {
 
         final MethodSignature signature = methods.get(0);
         assertEquals("switch$", signature.getName());
-        assertEquals(3, types.size());
     }
 }

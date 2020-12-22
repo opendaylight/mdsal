@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.yang.types;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
 
 import com.google.common.collect.Range;
 import java.util.List;
@@ -38,14 +37,13 @@ import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 
@@ -55,10 +53,11 @@ import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
  * @see org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider
  * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
+@Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class TypeProviderTest {
 
-    public static SchemaContext SCHEMA_CONTEXT;
+    public static EffectiveModelContext SCHEMA_CONTEXT;
     public static Module TEST_TYPE_PROVIDER;
 
     @Mock
@@ -364,32 +363,6 @@ public class TypeProviderTest {
         final TypeDefinition<?> leafType = leaf.getType();
 
         provider.javaTypeForSchemaDefinitionType(leafType, leaf);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void provideTypeForLeafrefWithNullLeafrefTypeTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
-
-        provider.provideTypeForLeafref(null, null, false);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void provideTypeForLeafrefWithNullLeafrefTypePathStatementTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
-
-        final LeafrefTypeWithNullXpath leafrePath = new LeafrefTypeWithNullXpath();
-        provider.provideTypeForLeafref(leafrePath, this.schemaNode, false);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void provideTypeForLeafrefWithNullParentModuleTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(SCHEMA_CONTEXT);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "bar",
-            "leafref-value");
-        final TypeDefinition<?> leafType = leaf.getType();
-        assertTrue(leafType instanceof LeafrefTypeDefinition);
-        doReturn(null).when(this.schemaNode).getPath();
-        provider.provideTypeForLeafref((LeafrefTypeDefinition) leafType, this.schemaNode, false);
     }
 
     @Test

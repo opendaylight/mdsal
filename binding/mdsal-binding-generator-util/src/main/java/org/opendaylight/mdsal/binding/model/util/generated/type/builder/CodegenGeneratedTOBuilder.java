@@ -15,8 +15,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBu
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
-
+public class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
     private Restrictions restrictions;
     private GeneratedPropertyBuilder suid;
     private String reference;
@@ -29,43 +28,38 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
     }
 
     @Override
-    public void setRestrictions(final Restrictions restrictions) {
+    public final void setRestrictions(final Restrictions restrictions) {
         this.restrictions = restrictions;
     }
 
     @Override
-    public void setSUID(final GeneratedPropertyBuilder newSuid) {
+    public final void setSUID(final GeneratedPropertyBuilder newSuid) {
         this.suid = newSuid;
     }
 
     @Override
-    public GeneratedTransferObject build() {
-        return new GTO(this);
-    }
-
-    @Override
-    public void setDescription(final String description) {
+    public final void setDescription(final String description) {
         this.description = description;
     }
 
     @Override
-    public void setModuleName(final String moduleName) {
+    public final void setModuleName(final String moduleName) {
         this.moduleName = moduleName;
     }
 
     @Override
-    public void setSchemaPath(final SchemaPath schemaPath) {
+    public final void setSchemaPath(final SchemaPath schemaPath) {
         this.schemaPath = schemaPath;
     }
 
     @Override
-    public void setReference(final String reference) {
+    public final void setReference(final String reference) {
         this.reference = reference;
     }
 
     @Override
-    AbstractEnumerationBuilder newEnumerationBuilder(final JavaTypeName identifier) {
-        return new CodegenEnumerationBuilder(identifier);
+    public final GeneratedTransferObject build() {
+        return new GTO(this);
     }
 
     private static final class GTO extends AbstractGeneratedTransferObject {

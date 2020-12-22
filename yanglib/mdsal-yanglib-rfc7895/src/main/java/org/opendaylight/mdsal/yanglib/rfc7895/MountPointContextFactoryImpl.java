@@ -27,15 +27,15 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.module.list.Module;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.module.list.Module.ConformanceType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.module.list.module.Submodule;
-import org.opendaylight.yangtools.rcf8528.data.util.AbstractMountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.rfc8528.data.api.YangLibraryConstants.ContainerName;
+import org.opendaylight.yangtools.rfc8528.data.util.AbstractMountPointContextFactory;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
+import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +75,8 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     protected EffectiveModelContext bindLibrary(final ContainerName containerName, final ContainerNode libData)
             throws YangParserException {
         checkArgument(containerName == ContainerName.RFC7895, "Unsupported container type %s", containerName);
-        checkArgument(ModulesState.QNAME.equals(libData.getNodeType()), "Unexpected container %s", libData);
+        checkArgument(ModulesState.QNAME.equals(libData.getIdentifier().getNodeType()),
+            "Unexpected container %s", libData);
 
         // DOM-to-Binding magic
         return bindLibrary(verifyNotNull(codec.deserialize(libData)));

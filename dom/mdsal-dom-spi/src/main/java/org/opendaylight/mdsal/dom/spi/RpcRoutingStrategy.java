@@ -10,17 +10,16 @@ package org.opendaylight.mdsal.dom.spi;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.odlext.model.api.ContextReferenceEffectiveStatement;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 
 public abstract class RpcRoutingStrategy implements Identifiable<QName> {
-    // FIXME: deprecate context-reference
-    private static final QName CONTEXT_REFERENCE = QName.create("urn:opendaylight:yang:extension:yang-ext",
-            "2013-07-09", "context-reference").intern();
-    private final QName identifier;
+    private final @NonNull QName identifier;
 
     private RpcRoutingStrategy(final QName identifier) {
         this.identifier = requireNonNull(identifier);
@@ -55,22 +54,18 @@ public abstract class RpcRoutingStrategy implements Identifiable<QName> {
     public abstract boolean isContextBasedRouted();
 
     public static RpcRoutingStrategy from(final RpcDefinition rpc) {
-        for (DataSchemaNode schemaNode : rpc.getInput().getChildNodes()) {
-            Optional<QName> context = getRoutingContext(schemaNode);
-            if (context.isPresent()) {
-                return new RoutedRpcStrategy(rpc.getQName(), context.get(), schemaNode.getQName());
+        // FIXME: deprecate context-reference
+        for (EffectiveStatement<?, ?> stmt : rpc.getInput().asEffectiveStatement().effectiveSubstatements()) {
+            if (stmt instanceof SchemaTreeEffectiveStatement) {
+                final Optional<QName> context =
+                    stmt.findFirstEffectiveSubstatementArgument(ContextReferenceEffectiveStatement.class);
+                if (context.isPresent()) {
+                    return new RoutedRpcStrategy(rpc.getQName(), context.orElseThrow(),
+                        ((SchemaTreeEffectiveStatement<?>) stmt).argument());
+                }
             }
         }
         return new GlobalRpcStrategy(rpc.getQName());
-    }
-
-    public static Optional<QName> getRoutingContext(final DataSchemaNode schemaNode) {
-        for (UnknownSchemaNode extension : schemaNode.getUnknownSchemaNodes()) {
-            if (CONTEXT_REFERENCE.equals(extension.getNodeType())) {
-                return Optional.ofNullable(extension.getQName());
-            }
-        }
-        return Optional.empty();
     }
 
     private static final class RoutedRpcStrategy extends RpcRoutingStrategy {
