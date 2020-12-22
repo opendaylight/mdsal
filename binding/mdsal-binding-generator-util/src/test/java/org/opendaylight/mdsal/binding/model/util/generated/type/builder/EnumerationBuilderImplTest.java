@@ -22,8 +22,8 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
-import org.opendaylight.yangtools.yang.model.util.type.EnumPairBuilder;
+import org.opendaylight.yangtools.yang.model.ri.type.BaseTypes;
+import org.opendaylight.yangtools.yang.model.ri.type.EnumPairBuilder;
 
 public class EnumerationBuilderImplTest {
 
@@ -149,7 +149,7 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void testUpdateEnumPairsFromEnumTypeDef() {
-        final EnumTypeDefinition enumTypeDefinition = BaseTypes.enumerationTypeBuilder(SchemaPath.SAME)
+        final EnumTypeDefinition enumTypeDefinition = BaseTypes.enumerationTypeBuilder(QName.create("test", "test"))
                 .addEnum(EnumPairBuilder.create("SomeName", 42).setDescription("Some Other Description")
                     .setReference("Some other reference").build()).build();
         enumerationBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDefinition);
