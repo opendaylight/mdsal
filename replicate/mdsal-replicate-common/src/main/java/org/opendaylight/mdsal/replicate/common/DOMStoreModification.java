@@ -36,13 +36,13 @@ final class DOMStoreModification implements DataTreeModification {
     }
 
     @Override
-    public void write(final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
+    public void write(final YangInstanceIdentifier path, final NormalizedNode data) {
         LOG.trace("Write {} data {}", path, data);
         transaction.write(path, data);
     }
 
     @Override
-    public Optional<NormalizedNode<?, ?>> readNode(final YangInstanceIdentifier path) {
+    public Optional<NormalizedNode> readNode(final YangInstanceIdentifier path) {
         throw new UnsupportedOperationException();
     }
 
@@ -57,7 +57,7 @@ final class DOMStoreModification implements DataTreeModification {
     }
 
     @Override
-    public void merge(final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
+    public void merge(final YangInstanceIdentifier path, final NormalizedNode data) {
         throw new UnsupportedOperationException();
     }
 

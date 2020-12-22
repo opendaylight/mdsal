@@ -12,16 +12,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
 public class DOMRpcIdentifierTest {
     private static final String LOCAL_IDENT = "local";
-    private static final QNameModule TEST_MODULE = QNameModule.create(URI.create(
+    private static final QNameModule TEST_MODULE = QNameModule.create(XMLNamespace.of(
             "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
     private static final QName LOCAL_QNAME = QName.create(TEST_MODULE, LOCAL_IDENT);
 

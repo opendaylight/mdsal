@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ForwardingObject;
 import java.util.Collection;
-import java.util.Optional;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -70,13 +69,13 @@ public abstract class AbstractBindingLazyContainerNode<T extends DataObject, C> 
     }
 
     @Override
-    public Collection<DataContainerChild<? extends PathArgument, ?>> getValue() {
-        return delegate().getValue();
+    public Collection<DataContainerChild> body() {
+        return delegate().body();
     }
 
     @Override
-    public Optional<DataContainerChild<? extends PathArgument, ?>> getChild(final PathArgument child) {
-        return delegate().getChild(child);
+    public DataContainerChild childByArg(final PathArgument child) {
+        return delegate().childByArg(child);
     }
 
     @Override
