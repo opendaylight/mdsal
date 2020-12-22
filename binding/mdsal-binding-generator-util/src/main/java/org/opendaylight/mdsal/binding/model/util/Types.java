@@ -452,7 +452,7 @@ public final class Types {
         }
 
         @Override
-        public RangeSet<T> getAllowedRanges() {
+        public RangeSet<@NonNull T> getAllowedRanges() {
             return ImmutableRangeSet.of(Range.closed(min, max));
         }
     }
