@@ -14,6 +14,5 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 @Deprecated(forRemoval = true)
 interface ReadableCursorOperation extends CursorStrategy {
 
-    Optional<NormalizedNode<?, ?>> readNode(PathArgument arg);
-
+    Optional<NormalizedNode> readNode(PathArgument arg);
 }

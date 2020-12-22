@@ -21,8 +21,8 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.data.api.schema.DistinctNodeContainer;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 
 final class TestUtils {
@@ -34,9 +34,9 @@ final class TestUtils {
 
     static final NodeIdentifier NODE_IDENTIFIER = NodeIdentifier.create(QName.create("", "test"));
 
-    static final NormalizedNode<?, ?> NORMALIZED_NODE = mock(NormalizedNode.class);
+    static final NormalizedNode NORMALIZED_NODE = mock(NormalizedNode.class);
 
-    static final NormalizedNodeContainer NORMALIZED_NODE_CONTAINER = mock(NormalizedNodeContainer.class);
+    static final DistinctNodeContainer NORMALIZED_NODE_CONTAINER = mock(DistinctNodeContainer.class);
 
     static final DOMStoreThreePhaseCommitCohort DOM_STORE_THREE_PHASE_COMMIT_COHORT =
             mock(DOMStoreThreePhaseCommitCohort.class);

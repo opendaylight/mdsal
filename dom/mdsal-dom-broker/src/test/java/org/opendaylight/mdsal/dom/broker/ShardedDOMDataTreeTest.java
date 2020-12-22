@@ -83,7 +83,7 @@ public class ShardedDOMDataTreeTest extends AbstractDatastoreTest {
     @Captor
     private ArgumentCaptor<Collection<DataTreeCandidate>> captorForChanges;
     @Captor
-    private ArgumentCaptor<Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>>> captorForSubtrees;
+    private ArgumentCaptor<Map<DOMDataTreeIdentifier, NormalizedNode>> captorForSubtrees;
 
     private final ContainerNode crossShardContainer = createCrossShardContainer();
 
@@ -195,8 +195,8 @@ public class ShardedDOMDataTreeTest extends AbstractDatastoreTest {
 
         final ContainerNode capturedChange =
                 (ContainerNode) capturedValue.get(1).iterator().next().getRootNode().getDataAfter().get();
-        final ContainerNode innerContainerVerify = (ContainerNode) crossShardContainer.getChild(
-                TestModel.INNER_CONTAINER_PATH.getLastPathArgument()).get();
+        final ContainerNode innerContainerVerify = (ContainerNode) crossShardContainer.childByArg(
+                TestModel.INNER_CONTAINER_PATH.getLastPathArgument());
         assertEquals(innerContainerVerify, capturedChange);
 
         verifyNoMoreInteractions(mockedDataTreeListener);

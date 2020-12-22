@@ -35,16 +35,16 @@ public class TransactionChainReadTransaction implements DOMDataTreeReadTransacti
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(final LogicalDatastoreType store,
+    public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
             final YangInstanceIdentifier path) {
-        final SettableFuture<Optional<NormalizedNode<?, ?>>> readResult = SettableFuture.create();
+        final SettableFuture<Optional<NormalizedNode>> readResult = SettableFuture.create();
 
         previousWriteTxFuture.addCallback(new FutureCallback<CommitInfo>() {
             @Override
             public void onSuccess(final CommitInfo result) {
-                delegateReadTx.read(store, path).addCallback(new FutureCallback<Optional<NormalizedNode<?, ?>>>() {
+                delegateReadTx.read(store, path).addCallback(new FutureCallback<Optional<NormalizedNode>>() {
                     @Override
-                    public void onSuccess(final Optional<NormalizedNode<?, ?>> result) {
+                    public void onSuccess(final Optional<NormalizedNode> result) {
                         readResult.set(result);
                     }
 
