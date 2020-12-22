@@ -7,12 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.opendaylight.mdsal.binding.generator.impl.SupportTestUtil.containsAttributes;
 import static org.opendaylight.mdsal.binding.generator.impl.SupportTestUtil.containsMethods;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
@@ -38,65 +41,61 @@ public class BitAndUnionTOEnclosingTest {
 
     @Test
     public void testNestedTypesInLeaf() {
-        GeneratedTransferObject lfLeaf = null;
-        int lfLeafCounter = 0;
-        GeneratedTransferObject lf1Leaf = null;
-        int lf1LeafCounter = 0;
-        GeneratedTransferObject lf2Leaf = null;
-        int lf2LeafCounter = 0;
-        List<GeneratedType> enclosedTypes = parentContainer.getEnclosedTypes();
-        assertEquals(5, enclosedTypes.size());
+        final List<GeneratedType> enclosedTypes = parentContainer.getEnclosedTypes();
+        assertEquals(3, enclosedTypes.size());
 
-        for (GeneratedType genType : enclosedTypes) {
-            if (genType instanceof GeneratedTransferObject) {
-                if (genType.getName().equals("Lf")) {
-                    lfLeaf = (GeneratedTransferObject) genType;
-                    lfLeafCounter++;
-                } else if (genType.getName().equals("Lf$1")) {
-                    lf1Leaf = (GeneratedTransferObject) genType;
-                    lf1LeafCounter++;
-                } else if (genType.getName().equals("Lf$2")) {
-                    lf2Leaf = (GeneratedTransferObject) genType;
-                    lf2LeafCounter++;
-                }
-
-            }
-        }
-
-        // nested types in leaf, contains Lf?
-        assertNotNull("Lf TO wasn't found.", lfLeaf);
-        assertEquals("Lf TO has incorrect number of occurences.", 1, lfLeafCounter);
+        // nested types in leaf
+        final List<GeneratedTransferObject> lfLeafs = enclosedTypes.stream()
+            .filter(genType -> genType.getName().equals("Lf"))
+            .map(genType -> {
+                assertThat(genType, instanceOf(GeneratedTransferObject.class));
+                return (GeneratedTransferObject) genType;
+            })
+            .collect(Collectors.toList());
+        assertEquals("Lf TO has incorrect number of occurences.", 1, lfLeafs.size());
+        GeneratedTransferObject lfLeaf = lfLeafs.get(0);
         assertEquals("Lf has incorrect package name.",
-                "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626.ParentContainer",
-                lfLeaf.getIdentifier().immediatelyEnclosingClass().get().toString());
+            "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626.ParentContainer",
+            lfLeaf.getIdentifier().immediatelyEnclosingClass().get().toString());
 
         assertEquals("Lf generated TO has incorrect number of properties", 2, lfLeaf.getProperties().size());
         containsAttributes(lfLeaf, true, true, true, new NameTypePattern("string", "String"));
         containsAttributes(lfLeaf, true, false, true, new NameTypePattern("lf$1", "Lf$1"));
 
-        // nested types in leaf, contains Lf1?
-        assertNotNull("Lf$1 TO wasn't found.", lf1Leaf);
-        assertEquals("Lf$1 TO has incorrect number of occurences.", 1, lf1LeafCounter);
+        // nested types in Lf
+        final List<GeneratedType> lfTypes = lfLeaf.getEnclosedTypes();
+        assertEquals(1, lfTypes.size());
+
+        final GeneratedType lf1Leaf = lfTypes.get(0);
+        assertEquals("Lf$1", lf1Leaf.getName());
         assertEquals("Lf$1 has incorrect package name.",
-                "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626.ParentContainer",
-                lf1Leaf.getIdentifier().immediatelyEnclosingClass().get().toString());
+            "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626.ParentContainer.Lf",
+            lf1Leaf.getIdentifier().immediatelyEnclosingClass().get().toString());
 
-        assertEquals("Lf generated TO has incorrect number of properties", 4, lf1Leaf.getProperties().size());
-        containsAttributes(lf1Leaf, true, true, true, new NameTypePattern("uint32", "Uint32"));
-        containsAttributes(lf1Leaf, true, true, true, new NameTypePattern("int8", "Byte"));
-        containsAttributes(lf1Leaf, true, true, true, new NameTypePattern("string", "String"));
-        containsAttributes(lf1Leaf, true, false, true, new NameTypePattern("lf$2", "Lf$2"));
+        assertThat(lf1Leaf, instanceOf(GeneratedTransferObject.class));
+        final GeneratedTransferObject lf1gto = (GeneratedTransferObject) lf1Leaf;
+        assertEquals("Lf$1 generated TO has incorrect number of properties", 4, lf1Leaf.getProperties().size());
+        containsAttributes(lf1gto, true, true, true, new NameTypePattern("uint32", "Uint32"));
+        containsAttributes(lf1gto, true, true, true, new NameTypePattern("int8", "Byte"));
+        containsAttributes(lf1gto, true, true, true, new NameTypePattern("string", "String"));
+        containsAttributes(lf1gto, true, false, true, new NameTypePattern("lf$2", "Lf$2"));
 
-        // nested types in leaf, contains Lf2?
-        assertNotNull("Lf$2 TO wasn't found.", lf2Leaf);
-        assertEquals("Lf$2 TO has incorrect number of occurences.", 1, lf2LeafCounter);
+        // nested types in Lf1
+        final List<GeneratedType> lf1Types = lf1Leaf.getEnclosedTypes();
+        assertEquals(1, lf1Types.size());
+
+        final GeneratedType lf2Leaf = lf1Types.get(0);
+        assertEquals("Lf$2", lf2Leaf.getName());
         assertEquals("Lf$2 has incorrect package name.",
-                "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626.ParentContainer",
-                lf2Leaf.getIdentifier().immediatelyEnclosingClass().get().toString());
+            "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626.ParentContainer.Lf.Lf$1",
+            lf2Leaf.getIdentifier().immediatelyEnclosingClass().get().toString());
 
+
+        assertThat(lf2Leaf, instanceOf(GeneratedTransferObject.class));
+        final GeneratedTransferObject lf2gto = (GeneratedTransferObject) lf2Leaf;
         assertEquals("Lf generated TO has incorrect number of properties", 2, lf2Leaf.getProperties().size());
-        containsAttributes(lf2Leaf, true, true, true, new NameTypePattern("string", "String"));
-        containsAttributes(lf2Leaf, true, true, true, new NameTypePattern("uint64", "Uint64"));
+        containsAttributes(lf2gto, true, true, true, new NameTypePattern("string", "String"));
+        containsAttributes(lf2gto, true, true, true, new NameTypePattern("uint64", "Uint64"));
     }
 
     @Test
@@ -126,49 +125,37 @@ public class BitAndUnionTOEnclosingTest {
         containsAttributes(typeUnionTypedef, true, false, true, new NameTypePattern("typeUnion$1", "TypeUnion$1"));
 
         List<GeneratedType> nestedUnions = typeUnionTypedef.getEnclosedTypes();
-        assertEquals("Incorrect number of nested unions", 2, nestedUnions.size());
+        assertEquals("Incorrect number of nested unions", 1, nestedUnions.size());
 
-        GeneratedTransferObject typeUnion1 = null;
-        int typeUnion1Counter = 0;
-        GeneratedTransferObject typeUnion2 = null;
-        int typeUnion2Counter = 0;
-        for (GeneratedType genType : nestedUnions) {
-            if (genType instanceof GeneratedTransferObject) {
-                if (genType.getName().equals("TypeUnion$1")) {
-                    typeUnion1 = (GeneratedTransferObject) genType;
-                    typeUnion1Counter++;
-                } else if (genType.getName().equals("TypeUnion$2")) {
-                    typeUnion2 = (GeneratedTransferObject) genType;
-                    typeUnion2Counter++;
-                }
-            }
-        }
-
-        assertNotNull("TypeUnion$1 TO wasn't found.", typeUnion1);
-        assertEquals("TypeUnion$1 TO has incorrect number of occurences.", 1, typeUnion1Counter);
-
+        GeneratedType typeUnion1 = nestedUnions.get(0);
+        assertEquals("TypeUnion$1", typeUnion1.getName());
         assertEquals("TypeUnion$1 has incorrect package name.",
-                "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626", typeUnion1.getPackageName());
-
+            "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626", typeUnion1.getPackageName());
         assertEquals("TypeUnion1 generated TO has incorrect number of properties", 4,
             typeUnion1.getProperties().size());
 
-        containsAttributes(typeUnion1, true, true, true, new NameTypePattern("uint32", "Uint32"));
-        containsAttributes(typeUnion1, true, true, true, new NameTypePattern("int8", "Byte"));
-        containsAttributes(typeUnion1, true, true, true, new NameTypePattern("string", "String"));
-        containsAttributes(typeUnion1, true, false, true, new NameTypePattern("typeUnion$2", "TypeUnion$2"));
+        assertThat(typeUnion1, instanceOf(GeneratedTransferObject.class));
+        GeneratedTransferObject typeUnion1gto = (GeneratedTransferObject) typeUnion1;
+        containsAttributes(typeUnion1gto, true, true, true, new NameTypePattern("uint32", "Uint32"));
+        containsAttributes(typeUnion1gto, true, true, true, new NameTypePattern("int8", "Byte"));
+        containsAttributes(typeUnion1gto, true, true, true, new NameTypePattern("string", "String"));
+        containsAttributes(typeUnion1gto, true, false, true, new NameTypePattern("typeUnion$2", "TypeUnion$2"));
 
-        assertNotNull("TypeUnion$2 TO wasn't found.", typeUnion2);
-        assertEquals("TypeUnion$2 TO has incorrect number of occurences.", 1, typeUnion2Counter);
 
+        List<GeneratedType> nestedUnions1 = typeUnion1.getEnclosedTypes();
+        assertEquals(1, nestedUnions1.size());
+
+        GeneratedType typeUnion2 = nestedUnions1.get(0);
+        assertEquals("TypeUnion$2", typeUnion2.getName());
         assertEquals("TypeUnion$2 has incorrect package name.",
-                "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626", typeUnion2.getPackageName());
-
+            "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626", typeUnion2.getPackageName());
         assertEquals("TypeUnion2 generated TO has incorrect number of properties", 2,
             typeUnion2.getProperties().size());
-        containsAttributes(typeUnion2, true, true, true, new NameTypePattern("string", "String"));
-        containsAttributes(typeUnion2, true, true, true, new NameTypePattern("uint64", "Uint64"));
 
+        assertThat(typeUnion2, instanceOf(GeneratedTransferObject.class));
+        GeneratedTransferObject typeUnion2gto = (GeneratedTransferObject) typeUnion2;
+        containsAttributes(typeUnion2gto, true, true, true, new NameTypePattern("string", "String"));
+        containsAttributes(typeUnion2gto, true, true, true, new NameTypePattern("uint64", "Uint64"));
     }
 
     @Test
