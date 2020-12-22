@@ -33,7 +33,7 @@ public interface DOMDataTreeListener extends EventListener {
      *                 which have not changed.
      */
     void onDataTreeChanged(@NonNull Collection<DataTreeCandidate> changes,
-            @NonNull Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees);
+            @NonNull Map<DOMDataTreeIdentifier, NormalizedNode> subtrees);
 
     /**
      * Invoked when a subtree listening failure occurs. This can be triggered, for example, when a

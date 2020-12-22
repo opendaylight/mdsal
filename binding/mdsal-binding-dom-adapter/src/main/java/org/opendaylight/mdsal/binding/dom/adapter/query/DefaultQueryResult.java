@@ -36,7 +36,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 @NonNullByDefault
 @SuppressModernizer
 final class DefaultQueryResult<T extends DataObject>
-        implements QueryResult<T>, Function<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>, QueryResult.Item<T>> {
+        implements QueryResult<T>, Function<Entry<YangInstanceIdentifier, NormalizedNode>, QueryResult.Item<T>> {
     private static final VarHandle ITEM_CODEC;
 
     static {
@@ -81,11 +81,11 @@ final class DefaultQueryResult<T extends DataObject>
     }
 
     @Override
-    public Item<T> apply(final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> domItem) {
+    public Item<T> apply(final Entry<YangInstanceIdentifier, NormalizedNode> domItem) {
         return new DefaultQueryResultItem<>(this, domItem);
     }
 
-    T createObject(final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> domItem) {
+    T createObject(final Entry<YangInstanceIdentifier, NormalizedNode> domItem) {
         final @Nullable BindingDataObjectCodecTreeNode<T> local =
             (BindingDataObjectCodecTreeNode<T>) ITEM_CODEC.getAcquire(this);
         return (local != null ? local : loadItemCodec(domItem.getKey())).deserialize(domItem.getValue());

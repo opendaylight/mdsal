@@ -42,7 +42,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public class ShardedDOMDataWriteTransactionTest {
-    private static final Map<YangInstanceIdentifier, List<NormalizedNode<?, ?>>> TEST_MAP = new HashMap<>();
+    private static final Map<YangInstanceIdentifier, List<NormalizedNode>> TEST_MAP = new HashMap<>();
 
     private static final DOMDataTreeIdentifier ROOT_ID =
             new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
@@ -160,10 +160,10 @@ public class ShardedDOMDataWriteTransactionTest {
         }
 
         @Override
-        public void merge(final PathArgument child, final NormalizedNode<?, ?> data) {
+        public void merge(final PathArgument child, final NormalizedNode data) {
             final ArrayDeque<PathArgument> newPath = new ArrayDeque<>(stack);
             newPath.push(child);
-            final List<NormalizedNode<?, ?>> dataList = TEST_MAP.get(YangInstanceIdentifier.create(newPath));
+            final List<NormalizedNode> dataList = TEST_MAP.get(YangInstanceIdentifier.create(newPath));
             if (dataList != null) {
                 dataList.add(data);
             } else {
@@ -172,7 +172,7 @@ public class ShardedDOMDataWriteTransactionTest {
         }
 
         @Override
-        public void write(final PathArgument child, final NormalizedNode<?, ?> data) {
+        public void write(final PathArgument child, final NormalizedNode data) {
             final ArrayDeque<PathArgument> newPath = new ArrayDeque<>(stack);
             newPath.push(child);
             TEST_MAP.put(YangInstanceIdentifier.create(newPath), Lists.newArrayList(data));

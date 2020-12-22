@@ -34,14 +34,12 @@ public class TransactionChainWriteTransaction implements DOMDataTreeWriteTransac
 
 
     @Override
-    public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path,
-            final NormalizedNode<?, ?> data) {
+    public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode data) {
         delegateTx.put(store, path, data);
     }
 
     @Override
-    public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path,
-            final NormalizedNode<?, ?> data) {
+    public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode data) {
         delegateTx.merge(store, path, data);
     }
 

@@ -53,9 +53,9 @@ public class BindingDOMDataTreeWriteCursorAdapterTest {
         doNothing().when(delegate).delete(any());
         doReturn(YangInstanceIdentifier.empty()).when(registry).toYangInstanceIdentifier(any());
         doNothing().when(delegate).close();
-        final NormalizedNode<?, ?> normalizedNode = mock(NormalizedNode.class);
+        final NormalizedNode normalizedNode = mock(NormalizedNode.class);
 
-        doReturn(new SimpleEntry<YangInstanceIdentifier,NormalizedNode<?,?>>(YangInstanceIdentifier.empty(),
+        doReturn(new SimpleEntry<>(YangInstanceIdentifier.empty(),
                 normalizedNode)).when(registry).toNormalizedNode(any(), any());
         adapter.write(pathArgument, data);
         verify(delegate).write(any(), any());

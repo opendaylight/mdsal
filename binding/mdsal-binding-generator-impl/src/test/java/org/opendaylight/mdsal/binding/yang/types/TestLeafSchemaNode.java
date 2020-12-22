@@ -43,8 +43,8 @@ public class TestLeafSchemaNode implements LeafSchemaNode {
     }
 
     @Override
-    public boolean isConfiguration() {
-        return false;
+    public Optional<Boolean> effectiveConfig() {
+        return Optional.of(Boolean.FALSE);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class DelegatingWriteCursorStrategyTest extends DelegatingWriteCursorStra
         this.merge(TestUtils.PATH_ARGUMENT, TestUtils.NORMALIZED_NODE);
         verify(TestUtils.DOM_DATA_TREE_WRITE_CURSOR).merge(TestUtils.PATH_ARGUMENT, TestUtils.NORMALIZED_NODE);
 
-        doReturn(ImmutableList.of(TestUtils.NORMALIZED_NODE)).when(TestUtils.NORMALIZED_NODE_CONTAINER).getValue();
+        doReturn(ImmutableList.of(TestUtils.NORMALIZED_NODE)).when(TestUtils.NORMALIZED_NODE_CONTAINER).body();
         doReturn(TestUtils.PATH_ARGUMENT).when(TestUtils.NORMALIZED_NODE).getIdentifier();
         this.mergeToCurrent(TestUtils.NORMALIZED_NODE_CONTAINER);
         verify(TestUtils.DOM_DATA_TREE_WRITE_CURSOR, times(2))

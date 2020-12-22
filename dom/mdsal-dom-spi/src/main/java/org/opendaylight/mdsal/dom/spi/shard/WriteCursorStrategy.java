@@ -19,11 +19,11 @@ public interface WriteCursorStrategy extends CursorStrategy {
 
     void delete(PathArgument arg);
 
-    void merge(PathArgument arg, NormalizedNode<?, ?> data);
+    void merge(PathArgument arg, NormalizedNode data);
 
-    void write(PathArgument arg, NormalizedNode<?, ?> data);
+    void write(PathArgument arg, NormalizedNode data);
 
-    void mergeToCurrent(NormalizedNodeContainer<?, ?, ?> data);
+    void mergeToCurrent(NormalizedNodeContainer<?, ?> data);
 
-    void writeToCurrent(NormalizedNodeContainer<?, ?, ?> data);
+    void writeToCurrent(NormalizedNodeContainer<?, ?> data);
 }

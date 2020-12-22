@@ -109,16 +109,16 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
     private <L extends DOMDataTreeChangeListener> void initialDataChangeEvent(
             final YangInstanceIdentifier listenerPath, final L listener) {
         // FIXME Add support for wildcard listeners
-        final Optional<NormalizedNode<?, ?>> preExistingData = dataTree.takeSnapshot()
+        final Optional<NormalizedNode> preExistingData = dataTree.takeSnapshot()
                 .readNode(YangInstanceIdentifier.create(stripShardPath(listenerPath)));
         final DataTreeCandidate initialCandidate;
 
         if (preExistingData.isPresent()) {
-            final NormalizedNode<?, ?> data = preExistingData.get();
+            final NormalizedNode data = preExistingData.get();
             checkState(data instanceof DataContainerNode, "Expected DataContainer node, but was {}", data.getClass());
             // if we are listening on root of some shard we still get
             // empty normalized node, root is always present
-            if (((DataContainerNode<?>) data).getValue().isEmpty()) {
+            if (((DataContainerNode<?>) data).isEmpty()) {
                 initialCandidate = DataTreeCandidates.newDataTreeCandidate(listenerPath,
                     DataTreeCandidateNodes.empty(data.getIdentifier()));
             } else {
@@ -133,17 +133,17 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         listener.onDataTreeChanged(Collections.singleton(initialCandidate));
     }
 
-    private static NormalizedNode<?, ?> translateRootShardIdentifierToListenerPath(
-            final YangInstanceIdentifier listenerPath, final NormalizedNode<?, ?> node) {
+    private static NormalizedNode translateRootShardIdentifierToListenerPath(final YangInstanceIdentifier listenerPath,
+            final NormalizedNode node) {
         if (listenerPath.isEmpty()) {
             return node;
         }
 
         final NormalizedNodeBuilder nodeBuilder;
         if (node instanceof ContainerNode) {
-            nodeBuilder = ImmutableContainerNodeBuilder.create().withValue(((ContainerNode) node).getValue());
+            nodeBuilder = ImmutableContainerNodeBuilder.create().withValue(((ContainerNode) node).body());
         } else if (node instanceof MapEntryNode) {
-            nodeBuilder = ImmutableMapEntryNodeBuilder.create().withValue(((MapEntryNode) node).getValue());
+            nodeBuilder = ImmutableMapEntryNodeBuilder.create().withValue(((MapEntryNode) node).body());
         } else {
             throw new IllegalArgumentException("Expected ContainerNode or MapEntryNode, but was " + node.getClass());
         }

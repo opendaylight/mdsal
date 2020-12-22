@@ -50,7 +50,7 @@ public class ShardedDOMReadTransactionAdapterTest {
 
     @Test
     public void testRead() throws InterruptedException, ExecutionException {
-        final ListenableFuture<Optional<NormalizedNode<?, ?>>> readResult =
+        final ListenableFuture<Optional<NormalizedNode>> readResult =
                 readTx.read(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
         assertTrue(readTx.exists(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH).get());
         assertEquals(readResult.get().get(), TestUtils.TEST_CONTAINER);
@@ -72,14 +72,14 @@ public class ShardedDOMReadTransactionAdapterTest {
             registerListener(final T listener, final Collection<DOMDataTreeIdentifier> subtrees,
                     final boolean allowRxMerges, final Collection<DOMDataTreeProducer> producers)
                             throws DOMDataTreeLoopException {
-            final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtree = new HashMap<>();
+            final Map<DOMDataTreeIdentifier, NormalizedNode> subtree = new HashMap<>();
             subtree.put(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH),
                     TestUtils.TEST_CONTAINER);
 
             listener.onDataTreeChanged(Collections.singleton(
                     DataTreeCandidates.fromNormalizedNode(TestModel.TEST_PATH, TestUtils.TEST_CONTAINER)), subtree);
 
-            return new ListenerRegistration<T>() {
+            return new ListenerRegistration<>() {
                 @Override
                 public void close() {
                     // NOOP
