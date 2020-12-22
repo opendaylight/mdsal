@@ -67,12 +67,12 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(final LogicalDatastoreType store,
+    public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
             final YangInstanceIdentifier path) {
         checkRunning();
         LOG.debug("{}: Invoking read at {}:{}", txIdentifier, store, path);
         final ListenerRegistration<DOMDataTreeListener> reg;
-        final SettableFuture<Optional<NormalizedNode<?, ?>>> initialDataTreeChangeFuture = SettableFuture.create();
+        final SettableFuture<Optional<NormalizedNode>> initialDataTreeChangeFuture = SettableFuture.create();
         try {
             reg = service.registerListener(new ReadShardedListener(initialDataTreeChangeFuture),
                     Collections.singleton(new DOMDataTreeIdentifier(store, path)), false, Collections.emptyList());
@@ -99,15 +99,15 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
     }
 
     static final class ReadShardedListener implements DOMDataTreeListener {
-        private final SettableFuture<Optional<NormalizedNode<?, ?>>> readResultFuture;
+        private final SettableFuture<Optional<NormalizedNode>> readResultFuture;
 
-        ReadShardedListener(final SettableFuture<Optional<NormalizedNode<?, ?>>> future) {
+        ReadShardedListener(final SettableFuture<Optional<NormalizedNode>> future) {
             this.readResultFuture = requireNonNull(future);
         }
 
         @Override
         public void onDataTreeChanged(final Collection<DataTreeCandidate> changes,
-                final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtrees) {
+                final Map<DOMDataTreeIdentifier, NormalizedNode> subtrees) {
             checkState(changes.size() == 1 && subtrees.size() == 1,
                     "DOMDataTreeListener registered exactly on one subtree");
             if (changes.iterator().next().getRootNode().getModificationType().equals(ModificationType.UNMODIFIED)) {

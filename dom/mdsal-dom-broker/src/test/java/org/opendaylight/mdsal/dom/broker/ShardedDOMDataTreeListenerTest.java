@@ -140,11 +140,11 @@ public class ShardedDOMDataTreeListenerTest {
         storeListener.getValue().onDataTreeChanged(changes);
 
         final ArgumentCaptor<Collection<DataTreeCandidate>> candidateCapture = captorFor(Collection.class);
-        final ArgumentCaptor<Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>>> mapCapture = captorFor(Map.class);
+        final ArgumentCaptor<Map<DOMDataTreeIdentifier, NormalizedNode>> mapCapture = captorFor(Map.class);
         verify(listener, times(1)).onDataTreeChanged(candidateCapture.capture(), mapCapture.capture());
 
         final Collection<DataTreeCandidate> receivedCandidate = candidateCapture.getValue();
-        final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> receivedMap = mapCapture.getValue();
+        final Map<DOMDataTreeIdentifier, NormalizedNode> receivedMap = mapCapture.getValue();
 
         assertNotNull("receivedCandidate", receivedCandidate);
         assertNotNull("receivedMap", receivedMap);

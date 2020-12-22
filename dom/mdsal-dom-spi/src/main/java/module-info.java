@@ -19,4 +19,5 @@ module org.opendaylight.mdsal.dom.spi {
     requires static transitive org.eclipse.jdt.annotation;
     requires static com.github.spotbugs.annotations;
     requires static org.checkerframework.checker.qual;
+    requires org.opendaylight.yangtools.yang.data.api;
 }
