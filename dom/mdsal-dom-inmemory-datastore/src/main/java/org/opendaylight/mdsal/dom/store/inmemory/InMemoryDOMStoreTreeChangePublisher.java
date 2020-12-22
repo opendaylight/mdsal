@@ -72,16 +72,16 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
     <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(
             final YangInstanceIdentifier treeId, final L listener, final DataTreeSnapshot snapshot) {
         final AbstractDOMDataTreeChangeListenerRegistration<L> reg = registerTreeChangeListener(treeId, listener);
-        final Optional<NormalizedNode<?, ?>> preExistingData = snapshot.readNode(YangInstanceIdentifier.empty());
+        final Optional<NormalizedNode> preExistingData = snapshot.readNode(YangInstanceIdentifier.empty());
         if (!preExistingData.isPresent()) {
             listener.onInitialData();
             return reg;
         }
 
-        final NormalizedNode<?, ?> data = preExistingData.get();
+        final NormalizedNode data = preExistingData.get();
         if (treeId.isEmpty()) {
             checkState(data instanceof DataContainerNode, "Unexpected root node %s", data);
-            if (((DataContainerNode) data).getValue().isEmpty()) {
+            if (((DataContainerNode) data).isEmpty()) {
                 // If we are listening on root of data tree we still get empty normalized node, root is always present,
                 // we should filter this out separately and notify it by 'onInitialData()' once.
                 // Otherwise, it is just a valid data node with empty value which also should be notified by

@@ -9,8 +9,12 @@ package org.opendaylight.mdsal.binding.generator.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
+import static org.opendaylight.mdsal.binding.generator.impl.SchemaContextUtil.findDataSchemaNode;
+import static org.opendaylight.mdsal.binding.generator.impl.SchemaContextUtil.findNodeInSchemaContext;
+import static org.opendaylight.mdsal.binding.generator.impl.SchemaContextUtil.findParentModule;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.packageNameForAugmentedGeneratedType;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.packageNameForGeneratedType;
@@ -47,9 +51,6 @@ import static org.opendaylight.mdsal.binding.model.util.Types.primitiveBooleanTy
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveIntType;
 import static org.opendaylight.mdsal.binding.model.util.Types.primitiveVoidType;
 import static org.opendaylight.mdsal.binding.model.util.Types.wildcardTypeFor;
-import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
-import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
-import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -134,12 +135,15 @@ import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
+import org.opendaylight.yangtools.yang.model.spi.ModuleDependencySort;
+import org.opendaylight.yangtools.yang.model.util.LeafrefResolver;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -894,10 +898,14 @@ abstract class AbstractTypeGenerator {
 
         processUsesAugments(augSchema, context, false);
         final SchemaNodeIdentifier targetPath = augSchema.getTargetPath();
+        verify(targetPath instanceof Absolute, "Unexpected augmentation path %s", targetPath);
+
+        final SchemaTreeEffectiveStatement<?> targetStmt = schemaContext.findSchemaTreeNode(targetPath)
+            .orElseThrow(() -> new IllegalArgumentException("augment target not found: " + targetPath));
+
+        // FIXME: untangle this
         SchemaNode targetSchemaNode = null;
 
-        // FIXME: can we use findDataSchemaNode() instead?
-        targetSchemaNode = findDataSchemaNode(schemaContext, targetPath.getNodeIdentifiers());
         if (targetSchemaNode instanceof DataSchemaNode && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
             if (targetSchemaNode instanceof DerivableSchemaNode) {
                 targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orElse(null);
@@ -906,9 +914,6 @@ abstract class AbstractTypeGenerator {
                 throw new IllegalStateException("Failed to find target node from grouping in augmentation " + augSchema
                         + " in module " + context.module().getName());
             }
-        }
-        if (targetSchemaNode == null) {
-            throw new IllegalArgumentException("augment target not found: " + targetPath);
         }
 
         if (targetSchemaNode instanceof ChoiceSchemaNode) {
@@ -1578,9 +1583,9 @@ abstract class AbstractTypeGenerator {
     }
 
     private Type resolveUnambiguousLeafNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
-            final ModuleContext context, final boolean inGrouping) {
+            final LeafrefResolver resolver, final ModuleContext context, final boolean inGrouping) {
         final Module parentModule = findParentModule(schemaContext, leaf);
-        final Type returnType = resolveReturnType(typeBuilder, leaf, context, parentModule, inGrouping);
+        final Type returnType = resolveReturnType(typeBuilder, leaf, resolver, context, parentModule, inGrouping);
         if (returnType != null) {
             processContextRefExtension(leaf, constructGetter(typeBuilder,  returnType, leaf), parentModule);
         }
@@ -1588,7 +1593,8 @@ abstract class AbstractTypeGenerator {
     }
 
     private Type resolveReturnType(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
-            final ModuleContext context, final Module parentModule, final boolean inGrouping) {
+            final LeafrefResolver resolver, final ModuleContext context, final Module parentModule,
+            final boolean inGrouping) {
         Type returnType = null;
 
         final TypeDefinition<?> typeDef = CompatUtils.compatType(leaf);
@@ -1617,11 +1623,10 @@ abstract class AbstractTypeGenerator {
                 final TypeDefinition<?> baseOrDeclaredType = getBaseOrDeclaredType(typeDef);
                 // we need to try to lookup an already generated type in case the leafref is targetting a generated type
                 if (baseOrDeclaredType instanceof LeafrefTypeDefinition) {
-                    final SchemaNode leafrefTarget =
-                            typeProvider.getTargetForLeafref((LeafrefTypeDefinition) baseOrDeclaredType, leaf);
-                    if (leafrefTarget instanceof TypedDataSchemaNode) {
-                        returnType = context.getInnerType(((TypedDataSchemaNode) leafrefTarget).getType().getPath());
-                    }
+                    final TypeDefinition<?> resolvedType =
+                        resolver.resolveLeafref((LeafrefTypeDefinition) baseOrDeclaredType);
+                    // FIXME: what is this about?
+                    returnType = context.getInnerType(resolvedType.getPath());
                 }
                 if (returnType == null) {
                     returnType = typeProvider.javaTypeForSchemaDefinitionType(baseOrDeclaredType, leaf,
@@ -1724,14 +1729,14 @@ abstract class AbstractTypeGenerator {
             if (typeDef instanceof UnionTypeDefinition) {
                 // GeneratedType for this type definition should have be already created
                 final ModuleContext mc = moduleContext(typeDef.getQName().getModule());
-                returnType = mc.getTypedefs().get(typeDef.getPath());
+                returnType = mc.getTypedefs().get(typeDef);
                 if (returnType == null) {
                     // This may still be an inner type, try to find it
                     returnType = mc.getInnerType(typeDef.getPath());
                 }
             } else if (typeDef instanceof EnumTypeDefinition && typeDef.getBaseType() == null) {
-                // Annonymous enumeration (already generated, since it is inherited via uses).
-                LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
+                // Anonymous enumeration (already generated, since it is inherited via uses).
+                LeafSchemaNode originalLeaf = (LeafSchemaNode) originalNodeOf(leaf);
                 QName qname = originalLeaf.getQName();
                 returnType = moduleContext(qname.getModule()).getInnerType(originalLeaf.getType().getPath());
             } else {
@@ -1771,6 +1776,10 @@ abstract class AbstractTypeGenerator {
         toBuilder.addHashIdentity(propBuilder);
         toBuilder.addToStringProperty(propBuilder);
         return true;
+    }
+
+    private static @Nullable SchemaNode originalNodeOf(final SchemaNode node) {
+        return node instanceof DerivableSchemaNode ? ((DerivableSchemaNode) node).getOriginal().orElse(null) : null;
     }
 
     private void resolveLeafListLeafrefNode(final GeneratedTypeBuilder typeBuilder, final LeafListSchemaNode node,

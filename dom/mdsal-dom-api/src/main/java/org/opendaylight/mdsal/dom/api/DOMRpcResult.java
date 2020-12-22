@@ -33,5 +33,5 @@ public interface DOMRpcResult {
      * @return Invocation result, null if the operation has not produced a result. This might
      *         be the case if the operation does not produce a result, or if it failed.
      */
-    @Nullable NormalizedNode<?, ?> getResult();
+    @Nullable NormalizedNode getResult();
 }

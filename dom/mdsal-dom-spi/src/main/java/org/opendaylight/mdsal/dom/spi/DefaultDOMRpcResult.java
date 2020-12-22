@@ -32,10 +32,10 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
     private static final long serialVersionUID = 1L;
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Interfaces do not specify Serializable")
-    private final @Nullable NormalizedNode<?, ?> result;
+    private final @Nullable NormalizedNode result;
     private final Collection<? extends RpcError> errors;
 
-    public DefaultDOMRpcResult(final NormalizedNode<?, ?> result, final RpcError... errors) {
+    public DefaultDOMRpcResult(final NormalizedNode result, final RpcError... errors) {
         this(result, asCollection(errors));
     }
 
@@ -43,11 +43,11 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
         this(null, asCollection(errors));
     }
 
-    public DefaultDOMRpcResult(final @Nullable NormalizedNode<?, ?> result) {
+    public DefaultDOMRpcResult(final @Nullable NormalizedNode result) {
         this(result, Collections.emptyList());
     }
 
-    public DefaultDOMRpcResult(final @Nullable NormalizedNode<?, ?> result,
+    public DefaultDOMRpcResult(final @Nullable NormalizedNode result,
             final Collection<? extends RpcError> errors) {
         this.result = result;
         this.errors = requireNonNull(errors);
@@ -67,7 +67,7 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
     }
 
     @Override
-    public @Nullable NormalizedNode<?, ?> getResult() {
+    public @Nullable NormalizedNode getResult() {
         return result;
     }
 
