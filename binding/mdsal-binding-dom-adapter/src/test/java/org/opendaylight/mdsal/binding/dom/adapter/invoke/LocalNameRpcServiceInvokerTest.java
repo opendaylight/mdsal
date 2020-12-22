@@ -11,18 +11,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableMap;
-import java.net.URI;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 
 public class LocalNameRpcServiceInvokerTest {
 
     private static RpcServiceInvoker rpcServiceInvoker;
-    private static final QNameModule Q_NAME_MODULE = QNameModule.create(URI.create("testURI"),
+    private static final QNameModule Q_NAME_MODULE = QNameModule.create(XMLNamespace.of("testURI"),
         Revision.of("2017-10-26"));
     private static final RpcService RPC_SERVICE = mock(RpcService.class);
 
