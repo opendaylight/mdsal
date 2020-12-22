@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Optional;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingLazyContainerNode;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -64,9 +63,9 @@ class LazySerializedContainerNode
         }
 
         @Override
-        public Optional<DataContainerChild<? extends PathArgument, ?>> getChild(final PathArgument child) {
+        public DataContainerChild childByArg(final PathArgument child) {
             // Use pre-cached value of routing field and do not run full serialization if we are accessing it.
-            return contextRef.getIdentifier().equals(child) ?  Optional.of(contextRef) : super.getChild(child);
+            return contextRef.getIdentifier().equals(child) ? contextRef : super.childByArg(child);
         }
     }
 }

@@ -44,8 +44,8 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
-import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.SystemMapNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.CollectionNodeBuilder;
@@ -150,11 +150,11 @@ public class IntegrationTest extends AbstractDataBrokerTest {
         verify(sinkChain, timeout(2000).times(1)).newWriteOnlyTransaction();
 
         // verify that the initial data invoked onDataTreeChanged() and was transferred to sink
-        ArgumentCaptor<NormalizedNode<?, ?>> dataCaptor = ArgumentCaptor.forClass(NormalizedNode.class);
+        ArgumentCaptor<NormalizedNode> dataCaptor = ArgumentCaptor.forClass(NormalizedNode.class);
         verify(sinkTx, timeout(2000).times(1)).put(any(), any(), dataCaptor.capture());
         // verify that the initial state contains everything
-        NormalizedNode<?, ?> capturedInitialState = dataCaptor.getAllValues().iterator().next();
-        NormalizedNode<?, ?> expectedEntityState = generateNormalizedNodeForEntities(deltaCount);
+        NormalizedNode capturedInitialState = dataCaptor.getAllValues().iterator().next();
+        NormalizedNode expectedEntityState = generateNormalizedNodeForEntities(deltaCount);
         assertEquals(expectedEntityState, capturedInitialState);
 
         verify(sinkTx, timeout(2000).times(1)).commit();
@@ -164,7 +164,7 @@ public class IntegrationTest extends AbstractDataBrokerTest {
     }
 
     private static ContainerNode generateNormalizedNodeForEntities(final int amount) {
-        final CollectionNodeBuilder<MapEntryNode, MapNode> builder = ImmutableNodes.mapNodeBuilder(ENTITY_QNAME);
+        final CollectionNodeBuilder<MapEntryNode, SystemMapNode> builder = ImmutableNodes.mapNodeBuilder(ENTITY_QNAME);
         for (int i = 0; i < amount; i++) {
             builder.withChild(ImmutableNodes.mapEntry(ENTITY_QNAME, ENTITY_NAME_QNAME, "testEntity" + i));
         }

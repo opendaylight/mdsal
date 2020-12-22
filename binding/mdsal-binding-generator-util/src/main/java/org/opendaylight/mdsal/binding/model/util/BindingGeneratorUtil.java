@@ -44,8 +44,8 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeRestrictedTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
-import org.opendaylight.yangtools.yang.model.util.type.DecimalTypeBuilder;
+import org.opendaylight.yangtools.yang.model.spi.type.BaseTypes;
+import org.opendaylight.yangtools.yang.model.spi.type.DecimalTypeBuilder;
 
 /**
  * Contains the methods for converting strings to valid JAVA language strings
@@ -268,7 +268,7 @@ public final class BindingGeneratorUtil {
             //        comparison
             if (type instanceof DecimalTypeDefinition) {
                 final DecimalTypeDefinition decimal = (DecimalTypeDefinition) type;
-                final DecimalTypeBuilder tmpBuilder = BaseTypes.decimalTypeBuilder(decimal.getPath());
+                final DecimalTypeBuilder tmpBuilder = BaseTypes.decimalTypeBuilder(decimal.getQName());
                 tmpBuilder.setFractionDigits(decimal.getFractionDigits());
                 final DecimalTypeDefinition tmp = tmpBuilder.build();
 

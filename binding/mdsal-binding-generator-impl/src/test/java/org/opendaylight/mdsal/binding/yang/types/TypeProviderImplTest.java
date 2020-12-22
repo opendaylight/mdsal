@@ -16,13 +16,13 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
-import java.net.URI;
 import java.util.NoSuchElementException;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
@@ -38,8 +38,7 @@ import org.opendaylight.yangtools.yang.model.api.type.EmptyTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
-import org.opendaylight.yangtools.yang.model.util.type.IdentityrefTypeBuilder;
+import org.opendaylight.yangtools.yang.model.spi.type.BaseTypes;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class TypeProviderImplTest {
@@ -48,7 +47,8 @@ public class TypeProviderImplTest {
     public void testLeafRefRelativeSelfReference() {
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(
             "/leafref/leafref-relative-invalid.yang");
-        final Module moduleRelative = schemaContext.findModules(URI.create("urn:xml:ns:yang:lrr")).iterator().next();
+        final Module moduleRelative = schemaContext.findModules(XMLNamespace.of("urn:xml:ns:yang:lrr"))
+            .iterator().next();
         final AbstractTypeProvider typeProvider = new RuntimeTypeProvider(schemaContext);
 
         final QName listNode = QName.create(moduleRelative.getQNameModule(), "neighbor");
@@ -64,7 +64,8 @@ public class TypeProviderImplTest {
     public void testLeafRefAbsoluteSelfReference() {
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(
             "/leafref/leafref-absolute-invalid.yang");
-        final Module moduleRelative = schemaContext.findModules(URI.create("urn:xml:ns:yang:lra")).iterator().next();
+        final Module moduleRelative = schemaContext.findModules(XMLNamespace.of("urn:xml:ns:yang:lra"))
+            .iterator().next();
         final AbstractTypeProvider typeProvider = new RuntimeTypeProvider(schemaContext);
 
         final QName listNode = QName.create(moduleRelative.getQNameModule(), "neighbor");
@@ -80,7 +81,7 @@ public class TypeProviderImplTest {
     @Test
     public void testLeafRefRelativeAndAbsoluteValidReference() {
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/leafref/leafref-valid.yang");
-        final Module moduleValid = schemaContext.findModules(URI.create("urn:xml:ns:yang:lrv")).iterator().next();
+        final Module moduleValid = schemaContext.findModules(XMLNamespace.of("urn:xml:ns:yang:lrv")).iterator().next();
         final AbstractTypeProvider typeProvider = new RuntimeTypeProvider(schemaContext);
 
         final QName listNode = QName.create(moduleValid.getQNameModule(), "neighbor");
@@ -155,8 +156,9 @@ public class TypeProviderImplTest {
         assertEquals("java.lang.Boolean.FALSE", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "false"));
 
         // decimal type
-        final DecimalTypeDefinition decimalType = BaseTypes.decimalTypeBuilder(refTypePath).setFractionDigits(4)
-                .build();
+        final DecimalTypeDefinition decimalType = BaseTypes.decimalTypeBuilder(refTypePath.getLastComponent())
+            .setFractionDigits(4)
+            .build();
 
         reset(leafSchemaNode);
         doReturn(decimalType).when(leafSchemaNode).getType();
@@ -178,7 +180,7 @@ public class TypeProviderImplTest {
             leafSchemaNode, "default value"));
 
         // enum type
-        final EnumTypeDefinition enumType =  BaseTypes.enumerationTypeBuilder(refTypePath).build();
+        final EnumTypeDefinition enumType =  BaseTypes.enumerationTypeBuilder(refTypePath.getLastComponent()).build();
 
         reset(leafSchemaNode);
         doReturn(enumType).when(leafSchemaNode).getType();
@@ -194,9 +196,9 @@ public class TypeProviderImplTest {
 
         // identityref type
         final IdentitySchemaNode identitySchemaNode = mock(IdentitySchemaNode.class);
-        final IdentityrefTypeBuilder identityRefBuilder = BaseTypes.identityrefTypeBuilder(refTypePath);
-        identityRefBuilder.addIdentity(identitySchemaNode);
-        final IdentityrefTypeDefinition identityRef =  identityRefBuilder.build();
+        final IdentityrefTypeDefinition identityRef =  BaseTypes.identityrefTypeBuilder(refTypePath.getLastComponent())
+            .addIdentity(identitySchemaNode)
+            .build();
 
         reset(leafSchemaNode);
         doReturn(identityRef).when(leafSchemaNode).getType();

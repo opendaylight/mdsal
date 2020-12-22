@@ -88,10 +88,11 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
+import org.opendaylight.yangtools.yang.model.spi.type.BaseTypes;
+import org.opendaylight.yangtools.yang.model.spi.type.CompatUtils;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
 import org.opendaylight.yangtools.yang.model.util.PathExpressionImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,8 +104,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
     // Backwards compatibility: Union types used to be instantiated in YANG namespace, which is no longer
     // the case, as unions are emitted to their correct schema path.
-    private static final SchemaPath UNION_PATH = SchemaPath.create(true,
-        org.opendaylight.yangtools.yang.model.util.BaseTypes.UNION_QNAME);
+    private static final SchemaPath UNION_PATH = SchemaPath.create(true, UnionTypeDefinition.QNAME);
 
     /**
      * Contains the schema data red from YANG files.
@@ -649,7 +649,6 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         addEnumDescription(enumBuilder, enumTypeDef);
         enumTypeDef.getReference().ifPresent(enumBuilder::setReference);
         enumBuilder.setModuleName(module.getName());
-        enumBuilder.setSchemaPath(enumTypeDef.getPath());
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
         return enumBuilder.toInstance(null);
     }
