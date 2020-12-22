@@ -209,5 +209,5 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
 
     abstract ListMultimap<K, D> decomposeIdentifiers(Set<I> instances);
 
-    abstract E createOperationEntry(EffectiveModelContext context, K key, Map<D, List<M>> implementations);
+    abstract @Nullable E createOperationEntry(EffectiveModelContext context, K key, Map<D, List<M>> implementations);
 }
