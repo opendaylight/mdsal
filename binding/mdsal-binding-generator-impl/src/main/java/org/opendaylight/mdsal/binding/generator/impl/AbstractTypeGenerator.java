@@ -139,7 +139,8 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
+import org.opendaylight.yangtools.yang.model.spi.ModuleDependencySort;
+import org.opendaylight.yangtools.yang.model.util.LeafrefResolver;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1578,9 +1579,9 @@ abstract class AbstractTypeGenerator {
     }
 
     private Type resolveUnambiguousLeafNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
-            final ModuleContext context, final boolean inGrouping) {
+            final LeafrefResolver resolver, final ModuleContext context, final boolean inGrouping) {
         final Module parentModule = findParentModule(schemaContext, leaf);
-        final Type returnType = resolveReturnType(typeBuilder, leaf, context, parentModule, inGrouping);
+        final Type returnType = resolveReturnType(typeBuilder, leaf, resolver, context, parentModule, inGrouping);
         if (returnType != null) {
             processContextRefExtension(leaf, constructGetter(typeBuilder,  returnType, leaf), parentModule);
         }
@@ -1588,7 +1589,8 @@ abstract class AbstractTypeGenerator {
     }
 
     private Type resolveReturnType(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
-            final ModuleContext context, final Module parentModule, final boolean inGrouping) {
+            final LeafrefResolver resolver, final ModuleContext context, final Module parentModule,
+            final boolean inGrouping) {
         Type returnType = null;
 
         final TypeDefinition<?> typeDef = CompatUtils.compatType(leaf);
@@ -1617,11 +1619,10 @@ abstract class AbstractTypeGenerator {
                 final TypeDefinition<?> baseOrDeclaredType = getBaseOrDeclaredType(typeDef);
                 // we need to try to lookup an already generated type in case the leafref is targetting a generated type
                 if (baseOrDeclaredType instanceof LeafrefTypeDefinition) {
-                    final SchemaNode leafrefTarget =
-                            typeProvider.getTargetForLeafref((LeafrefTypeDefinition) baseOrDeclaredType, leaf);
-                    if (leafrefTarget instanceof TypedDataSchemaNode) {
-                        returnType = context.getInnerType(((TypedDataSchemaNode) leafrefTarget).getType().getPath());
-                    }
+                    final TypeDefinition<?> resolvedType =
+                        resolver.resolveLeafref((LeafrefTypeDefinition) baseOrDeclaredType);
+                    // FIXME: what is this about?
+                    returnType = context.getInnerType(resolvedType.getPath());
                 }
                 if (returnType == null) {
                     returnType = typeProvider.javaTypeForSchemaDefinitionType(baseOrDeclaredType, leaf,
@@ -1724,13 +1725,13 @@ abstract class AbstractTypeGenerator {
             if (typeDef instanceof UnionTypeDefinition) {
                 // GeneratedType for this type definition should have be already created
                 final ModuleContext mc = moduleContext(typeDef.getQName().getModule());
-                returnType = mc.getTypedefs().get(typeDef.getPath());
+                returnType = mc.getTypedefs().get(typeDef);
                 if (returnType == null) {
                     // This may still be an inner type, try to find it
                     returnType = mc.getInnerType(typeDef.getPath());
                 }
             } else if (typeDef instanceof EnumTypeDefinition && typeDef.getBaseType() == null) {
-                // Annonymous enumeration (already generated, since it is inherited via uses).
+                // Anonymous enumeration (already generated, since it is inherited via uses).
                 LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
                 QName qname = originalLeaf.getQName();
                 returnType = moduleContext(qname.getModule()).getInnerType(originalLeaf.getType().getPath());
