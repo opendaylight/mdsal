@@ -30,7 +30,7 @@ public abstract class ForwardingDOMRpcResult extends ForwardingObject implements
     }
 
     @Override
-    public @Nullable NormalizedNode<?, ?> getResult() {
+    public @Nullable NormalizedNode getResult() {
         return delegate().getResult();
     }
 }

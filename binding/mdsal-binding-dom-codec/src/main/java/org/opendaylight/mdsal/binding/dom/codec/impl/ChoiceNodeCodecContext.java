@@ -238,10 +238,10 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
 
     @SuppressWarnings("unchecked")
     @Override
-    public D deserialize(final NormalizedNode<?, ?> data) {
+    public D deserialize(final NormalizedNode data) {
         checkArgument(data instanceof ChoiceNode);
         final ChoiceNode casted = (ChoiceNode) data;
-        final NormalizedNode<?, ?> first = Iterables.getFirst(casted.getValue(), null);
+        final NormalizedNode first = Iterables.getFirst(casted.body(), null);
 
         if (first == null) {
             // FIXME: this needs to be sorted out
@@ -252,7 +252,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
     }
 
     @Override
-    protected Object deserializeObject(final NormalizedNode<?, ?> normalizedNode) {
+    protected Object deserializeObject(final NormalizedNode normalizedNode) {
         return deserialize(normalizedNode);
     }
 
