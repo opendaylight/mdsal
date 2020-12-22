@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.yang.types;
 
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 /**
@@ -20,7 +20,7 @@ public final class TypeProviderModel {
 
     }
 
-    public static SchemaContext createTestContext() {
+    public static EffectiveModelContext createTestContext() {
         return YangParserTestUtils.parseYangResources(TypeProviderModel.class, "/base-yang-types.yang",
             "/" + TEST_TYPE_PROVIDER_MODULE_NAME + ".yang", "/test-type-provider-b.yang");
     }

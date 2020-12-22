@@ -23,7 +23,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 
 final class UnionTypeCodec extends ReflectionBasedCodec {
     private final ImmutableSet<UnionValueOptionContext> typeCodecs;
@@ -70,6 +69,7 @@ final class UnionTypeCodec extends ReflectionBasedCodec {
      *            - subtype of union
      * @throws NoSuchMethodException when the getter method is not found
      */
+    // FIXME: this needs to be reimplemented
     private static void addLeafrefValueCodec(final Class<?> unionCls, final UnionTypeDefinition unionType,
             final BindingCodecContext bindingCodecContext, final Set<UnionValueOptionContext> values,
             final TypeDefinition<?> subtype) throws NoSuchMethodException {
@@ -77,12 +77,13 @@ final class UnionTypeCodec extends ReflectionBasedCodec {
         final Module module = schemaContext.findModule(subtype.getQName().getModule()).get();
         final PathExpression xpath = ((LeafrefTypeDefinition) subtype).getPathStatement();
         // find schema node in schema context by xpath of leafref
-        final SchemaNode dataNode;
-        if (xpath.isAbsolute()) {
-            dataNode = SchemaContextUtil.findDataSchemaNode(schemaContext, module, xpath);
-        } else {
-            dataNode = SchemaContextUtil.findDataSchemaNodeForRelativeXPath(schemaContext, module, unionType, xpath);
-        }
+        final SchemaNode dataNode = null;
+
+//        if (xpath.isAbsolute()) {
+//            dataNode = SchemaContextUtil.findDataSchemaNode(schemaContext, module, xpath);
+//        } else {
+//            dataNode = SchemaContextUtil.findDataSchemaNodeForRelativeXPath(schemaContext, module, unionType, xpath);
+//        }
         final String className = BindingMapping.getClassName(unionCls.getSimpleName());
         final LeafSchemaNode typeNode = (LeafSchemaNode) dataNode;
 
