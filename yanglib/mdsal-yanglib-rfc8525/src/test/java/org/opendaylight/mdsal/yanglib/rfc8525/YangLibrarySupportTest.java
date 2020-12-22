@@ -32,14 +32,14 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 
 public class YangLibrarySupportTest {
 
     private static final BindingRuntimeGenerator BINDING_RUNTIME_GENERATOR = new DefaultBindingRuntimeGenerator();
 
-    private static final YangParserFactory YANG_PARSER_FACTORY = new YangParserFactoryImpl();
+    private static final YangParserFactory YANG_PARSER_FACTORY = new DefaultYangParserFactory();
 
     private YangLibrarySupport yangLib;
     private BindingRuntimeContext runtimeContext;
@@ -49,8 +49,7 @@ public class YangLibrarySupportTest {
     public void setUp() throws Exception {
         runtimeContext = BindingRuntimeHelpers.createRuntimeContext();
         final DefaultBindingCodecTreeFactory codecFactory = new DefaultBindingCodecTreeFactory();
-        yangLib = new YangLibrarySupport(YANG_PARSER_FACTORY, BINDING_RUNTIME_GENERATOR,
-                codecFactory);
+        yangLib = new YangLibrarySupport(YANG_PARSER_FACTORY, BINDING_RUNTIME_GENERATOR, codecFactory);
         codecTree = codecFactory.create(runtimeContext);
     }
 

@@ -62,7 +62,7 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public void write(final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
+    public void write(final YangInstanceIdentifier path, final NormalizedNode data) {
         checkNotReady();
 
         final DataTreeModification tree = mutableTree;
@@ -82,7 +82,7 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public void merge(final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
+    public void merge(final YangInstanceIdentifier path, final NormalizedNode data) {
         checkNotReady();
 
         final DataTreeModification tree = mutableTree;
@@ -127,7 +127,7 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
      * @param path Path to read
      * @return null if the the transaction has been closed;
      */
-    final Optional<NormalizedNode<?, ?>> readSnapshotNode(final YangInstanceIdentifier path) {
+    final Optional<NormalizedNode> readSnapshotNode(final YangInstanceIdentifier path) {
         return readyImpl == null ? null : mutableTree.readNode(path);
     }
 

@@ -83,8 +83,6 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
 
     protected abstract T thisInstance();
 
-    abstract AbstractEnumerationBuilder newEnumerationBuilder(JavaTypeName identifier);
-
     @Override
     public T addEnclosingTransferObject(final GeneratedTransferObject genTO) {
         checkArgument(genTO != null, "Parameter genTO cannot be null!");

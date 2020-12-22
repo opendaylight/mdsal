@@ -48,11 +48,6 @@ public final class RuntimeGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     }
 
     @Override
-    AbstractEnumerationBuilder newEnumerationBuilder(final JavaTypeName identifier) {
-        return new RuntimeEnumerationBuilder(identifier);
-    }
-
-    @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append("GeneratedTransferObject [packageName=");

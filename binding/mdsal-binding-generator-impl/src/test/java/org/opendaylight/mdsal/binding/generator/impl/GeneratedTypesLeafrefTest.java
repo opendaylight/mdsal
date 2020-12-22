@@ -90,7 +90,8 @@ public class GeneratedTypesLeafrefTest {
         assertNotNull(condLeafref);
         Type condLeafRT = condLeafref.getReturnType();
         assertNotNull(condLeafRT);
-        assertEquals("java.lang.Object", condLeafRT.getFullyQualifiedName());
+        assertEquals("org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Uri",
+            condLeafRT.getFullyQualifiedName());
 
         // InterfaceId
         final List<GeneratedProperty> gtIfcKeyProps = gtIfcKey.getProperties();
