@@ -25,7 +25,7 @@ public interface DataBrokerFailures {
      * Fails all future reads.
      *
      * @param exception a {@link ReadFailedException} to throw from a
-     * {@link ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
+     *        {@link ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
      */
     void failReads(ReadFailedException exception);
 
@@ -35,7 +35,7 @@ public interface DataBrokerFailures {
      * @param howManyTimes how many times to throw the passed exception, until it resets.
      *
      * @param exception a {@link ReadFailedException} to throw from a
-     * {@link ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
+     *        {@link ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
      */
     void failReads(int howManyTimes, ReadFailedException exception);
 
