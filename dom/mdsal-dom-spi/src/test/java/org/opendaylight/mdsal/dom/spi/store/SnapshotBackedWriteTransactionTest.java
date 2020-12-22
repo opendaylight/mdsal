@@ -38,8 +38,8 @@ public class SnapshotBackedWriteTransactionTest {
             mock(TransactionReadyPrototype.class);
     private static final DOMStoreThreePhaseCommitCohort DOM_STORE_THREE_PHASE_COMMIT_COHORT =
             mock(DOMStoreThreePhaseCommitCohort.class);
-    private static final NormalizedNode<?, ?> NORMALIZED_NODE = mock(NormalizedNode.class);
-    private static final Optional<NormalizedNode<?, ?>> NORMALIZED_NODE_OPTIONAL = Optional.of(NORMALIZED_NODE);
+    private static final NormalizedNode NORMALIZED_NODE = mock(NormalizedNode.class);
+    private static final Optional<NormalizedNode> NORMALIZED_NODE_OPTIONAL = Optional.of(NORMALIZED_NODE);
     private static SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
 
     @Before

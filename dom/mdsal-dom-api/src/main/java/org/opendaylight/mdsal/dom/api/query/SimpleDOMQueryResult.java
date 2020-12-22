@@ -21,28 +21,28 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 final class SimpleDOMQueryResult implements DOMQueryResult {
     static final SimpleDOMQueryResult EMPTY_INSTANCE = new SimpleDOMQueryResult(ImmutableList.of());
 
-    private final ImmutableList<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items;
+    private final ImmutableList<Entry<YangInstanceIdentifier, NormalizedNode>> items;
 
-    SimpleDOMQueryResult(final ImmutableList<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items) {
+    SimpleDOMQueryResult(final ImmutableList<Entry<YangInstanceIdentifier, NormalizedNode>> items) {
         this.items = items;
     }
 
-    SimpleDOMQueryResult(final List<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items) {
+    SimpleDOMQueryResult(final List<Entry<YangInstanceIdentifier, NormalizedNode>> items) {
         this(ImmutableList.copyOf(items));
     }
 
     @Override
-    public Iterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> iterator() {
+    public Iterator<Entry<YangInstanceIdentifier, NormalizedNode>> iterator() {
         return items.iterator();
     }
 
     @Override
-    public Spliterator<Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> spliterator() {
+    public Spliterator<Entry<YangInstanceIdentifier, NormalizedNode>> spliterator() {
         return items.spliterator();
     }
 
     @Override
-    public List<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> items() {
+    public List<? extends Entry<YangInstanceIdentifier, NormalizedNode>> items() {
         return items;
     }
 
