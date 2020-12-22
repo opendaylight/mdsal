@@ -43,7 +43,6 @@ import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExec
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
-import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -60,22 +59,20 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     private ExecutorService futureExecutor;
     private CommitExecutorService commitExecutor;
 
-    private static final DataContainerChild<?, ?> OUTER_LIST =
-            ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
+    private static final MapNode OUTER_LIST = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
             .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
             .build();
 
-    private static final DataContainerChild<?, ?> OUTER_LIST_2 =
-            ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
+    private static final MapNode OUTER_LIST_2 = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
             .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2))
             .build();
 
-    private static final NormalizedNode<?, ?> TEST_CONTAINER = Builders.containerBuilder()
+    private static final NormalizedNode TEST_CONTAINER = Builders.containerBuilder()
             .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TestModel.TEST_QNAME))
             .withChild(OUTER_LIST)
             .build();
 
-    private static final NormalizedNode<?, ?> TEST_CONTAINER_2 = Builders.containerBuilder()
+    private static final NormalizedNode TEST_CONTAINER_2 = Builders.containerBuilder()
             .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TestModel.TEST_QNAME))
             .withChild(OUTER_LIST_2)
             .build();
@@ -383,10 +380,8 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         listenerReg.close();
     }
 
-    private static void checkChange(final NormalizedNode<?, ?> expectedBefore,
-                                    final NormalizedNode<?, ?> expectedAfter,
-                                    final ModificationType expectedMod,
-                                    final DataTreeCandidateNode candidateNode) {
+    private static void checkChange(final NormalizedNode expectedBefore, final NormalizedNode expectedAfter,
+                                    final ModificationType expectedMod, final DataTreeCandidateNode candidateNode) {
         if (expectedBefore != null) {
             assertTrue(candidateNode.getDataBefore().isPresent());
             assertEquals(expectedBefore, candidateNode.getDataBefore().get());

@@ -25,20 +25,21 @@ class TracingReadWriteTransaction
     private final CloseTrackedTrait<TracingReadWriteTransaction> closeTracker;
     private final DOMDataTreeReadWriteTransaction delegate;
 
-    TracingReadWriteTransaction(DOMDataTreeReadWriteTransaction delegate, TracingBroker tracingBroker,
-            CloseTrackedRegistry<TracingReadWriteTransaction> readWriteTransactionsRegistry) {
+    TracingReadWriteTransaction(final DOMDataTreeReadWriteTransaction delegate, final TracingBroker tracingBroker,
+            final CloseTrackedRegistry<TracingReadWriteTransaction> readWriteTransactionsRegistry) {
         super(delegate, tracingBroker);
         this.closeTracker = new CloseTrackedTrait<>(readWriteTransactionsRegistry, this);
         this.delegate = requireNonNull(delegate);
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(LogicalDatastoreType store, YangInstanceIdentifier yiid) {
+    public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
+            final YangInstanceIdentifier yiid) {
         return delegate.read(store, yiid);
     }
 
     @Override
-    public FluentFuture<Boolean> exists(LogicalDatastoreType store, YangInstanceIdentifier yiid) {
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier yiid) {
         return delegate.exists(store, yiid);
     }
 
