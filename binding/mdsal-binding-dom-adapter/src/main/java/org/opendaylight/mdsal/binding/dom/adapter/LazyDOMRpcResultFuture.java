@@ -117,7 +117,7 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
                 return new DefaultDOMRpcResult(codec.toNormalizedNodeRpcData((DataContainer) inputData));
             }
 
-            return new DefaultDOMRpcResult((NormalizedNode<?, ?>) null);
+            return new DefaultDOMRpcResult((NormalizedNode) null);
         }
         return new DefaultDOMRpcResult(input.getErrors());
     }
