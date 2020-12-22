@@ -12,12 +12,12 @@ import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Method;
-import java.net.URI;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 
 public class BindingDOMRpcImplementationAdapterTest {
 
@@ -25,7 +25,7 @@ public class BindingDOMRpcImplementationAdapterTest {
     public void basicTest() throws Exception {
         final BindingDOMCodecServices registry = mock(BindingDOMCodecServices.class);
         final Method testMethod = this.getClass().getDeclaredMethod("testMethod");
-        final QName rpcType = QName.create(QNameModule.create(new URI("tst")), "test");
+        final QName rpcType = QName.create(QNameModule.create(XMLNamespace.of("tst")), "test");
         final BindingDOMRpcImplementationAdapter adapter = new BindingDOMRpcImplementationAdapter(
             new ConstantAdapterContext(registry), OpendaylightTestRpcServiceService.class,
             ImmutableMap.of(rpcType, testMethod), mock(OpendaylightTestRpcServiceService.class));
