@@ -25,7 +25,7 @@ public interface DOMStoreWriteTransaction extends DOMStoreTransaction {
      * @throws IllegalStateException if the client code already sealed transaction and invoked
      *         {@link #ready()}
      */
-    void write(YangInstanceIdentifier path, NormalizedNode<?, ?> data);
+    void write(YangInstanceIdentifier path, NormalizedNode data);
 
     /**
      * Store a provided data at specified path. This acts as a add / replace operation, which is to
@@ -40,7 +40,7 @@ public interface DOMStoreWriteTransaction extends DOMStoreTransaction {
      * @throws IllegalStateException if the client code already sealed transaction and invoked
      *         {@link #ready()}
      */
-    void merge(YangInstanceIdentifier path, NormalizedNode<?, ?> data);
+    void merge(YangInstanceIdentifier path, NormalizedNode data);
 
     /**
      * Deletes data and whole subtree located at provided path.
