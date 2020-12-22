@@ -38,10 +38,10 @@ import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -58,7 +58,7 @@ import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 @RunWith(MockitoJUnitRunner.class)
 public class TypeProviderTest {
 
-    public static SchemaContext SCHEMA_CONTEXT;
+    public static EffectiveModelContext SCHEMA_CONTEXT;
     public static Module TEST_TYPE_PROVIDER;
 
     @Mock

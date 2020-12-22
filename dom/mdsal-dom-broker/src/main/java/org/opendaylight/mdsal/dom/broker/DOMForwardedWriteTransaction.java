@@ -81,8 +81,7 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction> extends
     }
 
     @Override
-    public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path,
-            final NormalizedNode<?, ?> data) {
+    public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode data) {
         checkRunning(commitImpl);
         getSubtransaction(store).write(path, data);
     }
@@ -94,8 +93,7 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction> extends
     }
 
     @Override
-    public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path,
-            final NormalizedNode<?, ?> data) {
+    public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode data) {
         checkRunning(commitImpl);
         getSubtransaction(store).merge(path, data);
     }

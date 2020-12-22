@@ -29,8 +29,7 @@ public interface DOMRpcService extends DOMService {
      * @return A {@link ListenableFuture} which will return either a result structure, or report a subclass
      *         of {@link DOMRpcException} reporting a transport error.
      */
-    @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull QName type,
-            @NonNull NormalizedNode<?, ?> input);
+    @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull QName type, @NonNull NormalizedNode input);
 
     /**
      * Register a {@link DOMRpcAvailabilityListener} with this service to receive notifications

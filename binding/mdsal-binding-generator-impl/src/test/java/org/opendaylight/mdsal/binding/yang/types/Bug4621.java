@@ -11,23 +11,23 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertThrows;
 
-import java.net.URI;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Bug4621 {
     @Test
     public void bug4621test() {
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/bug-4621/foo.yang");
-        final Module moduleValid = schemaContext.findModules(URI.create("foo")).iterator().next();
+        final EffectiveModelContext schemaContext = YangParserTestUtils.parseYangResource("/bug-4621/foo.yang");
+        final Module moduleValid = schemaContext.findModules(XMLNamespace.of("foo")).iterator().next();
         final TypeProvider typeProvider = new RuntimeTypeProvider(schemaContext);
 
         final QName listNode = QName.create(moduleValid.getQNameModule(), "neighbor");
