@@ -83,7 +83,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest extends AbstractDatastoreT
     @Captor
     private ArgumentCaptor<Collection<DataTreeCandidate>> captorForChanges;
     @Captor
-    private ArgumentCaptor<Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>>> captorForSubtrees;
+    private ArgumentCaptor<Map<DOMDataTreeIdentifier, NormalizedNode>> captorForSubtrees;
 
     private final ContainerNode crossShardContainer = createCrossShardContainer();
 
@@ -195,13 +195,12 @@ public class ShardedDOMDataTreeProducerMultiShardTest extends AbstractDatastoreT
 
         final ContainerNode dataAfter =
                 (ContainerNode) capturedValue.iterator().next().getRootNode().getDataAfter().get();
-        assertEquals(crossShardContainer.getChild(
-                TestModel.INNER_CONTAINER_PATH.getLastPathArgument()).get(), dataAfter);
+        assertEquals(crossShardContainer.childByArg(TestModel.INNER_CONTAINER_PATH.getLastPathArgument()), dataAfter);
 
-        final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> capturedSubtrees = captorForSubtrees.getValue();
-        assertTrue(capturedSubtrees.size() == 1);
+        final Map<DOMDataTreeIdentifier, NormalizedNode> capturedSubtrees = captorForSubtrees.getValue();
+        assertEquals(1, capturedSubtrees.size());
         assertTrue(capturedSubtrees.containsKey(INNER_CONTAINER_ID));
-        assertEquals(crossShardContainer.getChild(TestModel.INNER_CONTAINER_PATH.getLastPathArgument()).get(),
+        assertEquals(crossShardContainer.childByArg(TestModel.INNER_CONTAINER_PATH.getLastPathArgument()),
                 capturedSubtrees.get(INNER_CONTAINER_ID));
 
         verifyNoMoreInteractions(mockedDataTreeListener);
@@ -234,8 +233,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest extends AbstractDatastoreT
         verify(mockedDataTreeListener, timeout(1000).times(4)).onDataTreeChanged(
                 captorForChanges.capture(), captorForSubtrees.capture());
         final List<Collection<DataTreeCandidate>> capturedChanges = captorForChanges.getAllValues();
-        final List<Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>>> capturedSubtrees =
-                captorForSubtrees.getAllValues();
+        final List<Map<DOMDataTreeIdentifier, NormalizedNode>> capturedSubtrees = captorForSubtrees.getAllValues();
         final DataTreeCandidate firstNotificationCandidate = capturedChanges.get(2).iterator().next();
 
         assertTrue(capturedSubtrees.get(2).size() == 1);

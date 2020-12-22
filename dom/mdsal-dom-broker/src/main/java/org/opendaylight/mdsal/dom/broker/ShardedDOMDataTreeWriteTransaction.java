@@ -238,13 +238,13 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         }
 
         @Override
-        public void merge(final PathArgument child, final NormalizedNode<?, ?> data) {
+        public void merge(final PathArgument child, final NormalizedNode data) {
             checkAvailable(child);
             delegate.merge(child, data);
         }
 
         @Override
-        public void write(final PathArgument child, final NormalizedNode<?, ?> data) {
+        public void write(final PathArgument child, final NormalizedNode data) {
             checkAvailable(child);
             delegate.write(child, data);
         }
