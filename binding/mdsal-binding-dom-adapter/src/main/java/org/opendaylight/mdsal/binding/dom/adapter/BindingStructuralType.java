@@ -70,7 +70,7 @@ public enum BindingStructuralType {
     UNKNOWN;
 
     public static BindingStructuralType from(final DataTreeCandidateNode domChildNode) {
-        Optional<NormalizedNode<?, ?>> dataBased = domChildNode.getDataAfter();
+        Optional<NormalizedNode> dataBased = domChildNode.getDataAfter();
         if (!dataBased.isPresent()) {
             dataBased = domChildNode.getDataBefore();
         }
@@ -90,7 +90,7 @@ public enum BindingStructuralType {
         return UNKNOWN;
     }
 
-    static BindingStructuralType from(final NormalizedNode<?, ?> data) {
+    static BindingStructuralType from(final NormalizedNode data) {
         if (isNotAddressable(data)) {
             return NOT_ADDRESSABLE;
         }
@@ -135,11 +135,11 @@ public enum BindingStructuralType {
         }
     }
 
-    private static boolean isVisibleContainer(final NormalizedNode<?, ?> data) {
+    private static boolean isVisibleContainer(final NormalizedNode data) {
         return data instanceof MapEntryNode || data instanceof ContainerNode || data instanceof AugmentationNode;
     }
 
-    private static boolean isNotAddressable(final NormalizedNode<?, ?> normalizedNode) {
+    private static boolean isNotAddressable(final NormalizedNode normalizedNode) {
         return normalizedNode instanceof LeafNode
                 || normalizedNode instanceof AnyxmlNode
                 || normalizedNode instanceof LeafSetNode

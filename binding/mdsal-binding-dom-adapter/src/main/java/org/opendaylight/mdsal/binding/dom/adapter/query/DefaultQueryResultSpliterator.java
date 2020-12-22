@@ -22,11 +22,11 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 @NonNullByDefault
 final class DefaultQueryResultSpliterator<T extends DataObject> implements Spliterator<QueryResult.Item<T>> {
-    private final Spliterator<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> domSpliterator;
+    private final Spliterator<? extends Entry<YangInstanceIdentifier, NormalizedNode>> domSpliterator;
     private final DefaultQueryResult<T> result;
 
     DefaultQueryResultSpliterator(final DefaultQueryResult<T> result,
-            final Spliterator<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> domSpliterator) {
+            final Spliterator<? extends Entry<YangInstanceIdentifier, NormalizedNode>> domSpliterator) {
         this.result = requireNonNull(result);
         this.domSpliterator = requireNonNull(domSpliterator);
     }
@@ -38,8 +38,7 @@ final class DefaultQueryResultSpliterator<T extends DataObject> implements Split
 
     @Override
     public @Nullable Spliterator<Item<T>> trySplit() {
-        final Spliterator<? extends Entry<YangInstanceIdentifier, NormalizedNode<?, ?>>> split =
-            domSpliterator.trySplit();
+        final Spliterator<? extends Entry<YangInstanceIdentifier, NormalizedNode>> split = domSpliterator.trySplit();
         return split == null ? null : new DefaultQueryResultSpliterator<>(result, split);
     }
 
