@@ -21,6 +21,6 @@ public class Mdsal531Test extends AbstractOpaqueTest {
         final List<GeneratedType> types = DefaultBindingGenerator.generateFor(
                 YangParserTestUtils.parseYangResourceDirectory("/mdsal-531"));
         assertNotNull(types);
-        assertEquals(10, types.size());
+        assertEquals(9, types.size());
     }
 }
