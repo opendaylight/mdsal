@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.yang.types;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
@@ -46,18 +45,15 @@ final class TypedefResolver {
     }
 
     private static void fillRecursively(final List<TypeDefinition<?>> list, final DataNodeContainer container) {
-        final Collection<? extends DataSchemaNode> childNodes = container.getChildNodes();
-        if (childNodes != null) {
-            for (DataSchemaNode childNode : childNodes) {
-                if (!childNode.isAugmenting()) {
-                    if (childNode instanceof ContainerSchemaNode) {
-                        fillRecursively(list, (ContainerSchemaNode) childNode);
-                    } else if (childNode instanceof ListSchemaNode) {
-                        fillRecursively(list, (ListSchemaNode) childNode);
-                    } else if (childNode instanceof ChoiceSchemaNode) {
-                        for (CaseSchemaNode caseNode : ((ChoiceSchemaNode) childNode).getCases()) {
-                            fillRecursively(list, caseNode);
-                        }
+        for (DataSchemaNode childNode : container.getChildNodes()) {
+            if (!childNode.isAugmenting()) {
+                if (childNode instanceof ContainerSchemaNode) {
+                    fillRecursively(list, (ContainerSchemaNode) childNode);
+                } else if (childNode instanceof ListSchemaNode) {
+                    fillRecursively(list, (ListSchemaNode) childNode);
+                } else if (childNode instanceof ChoiceSchemaNode) {
+                    for (CaseSchemaNode caseNode : ((ChoiceSchemaNode) childNode).getCases()) {
+                        fillRecursively(list, caseNode);
                     }
                 }
             }
@@ -65,11 +61,8 @@ final class TypedefResolver {
 
         list.addAll(container.getTypeDefinitions());
 
-        final Collection<? extends GroupingDefinition> groupings = container.getGroupings();
-        if (groupings != null) {
-            for (GroupingDefinition grouping : groupings) {
-                fillRecursively(list, grouping);
-            }
+        for (GroupingDefinition grouping : container.getGroupings()) {
+            fillRecursively(list, grouping);
         }
     }
 }
