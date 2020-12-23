@@ -251,7 +251,7 @@ class InterfaceTemplate extends BaseTemplate {
             Return «propReturn».
 
             «reference.formatReference»
-            @return {@code «method.returnType.fullyQualifiedName»} «propReturn»
+            @return {@code «method.returnType.name»} «propReturn»
         ''')
     }
 
@@ -265,8 +265,8 @@ class InterfaceTemplate extends BaseTemplate {
 
     def private generateDefaultImplementedInterface() '''
         @«OVERRIDE.importedName»
-        default «CLASS.importedName»<«type.fullyQualifiedName»> «DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME»() {
-            return «type.fullyQualifiedName».class;
+        default «CLASS.importedName»<«type.importedName»> «DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME»() {
+            return «type.importedName».class;
         }
     '''
 
