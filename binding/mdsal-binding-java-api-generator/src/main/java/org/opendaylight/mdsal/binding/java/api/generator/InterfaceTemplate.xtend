@@ -251,7 +251,7 @@ class InterfaceTemplate extends BaseTemplate {
             Return «propReturn»
 
             «reference.formatReference»
-            @return {@code «method.returnType.fullyQualifiedName»} «propReturn»
+            @return {@code «method.returnType.name»} «propReturn»
         ''')
     }
 
