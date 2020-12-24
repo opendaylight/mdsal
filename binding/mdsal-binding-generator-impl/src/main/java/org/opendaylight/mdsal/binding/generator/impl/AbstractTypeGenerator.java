@@ -989,7 +989,7 @@ abstract class AbstractTypeGenerator {
             if (result instanceof DataNodeContainer) {
                 final QName resultNode = node.bindTo(result.getQName().getModule());
 
-                SchemaNode found = ((DataNodeContainer) result).getDataChildByName(resultNode);
+                SchemaNode found = ((DataNodeContainer) result).dataChildByName(resultNode);
                 if (found == null) {
                     if (result instanceof ActionNodeContainer) {
                         found = ((ActionNodeContainer) result).findAction(resultNode).orElse(null);
