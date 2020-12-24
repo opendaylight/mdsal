@@ -350,7 +350,7 @@ class GeneratorImpl {
         for (QName pathElement : path.nodeIdentifiers) {
             val module = ctx.findModule(pathElement.module)
             if (module.isPresent) {
-                var foundNode = module.get.getDataChildByName(pathElement)
+                var foundNode = module.get.dataChildByName(pathElement)
                 if (foundNode === null) {
                     val child = nodes.last
                     if (child instanceof DataNodeContainer) {
@@ -1222,7 +1222,7 @@ class GeneratorImpl {
 
         for (name : path) {
             if (parent instanceof DataNodeContainer) {
-                var SchemaNode node = parent.getDataChildByName(name)
+                var SchemaNode node = parent.dataChildByName(name)
                 if (node === null && (parent instanceof Module)) {
                     val notifications = (parent as Module).notifications;
                     for (notification : notifications) {

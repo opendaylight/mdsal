@@ -268,9 +268,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         DataSchemaNode dataChildByName;
         for (QName next : parentNode.getPath().getPathFromRoot()) {
             if (current == null) {
-                dataChildByName = schemaContext.getDataChildByName(next);
+                dataChildByName = schemaContext.dataChildByName(next);
             } else {
-                dataChildByName = current.getDataChildByName(next);
+                dataChildByName = current.dataChildByName(next);
             }
             if (dataChildByName == null) {
                 return false;
