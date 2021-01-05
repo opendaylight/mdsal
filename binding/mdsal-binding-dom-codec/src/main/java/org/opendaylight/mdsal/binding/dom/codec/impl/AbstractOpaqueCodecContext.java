@@ -93,7 +93,7 @@ abstract sealed class AbstractOpaqueCodecContext<T extends OpaqueObject<T>> exte
     }
 
     @Override
-    ValueCodec<Object, Object> getValueCodec() {
+    public ValueCodec<Object, Object> getValueCodec() {
         return valueCodec;
     }
 

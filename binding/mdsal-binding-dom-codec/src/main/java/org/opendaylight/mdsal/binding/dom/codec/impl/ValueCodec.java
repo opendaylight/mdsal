@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-interface ValueCodec<S, D> {
+public interface ValueCodec<S, D> {
     /**
      * Produce an internal object based on an external object.
      *
