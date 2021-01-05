@@ -11,6 +11,9 @@ import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.query.ComparableMatchBuilder;
+import org.opendaylight.mdsal.binding.api.query.LeafListComparableMatchBuilder;
+import org.opendaylight.mdsal.binding.api.query.LeafListMatchBuilder;
+import org.opendaylight.mdsal.binding.api.query.LeafListStringMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath;
 import org.opendaylight.mdsal.binding.api.query.StringMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.ValueMatchBuilder;
@@ -134,12 +137,93 @@ final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> 
         return defaultFor(methodRef);
     }
 
+    @Override
+    public LeafListMatchBuilder<O, Boolean> leafList(final BooleanLeafListReference<T> methodRef) {
+        return defaultFor(methodRef);
+    }
+
+    @Override
+    public LeafListComparableMatchBuilder<O, Decimal64> leafList(final Decimal64LeafListReference<T> methodRef) {
+        return comparableFor(methodRef);
+    }
+
+    @Override
+    public LeafListMatchBuilder<O, Empty> leafList(final EmptyLeafListReference<T> methodRef) {
+        return defaultFor(methodRef);
+    }
+
+    @Override
+    public LeafListStringMatchBuilder<O> leafList(final StringLeafListReference<T> methodRef) {
+        return new DefaultLeafListStringMatchBuilder<>(builder, select, builder.bindMethod(target.build(), methodRef));
+    }
+
+    @Override
+    public LeafListComparableMatchBuilder<O, Byte> leafList(final Int8LeafListReference<T> methodRef) {
+        return comparableFor(methodRef);
+    }
+
+    @Override
+    public LeafListComparableMatchBuilder<O, Short> leafList(final Int16LeafListReference<T> methodRef) {
+        return comparableFor(methodRef);
+    }
+
+    @Override
+    public LeafListComparableMatchBuilder<O, Integer> leafList(final Int32LeafListReference<T> methodRef) {
+        return comparableFor(methodRef);
+    }
+
+    @Override
+    public LeafListComparableMatchBuilder<O, Long> leafList(final Int64LeafListReference<T> methodRef) {
+        return comparableFor(methodRef);
+    }
+
+    @Override
+    public LeafListComparableMatchBuilder<O, Uint8> leafList(final Uint8LeafListReference<T> methodRef) {
+        return comparableFor(methodRef);
+    }
+
+    @Override
+    public LeafListComparableMatchBuilder<O, Uint16> leafList(final Uint16LeafListReference<T> methodRef) {
+        return comparableFor(methodRef);
+    }
+
+    @Override
+    public LeafListComparableMatchBuilder<O, Uint32> leafList(final Uint32LeafListReference<T> methodRef) {
+        return comparableFor(methodRef);
+    }
+
+    @Override
+    public LeafListComparableMatchBuilder<O, Uint64> leafList(final Uint64LeafListReference<T> methodRef) {
+        return comparableFor(methodRef);
+    }
+
+    @Override
+    public <I extends BaseIdentity> LeafListMatchBuilder<O, I> leafList(
+            final IdentityLeafListReference<T, I> methodRef) {
+        return defaultFor(methodRef);
+    }
+
+    @Override
+    public <C extends TypeObject> LeafListMatchBuilder<O, C> leafList(
+            final TypeObjectLeafListReference<T, C> methodRef) {
+        return defaultFor(methodRef);
+    }
+
     private <F> @NonNull ValueMatchBuilder<O, F> defaultFor(final LeafReference<T, F> ref) {
         return new DefaultValueMatchBuilder<>(builder, select, builder.bindMethod(target.build(), ref));
+    }
+
+    private <F> @NonNull LeafListMatchBuilder<O, F> defaultFor(final LeafListReference<T, F> ref) {
+        return new DefaultLeafListMatchBuilder<>(builder, select, builder.bindMethod(target.build(), ref));
     }
 
     private <F extends Comparable<F>> @NonNull ComparableMatchBuilder<O, F> comparableFor(
             final LeafReference<T, F> ref) {
         return new DefaultComparableMatchBuilder<>(builder, select, builder.bindMethod(target.build(), ref));
+    }
+
+    private <F extends Comparable<F>> @NonNull LeafListComparableMatchBuilder<O, F> comparableFor(
+            final LeafListReference<T, F> ref) {
+        return new DefaultLeafListComparableMatchBuilder<>(builder, select, builder.bindMethod(target.build(), ref));
     }
 }

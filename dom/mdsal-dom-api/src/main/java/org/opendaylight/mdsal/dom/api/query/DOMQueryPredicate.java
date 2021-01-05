@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -20,7 +21,9 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
+import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
@@ -42,6 +45,14 @@ public final class DOMQueryPredicate implements Immutable {
 
         public static final Match exists() {
             return MatchExists.INSTACE;
+        }
+
+        public static final Match isEmpty() {
+            return MatchEmpty.INSTANCE;
+        }
+
+        public static final Match notEmpty() {
+            return MatchEmpty.NOT_INSTANCE;
         }
 
         public static final <T extends Comparable<T>> Match greaterThan(final T value) {
@@ -78,6 +89,34 @@ public final class DOMQueryPredicate implements Immutable {
 
         public static final <V> Match valueEquals(final V value) {
             return new MatchValueEquals<>(value);
+        }
+
+        public static final <I> Match containsItem(final I item) {
+            return new MatchContains<>(item);
+        }
+
+        public static final Match containsAll(final Collection<?> items) {
+            // Only empty collection contains all of empty items
+            return items.isEmpty() ? isEmpty() : new MatchContainsAll<>(ImmutableList.copyOf(items));
+        }
+
+        public static final Match containsAny(final Collection<?> items) {
+            return new MatchContainsAny<>(ImmutableList.copyOf(items));
+        }
+
+        public static final Match matchesItem(final Match itemMatch) {
+            // FIXME: implement this
+            throw new UnsupportedOperationException();
+        }
+
+        public static final Match matchesAll(final Match itemMatch) {
+            // FIXME: implement this
+            throw new UnsupportedOperationException();
+        }
+
+        public static final Match matchesAny(final Match itemMatch) {
+            // FIXME: implement this
+            throw new UnsupportedOperationException();
         }
 
         /**
@@ -168,6 +207,30 @@ public final class DOMQueryPredicate implements Immutable {
         @Override
         String op() {
             return "anyOf";
+        }
+    }
+
+    private static final class MatchEmpty extends AbstractMatchCollection<Object> {
+        static final MatchEmpty INSTANCE = new MatchEmpty();
+        static final Match NOT_INSTANCE = INSTANCE.negate();
+
+        private MatchEmpty() {
+            // Hidden on purpose
+        }
+
+        @Override
+        boolean nullValue() {
+            return true;
+        }
+
+        @Override
+        boolean testValue(final LeafSetNode<Object> data) {
+            return data.size() == 0;
+        }
+
+        @Override
+        String op() {
+            return "isEmpty";
         }
     }
 
@@ -368,6 +431,83 @@ public final class DOMQueryPredicate implements Immutable {
         }
     }
 
+    private static final class MatchContains<I> extends AbstractMatchCollectionValue<I, I> {
+        MatchContains(final I value) {
+            super(value);
+        }
+
+        @Override
+        boolean nullValue() {
+            return false;
+        }
+
+        @Override
+        boolean testValue(final LeafSetNode<I> data) {
+            return contains(data, value());
+        }
+
+        @Override
+        String op() {
+            return "contains";
+        }
+
+        static <T> boolean contains(final LeafSetNode<T> data, final T value) {
+            return data.findChildByArg(new NodeWithValue<>(data.getIdentifier().getNodeType(), value)).isPresent();
+        }
+    }
+
+    private static final class MatchContainsAll<I> extends AbstractMatchCollectionValue<I, ImmutableList<I>> {
+        MatchContainsAll(final ImmutableList<I> items) {
+            super(items);
+        }
+
+        @Override
+        boolean nullValue() {
+            return value().isEmpty();
+        }
+
+        @Override
+        boolean testValue(final LeafSetNode<I> data) {
+            for (I item : value()) {
+                if (!MatchContains.contains(data, item)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        String op() {
+            return "containsAll";
+        }
+    }
+
+    private static final class MatchContainsAny<I> extends AbstractMatchCollectionValue<I, ImmutableList<I>> {
+        MatchContainsAny(final ImmutableList<I> items) {
+            super(items);
+        }
+
+        @Override
+        boolean nullValue() {
+            return false;
+        }
+
+        @Override
+        boolean testValue(final LeafSetNode<I> data) {
+            for (I item : value()) {
+                if (MatchContains.contains(data, item)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        String op() {
+            return "containsAny";
+        }
+    }
+
     private abstract static class CompositeMatch extends Match {
         private final ImmutableList<Match> components;
 
@@ -451,6 +591,35 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         final @NonNull T value() {
+            return value;
+        }
+
+        @Override
+        final void appendArgument(final StringBuilder sb) {
+            sb.append(value);
+        }
+    }
+
+    private abstract static class AbstractMatchCollection<T> extends Match {
+        @Override
+        @SuppressWarnings("unchecked")
+        public final boolean test(final @Nullable NormalizedNode data) {
+            return data instanceof LeafSetNode ? testValue((LeafSetNode<T>) data) : nullValue();
+        }
+
+        abstract boolean nullValue();
+
+        abstract boolean testValue(LeafSetNode<T> data);
+    }
+
+    private abstract static class AbstractMatchCollectionValue<T, V> extends AbstractMatchCollection<T> {
+        private final @NonNull V value;
+
+        AbstractMatchCollectionValue(final V value) {
+            this.value = requireNonNull(value);
+        }
+
+        final @NonNull V value() {
             return value;
         }
 
