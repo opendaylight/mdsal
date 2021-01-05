@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -42,6 +43,14 @@ public final class DOMQueryPredicate implements Immutable {
 
         public static final Match exists() {
             return MatchExists.INSTACE;
+        }
+
+        public static final Match isEmpty() {
+            return MatchEmpty.INSTANCE;
+        }
+
+        public static final Match notEmpty() {
+            return MatchEmpty.NOT_INSTANCE;
         }
 
         public static final <T extends Comparable<T>> Match greaterThan(final T value) {
@@ -78,6 +87,31 @@ public final class DOMQueryPredicate implements Immutable {
 
         public static final <V> Match valueEquals(final V value) {
             return new MatchValueEquals<>(value);
+        }
+
+        public static final <I> Match containsItem(final I item) {
+            return new MatchContains<>(item);
+        }
+
+        public static final Match containsAll(final Collection<?> items) {
+            // Only empty collection contains all of empty items
+            return items.isEmpty() ? isEmpty() : new MatchContainsAll<>(ImmutableList.copyOf(items));
+        }
+
+        public static final Match containsAny(final Collection<?> items) {
+            return new MatchContainsAny<>(ImmutableList.copyOf(items));
+        }
+
+        public static final Match allOf(final Collection<Match> components) {
+            // Collapse single-element all()
+            return components.size() == 1 ? components.iterator().next()
+                : new MatchAll(ImmutableList.copyOf(components));
+        }
+
+        public static final Match anyOf(final Collection<Match> components) {
+            // Collapse single-element any()
+            return components.size() == 1 ? components.iterator().next()
+                : new MatchAny(ImmutableList.copyOf(components));
         }
 
         /**
@@ -168,6 +202,25 @@ public final class DOMQueryPredicate implements Immutable {
         @Override
         String op() {
             return "anyOf";
+        }
+    }
+
+    private static final class MatchEmpty extends AbstractMatchCollection<Object> {
+        static final MatchEmpty INSTANCE = new MatchEmpty();
+        static final Match NOT_INSTANCE = INSTANCE.negate();
+
+        private MatchEmpty() {
+            // Hidden on purpose
+        }
+
+        @Override
+        boolean testValue(final Collection<Object> data) {
+            return data.isEmpty();
+        }
+
+        @Override
+        String op() {
+            return "isEmpty";
         }
     }
 
@@ -368,6 +421,61 @@ public final class DOMQueryPredicate implements Immutable {
         }
     }
 
+    private static final class MatchContains<I> extends AbstractMatchCollectionValue<I, I> {
+        MatchContains(final I value) {
+            super(value);
+        }
+
+        @Override
+        String op() {
+            return "contains";
+        }
+
+        @Override
+        boolean testValue(final Collection<I> data) {
+            return data.contains(value());
+        }
+    }
+
+    private static final class MatchContainsAll<I> extends AbstractMatchCollectionValue<I, ImmutableList<I>> {
+        MatchContainsAll(final ImmutableList<I> items) {
+            super(items);
+        }
+
+        @Override
+        boolean testValue(final Collection<I> data) {
+            return data.containsAll(value());
+        }
+
+        @Override
+        String op() {
+            return "containsAll";
+        }
+    }
+
+    private static final class MatchContainsAny<I> extends AbstractMatchCollectionValue<I, ImmutableList<I>> {
+        MatchContainsAny(final ImmutableList<I> items) {
+            super(items);
+        }
+
+        @Override
+        boolean testValue(final Collection<I> data) {
+            if (!data.isEmpty()) {
+                for (I item : value()) {
+                    if (data.contains(item)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        @Override
+        String op() {
+            return "containsAny";
+        }
+    }
+
     private abstract static class CompositeMatch extends Match {
         private final ImmutableList<Match> components;
 
@@ -451,6 +559,32 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         final @NonNull T value() {
+            return value;
+        }
+
+        @Override
+        final void appendArgument(final StringBuilder sb) {
+            sb.append(value);
+        }
+    }
+
+    private abstract static class AbstractMatchCollection<T> extends AbstractMatch {
+        @Override
+        final boolean testValue(final @Nullable Object data) {
+            return data instanceof Collection && testValue((Collection<T>) data);
+        }
+
+        abstract boolean testValue(Collection<T> data);
+    }
+
+    private abstract static class AbstractMatchCollectionValue<T, V> extends AbstractMatchCollection<T> {
+        private final @NonNull V value;
+
+        AbstractMatchCollectionValue(final V value) {
+            this.value = requireNonNull(value);
+        }
+
+        final @NonNull V value() {
             return value;
         }
 

@@ -70,6 +70,7 @@ public class QueryBuilderTest {
                         new AlarmsBuilder()
                             .setId(Uint64.ZERO)
                             .setCritical(Empty.getInstance())
+                            .setAlarmMessages(List.of("message1", "message2"))
                             .setAffectedUsers(BindingMap.of(
                                 // TODO: fill
                             )).build(),
@@ -88,6 +89,7 @@ public class QueryBuilderTest {
                         new AlarmsBuilder()
                         .setId(Uint64.ZERO)
                         .setCritical(Empty.getInstance())
+                            .setAlarmMessages(List.of("message2", "message3"))
                         .setAffectedUsers(BindingMap.of(
                             // TODO: fill
                         )).build())).build()
@@ -112,14 +114,30 @@ public class QueryBuilderTest {
     }
 
     @Test
-    public void testFindCriticalAlarms() {
+    public void testFindAlarmsContainingMessage() {
         final Stopwatch sw = Stopwatch.createStarted();
         final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
             .extractChild(System.class)
             .extractChild(Alarms.class)
                 .matching()
-                    .leaf(Alarms::getCritical).nonNull()
-                .build();
+                    .leafList(Alarms::getAlarmMessages).contains().item("message2").build();
+        LOG.info("Query built in {}", sw);
+
+        final List<? extends Item<@NonNull Alarms>> items = execute(query).getItems();
+        List<? extends Alarms> values = execute(query).getValues();
+        assertEquals(2, items.size());
+        assertEquals(2, values.size());
+    }
+
+    @Test
+    public void testFindCriticalAlarms() {
+        final Stopwatch sw = Stopwatch.createStarted();
+        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+            .extractChild(System.class)
+            .extractChild(Alarms.class)
+            .matching()
+            .leaf(Alarms::getCritical).nonNull()
+            .build();
         LOG.info("Query built in {}", sw);
 
         final List<? extends Item<@NonNull Alarms>> items = execute(query).getItems();
