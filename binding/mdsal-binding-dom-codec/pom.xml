@@ -90,9 +90,11 @@
                 <configuration>
                     <instructions>
                         <Bundle-Name>${project.groupId}.${project.artifactId}</Bundle-Name>
+                        <Export-Package>
+                            org.opendaylight.mdsal.binding.dom.codec.impl
+                        </Export-Package>
                         <Private-Package>
-                            org.opendaylight.mdsal.binding.dom.codec.impl,
-                            org.opendaylight.mdsal.binding.dom.codec.loader,
+                            org.opendaylight.mdsal.binding.dom.codec.loader
                         </Private-Package>
                         <Import-Package>
                             !net.bytebuddy.*,
