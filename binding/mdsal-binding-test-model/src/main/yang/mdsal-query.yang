@@ -30,6 +30,9 @@ module mdsal-query {
         type empty;
       }
 
+      leaf-list alarm-messages {
+        type string;
+      }
       uses third-grp;
     }
   }
