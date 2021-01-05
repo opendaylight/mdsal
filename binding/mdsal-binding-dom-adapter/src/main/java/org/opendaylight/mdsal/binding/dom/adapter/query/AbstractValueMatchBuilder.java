@@ -7,12 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.query;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.query.ValueMatch;
 import org.opendaylight.mdsal.binding.api.query.ValueMatchBuilder;
 import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundMethod;
+import org.opendaylight.mdsal.binding.dom.codec.impl.ValueNodeCodecContext;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Match;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -24,12 +26,19 @@ abstract class AbstractValueMatchBuilder<T extends DataObject, V> implements Val
     private final QueryBuilderState builder;
     private final InstanceIdentifier<T> select;
     private final BoundMethod method;
+    private final ValueNodeCodecContext valueCodec;
 
     AbstractValueMatchBuilder(final QueryBuilderState builder, final InstanceIdentifier<T> select,
             final BoundMethod method) {
         this.builder = requireNonNull(builder);
         this.select = requireNonNull(select);
         this.method = requireNonNull(method);
+        checkArgument(method.methodCodec instanceof ValueNodeCodecContext, "BoundMethod is missing ValueCodec");
+        this.valueCodec = (ValueNodeCodecContext) method.methodCodec;
+    }
+
+    final ValueNodeCodecContext getValueCodec() {
+        return this.valueCodec;
     }
 
     @Override
