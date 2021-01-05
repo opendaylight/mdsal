@@ -136,7 +136,6 @@ abstract class OpaqueNodeCodecContext<T extends OpaqueObject<T>> extends ValueNo
         return deserialize(normalizedNode);
     }
 
-    @Override
     ValueCodec<Object, Object> getValueCodec() {
         return valueCodec;
     }
