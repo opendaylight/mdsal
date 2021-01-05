@@ -2,6 +2,26 @@ module mdsal-query {
   namespace "mdsal-query";
   prefix mq;
 
+  typedef alarm-message {
+    type string {
+      length "1 .. 200";
+    }
+  }
+
+  typedef alarm-union {
+    type union {
+      type uint32;
+
+       type binary {
+         length "3";
+       }
+
+       type string;
+
+       type alarm-message;
+    }
+  }
+
   grouping first-grp {
     list system {
       key name;
@@ -30,6 +50,17 @@ module mdsal-query {
         type empty;
       }
 
+      leaf-list alarm-messages {
+        type alarm-message;
+      }
+
+      leaf-list alarm-unions {
+        type alarm-union;
+      }
+
+      leaf-list primitive-messages {
+        type string;
+      }
       uses third-grp;
     }
   }
