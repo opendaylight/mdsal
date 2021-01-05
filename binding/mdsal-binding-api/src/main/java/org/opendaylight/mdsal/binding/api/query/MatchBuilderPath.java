@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.api.query;
 
 import com.google.common.annotations.Beta;
 import java.io.Serializable;
+import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
@@ -190,6 +191,134 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
     <C extends TypeObject> @NonNull ValueMatchBuilder<O, C> leaf(TypeObjectLeafReference<T, C> methodRef);
 
     /**
+     * Match an {@code boolean} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListMatchBuilder}
+     * @throws NullPointerException if methodRef is {@code null}
+     */
+    @NonNull LeafListMatchBuilder<O, Boolean> leafList(BooleanLeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code decimal64} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListComparableMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull LeafListComparableMatchBuilder<O, Decimal64> leafList(Decimal64LeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code empty} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull LeafListMatchBuilder<O, Empty> leafList(EmptyLeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code string} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListStringMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull LeafListStringMatchBuilder<O> leafList(StringLeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code int8} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListComparableMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull LeafListComparableMatchBuilder<O, Byte> leafList(Int8LeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code int16} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListComparableMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull LeafListComparableMatchBuilder<O, Short> leafList(Int16LeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code int32} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListComparableMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull LeafListComparableMatchBuilder<O, Integer> leafList(Int32LeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code int64} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListComparableMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull LeafListComparableMatchBuilder<O, Long> leafList(Int64LeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code uint8} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListComparableMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull LeafListComparableMatchBuilder<O, Uint8> leafList(Uint8LeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code uint16} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListComparableMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull LeafListComparableMatchBuilder<O, Uint16> leafList(Uint16LeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code uint32} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListComparableMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull LeafListComparableMatchBuilder<O, Uint32> leafList(Uint32LeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code uint64} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListComparableMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull LeafListComparableMatchBuilder<O, Uint64> leafList(Uint64LeafListReference<T> methodRef);
+
+    /**
+     * Match an {@code identityref} leaf-list's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    <I extends BaseIdentity> @NonNull LeafListMatchBuilder<O, I> leafList(
+        IdentityLeafListReference<T, I> methodRef);
+
+    /**
+     * Match a generic leaf-list value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link LeafListMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    <C extends TypeObject> @NonNull LeafListMatchBuilder<O, C> leafList(
+        TypeObjectLeafListReference<T, C> methodRef);
+
+    /**
      * Base interface for capturing binding getter method references through lambda expressions. This interface should
      * never be used directly, but rather through one of its specializations.
      *
@@ -215,6 +344,22 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
          */
         @Deprecated(forRemoval = true)
         C dummyMethod(P parent);
+    }
+
+    /**
+     * Intermediate specialization of {@link LeafReference} for {@code leaf-list} attributes. This interface should not
+     * be used directly, but rather through its specializations.
+     *
+     * @param <P> Parent type
+     * @param <C> Child item type
+     */
+
+    sealed interface LeafListReference<P, C> extends LeafReference<P, Set<C>> permits BooleanLeafListReference,
+        Decimal64LeafListReference, EmptyLeafListReference, IdentityLeafListReference, Int16LeafListReference,
+        Int32LeafListReference, Int64LeafListReference, Int8LeafListReference, StringLeafListReference,
+        TypeObjectLeafListReference, Uint16LeafListReference, Uint32LeafListReference, Uint64LeafListReference,
+        Uint8LeafListReference {
+
     }
 
     @FunctionalInterface
@@ -284,6 +429,76 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
 
     @FunctionalInterface
     interface TypeObjectLeafReference<P, T extends TypeObject> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface BooleanLeafListReference<P> extends LeafListReference<P, Boolean> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface Decimal64LeafListReference<P> extends LeafListReference<P, Decimal64> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface EmptyLeafListReference<P> extends LeafListReference<P, Empty> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface StringLeafListReference<P> extends LeafListReference<P, String> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface Int8LeafListReference<P> extends LeafListReference<P, Byte> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface Int16LeafListReference<P> extends LeafListReference<P, Short> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface Int32LeafListReference<P> extends LeafListReference<P, Integer> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface Int64LeafListReference<P> extends LeafListReference<P, Long> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface Uint8LeafListReference<P> extends LeafListReference<P, Uint8> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface Uint16LeafListReference<P> extends LeafListReference<P, Uint16> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface Uint32LeafListReference<P> extends LeafListReference<P, Uint32> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface Uint64LeafListReference<P> extends LeafListReference<P, Uint64> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface IdentityLeafListReference<P, T extends BaseIdentity> extends LeafListReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    non-sealed interface TypeObjectLeafListReference<P, T extends TypeObject> extends LeafListReference<P, T> {
 
     }
 }
