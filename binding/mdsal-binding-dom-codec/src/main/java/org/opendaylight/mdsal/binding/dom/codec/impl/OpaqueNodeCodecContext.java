@@ -140,7 +140,7 @@ abstract class OpaqueNodeCodecContext<T extends OpaqueObject<T>> extends ValueNo
     }
 
     @Override
-    IllegalArgumentCodec<Object, Object> getValueCodec() {
+    public IllegalArgumentCodec<Object, Object> getValueCodec() {
         return valueCodec;
     }
 
