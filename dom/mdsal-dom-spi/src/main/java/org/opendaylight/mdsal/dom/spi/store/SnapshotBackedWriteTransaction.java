@@ -72,7 +72,10 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
             tree.write(path, data);
             // FIXME: Add checked exception
         } catch (Exception e) {
-            LOG.error("Tx: {}, failed to write {}:{} in {}", getIdentifier(), path, data, tree, e);
+            LOG.error("""
+                Tx: {} failed to write to {}
+                  value: {}
+                  tree: {}""", getIdentifier(), path, data.prettyTree(), tree, e);
             // Rethrow original ones if they are subclasses of RuntimeException or Error
             Throwables.throwIfUnchecked(e);
             // FIXME: Introduce proper checked exception
