@@ -322,7 +322,11 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         val returnType = field.returnType
         if (returnType instanceof ParameterizedType) {
             if (Types.isListType(returnType)) {
-                return generateListSetter(field, returnType.actualTypeArguments.get(0))
+                val arguments = returnType.actualTypeArguments
+                if (arguments.isEmpty) {
+                    return generateListSetter(field, Types.objectType)
+                }
+                return generateListSetter(field, arguments.get(0))
             } else if (Types.isMapType(returnType)) {
                 return generateMapSetter(field, returnType.actualTypeArguments.get(1))
             }
