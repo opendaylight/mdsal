@@ -143,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "4c5e4c94_9c916394",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-01-13T15:42:09Z",
+      "side": 1,
+      "message": "True, but let\u0027s not create more for that task -- i.e. use the constant here, schedule a cleanup for later.",
+      "parentUuid": "64185a0f_19050996",
+      "range": {
+        "startLine": 333,
+        "startChar": 0,
+        "endLine": 341,
+        "endChar": 13
+      },
+      "revId": "e98e22875a24df9ae9932556736659990b49947c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "85a7e16d_61465de9",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
         "patchSetId": 8
