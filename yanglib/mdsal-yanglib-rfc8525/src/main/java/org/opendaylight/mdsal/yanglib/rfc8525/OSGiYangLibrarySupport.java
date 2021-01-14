@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.yanglib.rfc8525;
 import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.annotations.Beta;
-import java.io.IOException;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
@@ -45,7 +44,7 @@ public final class OSGiYangLibrarySupport extends ForwardingYangLibSupport {
     }
 
     @Activate
-    void activate() throws YangParserException, IOException {
+    void activate() throws YangParserException {
         delegate = new YangLibrarySupport(parserFactory, generator, codecFactory);
         LOG.info("RFC8525 YANG Library support activated");
     }

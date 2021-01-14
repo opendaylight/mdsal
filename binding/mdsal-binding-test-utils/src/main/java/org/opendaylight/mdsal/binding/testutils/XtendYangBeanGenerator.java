@@ -51,7 +51,7 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
 
     @Override
     protected boolean isUsingBuilder(final Object bean, final Class<?> builderClass) {
-        return useBuilderExtensions(bean) ? false : super.isUsingBuilder(bean, builderClass);
+        return !useBuilderExtensions(bean) && super.isUsingBuilder(bean, builderClass);
     }
 
     @Override
