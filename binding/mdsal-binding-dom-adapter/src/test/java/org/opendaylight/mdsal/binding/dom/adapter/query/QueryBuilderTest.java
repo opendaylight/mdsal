@@ -170,6 +170,66 @@ public class QueryBuilderTest {
     }
 
     @Test
+    public void testFindGreaterThanAlarms() {
+        final Stopwatch sw = Stopwatch.createStarted();
+        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+            .extractChild(System.class)
+            .extractChild(Alarms.class)
+            .matching()
+            .leaf(Alarms::getId).greaterThan(Uint64.ONE)
+            .build();
+        LOG.info("Query built in {}", sw);
+
+        final List<? extends Item<@NonNull Alarms>> items = execute(query).getItems();
+        assertEquals(1, items.size());
+    }
+
+    @Test
+    public void testFindGreaterThanOrEqualsAlarms() {
+        final Stopwatch sw = Stopwatch.createStarted();
+        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+            .extractChild(System.class)
+            .extractChild(Alarms.class)
+            .matching()
+            .leaf(Alarms::getId).greaterThanOrEqual(Uint64.ONE)
+            .build();
+        LOG.info("Query built in {}", sw);
+
+        final List<? extends Item<@NonNull Alarms>> items = execute(query).getItems();
+        assertEquals(2, items.size());
+    }
+
+    @Test
+    public void testFindLessThanAlarms() {
+        final Stopwatch sw = Stopwatch.createStarted();
+        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+            .extractChild(System.class)
+            .extractChild(Alarms.class)
+            .matching()
+            .leaf(Alarms::getId).lessThan(Uint64.ONE)
+            .build();
+        LOG.info("Query built in {}", sw);
+
+        final List<? extends Item<@NonNull Alarms>> items = execute(query).getItems();
+        assertEquals(2, items.size());
+    }
+
+    @Test
+    public void testFindLessThanOrEqualsAlarms() {
+        final Stopwatch sw = Stopwatch.createStarted();
+        final QueryExpression<Alarms> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+            .extractChild(System.class)
+            .extractChild(Alarms.class)
+            .matching()
+            .leaf(Alarms::getId).lessThanOrEqual(Uint64.ONE)
+            .build();
+        LOG.info("Query built in {}", sw);
+
+        final List<? extends Item<@NonNull Alarms>> items = execute(query).getItems();
+        assertEquals(3, items.size());
+    }
+
+    @Test
     public void testFindSystemFirstWithAlarmOne() {
         final Stopwatch sw = Stopwatch.createStarted();
         final QueryExpression<System> query = factory.querySubtree(InstanceIdentifier.create(Foo.class))
