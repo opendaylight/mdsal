@@ -316,7 +316,7 @@ public final class DOMQueryPredicate implements Immutable {
 
         @Override
         boolean testCompare(final int valueToData) {
-            return valueToData <= 0;
+            return valueToData < 0;
         }
     }
 
@@ -332,7 +332,7 @@ public final class DOMQueryPredicate implements Immutable {
 
         @Override
         boolean testCompare(final int valueToData) {
-            return valueToData < 0;
+            return valueToData <= 0;
         }
     }
 
@@ -348,7 +348,7 @@ public final class DOMQueryPredicate implements Immutable {
 
         @Override
         boolean testCompare(final int valueToData) {
-            return valueToData >= 0;
+            return valueToData > 0;
         }
     }
 
@@ -364,7 +364,7 @@ public final class DOMQueryPredicate implements Immutable {
 
         @Override
         boolean testCompare(final int valueToData) {
-            return valueToData > 0;
+            return valueToData >= 0;
         }
     }
 
@@ -420,6 +420,13 @@ public final class DOMQueryPredicate implements Immutable {
             return data != null && testCompare(value().compareTo((T) data));
         }
 
+        /**
+         * Evaluate the result of {@code value().compareTo(data)}. Note this result is an inversion of what the match
+         * may be named.
+         *
+         * @param valueToData {@link Comparable#compareTo(Object)} result
+         * @return True if the result indicates a match
+         */
         abstract boolean testCompare(int valueToData);
     }
 
