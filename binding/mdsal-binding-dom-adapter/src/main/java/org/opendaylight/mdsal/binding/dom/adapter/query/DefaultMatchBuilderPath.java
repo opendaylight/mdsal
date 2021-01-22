@@ -65,6 +65,11 @@ final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> 
     }
 
     @Override
+    public ValueMatchBuilder<O, Boolean> leaf(final BooleanLeafReference<T> methodRef) {
+        return defaultFor(methodRef);
+    }
+
+    @Override
     public ValueMatchBuilder<O, Empty> leaf(final EmptyLeafReference<T> methodRef) {
         return defaultFor(methodRef);
     }
