@@ -63,6 +63,15 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
         @NonNull MatchBuilderPath<O, N> extractChild(Class<@NonNull N> listItem, K listKey);
 
     /**
+     * Match an {@code boolean} leaf's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link ValueMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull ValueMatchBuilder<O, Boolean> leaf(BooleanLeafReference<T> methodRef);
+
+    /**
      * Match an {@code empty} leaf's value.
      *
      * @param methodRef method reference to the getter method
@@ -196,6 +205,11 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
          */
         @Deprecated(forRemoval = true)
         C dummyMethod(P parent);
+    }
+
+    @FunctionalInterface
+    public interface BooleanLeafReference<P> extends LeafReference<P, Boolean> {
+
     }
 
     @FunctionalInterface
