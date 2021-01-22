@@ -8,9 +8,11 @@
 package org.opendaylight.mdsal.binding.dom.adapter.query;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import com.google.common.base.Stopwatch;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -159,6 +161,13 @@ public class QueryBuilderTest {
 
         final List<? extends Item<@NonNull Alarms>> items = execute(query).getItems();
         assertEquals(2, items.size());
+
+        List<Alarms> verifiedResult = items.stream()
+            .map(Item::object)
+            .filter(object -> object.getId().equals(Uint64.ZERO))
+            .collect(Collectors.toList());
+        assertNotNull(verifiedResult);
+        assertEquals(2, verifiedResult.size());
     }
 
     @Test
