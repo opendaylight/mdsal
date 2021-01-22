@@ -13,6 +13,7 @@ import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.System;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.SystemKey;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.second.grp.Alarms;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.third.grp.AffectedUsers;
+import org.opendaylight.yang.gen.v1.mdsal426.norev.BooleanCont;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
@@ -130,6 +131,15 @@ public class QueryBuilderExamples {
                     .childObject(AffectedUsers.class)
                     .leaf(AffectedUsers::getUid)
                     .greaterThan(Uint64.TEN)
+                .build();
+    }
+
+    public QueryExpression<BooleanCont> selectBoolean() {
+        return factory
+                .querySubtree(InstanceIdentifier.create(BooleanCont.class))
+                .matching()
+                    .leaf(BooleanCont::getIsFoo)
+                    .valueEquals(true)
                 .build();
     }
 }
