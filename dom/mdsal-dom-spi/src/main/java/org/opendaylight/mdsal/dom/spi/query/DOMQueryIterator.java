@@ -108,13 +108,22 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
     }
 
     @SuppressFBWarnings(value = "NP_NONNULL_RETURN_VIOLATION", justification = "Ungrokked @Nullable")
+    // TODO: this is a huge method which could be restructured with hard tailcalls, alas we do not have those (yet?)
+    //       Any such refactor better have some benchmarks to show non-regression.
     private @Nullable Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> findNext() {
-        // We always start with non-empty frames, as we signal end of data when we reach the end. We know this never
-        // null, by Eclipse insists. We do not care (that much) and use a poll() here.
-        // TODO: this is a huge method which could be restructured with hard tailcalls, alas we do not have those (yet?)
-        //       Any such refactor better have some benchmarks to show non-regression.
+        // We always start with non-empty frames, as we signal end of data when we reach the end. 'currentPath' points
+        // to the next frame to process.
+
+        // We know this is never null and would have preferred to use pop(), but Eclipse insists. We do not care
+        // (that much) and use a poll() here.
         Frame current = frames.poll();
         while (current != null) {
+            // Whenever we reach here, 'currentPath' points to the 'current' entry, while 'frames' has current's parent
+            // on top. Every 'continue' site in this block is expected to maintain that invariant.
+            // Furthermore all 'return' sites are expected to leave 'frames' and 'currentPath' consistent, otherwise
+            // next invocation of this method would violate this invariant.
+
+            // Look what's next in the 'select' part of the lookup
             final PathArgument next = remainingSelect.poll();
             if (next == null) {
                 // We are matching this frame, and if we got here it must have a stashed iterator, as we deal with
@@ -193,10 +202,6 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
                 continue;
             }
 
-            // Push our state back, it's just a placeholder for 'currentSelect'. Current path points at us and so does
-            // the saved Frame.
-            currentPath.addLast(current.data.getIdentifier());
-
             // Now decide what sort of entry to push. For maps we want to start an iterator already, so it gets
             // picked up as a continuation.
             if (child instanceof MapNode) {
@@ -213,6 +218,7 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
                             frames.push(current);
                             currentPath.addLast(map.getIdentifier());
                             frames.push(new Frame(map, next));
+                            currentPath.addLast(target);
                             current = new Frame(entry, target);
                             continue;
                         }
@@ -231,10 +237,12 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
 
                 // We have a wildcard, expand it
                 frames.push(current);
+                currentPath.addLast(next);
                 current = new MapFrame(child, next, map.getValue().iterator());
             } else {
                 // Next step in iteration, deal with it
                 frames.push(current);
+                currentPath.addLast(child.getIdentifier());
                 current = new Frame(child, next);
             }
         }
