@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.query;
 
 import static java.util.Objects.requireNonNull;
 
+import java.math.BigDecimal;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.query.ComparableMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath;
@@ -67,6 +68,11 @@ final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> 
     @Override
     public ValueMatchBuilder<O, Boolean> leaf(final BooleanLeafReference<T> methodRef) {
         return defaultFor(methodRef);
+    }
+
+    @Override
+    public ComparableMatchBuilder<O, BigDecimal> leaf(final Decimal64LeafReference<T> methodRef) {
+        return comparableFor(methodRef);
     }
 
     @Override
