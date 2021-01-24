@@ -18,6 +18,7 @@ import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
+import org.opendaylight.yangtools.yang.binding.ScalarTypeObject;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -73,6 +74,17 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
     @NonNull ValueMatchBuilder<O, Boolean> leaf(BooleanLeafReference<T> methodRef);
 
     /**
+     * Match an {@code boolean} leaf's value.
+     *
+     * @param <S> A {@link ScalarTypeObject} encapsulating a boolean value
+     * @param methodRef method reference to the getter method
+     * @return A {@link ValueMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    <S extends ScalarTypeObject<Boolean>> @NonNull ValueMatchBuilder<O, S> leaf(
+        ScalarBooleanLeafReference<T, S> methodRef);
+
+    /**
      * Match an {@code decimal64} leaf's value.
      *
      * @param methodRef method reference to the getter method
@@ -80,6 +92,17 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      * @throws NullPointerException if methodRef is null
      */
     @NonNull ComparableMatchBuilder<O, BigDecimal> leaf(Decimal64LeafReference<T> methodRef);
+
+    /**
+     * Match an {@code decimal64} leaf's value.
+     *
+     * @param <S> A {@link ScalarTypeObject} encapsulating a boolean value
+     * @param methodRef method reference to the getter method
+     * @return A {@link ValueMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    <S extends ScalarTypeObject<BigDecimal>> @NonNull ComparableMatchBuilder<O, BigDecimal> leaf(
+        ScalarDecimal64LeafReference<T, S> methodRef);
 
     /**
      * Match an {@code empty} leaf's value.
@@ -284,6 +307,78 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
 
     @FunctionalInterface
     public interface TypeObjectLeafReference<P, T extends TypeObject> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarBooleanLeafReference<P, T extends ScalarTypeObject<Boolean>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarDecimal64LeafReference<P, T extends ScalarTypeObject<BigDecimal>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarEmptyLeafReference<P, T extends ScalarTypeObject<Empty>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarStringLeafReference<P, T extends ScalarTypeObject<String>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarInt8LeafReference<P, T extends ScalarTypeObject<Byte>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarInt16LeafReference<P, T extends ScalarTypeObject<Short>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarInt32LeafReference<P, T extends ScalarTypeObject<Integer>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarInt64LeafReference<P, T extends ScalarTypeObject<Long>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarUint8LeafReference<P, T extends ScalarTypeObject<Uint8>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarUint16LeafReference<P, T extends ScalarTypeObject<Uint16>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarUint32LeafReference<P, T extends ScalarTypeObject<Uint32>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarUint64LeafReference<P, T extends ScalarTypeObject<Uint64>> extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarIdentityLeafReference<P, I extends BaseIdentity, T extends ScalarTypeObject<I>>
+            extends LeafReference<P, T> {
+
+    }
+
+    @FunctionalInterface
+    public interface ScalarTypeObjectLeafReference<P, O extends TypeObject, T extends ScalarTypeObject<O>>
+            extends LeafReference<P, T> {
 
     }
 }

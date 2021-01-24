@@ -153,4 +153,14 @@ public class QueryBuilderExamples {
                     .valueEquals(BigDecimal.ONE)
                 .build();
     }
+
+    public QueryExpression<DecimalContainer> selectScalarDecimal64() {
+        return factory
+                .querySubtree(InstanceIdentifier.create(DecimalContainer.class))
+                .matching()
+                    .leaf(DecimalContainer::getDecimalLeaf)
+                    .valueEquals(BigDecimal.ONE)
+                .build();
+    }
+
 }
