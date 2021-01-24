@@ -18,6 +18,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
+@Deprecated
 public class DOMExceptionsTest {
     private static final String TEST_MESSAGE = "TestMessage";
     private static final String TEST_LISTS = "test-lists";

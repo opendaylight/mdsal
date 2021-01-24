@@ -26,6 +26,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableCo
  * Abstract test suite demonstrating various access patterns on how a {@link DOMDataTreeService}
  * can be used.
  */
+@Deprecated
 public abstract class AbstractDOMDataTreeServiceTestSuite {
     protected static final QNameModule TEST_MODULE =
             QNameModule.create(URI.create("urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
