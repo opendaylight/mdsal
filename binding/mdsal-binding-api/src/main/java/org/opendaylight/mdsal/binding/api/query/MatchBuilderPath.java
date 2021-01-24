@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.api.query;
 
 import com.google.common.annotations.Beta;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
@@ -70,6 +71,15 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      * @throws NullPointerException if methodRef is null
      */
     @NonNull ValueMatchBuilder<O, Boolean> leaf(BooleanLeafReference<T> methodRef);
+
+    /**
+     * Match an {@code decimal64} leaf's value.
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link ValueMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    @NonNull ComparableMatchBuilder<O, BigDecimal> leaf(Decimal64LeafReference<T> methodRef);
 
     /**
      * Match an {@code empty} leaf's value.
@@ -209,6 +219,11 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
 
     @FunctionalInterface
     public interface BooleanLeafReference<P> extends LeafReference<P, Boolean> {
+
+    }
+
+    @FunctionalInterface
+    public interface Decimal64LeafReference<P> extends LeafReference<P, BigDecimal> {
 
     }
 
