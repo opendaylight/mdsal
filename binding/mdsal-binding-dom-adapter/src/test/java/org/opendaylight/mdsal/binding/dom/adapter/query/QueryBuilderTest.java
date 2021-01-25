@@ -251,6 +251,13 @@ public class QueryBuilderTest {
 
         final List<? extends Item<@NonNull System>> items = execute(query).getItems();
         assertEquals(1, items.size());
+
+        List<Alarms> collect = items.stream()
+            .map(Item::object)
+            .filter(item -> (item.getAlarms() != null))
+            .flatMap(item -> item.getAlarms().values().stream())
+            .collect(Collectors.toList());
+        assertEquals(1, collect.size());
     }
 
 
