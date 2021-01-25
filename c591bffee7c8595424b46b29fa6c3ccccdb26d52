@@ -45,6 +45,121 @@
       "revId": "c591bffee7c8595424b46b29fa6c3ccccdb26d52",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "00735131_620a33e1",
+        "filename": "QueryBuilderUserGuide.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-01-25T19:46:02Z",
+      "side": 1,
+      "message": "ed\n\nalso add something the lines of:\nA QueryExpression is similar to an SQL query expression. While SQL operates on tables and rows, QueryExpression operates on a subtree.",
+      "range": {
+        "startLine": 12,
+        "startChar": 60,
+        "endLine": 12,
+        "endChar": 63
+      },
+      "revId": "c591bffee7c8595424b46b29fa6c3ccccdb26d52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23fd483a_e6de8579",
+        "filename": "QueryBuilderUserGuide.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-01-25T19:46:02Z",
+      "side": 1,
+      "message": "add something along the lines of:\nA QueryExpression is built up of three items, which specify *what* to search, looking for *something* matching a *predicate*. This is similar in structure to being an SQL query:\n\nFROM *what* SELECT *something* WHERE *predicate*",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 34
+      },
+      "revId": "c591bffee7c8595424b46b29fa6c3ccccdb26d52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fb5194e6_be452f15",
+        "filename": "QueryBuilderUserGuide.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-01-25T19:46:02Z",
+      "side": 1,
+      "message": "add something along the lines of:\nThis corresponds to the *what* part of a query. Just as with SQL tables, this path has to point to at most one item.",
+      "range": {
+        "startLine": 32,
+        "startChar": 68,
+        "endLine": 32,
+        "endChar": 69
+      },
+      "revId": "c591bffee7c8595424b46b29fa6c3ccccdb26d52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aae4506e_bf023ee1",
+        "filename": "QueryBuilderUserGuide.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-01-25T19:46:02Z",
+      "side": 1,
+      "message": "add something along the lines of:\nThis constitutes an intermediate step of specifying the *something* part of *what* needs be found.",
+      "range": {
+        "startLine": 37,
+        "startChar": 98,
+        "endLine": 37,
+        "endChar": 110
+      },
+      "revId": "c591bffee7c8595424b46b29fa6c3ccccdb26d52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee273d36_c32fe72c",
+        "filename": "QueryBuilderUserGuide.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-01-25T19:46:02Z",
+      "side": 1,
+      "message": "add something along the lines of:\nThis consitutes the *predicate* part of the query. Every candidate *something* has to match this pattern.",
+      "range": {
+        "startLine": 43,
+        "startChar": 98,
+        "endLine": 43,
+        "endChar": 105
+      },
+      "revId": "c591bffee7c8595424b46b29fa6c3ccccdb26d52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
     }
   ]
 }
