@@ -125,3 +125,4 @@ Table of Contents
    architecture
    conceptual-data-tree
    incremental-backup
+   binding-query-user-guide
