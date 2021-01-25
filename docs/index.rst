@@ -122,6 +122,7 @@ Table of Contents
 .. toctree::
    :maxdepth: 1
 
-   architecture
-   conceptual-data-tree
-   incremental-backup
+    architecture
+    conceptual-data-tree
+    incremental-backup
+    query-builder-user-guide
