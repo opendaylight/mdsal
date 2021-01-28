@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8d43f437_02ecf934",
+        "filename": "QueryBuilderUserGuide.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-01-28T01:30:40Z",
+      "side": 1,
+      "message": "Suggestion:\nMD-SAL component provides a binding query language to interact with the underlying data store. This API offers a type-safe mechanism for retrieving and processing data using parameterized queries.",
+      "revId": "42e393d0797e89ce310859a39203dfc8fc969ef0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "809257ec_932fca10",
+        "filename": "QueryBuilderUserGuide.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-01-28T01:30:40Z",
+      "side": 1,
+      "message": "It\u0027s not really clear exactly described here, is it possible to rephrase this one sentence? DOM stands for Document Object Model, right?",
+      "revId": "42e393d0797e89ce310859a39203dfc8fc969ef0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d09242f_1e2089fe",
+        "filename": "QueryBuilderUserGuide.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-01-28T01:30:40Z",
+      "side": 1,
+      "message": "Suggestion: \"... reduce the amount of data transferred between components\"\nQuestion: what are the components we talking about?",
+      "revId": "42e393d0797e89ce310859a39203dfc8fc969ef0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "356e28a1_58c2d7df",
+        "filename": "QueryBuilderUserGuide.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-01-28T01:30:40Z",
+      "side": 1,
+      "message": "I assume that its not separate OSGi component. Suggestion: \"This API is a part of the MD-SAL component and can be found inside the org.opendaylight.mdsal.binding.api.query package.\"",
+      "revId": "42e393d0797e89ce310859a39203dfc8fc969ef0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93bb397c_62ee4a3c",
+        "filename": "QueryBuilderUserGuide.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-01-28T01:30:40Z",
+      "side": 1,
+      "message": "Suggestion: building blocks and execution workflow?",
+      "revId": "42e393d0797e89ce310859a39203dfc8fc969ef0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
