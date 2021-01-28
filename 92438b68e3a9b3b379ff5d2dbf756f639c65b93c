@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dbdfc878_9621499d",
+        "filename": "docs/developer-guide.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-01-28T23:26:24Z",
+      "side": 1,
+      "message": "Binding Query Language/API?",
+      "revId": "92438b68e3a9b3b379ff5d2dbf756f639c65b93c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
