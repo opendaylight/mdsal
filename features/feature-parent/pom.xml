@@ -15,6 +15,7 @@
         <relativePath/>
     </parent>
 
+
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>feature-parent</artifactId>
     <version>7.0.6-SNAPSHOT</version>
