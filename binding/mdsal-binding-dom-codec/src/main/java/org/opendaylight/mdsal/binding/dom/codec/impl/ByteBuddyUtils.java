@@ -15,6 +15,7 @@ import net.bytebuddy.asm.AsmVisitorWrapper;
 import net.bytebuddy.description.field.FieldDescription;
 import net.bytebuddy.description.field.FieldDescription.ForLoadedField;
 import net.bytebuddy.description.field.FieldList;
+import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.method.MethodDescription.ForLoadedMethod;
 import net.bytebuddy.description.method.MethodList;
 import net.bytebuddy.description.type.TypeDescription;
@@ -29,10 +30,14 @@ import net.bytebuddy.jar.asm.ClassWriter;
 import net.bytebuddy.jar.asm.Label;
 import net.bytebuddy.jar.asm.MethodVisitor;
 import net.bytebuddy.jar.asm.Opcodes;
+import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.pool.TypePool;
 
 final class ByteBuddyUtils {
+    // Singleton instances ByteBuddy does not provide
+    static final ElementMatcher<MethodDescription> IS_CONSTRUCTOR = ElementMatchers.isConstructor();
+    static final ElementMatcher<MethodDescription> IS_DEFAULT_CONSTRUCTOR = ElementMatchers.isDefaultConstructor();
     static final StackManipulation THIS = MethodVariableAccess.loadThis();
 
     private ByteBuddyUtils() {
@@ -57,10 +62,6 @@ final class ByteBuddyUtils {
 
     static StackManipulation markLabel(final Label label) {
         return new Mark(label);
-    }
-
-    static StackManipulation loadThis() {
-        return THIS;
     }
 
     static StackManipulation getField(final Field field) {

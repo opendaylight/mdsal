@@ -8,6 +8,10 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkState;
+import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.IS_CONSTRUCTOR;
+import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.THIS;
+import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.getField;
+import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.putField;
 
 import com.google.common.base.Throwables;
 import java.lang.invoke.MethodHandle;
@@ -29,7 +33,6 @@ import net.bytebuddy.implementation.bytecode.member.MethodInvocation;
 import net.bytebuddy.implementation.bytecode.member.MethodReturn;
 import net.bytebuddy.implementation.bytecode.member.MethodVariableAccess;
 import net.bytebuddy.jar.asm.Opcodes;
-import net.bytebuddy.matcher.ElementMatchers;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.GeneratorResult;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -121,11 +124,11 @@ final class NotificationCodecContext<D extends DataObject & Notification>
         INSTANCE;
 
         private static final StackManipulation INSTANT_ARG = MethodVariableAccess.REFERENCE.loadFrom(3);
-        private static final StackManipulation LOAD_CTOR_ARGS;
+        private static final StackManipulation CTOR_ARGS;
 
         static {
             try {
-                LOAD_CTOR_ARGS = MethodVariableAccess.allArgumentsOf(new MethodDescription.ForLoadedConstructor(
+                CTOR_ARGS = MethodVariableAccess.allArgumentsOf(new MethodDescription.ForLoadedConstructor(
                     AugmentableCodecDataObject.class.getDeclaredConstructor(DataObjectCodecContext.class,
                         NormalizedNodeContainer.class)));
             } catch (NoSuchMethodException e) {
@@ -142,15 +145,15 @@ final class NotificationCodecContext<D extends DataObject & Notification>
         public ByteCodeAppender appender(final Target implementationTarget) {
             final TypeDescription instrumentedType = implementationTarget.getInstrumentedType();
             final InGenericShape superCtor = instrumentedType.getSuperClass().getDeclaredMethods()
-                    .filter(ElementMatchers.isConstructor()).getOnly();
+                    .filter(IS_CONSTRUCTOR).getOnly();
 
             return new ByteCodeAppender.Simple(
-                ByteBuddyUtils.THIS,
-                LOAD_CTOR_ARGS,
+                THIS,
+                CTOR_ARGS,
                 MethodInvocation.invoke(superCtor),
-                ByteBuddyUtils.THIS,
+                THIS,
                 INSTANT_ARG,
-                ByteBuddyUtils.putField(instrumentedType, INSTANT_FIELD),
+                putField(instrumentedType, INSTANT_FIELD),
                 MethodReturn.VOID);
         }
     }
@@ -166,8 +169,8 @@ final class NotificationCodecContext<D extends DataObject & Notification>
         @Override
         public ByteCodeAppender appender(final Target implementationTarget) {
             return new ByteCodeAppender.Simple(
-              ByteBuddyUtils.THIS,
-              ByteBuddyUtils.getField(implementationTarget.getInstrumentedType(), INSTANT_FIELD),
+              THIS,
+              getField(implementationTarget.getInstrumentedType(), INSTANT_FIELD),
               MethodReturn.REFERENCE);
         }
     }

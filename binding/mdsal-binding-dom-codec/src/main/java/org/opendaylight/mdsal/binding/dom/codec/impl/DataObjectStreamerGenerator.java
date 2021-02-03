@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
+import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.IS_DEFAULT_CONSTRUCTOR;
 import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.getField;
 import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.invokeMethod;
 import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.putField;
@@ -45,7 +46,6 @@ import net.bytebuddy.implementation.bytecode.member.MethodReturn;
 import net.bytebuddy.implementation.bytecode.member.MethodVariableAccess;
 import net.bytebuddy.jar.asm.MethodVisitor;
 import net.bytebuddy.jar.asm.Opcodes;
-import net.bytebuddy.matcher.ElementMatchers;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
@@ -461,7 +461,7 @@ final class DataObjectStreamerGenerator<T extends DataObjectStreamer<?>> impleme
                 TypeCreation.of(instrumentedType),
                 Duplication.SINGLE,
                 MethodInvocation.invoke(instrumentedType.getDeclaredMethods()
-                    .filter(ElementMatchers.isDefaultConstructor()).getOnly().asDefined()),
+                    .filter(IS_DEFAULT_CONSTRUCTOR).getOnly().asDefined()),
                 putField(instrumentedType, INSTANCE_FIELD))
                     .apply(methodVisitor, implementationContext);
             return new Size(operandStackSize.getMaximalSize(), instrumentedMethod.getStackSize());
