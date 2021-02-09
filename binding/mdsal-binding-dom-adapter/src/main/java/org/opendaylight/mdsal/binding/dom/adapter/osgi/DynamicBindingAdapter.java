@@ -13,7 +13,6 @@ import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.DataTreeService;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
@@ -23,7 +22,6 @@ import org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactory;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -60,8 +58,6 @@ public final class DynamicBindingAdapter {
     ComponentFactory actionProviderServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiDataBroker.FACTORY_NAME + ")")
     ComponentFactory dataBrokerFactory = null;
-    @Reference(target = "(component.factory=" + OSGiDataTreeService.FACTORY_NAME + ")")
-    ComponentFactory dataTreeServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiMountPointService.FACTORY_NAME + ")")
     ComponentFactory mountPointServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiNotificationService.FACTORY_NAME + ")")
@@ -78,8 +74,6 @@ public final class DynamicBindingAdapter {
         trackers = ImmutableList.of(
             new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker,
                     dataBrokerFactory),
-            new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, factory::createDataTreeService,
-                    dataTreeServiceFactory),
             new AdaptingTracker<>(ctx, DOMMountPointService.class, MountPointService.class,
                     factory::createMountPointService, mountPointServiceFactory),
             new AdaptingTracker<>(ctx, DOMNotificationService.class, NotificationService.class,

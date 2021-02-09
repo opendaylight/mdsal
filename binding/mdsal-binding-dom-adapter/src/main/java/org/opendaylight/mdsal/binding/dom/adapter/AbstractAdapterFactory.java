@@ -11,7 +11,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.DataTreeService;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
@@ -21,7 +20,6 @@ import org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactory;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -32,11 +30,6 @@ abstract class AbstractAdapterFactory implements AdapterFactory {
     @Override
     public final DataBroker createDataBroker(final DOMDataBroker domService) {
         return new BindingDOMDataBrokerAdapter(context(), domService);
-    }
-
-    @Override
-    public final DataTreeService createDataTreeService(final DOMDataTreeService domService) {
-        return new BindingDOMDataTreeServiceAdapter(context(), domService);
     }
 
     @Override

@@ -8,7 +8,6 @@
 module org.opendaylight.mdsal.dom.spi {
     exports org.opendaylight.mdsal.dom.spi;
     exports org.opendaylight.mdsal.dom.spi.query;
-    exports org.opendaylight.mdsal.dom.spi.shard;
     exports org.opendaylight.mdsal.dom.spi.store;
 
     requires transitive org.opendaylight.mdsal.dom.api;

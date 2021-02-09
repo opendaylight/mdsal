@@ -13,7 +13,6 @@ import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.DataTreeService;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
@@ -22,7 +21,6 @@ import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -46,15 +44,6 @@ public interface AdapterFactory {
      * @throws NullPointerException if {@code domService} is null
      */
     DataBroker createDataBroker(DOMDataBroker domService);
-
-    /**
-     * Create a {@link DataTreeService} backed by a {@link DOMDataTreeService}.
-     *
-     * @param domService Backing DOMDataTreeService
-     * @return A DataTreeService
-     * @throws NullPointerException if {@code domService} is null
-     */
-    DataTreeService createDataTreeService(DOMDataTreeService domService);
 
     /**
      * Create a {@link MountPointService} backed by a {@link DOMMountPointService}.
