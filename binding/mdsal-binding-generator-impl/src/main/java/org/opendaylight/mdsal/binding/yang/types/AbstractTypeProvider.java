@@ -92,7 +92,6 @@ import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
 import org.opendaylight.yangtools.yang.model.util.PathExpressionImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
-import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -95,6 +95,7 @@ import org.opendaylight.mdsal.binding.model.util.TypeConstants;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider;
+import org.opendaylight.mdsal.binding.yang.types.CompatUtils;
 import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
@@ -140,7 +141,6 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
-import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
