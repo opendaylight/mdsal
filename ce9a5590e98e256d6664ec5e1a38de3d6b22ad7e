@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4a3d85ff_b57cb40f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 15
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-02-11T19:43:51Z",
+      "side": 1,
+      "message": "From the developer\u0027s perspective, it would really hard to understand what this patch brings to the table. I propose to be more specific, as you are only adding changes for the binding query language documentation.",
+      "revId": "ce9a5590e98e256d6664ec5e1a38de3d6b22ad7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "103286ae_61315370",
+        "filename": "docs/index.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-02-11T19:43:51Z",
+      "side": 1,
+      "message": "I would suggest using a name that would be aligned with the content inside the file. If we\u0027re putting documentation about Query Binding Language, why is it called \u0027query builder\u0027?",
+      "revId": "ce9a5590e98e256d6664ec5e1a38de3d6b22ad7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
