@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9573a8b1_c517af07",
+        "filename": "docs/binding-query-user-guide.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 8908
+      },
+      "writtenOn": "2021-02-15T14:36:17Z",
+      "side": 1,
+      "message": "May be better like this? This constitutes an intermediate step of specifying *some* part of *what* needs to be found.",
+      "revId": "af37cb8acc19dabb6924264fa81e8d89c3e5403b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb38d8c3_1e1c5954",
+        "filename": "docs/binding-query-user-guide.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 8908
+      },
+      "writtenOn": "2021-02-15T14:36:17Z",
+      "side": 1,
+      "message": "pattern for the request",
+      "revId": "af37cb8acc19dabb6924264fa81e8d89c3e5403b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0c0b6b42_65bd32fe",
+        "filename": "docs/binding-query-user-guide.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 8908
+      },
+      "writtenOn": "2021-02-15T14:36:17Z",
+      "side": 1,
+      "message": "lets change *.class* to class",
+      "revId": "af37cb8acc19dabb6924264fa81e8d89c3e5403b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6966211_96d1b315",
+        "filename": "docs/binding-query-user-guide.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 8908
+      },
+      "writtenOn": "2021-02-15T14:36:17Z",
+      "side": 1,
+      "message": "lets change *.class* to class",
+      "revId": "af37cb8acc19dabb6924264fa81e8d89c3e5403b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
