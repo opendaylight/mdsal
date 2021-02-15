@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2156fc55_2ebf95a5",
+        "filename": "docs/query-binding-language-developer-guide.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-02-15T09:11:07Z",
+      "side": 1,
+      "message": "to process in code",
+      "revId": "1ae5d6155137521bf9e513fe047511a0edcb4d13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f7fe9c21_4d22f217",
+        "filename": "docs/query-binding-language-developer-guide.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-02-15T09:11:07Z",
+      "side": 1,
+      "message": "the Foo",
+      "revId": "1ae5d6155137521bf9e513fe047511a0edcb4d13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dfc341fc_9ea860bd",
+        "filename": "docs/query-binding-language-developer-guide.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-02-15T09:11:07Z",
+      "side": 1,
+      "message": "executeS",
+      "revId": "1ae5d6155137521bf9e513fe047511a0edcb4d13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "09382fc3_57bdc59a",
+        "filename": "docs/query-binding-language-developer-guide.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-02-15T09:11:07Z",
+      "side": 1,
+      "message": "- running the method \n- a query",
+      "revId": "1ae5d6155137521bf9e513fe047511a0edcb4d13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "801aed4e_f0c1af7e",
+        "filename": "docs/query-binding-language-developer-guide.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 8762
+      },
+      "writtenOn": "2021-02-15T09:11:07Z",
+      "side": 1,
+      "message": "For example,",
+      "revId": "1ae5d6155137521bf9e513fe047511a0edcb4d13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
