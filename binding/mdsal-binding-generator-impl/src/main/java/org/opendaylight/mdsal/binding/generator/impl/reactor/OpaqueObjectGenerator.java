@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) 2021 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.opendaylight.mdsal.binding.generator.impl.reactor;
+
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.model.util.BindingTypes;
+import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
+
+/**
+ * Common generator for {@code anydata} and {@code anyxml}.
+ */
+final class OpaqueObjectGenerator<T extends DataTreeEffectiveStatement<?>> extends AbstractExplicitGenerator<T> {
+    OpaqueObjectGenerator(final T statement, final AbstractCompositeGenerator<?> parent) {
+        super(statement, parent);
+    }
+
+    @Override
+    void pushToInference(final SchemaInferenceStack dataTree) {
+        dataTree.enterDataTree(statement().getIdentifier());
+    }
+
+    @Override
+    GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
+        final GeneratedTypeBuilder builder = builderFactory.newGeneratedTypeBuilder(typeName());
+        addImplementsChildOf(builder);
+        builder.addImplementsType(BindingTypes.opaqueObject(builder));
+        defaultImplementedInterace(builder);
+//      annotateDeprecatedIfNecessary(anyNode, anyxmlTypeBuilder);
+
+        final ModuleGenerator module = currentModule();
+        module.addQNameConstant(builder, statement().argument().getLocalName());
+
+        // FIXME: this should be a common block
+//        addCodegenInformation(newType, module, schemaNode);
+        builder.setModuleName(module.statement().argument().getLocalName());
+//        newType.setSchemaPath(schemaNode.getPath());
+
+        return builder.build();
+    }
+}
