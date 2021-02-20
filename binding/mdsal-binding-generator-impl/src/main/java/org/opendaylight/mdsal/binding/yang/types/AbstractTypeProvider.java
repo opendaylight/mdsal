@@ -86,6 +86,7 @@ import org.opendaylight.yangtools.yang.model.api.type.InstanceIdentifierTypeDefi
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.TypeDefinitions;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.ri.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.spi.ModuleDependencySort;
@@ -101,7 +102,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
     // Backwards compatibility: Union types used to be instantiated in YANG namespace, which is no longer
     // the case, as unions are emitted to their correct schema path.
-    private static final SchemaPath UNION_PATH = SchemaPath.create(true, UnionTypeDefinition.QNAME);
+    private static final SchemaPath UNION_PATH = SchemaPath.create(true, TypeDefinitions.UNION);
 
     /**
      * Contains the schema data red from YANG files.
