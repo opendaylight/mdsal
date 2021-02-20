@@ -776,6 +776,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         if (baseTypedef.getBaseType() != null) {
             returnType = provideGeneratedTOFromExtendedType(typedef, baseTypedef, basePackageName,
                 module.getName());
+
+
+
+
         } else if (baseTypedef instanceof UnionTypeDefinition) {
             final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForUnionTypeDef(
                 JavaTypeName.create(basePackageName, BindingMapping.getClassName(typedef.getQName())),
@@ -802,6 +806,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) baseTypedef;
             // TODO units for typedef enum
             returnType = provideTypeForEnum(enumTypeDef, typedefName, typedef);
+
+
+
+
         } else if (baseTypedef instanceof BitsTypeDefinition) {
             final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForBitsTypeDefinition(
                 JavaTypeName.create(basePackageName, BindingMapping.getClassName(typedef.getQName())),
@@ -810,6 +818,12 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
             makeSerializable(genTOBuilder);
             returnType = genTOBuilder.build();
+
+
+
+
+
+
         } else {
             final Type javaType = javaTypeForSchemaDefinitionType(baseTypedef, typedef);
             returnType = wrapJavaTypeIntoTO(basePackageName, typedef, javaType, module.getName());
