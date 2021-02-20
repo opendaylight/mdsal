@@ -26,6 +26,5 @@ public class Mdsal500Test {
 
         final MethodSignature signature = types.get(2).getMethodDefinitions().iterator().next();
         assertEquals("switch$", signature.getName());
-        assertEquals(3, types.size());
     }
 }
