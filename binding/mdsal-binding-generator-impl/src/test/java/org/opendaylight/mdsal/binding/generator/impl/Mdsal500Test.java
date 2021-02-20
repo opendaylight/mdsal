@@ -23,8 +23,8 @@ public class Mdsal500Test {
         final List<Type> types = DefaultBindingGenerator.generateFor(
                 YangParserTestUtils.parseYangResource("/mdsal500.yang"));
         assertNotNull(types);
+        assertEquals(3, types.size());
         final MethodSignature signature = ((GeneratedType) types.get(2)).getMethodDefinitions().iterator().next();
         assertEquals("switch$", signature.getName());
-        assertEquals(3, types.size());
     }
 }
