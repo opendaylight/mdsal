@@ -11,7 +11,7 @@ import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenera
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 
 module org.opendaylight.mdsal.binding.generator.impl {
-    // FIXME: 8.0.0: do not export this package (move public stuff to .di)
+    // FIXME: 8.0.0: rename to mdsal.binding.generator.ri, keep implementation hidden in ri.impl
     exports org.opendaylight.mdsal.binding.generator.impl;
     exports org.opendaylight.mdsal.binding.yang.types;
 
@@ -21,11 +21,15 @@ module org.opendaylight.mdsal.binding.generator.impl {
     requires transitive org.opendaylight.mdsal.binding.generator.api;
     requires transitive org.opendaylight.mdsal.binding.generator.util;
     requires transitive org.opendaylight.mdsal.binding.runtime.api;
+    requires com.google.common;
     requires org.opendaylight.mdsal.binding.spec.util;
+    requires org.opendaylight.yangtools.concepts;
+    requires org.opendaylight.yangtools.yang.common;
     requires org.opendaylight.yangtools.yang.model.api;
     requires org.opendaylight.yangtools.yang.model.spi;
     requires org.opendaylight.yangtools.yang.model.ri;
     requires org.opendaylight.yangtools.yang.model.util;
+    requires org.opendaylight.yangtools.odlext.model.api;
     requires org.opendaylight.yangtools.util;
     requires org.slf4j;
 
