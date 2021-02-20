@@ -21,6 +21,7 @@ module org.opendaylight.mdsal.binding.generator.impl {
     requires transitive org.opendaylight.mdsal.binding.generator.api;
     requires transitive org.opendaylight.mdsal.binding.generator.util;
     requires transitive org.opendaylight.mdsal.binding.runtime.api;
+    requires com.google.common;
     requires org.opendaylight.mdsal.binding.spec.util;
     requires org.opendaylight.yangtools.yang.model.api;
     requires org.opendaylight.yangtools.yang.model.spi;
@@ -35,4 +36,5 @@ module org.opendaylight.mdsal.binding.generator.impl {
     requires static javax.inject;
     requires static metainf.services;
     requires static org.osgi.service.component.annotations;
+    requires org.opendaylight.yangtools.yang.common;
 }
