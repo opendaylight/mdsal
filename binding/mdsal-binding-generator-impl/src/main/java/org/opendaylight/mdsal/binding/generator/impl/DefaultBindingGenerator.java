@@ -7,24 +7,27 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.binding.generator.impl.reactor.Generator;
+import org.opendaylight.mdsal.binding.generator.impl.reactor.GeneratorReactor;
+import org.opendaylight.mdsal.binding.generator.impl.reactor.ModuleGenerator;
+import org.opendaylight.mdsal.binding.generator.impl.reactor.TypeBuilderFactory;
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
 
 /**
  * Default implementation of {@link BindingGenerator}.
@@ -51,40 +54,40 @@ public final class DefaultBindingGenerator implements BindingGenerator {
     }
 
     /**
-     * Resolves generated types from <code>context</code> schema nodes only for modules specified
-     * in <code>modules</code>. Generated types are created for modules, groupings, types, containers, lists, choices,
-     * augments, rpcs, notification, identities.
+     * Resolves generated types from {@code context} schema nodes only for modules specified in {@code modules}.
+     * Generated types are created for modules, groupings, types, containers, lists, choices, augments, rpcs,
+     * notification, identities and actions.
      *
      * @param context schema context which contains data about all schema nodes saved in modules
      * @param modules set of modules for which schema nodes should be generated types
-     * @return list of types (usually <code>GeneratedType</code> or
-     *         <code>GeneratedTransferObject</code>) which:
+     * @return list of types (usually a {@link GeneratedType} or an {@link GeneratedTransferObject}), which:
      *         <ul>
-     *         <li>are generated from <code>context</code> schema nodes and</li>
-     *         <li>are also part of some of the module in <code>modules</code>
-     *         set.</li>
+     *           <li>are generated from {@code context} schema nodes and</li>
+     *           <li>are also part of some of the module in {@code modules} set.</li>
      *         </ul>
-     * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if arg <code>context</code> is null or</li>
-     *             <li>if arg <code>modules</code> is null</li>
-     *             </ul>
-     * @throws IllegalStateException
-     *             if <code>context</code> contain no modules
+     * @throws NullPointerException if any argument is {@code null}, or if {@code modules} contains a {@code null}
+     *                              element
      */
     @VisibleForTesting
     static @NonNull List<GeneratedType> generateFor(final EffectiveModelContext context,
             final Collection<? extends Module> modules) {
-        GeneratorUtils.checkContext(context);
-        checkArgument(modules != null, "Set of Modules cannot be NULL.");
+        final Set<ModuleEffectiveStatement> filter = modules.stream().map(Module::asEffectiveStatement)
+            .collect(Collectors.toUnmodifiableSet());
 
-        final Map<SchemaNode, JavaTypeName> renames = new IdentityHashMap<>();
-        for (;;) {
-            try {
-                return new CodegenTypeGenerator(context, renames).toTypes(modules);
-            } catch (RenameMappingException e) {
-                GeneratorUtils.rename(renames, e);
+        final List<GeneratedType> result = new ArrayList<>();
+        for (ModuleGenerator gen : new GeneratorReactor(context).execute(TypeBuilderFactory.codegen()).values()) {
+            if (filter.contains(gen.statement())) {
+                addTypes(result, gen);
             }
+        }
+
+        return result;
+    }
+
+    private static void addTypes(final List<GeneratedType> result, final Generator gen) {
+        gen.generatedType().ifPresent(result::add);
+        for (Generator child : gen) {
+            addTypes(result, child);
         }
     }
 }
