@@ -13,16 +13,13 @@ import static org.opendaylight.yangtools.util.concurrent.FluentFutures.immediate
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -47,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @param <T> Subtype of {@link DOMStoreWriteTransaction} which is used as subtransaction.
  */
 class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
-        extends AbstractDOMForwardedCompositeTransaction<T> implements DOMDataTreeWriteTransaction {
+        extends AbstractDOMForwardedTransaction<T> implements DOMDataTreeWriteTransaction {
     @SuppressWarnings("rawtypes")
     private static final AtomicReferenceFieldUpdater<DOMForwardedWriteTransaction,
         AbstractDOMForwardedTransactionFactory> IMPL_UPDATER = AtomicReferenceFieldUpdater.newUpdater(
@@ -74,9 +71,10 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
      */
     private volatile Future<?> commitFuture;
 
-    protected DOMForwardedWriteTransaction(final Object identifier, final Map<LogicalDatastoreType, T> backingTxs,
+    protected DOMForwardedWriteTransaction(final Object identifier,
+            final Function<LogicalDatastoreType, T> backingTxFactory,
             final AbstractDOMForwardedTransactionFactory<?> commitImpl) {
-        super(identifier, backingTxs);
+        super(identifier, backingTxFactory);
         this.commitImpl = requireNonNull(commitImpl, "commitImpl must not be null.");
     }
 
@@ -124,19 +122,18 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
         final AbstractDOMForwardedTransactionFactory<?> impl = IMPL_UPDATER.getAndSet(this, null);
         checkRunning(impl);
 
-        final Collection<T> txns = getSubtransactions();
-        final Collection<DOMStoreThreePhaseCommitCohort> cohorts = new ArrayList<>(txns.size());
-
         FluentFuture<? extends CommitInfo> ret;
-        try {
-            for (final DOMStoreWriteTransaction txn : txns) {
-                cohorts.add(txn.ready());
+        final var tx = getSubtransaction();
+        if (tx == null) {
+            ret = CommitInfo.emptyFluentFuture();
+        } else {
+            try {
+                ret = impl.commit(this, tx.ready());
+            } catch (RuntimeException e) {
+                ret = immediateFailedFluentFuture(TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER.apply(e));
             }
-
-            ret = impl.commit(this, cohorts);
-        } catch (RuntimeException e) {
-            ret = immediateFailedFluentFuture(TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER.apply(e));
         }
+
         FUTURE_UPDATER.lazySet(this, ret);
         return ret;
     }

@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.broker;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.Futures;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +26,7 @@ public class CommitCoordinationTaskTest {
     @Before
     public void setUp() throws Exception {
         final DOMDataTreeWriteTransaction tx = mock(DOMDataTreeWriteTransaction.class);
-        task = new CommitCoordinationTask(tx, ImmutableList.of(cohort), null);
+        task = new CommitCoordinationTask(tx, cohort, null);
         doReturn("test").when(tx).getIdentifier();
     }
 
