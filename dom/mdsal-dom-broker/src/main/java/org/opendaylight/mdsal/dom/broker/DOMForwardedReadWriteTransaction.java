@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.util.concurrent.FluentFuture;
-import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeQueryReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
@@ -41,9 +41,9 @@ final class DOMForwardedReadWriteTransaction extends DOMForwardedWriteTransactio
         implements DOMDataTreeQueryReadWriteTransaction {
 
     DOMForwardedReadWriteTransaction(final Object identifier,
-        final Map<LogicalDatastoreType, DOMStoreReadWriteTransaction> backingTxs,
+        final Function<LogicalDatastoreType, DOMStoreReadWriteTransaction> txSupplier,
             final AbstractDOMForwardedTransactionFactory<?> commitImpl) {
-        super(identifier, backingTxs, commitImpl);
+        super(identifier, txSupplier, commitImpl);
     }
 
     @Override

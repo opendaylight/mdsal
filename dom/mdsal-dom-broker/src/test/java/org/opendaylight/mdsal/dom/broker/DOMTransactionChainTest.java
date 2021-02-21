@@ -66,7 +66,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         assertNotNull(txChain);
 
         /**
-         * We alocate new read-write transaction and write /test.
+         * We allocate new read-write transaction and write /test.
          */
         final DOMDataTreeWriteTransaction firstTx = allocateAndWrite(txChain);
 
@@ -77,7 +77,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         final ListenableFuture<? extends CommitInfo> firstWriteTxFuture = firstTx.commit();
 
         /**
-         * We alocate chained transaction - read transaction.
+         * We allocate chained transaction - read transaction.
          */
         final DOMDataTreeReadTransaction secondReadTx = txChain.newReadOnlyTransaction();
 
@@ -91,7 +91,7 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         assertTestContainerExists(secondReadTx);
 
         /**
-         * We alocate next transaction, which is still based on first one, but
+         * We allocate next transaction, which is still based on first one, but
          * is read-write.
          *
          */
@@ -110,13 +110,13 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         final DOMDataTreeReadTransaction storeReadTx = domBroker.newReadOnlyTransaction();
 
         /**
-         * We verify transaction is commited to store, container should exists
+         * We verify transaction is committed to store, container should exist
          * in datastore.
          */
         assertTestContainerExists(storeReadTx);
 
         /**
-         * third transaction is sealed and commited.
+         * third transaction is sealed and committed.
          */
         assertCommitSuccessful(thirdDeleteTx.commit());
 
@@ -136,17 +136,17 @@ public class DOMTransactionChainTest extends AbstractDatastoreTest {
         assertNotNull(txChain);
 
         /**
-         * We alocate new read-write transaction and write /test
+         * We allocate new read-write transaction and write /test
          */
         allocateAndWrite(txChain);
 
         /**
-         * We alocate chained transaction - read transaction, note first one is
-         * still not commited to datastore, so this allocation should fail with
+         * We allocate chained transaction - read transaction, note first one is
+         * still not committed to datastore, so this allocation should fail with
          * IllegalStateException.
          */
         try {
-            txChain.newReadOnlyTransaction();
+            allocateAndWrite(txChain); // actual backing tx allocation happens on put
             fail("Allocation of secondReadTx should fail with IllegalStateException");
         } catch (final Exception e) {
             assertTrue(e instanceof IllegalStateException);
