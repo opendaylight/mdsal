@@ -8,21 +8,20 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionFactory;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
@@ -34,13 +33,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract composite transaction factory.
  *
- *<p>
- * Provides an convenience common implementation for composite DOM Transactions, where subtransaction is identified by
+ * <p>
+ * Provides a convenience common implementation for composite DOM Transactions, where subtransaction is identified by
  * {@link LogicalDatastoreType} type and implementation of subtransaction is provided by
  * {@link DOMStoreTransactionFactory}.
  *
  * <b>Note:</b>This class does not have thread-safe implementation of  {@link #close()}, implementation may allow
- *             accessing and allocating new transactions during closing this instance.
+ * accessing and allocating new transactions during closing this instance.
  *
  * @param <T> Type of {@link DOMStoreTransactionFactory} factory.
  */
@@ -62,6 +61,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     private volatile boolean closed;
 
     protected AbstractDOMForwardedTransactionFactory(final Map<LogicalDatastoreType, ? extends T> txFactories) {
+        checkState(!txFactories.isEmpty(), "txFactories should not be empty.");
         this.storeTxFactories = new EnumMap<>(txFactories);
     }
 
@@ -75,49 +75,46 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     /**
      * User-supplied implementation of {@link DOMDataTreeWriteTransaction#commit()} for transaction.
      *
-     *<p>
+     * <p>
      * Callback invoked when {@link DOMDataTreeWriteTransaction#commit()} is invoked on transaction created by this
      * factory.
      *
      * @param transaction Transaction on which {@link DOMDataTreeWriteTransaction#commit()} was invoked.
-     * @param cohorts Iteratable of cohorts for subtransactions associated with the transaction being committed.
+     * @param cohort      Subtransactions associated with the transaction being committed.
      * @return a FluentFuture. if commit coordination on cohorts finished successfully, a CommitInfo is returned from
-     *         the Future, On failure, the Future fails with a {@link TransactionCommitFailedException}.
+     *     the Future, On failure, the Future fails with a {@link TransactionCommitFailedException}.
      */
     protected abstract FluentFuture<? extends CommitInfo> commit(DOMDataTreeWriteTransaction transaction,
-            Collection<DOMStoreThreePhaseCommitCohort> cohorts);
+            DOMStoreThreePhaseCommitCohort cohort);
 
     /**
-     * Creates a new composite read-only transaction.
+     * Creates a new forwarded read-only transaction.
      *
      * <p>
-     * Creates a new composite read-only transaction backed by one transaction per factory in {@link #getTxFactories()}.
+     * Creates a new read-only transaction backed by single read-only sub-transaction.
+     * Target datastore is determined dynamically on first usage.
      *
      * <p>
-     * Subtransaction for reading is selected by supplied {@link LogicalDatastoreType} as parameter for
+     * Sub-transaction for reading is selected by supplied {@link LogicalDatastoreType} as parameter for
      * {@link DOMDataTreeReadTransaction#read(LogicalDatastoreType, YangInstanceIdentifier)}
      *
      * <p>
-     * Id of returned transaction is retrieved via {@link #newTransactionIdentifier()}.
+     * Identifier of returned transaction is retrieved via {@link #newTransactionIdentifier()}.
      *
      * @return New composite read-only transaction.
      */
     public final DOMDataTreeReadTransaction newReadOnlyTransaction() {
         checkNotClosed();
-
-        final var txns = new EnumMap<LogicalDatastoreType, DOMStoreReadTransaction>(LogicalDatastoreType.class);
-        for (var store : storeTxFactories.entrySet()) {
-            txns.put(store.getKey(), store.getValue().newReadOnlyTransaction());
-        }
-        return new DOMForwardedReadOnlyTransaction(newTransactionIdentifier(), txns);
+        return new DOMForwardedReadOnlyTransaction(newTransactionIdentifier(),
+            storeType -> requireTxFactory(storeType).newReadOnlyTransaction());
     }
 
     /**
-     * Creates a new composite write-only transaction
+     * Creates a new forwarded write-only transaction
      *
      * <p>
-     * Creates a new composite write-only transaction backed by one write-only transaction per factory in
-     * {@link #getTxFactories()}.
+     * Creates a new write-only transaction backed by single write-only sub-transaction.
+     * Target datastore is determined dynamically on first usage.
      *
      * <p>
      * Implementation of composite Write-only transaction is following:
@@ -135,39 +132,31 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      *     - backing subtransaction is selected by {@link LogicalDatastoreType},
      *       {@link DOMStoreWriteTransaction#delete(YangInstanceIdentifier)} is invoked on selected subtransaction.
      * <li>{@link DOMDataTreeWriteTransaction#commit()} - results in invoking {@link DOMStoreWriteTransaction#ready()},
-     *     gathering all resulting cohorts and then invoking finalized implementation callback
-     *     {@link #commit(DOMDataTreeWriteTransaction, Collection)} with transaction which was committed and gathered
-     *     results.</li>
+     *     gathering resulting cohort and then invoking finalized implementation callback
+     *     {@link #commit(DOMDataTreeWriteTransaction, DOMStoreThreePhaseCommitCohort)} with transaction which
+     *     was committed and gathered results.</li>
      * </ul>
      *
      * <p>
-     * Id of returned transaction is generated via {@link #newTransactionIdentifier()}.
+     * Identifier of returned transaction is generated via {@link #newTransactionIdentifier()}.
      *
      * @return New composite write-only transaction associated with this factory.
      */
     public final DOMDataTreeWriteTransaction newWriteOnlyTransaction() {
         checkNotClosed();
-
-        final var txns = new EnumMap<LogicalDatastoreType, DOMStoreWriteTransaction>(LogicalDatastoreType.class);
-        for (var store : storeTxFactories.entrySet()) {
-            txns.put(store.getKey(), store.getValue().newWriteOnlyTransaction());
-        }
-        return new DOMForwardedWriteTransaction<>(newTransactionIdentifier(), txns, this);
+        return new DOMForwardedWriteTransaction<>(newTransactionIdentifier(),
+            storeType -> requireTxFactory(storeType).newWriteOnlyTransaction(), this);
     }
 
     /**
-     * Creates a new composite read-write transaction.
+     * Creates a new forwarded read-write transaction.
      *
-     * @return New composite read-write transaction associated with this factory.
+     * @return New forwarded read-write transaction associated with this factory.
      */
     public final DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
         checkNotClosed();
-
-        final var txns = new EnumMap<LogicalDatastoreType, DOMStoreReadWriteTransaction>(LogicalDatastoreType.class);
-        for (var store : storeTxFactories.entrySet()) {
-            txns.put(store.getKey(), store.getValue().newReadWriteTransaction());
-        }
-        return new DOMForwardedReadWriteTransaction(newTransactionIdentifier(), txns, this);
+        return new DOMForwardedReadWriteTransaction(newTransactionIdentifier(),
+            storeType -> requireTxFactory(storeType).newReadWriteTransaction(), this);
     }
 
     /**
@@ -179,6 +168,14 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      */
     protected final Map<LogicalDatastoreType, T> getTxFactories() {
         return storeTxFactories;
+    }
+
+    private @NonNull T requireTxFactory(final LogicalDatastoreType type) {
+        final var factory = storeTxFactories.get(requireNonNull(type));
+        if (factory == null) {
+            throw new IllegalArgumentException("Unsupported datastore type " + type);
+        }
+        return factory;
     }
 
     /**
