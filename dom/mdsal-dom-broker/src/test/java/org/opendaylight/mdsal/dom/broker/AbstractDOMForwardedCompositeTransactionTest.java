@@ -12,30 +12,35 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doThrow;
+import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
+import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import com.google.common.collect.ImmutableMap;
-import java.util.Map;
+import java.util.function.Function;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AbstractDOMForwardedCompositeTransactionTest {
     @Mock
-    public DOMStoreTransaction failTx1;
+    public DOMStoreTransaction configTx;
     @Mock
-    public DOMStoreTransaction failTx2;
+    public DOMStoreTransaction operationalTx;
 
     @Test
     public void closeSubtransactionsTest() throws Exception {
-        doThrow(UnsupportedOperationException.class).when(failTx1).close();
-        doThrow(UnsupportedOperationException.class).when(failTx2).close();
+        doThrow(UnsupportedOperationException.class).when(configTx).close();
+        doThrow(UnsupportedOperationException.class).when(operationalTx).close();
 
-        final var domForwardedCompositeTransaction = new DOMForwardedCompositeTransactionTestImpl("testIdent",
-            ImmutableMap.of(LogicalDatastoreType.CONFIGURATION, failTx1, LogicalDatastoreType.OPERATIONAL, failTx2));
+        final var domForwardedCompositeTransaction = new DOMForwardedCompositeTransactionTestImpl("test",
+            type -> switch (type) {
+                case CONFIGURATION -> configTx;
+                case OPERATIONAL -> operationalTx;
+            });
 
         final var ex = assertThrows(IllegalStateException.class,
             domForwardedCompositeTransaction::closeSubtransactions);
@@ -43,11 +48,26 @@ public class AbstractDOMForwardedCompositeTransactionTest {
         assertThat(ex.getCause(), instanceOf(UnsupportedOperationException.class));
     }
 
+    @Test
+    public void datastoreMismatchOnGetSubtransaction() {
+        final var compositeTx1 = new DOMForwardedCompositeTransactionTestImpl("test",
+            type -> switch (type) {
+                case CONFIGURATION -> configTx;
+                case OPERATIONAL -> operationalTx;
+            });
+
+        assertEquals(configTx, compositeTx1.getSubtransaction(CONFIGURATION));
+        final var exception = assertThrows(TransactionDatastoreMismatchException.class,
+                () -> compositeTx1.getSubtransaction(OPERATIONAL));
+        assertEquals(CONFIGURATION, exception.expected());
+        assertEquals(OPERATIONAL, exception.encountered());
+    }
+
     private static final class DOMForwardedCompositeTransactionTestImpl
             extends AbstractDOMForwardedCompositeTransaction<DOMStoreTransaction> {
         DOMForwardedCompositeTransactionTestImpl(final Object identifier,
-                                                 final Map<LogicalDatastoreType, DOMStoreTransaction> backingTxs) {
-            super(identifier, backingTxs);
+                final Function<LogicalDatastoreType, DOMStoreTransaction> backingTxFactory) {
+            super(identifier, backingTxFactory);
         }
     }
 }

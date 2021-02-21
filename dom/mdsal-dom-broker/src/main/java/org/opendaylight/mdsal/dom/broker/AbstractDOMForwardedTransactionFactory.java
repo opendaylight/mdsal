@@ -68,12 +68,12 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      * factory.
      *
      * @param transaction Transaction on which {@link DOMDataTreeWriteTransaction#commit()} was invoked.
-     * @param cohorts Iteratable of cohorts for subtransactions associated with the transaction being committed.
+     * @param cohort Subtransactions associated with the transaction being committed.
      * @return a FluentFuture. if commit coordination on cohorts finished successfully, a CommitInfo is returned from
      *         the Future, On failure, the Future fails with a {@link TransactionCommitFailedException}.
      */
     protected abstract FluentFuture<? extends CommitInfo> commit(DOMDataTreeWriteTransaction transaction,
-            Collection<DOMStoreThreePhaseCommitCohort> cohorts);
+            DOMStoreThreePhaseCommitCohort cohort);
 
     /**
      * Creates a new composite read-only transaction.
