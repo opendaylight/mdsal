@@ -13,10 +13,12 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -28,19 +30,25 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DOMForwardedWriteTransactionTest {
     @Mock
-    private AbstractDOMForwardedTransactionFactory<?> abstractDOMForwardedTransactionFactory;
+    private AbstractDOMForwardedTransactionFactory<?> commitImpl;
 
     @Mock
     private DOMStoreWriteTransaction domStoreWriteTransaction;
+
+    private Function<LogicalDatastoreType, DOMStoreWriteTransaction> backingTxFactory;
+
+    @Before
+    public void setup() {
+        backingTxFactory = storeType -> domStoreWriteTransaction;
+    }
 
     @Test
     public void readyRuntimeExceptionAndCancel() throws InterruptedException {
         final RuntimeException thrown = new RuntimeException();
         doThrow(thrown).when(domStoreWriteTransaction).ready();
         final DOMForwardedWriteTransaction<DOMStoreWriteTransaction> domForwardedWriteTransaction =
-            new DOMForwardedWriteTransaction<>(new Object(),
-                Map.of(LogicalDatastoreType.OPERATIONAL, domStoreWriteTransaction),
-                abstractDOMForwardedTransactionFactory);
+                new DOMForwardedWriteTransaction<>(new Object(), backingTxFactory, commitImpl);
+        domForwardedWriteTransaction.getSubtransaction(CONFIGURATION); // ensure backingTx initialized
         ListenableFuture<?> submitFuture = domForwardedWriteTransaction.commit();
 
         ExecutionException ex = assertThrows(ExecutionException.class, submitFuture::get);
@@ -54,12 +62,10 @@ public class DOMForwardedWriteTransactionTest {
     public void submitRuntimeExceptionAndCancel() throws InterruptedException {
         RuntimeException thrown = new RuntimeException();
         doReturn(null).when(domStoreWriteTransaction).ready();
-        doThrow(thrown).when(abstractDOMForwardedTransactionFactory).commit(any(), any());
+        doThrow(thrown).when(commitImpl).commit(any(), any());
         DOMForwardedWriteTransaction<DOMStoreWriteTransaction> domForwardedWriteTransaction =
-                new DOMForwardedWriteTransaction<>(
-                        new Object(),
-                        Map.of(LogicalDatastoreType.OPERATIONAL, domStoreWriteTransaction),
-                        abstractDOMForwardedTransactionFactory);
+                new DOMForwardedWriteTransaction<>(new Object(), backingTxFactory, commitImpl);
+        domForwardedWriteTransaction.getSubtransaction(CONFIGURATION); // ensure backingTx initialized
         ListenableFuture<?> submitFuture = domForwardedWriteTransaction.commit();
         ExecutionException ex = assertThrows(ExecutionException.class, submitFuture::get);
         Throwable cause = ex.getCause();
