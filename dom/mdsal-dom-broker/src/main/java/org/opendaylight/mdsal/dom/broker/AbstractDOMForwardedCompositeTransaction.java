@@ -30,7 +30,7 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
  */
 abstract class AbstractDOMForwardedCompositeTransaction<K, T extends DOMStoreTransaction> implements
         DOMDataTreeTransaction {
-
+    // FIXME: resolve these lazily to a single datastore
     private final Map<K, T> backingTxs;
     private final Object identifier;
 
