@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -33,6 +34,8 @@ public interface DOMDataTreeReadOperations {
      *         <li>If the read of the data fails, the Future will fail with a {@link ReadFailedException} or
      *         an exception derived from ReadFailedException.</li>
      *         </ul>
+     * @throws NullPointerException if any argument is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     FluentFuture<Optional<NormalizedNode>> read(LogicalDatastoreType store, YangInstanceIdentifier path);
 
@@ -54,6 +57,8 @@ public interface DOMDataTreeReadOperations {
      *         <li>If checking for the data fails, the Future will fail with a {@link ReadFailedException} or
      *         an exception derived from ReadFailedException.</li>
      *         </ul>
+     * @throws NullPointerException if any argument is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     FluentFuture<Boolean> exists(LogicalDatastoreType store, YangInstanceIdentifier path);
 }
