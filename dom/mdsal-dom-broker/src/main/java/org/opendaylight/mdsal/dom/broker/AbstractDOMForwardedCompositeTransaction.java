@@ -13,13 +13,14 @@ import static java.util.Objects.requireNonNull;
 import java.util.Collection;
 import java.util.Map;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
 
 /**
  * Composite DOM Transaction backed by {@link DOMStoreTransaction}.
  *
- *<p>
+ * <p>
  * Abstract base for composite transaction, which provides access only to common
  * functionality as retrieval of subtransaction, close method and retrieval of
  * identifier.
@@ -28,8 +29,10 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
  */
 abstract class AbstractDOMForwardedCompositeTransaction<T extends DOMStoreTransaction>
         implements DOMDataTreeTransaction {
+
     private final Map<LogicalDatastoreType, T> backingTxs;
     private final Object identifier;
+    private LogicalDatastoreType currentDataStoreType;
 
     /**
      * Creates new composite Transactions.
@@ -46,26 +49,34 @@ abstract class AbstractDOMForwardedCompositeTransaction<T extends DOMStoreTransa
     }
 
     /**
-     * Returns subtransaction associated with supplied key.
+     * Returns subtransaction associated with supplied datastore type.
      *
-     * @param key is used to retrieve subtransaction object
+     * <p>
+     * The method allows usage of single datastore type per transaction instance;
+     * eligible datastore type is defined by first method access.
+     *
+     * @param datastoreType is used to identify subtransaction object
      * @return the subtransaction object
-     * @throws NullPointerException
-     *             if key is null
-     * @throws IllegalArgumentException
-     *             if no subtransaction is associated with key.
+     * @throws NullPointerException     if datastoreType is null
+     * @throws IllegalArgumentException if no ubtransaction is associated with datastoreType.
+     * @throws TransactionDatastoreMismatchException if datastoreType mismatches the one used at first access
      */
-    protected final T getSubtransaction(final LogicalDatastoreType key) {
-        requireNonNull(key, "key must not be null.");
+    protected final T getSubtransaction(final LogicalDatastoreType datastoreType) {
+        requireNonNull(datastoreType, "datastoreType must not be null.");
 
-        final T ret = backingTxs.get(key);
-        checkArgument(ret != null, "No subtransaction associated with %s", key);
+        if (currentDataStoreType == null) {
+            currentDataStoreType = datastoreType;
+        } else if (currentDataStoreType != datastoreType) {
+            throw new TransactionDatastoreMismatchException(currentDataStoreType, datastoreType);
+        }
+
+        final T ret = backingTxs.get(datastoreType);
+        checkArgument(ret != null, "No subtransaction associated with %s", datastoreType);
         return ret;
     }
 
     /**
      * Returns immutable Iterable of all subtransactions.
-     *
      */
     protected Collection<T> getSubtransactions() {
         return backingTxs.values();
