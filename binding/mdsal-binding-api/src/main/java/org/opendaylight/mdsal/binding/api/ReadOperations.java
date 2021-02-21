@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -38,8 +39,9 @@ public interface ReadOperations {
      *         <li>If the read of the data fails, the Future will fail with a {@link ReadFailedException} or
      *         an exception derived from ReadFailedException.</li>
      *         </ul>
-     * @throws NullPointerException if any of the arguments is null
      * @throws IllegalArgumentException if the path is {@link InstanceIdentifier#isWildcarded()}
+     * @throws NullPointerException if any of the arguments is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     <T extends DataObject> @NonNull FluentFuture<Optional<T>> read(@NonNull LogicalDatastoreType store,
             @NonNull InstanceIdentifier<T> path);
@@ -62,9 +64,10 @@ public interface ReadOperations {
      *         <li>If the check fails, the Future will fail with a {@link ReadFailedException} or an exception derived
      *             from ReadFailedException.</li>
      *         </ul>
-     * @throws NullPointerException if any of the arguments is null
      * @throws IllegalArgumentException if the path is {@link InstanceIdentifier#isWildcarded()} and the implementation
      *                                  does not support evaluating wildcards.
+     * @throws NullPointerException if any of the arguments is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     @NonNull FluentFuture<Boolean> exists(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path);
 }
