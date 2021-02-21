@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.api;
 import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -30,7 +31,8 @@ public interface WriteOperations {
      * @param path the data object path
      * @param data the data object to be written to the specified path
      * @throws IllegalStateException if the transaction has already been submitted
-     * @throws NullPointerException if any of the arguments is null
+     * @throws NullPointerException if any of the arguments is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
             @NonNull T data);
@@ -55,7 +57,8 @@ public interface WriteOperations {
      * @param path the data object path
      * @param data the data object to be written to the specified path
      * @throws IllegalStateException if the transaction has already been submitted
-     * @throws NullPointerException if any of the arguments is null
+     * @throws NullPointerException if any of the arguments is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     // TODO: can we come up with a better name?
     @Beta
@@ -73,7 +76,8 @@ public interface WriteOperations {
      * @param path the data object path
      * @param data the data object to be merged to the specified path
      * @throws IllegalStateException if the transaction has already been submitted
-     * @throws NullPointerException if any of the arguments is null
+     * @throws NullPointerException if any of the arguments is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
             @NonNull T data);
@@ -97,7 +101,8 @@ public interface WriteOperations {
      * @param path the data object path
      * @param data the data object to be merged to the specified path
      * @throws IllegalStateException if the transaction has already been submitted
-     * @throws NullPointerException if any of the arguments is null
+     * @throws NullPointerException if any of the arguments is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     // TODO: can we come up with a better name?
     @Beta
@@ -110,6 +115,8 @@ public interface WriteOperations {
      * @param store Logical data store which should be modified
      * @param path Data object path
      * @throws IllegalStateException if the transaction was committed or canceled.
+     * @throws NullPointerException if any of the arguments is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     void delete(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path);
 }
