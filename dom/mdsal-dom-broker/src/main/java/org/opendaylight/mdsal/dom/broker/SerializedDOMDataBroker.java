@@ -7,12 +7,11 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
 import org.opendaylight.mdsal.common.api.CommitInfo;
@@ -64,14 +63,14 @@ public class SerializedDOMDataBroker extends AbstractDOMDataBroker {
 
     @Override
     protected FluentFuture<? extends CommitInfo> commit(final DOMDataTreeWriteTransaction transaction,
-            final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
-        Preconditions.checkArgument(transaction != null, "Transaction must not be null.");
-        Preconditions.checkArgument(cohorts != null, "Cohorts must not be null.");
+            final DOMStoreThreePhaseCommitCohort cohort) {
+        checkArgument(transaction != null, "Transaction must not be null.");
+        requireNonNull(cohort, "Cohort must not be null.");
         LOG.debug("Tx: {} is submitted for execution.", transaction.getIdentifier());
 
         try {
             return FluentFuture.from(executor.submit(
-                new CommitCoordinationTask.WithTracker(transaction, cohorts, commitStatsTracker)));
+                new CommitCoordinationTask.WithTracker(transaction, cohort, commitStatsTracker)));
         } catch (RejectedExecutionException e) {
             LOG.error("The commit executor's queue is full - submit task was rejected. \n{}", executor, e);
             return FluentFutures.immediateFailedFluentFuture(new TransactionCommitFailedException(
