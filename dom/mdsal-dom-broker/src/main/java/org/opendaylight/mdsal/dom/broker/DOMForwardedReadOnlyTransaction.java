@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.util.concurrent.FluentFuture;
-import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeQueryReadTransaction;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
@@ -24,12 +24,11 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * {@link LogicalDatastoreType} type parameter in
  * {@link #read(LogicalDatastoreType, YangInstanceIdentifier)}.
  */
-class DOMForwardedReadOnlyTransaction extends AbstractDOMForwardedCompositeTransaction<DOMStoreReadTransaction>
+class DOMForwardedReadOnlyTransaction extends AbstractDOMForwardedTransaction<DOMStoreReadTransaction>
         implements DOMDataTreeQueryReadTransaction {
-
-    protected DOMForwardedReadOnlyTransaction(final Object identifier,
-            final Map<LogicalDatastoreType, DOMStoreReadTransaction> backingTxs) {
-        super(identifier, backingTxs);
+    DOMForwardedReadOnlyTransaction(final Object identifier,
+            final Function<LogicalDatastoreType, DOMStoreReadTransaction> txSupplier) {
+        super(identifier, txSupplier);
     }
 
     @Override

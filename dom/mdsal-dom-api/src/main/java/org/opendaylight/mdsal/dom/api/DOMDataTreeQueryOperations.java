@@ -33,8 +33,8 @@ public interface DOMDataTreeQueryOperations {
      *               an exception derived from ReadFailedException.
      *            </li>
      *         </ul>
-     * @throws NullPointerException if any of the arguments is null
-     * @throws IllegalArgumentException if the query is not supported
+     * @throws NullPointerException if any of the arguments is {@code null}
+     * @throws IllegalArgumentException if the {@code query} or {@code store} is not supported
      */
     FluentFuture<DOMQueryResult> execute(LogicalDatastoreType store, DOMQuery query);
 }

@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.dom.api;
 
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -23,7 +24,10 @@ public interface DOMDataTreeWriteOperations {
      * @param store the logical data store which should be modified
      * @param path the data object path
      * @param data the data object to be written to the specified path
+     * @throws IllegalArgumentException if {@code store} is not supported
      * @throws IllegalStateException if the transaction has already been submitted
+     * @throws NullPointerException if any argument is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     void put(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode data);
 
@@ -37,7 +41,10 @@ public interface DOMDataTreeWriteOperations {
      * @param store the logical data store which should be modified
      * @param path the data object path
      * @param data the data object to be merged to the specified path
+     * @throws IllegalArgumentException if {@code store} is not supported
      * @throws IllegalStateException if the transaction has already been submitted
+     * @throws NullPointerException if any argument is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     void merge(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode data);
 
@@ -46,7 +53,10 @@ public interface DOMDataTreeWriteOperations {
      *
      * @param store Logical data store which should be modified
      * @param path Data object path
+     * @throws IllegalArgumentException if {@code store} is not supported
      * @throws IllegalStateException if the transaction was committed or canceled.
+     * @throws NullPointerException if any argument is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     void delete(LogicalDatastoreType store, YangInstanceIdentifier path);
 }
