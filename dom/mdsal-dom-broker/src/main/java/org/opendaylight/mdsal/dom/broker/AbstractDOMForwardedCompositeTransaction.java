@@ -7,19 +7,24 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-import java.util.Collection;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
 
 /**
  * Composite DOM Transaction backed by {@link DOMStoreTransaction}.
  *
- *<p>
+ * <p>
  * Abstract base for composite transaction, which provides access only to common
  * functionality as retrieval of subtransaction, close method and retrieval of
  * identifier.
@@ -28,8 +33,21 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
  */
 abstract class AbstractDOMForwardedCompositeTransaction<T extends DOMStoreTransaction>
         implements DOMDataTreeTransaction {
-    private final Map<LogicalDatastoreType, T> backingTxs;
-    private final Object identifier;
+    private static final VarHandle BACKING_TX;
+
+    static {
+        try {
+            BACKING_TX = MethodHandles.lookup().findVarHandle(AbstractDOMForwardedCompositeTransaction.class,
+                "backingTx", Entry.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    private final @NonNull Object identifier;
+    private final Function<LogicalDatastoreType, T> backingTxFactory;
+
+    private volatile Entry<LogicalDatastoreType, T> backingTx;
 
     /**
      * Creates new composite Transactions.
@@ -40,35 +58,53 @@ abstract class AbstractDOMForwardedCompositeTransaction<T extends DOMStoreTransa
      *            Key,value map of backing transactions.
      */
     protected AbstractDOMForwardedCompositeTransaction(final Object identifier,
-            final Map<LogicalDatastoreType, T> backingTxs) {
+            final Function<LogicalDatastoreType, T> backingTxFactory) {
         this.identifier = requireNonNull(identifier, "Identifier should not be null");
-        this.backingTxs = requireNonNull(backingTxs, "Backing transactions should not be null");
+        this.backingTxFactory = requireNonNull(backingTxFactory, "Backing transactions should not be null");
     }
 
     /**
-     * Returns subtransaction associated with supplied key.
+     * Returns subtransaction associated with supplied datastore type.
      *
-     * @param key is used to retrieve subtransaction object
+     * <p>
+     * The method allows usage of single datastore type per transaction instance;
+     * eligible datastore type is defined by first method access.
+     *
+     * @param datastoreType is used to identify subtransaction object
      * @return the subtransaction object
-     * @throws NullPointerException
-     *             if key is null
-     * @throws IllegalArgumentException
-     *             if no subtransaction is associated with key.
+     * @throws NullPointerException     if datastoreType is null
+     * @throws IllegalArgumentException if no ubtransaction is associated with datastoreType.
+     * @throws TransactionDatastoreMismatchException if datastoreType mismatches the one used at first access
      */
-    protected final T getSubtransaction(final LogicalDatastoreType key) {
-        requireNonNull(key, "key must not be null.");
+    protected final T getSubtransaction(final LogicalDatastoreType datastoreType) {
+        final var ds = requireNonNull(datastoreType, "datastoreType must not be null.");
 
-        final T ret = backingTxs.get(key);
-        checkArgument(ret != null, "No subtransaction associated with %s", key);
-        return ret;
+        var entry = backingTx;
+        if (entry == null) {
+            final var tx = backingTxFactory.apply(datastoreType);
+            final var newEntry = Map.entry(ds, tx);
+            final var witness = (Entry<LogicalDatastoreType, T>) BACKING_TX.compareAndExchange(this, null, newEntry);
+            if (witness != null) {
+                tx.close();
+                entry = witness;
+            } else {
+                entry = witness;
+            }
+        }
+
+        final var encountered = entry.getKey();
+        if (encountered != datastoreType) {
+            throw new TransactionDatastoreMismatchException(ds, encountered);
+        }
+        return entry.getValue();
     }
 
     /**
      * Returns immutable Iterable of all subtransactions.
-     *
      */
-    protected Collection<T> getSubtransactions() {
-        return backingTxs.values();
+    protected @Nullable T getSubtransaction() {
+        final Entry<LogicalDatastoreType, T> entry;
+        return (entry = backingTx) == null ? null : entry.getValue();
     }
 
     @Override
@@ -82,23 +118,14 @@ abstract class AbstractDOMForwardedCompositeTransaction<T extends DOMStoreTransa
          * We share one exception for all failures, which are added
          * as supressedExceptions to it.
          */
-        IllegalStateException failure = null;
-        for (T subtransaction : backingTxs.values()) {
+        final var subtransaction = getSubtransaction();
+        if (subtransaction != null) {
             try {
                 subtransaction.close();
             } catch (Exception e) {
                 // If we did not allocate failure we allocate it
-                if (failure == null) {
-                    failure = new IllegalStateException("Uncaught exception occurred during closing transaction", e);
-                } else {
-                    // We update it with additional exceptions, which occurred during error.
-                    failure.addSuppressed(e);
-                }
+                throw new IllegalStateException("Uncaught exception occurred during closing transaction", e);
             }
-        }
-        // If we have failure, we throw it at after all attempts to close.
-        if (failure != null) {
-            throw failure;
         }
     }
 }
