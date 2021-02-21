@@ -13,6 +13,7 @@ import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -33,8 +34,9 @@ public interface QueryOperations {
      *               an exception derived from ReadFailedException.
      *            </li>
      *         </ul>
-     * @throws NullPointerException if any of the arguments is null
      * @throws IllegalArgumentException if the query is not supported
+     * @throws NullPointerException if any of the arguments is {@code null}
+     * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     <T extends @NonNull DataObject> @NonNull FluentFuture<QueryResult<T>> execute(@NonNull LogicalDatastoreType store,
         @NonNull QueryExpression<T> query);
