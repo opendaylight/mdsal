@@ -22,6 +22,6 @@ extlinks = {
 }
 
 data = ET.parse('pom.xml')
-mdsal_version = data.getroot().find('*//{http://maven.apache.org/POM/4.0.0}version').text
-version = mdsal_version
-release = mdsal_version
+project_version = data.getroot().find('./{http://maven.apache.org/POM/4.0.0}version').text
+version = project_version
+release = project_version
