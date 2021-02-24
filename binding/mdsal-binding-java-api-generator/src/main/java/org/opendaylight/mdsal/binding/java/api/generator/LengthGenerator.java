@@ -98,7 +98,7 @@ final class LengthGenerator {
         sb.append("private static void ").append(lengthCheckerName(member)).append("(final String value) {\n");
 
         if (!expressions.isEmpty()) {
-            sb.append("    final int length = value.length();\n");
+            sb.append("    final int length = value.codePointCount(0, value.length());\n");
 
             for (String exp : expressions) {
                 sb.append("    if (").append(exp).append(") {\n");
