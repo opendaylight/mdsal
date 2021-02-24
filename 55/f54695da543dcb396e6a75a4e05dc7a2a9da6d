@@ -1,0 +1,7 @@
+Verified+1: jenkins-releng
+Code-Review+2: Robert Varga <nite@hq.sk>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Wed, 24 Feb 2021 19:42:55 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/c/mdsal/+/95353
+Project: mdsal
+Branch: refs/heads/7.0.x
