@@ -175,6 +175,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     }
 
     NotificationCodecContext<?> getNotification(final Absolute notification) {
+        System.out.println("he");
         return getOrRethrow(notificationsByPath, notification);
     }
 
