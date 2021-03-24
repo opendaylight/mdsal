@@ -483,7 +483,7 @@ abstract class AbstractTypeGenerator {
      *             if module is null
      */
     private GeneratedTypeBuilder moduleToDataType(final ModuleContext context) {
-        final GeneratedTypeBuilder moduleDataTypeBuilder = moduleTypeBuilder(context, "Data");
+        final GeneratedTypeBuilder moduleDataTypeBuilder = moduleTypeBuilder(context, BindingMapping.DATA_ROOT_SUFFIX);
         final Module module = context.module();
         addImplementedInterfaceFromUses(module, moduleDataTypeBuilder);
         moduleDataTypeBuilder.addImplementsType(DATA_ROOT);
@@ -586,7 +586,7 @@ abstract class AbstractTypeGenerator {
             return;
         }
 
-        final GeneratedTypeBuilder interfaceBuilder = moduleTypeBuilder(context, "Service");
+        final GeneratedTypeBuilder interfaceBuilder = moduleTypeBuilder(context, BindingMapping.RPC_SERVICE_SUFFIX);
         interfaceBuilder.addImplementsType(RPC_SERVICE);
 
         addCodegenInformation(interfaceBuilder, module, "RPCs", rpcDefinitions);
@@ -650,7 +650,8 @@ abstract class AbstractTypeGenerator {
             return;
         }
 
-        final GeneratedTypeBuilder listenerInterface = moduleTypeBuilder(context, "Listener");
+        final GeneratedTypeBuilder listenerInterface = moduleTypeBuilder(context,
+            BindingMapping.NOTIFICATION_LISTENER_SUFFIX);
         listenerInterface.addImplementsType(NOTIFICATION_LISTENER);
 
         for (final NotificationDefinition notification : notifications) {
