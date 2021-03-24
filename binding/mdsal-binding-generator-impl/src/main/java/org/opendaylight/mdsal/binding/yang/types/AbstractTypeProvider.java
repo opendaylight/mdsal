@@ -1384,7 +1384,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             final Iterator<QName> path = node.getPath().getPathFromRoot().iterator();
             path.next();
             if (!path.hasNext()) {
-                parentName = BindingMapping.getClassName(parent.getName()) + "Data";
+                parentName = BindingMapping.getClassName(parent.getName()) + BindingMapping.DATA_ROOT_SUFFIX;
                 final String basePackageName = BindingMapping.getRootPackageName(parent.getQNameModule());
                 className = basePackageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
             } else {
@@ -1674,7 +1674,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             final Module parent = schemaContext.findModule(first.getModule()).orElse(null);
             final String basePackageName = BindingMapping.getRootPackageName(parent.getQNameModule());
             if (!path.hasNext()) {
-                parentName = BindingMapping.getClassName(parent.getName()) + "Data";
+                parentName = BindingMapping.getClassName(parent.getName()) + BindingMapping.DATA_ROOT_SUFFIX;
                 className = basePackageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
             } else {
                 final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
