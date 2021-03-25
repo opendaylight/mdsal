@@ -7,10 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import org.junit.Test;
@@ -20,14 +19,13 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorImplTest {
-
     @Test
     public void isisTotpologyStatementParserTest()  {
         List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
             BindingGeneratorImplTest.class,
             "/isis-topology/network-topology@2013-10-21.yang", "/isis-topology/isis-topology@2013-10-21.yang",
             "/isis-topology/l3-unicast-igp-topology@2013-10-21.yang"));
-        assertFalse(generateTypes.isEmpty());
+        assertEquals(9, generateTypes.size());
     }
 
     @Test
@@ -78,50 +76,45 @@ public class BindingGeneratorImplTest {
         Type childOfParamType = null;
         for (Type type : implements1) {
             if (type.getName().equals("ChildOf")) {
-                childOfParamType = ((ParameterizedType) type)
-                        .getActualTypeArguments()[0];
+                childOfParamType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 break;
             }
         }
         assertNotNull(childOfParamType);
-        assertTrue(childOfParamType.getName().equals("ChoiceTestData"));
+        assertEquals("ChoiceTestData", childOfParamType.getName());
 
         implements1 = myList.getImplements();
         childOfParamType = null;
         for (Type type : implements1) {
             if (type.getName().equals("ChildOf")) {
-                childOfParamType = ((ParameterizedType) type)
-                        .getActualTypeArguments()[0];
+                childOfParamType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 break;
             }
         }
         assertNotNull(childOfParamType);
-        assertTrue(childOfParamType.getName().equals("ChoiceTestData"));
+        assertEquals("ChoiceTestData", childOfParamType.getName());
 
         implements1 = myContainer2.getImplements();
         childOfParamType = null;
         for (Type type : implements1) {
             if (type.getName().equals("ChildOf")) {
-                childOfParamType = ((ParameterizedType) type)
-                        .getActualTypeArguments()[0];
+                childOfParamType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 break;
             }
         }
         assertNotNull(childOfParamType);
-        assertTrue(childOfParamType.getName().equals("Myrootcontainer"));
+        assertEquals("Myrootcontainer", childOfParamType.getName());
 
         implements1 = myList2.getImplements();
         childOfParamType = null;
         for (Type type : implements1) {
             if (type.getName().equals("ChildOf")) {
-                childOfParamType = ((ParameterizedType) type)
-                        .getActualTypeArguments()[0];
+                childOfParamType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 break;
             }
         }
         assertNotNull(childOfParamType);
-        assertTrue(childOfParamType.getName().equals("Myrootcontainer"));
-
+        assertEquals("Myrootcontainer", childOfParamType.getName());
     }
 
     @Test
@@ -156,5 +149,4 @@ public class BindingGeneratorImplTest {
         assertNull(childOf);
         assertNotNull(dataObject);
     }
-
 }
