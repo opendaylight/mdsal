@@ -16,14 +16,14 @@ import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.util.BaseYangTypes;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class ExtendedTypedefTest {
     @Test
     public void constantGenerationTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
             ExtendedTypedefTest.class,
             "/typedef-of-typedef/typedef_of_typedef.yang", "/ietf-models/ietf-inet-types.yang"));
 
@@ -31,7 +31,7 @@ public class ExtendedTypedefTest {
         GeneratedTransferObject extendedTypedefUnion = null;
         GeneratedTransferObject unionTypedef = null;
         GeneratedTransferObject typedefFromImport = null;
-        for (final Type type : genTypes) {
+        for (final GeneratedType type : genTypes) {
             if (type instanceof GeneratedTransferObject) {
                 if (type.getName().equals("SimpleTypedef4")) {
                     simpleTypedef4 = (GeneratedTransferObject) type;

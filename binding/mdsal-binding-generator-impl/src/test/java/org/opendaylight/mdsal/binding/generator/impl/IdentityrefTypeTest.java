@@ -50,14 +50,13 @@ public class IdentityrefTypeTest {
      */
     @Test
     public void testIdentityrefYangBuiltInType() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangFiles(testModels));
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangFiles(testModels));
 
         GeneratedType moduleGenType = null;
-        for (Type type : genTypes) {
+        for (GeneratedType type : genTypes) {
             if (type.getName().equals("ModuleIdentityrefData")) {
-                if (type instanceof GeneratedType) {
-                    moduleGenType = (GeneratedType) type;
-                }
+                moduleGenType = type;
             }
         }
 

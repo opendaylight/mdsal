@@ -23,19 +23,17 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BitAndUnionTOEnclosingTest {
 
-    private static List<Type> genTypes = null;
+    private static List<GeneratedType> genTypes = null;
     private static GeneratedType parentContainer = null;
 
     @BeforeClass
     public static void loadTestResources() {
         genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource("/bit_and_union.yang"));
 
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType) {
-                GeneratedType genType = (GeneratedType) type;
-                if (genType.getName().equals("ParentContainer") && !(genType instanceof GeneratedTransferObject)) {
-                    parentContainer = genType;
-                }
+        for (GeneratedType type : genTypes) {
+            GeneratedType genType = type;
+            if (genType.getName().equals("ParentContainer") && !(genType instanceof GeneratedTransferObject)) {
+                parentContainer = genType;
             }
         }
     }

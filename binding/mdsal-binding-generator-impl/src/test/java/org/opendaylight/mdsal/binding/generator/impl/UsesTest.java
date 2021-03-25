@@ -16,13 +16,12 @@ import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class UsesTest {
     @Test
     public void usesInGroupingDependenciesTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
                 "/uses-of-grouping/uses-of-grouping-dependencies.yang"));
         GeneratedType groupingU = null;
         GeneratedType groupingX = null;
@@ -32,9 +31,8 @@ public class UsesTest {
         int groupingXCounter = 0;
         int groupingVCounter = 0;
 
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-                GeneratedType genType = (GeneratedType) type;
+        for (GeneratedType genType : genTypes) {
+            if (!(genType instanceof GeneratedTransferObject)) {
                 if (genType.getName().equals("GroupingU")) {
                     groupingU = genType;
                     groupingUCounter++;
@@ -72,16 +70,15 @@ public class UsesTest {
 
     @Test
     public void usesInCaseTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
                 "/uses-of-grouping/uses-of-grouping-case.yang"));
 
         GeneratedType groupingCaseTest = null;
         int groupingCaseTestCounter = 0;
         GeneratedType caseC = null;
         int caseCCounter = 0;
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-                GeneratedType genType = (GeneratedType) type;
+        for (GeneratedType genType : genTypes) {
+            if (!(genType instanceof GeneratedTransferObject)) {
                 if (genType.getName().equals("C")) {
                     caseC = genType;
                     caseCCounter++;
@@ -116,7 +113,7 @@ public class UsesTest {
 
     @Test
     public void usesInContainerTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
                 "/uses-of-grouping/uses-of-grouping-container.yang"));
 
         int containerTestCount = 0;
@@ -124,9 +121,8 @@ public class UsesTest {
         GeneratedType containerTest = null;
         GeneratedType groupingContainerTest = null;
 
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-                GeneratedType genType = (GeneratedType) type;
+        for (GeneratedType genType : genTypes) {
+            if (!(genType instanceof GeneratedTransferObject)) {
                 if (genType.getName().equals("GroupingContainerTest")) {
                     groupingContainerTest = genType;
                     groupingContainerTestCounter++;
@@ -165,7 +161,7 @@ public class UsesTest {
 
     @Test
     public void usesInGroupingTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
                 "/uses-of-grouping/uses-of-grouping-grouping.yang"));
 
         int groupingTestCount = 0;
@@ -173,9 +169,8 @@ public class UsesTest {
         GeneratedType groupingTest = null;
         GeneratedType groupingGroupingTest = null;
 
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-                GeneratedType genType = (GeneratedType) type;
+        for (GeneratedType genType : genTypes) {
+            if (!(genType instanceof GeneratedTransferObject)) {
                 if (genType.getName().equals("GroupingGroupingTest")) {
                     groupingGroupingTest = genType;
                     groupingGroupingTestCounter++;
@@ -211,7 +206,7 @@ public class UsesTest {
 
     @Test
     public void usesInListTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
                 "/uses-of-grouping/uses-of-grouping-list.yang"));
 
         int listTestCounter = 0;
@@ -223,9 +218,8 @@ public class UsesTest {
         GeneratedType containerGroupingListTest = null;
         GeneratedType listGroupingListTest = null;
 
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-                GeneratedType genType = (GeneratedType) type;
+        for (GeneratedType genType : genTypes) {
+            if (!(genType instanceof GeneratedTransferObject)) {
                 if (genType.getName().equals("GroupingListTest")) {
                     groupingListTest = genType;
                     groupingListTestCounter++;
@@ -289,7 +283,7 @@ public class UsesTest {
 
     @Test
     public void usesInModulTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
                 "/uses-of-grouping/uses-of-grouping-modul.yang"));
 
         int groupingModulTestCounter = 0;
@@ -297,9 +291,8 @@ public class UsesTest {
         GeneratedType groupingModulTest = null;
         GeneratedType groupingUsesModulData = null;
 
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-                GeneratedType genType = (GeneratedType) type;
+        for (GeneratedType genType : genTypes) {
+            if (!(genType instanceof GeneratedTransferObject)) {
                 if (genType.getName().equals("GroupingModulTest")) {
                     groupingModulTest = genType;
                     groupingModulTestCounter++;
@@ -335,7 +328,7 @@ public class UsesTest {
 
     @Test
     public void usesInRpcTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
                 "/uses-of-grouping/uses-of-grouping-rpc.yang"));
 
         int rpcTestInputCounter = 0;
@@ -349,9 +342,8 @@ public class UsesTest {
         GeneratedType groupingRpcOutputTest = null;
         GeneratedType containerGroupingRpcInputTest = null;
 
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-                GeneratedType genType = (GeneratedType) type;
+        for (GeneratedType genType : genTypes) {
+            if (!(genType instanceof GeneratedTransferObject)) {
                 if (genType.getName().equals("RpcTestInput")) {
                     rpcTestInput = genType;
                     rpcTestInputCounter++;
@@ -425,17 +417,16 @@ public class UsesTest {
 
     @Test
     public void usesInAugmentTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-                "/uses-of-grouping/uses-of-grouping-augment.yang"));
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/uses-of-grouping/uses-of-grouping-augment.yang"));
 
         GeneratedType containerAugment1 = null;
         GeneratedType groupingAugmentTest = null;
         int containerAugment1Counter = 0;
         int groupingAugmentTestCounter = 0;
 
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-                GeneratedType genType = (GeneratedType) type;
+        for (GeneratedType genType : genTypes) {
+            if (!(genType instanceof GeneratedTransferObject)) {
                 if (genType.getName().equals("ContainerAugment1")) {
                     containerAugment1 = genType;
                     containerAugment1Counter++;
@@ -472,8 +463,8 @@ public class UsesTest {
 
     @Test
     public void usesInNotification() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-                "/uses-of-grouping/uses-of-grouping-notification.yang"));
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/uses-of-grouping/uses-of-grouping-notification.yang"));
 
         GeneratedType notificationTest = null;
         GeneratedType groupingNotificationTest = null;
@@ -482,9 +473,9 @@ public class UsesTest {
         int groupingNotificationTestCounter = 0;
         int containerGroupingNotificationTestCounter = 0;
 
-        for (Type type : genTypes) {
+        for (GeneratedType type : genTypes) {
             if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-                GeneratedType genType = (GeneratedType) type;
+                GeneratedType genType = type;
                 if (genType.getName().equals("NotificationTest")) {
                     notificationTest = genType;
                     notificationTestCounter++;

@@ -26,15 +26,13 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class Mdsal320Test {
     @Test
     public void mdsal320Test() {
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/mdsal320.yang"));
+        final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/mdsal320.yang"));
         assertNotNull(generateTypes);
         assertEquals(4, generateTypes.size());
 
-        final Type fooType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
+        final GeneratedType foo = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
             .equals("org.opendaylight.yang.gen.v1.urn.odl.yt320.norev.Foo")).findFirst().get();
-        assertTrue(fooType instanceof GeneratedType);
-        final GeneratedType foo = (GeneratedType) fooType;
 
         GeneratedTransferObject bar = null;
         GeneratedTransferObject bar1 = null;

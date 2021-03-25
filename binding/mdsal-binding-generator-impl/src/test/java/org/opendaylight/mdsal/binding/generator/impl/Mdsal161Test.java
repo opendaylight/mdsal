@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
@@ -24,8 +25,8 @@ public class Mdsal161Test {
      */
     @Test
     public void mdsal161Test() {
-        final Collection<Type> types = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/mdsal161.yang"));
+        final Collection<GeneratedType> types = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/mdsal161.yang"));
         assertNotNull(types);
         assertEquals(24, types.size());
 
@@ -37,8 +38,8 @@ public class Mdsal161Test {
         assertKeyStructure(types, "org.opendaylight.yang.gen.v1.mdsal161.norev.WithoutGrpTypedefKey");
     }
 
-    private static void assertKeyStructure(final Collection<Type> types, final String className) {
-        final Optional<Type> optType = types.stream().filter(t -> t.getFullyQualifiedName().equals(className))
+    private static void assertKeyStructure(final Collection<GeneratedType> types, final String className) {
+        final Optional<GeneratedType> optType = types.stream().filter(t -> t.getFullyQualifiedName().equals(className))
                 .findFirst();
         assertTrue("Type for " + className + " not found", optType.isPresent());
 

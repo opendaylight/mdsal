@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class BindingGeneratorImplTest {
     @Test
     public void isisTotpologyStatementParserTest()  {
-        List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+        List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
             BindingGeneratorImplTest.class,
             "/isis-topology/network-topology@2013-10-21.yang", "/isis-topology/isis-topology@2013-10-21.yang",
             "/isis-topology/l3-unicast-igp-topology@2013-10-21.yang"));
@@ -30,7 +30,7 @@ public class BindingGeneratorImplTest {
 
     @Test
     public void choiceNodeGenerationTest() {
-        List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
                 "/binding-generator-impl-test/choice-test.yang"));
 
         GeneratedType choiceTestData = null;
@@ -40,25 +40,25 @@ public class BindingGeneratorImplTest {
         GeneratedType myList2 = null;
         GeneratedType myContainer2 = null;
 
-        for (Type type : generateTypes) {
+        for (GeneratedType type : generateTypes) {
             switch (type.getName()) {
                 case "ChoiceTestData":
-                    choiceTestData = (GeneratedType) type;
+                    choiceTestData = type;
                     break;
                 case "Myrootcontainer":
-                    myRootContainer = (GeneratedType) type;
+                    myRootContainer = type;
                     break;
                 case "Mylist":
-                    myList = (GeneratedType) type;
+                    myList = type;
                     break;
                 case "Mylist2":
-                    myList2 = (GeneratedType) type;
+                    myList2 = type;
                     break;
                 case "Mycontainer":
-                    myContainer = (GeneratedType) type;
+                    myContainer = type;
                     break;
                 case "Mycontainer2":
-                    myContainer2 = (GeneratedType) type;
+                    myContainer2 = type;
                     break;
                 default:
                     // ignore
@@ -119,13 +119,13 @@ public class BindingGeneratorImplTest {
 
     @Test
     public void notificationGenerationTest() {
-        List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
                 "/binding-generator-impl-test/notification-test.yang"));
 
         GeneratedType foo = null;
-        for (Type type : generateTypes) {
+        for (GeneratedType type : generateTypes) {
             if (type.getName().equals("Foo")) {
-                foo = (GeneratedType) type;
+                foo = type;
                 break;
             }
         }

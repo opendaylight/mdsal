@@ -12,7 +12,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Collection;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 /**
@@ -22,7 +22,7 @@ public class Mdsal519Test {
 
     @Test
     public void testNestedLeafref2() {
-        final Collection<Type> types = DefaultBindingGenerator.generateFor(
+        final Collection<GeneratedType> types = DefaultBindingGenerator.generateFor(
             YangParserTestUtils.parseYangResource("/mdsal-519/specific-grouping-leafref.yang"));
         assertNotNull(types);
         assertEquals(4, types.size());

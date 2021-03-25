@@ -7,20 +7,18 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Bug4145Test {
     @Test
     public void bug4145Test() {
-        List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
             "/bug-4145/foo.yang"));
-        assertNotNull(generateTypes);
-        assertTrue(generateTypes.size() > 0);
+        assertEquals(0, generateTypes.size());
     }
 }

@@ -9,27 +9,24 @@ package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal335Test {
     @Test
     public void mdsal335Test() {
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
             "/mdsal335.yang"));
         assertNotNull(generateTypes);
         assertEquals(2, generateTypes.size());
 
-        final Type nozoneType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
-            .equals("org.opendaylight.yang.gen.v1.mdsal335.norev.Ipv4AddressNoZone")).findFirst().get();
-
-        assertTrue(nozoneType instanceof GeneratedType);
-        final GeneratedType gen = (GeneratedType) nozoneType;
+        final GeneratedType gen = generateTypes.stream()
+            .filter(type -> type.getFullyQualifiedName()
+                .equals("org.opendaylight.yang.gen.v1.mdsal335.norev.Ipv4AddressNoZone"))
+            .findFirst().orElseThrow();
         assertEquals(1, gen.getConstantDefinitions().size());
     }
 }

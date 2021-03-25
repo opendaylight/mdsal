@@ -15,19 +15,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal459Test {
     @Test
     public void testAugmentedAction() {
-        final List<Type> types = DefaultBindingGenerator.generateFor(
+        final List<GeneratedType> types = DefaultBindingGenerator.generateFor(
             YangParserTestUtils.parseYangResourceDirectory("/mdsal-459/"));
         assertNotNull(types);
         assertEquals(6, types.size());
 
-        final Set<JavaTypeName> typeNames = types.stream().map(Type::getIdentifier).collect(Collectors.toSet());
+        final Set<JavaTypeName> typeNames = types.stream().map(GeneratedType::getIdentifier)
+            .collect(Collectors.toSet());
         assertEquals(ImmutableSet.of(
             JavaTypeName.create("org.opendaylight.yang.gen.v1.base.norev", "Foo"),
             JavaTypeName.create("org.opendaylight.yang.gen.v1.base.norev", "BaseData"),

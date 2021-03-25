@@ -17,18 +17,18 @@ import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal269Test {
     @Test
     public void mdsal269Test() {
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/mdsal269.yang"));
+        final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/mdsal269.yang"));
         assertNotNull(generateTypes);
         assertEquals(4, generateTypes.size());
 
-        final Type mplsLabelType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
+        final GeneratedType mplsLabelType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
             .equals("org.opendaylight.yang.gen.v1.mdsal269.rev180130.MplsLabel")).findFirst().get();
 
         assertTrue(mplsLabelType instanceof GeneratedTransferObject);

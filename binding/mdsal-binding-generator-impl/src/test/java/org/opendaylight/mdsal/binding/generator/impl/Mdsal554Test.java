@@ -14,17 +14,16 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal554Test {
     @Test
     public void builderTemplateGenerateListenerMethodsTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(
             YangParserTestUtils.parseYangResource("/mdsal554.yang"));
         assertEquals(4, genTypes.size());
 
-        final List<MethodSignature> methods = ((GeneratedType) genTypes.get(3)).getMethodDefinitions();
+        final List<MethodSignature> methods = genTypes.get(3).getMethodDefinitions();
         assertEquals(3, methods.size());
         assertEquals(methods.get(0).getName(), "onDeprecatedNotification");
         assertEquals(methods.get(0).isDefault(), false);
