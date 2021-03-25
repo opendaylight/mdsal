@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
@@ -22,7 +23,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class GeneratedTypesStringTest {
     @Test
     public void constantGenerationTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
             "/simple-string-demo.yang"));
 
         boolean typedefStringFound = false;
@@ -32,7 +33,7 @@ public class GeneratedTypesStringTest {
         boolean noStringInReqExListFound = false;
         boolean constantRegExListValueOK = false;
         boolean constantRegExListTypeOneGeneric = false;
-        for (final Type type : genTypes) {
+        for (final GeneratedType type : genTypes) {
             if (type instanceof GeneratedTransferObject) {
                 final GeneratedTransferObject genTO = (GeneratedTransferObject) type;
 

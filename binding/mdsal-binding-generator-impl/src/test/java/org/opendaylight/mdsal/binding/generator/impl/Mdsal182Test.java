@@ -8,11 +8,10 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.Collection;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 /**
@@ -21,16 +20,15 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class Mdsal182Test {
     @Test
     public void testOneUpLeafref() {
-        final Collection<Type> types = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/mdsal-182/good-leafref.yang"));
+        final Collection<GeneratedType> types = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/mdsal-182/good-leafref.yang"));
         assertEquals(6, types.size());
     }
 
     @Test
     public void testTwoUpLeafref() {
-        final Collection<Type> types = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/mdsal-182/grouping-leafref.yang"));
-        assertNotNull(types);
+        final Collection<GeneratedType> types = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/mdsal-182/grouping-leafref.yang"));
         assertEquals(4, types.size());
     }
 }

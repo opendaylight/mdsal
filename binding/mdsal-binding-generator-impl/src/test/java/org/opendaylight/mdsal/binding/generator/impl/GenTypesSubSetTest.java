@@ -8,14 +8,13 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
@@ -29,20 +28,15 @@ public class GenTypesSubSetTest {
                 "/ietf-models/ietf-inet-types.yang", "/ietf-models/ietf-yang-types.yang");
         final Set<Module> toGenModules = new HashSet<>();
         for (final Module module : context.getModules()) {
-            if (module.getName().equals("abstract-topology")) {
-                toGenModules.add(module);
-            } else if (module.getName().equals("ietf-interfaces")) {
+            if (module.getName().equals("abstract-topology") || module.getName().equals("ietf-interfaces")) {
                 toGenModules.add(module);
             }
         }
 
         assertEquals("Set of to Generate Modules must contain 2 modules", 2, toGenModules.size());
-        assertNotNull("Schema Context is null", context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context, toGenModules);
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(context, toGenModules);
         assertNotNull("genTypes is null", genTypes);
-        assertFalse("genTypes is empty", genTypes.isEmpty());
-        assertEquals("Expected Generated Types from provided sub set of " + "modules should be 23!", 23,
-                genTypes.size());
+        assertEquals(23, genTypes.size());
     }
 
     @Test
@@ -55,19 +49,15 @@ public class GenTypesSubSetTest {
 
         final Set<Module> toGenModules = new HashSet<>();
         for (final Module module : context.getModules()) {
-            if (module.getName().equals("abstract-topology")) {
-                toGenModules.add(module);
-            } else if (module.getName().equals("ietf-interfaces")) {
-                toGenModules.add(module);
-            } else if (module.getName().equals("iana-if-type")) {
+            if (module.getName().equals("abstract-topology") || module.getName().equals("ietf-interfaces")
+                || module.getName().equals("iana-if-type")) {
                 toGenModules.add(module);
             }
         }
         assertEquals("Set of to Generate Modules must contain 3 modules", 3, toGenModules.size());
 
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context, toGenModules);
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(context, toGenModules);
         assertNotNull("genTypes is null", genTypes);
-        assertFalse("genTypes is empty", genTypes.isEmpty());
-        assertEquals("Expected Generated Types", 24, genTypes.size());
+        assertEquals(24, genTypes.size());
     }
 }

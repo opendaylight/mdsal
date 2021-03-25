@@ -69,7 +69,7 @@ public final class ModuleContext implements Mutable {
     private final Map<Type, WithStatus> typeToSchema = new HashMap<>();
     private final List<GeneratedTOBuilder> genTOs = new ArrayList<>();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
-    private final Map<SchemaPath, Type> typedefs = new HashMap<>();
+    private final Map<SchemaPath, GeneratedType> typedefs = new HashMap<>();
     private final Module module;
 
     // Conflict mapping
@@ -103,8 +103,8 @@ public final class ModuleContext implements Mutable {
         return ret;
     }
 
-    List<Type> getGeneratedTypes() {
-        List<Type> result = new ArrayList<>();
+    List<GeneratedType> getGeneratedTypes() {
+        List<GeneratedType> result = new ArrayList<>();
 
         if (moduleNode != null) {
             result.add(moduleNode.build());
@@ -113,7 +113,7 @@ public final class ModuleContext implements Mutable {
         for (GeneratedTOBuilder b : genTOs) {
             result.add(b.build());
         }
-        for (Type b : typedefs.values()) {
+        for (GeneratedType b : typedefs.values()) {
             if (b != null) {
                 result.add(b);
             }
@@ -195,7 +195,7 @@ public final class ModuleContext implements Mutable {
         groupings.put(def.getPath(), builder);
     }
 
-    public void addTypedefType(final TypeDefinition<?> def, final Type type) {
+    public void addTypedefType(final TypeDefinition<?> def, final GeneratedType type) {
         final JavaTypeName name = type.getIdentifier();
         final SchemaNode existingDef = nameMapping.putIfAbsent(name, def);
         if (existingDef != null) {
@@ -227,7 +227,7 @@ public final class ModuleContext implements Mutable {
         augmentations.add(builder);
     }
 
-    public Map<SchemaPath, Type> getTypedefs() {
+    public Map<SchemaPath, GeneratedType> getTypedefs() {
         return typedefs;
     }
 

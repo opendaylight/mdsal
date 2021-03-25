@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
@@ -21,9 +20,9 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class Bug6135Test {
     @Test
     public void bug6135Test() {
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/bug-6135/foo.yang"));
-        assertFalse(generateTypes.isEmpty());
+        final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/bug-6135/foo.yang"));
+        assertEquals(5, generateTypes.size());
 
         GeneratedType genInterface = null;
         for (final Type type : generateTypes) {

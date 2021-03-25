@@ -12,8 +12,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
@@ -32,11 +32,11 @@ final class CodegenTypeGenerator extends AbstractTypeGenerator {
         super(context, new CodegenTypeProvider(context, renames), renames);
     }
 
-    List<Type> toTypes(final Collection<? extends Module> modules) {
-        final List<Type> filteredGenTypes = new ArrayList<>();
+    List<GeneratedType> toTypes(final Collection<? extends Module> modules) {
+        final List<GeneratedType> filteredGenTypes = new ArrayList<>();
         for (final Module m : modules) {
             filteredGenTypes.addAll(moduleContext(m.getQNameModule()).getGeneratedTypes());
-            final Set<Type> additionalTypes = typeProvider().getAdditionalTypes().get(m);
+            final Set<GeneratedType> additionalTypes = typeProvider().getAdditionalTypes().get(m);
             if (additionalTypes != null) {
                 filteredGenTypes.addAll(additionalTypes);
             }

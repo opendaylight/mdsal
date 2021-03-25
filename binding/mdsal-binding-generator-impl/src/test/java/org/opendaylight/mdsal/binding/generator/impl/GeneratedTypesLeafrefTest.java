@@ -33,10 +33,9 @@ public class GeneratedTypesLeafrefTest {
             "/ietf-models/ietf-inet-types.yang", "/ietf-models/ietf-yang-types.yang");
         assertEquals(4, context.getModules().size());
 
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(context);
 
         assertEquals(54, genTypes.size());
-        assertNotNull(genTypes);
 
         GeneratedTransferObject gtIfcKey = null;
         GeneratedType gtIfc = null;

@@ -7,23 +7,20 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class ControllerTest {
     @Test
     public void controllerAugmentationTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
             ControllerTest.class,
             "/controller-models/controller-network.yang", "/controller-models/controller-openflow.yang",
             "/ietf-models/ietf-inet-types.yang"));
-
-        assertNotNull(genTypes);
-        assertTrue(!genTypes.isEmpty());
+        assertEquals(54, genTypes.size());
     }
 }

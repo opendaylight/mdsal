@@ -322,7 +322,7 @@ abstract class AbstractTypeGenerator {
 
         for (final TypeDefinition<?> typedef : SchemaNodeUtils.getAllTypeDefinitions(module)) {
             if (typedef != null) {
-                final Type type = typeProvider.generatedTypeForExtendedDefinitionType(typedef,  typedef);
+                final GeneratedType type = typeProvider.generatedTypeForExtendedDefinitionType(typedef,  typedef);
                 if (type != null) {
                     context.addTypedefType(typedef, type);
                     context.addTypeToSchema(type,typedef);

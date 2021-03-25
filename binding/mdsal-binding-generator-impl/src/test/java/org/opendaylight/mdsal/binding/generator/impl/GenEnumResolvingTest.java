@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class GenEnumResolvingTest {
     @Test
     public void testLeafEnumResolving() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
             GenEnumResolvingTest.class,
             "/enum-test-models/ietf-interfaces@2012-11-15.yang", "/ietf-models/iana-if-type.yang"));
         assertTrue(genTypes != null);
@@ -30,11 +30,9 @@ public class GenEnumResolvingTest {
         assertEquals("Expected count of all Generated Types", 6, genTypes.size());
 
         GeneratedType genInterface = null;
-        for (final Type type : genTypes) {
-            if (type instanceof GeneratedType) {
-                if (type.getName().equals("Interface")) {
-                    genInterface = (GeneratedType) type;
-                }
+        for (final GeneratedType type : genTypes) {
+            if (type.getName().equals("Interface")) {
+                genInterface = type;
             }
         }
         assertNotNull("Generated Type Interface is not present in list of Generated Types", genInterface);
@@ -82,7 +80,7 @@ public class GenEnumResolvingTest {
 
     @Test
     public void testTypedefEnumResolving() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
             "/ietf-models/iana-if-type.yang"));
         assertTrue(genTypes != null);
         assertEquals(1, genTypes.size());
@@ -96,7 +94,7 @@ public class GenEnumResolvingTest {
 
     @Test
     public void testLeafrefEnumResolving() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
             GenEnumResolvingTest.class,
             "/enum-test-models/abstract-topology@2013-02-08.yang", "/enum-test-models/ietf-interfaces@2012-11-15.yang",
             "/ietf-models/iana-if-type.yang"));
@@ -104,13 +102,10 @@ public class GenEnumResolvingTest {
         assertTrue(!genTypes.isEmpty());
 
         GeneratedType genInterface = null;
-        for (final Type type : genTypes) {
-            if (type instanceof GeneratedType) {
-                if (type.getPackageName().equals(
-                        "org.opendaylight.yang.gen.v1.urn.model._abstract.topology.rev130208.topology.interfaces")
-                        && type.getName().equals("Interface")) {
-                    genInterface = (GeneratedType) type;
-                }
+        for (final GeneratedType type : genTypes) {
+            if (type.getName().equals("Interface") && type.getPackageName().equals(
+                "org.opendaylight.yang.gen.v1.urn.model._abstract.topology.rev130208.topology.interfaces")) {
+                genInterface = type;
             }
         }
         assertNotNull("Generated Type Interface is not present in list of Generated Types", genInterface);

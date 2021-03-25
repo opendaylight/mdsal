@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.generator.api;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 
@@ -19,29 +19,29 @@ import org.opendaylight.yangtools.yang.model.api.Module;
  */
 public interface BindingGenerator {
     /**
-     * Generate Types from whole Schema Context. The method will return List of All Generated Types that could be
-     * Generated from EffectiveModelContext.
+     * Generate Types from an entire {@link EffectiveModelContext}. The method will return list of all
+     * {@link GeneratedType}s that could be Generated from EffectiveModelContext.
      *
      * @param context EffectiveModelContext
      * @return List of Generated Types
      *
      * @see EffectiveModelContext
      */
-    default @NonNull List<Type> generateTypes(final EffectiveModelContext context) {
+    default @NonNull List<GeneratedType> generateTypes(final EffectiveModelContext context) {
         return generateTypes(context, context.getModules());
     }
 
     /**
-     * Generate Types from Schema Context restricted by sub set of specified Modules. The Schema Context MUST contain
-     * all of the sub modules otherwise the there is no guarantee that result List of Generated Types will contain
-     * correct Generated Types.
+     * Generate Types from an {@link EffectiveModelContext} restricted by sub set of specified Modules. The effective
+     * model context <em>must</em> contain all of the sub modules otherwise the there is no guarantee that result
+     * List of Generated Types will contain correct Generated Types.
      *
-     * @param context Schema Context
-     * @param modules Sub Set of Modules
-     * @return List of Generated Types restricted by sub set of Modules
+     * @param context EffectiveModelContext
+     * @param modules Subset of Modules
+     * @return List of Generated Types restricted by subset of Modules
      *
      * @see Module
      * @see EffectiveModelContext
      */
-    @NonNull List<Type> generateTypes(EffectiveModelContext context, Collection<? extends Module> modules);
+    @NonNull List<GeneratedType> generateTypes(EffectiveModelContext context, Collection<? extends Module> modules);
 }

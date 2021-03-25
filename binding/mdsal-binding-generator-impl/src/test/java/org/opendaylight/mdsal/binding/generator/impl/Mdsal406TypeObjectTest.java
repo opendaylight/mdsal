@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.TYPE_OBJECT;
 
 import java.util.List;
@@ -39,15 +38,14 @@ public class Mdsal406TypeObjectTest {
 
     @Test
     public void typeObjectTest() {
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(CONTEXT);
+        final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(CONTEXT);
         assertNotNull(generateTypes);
 
-        final Type typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
+        final GeneratedType typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
             .equals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.MyBinary")).findFirst().get();
 
-        assertTrue(typedefType instanceof GeneratedType);
-        assertNotNull(((GeneratedType)  typedefType).getImplements());
-        Type objectType = ((GeneratedType)  typedefType).getImplements().stream()
+        assertNotNull(typedefType.getImplements());
+        Type objectType = typedefType.getImplements().stream()
                 .filter(type -> type.getFullyQualifiedName()
                 .equals("org.opendaylight.yangtools.yang.binding.ScalarTypeObject")).findAny().get();
         assertEquals(BindingTypes.scalarTypeObject(Types.BYTE_ARRAY), objectType);
@@ -55,15 +53,14 @@ public class Mdsal406TypeObjectTest {
 
     @Test
     public void typeObjectForBitsTypedefTest() {
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(CONTEXT);
+        final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(CONTEXT);
         assertNotNull(generateTypes);
 
-        final Type typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
+        final GeneratedType typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
                 .equals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.MyBits")).findFirst().get();
 
-        assertTrue(typedefType instanceof GeneratedType);
-        assertNotNull(((GeneratedType)  typedefType).getImplements());
-        Type objectType = ((GeneratedType)  typedefType).getImplements().stream()
+        assertNotNull(typedefType.getImplements());
+        Type objectType = typedefType.getImplements().stream()
                 .filter(type -> type.getFullyQualifiedName()
                         .equals("org.opendaylight.yangtools.yang.binding.TypeObject")).findAny().get();
         assertEquals(TYPE_OBJECT, objectType);
@@ -71,15 +68,14 @@ public class Mdsal406TypeObjectTest {
 
     @Test
     public void typeObjectForUnionTypedefTest() {
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(CONTEXT);
+        final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(CONTEXT);
         assertNotNull(generateTypes);
 
-        final Type typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
+        final GeneratedType typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
                 .equals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.MyUnion")).findFirst().get();
 
-        assertTrue(typedefType instanceof GeneratedType);
-        assertNotNull(((GeneratedType)  typedefType).getImplements());
-        Type objectType = ((GeneratedType)  typedefType).getImplements().stream()
+        assertNotNull(typedefType.getImplements());
+        Type objectType = typedefType.getImplements().stream()
                 .filter(type -> type.getFullyQualifiedName()
                         .equals("org.opendaylight.yangtools.yang.binding.TypeObject")).findAny().get();
         assertEquals(TYPE_OBJECT, objectType);

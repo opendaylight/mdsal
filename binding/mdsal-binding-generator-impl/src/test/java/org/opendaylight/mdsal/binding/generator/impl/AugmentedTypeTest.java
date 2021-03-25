@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -34,10 +35,8 @@ public class AugmentedTypeTest {
             "/augment-test-models/ietf-interfaces@2012-11-15.yang");
         assertNotNull("Schema Context is null", context);
 
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
-
-        assertNotNull("genTypes is null", genTypes);
-        assertFalse("genTypes is empty", genTypes.isEmpty());
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(context);
+        assertEquals(28, genTypes.size());
 
         GeneratedTransferObject gtInterfaceKey = null;
         GeneratedType gtInterface = null;

@@ -19,13 +19,12 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.Parameter;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesBitsTest {
     @Test
     public void testGeneretedTypesBitsTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
             "/simple-bits-demo.yang"));
         assertTrue(genTypes != null);
 
@@ -44,9 +43,9 @@ public class GeneratedTypesBitsTest {
         boolean setByteLeafMethodFound = false;
         int setByteLeafMethodParamNum = 0;
 
-        for (final Type type : genTypes) {
-            if (type instanceof GeneratedTransferObject) { // searching for
-                                                           // ByteType
+        for (final GeneratedType type : genTypes) {
+            if (type instanceof GeneratedTransferObject) {
+                // searching for ByteType
                 final GeneratedTransferObject genTO = (GeneratedTransferObject) type;
                 if (genTO.getName().equals("ByteType")) {
                     byteTypeFound = true;
@@ -63,9 +62,9 @@ public class GeneratedTypesBitsTest {
                     hashPropertiesNum = genProperties.size();
 
                 }
-            } else if (type instanceof GeneratedType) {
+            } else {
                 // searching for interface LeafParameterContainer
-                final GeneratedType genType = (GeneratedType) type;
+                final GeneratedType genType = type;
                 if (genType.getName().equals("LeafParentContainer")) {
                     leafParentFound = true;
                     // check of methods
@@ -83,7 +82,6 @@ public class GeneratedTypesBitsTest {
                                 List<Parameter> parameters = methodSignature.getParameters();
                                 setByteLeafMethodParamNum = parameters.size();
                             }
-
                         }
                     }
                 }
