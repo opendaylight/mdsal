@@ -32,7 +32,7 @@ public class UnionTypeDefTest {
     @Test
     public void unionTypedefLeafrefTest() {
         final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(
-            YangParserTestUtils.parseYangResource("/leafref_typedef_union/bug8449.yang"));
+            YangParserTestUtils.parseYangResource("/bug8449.yang"));
         assertNotNull(generateTypes);
         for (final GeneratedType type : generateTypes) {
             if (type.getName().equals("Cont")) {
