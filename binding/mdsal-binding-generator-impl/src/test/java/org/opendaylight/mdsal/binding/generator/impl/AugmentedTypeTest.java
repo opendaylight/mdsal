@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -17,13 +18,11 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AugmentedTypeTest {
-
     @Test
     public void augmentedAbstractTopologyTest() {
         final EffectiveModelContext context = YangParserTestUtils.parseYangResources(AugmentedTypeTest.class,
@@ -34,10 +33,8 @@ public class AugmentedTypeTest {
             "/augment-test-models/ietf-interfaces@2012-11-15.yang");
         assertNotNull("Schema Context is null", context);
 
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
-
-        assertNotNull("genTypes is null", genTypes);
-        assertFalse("genTypes is empty", genTypes.isEmpty());
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(context);
+        assertEquals(28, genTypes.size());
 
         GeneratedTransferObject gtInterfaceKey = null;
         GeneratedType gtInterface = null;
@@ -45,7 +42,7 @@ public class AugmentedTypeTest {
         GeneratedTransferObject gtTunnelKey = null;
         GeneratedType gtNetworkLink2 = null;
 
-        for (final Type type : genTypes) {
+        for (final GeneratedType type : genTypes) {
             if (!type.getPackageName().contains("augment._abstract.topology")) {
                 continue;
             }
@@ -53,13 +50,13 @@ public class AugmentedTypeTest {
             if (type.getName().equals("InterfaceKey")) {
                 gtInterfaceKey = (GeneratedTransferObject) type;
             } else if (type.getName().equals("Interface")) {
-                gtInterface = (GeneratedType) type;
+                gtInterface = type;
             } else if (type.getName().equals("Tunnel")) {
-                gtTunnel = (GeneratedType) type;
+                gtTunnel = type;
             } else if (type.getName().equals("TunnelKey")) {
                 gtTunnelKey = (GeneratedTransferObject) type;
             } else if (type.getName().equals("NetworkLink2")) {
-                gtNetworkLink2 = (GeneratedType) type;
+                gtNetworkLink2 = type;
             }
         }
 
@@ -159,15 +156,4 @@ public class AugmentedTypeTest {
         assertTrue("getInterface method return type name must be String", getIfcMethod.getReturnType().getName()
                 .equals("String"));
     }
-
-    @Test
-    public void augmentedNetworkLinkTest() {
-
-    }
-
-    @Test
-    public void augmentedTopologyTunnelsTest() {
-
-    }
-
 }

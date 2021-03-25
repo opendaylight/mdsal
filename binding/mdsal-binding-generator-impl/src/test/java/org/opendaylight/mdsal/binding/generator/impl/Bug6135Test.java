@@ -8,27 +8,25 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Bug6135Test {
     @Test
     public void bug6135Test() {
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/bug-6135/foo.yang"));
-        assertFalse(generateTypes.isEmpty());
+        final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/bug-6135/foo.yang"));
+        assertEquals(5, generateTypes.size());
 
         GeneratedType genInterface = null;
-        for (final Type type : generateTypes) {
+        for (final GeneratedType type : generateTypes) {
             if (type.getName().equals("TestLeafrefData")) {
-                genInterface = (GeneratedType) type;
+                genInterface = type;
                 break;
             }
         }

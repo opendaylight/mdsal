@@ -7,8 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -17,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BinaryTypeTest {
@@ -37,14 +35,9 @@ public class BinaryTypeTest {
 
     @Test
     public void binaryTypeTest() {
-        final EffectiveModelContext context = YangParserTestUtils.parseYangFiles(YANG_MODELS);
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangFiles(YANG_MODELS));
 
-        assertNotNull("context is null", context);
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
-
-        assertNotNull("genTypes is null", genTypes);
-        assertFalse("genTypes is empty", genTypes.isEmpty());
-
-        //TODO: implement test
+        assertEquals(9, genTypes.size());
     }
 }

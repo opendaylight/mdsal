@@ -14,17 +14,17 @@ import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal573Test {
     @Test
     public void mdsal573Test() {
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-                "/mdsal573.yang"));
+        final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/mdsal573.yang"));
         assertNotNull(generateTypes);
+        assertEquals(7, generateTypes.size());
 
-        final MethodSignature methodSignature = ((GeneratedType) generateTypes.get(0)).getMethodDefinitions().get(0);
+        final MethodSignature methodSignature = generateTypes.get(0).getMethodDefinitions().get(0);
         assertEquals("implementedInterface", methodSignature.getName());
     }
 }

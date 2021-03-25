@@ -12,13 +12,13 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal517Test extends AbstractOpaqueTest {
     @Test
     public void augmentActionInputInGroupingTest() {
-        final List<Type> types = DefaultBindingGenerator.generateFor(
+        final List<GeneratedType> types = DefaultBindingGenerator.generateFor(
                 YangParserTestUtils.parseYangResourceDirectory("/mdsal-517"));
         assertNotNull(types);
         assertEquals(11, types.size());

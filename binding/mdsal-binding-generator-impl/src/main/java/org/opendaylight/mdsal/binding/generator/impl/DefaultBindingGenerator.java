@@ -20,8 +20,8 @@ import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -40,12 +40,13 @@ public final class DefaultBindingGenerator implements BindingGenerator {
     }
 
     @Override
-    public List<Type> generateTypes(final EffectiveModelContext context, final Collection<? extends Module> modules) {
+    public List<GeneratedType> generateTypes(final EffectiveModelContext context,
+            final Collection<? extends Module> modules) {
         return generateFor(context, modules);
     }
 
     @VisibleForTesting
-    static @NonNull List<Type> generateFor(final EffectiveModelContext context) {
+    static @NonNull List<GeneratedType> generateFor(final EffectiveModelContext context) {
         return generateFor(context, context.getModules());
     }
 
@@ -72,7 +73,7 @@ public final class DefaultBindingGenerator implements BindingGenerator {
      *             if <code>context</code> contain no modules
      */
     @VisibleForTesting
-    static @NonNull List<Type> generateFor(final EffectiveModelContext context,
+    static @NonNull List<GeneratedType> generateFor(final EffectiveModelContext context,
             final Collection<? extends Module> modules) {
         GeneratorUtils.checkContext(context);
         checkArgument(modules != null, "Set of Modules cannot be NULL.");

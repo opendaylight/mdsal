@@ -23,13 +23,13 @@ import org.opendaylight.yangtools.yang.binding.OpaqueObject;
 
 abstract class AbstractOpaqueTest {
 
-    static void assertOpaqueNode(final List<Type> types, final String ns, final String pkg, final String name) {
+    static void assertOpaqueNode(final List<GeneratedType> types, final String ns, final String pkg,
+            final String name) {
         final JavaTypeName typeName = JavaTypeName.create("org.opendaylight.yang.gen.v1." + ns + ".norev" + pkg, name);
-        final Optional<Type> optType = types.stream().filter(t -> typeName.equals(t.getIdentifier())).findFirst();
+        final Optional<GeneratedType> optType = types.stream().filter(t -> typeName.equals(t.getIdentifier()))
+            .findFirst();
         assertTrue(optType.isPresent());
-        final Type type = optType.get();
-        assertTrue(type instanceof GeneratedType);
-        final GeneratedType genType = (GeneratedType) type;
+        final GeneratedType genType = optType.get();
         final Iterator<Type> it = genType.getImplements().iterator();
         final Type first = it.next();
         assertTrue(first instanceof ParameterizedType);

@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.opendaylight.mdsal.binding.generator.impl.SupportTestUtil.containsInterface;
 import static org.opendaylight.mdsal.binding.generator.impl.SupportTestUtil.containsMethods;
@@ -17,7 +16,6 @@ import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
@@ -26,13 +24,12 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
         super(ChoiceCaseGenTypesTest.class.getResource("/choice-case-type-test-models"));
     }
 
-    private static GeneratedType checkGeneratedType(final List<Type> genTypes, final String genTypeName,
+    private static GeneratedType checkGeneratedType(final List<GeneratedType> genTypes, final String genTypeName,
             final String packageName, final int occurences) {
         GeneratedType searchedGenType = null;
         int searchedGenTypeCounter = 0;
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-                GeneratedType genType = (GeneratedType) type;
+        for (GeneratedType genType : genTypes) {
+            if (!(genType instanceof GeneratedTransferObject)) {
                 if (genType.getName().equals(genTypeName) && genType.getPackageName().equals(packageName)) {
                     searchedGenType = genType;
                     searchedGenTypeCounter++;
@@ -46,17 +43,18 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
 
     }
 
-    private static GeneratedType checkGeneratedType(final List<Type> genTypes, final String genTypeName,
+    private static GeneratedType checkGeneratedType(final List<GeneratedType> genTypes, final String genTypeName,
             final String packageName) {
         return checkGeneratedType(genTypes, genTypeName, packageName, 1);
     }
 
     @Test
     public void choiceCaseResolvingTypeTest() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangFiles(testModels));
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangFiles(testModels));
 
         assertNotNull("genTypes is null", genTypes);
-        assertFalse("genTypes is empty", genTypes.isEmpty());
+        assertEquals(40, genTypes.size());
 
         // test for file choice-monitoring
         String pcgPref = "org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.choice.monitoring.rev130701."

@@ -7,11 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 
 import java.util.List;
 import org.junit.Test;
@@ -33,10 +34,9 @@ public class GeneratedTypesLeafrefTest {
             "/ietf-models/ietf-inet-types.yang", "/ietf-models/ietf-yang-types.yang");
         assertEquals(4, context.getModules().size());
 
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context);
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(context);
 
         assertEquals(54, genTypes.size());
-        assertNotNull(genTypes);
 
         GeneratedTransferObject gtIfcKey = null;
         GeneratedType gtIfc = null;
@@ -216,12 +216,8 @@ public class GeneratedTypesLeafrefTest {
             "/leafref-test-invalid-model/foo.yang");
         assertEquals(1, context.getModules().size());
 
-        try {
-            DefaultBindingGenerator.generateFor(context);
-            fail("Expected IllegalArgumentException caused by invalid leafref path");
-        } catch (IllegalArgumentException e) {
-            String expected = "Failed to find leafref target";
-            assertTrue(e.getMessage().contains(expected));
-        }
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+            () -> DefaultBindingGenerator.generateFor(context));
+        assertThat(ex.getMessage(), containsString("Failed to find leafref target"));
     }
 }

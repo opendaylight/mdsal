@@ -14,13 +14,12 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GenerateInnerClassForBitsAndUnionInLeavesTest {
     @Test
     public void testInnerClassCreationForBitsAndUnionsInLeafes() {
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
             "/bit_and_union_in_leaf.yang"));
         assertTrue(genTypes != null);
 
@@ -43,11 +42,11 @@ public class GenerateInnerClassForBitsAndUnionInLeavesTest {
         boolean uint8UnionPropertyFound = false;
         boolean uint8UnionPropertyTypeOK = false;
 
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
+        for (GeneratedType type : genTypes) {
+            if (!(type instanceof GeneratedTransferObject)) {
                 if (type.getName().equals("ParentContainer")) {
                     parentContainerFound = true;
-                    GeneratedType parentContainer = (GeneratedType) type;
+                    GeneratedType parentContainer = type;
                     List<GeneratedType> enclosedTypes = parentContainer.getEnclosedTypes();
                     for (GeneratedType genType : enclosedTypes) {
                         if (genType instanceof GeneratedTransferObject) {

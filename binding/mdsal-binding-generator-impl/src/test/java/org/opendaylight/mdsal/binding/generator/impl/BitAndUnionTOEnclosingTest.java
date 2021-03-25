@@ -18,24 +18,20 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BitAndUnionTOEnclosingTest {
 
-    private static List<Type> genTypes = null;
+    private static List<GeneratedType> genTypes = null;
     private static GeneratedType parentContainer = null;
 
     @BeforeClass
     public static void loadTestResources() {
         genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource("/bit_and_union.yang"));
 
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType) {
-                GeneratedType genType = (GeneratedType) type;
-                if (genType.getName().equals("ParentContainer") && !(genType instanceof GeneratedTransferObject)) {
-                    parentContainer = genType;
-                }
+        for (GeneratedType genType : genTypes) {
+            if (genType.getName().equals("ParentContainer") && !(genType instanceof GeneratedTransferObject)) {
+                parentContainer = genType;
             }
         }
     }
@@ -107,13 +103,10 @@ public class BitAndUnionTOEnclosingTest {
         GeneratedTransferObject typeUnionTypedef = null;
         int typeUnionTypedefCounter = 0;
 
-        for (Type type : genTypes) {
-            if (type instanceof GeneratedType) {
-                GeneratedType genType = (GeneratedType) type;
-                if (genType.getName().equals("TypeUnion") && genType instanceof GeneratedTransferObject) {
-                    typeUnionTypedef = (GeneratedTransferObject) genType;
-                    typeUnionTypedefCounter++;
-                }
+        for (GeneratedType genType : genTypes) {
+            if (genType.getName().equals("TypeUnion") && genType instanceof GeneratedTransferObject) {
+                typeUnionTypedef = (GeneratedTransferObject) genType;
+                typeUnionTypedefCounter++;
             }
         }
 

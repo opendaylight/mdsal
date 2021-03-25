@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -15,7 +17,7 @@ import java.util.Collection;
 import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal161Test {
@@ -24,8 +26,8 @@ public class Mdsal161Test {
      */
     @Test
     public void mdsal161Test() {
-        final Collection<Type> types = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/mdsal161.yang"));
+        final Collection<GeneratedType> types = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/mdsal161.yang"));
         assertNotNull(types);
         assertEquals(24, types.size());
 
@@ -37,13 +39,13 @@ public class Mdsal161Test {
         assertKeyStructure(types, "org.opendaylight.yang.gen.v1.mdsal161.norev.WithoutGrpTypedefKey");
     }
 
-    private static void assertKeyStructure(final Collection<Type> types, final String className) {
-        final Optional<Type> optType = types.stream().filter(t -> t.getFullyQualifiedName().equals(className))
+    private static void assertKeyStructure(final Collection<GeneratedType> types, final String className) {
+        final Optional<GeneratedType> optType = types.stream().filter(t -> t.getFullyQualifiedName().equals(className))
                 .findFirst();
         assertTrue("Type for " + className + " not found", optType.isPresent());
 
-        final Type type = optType.get();
-        assertTrue(type instanceof GeneratedTransferObject);
+        final GeneratedType type = optType.get();
+        assertThat(type, instanceOf(GeneratedTransferObject.class));
         final GeneratedTransferObject gto = (GeneratedTransferObject) type;
         assertEquals(2, gto.getEqualsIdentifiers().size());
     }

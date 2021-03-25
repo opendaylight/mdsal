@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
@@ -40,7 +40,7 @@ public class Mdsal448Test {
             Iterables.get(groupings, 0));
         assertEquals(ordered, reverse);
 
-        final List<Type> types = DefaultBindingGenerator.generateFor(context);
+        final List<GeneratedType> types = DefaultBindingGenerator.generateFor(context);
         assertNotNull(types);
         assertEquals(9, types.size());
     }

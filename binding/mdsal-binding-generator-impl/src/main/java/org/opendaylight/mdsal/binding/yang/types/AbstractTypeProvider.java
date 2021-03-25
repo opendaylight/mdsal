@@ -36,6 +36,7 @@ import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -88,23 +89,19 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     private static final Pattern GROUPS_PATTERN = Pattern.compile("\\[(.*?)\\]");
     private static final JavaTypeName DEPRECATED_ANNOTATION = JavaTypeName.create(Deprecated.class);
 
-    // Backwards compatibility: Union types used to be instantiated in YANG namespace, which is no longer
-    // the case, as unions are emitted to their correct schema path.
-    private static final SchemaPath UNION_PATH = SchemaPath.create(true,
-        org.opendaylight.yangtools.yang.model.util.BaseTypes.UNION_QNAME);
-
     /**
      * Contains the schema data red from YANG files.
      */
     private final SchemaContext schemaContext;
 
-    private final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap = new HashMap<>();
+    private final Map<String, Map<Optional<Revision>, Map<String, GeneratedType>>> genTypeDefsContextMap =
+        new HashMap<>();
 
     /**
      * The map which maps schema paths to JAVA <code>Type</code>.
      */
     private final Map<SchemaPath, Type> referencedTypes = new HashMap<>();
-    private final Map<Module, Set<Type>> additionalTypes = new HashMap<>();
+    private final Map<Module, Set<GeneratedType>> additionalTypes = new HashMap<>();
     private final Map<SchemaNode, JavaTypeName> renames;
 
     /**
@@ -140,7 +137,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         referencedTypes.put(refTypePath, refType);
     }
 
-    public Map<Module, Set<Type>> getAdditionalTypes() {
+    public Map<Module, Set<GeneratedType>> getAdditionalTypes() {
         return additionalTypes;
     }
 
@@ -324,9 +321,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 final Module module = findParentModule(schemaContext, typeDefinition);
                 final Restrictions r = BindingGeneratorUtil.getRestrictions(typeDefinition);
                 if (module != null) {
-                    final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(
+                    final Map<Optional<Revision>, Map<String, GeneratedType>> modulesByDate = genTypeDefsContextMap.get(
                         module.getName());
-                    final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
+                    final Map<String, GeneratedType> genTOs = modulesByDate.get(module.getRevision());
                     if (genTOs != null) {
                         returnType = genTOs.get(typedefName);
                     }
@@ -388,7 +385,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *             <li>if name of <code>typeDefinition</code></li>
      *             </ul>
      */
-    public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition,
+    public GeneratedType generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition,
             final SchemaNode parentNode) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         if (typeDefinition.getQName() == null) {
@@ -453,9 +450,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
         final Module module = findParentModule(schemaContext, parentNode);
         if (module != null) {
-            final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(
+            final Map<Optional<Revision>, Map<String, GeneratedType>> modulesByDate = genTypeDefsContextMap.get(
                 module.getName());
-            final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
+            final Map<String, GeneratedType> genTOs = modulesByDate.get(module.getRevision());
             if (genTOs != null) {
                 return genTOs.get(typeDefinition.getQName().getLocalName());
             }
@@ -747,7 +744,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final List<Module> modulesSortedByDependency = ModuleDependencySort.sort(schemaContext.getModules());
 
         for (Module module : modulesSortedByDependency) {
-            Map<Optional<Revision>, Map<String, Type>> dateTypeMap = genTypeDefsContextMap.computeIfAbsent(
+            Map<Optional<Revision>, Map<String, GeneratedType>> dateTypeMap = genTypeDefsContextMap.computeIfAbsent(
                 module.getName(), key -> new HashMap<>());
             dateTypeMap.put(module.getRevision(), Collections.emptyMap());
             genTypeDefsContextMap.put(module.getName(), dateTypeMap);
@@ -789,7 +786,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
         final String typedefName = typedef.getQName().getLocalName();
 
-        final Type returnType;
+        final GeneratedType returnType;
         if (baseTypedef.getBaseType() != null) {
             returnType = provideGeneratedTOFromExtendedType(typedef, baseTypedef, basePackageName,
                 module.getName());
@@ -832,10 +829,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             returnType = wrapJavaTypeIntoTO(basePackageName, typedef, javaType, module.getName());
         }
         if (returnType != null) {
-            final Map<Optional<Revision>, Map<String, Type>> modulesByDate =
+            final Map<Optional<Revision>, Map<String, GeneratedType>> modulesByDate =
                     genTypeDefsContextMap.get(module.getName());
             final Optional<Revision> moduleRevision = module.getRevision();
-            Map<String, Type> typeMap = modulesByDate.get(moduleRevision);
+            Map<String, GeneratedType> typeMap = modulesByDate.get(moduleRevision);
             if (typeMap != null) {
                 if (typeMap.isEmpty()) {
                     typeMap = new HashMap<>(4);
@@ -1048,9 +1045,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     private Type findGenTO(final String searchedTypeName, final SchemaNode parentNode) {
         final Module typeModule = findParentModule(schemaContext, parentNode);
         if (typeModule != null && typeModule.getName() != null) {
-            final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(
+            final Map<Optional<Revision>, Map<String, GeneratedType>> modulesByDate = genTypeDefsContextMap.get(
                 typeModule.getName());
-            final Map<String, Type> genTOs = modulesByDate.get(typeModule.getRevision());
+            final Map<String, GeneratedType> genTOs = modulesByDate.get(typeModule.getRevision());
             if (genTOs != null) {
                 return genTOs.get(searchedTypeName);
             }
@@ -1070,9 +1067,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         if (!(newTypeDef instanceof UnionTypeDefinition)) {
             final Module parentModule = findParentModule(schemaContext, parentNode);
             if (parentModule != null && parentModule.getName() != null) {
-                final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(
+                final Map<Optional<Revision>, Map<String, GeneratedType>> modulesByDate = genTypeDefsContextMap.get(
                     parentModule.getName());
-                final Map<String, Type> genTOsMap = modulesByDate.get(parentModule.getRevision());
+                final Map<String, GeneratedType> genTOsMap = modulesByDate.get(parentModule.getRevision());
                 genTOsMap.put(newTypeDef.getQName().getLocalName(), genTOBuilder.build());
             }
         }
@@ -1220,8 +1217,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             genTOBuilder.setIsUnion(true);
         }
 
-        Map<Optional<Revision>, Map<String, Type>> modulesByDate = null;
-        Map<String, Type> typeMap = null;
+        Map<Optional<Revision>, Map<String, GeneratedType>> modulesByDate = null;
+        Map<String, GeneratedType> typeMap = null;
         final Module parentModule = findParentModule(schemaContext, innerExtendedType);
         if (parentModule != null) {
             modulesByDate = genTypeDefsContextMap.get(parentModule.getName());
@@ -1230,7 +1227,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
         if (typeMap != null) {
             final String innerTypeDef = innerExtendedType.getQName().getLocalName();
-            final Type type = typeMap.get(innerTypeDef);
+            final GeneratedType type = typeMap.get(innerTypeDef);
             if (type instanceof GeneratedTransferObject) {
                 genTOBuilder.setExtendsType((GeneratedTransferObject) type);
             }

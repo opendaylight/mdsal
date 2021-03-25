@@ -38,7 +38,7 @@ import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile;
 import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile.FileKind;
 import org.opendaylight.mdsal.binding.java.api.generator.YangModuleInfoTemplate;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -74,7 +74,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
         // Step one: determine binding types which we are generating
         final Stopwatch sw = Stopwatch.createStarted();
-        final List<Type> types = ServiceLoader.load(BindingGenerator.class)
+        final List<GeneratedType> types = ServiceLoader.load(BindingGenerator.class)
                 .findFirst().orElseThrow(() -> new IllegalStateException("No BindingGenerator implementation found"))
                 .generateTypes(context, yangModules);
         LOG.info("Found {} Binding types in {}", types.size(), sw);

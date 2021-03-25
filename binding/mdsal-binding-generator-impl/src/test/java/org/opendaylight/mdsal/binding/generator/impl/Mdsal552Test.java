@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -17,7 +15,6 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal552Test {
@@ -30,25 +27,23 @@ public class Mdsal552Test {
 
     @Test
     public void enumLeafrefTest() {
-        final List<Type> types = DefaultBindingGenerator.generateFor(
+        final List<GeneratedType> types = DefaultBindingGenerator.generateFor(
                 YangParserTestUtils.parseYangResource("/mdsal552.yang"));
         assertNotNull(types);
         assertEquals(5, types.size());
 
-        final Type baz = types.stream()
+        final GeneratedType baz = types.stream()
                 .filter(type -> BAZ.equals(type.getIdentifier()))
                 .findFirst().orElseThrow();
-        assertThat(baz, instanceOf(GeneratedType.class));
-        final MethodSignature bazGetRef = ((GeneratedType) baz).getMethodDefinitions().stream()
+        final MethodSignature bazGetRef = baz.getMethodDefinitions().stream()
                 .filter(method -> method.getName().equals("getRef"))
                 .findFirst().orElseThrow();
         assertEquals(ENUMERATION, bazGetRef.getReturnType().getIdentifier());
 
-        final Type input = types.stream()
+        final GeneratedType input = types.stream()
                 .filter(type -> BAR_INPUT.equals(type.getIdentifier()))
                 .findFirst().orElseThrow();
-        assertThat(input, instanceOf(GeneratedType.class));
-        final MethodSignature inputGetRef = ((GeneratedType) input).getMethodDefinitions().stream()
+        final MethodSignature inputGetRef = input.getMethodDefinitions().stream()
                 .filter(method -> method.getName().equals("getRef"))
                 .findFirst().orElseThrow();
         assertEquals(ENUMERATION, inputGetRef.getReturnType().getIdentifier());

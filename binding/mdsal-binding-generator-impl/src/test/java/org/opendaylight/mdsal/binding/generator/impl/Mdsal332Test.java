@@ -15,19 +15,19 @@ import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal332Test {
     @Test
     public void mdsal332Test() {
-        final List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/mdsal332.yang"));
+        final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/mdsal332.yang"));
         assertNotNull(generateTypes);
         assertEquals(5, generateTypes.size());
 
-        final List<JavaTypeName> names = generateTypes.stream().map(Type::getIdentifier)
+        final List<JavaTypeName> names = generateTypes.stream().map(GeneratedType::getIdentifier)
                 .collect(ImmutableList.toImmutableList());
         final Set<JavaTypeName> uniqueNames = ImmutableSet.copyOf(names);
         assertEquals(ImmutableList.copyOf(uniqueNames), names);

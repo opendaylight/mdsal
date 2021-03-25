@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class BindingGeneratorImplTest {
     @Test
     public void isisTotpologyStatementParserTest()  {
-        List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
+        List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResources(
             BindingGeneratorImplTest.class,
             "/isis-topology/network-topology@2013-10-21.yang", "/isis-topology/isis-topology@2013-10-21.yang",
             "/isis-topology/l3-unicast-igp-topology@2013-10-21.yang"));
@@ -30,7 +30,7 @@ public class BindingGeneratorImplTest {
 
     @Test
     public void choiceNodeGenerationTest() {
-        List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
                 "/binding-generator-impl-test/choice-test.yang"));
 
         GeneratedType choiceTestData = null;
@@ -40,25 +40,25 @@ public class BindingGeneratorImplTest {
         GeneratedType myList2 = null;
         GeneratedType myContainer2 = null;
 
-        for (Type type : generateTypes) {
+        for (GeneratedType type : generateTypes) {
             switch (type.getName()) {
                 case "ChoiceTestData":
-                    choiceTestData = (GeneratedType) type;
+                    choiceTestData = type;
                     break;
                 case "Myrootcontainer":
-                    myRootContainer = (GeneratedType) type;
+                    myRootContainer = type;
                     break;
                 case "Mylist":
-                    myList = (GeneratedType) type;
+                    myList = type;
                     break;
                 case "Mylist2":
-                    myList2 = (GeneratedType) type;
+                    myList2 = type;
                     break;
                 case "Mycontainer":
-                    myContainer = (GeneratedType) type;
+                    myContainer = type;
                     break;
                 case "Mycontainer2":
-                    myContainer2 = (GeneratedType) type;
+                    myContainer2 = type;
                     break;
                 default:
                     // ignore
@@ -72,9 +72,8 @@ public class BindingGeneratorImplTest {
         assertNotNull(myList2);
         assertNotNull(myContainer2);
 
-        List<Type> implements1 = myContainer.getImplements();
         Type childOfParamType = null;
-        for (Type type : implements1) {
+        for (Type type : myContainer.getImplements()) {
             if (type.getName().equals("ChildOf")) {
                 childOfParamType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 break;
@@ -83,9 +82,8 @@ public class BindingGeneratorImplTest {
         assertNotNull(childOfParamType);
         assertEquals("ChoiceTestData", childOfParamType.getName());
 
-        implements1 = myList.getImplements();
         childOfParamType = null;
-        for (Type type : implements1) {
+        for (Type type : myList.getImplements()) {
             if (type.getName().equals("ChildOf")) {
                 childOfParamType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 break;
@@ -94,9 +92,8 @@ public class BindingGeneratorImplTest {
         assertNotNull(childOfParamType);
         assertEquals("ChoiceTestData", childOfParamType.getName());
 
-        implements1 = myContainer2.getImplements();
         childOfParamType = null;
-        for (Type type : implements1) {
+        for (Type type : myContainer2.getImplements()) {
             if (type.getName().equals("ChildOf")) {
                 childOfParamType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 break;
@@ -105,9 +102,8 @@ public class BindingGeneratorImplTest {
         assertNotNull(childOfParamType);
         assertEquals("Myrootcontainer", childOfParamType.getName());
 
-        implements1 = myList2.getImplements();
         childOfParamType = null;
-        for (Type type : implements1) {
+        for (Type type : myList2.getImplements()) {
             if (type.getName().equals("ChildOf")) {
                 childOfParamType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 break;
@@ -119,21 +115,20 @@ public class BindingGeneratorImplTest {
 
     @Test
     public void notificationGenerationTest() {
-        List<Type> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+        List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
                 "/binding-generator-impl-test/notification-test.yang"));
 
         GeneratedType foo = null;
-        for (Type type : generateTypes) {
+        for (GeneratedType type : generateTypes) {
             if (type.getName().equals("Foo")) {
-                foo = (GeneratedType) type;
+                foo = type;
                 break;
             }
         }
 
         Type childOf = null;
         Type dataObject = null;
-        List<Type> impl = foo.getImplements();
-        for (Type type : impl) {
+        for (Type type :  foo.getImplements()) {
             switch (type.getName()) {
                 case "ChildOf":
                     childOf = type;
