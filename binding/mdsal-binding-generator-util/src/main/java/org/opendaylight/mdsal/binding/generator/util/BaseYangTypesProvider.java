@@ -15,7 +15,6 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.BaseYangTypes;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
@@ -50,11 +49,6 @@ public final class BaseYangTypesProvider implements TypeProvider {
         final String typeName = type.getQName().getLocalName();
         final Type mapped = BaseYangTypes.javaTypeForYangType(typeName);
         return mapped == null || restrictions == null ? mapped : Types.restrictedType(mapped, restrictions);
-    }
-
-    @Override
-    public String getTypeDefaultConstruction(final LeafSchemaNode node) {
-        return null;
     }
 
     @Override

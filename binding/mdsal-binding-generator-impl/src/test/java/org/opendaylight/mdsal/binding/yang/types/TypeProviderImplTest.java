@@ -8,38 +8,23 @@
 package org.opendaylight.mdsal.binding.yang.types;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 
 import java.net.URI;
-import java.util.NoSuchElementException;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.BooleanTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.DecimalTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.EmptyTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
-import org.opendaylight.yangtools.yang.model.util.type.IdentityrefTypeBuilder;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class TypeProviderImplTest {
@@ -113,101 +98,14 @@ public class TypeProviderImplTest {
         typeProvider.putReferencedType(refTypePath, refType);
         final StringTypeDefinition stringType = BaseTypes.stringType();
 
-        final LeafSchemaNode leafSchemaNode = mock(LeafSchemaNode.class);
-        doReturn(stringType).when(leafSchemaNode).getType();
-        doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
-
-        // test constructor
-        assertNotNull(typeProvider);
-
         // test getAdditionalTypes() method
-        assertFalse(typeProvider.getAdditionalTypes().isEmpty());
+        assertEquals(1, typeProvider.getAdditionalTypes().size());
 
         // test getConstructorPropertyName() method
-        assertTrue(typeProvider.getConstructorPropertyName(null).isEmpty());
+        assertEquals("", typeProvider.getConstructorPropertyName(null));
         assertEquals("value", typeProvider.getConstructorPropertyName(stringType));
 
         // test getParamNameFromType() method
         assertEquals("string", typeProvider.getParamNameFromType(stringType));
-
-        // test getTypeDefaultConstruction() method for string type
-        assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
-
-        // binary type
-        final BinaryTypeDefinition binaryType = BaseTypes.binaryType();
-
-        reset(leafSchemaNode);
-        doReturn(binaryType).when(leafSchemaNode).getType();
-        doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
-
-        assertEquals("new byte[] {-45}", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "01"));
-
-        // boolean type
-        final BooleanTypeDefinition booleanType = BaseTypes.booleanType();
-
-        reset(leafSchemaNode);
-        doReturn(booleanType).when(leafSchemaNode).getType();
-        doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
-
-        assertEquals("java.lang.Boolean.FALSE", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "false"));
-
-        // decimal type
-        final DecimalTypeDefinition decimalType = BaseTypes.decimalTypeBuilder(refTypePath).setFractionDigits(4)
-                .build();
-
-        reset(leafSchemaNode);
-        doReturn(decimalType).when(leafSchemaNode).getType();
-        doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
-
-        assertEquals("new java.math.BigDecimal(\"111\")", typeProvider.getTypeDefaultConstruction(leafSchemaNode,
-            "111"));
-
-        // empty type
-        final EmptyTypeDefinition emptyType = BaseTypes.emptyType();
-
-        reset(leafSchemaNode);
-        doReturn(emptyType).when(leafSchemaNode).getType();
-        doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
-
-        assertEquals("java.lang.Boolean.valueOf(\"default value\")", typeProvider.getTypeDefaultConstruction(
-            leafSchemaNode, "default value"));
-
-        // enum type
-        final EnumTypeDefinition enumType =  BaseTypes.enumerationTypeBuilder(refTypePath).build();
-
-        reset(leafSchemaNode);
-        doReturn(enumType).when(leafSchemaNode).getType();
-        doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
-
-        try {
-            assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
-            fail("Expected NoSuchElementException");
-        } catch (NoSuchElementException e) {
-            // Okay
-        }
-
-        // identityref type
-        final IdentitySchemaNode identitySchemaNode = mock(IdentitySchemaNode.class);
-        final IdentityrefTypeBuilder identityRefBuilder = BaseTypes.identityrefTypeBuilder(refTypePath);
-        identityRefBuilder.addIdentity(identitySchemaNode);
-        final IdentityrefTypeDefinition identityRef =  identityRefBuilder.build();
-
-        reset(leafSchemaNode);
-        doReturn(identityRef).when(leafSchemaNode).getType();
-        doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
-
-        try {
-            assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
-            fail("Expected UnsupportedOperationException");
-        } catch (UnsupportedOperationException e) {
-            assertEquals("Cannot get default construction for identityref type", e.getMessage());
-        }
     }
 }

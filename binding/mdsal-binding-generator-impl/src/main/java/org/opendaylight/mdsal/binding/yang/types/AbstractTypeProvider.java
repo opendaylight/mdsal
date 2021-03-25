@@ -18,15 +18,11 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,10 +55,6 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.Generate
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
-import org.opendaylight.yangtools.yang.common.Uint16;
-import org.opendaylight.yangtools.yang.common.Uint32;
-import org.opendaylight.yangtools.yang.common.Uint64;
-import org.opendaylight.yangtools.yang.common.Uint8;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
@@ -75,15 +67,11 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition.Bit;
-import org.opendaylight.yangtools.yang.model.api.type.BooleanTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.DecimalTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.EmptyTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.InstanceIdentifierTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
@@ -91,7 +79,6 @@ import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
 import org.opendaylight.yangtools.yang.model.util.PathExpressionImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1359,335 +1346,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         }
     }
 
-    @Override
-    public String getTypeDefaultConstruction(final LeafSchemaNode node) {
-        return getTypeDefaultConstruction(node, (String) node.getType().getDefaultValue().orElse(null));
-    }
-
-    public String getTypeDefaultConstruction(final LeafSchemaNode node, final String defaultValue) {
-        final TypeDefinition<?> type = CompatUtils.compatType(node);
-        final QName typeQName = type.getQName();
-        final TypeDefinition<?> base = baseTypeDefForExtendedType(type);
-        requireNonNull(type, () -> "Cannot provide default construction for null type of " + node);
-        requireNonNull(defaultValue, () -> "Cannot provide default construction for null default statement of "
-            + node);
-
-        final StringBuilder sb = new StringBuilder();
-        String result = null;
-        if (base instanceof BinaryTypeDefinition) {
-            result = binaryToDef(defaultValue);
-        } else if (base instanceof BitsTypeDefinition) {
-            String parentName;
-            String className;
-            final Module parent = getParentModule(node);
-            final Iterator<QName> path = node.getPath().getPathFromRoot().iterator();
-            path.next();
-            if (!path.hasNext()) {
-                parentName = BindingMapping.getClassName(parent.getName()) + BindingMapping.DATA_ROOT_SUFFIX;
-                final String basePackageName = BindingMapping.getRootPackageName(parent.getQNameModule());
-                className = basePackageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
-            } else {
-                final String basePackageName = BindingMapping.getRootPackageName(parent.getQNameModule());
-                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-                    type.getPath());
-                parentName = BindingMapping.getClassName(parent.getName());
-                className = packageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
-            }
-            result = bitsToDef((BitsTypeDefinition) base, className, defaultValue, type.getBaseType() != null);
-        } else if (base instanceof BooleanTypeDefinition) {
-            result = typeToBooleanDef(defaultValue);
-        } else if (base instanceof DecimalTypeDefinition) {
-            result = typeToDef(BigDecimal.class, defaultValue);
-        } else if (base instanceof EmptyTypeDefinition) {
-            result = typeToBooleanDef(defaultValue);
-        } else if (base instanceof EnumTypeDefinition) {
-            final char[] defValArray = defaultValue.toCharArray();
-            final char first = Character.toUpperCase(defaultValue.charAt(0));
-            defValArray[0] = first;
-            final String newDefVal = new String(defValArray);
-            String className;
-            if (type.getBaseType() != null) {
-                final Module m = getParentModule(type);
-                final String basePackageName = BindingMapping.getRootPackageName(m.getQNameModule());
-                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-                    type.getPath());
-                className = packageName + "." + BindingMapping.getClassName(typeQName);
-            } else {
-                final Module parentModule = getParentModule(node);
-                final String basePackageName = BindingMapping.getRootPackageName(parentModule.getQNameModule());
-                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-                    node.getPath());
-                className = packageName + "." + BindingMapping.getClassName(node.getQName());
-            }
-            result = className + "." + newDefVal;
-        } else if (base instanceof IdentityrefTypeDefinition) {
-            throw new UnsupportedOperationException("Cannot get default construction for identityref type");
-        } else if (base instanceof InstanceIdentifierTypeDefinition) {
-            throw new UnsupportedOperationException("Cannot get default construction for instance-identifier type");
-        } else if (isInt8(base)) {
-            result = typeToValueOfDef(Byte.class, defaultValue);
-        } else if (isInt16(base)) {
-            result = typeToValueOfDef(Short.class, defaultValue);
-        } else if (isInt32(base)) {
-            result = typeToValueOfDef(Integer.class, defaultValue);
-        } else if (isInt64(base)) {
-            result = typeToValueOfDef(Long.class, defaultValue);
-        } else if (base instanceof LeafrefTypeDefinition) {
-            result = leafrefToDef(node, (LeafrefTypeDefinition) base, defaultValue);
-        } else if (base instanceof StringTypeDefinition) {
-            result = "\"" + defaultValue + "\"";
-        } else if (isUint8(base)) {
-            result = typeToValueOfDef(Uint8.class, defaultValue);
-        } else if (isUint16(base)) {
-            result = typeToValueOfDef(Uint16.class, defaultValue);
-        } else if (isUint32(base)) {
-            result = typeToValueOfDef(Uint32.class, defaultValue);
-        } else if (isUint64(base)) {
-            result = typeToValueOfDef(Uint64.class, defaultValue);
-        } else if (base instanceof UnionTypeDefinition) {
-            result = unionToDef(node);
-        } else {
-            result = "";
-        }
-        sb.append(result);
-
-        if (type.getBaseType() != null && !(base instanceof LeafrefTypeDefinition)
-                && !(base instanceof EnumTypeDefinition) && !(base instanceof UnionTypeDefinition)) {
-            final Module m = getParentModule(type);
-            final String basePackageName = BindingMapping.getRootPackageName(m.getQNameModule());
-            final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-                type.getPath());
-            final String className = packageName + "." + BindingMapping.getClassName(typeQName);
-            sb.insert(0, "new " + className + "(");
-            sb.insert(sb.length(), ')');
-        }
-
-        return sb.toString();
-    }
-
-
-    /**
-     * Check if a particular type definition represents the built-in int8 type.
-     *
-     * @param type Type definition
-     * @return True if the definition is the built-in int8 type.
-     */
-    private static boolean isInt8(final TypeDefinition<?> type) {
-        return BaseTypes.int8Type().getPath().equals(type.getPath());
-    }
-
-    /**
-     * Check if a particular type definition represents the built-in int16 type.
-     *
-     * @param type Type definition
-     * @return True if the definition is the built-in int16 type.
-     */
-    private static boolean isInt16(final TypeDefinition<?> type) {
-        return BaseTypes.int16Type().getPath().equals(type.getPath());
-    }
-
-    /**
-     * Check if a particular type definition represents the built-in int32 type.
-     *
-     * @param type Type definition
-     * @return True if the definition is the built-in int32 type.
-     */
-    private static boolean isInt32(final TypeDefinition<?> type) {
-        return BaseTypes.int32Type().getPath().equals(type.getPath());
-    }
-
-    /**
-     * Check if a particular type definition represents the built-in int64 type.
-     *
-     * @param type Type definition
-     * @return True if the definition is the built-in int64 type.
-     */
-    private static boolean isInt64(final TypeDefinition<?> type) {
-        return BaseTypes.int64Type().getPath().equals(type.getPath());
-    }
-
-    /**
-     * Check if a particular type is the base type for uint8.
-     *
-     * @param type The type to check
-     * @return If the type corresponds to the base uint8 type.
-     * @throws NullPointerException if type is null
-     */
-    private static boolean isUint8(final TypeDefinition<?> type) {
-        return BaseTypes.uint8Type().getPath().equals(type.getPath());
-    }
-
-    /**
-     * Check if a particular type is the base type for uint16.
-     *
-     * @param type The type to check
-     * @return If the type corresponds to the base uint16 type.
-     * @throws NullPointerException if type is null
-     */
-    private static boolean isUint16(final TypeDefinition<?> type) {
-        return BaseTypes.uint16Type().getPath().equals(type.getPath());
-    }
-
-    /**
-     * Check if a particular type is the base type for uint32.
-     *
-     * @param type The type to check
-     * @return If the type corresponds to the base uint32 type.
-     * @throws NullPointerException if type is null
-     */
-    private static boolean isUint32(final TypeDefinition<?> type) {
-        return BaseTypes.uint32Type().getPath().equals(type.getPath());
-    }
-
-    /**
-     * Check if a particular type is the base type for uint64.
-     *
-     * @param type The type to check
-     * @return If the type corresponds to the base uint64 type.
-     * @throws NullPointerException if type is null
-     */
-    private static boolean isUint64(final TypeDefinition<?> type) {
-        return BaseTypes.uint64Type().getPath().equals(type.getPath());
-    }
-
-    private static String typeToDef(final Class<?> clazz, final String defaultValue) {
-        return "new " + clazz.getName() + "(\"" + defaultValue + "\")";
-    }
-
-    private static String typeToValueOfDef(final Class<?> clazz, final String defaultValue) {
-        return clazz.getName() + ".valueOf(\"" + defaultValue + "\")";
-    }
-
-    private static String typeToBooleanDef(final String defaultValue) {
-        switch (defaultValue) {
-            case "false":
-                return "java.lang.Boolean.FALSE";
-            case "true":
-                return "java.lang.Boolean.TRUE";
-            default:
-                return typeToValueOfDef(Boolean.class, defaultValue);
-        }
-    }
-
-    private static String binaryToDef(final String defaultValue) {
-        final StringBuilder sb = new StringBuilder();
-        final byte[] encoded = Base64.getDecoder().decode(defaultValue);
-        sb.append("new byte[] {");
-        for (int i = 0; i < encoded.length; i++) {
-            sb.append(encoded[i]);
-            if (i != encoded.length - 1) {
-                sb.append(", ");
-            }
-        }
-        sb.append('}');
-        return sb.toString();
-    }
-
-    private static final Comparator<Bit> BIT_NAME_COMPARATOR = Comparator.comparing(Bit::getName);
-
-    private static String bitsToDef(final BitsTypeDefinition type, final String className, final String defaultValue,
-            final boolean isExt) {
-        final List<Bit> bits = new ArrayList<>(type.getBits());
-        bits.sort(BIT_NAME_COMPARATOR);
-        final StringBuilder sb = new StringBuilder();
-        if (!isExt) {
-            sb.append("new ").append(className).append('(');
-        }
-        for (int i = 0; i < bits.size(); i++) {
-            sb.append(bits.get(i).getName().equals(defaultValue));
-            if (i != bits.size() - 1) {
-                sb.append(", ");
-            }
-        }
-        if (!isExt) {
-            sb.append(')');
-        }
-        return sb.toString();
-    }
-
     private Module getParentModule(final SchemaNode node) {
         final QName qname = node.getPath().getPathFromRoot().iterator().next();
         return schemaContext.findModule(qname.getModule()).orElse(null);
-    }
-
-    private String leafrefToDef(final LeafSchemaNode parentNode, final LeafrefTypeDefinition leafrefType,
-            final String defaultValue) {
-        Preconditions.checkArgument(leafrefType != null, "Leafref Type Definition reference cannot be NULL!");
-        Preconditions.checkArgument(leafrefType.getPathStatement() != null,
-                "The Path Statement for Leafref Type Definition cannot be NULL!");
-
-        final PathExpression xpath = leafrefType.getPathStatement();
-        final String strXPath = xpath.getOriginalString();
-
-        if (strXPath != null) {
-            if (strXPath.indexOf('[') == -1) {
-                final Module module = findParentModule(schemaContext, parentNode);
-                if (module != null) {
-                    final SchemaNode dataNode;
-                    if (xpath.isAbsolute()) {
-                        dataNode = findDataTreeSchemaNode(schemaContext, module.getQNameModule(), xpath);
-                    } else {
-                        dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
-                    }
-                    final String result = getTypeDefaultConstruction((LeafSchemaNode) dataNode, defaultValue);
-                    return result;
-                }
-            } else {
-                return "new java.lang.Object()";
-            }
-        }
-
-        return null;
-    }
-
-    private String unionToDef(final LeafSchemaNode node) {
-        final TypeDefinition<?> type = CompatUtils.compatType(node);
-        String parentName;
-        String className;
-
-        if (type.getBaseType() != null) {
-            final QName typeQName = type.getQName();
-            Module module = null;
-            final Collection<? extends Module> modules = schemaContext.findModules(typeQName.getNamespace());
-            if (modules.size() > 1) {
-                for (Module m : modules) {
-                    if (m.getRevision().equals(typeQName.getRevision())) {
-                        module = m;
-                        break;
-                    }
-                }
-                if (module == null) {
-                    final List<Module> modulesList = new ArrayList<>(modules);
-                    modulesList.sort((o1, o2) -> Revision.compare(o1.getRevision(), o2.getRevision()));
-                    module = modulesList.get(0);
-                }
-            } else {
-                module = modules.iterator().next();
-            }
-
-            final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
-            className = basePackageName + "." + BindingMapping.getClassName(typeQName);
-        } else {
-            final Iterator<QName> path = node.getPath().getPathFromRoot().iterator();
-            final QName first = path.next();
-            final Module parent = schemaContext.findModule(first.getModule()).orElse(null);
-            final String basePackageName = BindingMapping.getRootPackageName(parent.getQNameModule());
-            if (!path.hasNext()) {
-                parentName = BindingMapping.getClassName(parent.getName()) + BindingMapping.DATA_ROOT_SUFFIX;
-                className = basePackageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
-            } else {
-                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-                    UNION_PATH);
-                className = packageName + "." + BindingMapping.getClassName(node.getQName());
-            }
-        }
-        return union(className, (String) node.getType().getDefaultValue().orElse(null), node);
-    }
-
-    private static String union(final String className, final String defaultValue, final LeafSchemaNode node) {
-        return new StringBuilder()
-                .append("new ").append(className).append("(\"").append(defaultValue).append("\".toCharArray())")
-                .toString();
     }
 
     @Override

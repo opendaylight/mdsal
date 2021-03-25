@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.generator.spi;
 
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
@@ -48,11 +47,6 @@ public interface TypeProvider {
             final Restrictions restrictions) {
         return javaTypeForSchemaDefinitionType(type, parentNode, restrictions, false);
     }
-
-    /**
-     * Returns string containing code for creation of new type instance.
-     */
-    String getTypeDefaultConstruction(LeafSchemaNode node);
 
     String getConstructorPropertyName(SchemaNode node);
 
