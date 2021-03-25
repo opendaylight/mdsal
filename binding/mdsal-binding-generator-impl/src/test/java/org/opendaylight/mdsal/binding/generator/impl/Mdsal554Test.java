@@ -9,34 +9,22 @@ package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal554Test {
     @Test
     public void builderTemplateGenerateListenerMethodsTest() {
-        final EffectiveModelContext context = YangParserTestUtils.parseYangResource("/mdsal554.yang");
+        final List<Type> genTypes = DefaultBindingGenerator.generateFor(
+            YangParserTestUtils.parseYangResource("/mdsal554.yang"));
+        assertEquals(4, genTypes.size());
 
-        final Set<Module> toGenModules = new HashSet<>();
-        for (final Module module : context.getModules()) {
-            toGenModules.add(module);
-        }
-
-        final List<Type> genTypes = DefaultBindingGenerator.generateFor(context, toGenModules);
-
-        final GeneratedType type = (GeneratedType) genTypes.get(3);
-
-        final List<MethodSignature> methods = type.getMethodDefinitions();
-
+        final List<MethodSignature> methods = ((GeneratedType) genTypes.get(3)).getMethodDefinitions();
         assertEquals(3, methods.size());
         assertEquals(methods.get(0).getName(), "onDeprecatedNotification");
         assertEquals(methods.get(0).isDefault(), false);
