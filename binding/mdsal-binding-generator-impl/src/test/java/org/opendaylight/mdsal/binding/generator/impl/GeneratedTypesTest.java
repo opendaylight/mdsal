@@ -223,19 +223,6 @@ public class GeneratedTypesTest {
         String getSimpleListKeyMethodReturnTypeName = "";
         String getListChildContainerMethodReturnTypeName = "";
 
-        int listKeyClassPropertyCount = 0;
-        String listKeyClassPropertyName = "";
-        String listKeyClassPropertyTypeName = "";
-        boolean listKeyClassPropertyReadOnly = false;
-
-        int hashMethodParameterCount = 0;
-        String hashMethodParameterName = "";
-        String hashMethodParameterReturnTypeName = "";
-
-        int equalMethodParameterCount = 0;
-        String equalMethodParameterName = "";
-        String equalMethodParameterReturnTypeName = "";
-
         for (final Type type : genTypes) {
             if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
                 final GeneratedType genType = (GeneratedType) type;
@@ -281,20 +268,19 @@ public class GeneratedTypesTest {
                 final List<GeneratedProperty> hashProps = genTO.getHashCodeIdentifiers();
                 final List<GeneratedProperty> equalProps = genTO.getEqualsIdentifiers();
 
-                listKeyClassCount++;
-                listKeyClassPropertyCount = properties.size();
-                listKeyClassPropertyName = properties.get(0).getName();
-                listKeyClassPropertyTypeName = properties.get(0).getReturnType().getName();
-                listKeyClassPropertyReadOnly = properties.get(0).isReadOnly();
+                assertEquals("Unexpected key", 0, listKeyClassCount++);
+                assertEquals(1, properties.size());
+                assertEquals("listKey", properties.get(0).getName());
+                assertEquals("Byte", properties.get(0).getReturnType().getName());
+                assertTrue(properties.get(0).isReadOnly());
 
-                hashMethodParameterCount = hashProps.size();
-                hashMethodParameterName = hashProps.get(0).getName();
-                hashMethodParameterReturnTypeName = hashProps.get(0).getReturnType().getName();
+                assertEquals(1, hashProps.size());
+                assertEquals("listKey", hashProps.get(0).getName());
+                assertEquals("Byte", hashProps.get(0).getReturnType().getName());
 
-                equalMethodParameterCount = equalProps.size();
-                equalMethodParameterName = equalProps.get(0).getName();
-                equalMethodParameterReturnTypeName = equalProps.get(0).getReturnType().getName();
-
+                assertEquals(1, equalProps.size());
+                assertEquals("listKey", equalProps.get(0).getName());
+                assertEquals("Byte",  equalProps.get(0).getReturnType().getName());
             }
         }
 
@@ -304,17 +290,6 @@ public class GeneratedTypesTest {
         assertEquals(5, listChildContainerMethodsCount);
         assertEquals(1, getSimpleListKeyMethodCount);
         assertEquals(1, listKeyClassCount);
-
-        assertEquals(1, listKeyClassPropertyCount);
-        assertEquals("listKey", listKeyClassPropertyName);
-        assertEquals("Byte", listKeyClassPropertyTypeName);
-        assertTrue(listKeyClassPropertyReadOnly);
-        assertEquals(1, hashMethodParameterCount);
-        assertEquals("listKey", hashMethodParameterName);
-        assertEquals("Byte", hashMethodParameterReturnTypeName);
-        assertEquals(1, equalMethodParameterCount);
-        assertEquals("listKey", equalMethodParameterName);
-        assertEquals("Byte", equalMethodParameterReturnTypeName);
 
         assertEquals("SimpleListKey", getSimpleListKeyMethodReturnTypeName);
 
@@ -355,9 +330,7 @@ public class GeneratedTypesTest {
                     compositeKeyListKeyCount++;
                     final List<GeneratedProperty> properties = genTO.getProperties();
                     for (final GeneratedProperty prop : properties) {
-                        if (prop.getName().equals("key1")) {
-                            compositeKeyListKeyPropertyCount++;
-                        } else if (prop.getName().equals("key2")) {
+                        if (prop.getName().equals("key1") || prop.getName().equals("key2")) {
                             compositeKeyListKeyPropertyCount++;
                         }
                     }
