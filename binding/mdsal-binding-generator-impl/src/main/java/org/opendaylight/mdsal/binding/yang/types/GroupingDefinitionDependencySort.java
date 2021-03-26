@@ -28,12 +28,15 @@ import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
 
-// FIXME: 8.0.0: this should be final
-public class GroupingDefinitionDependencySort {
+public final class GroupingDefinitionDependencySort {
+    private GroupingDefinitionDependencySort() {
+        // Hidden on purpose
+    }
+
     /**
-     * Sorts set {@code groupingDefinitions} according to the mutual dependencies.<br>
-     * Elements of {@code groupingDefinitions} are firstly transformed to {@link Node} interfaces and then are
-     * sorted by {@link TopologicalSort#sort(Set) sort()} method of {@code TopologicalSort}.<br>
+     * Sorts a set of {@code groupings} according to the mutual dependencies. Elements of {@code groupings} are first
+     * transformed to {@link Node} interfaces and then are sorted by {@link TopologicalSort#sort(Set) sort()} method of
+     * {@code TopologicalSort}.<br>
      *
      * <i>Definition of dependency relation:<br>
      * The first {@code GroupingDefinition} object (in this context) depends on second {@code GroupingDefinition} object
@@ -41,17 +44,17 @@ public class GroupingDefinitionDependencySort {
      * a reference to the second one.
      * </i>
      *
-     * @param groupingDefinitions set of grouping definition which should be sorted according to mutual dependencies
+     * @param groupings set of grouping definition which should be sorted according to mutual dependencies
      * @return list of grouping definitions which are sorted by mutual dependencies
      * @throws IllegalArgumentException if {@code groupingDefinitions}
      *
      */
-    public List<GroupingDefinition> sort(final Collection<? extends GroupingDefinition> groupingDefinitions) {
-        if (groupingDefinitions == null) {
+    public static List<GroupingDefinition> sort(final Collection<? extends GroupingDefinition> groupings) {
+        if (groupings == null) {
             throw new IllegalArgumentException("Set of Type Definitions cannot be NULL!");
         }
 
-        final List<Node> sortedNodes = TopologicalSort.sort(groupingDefinitionsToNodes(groupingDefinitions));
+        final List<Node> sortedNodes = TopologicalSort.sort(groupingDefinitionsToNodes(groupings));
         final List<GroupingDefinition> resultGroupingDefinitions = new ArrayList<>(sortedNodes.size());
         for (Node node : sortedNodes) {
             NodeWrappedType nodeWrappedType = (NodeWrappedType) node;
@@ -67,24 +70,24 @@ public class GroupingDefinitionDependencySort {
      * For every uses node is found its wrapping node (next as <i>nodeTo</i>). This dependency relationship between
      * nodeFrom and all found nodesTo is modeled with creating of one edge from nodeFrom to nodeTo.
      *
-     * @param groupingDefinitions set of grouping definition which will be wrapped to nodes
+     * @param groupings set of grouping definitions which will be wrapped to nodes
      * @return set of nodes where every one contains wrapped grouping definition
      */
-    private Set<Node> groupingDefinitionsToNodes(final Collection<? extends GroupingDefinition> groupingDefinitions) {
+    private static Set<Node> groupingDefinitionsToNodes(final Collection<? extends GroupingDefinition> groupings) {
         final Map<GroupingDefinition, Node> nodeMap = new HashMap<>();
         final Set<Node> resultNodes = new HashSet<>();
 
-        for (final GroupingDefinition groupingDefinition : groupingDefinitions) {
-            final Node node = new NodeWrappedType(groupingDefinition);
-            nodeMap.put(groupingDefinition, node);
+        for (final GroupingDefinition grouping : groupings) {
+            final Node node = new NodeWrappedType(grouping);
+            nodeMap.put(grouping, node);
             resultNodes.add(node);
         }
 
         for (final Node node : resultNodes) {
             final NodeWrappedType nodeWrappedType = (NodeWrappedType) node;
-            final GroupingDefinition groupingDefinition = (GroupingDefinition) nodeWrappedType.getWrappedType();
+            final GroupingDefinition grouping = (GroupingDefinition) nodeWrappedType.getWrappedType();
 
-            Set<UsesNode> usesNodes = getAllUsesNodes(groupingDefinition);
+            Set<UsesNode> usesNodes = getAllUsesNodes(grouping);
 
             for (UsesNode usesNode : usesNodes) {
                 Node nodeTo = nodeMap.get(usesNode.getSourceGrouping());
@@ -104,7 +107,7 @@ public class GroupingDefinitionDependencySort {
      * @param container data node container which can contain some uses of grouping
      * @return set of uses nodes which were find in <code>container</code>.
      */
-    private Set<UsesNode> getAllUsesNodes(final DataNodeContainer container) {
+    private static Set<UsesNode> getAllUsesNodes(final DataNodeContainer container) {
         Set<UsesNode> ret = new HashSet<>();
         Collection<? extends UsesNode> usesNodes = container.getUses();
         ret.addAll(usesNodes);

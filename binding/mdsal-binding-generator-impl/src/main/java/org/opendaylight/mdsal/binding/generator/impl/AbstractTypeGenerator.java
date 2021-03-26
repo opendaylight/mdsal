@@ -817,7 +817,7 @@ abstract class AbstractTypeGenerator {
      */
     private void groupingsToGenTypes(final ModuleContext context,
             final Collection<? extends GroupingDefinition> groupings) {
-        for (final GroupingDefinition grouping : new GroupingDefinitionDependencySort().sort(groupings)) {
+        for (final GroupingDefinition grouping : GroupingDefinitionDependencySort.sort(groupings)) {
             // Converts individual grouping to GeneratedType. Firstly generated type builder is created and every child
             // node of grouping is resolved to the method.
             final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(context, grouping);

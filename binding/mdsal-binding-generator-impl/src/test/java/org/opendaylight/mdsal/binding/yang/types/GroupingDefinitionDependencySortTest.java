@@ -22,9 +22,6 @@ import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class GroupingDefinitionDependencySortTest {
-    private final GroupingDefinitionDependencySort groupingDefinitionDependencySort =
-            new GroupingDefinitionDependencySort();
-
     @Test
     public void testSortMethod() {
 
@@ -83,14 +80,14 @@ public class GroupingDefinitionDependencySortTest {
         unsortedGroupingDefs.add(grp4);
         unsortedGroupingDefs.add(grp5);
 
-        List<GroupingDefinition> sortedGroupingDefs = groupingDefinitionDependencySort.sort(unsortedGroupingDefs);
+        List<GroupingDefinition> sortedGroupingDefs = GroupingDefinitionDependencySort.sort(unsortedGroupingDefs);
         assertNotNull(sortedGroupingDefs);
     }
 
     @Test
     public void testNullSort() {
         final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-            () -> groupingDefinitionDependencySort.sort(null));
+            () -> GroupingDefinitionDependencySort.sort(null));
         assertEquals("Set of Type Definitions cannot be NULL!", ex.getMessage());
     }
 }

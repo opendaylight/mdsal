@@ -46,6 +46,6 @@ public class Mdsal448Test {
     }
 
     private static List<GroupingDefinition> sortGroupings(final GroupingDefinition... groupings) {
-        return new GroupingDefinitionDependencySort().sort(Arrays.asList(groupings));
+        return GroupingDefinitionDependencySort.sort(Arrays.asList(groupings));
     }
 }
