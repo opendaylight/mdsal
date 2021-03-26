@@ -19,11 +19,10 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
  * Test specific combination of leafrefs, grouping and relative paths.
  */
 public class Mdsal519Test {
-
     @Test
     public void testNestedLeafref2() {
         final Collection<GeneratedType> types = DefaultBindingGenerator.generateFor(
-            YangParserTestUtils.parseYangResource("/mdsal-519/specific-grouping-leafref.yang"));
+            YangParserTestUtils.parseYangResource("/mdsal519.yang"));
         assertNotNull(types);
         assertEquals(4, types.size());
     }

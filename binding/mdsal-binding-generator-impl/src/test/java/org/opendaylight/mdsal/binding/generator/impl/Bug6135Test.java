@@ -20,7 +20,7 @@ public class Bug6135Test {
     @Test
     public void bug6135Test() {
         final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(
-            YangParserTestUtils.parseYangResource("/bug-6135/foo.yang"));
+            YangParserTestUtils.parseYangResource("/bug6135.yang"));
         assertEquals(5, generateTypes.size());
 
         GeneratedType genInterface = null;

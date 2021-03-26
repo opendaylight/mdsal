@@ -18,7 +18,7 @@ public class Bug4145Test {
     @Test
     public void bug4145Test() {
         List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/bug-4145/foo.yang"));
+            "/bug4145.yang"));
         assertEquals(8, generateTypes.size());
     }
 }

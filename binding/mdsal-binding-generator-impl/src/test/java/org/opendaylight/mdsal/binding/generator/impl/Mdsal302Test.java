@@ -19,7 +19,7 @@ public class Mdsal302Test {
     @Test
     public void bug4145Test() {
         List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
-            "/mdsal-302/mdsal-302.yang"));
+            "/mdsal302.yang"));
         assertNotNull(generateTypes);
         assertEquals(15, generateTypes.size());
     }

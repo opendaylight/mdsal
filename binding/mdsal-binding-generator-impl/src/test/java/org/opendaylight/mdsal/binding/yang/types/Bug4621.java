@@ -26,7 +26,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class Bug4621 {
     @Test
     public void bug4621test() {
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/bug-4621/foo.yang");
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/bug4621.yang");
         final Module moduleValid = schemaContext.findModules(URI.create("foo")).iterator().next();
         final TypeProvider typeProvider = new RuntimeTypeProvider(schemaContext);
 
