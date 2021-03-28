@@ -46,7 +46,7 @@ public abstract class AbstractBootstrapSupport implements AutoCloseable, Bootstr
     }
 
     @Override
-    public  final ServerBootstrap newServerBootstrap() {
+    public final ServerBootstrap newServerBootstrap() {
         return new ServerBootstrap().group(bossGroup, workerGroup).channel(serverChannelClass);
     }
 

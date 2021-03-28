@@ -15,10 +15,10 @@ import java.net.UnknownHostException;
 import java.time.Duration;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
-import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
@@ -61,15 +61,10 @@ public final class NettyReplicationSink {
     @Reference
     private ClusterSingletonServiceProvider singletonService;
 
-    private static final class Disabled extends AbstractRegistration {
-        @Override
-        protected void removeRegistration() {
-            // no-op
-        }
-    }
+    private Registration reg;
 
-    private NettyReplicationSink() {
-
+    public NettyReplicationSink() {
+        // Visible for DI
     }
 
     @Activate
@@ -78,8 +73,14 @@ public final class NettyReplicationSink {
         final Duration reconnectDelay = Duration.ofMillis(config.reconnectDelayMillis());
         final Duration keepaliveInterval = Duration.ofSeconds(config.keepAliveIntervalSeconds());
 
-        createSink(bootstrapSupport, dataBroker, singletonService, config.enabled(), sourceAddress,
+        reg = createSink(bootstrapSupport, dataBroker, singletonService, config.enabled(), sourceAddress,
                 config.sourcePort(), reconnectDelay, keepaliveInterval, config.maxMissedKeepalives());
+    }
+
+    @Deactivate
+    void deactivate() {
+        reg.close();
+        reg = null;
     }
 
     static Registration createSink(final BootstrapSupport bootstrap, final DOMDataBroker broker,
@@ -90,6 +91,6 @@ public final class NettyReplicationSink {
         checkArgument(maxMissedKeepalives > 0, "max-missed-keepalives %s must be greater than 0", maxMissedKeepalives);
         return enabled ? singleton.registerClusterSingletonService(new SinkSingletonService(bootstrap,
                 broker, new InetSocketAddress(sourceAddress, sourcePort), reconnectDelay, keepaliveInterval,
-                maxMissedKeepalives)) : new Disabled();
+                maxMissedKeepalives)) : new NoOpRegistration();
     }
 }
