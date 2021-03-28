@@ -17,7 +17,6 @@ import org.osgi.service.component.annotations.Deactivate;
 
 @Component(immediate = true, service = BootstrapSupport.class)
 public class OSGiBootstrapSupportProvider implements BootstrapSupport {
-
     private AbstractBootstrapSupport delegate = null;
 
     @Activate
@@ -26,7 +25,8 @@ public class OSGiBootstrapSupportProvider implements BootstrapSupport {
     }
 
     @Deactivate
-    void deactivate() {
+    void deactivate() throws InterruptedException {
+        delegate.close();
         delegate = null;
     }
 

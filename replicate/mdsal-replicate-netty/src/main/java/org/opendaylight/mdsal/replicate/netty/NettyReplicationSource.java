@@ -14,10 +14,10 @@ import java.time.Duration;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
-import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
@@ -54,15 +54,10 @@ public final class NettyReplicationSource {
     @Reference
     private ClusterSingletonServiceProvider singletonService;
 
-    private static final class Disabled extends AbstractRegistration {
-        @Override
-        protected void removeRegistration() {
-            // no-op
-        }
-    }
+    private Registration reg;
 
-    private NettyReplicationSource() {
-
+    public NettyReplicationSource() {
+        // Visible for DI
     }
 
     @Activate
@@ -71,6 +66,12 @@ public final class NettyReplicationSource {
 
         createSource(bootstrapSupport, dataBroker, singletonService, config.enabled(), config.listenPort(),
                 keepaliveInterval, config.maxMissedKeepalives());
+    }
+
+    @Deactivate
+    void deactivate() {
+        reg.close();
+        reg = null;
     }
 
     static Registration createSource(final BootstrapSupport bootstrap, final DOMDataBroker broker,
@@ -82,6 +83,6 @@ public final class NettyReplicationSource {
         verify(dtcs != null, "Missing DOMDataTreeChangeService in broker %s", broker);
         checkArgument(maxMissedKeepalives > 0, "max-missed-keepalives %s must be greater than 0", maxMissedKeepalives);
         return enabled ? singleton.registerClusterSingletonService(new SourceSingletonService(bootstrap,
-                dtcs, listenPort, keepaliveInterval, maxMissedKeepalives)) : new Disabled();
+                dtcs, listenPort, keepaliveInterval, maxMissedKeepalives)) : new NoOpRegistration();
     }
 }
