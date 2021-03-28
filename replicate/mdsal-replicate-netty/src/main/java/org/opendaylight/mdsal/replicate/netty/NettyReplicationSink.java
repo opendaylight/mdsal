@@ -68,8 +68,8 @@ public final class NettyReplicationSink {
         }
     }
 
-    private NettyReplicationSink() {
-
+    public NettyReplicationSink() {
+        // Visible for DI
     }
 
     @Activate

@@ -61,8 +61,8 @@ public final class NettyReplicationSource {
         }
     }
 
-    private NettyReplicationSource() {
-
+    public NettyReplicationSource() {
+        // Visible for DI
     }
 
     @Activate
