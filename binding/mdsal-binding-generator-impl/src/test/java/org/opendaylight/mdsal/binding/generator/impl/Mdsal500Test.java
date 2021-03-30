@@ -24,7 +24,10 @@ public class Mdsal500Test {
         assertNotNull(types);
         assertEquals(3, types.size());
 
-        final MethodSignature signature = types.get(2).getMethodDefinitions().iterator().next();
+        final List<MethodSignature> methods = types.get(2).getMethodDefinitions();
+        assertEquals(1, methods.size());
+
+        final MethodSignature signature = methods.get(0);
         assertEquals("switch$", signature.getName());
         assertEquals(3, types.size());
     }
