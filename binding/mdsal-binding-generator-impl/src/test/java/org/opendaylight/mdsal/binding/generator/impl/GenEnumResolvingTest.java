@@ -11,7 +11,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import org.junit.Test;
@@ -128,13 +127,13 @@ public class GenEnumResolvingTest {
         }
 
         assertNotNull("Expected Referenced Enum LinkUpDownTrapEnable, but was NULL!", linkUpDownTrapEnable);
-        assertTrue("Expected LinkUpDownTrapEnable of type Enumeration", linkUpDownTrapEnable instanceof Enumeration);
+        assertThat(linkUpDownTrapEnable, instanceOf(Enumeration.class));
         assertEquals(
             "org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev121115.interfaces.Interface",
             linkUpDownTrapEnable.getIdentifier().immediatelyEnclosingClass().get().toString());
 
         assertNotNull("Expected Referenced Enum OperStatus, but was NULL!", operStatus);
-        assertTrue("Expected OperStatus of type Enumeration", operStatus instanceof Enumeration);
+        assertThat(operStatus, instanceOf(Enumeration.class));
         assertEquals(
             "org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev121115.interfaces.Interface",
             operStatus.getIdentifier().immediatelyEnclosingClass().get().toString());
