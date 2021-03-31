@@ -24,7 +24,9 @@ public class Mdsal500Test {
         assertNotNull(types);
         assertEquals(3, types.size());
 
-        final List<MethodSignature> methods = types.get(2).getMethodDefinitions();
+        final GeneratedType rpcService = types.get(2);
+        assertEquals("Mdsal500Service", rpcService.getName());
+        final List<MethodSignature> methods = rpcService.getMethodDefinitions();
         assertEquals(1, methods.size());
 
         final MethodSignature signature = methods.get(0);
