@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -14,6 +17,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.util.BaseYangTypes;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GenerateInnerClassForBitsAndUnionInLeavesTest {
@@ -21,26 +25,12 @@ public class GenerateInnerClassForBitsAndUnionInLeavesTest {
     public void testInnerClassCreationForBitsAndUnionsInLeafes() {
         final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
             "/bit_and_union_in_leaf.yang"));
-        assertTrue(genTypes != null);
+        assertNotNull(genTypes);
+        assertEquals(7, genTypes.size());
 
         boolean parentContainerFound = false;
         boolean bitLeafTOFound = false;
         boolean unionLeafTOFound = false;
-
-        boolean firstBitPropertyFound = false;
-        boolean secondBitPropertyFound = false;
-        boolean thirdBitPropertyFound = false;
-
-        boolean firstBitPropertyTypeOK = false;
-        boolean secondBitPropertyTypeOK = false;
-        boolean thirdBitPropertyTypeOK = false;
-
-        boolean int32UnionPropertyFound = false;
-        boolean int32UnionPropertyTypeOK = false;
-        boolean stringUnionPropertyFound = false;
-        boolean stringUnionPropertyTypeOK = false;
-        boolean uint8UnionPropertyFound = false;
-        boolean uint8UnionPropertyTypeOK = false;
 
         for (GeneratedType type : genTypes) {
             if (!(type instanceof GeneratedTransferObject)) {
@@ -50,58 +40,58 @@ public class GenerateInnerClassForBitsAndUnionInLeavesTest {
                     List<GeneratedType> enclosedTypes = parentContainer.getEnclosedTypes();
                     for (GeneratedType genType : enclosedTypes) {
                         if (genType instanceof GeneratedTransferObject) {
-                            if (genType.getName().equals("BitLeaf")) {
-                                bitLeafTOFound = true;
-                                GeneratedTransferObject bitLeafTO = (GeneratedTransferObject) genType;
+                            final GeneratedTransferObject gto = (GeneratedTransferObject) genType;
 
-                                List<GeneratedProperty> bitLeafProperties = bitLeafTO.getProperties();
+                            if (genType.getName().equals("BitLeaf")) {
+                                assertFalse("Unexpected duplicate BitLeaf", bitLeafTOFound);
+                                bitLeafTOFound = true;
+
+                                List<GeneratedProperty> bitLeafProperties = gto.getProperties();
+                                assertEquals(3, bitLeafProperties.size());
+
+                                boolean firstBitPropertyFound = false;
+                                boolean secondBitPropertyFound = false;
+                                boolean thirdBitPropertyFound = false;
                                 for (GeneratedProperty bitLeafProperty : bitLeafProperties) {
-                                    String bitLeafPropertyType = bitLeafProperty.getReturnType().getName();
                                     if (bitLeafProperty.getName().equals("firstBit")) {
                                         firstBitPropertyFound = true;
-                                        if (bitLeafPropertyType.equals("Boolean")) {
-                                            firstBitPropertyTypeOK = true;
-                                        }
+                                        assertEquals(BaseYangTypes.BOOLEAN_TYPE, bitLeafProperty.getReturnType());
                                     } else if (bitLeafProperty.getName().equals("secondBit")) {
                                         secondBitPropertyFound = true;
-                                        if (bitLeafPropertyType.equals("Boolean")) {
-                                            secondBitPropertyTypeOK = true;
-                                        }
+                                        assertEquals(BaseYangTypes.BOOLEAN_TYPE, bitLeafProperty.getReturnType());
                                     } else if (bitLeafProperty.getName().equals("thirdBit")) {
                                         thirdBitPropertyFound = true;
-                                        if (bitLeafPropertyType.equals("Boolean")) {
-                                            thirdBitPropertyTypeOK = true;
-                                        }
+                                        assertEquals(BaseYangTypes.BOOLEAN_TYPE, bitLeafProperty.getReturnType());
                                     }
-
                                 }
-
+                                assertTrue(firstBitPropertyFound);
+                                assertTrue(secondBitPropertyFound);
+                                assertTrue(thirdBitPropertyFound);
                             } else if (genType.getName().equals("UnionLeaf")) {
+                                assertFalse("Unexpected duplicate UnionLeaf", unionLeafTOFound);
                                 unionLeafTOFound = true;
-                                GeneratedTransferObject unionLeafTO = (GeneratedTransferObject) genType;
 
-                                List<GeneratedProperty> unionLeafProperties = unionLeafTO.getProperties();
+                                List<GeneratedProperty> unionLeafProperties = gto.getProperties();
+                                assertEquals(3, unionLeafProperties.size());
+
+                                boolean int32UnionPropertyFound = false;
+                                boolean stringUnionPropertyFound = false;
+                                boolean uint8UnionPropertyFound = false;
                                 for (GeneratedProperty unionLeafProperty : unionLeafProperties) {
-                                    String unionLeafPropertyType = unionLeafProperty.getReturnType().getName();
                                     if (unionLeafProperty.getName().equals("int32")) {
                                         int32UnionPropertyFound = true;
-                                        if (unionLeafPropertyType.equals("Integer")) {
-                                            int32UnionPropertyTypeOK = true;
-                                        }
+                                        assertEquals(BaseYangTypes.INT32_TYPE, unionLeafProperty.getReturnType());
                                     } else if (unionLeafProperty.getName().equals("string")) {
                                         stringUnionPropertyFound = true;
-                                        if (unionLeafPropertyType.equals("String")) {
-                                            stringUnionPropertyTypeOK = true;
-                                        }
+                                        assertEquals(BaseYangTypes.STRING_TYPE, unionLeafProperty.getReturnType());
                                     } else if (unionLeafProperty.getName().equals("uint8")) {
                                         uint8UnionPropertyFound = true;
-                                        if (unionLeafPropertyType.equals("Uint8")) {
-                                            uint8UnionPropertyTypeOK = true;
-                                        }
+                                        assertEquals(BaseYangTypes.UINT8_TYPE, unionLeafProperty.getReturnType());
                                     }
-
                                 }
-
+                                assertTrue(int32UnionPropertyFound);
+                                assertTrue(stringUnionPropertyFound);
+                                assertTrue(uint8UnionPropertyFound);
                             }
                         }
                     }
@@ -109,23 +99,7 @@ public class GenerateInnerClassForBitsAndUnionInLeavesTest {
             }
         }
         assertTrue(parentContainerFound);
-
         assertTrue(bitLeafTOFound);
-        assertTrue(firstBitPropertyFound);
-        assertTrue(secondBitPropertyFound);
-        assertTrue(thirdBitPropertyFound);
-
-        assertTrue(firstBitPropertyTypeOK);
-        assertTrue(secondBitPropertyTypeOK);
-        assertTrue(thirdBitPropertyTypeOK);
-
         assertTrue(unionLeafTOFound);
-        assertTrue(int32UnionPropertyFound);
-        assertTrue(int32UnionPropertyTypeOK);
-        assertTrue(stringUnionPropertyFound);
-        assertTrue(stringUnionPropertyTypeOK);
-        assertTrue(uint8UnionPropertyFound);
-        assertTrue(uint8UnionPropertyTypeOK);
-
     }
 }
