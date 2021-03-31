@@ -34,19 +34,22 @@ public class UnionTypeDefTest {
         final List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(
             YangParserTestUtils.parseYangResource("/bug8449.yang"));
         assertNotNull(generateTypes);
-        for (final GeneratedType type : generateTypes) {
-            if (type.getName().equals("Cont")) {
-                final GeneratedType refType = type.getEnclosedTypes().iterator().next();
-                for (final GeneratedProperty generatedProperty : refType.getProperties()) {
-                    switch (generatedProperty.getName()) {
-                        case "stringRefValue":
-                            assertEquals(Types.STRING, generatedProperty.getReturnType());
-                            break;
-                        default:
-                            // ignore
-                    }
-                }
-            }
-        }
+        assertEquals(6, generateTypes.size());
+
+        final GeneratedType cont = generateTypes.stream()
+            .filter(type -> type.getName().equals("Cont"))
+            .findFirst()
+            .orElseThrow();
+
+        final List<GeneratedType> enclosedTypes = cont.getEnclosedTypes();
+        assertEquals(1, enclosedTypes.size());
+
+        final GeneratedType refType = enclosedTypes.get(0);
+        final List<GeneratedProperty> properties = refType.getProperties();
+        assertEquals(1, properties.size());
+
+        final GeneratedProperty property = properties.get(0);
+        assertEquals("stringRefValue", property.getName());
+        assertEquals(Types.STRING, property.getReturnType());
     }
 }
