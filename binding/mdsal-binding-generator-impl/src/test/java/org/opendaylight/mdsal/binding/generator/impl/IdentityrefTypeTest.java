@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.net.URI;
@@ -21,6 +22,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class IdentityrefTypeTest {
@@ -52,34 +54,28 @@ public class IdentityrefTypeTest {
     public void testIdentityrefYangBuiltInType() {
         final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(
             YangParserTestUtils.parseYangFiles(testModels));
+        assertEquals(2, genTypes.size());
 
-        GeneratedType moduleGenType = null;
-        for (GeneratedType type : genTypes) {
-            if (type.getName().equals("ModuleIdentityrefData")) {
-                moduleGenType = type;
-            }
-        }
+        GeneratedType moduleGenType = genTypes.stream()
+            .filter(type -> type.getName().equals("ModuleIdentityrefData"))
+            .findFirst()
+            .orElseThrow();
 
-        assertNotNull("Generated type for whole module wasn't found", moduleGenType);
-
-        String typeName = null;
-        String actualTypeName = "";
-        int numOfActualTypes = 0;
         List<MethodSignature> methodSignatures = moduleGenType.getMethodDefinitions();
-        for (MethodSignature methodSignature : methodSignatures) {
-            if (methodSignature.getName().equals("getLf")) {
-                Type returnType = methodSignature.getReturnType();
-                if (returnType instanceof ParameterizedType) {
-                    typeName = returnType.getName();
-                    Type[] actualTypes = ((ParameterizedType) returnType).getActualTypeArguments();
-                    numOfActualTypes = actualTypes.length;
-                    actualTypeName = actualTypes[0].getName();
-                }
-            }
-        }
-        assertNotNull("The method 'getLf' was not found", typeName);
-        assertEquals("Return type has incorrect name", "Class", typeName);
-        assertEquals("Incorrect number of type parameters", 1, numOfActualTypes);
-        assertEquals("Return type has incorrect actual parameter", "SomeIdentity", actualTypeName);
+        assertEquals(1, methodSignatures.size());
+
+        MethodSignature methodSignature = methodSignatures.get(0);
+        assertEquals("getLf", methodSignature.getName());
+
+        Type returnType = methodSignature.getReturnType();
+        assertThat(returnType, instanceOf(ParameterizedType.class));
+        ParameterizedType parameterized = (ParameterizedType) returnType;
+        assertEquals(Types.CLASS, parameterized.getRawType());
+
+        Type[] actualTypes = parameterized.getActualTypeArguments();
+        assertEquals("Incorrect number of type parameters", 1, actualTypes.length);
+        assertEquals("Return type has incorrect actual parameter",
+            "org.opendaylight.yang.gen.v1.urn.identityref.module.rev131109.SomeIdentity",
+            actualTypes[0].getFullyQualifiedName());
     }
 }
