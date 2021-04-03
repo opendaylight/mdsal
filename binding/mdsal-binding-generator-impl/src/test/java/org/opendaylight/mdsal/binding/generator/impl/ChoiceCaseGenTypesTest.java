@@ -18,40 +18,11 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
-public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
-
-    public ChoiceCaseGenTypesTest() {
-        super(ChoiceCaseGenTypesTest.class.getResource("/choice-case-type-test-models"));
-    }
-
-    private static GeneratedType checkGeneratedType(final List<GeneratedType> genTypes, final String genTypeName,
-            final String packageName, final int occurences) {
-        GeneratedType searchedGenType = null;
-        int searchedGenTypeCounter = 0;
-        for (GeneratedType genType : genTypes) {
-            if (!(genType instanceof GeneratedTransferObject)) {
-                if (genType.getName().equals(genTypeName) && genType.getPackageName().equals(packageName)) {
-                    searchedGenType = genType;
-                    searchedGenTypeCounter++;
-                }
-            }
-        }
-        assertNotNull("Generated type " + genTypeName + " wasn't found", searchedGenType);
-        assertEquals(genTypeName + " generated type has incorrect number of occurences.", occurences,
-                searchedGenTypeCounter);
-        return searchedGenType;
-
-    }
-
-    private static GeneratedType checkGeneratedType(final List<GeneratedType> genTypes, final String genTypeName,
-            final String packageName) {
-        return checkGeneratedType(genTypes, genTypeName, packageName, 1);
-    }
-
+public class ChoiceCaseGenTypesTest {
     @Test
     public void choiceCaseResolvingTypeTest() {
         final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(
-            YangParserTestUtils.parseYangFiles(testModels));
+            YangParserTestUtils.parseYangResourceDirectory("/choice-case-type-test-models"));
 
         assertNotNull("genTypes is null", genTypes);
         assertEquals(40, genTypes.size());
@@ -163,5 +134,29 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
         genType = checkGeneratedType(genTypes, "Yang", pcgPref + ".netconf.state.datastores.datastore.storage.format");
         containsMethods(genType, new NameTypePattern("getYangFileName", "String"));
         containsInterface("StorageFormat", genType);
+    }
+
+    private static GeneratedType checkGeneratedType(final List<GeneratedType> genTypes, final String genTypeName,
+            final String packageName, final int occurences) {
+        GeneratedType searchedGenType = null;
+        int searchedGenTypeCounter = 0;
+        for (GeneratedType genType : genTypes) {
+            if (!(genType instanceof GeneratedTransferObject)) {
+                if (genType.getName().equals(genTypeName) && genType.getPackageName().equals(packageName)) {
+                    searchedGenType = genType;
+                    searchedGenTypeCounter++;
+                }
+            }
+        }
+        assertNotNull("Generated type " + genTypeName + " wasn't found", searchedGenType);
+        assertEquals(genTypeName + " generated type has incorrect number of occurences.", occurences,
+            searchedGenTypeCounter);
+        return searchedGenType;
+
+    }
+
+    private static GeneratedType checkGeneratedType(final List<GeneratedType> genTypes, final String genTypeName,
+        final String packageName) {
+        return checkGeneratedType(genTypes, genTypeName, packageName, 1);
     }
 }

@@ -22,16 +22,11 @@ import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
-public class AugmentRelativeXPathTest extends AbstractTypesTest {
-
-    public AugmentRelativeXPathTest() {
-        super(AugmentRelativeXPathTest.class.getResource("/augment-relative-xpath-models"));
-    }
-
+public class AugmentRelativeXPathTest {
     @Test
     public void testAugmentationWithRelativeXPath() {
         final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(
-            YangParserTestUtils.parseYangFiles(testModels));
+            YangParserTestUtils.parseYangResourceDirectory("/augment-relative-xpath-models"));
         assertNotNull("genTypes is null", genTypes);
         assertEquals(26, genTypes.size());
 
@@ -118,5 +113,4 @@ public class AugmentRelativeXPathTest extends AbstractTypesTest {
         assertNotNull("Tunnel is null", gtTunnel);
         assertNotNull("TunnelKey is null", gtTunnelKey);
     }
-
 }
