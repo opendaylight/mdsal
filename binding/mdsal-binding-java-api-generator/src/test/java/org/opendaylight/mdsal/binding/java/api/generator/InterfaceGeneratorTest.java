@@ -23,7 +23,7 @@ import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.Types;
 
-public class InterfaceGeneratorTest {
+public class InterfaceGeneratorTest extends BaseGeneratorTest{
     private static final String TEST = "test";
     private static final JavaTypeName TYPE_NAME = JavaTypeName.create(TEST, TEST);
 
