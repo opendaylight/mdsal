@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import org.junit.BeforeClass;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingGenerator;
+import org.opendaylight.mdsal.binding.java.api.generator.BaseGeneratorTest;
 import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile;
 import org.opendaylight.mdsal.binding.java.api.generator.YangModuleInfoTemplate;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -30,7 +31,7 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
-public abstract class BaseCompilationTest {
+public abstract class BaseCompilationTest extends BaseGeneratorTest {
 
     @BeforeClass
     public static void createTestDirs() {

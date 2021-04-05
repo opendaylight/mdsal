@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class FileSearchUtil {
-    private static final String LS = System.lineSeparator();
     static final String TAB = "    ";
     static final String DOUBLE_TAB = TAB.repeat(2);
     static final String TRIPLE_TAB = TAB.repeat(3);
@@ -38,7 +37,7 @@ final class FileSearchUtil {
         for (final String line : lines) {
             assertFileContains(fileContent, line);
         }
-        assertFileContains(fileContent, String.join(LS, lines));
+        assertFileContains(fileContent, String.join(System.lineSeparator(), lines));
     }
 
     static Map<String, File> getFiles(final File path) {
