@@ -27,6 +27,7 @@ import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -96,7 +97,8 @@ public class BindingGeneratorUtilTest {
             JavaTypeName.create("org.opendaylight.yangtools.test", "TestType"));
         genTypeBuilder.addMethod("testMethod");
         genTypeBuilder.addAnnotation("org.opendaylight.yangtools.test.annotation", "AnnotationTest");
-        genTypeBuilder.addEnclosingTransferObject("testObject");
+        genTypeBuilder.addEnclosingTransferObject(new CodegenGeneratedTOBuilder(genTypeBuilder.getIdentifier()
+            .createEnclosed("testObject")).build());
         genTypeBuilder.addProperty("newProp");
         GeneratedTypeBuilder genType = new CodegenGeneratedTypeBuilder(
             JavaTypeName.create("org.opendaylight.yangtools.test", "Type2"));

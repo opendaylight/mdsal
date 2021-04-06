@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
@@ -245,15 +246,9 @@ public class GeneratedTypeBuilderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void addEnclosingTransferObjectIllegalArgumentTest() {
-        new CodegenGeneratedTypeBuilder(JavaTypeName.create("my.package", "MyName")).addEnclosingTransferObject(
-            (String) null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void addEnclosingTransferObjectIllegalArgumentTest2() {
         new CodegenGeneratedTypeBuilder(JavaTypeName.create("my.package", "MyName")).addEnclosingTransferObject(
-            (GeneratedTOBuilder) null);
+            (GeneratedTransferObject) null);
     }
 
     @Test
@@ -261,14 +256,16 @@ public class GeneratedTypeBuilderTest {
         GeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder(
             JavaTypeName.create("my.package", "MyName"));
 
-        GeneratedTOBuilder enclosingTransferObject = generatedTypeBuilder.addEnclosingTransferObject("myTOName");
-        GeneratedTOBuilder enclosingTransferObject2 = generatedTypeBuilder.addEnclosingTransferObject("myTOName2");
-        assertEquals(generatedTypeBuilder, generatedTypeBuilder.addEnclosingTransferObject(
-            new CodegenGeneratedTOBuilder(generatedTypeBuilder.getIdentifier().createEnclosed("myTOName3"))));
+        GeneratedTOBuilder enclosingTransferObject = new CodegenGeneratedTOBuilder(generatedTypeBuilder.getIdentifier()
+            .createEnclosed("myTOName"));
+        GeneratedTOBuilder enclosingTransferObject2 = new CodegenGeneratedTOBuilder(generatedTypeBuilder.getIdentifier()
+            .createEnclosed("myTOName2"));
+        GeneratedTOBuilder enclosingTransferObject3 = new CodegenGeneratedTOBuilder(generatedTypeBuilder.getIdentifier()
+            .createEnclosed("myTOName3"));
 
-        assertNotNull(enclosingTransferObject);
-        assertNotNull(enclosingTransferObject2);
-
+        generatedTypeBuilder.addEnclosingTransferObject(enclosingTransferObject.build());
+        generatedTypeBuilder.addEnclosingTransferObject(enclosingTransferObject2.build());
+        generatedTypeBuilder.addEnclosingTransferObject(enclosingTransferObject3.build());
         GeneratedType instance = generatedTypeBuilder.build();
         List<GeneratedType> enclosedTypes = instance.getEnclosedTypes();
 
@@ -276,8 +273,7 @@ public class GeneratedTypeBuilderTest {
 
         assertTrue(enclosedTypes.contains(enclosingTransferObject.build()));
         assertTrue(enclosedTypes.contains(enclosingTransferObject2.build()));
-        assertTrue(enclosedTypes.contains(new CodegenGeneratedTOBuilder(
-            generatedTypeBuilder.getIdentifier().createEnclosed("myTOName3")).build()));
+        assertTrue(enclosedTypes.contains(enclosingTransferObject3.build()));
         assertFalse(enclosedTypes.contains(new CodegenGeneratedTOBuilder(
             generatedTypeBuilder.getIdentifier().createEnclosed("myTOName4")).build()));
     }

@@ -212,8 +212,10 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
                 tmp.add(new RpcGenerator((RpcEffectiveStatement) stmt, this));
             } else if (stmt instanceof TypedefEffectiveStatement) {
                 tmp.add(new TypedefGenerator((TypedefEffectiveStatement) stmt, this));
-            } else if (stmt instanceof AugmentEffectiveStatement && includeAugments) {
-                tmp.add(new AugmentGenerator((AugmentEffectiveStatement) stmt, this));
+            } else if (stmt instanceof AugmentEffectiveStatement) {
+                if (includeAugments) {
+                    tmp.add(new AugmentGenerator((AugmentEffectiveStatement) stmt, this));
+                }
             } else {
                 LOG.trace("Ignoring statement {}", stmt);
                 continue;
