@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.model.api.type.builder;
 
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
-import org.opendaylight.mdsal.binding.model.api.Type;
 
 /**
  * Generated Property Builder is interface that contains methods to build and instantiate Generated Property definition.
@@ -35,8 +34,7 @@ public interface GeneratedPropertyBuilder extends TypeMemberBuilder<GeneratedPro
      * as <code>null</code> reference the method SHOULD thrown
      * {@link IllegalArgumentException}.
      *
-     * @param definingType Defining Type of Generated Property
      * @return <code>new</code> <i>immutable</i> instance of Generated Property.
      */
-    GeneratedProperty toInstance(Type definingType);
+    GeneratedProperty toInstance();
 }

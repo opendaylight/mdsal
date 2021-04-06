@@ -50,12 +50,9 @@ public class GeneratedTypeBuilderTest {
         Constant constant2 = generatedTypeBuilder.addConstant(
                 Types.typeForClass(int.class, BindingGeneratorUtil.getRestrictions(null)), "myIntConstant", 1);
 
-        Constant constant3 = new ConstantImpl(generatedTypeBuilder, Types.typeForClass(String.class), "myConstant",
-                "myConstantValue");
-        final Constant constant4 = new ConstantImpl(generatedTypeBuilder, Types.typeForClass(String.class),
-            "myConstant2", "myConstantValue");
-        final Constant constant5 = new ConstantImpl(generatedTypeBuilder, Types.typeForClass(String.class),
-            "myConstant", "myConstantValue2");
+        Constant constant3 = new ConstantImpl(Types.typeForClass(String.class), "myConstant", "myConstantValue");
+        final Constant constant4 = new ConstantImpl(Types.typeForClass(String.class), "myConstant2", "myConstantValue");
+        final Constant constant5 = new ConstantImpl(Types.typeForClass(String.class), "myConstant", "myConstantValue2");
 
         assertNotNull(constant);
         assertNotNull(constant2);
@@ -79,8 +76,8 @@ public class GeneratedTypeBuilderTest {
         assertFalse(constant.hashCode() == constant4.hashCode());
         assertTrue(constant.hashCode() == constant5.hashCode());
 
-        assertEquals("Constant [type=Type (java.lang.String), name=myConstant, value=myConstantValue, "
-                + "definingType=my.package.MyName]", constant.toString());
+        assertEquals("Constant [type=Type (java.lang.String), name=myConstant, value=myConstantValue]",
+            constant.toString());
 
         assertEquals("Type (java.lang.String) myConstant myConstantValue", constant.toFormattedString());
 
@@ -97,7 +94,6 @@ public class GeneratedTypeBuilderTest {
         assertEquals("myConstant", constant.getName());
         assertEquals("myConstantValue", constant.getValue());
         assertEquals(Types.typeForClass(String.class), constant.getType());
-        assertEquals(generatedTypeBuilder, constant.getDefiningType());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -158,10 +154,10 @@ public class GeneratedTypeBuilderTest {
 
         assertEquals(2, properties.size());
 
-        assertTrue(properties.contains(propertyBuilder.toInstance(instance)));
-        assertTrue(properties.contains(propertyBuilder2.toInstance(instance)));
+        assertTrue(properties.contains(propertyBuilder.toInstance()));
+        assertTrue(properties.contains(propertyBuilder2.toInstance()));
         // assertTrue(properties.contains(propertyBuilderNull.toInstance(instance)));
-        assertFalse(properties.contains(new GeneratedPropertyBuilderImpl("myProperty3").toInstance(instance)));
+        assertFalse(properties.contains(new GeneratedPropertyBuilderImpl("myProperty3").toInstance()));
 
     }
 
@@ -217,11 +213,10 @@ public class GeneratedTypeBuilderTest {
 
         assertEquals(2, enumerations.size());
 
-        assertTrue(enumerations.contains(enumBuilder.toInstance(instance)));
-        assertTrue(enumerations.contains(enumBuilder2.toInstance(instance)));
+        assertTrue(enumerations.contains(enumBuilder.toInstance()));
+        assertTrue(enumerations.contains(enumBuilder2.toInstance()));
         assertFalse(enumerations.contains(new CodegenEnumerationBuilder(JavaTypeName.create("my.package",
-            "myEnumName3"))
-            .toInstance(instance)));
+            "myEnumName3")).toInstance()));
 
     }
 

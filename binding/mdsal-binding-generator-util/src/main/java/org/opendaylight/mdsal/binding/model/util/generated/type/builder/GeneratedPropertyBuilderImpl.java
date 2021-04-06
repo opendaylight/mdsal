@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 import java.util.List;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 
 public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilder<GeneratedPropertyBuilder>
@@ -41,10 +40,10 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
     }
 
     @Override
-    public GeneratedProperty toInstance(final Type definingType) {
+    public GeneratedProperty toInstance() {
         final List<AnnotationType> annotations = toAnnotationTypes();
-        return new GeneratedPropertyImpl(definingType, getName(), annotations, getComment(), getAccessModifier(),
-                getReturnType(), isFinal(), isStatic(), this.readOnly, this.value);
+        return new GeneratedPropertyImpl(getName(), annotations, getComment(), getAccessModifier(), getReturnType(),
+            isFinal(), isStatic(), this.readOnly, this.value);
     }
 
     @Override

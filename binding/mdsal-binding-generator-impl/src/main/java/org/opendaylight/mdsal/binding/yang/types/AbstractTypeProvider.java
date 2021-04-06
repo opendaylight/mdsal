@@ -635,7 +635,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         enumBuilder.setModuleName(module.getName());
         enumBuilder.setSchemaPath(enumTypeDef.getPath());
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
-        return enumBuilder.toInstance(null);
+        return enumBuilder.toInstance();
     }
 
     /**
@@ -669,7 +669,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
         addEnumDescription(enumBuilder, enumTypeDef);
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
-        return enumBuilder.toInstance(enumBuilder);
+        return enumBuilder.toInstance();
     }
 
     public abstract void addEnumDescription(EnumBuilder enumBuilder, EnumTypeDefinition enumTypeDef);

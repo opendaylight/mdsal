@@ -87,7 +87,7 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
             if (builder.suid == null) {
                 this.suid = null;
             } else {
-                this.suid = builder.suid.toInstance(GTO.this);
+                this.suid = builder.suid.toInstance();
             }
         }
 

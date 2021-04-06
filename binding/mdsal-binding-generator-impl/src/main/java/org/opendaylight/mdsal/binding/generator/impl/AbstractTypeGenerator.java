@@ -847,7 +847,7 @@ abstract class AbstractTypeGenerator {
         final EnumBuilder enumBuilder = typeBuilder.addEnumeration(BindingMapping.getClassName(enumName));
         typeProvider.addEnumDescription(enumBuilder, enumTypeDef);
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
-        final Enumeration ret = enumBuilder.toInstance(typeBuilder);
+        final Enumeration ret = enumBuilder.toInstance();
         context.addTypeToSchema(ret, enumTypeDef);
         context.addInnerTypedefType(enumTypeDef.getPath(), ret);
         return ret;

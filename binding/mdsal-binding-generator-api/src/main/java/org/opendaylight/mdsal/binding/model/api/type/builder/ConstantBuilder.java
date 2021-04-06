@@ -8,11 +8,10 @@
 package org.opendaylight.mdsal.binding.model.api.type.builder;
 
 import org.opendaylight.mdsal.binding.model.api.Constant;
-import org.opendaylight.mdsal.binding.model.api.Type;
 
 public interface ConstantBuilder {
 
     void assignValue(Object value);
 
-    Constant toInstance(Type definingType);
+    Constant toInstance();
 }

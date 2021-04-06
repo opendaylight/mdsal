@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -51,8 +50,8 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
     }
 
     @Override
-    public Enumeration toInstance(final Type definingType) {
-        return new EnumerationImpl(this, definingType);
+    public Enumeration toInstance() {
+        return new EnumerationImpl(this);
     }
 
     @Override
@@ -96,8 +95,8 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
         private final String moduleName;
         private final SchemaPath schemaPath;
 
-        EnumerationImpl(final CodegenEnumerationBuilder builder, final Type definingType) {
-            super(builder, definingType);
+        EnumerationImpl(final CodegenEnumerationBuilder builder) {
+            super(builder);
             this.description = builder.description;
             this.moduleName = builder.moduleName;
             this.schemaPath = builder.schemaPath;

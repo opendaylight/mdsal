@@ -35,7 +35,7 @@ public class GeneratedPropertyBuilderImplTest {
                 + "(java.lang.Boolean), isFinal=true, isReadOnly=false, modifier=PUBLIC]",
                 generatedPropertyBuilderImpl.toString());
 
-        GeneratedProperty instance = generatedPropertyBuilderImpl.toInstance(null);
+        GeneratedProperty instance = generatedPropertyBuilderImpl.toInstance();
 
         assertNotNull(instance);
 

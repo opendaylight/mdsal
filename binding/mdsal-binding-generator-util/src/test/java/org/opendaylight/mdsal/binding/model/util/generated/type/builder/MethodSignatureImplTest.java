@@ -45,18 +45,18 @@ public class MethodSignatureImplTest {
         boolean isAbstract = false;
         boolean isStatic = false;
 
-        signature1 = new MethodSignatureImpl(type, name, annotations, comment,
+        signature1 = new MethodSignatureImpl(name, annotations, comment,
                 accessModifier, returnType, params, isFinal, isAbstract,
                 isStatic);
-        signature2 = new MethodSignatureImpl(type, name, annotations, comment,
+        signature2 = new MethodSignatureImpl(name, annotations, comment,
                 accessModifier, returnType, params, isFinal, isAbstract,
                 isStatic);
         returnType = null;
-        signature3 = new MethodSignatureImpl(type, name, annotations, comment,
+        signature3 = new MethodSignatureImpl(name, annotations, comment,
                 accessModifier, returnType, params, isFinal, isAbstract,
                 isStatic);
         name = null;
-        signature4 = new MethodSignatureImpl(type, name, annotations, comment,
+        signature4 = new MethodSignatureImpl(name, annotations, comment,
                 accessModifier, returnType, params, isFinal, isAbstract,
                 isStatic);
 

@@ -8,27 +8,15 @@
 package org.opendaylight.mdsal.binding.model.api;
 
 /**
- * Interface Contact is designed to hold and model java constant. In Java there
- * are no constant keywords instead of the constant is defined as static final
- * field with assigned value. For this purpose the Constant interface contains
- * methods {@link #getType()} to provide wrapped return Type of Constant,
- * {@link #getName()} the Name of constant and the {@link #getValue()} for
- * providing of value assigned to Constant. To determine of which type the
- * constant value is it is recommended firstly to retrieve Type from constant.
- * The Type interface holds base information like java package name and java
- * type name (e.g. fully qualified name). From this string user should be able
- * to determine to which type can be {@link #getValue()} type typecasted to
- * unbox and provide value assigned to constant.
+ * Interface Contact is designed to hold and model java constant. In Java there are no constant keywords instead of the
+ * constant is defined as static final field with assigned value. For this purpose the Constant interface contains
+ * methods {@link #getType()} to provide wrapped return Type of Constant, {@link #getName()} the Name of constant and
+ * the {@link #getValue()} for providing of value assigned to Constant. To determine of which type the constant value is
+ * it is recommended firstly to retrieve Type from constant. The Type interface holds base information like java package
+ * name and java type name (e.g. fully qualified name). From this string user should be able to determine to which type
+ * can be {@link #getValue()} type typecasted to unbox and provide value assigned to constant.
  */
 public interface Constant {
-
-    /**
-     * Returns the Type that declares constant.
-     *
-     * @return the Type that declares constant.
-     */
-    Type getDefiningType();
-
     /**
      * Returns the return Type (or just Type) of the Constant.
      *

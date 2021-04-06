@@ -15,17 +15,6 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
  */
 public interface Enumeration extends GeneratedType {
     /**
-     * Returns list of annotation definitions associated with enumeration type.
-     *
-     * @return list of annotation definitions associated with enumeration type.
-     */
-    @Override
-    List<AnnotationType> getAnnotations();
-
-    @Override
-    Type getParentType();
-
-    /**
      * Returns list of the couples - name and value.
      *
      * @return list of the enumeration pairs.

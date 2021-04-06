@@ -19,17 +19,15 @@ abstract class AbstractTypeMember implements TypeMember {
 
     private final String name;
     private final TypeMemberComment comment;
-    private final Type definingType;
     private final Type returnType;
     private final List<AnnotationType> annotations;
     private final boolean isFinal;
     private final boolean isStatic;
     private final AccessModifier accessModifier;
 
-    protected AbstractTypeMember(final Type definingType, final String name,  final List<AnnotationType> annotations,
+    protected AbstractTypeMember(final String name,  final List<AnnotationType> annotations,
             final TypeMemberComment comment, final AccessModifier accessModifier, final Type returnType,
             final boolean isFinal, final boolean isStatic) {
-        this.definingType = definingType;
         this.name = name;
         this.annotations = annotations;
         this.comment = comment;
@@ -52,11 +50,6 @@ abstract class AbstractTypeMember implements TypeMember {
     @Override
     public TypeMemberComment getComment() {
         return comment;
-    }
-
-    @Override
-    public Type getDefiningType() {
-        return this.definingType;
     }
 
     @Override
@@ -98,17 +91,12 @@ abstract class AbstractTypeMember implements TypeMember {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder()
+        return new StringBuilder()
             .append("AbstractTypeMember [name=").append(getName())
             .append(", comment=").append(getComment())
-            .append(", definingType=");
-        if (getDefiningType() != null) {
-            builder.append(getDefiningType().getPackageName()).append('.').append(getDefiningType().getName());
-        } else {
-            builder.append(" null");
-        }
-        return builder.append(", returnType=").append(getReturnType())
+            .append(", returnType=").append(getReturnType())
             .append(", annotations=").append(getAnnotations())
-            .append(']').toString();
+            .append(']')
+            .toString();
     }
 }

@@ -16,28 +16,23 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 
 public class ConstantImplTest {
-
     @Test
     public void testMethodsOfConstantImpl() {
-        final CodegenGeneratedTypeBuilder definingType = new CodegenGeneratedTypeBuilder(
-            JavaTypeName.create("org.opendaylight.yangtools.test", "DefiningType"));
         final CodegenGeneratedTypeBuilder type = new CodegenGeneratedTypeBuilder(
             JavaTypeName.create("org.opendaylight.yangtools.test.v1", "BaseType"));
-        final ConstantImpl constImpl = new ConstantImpl(definingType, type, "IpAddress", "127.0.0.1");
-        final ConstantImpl constImpl2 = new ConstantImpl(definingType, type, "IpAddress", "127.0.0.1");
-        final ConstantImpl constImpl3 = new ConstantImpl(definingType, type, "IpAddress", "127.0.0.0");
+        final ConstantImpl constImpl = new ConstantImpl(type, "IpAddress", "127.0.0.1");
+        final ConstantImpl constImpl2 = new ConstantImpl(type, "IpAddress", "127.0.0.1");
+        final ConstantImpl constImpl3 = new ConstantImpl(type, "IpAddress", "127.0.0.0");
         final ConstantImpl constImpl4 = constImpl;
-        final ConstantImpl constImpl5 = new ConstantImpl(definingType, type, null, "127.0.0.0");
-        final ConstantImpl constImpl6 = new ConstantImpl(definingType, type, "IpAddress", null);
+        final ConstantImpl constImpl5 = new ConstantImpl(type, null, "127.0.0.0");
+        final ConstantImpl constImpl6 = new ConstantImpl(type, "IpAddress", null);
 
-        assertEquals("DefiningType", constImpl.getDefiningType().getName());
         assertEquals("BaseType", constImpl.getType().getName());
         assertEquals("IpAddress", constImpl.getName());
         assertEquals("127.0.0.1", constImpl.getValue());
         assertTrue(constImpl.toFormattedString().contains("GeneratedTransferObject"));
         assertTrue(constImpl.toString().contains("GeneratedTransferObject"));
         assertEquals(constImpl.hashCode(), constImpl2.hashCode());
-        assertNotNull(constImpl.getDefiningType());
         assertNotNull(constImpl.getType());
         assertNotNull(constImpl.getName());
         assertNotNull(constImpl.getValue());

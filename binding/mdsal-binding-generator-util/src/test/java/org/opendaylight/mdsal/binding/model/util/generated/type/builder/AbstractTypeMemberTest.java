@@ -36,7 +36,8 @@ public class AbstractTypeMemberTest {
         assertTrue(genProperty.isFinal());
         assertTrue(genProperty.isStatic());
         assertEquals(genProperty.hashCode(), genProperty2.hashCode());
-        assertTrue(genProperty.toString().contains("org.opendaylight.yangtools.test.TestType"));
+        assertEquals("MethodSignatureImpl [name=TestProperty, comment=TypeMemberComment{contract=test comment}, "
+            + "returnType=null, params=[], annotations=[]]", genProperty.toString());
         assertNotNull(genProperty.toString());
         assertTrue(genProperty.equals(genProperty2));
         assertFalse(genProperty.equals(null));

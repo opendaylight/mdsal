@@ -31,13 +31,6 @@ import java.util.Optional;
  */
 public interface GeneratedType extends Type, DocumentedType {
     /**
-     * Returns the parent type if Generated Type is defined as enclosing type, otherwise returns <code>null</code>.
-     *
-     * @return the parent type if Generated Type is defined as enclosing type, otherwise returns <code>null</code>
-     */
-    Type getParentType();
-
-    /**
      * Returns comment string associated with Generated Type.
      *
      * @return comment string associated with Generated Type.

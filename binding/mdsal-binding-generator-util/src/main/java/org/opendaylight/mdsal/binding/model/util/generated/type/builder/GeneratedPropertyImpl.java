@@ -18,10 +18,10 @@ final class GeneratedPropertyImpl extends AbstractTypeMember implements Generate
     private final String value;
     private final boolean readOnly;
 
-    GeneratedPropertyImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
-            final TypeMemberComment comment, final AccessModifier accessModifier, final Type returnType,
-            final boolean isFinal, final boolean isStatic, final boolean isReadOnly, final String value) {
-        super(definingType, name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
+    GeneratedPropertyImpl(final String name, final List<AnnotationType> annotations, final TypeMemberComment comment,
+            final AccessModifier accessModifier, final Type returnType, final boolean isFinal, final boolean isStatic,
+            final boolean isReadOnly, final String value) {
+        super(name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
         this.value = value;
         this.readOnly = isReadOnly;
     }
@@ -38,20 +38,15 @@ final class GeneratedPropertyImpl extends AbstractTypeMember implements Generate
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder()
+        return new StringBuilder()
             .append("GeneratedPropertyImpl [name=").append(getName())
             .append(", annotations=").append(getAnnotations())
             .append(", comment=").append(getComment())
-            .append(", parent=");
-        if (getDefiningType() != null) {
-            builder.append(getDefiningType().getPackageName()).append(".").append(getDefiningType().getName());
-        } else {
-            builder.append("null");
-        }
-        return builder.append(", returnType=").append(getReturnType())
+            .append(", returnType=").append(getReturnType())
             .append(", isFinal=").append(isFinal())
             .append(", isReadOnly=").append(readOnly)
             .append(", modifier=").append(getAccessModifier())
-            .append(']').toString();
+            .append(']')
+            .toString();
     }
 }

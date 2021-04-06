@@ -20,7 +20,7 @@ public interface EnumBuilder extends Type, AnnotableTypeBuilder {
 
     void setDescription(String description);
 
-    Enumeration toInstance(Type definingType);
+    Enumeration toInstance();
 
     /**
      * Updates this builder with data from <code>enumTypeDef</code>. Specifically this data represents list

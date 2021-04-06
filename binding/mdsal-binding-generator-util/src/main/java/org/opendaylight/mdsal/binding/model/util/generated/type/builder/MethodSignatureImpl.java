@@ -26,18 +26,18 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
     private final boolean isDefault;
 
     @VisibleForTesting
-    MethodSignatureImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
-        final TypeMemberComment comment, final AccessModifier accessModifier, final Type returnType,
-        final List<Parameter> params, final boolean isFinal, final boolean isAbstract, final boolean isStatic) {
-        this(definingType, name, annotations, comment, accessModifier, returnType, params, isFinal, isAbstract,
-            isStatic, false, ValueMechanics.NORMAL);
+    MethodSignatureImpl(final String name, final List<AnnotationType> annotations,
+            final TypeMemberComment comment, final AccessModifier accessModifier, final Type returnType,
+            final List<Parameter> params, final boolean isFinal, final boolean isAbstract, final boolean isStatic) {
+        this(name, annotations, comment, accessModifier, returnType, params, isFinal, isAbstract, isStatic, false,
+            ValueMechanics.NORMAL);
     }
 
-    MethodSignatureImpl(final Type definingType, final String name, final List<AnnotationType> annotations,
+    MethodSignatureImpl(final String name, final List<AnnotationType> annotations,
             final TypeMemberComment comment, final AccessModifier accessModifier, final Type returnType,
             final List<Parameter> params, final boolean isFinal, final boolean isAbstract, final boolean isStatic,
             final boolean isDefault, final ValueMechanics mechanics) {
-        super(definingType, name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
+        super(name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
         this.params = params;
         this.isAbstract = isAbstract;
         this.isDefault = isDefault;
@@ -90,22 +90,13 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder()
+        return new StringBuilder()
             .append("MethodSignatureImpl [name=").append(getName())
             .append(", comment=").append(getComment())
-            .append(", definingType=");
-
-        final Type defType = getDefiningType();
-        if (defType != null) {
-            builder.append(defType.getPackageName()).append('.').append(defType.getName());
-        } else {
-            builder.append(" null");
-        }
-
-        return builder
             .append(", returnType=").append(getReturnType())
             .append(", params=").append(this.params)
             .append(", annotations=").append(getAnnotations())
-            .append(']').toString();
+            .append(']')
+            .toString();
     }
 }

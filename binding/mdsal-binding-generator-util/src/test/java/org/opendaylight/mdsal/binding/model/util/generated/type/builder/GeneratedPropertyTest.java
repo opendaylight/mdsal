@@ -25,7 +25,7 @@ public class GeneratedPropertyTest {
         propertyBuilderImpl.setValue("new value");
         propertyBuilderImpl.setReadOnly(true);
 
-        final GeneratedProperty genProperty = propertyBuilderImpl.toInstance(null);
+        final GeneratedProperty genProperty = propertyBuilderImpl.toInstance();
         assertNotNull(genProperty);
 
         assertNotNull(propertyBuilderImpl.toString());
@@ -33,7 +33,7 @@ public class GeneratedPropertyTest {
 
     @Test
     public void testMethodsForGeneratedPropertyImpl() {
-        final GeneratedPropertyImpl propertyImpl = new GeneratedPropertyImpl(null, "Test", null,
+        final GeneratedPropertyImpl propertyImpl = new GeneratedPropertyImpl("Test", null,
             TypeMemberComment.contractOf("test property"), AccessModifier.PRIVATE, null, true, true, true,
             "test value");
 

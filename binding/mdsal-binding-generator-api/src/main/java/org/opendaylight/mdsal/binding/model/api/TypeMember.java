@@ -62,11 +62,4 @@ public interface TypeMember {
      * @return the name of member.
      */
     String getName();
-
-    /**
-     * Returns the Type that declares member.
-     *
-     * @return the Type that declares member.
-     */
-    Type getDefiningType();
 }

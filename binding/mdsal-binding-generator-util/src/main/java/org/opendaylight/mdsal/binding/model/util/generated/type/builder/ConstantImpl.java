@@ -12,22 +12,14 @@ import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
 final class ConstantImpl implements Constant {
-
-    private final Type definingType;
     private final Type type;
     private final String name;
     private final Object value;
 
-    ConstantImpl(final Type definingType, final Type type, final String name, final Object value) {
-        this.definingType = definingType;
+    ConstantImpl(final Type type, final String name, final Object value) {
         this.type = type;
         this.name = name;
         this.value = value;
-    }
-
-    @Override
-    public Type getDefiningType() {
-        return this.definingType;
     }
 
     @Override
@@ -81,14 +73,6 @@ final class ConstantImpl implements Constant {
         builder.append(this.name);
         builder.append(", value=");
         builder.append(this.value);
-        if (this.definingType != null) {
-            builder.append(", definingType=");
-            builder.append(this.definingType.getPackageName());
-            builder.append(".");
-            builder.append(this.definingType.getName());
-        } else {
-            builder.append(", definingType= null");
-        }
         builder.append("]");
         return builder.toString();
     }

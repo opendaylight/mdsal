@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 import org.opendaylight.mdsal.binding.model.util.Types;
 
@@ -32,8 +31,7 @@ public class GeneratedPropertyImplTest {
         generatedPropertyBuilderImpl.setAccessModifier(AccessModifier.PUBLIC);
         generatedPropertyBuilderImpl.setReturnType(Types.BOOLEAN);
 
-        GeneratedProperty instance = generatedPropertyBuilderImpl.toInstance(new CodegenGeneratedTypeBuilder(
-            JavaTypeName.create("my.package", "myTypeName")).build());
+        GeneratedProperty instance = generatedPropertyBuilderImpl.toInstance();
 
         assertNotNull(instance);
 
@@ -47,7 +45,7 @@ public class GeneratedPropertyImplTest {
 
         assertEquals("GeneratedPropertyImpl [name=myPropertyName, annotations=[], "
             + "comment=TypeMemberComment{contract=myComment}, "
-            + "parent=my.package.myTypeName, returnType=Type (java.lang.Boolean), isFinal=true, isReadOnly=false, "
+            + "returnType=Type (java.lang.Boolean), isFinal=true, isReadOnly=false, "
             + "modifier=PUBLIC]", instance.toString());
     }
 
@@ -65,10 +63,10 @@ public class GeneratedPropertyImplTest {
         generatedPropertyBuilderImpl3.setReturnType(Types.BOOLEAN);
         generatedPropertyBuilderImpl4.setReturnType(Types.STRING);
 
-        final GeneratedProperty property = generatedPropertyBuilderImpl.toInstance(null);
-        final GeneratedProperty property2 = generatedPropertyBuilderImpl2.toInstance(null);
-        final GeneratedProperty property3 = generatedPropertyBuilderImpl3.toInstance(null);
-        final GeneratedProperty property4 = generatedPropertyBuilderImpl4.toInstance(null);
+        final GeneratedProperty property = generatedPropertyBuilderImpl.toInstance();
+        final GeneratedProperty property2 = generatedPropertyBuilderImpl2.toInstance();
+        final GeneratedProperty property3 = generatedPropertyBuilderImpl3.toInstance();
+        final GeneratedProperty property4 = generatedPropertyBuilderImpl4.toInstance();
 
         assertNotNull(property);
         assertNotNull(property2);

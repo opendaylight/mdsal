@@ -162,14 +162,11 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
     }
 
     abstract static class AbstractEnumeration extends AbstractBaseType implements Enumeration {
-
-        private final Type definingType;
-        private final List<Pair> values;
         private final List<AnnotationType> annotations;
+        private final List<Pair> values;
 
-        AbstractEnumeration(final AbstractEnumerationBuilder builder, final Type definingType) {
+        AbstractEnumeration(final AbstractEnumerationBuilder builder) {
             super(builder.getIdentifier());
-            this.definingType = definingType;
             this.values = ImmutableList.copyOf(builder.values);
 
             final ArrayList<AnnotationType> a = new ArrayList<>();
@@ -177,11 +174,6 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
                 a.add(b.build());
             }
             this.annotations = ImmutableList.copyOf(a);
-        }
-
-        @Override
-        public final Type getParentType() {
-            return this.definingType;
         }
 
         @Override
@@ -226,14 +218,6 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
             final StringBuilder builder = new StringBuilder();
             builder.append("Enumeration [packageName=");
             builder.append(getPackageName());
-            if (this.definingType != null) {
-                builder.append(", definingType=");
-                builder.append(this.definingType.getPackageName());
-                builder.append(".");
-                builder.append(this.definingType.getName());
-            } else {
-                builder.append(", definingType= null");
-            }
             builder.append(", name=");
             builder.append(getName());
             builder.append(", values=");

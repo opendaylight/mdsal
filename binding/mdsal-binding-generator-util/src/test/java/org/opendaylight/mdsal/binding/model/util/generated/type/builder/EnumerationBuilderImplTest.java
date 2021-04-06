@@ -55,7 +55,7 @@ public class EnumerationBuilderImplTest {
         enumerationBuilderOtherName = new CodegenEnumerationBuilder(JavaTypeName.create(packageName, "SomeOtherName"));
         enumerationBuilderOtherPackage = new CodegenEnumerationBuilder(JavaTypeName.create("org.opendaylight.other",
             name));
-        enumeration = enumerationBuilder.toInstance(enumerationBuilder);
+        enumeration = enumerationBuilder.toInstance();
     }
 
     @Test(expected = NullPointerException.class)
@@ -92,7 +92,6 @@ public class EnumerationBuilderImplTest {
         assertEquals(name, enumeration.getName());
         assertEquals(packageName, enumeration.getPackageName());
         assertEquals(null, enumeration.getComment());
-        assertEquals(enumerationBuilder, enumeration.getParentType());
         assertEquals(DESCRIPTION, enumeration.getDescription());
         assertEquals(moduleName, enumeration.getModuleName());
         assertEquals(packageName + '.' + name, enumeration.getFullyQualifiedName());
@@ -112,20 +111,19 @@ public class EnumerationBuilderImplTest {
         assertEquals(enumeration, enumeration);
         assertNotEquals(enumeration, "string");
 
-        final Enumeration enumerationOtherPackage = enumerationBuilderOtherPackage
-                .toInstance(enumerationBuilderOtherPackage);
+        final Enumeration enumerationOtherPackage = enumerationBuilderOtherPackage.toInstance();
         assertNotEquals(enumeration, enumerationOtherPackage);
 
-        final Enumeration enumerationOtherName = enumerationBuilderOtherName.toInstance(enumerationBuilderOtherName);
+        final Enumeration enumerationOtherName = enumerationBuilderOtherName.toInstance();
         assertNotEquals(enumeration, enumerationOtherName);
 
         enumerationBuilderSame.addValue(valueName, valueName, value, Status.CURRENT, valueDescription, null);
-        final Enumeration enumerationSame = enumerationBuilderSame.toInstance(enumerationBuilderSame);
+        final Enumeration enumerationSame = enumerationBuilderSame.toInstance();
         assertEquals(enumeration, enumerationSame);
 
         final CodegenEnumerationBuilder enumerationBuilderSame1 = new CodegenEnumerationBuilder(
             JavaTypeName.create(packageName, name));
-        final Enumeration enumerationSame1 = enumerationBuilderSame1.toInstance(enumerationBuilderSame1);
+        final Enumeration enumerationSame1 = enumerationBuilderSame1.toInstance();
         enumerationBuilderSame1.addValue(valueName, valueName, 14, Status.CURRENT, valueDescription, null);
         // Enums are equal thanks to same package name and local name
         assertEquals(enumeration, enumerationSame1);
@@ -133,14 +131,11 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void testEnumerationToString() {
-        final String formattedString = "public enum " + name + " {\n"
-                + "\t TestValue " + "(12 );\n"
-                + "}";
-        final String s = "Enumeration [packageName=" + packageName + ", definingType=" + packageName + "." + name
-                + ", name=" + name + ", values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]";
-
-        assertEquals(s, enumeration.toString());
-        assertEquals(formattedString, enumeration.toFormattedString());
+        assertEquals("Enumeration [packageName=" + packageName + ", name=" + name
+            + ", values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]", enumeration.toString());
+        assertEquals("public enum " + name + " {\n"
+            + "\t TestValue " + "(12 );\n"
+            + "}", enumeration.toFormattedString());
 
         assertEquals("EnumerationBuilderImpl [packageName=org.opendaylight.test, name=TestName, "
                 + "values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]",
