@@ -844,10 +844,13 @@ abstract class AbstractTypeGenerator {
      */
     private Enumeration resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
             final GeneratedTypeBuilder typeBuilder, final ModuleContext context) {
-        final EnumBuilder enumBuilder = typeBuilder.addEnumeration(BindingMapping.getClassName(enumName));
+        final EnumBuilder enumBuilder = typeProvider.newEnumerationBuilder(typeBuilder.getIdentifier()
+            .createEnclosed(BindingMapping.getClassName(enumName), "$"));
         typeProvider.addEnumDescription(enumBuilder, enumTypeDef);
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
         final Enumeration ret = enumBuilder.toInstance();
+        typeBuilder.addEnumeration(ret);
+
         context.addTypeToSchema(ret, enumTypeDef);
         context.addInnerTypedefType(enumTypeDef.getPath(), ret);
         return ret;
@@ -1604,11 +1607,7 @@ abstract class AbstractTypeGenerator {
                 // Store the inner type within the union so that we can find the reference for it
                 context.addInnerTypedefType(typeDef.getPath(), returnType);
             } else if (typeDef instanceof BitsTypeDefinition) {
-                GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder((BitsTypeDefinition) typeDef, typeBuilder, leaf,
-                    parentModule);
-                if (genTOBuilder != null) {
-                    returnType = genTOBuilder.build();
-                }
+                returnType = addTOToTypeBuilder((BitsTypeDefinition) typeDef, typeBuilder, leaf, parentModule);
             } else {
                 // It is constrained version of already declared type (inner declared type exists, only for special
                 // cases (Enum, Union, Bits), which were already checked.
@@ -1819,9 +1818,7 @@ abstract class AbstractTypeGenerator {
                 final UnionTypeDefinition unionDef = (UnionTypeDefinition) typeDef;
                 returnType = addTOToTypeBuilder(unionDef, typeBuilder, node, parentModule);
             } else if (typeDef instanceof BitsTypeDefinition) {
-                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder((BitsTypeDefinition) typeDef, typeBuilder,
-                        node, parentModule);
-                returnType = genTOBuilder.build();
+                returnType = addTOToTypeBuilder((BitsTypeDefinition) typeDef, typeBuilder, node, parentModule);
             } else {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions, inGrouping);
@@ -2117,12 +2114,12 @@ abstract class AbstractTypeGenerator {
         checkState(!types.isEmpty(), "No GeneratedTOBuilder objects generated from union %s", typeDef);
         final List<GeneratedTOBuilder> genTOBuilders = new ArrayList<>(types);
         final GeneratedTOBuilder resultTOBuilder = types.remove(0);
-        types.forEach(resultTOBuilder::addEnclosingTransferObject);
-        genTOBuilders.forEach(typeBuilder::addEnclosingTransferObject);
+        genTOBuilders.forEach(builder -> typeBuilder.addEnclosingTransferObject(builder.build()));
 
         for (GeneratedTOBuilder builder : types) {
+            final GeneratedTransferObject type = builder.build();
+            resultTOBuilder.addEnclosingTransferObject(type);
             if (builder.isUnion()) {
-                final GeneratedTransferObject type = builder.build();
                 createUnionBuilder(builder, typeBuilder, type, parentModule);
             }
         }
@@ -2142,12 +2139,13 @@ abstract class AbstractTypeGenerator {
      * @param parentModule parent module
      * @return generated TO builder for <code>typeDef</code>
      */
-    private GeneratedTOBuilder addTOToTypeBuilder(final BitsTypeDefinition typeDef,
+    private GeneratedTransferObject addTOToTypeBuilder(final BitsTypeDefinition typeDef,
             final GeneratedTypeBuilder typeBuilder, final DataSchemaNode leaf, final Module parentModule) {
-        final GeneratedTOBuilder genTOBuilder = typeProvider.provideGeneratedTOBuilderForBitsTypeDefinition(
-            allocateNestedType(typeBuilder.getIdentifier(), leaf.getQName()), typeDef, parentModule.getName());
-        typeBuilder.addEnclosingTransferObject(genTOBuilder);
-        return genTOBuilder;
+        final GeneratedTransferObject genTO = typeProvider.provideGeneratedTOBuilderForBitsTypeDefinition(
+            allocateNestedType(typeBuilder.getIdentifier(), leaf.getQName()), typeDef, parentModule.getName())
+            .build();
+        typeBuilder.addEnclosingTransferObject(genTO);
+        return genTO;
     }
 
     /**

@@ -37,18 +37,9 @@ public class AbstractGeneratedTypeBuilderTest {
             JavaTypeName.create("my.package", "MyName"));
 
         generatedTypeBuilder.addEnclosingTransferObject(new CodegenGeneratedTOBuilder(
-            JavaTypeName.create("my.package", "myName")));
+            JavaTypeName.create("my.package", "myName")).build());
         generatedTypeBuilder.addEnclosingTransferObject(new CodegenGeneratedTOBuilder(
-            JavaTypeName.create("my.package", "myName")));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addEnclosingTransferObjectArgumentTest2() {
-        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder(
-            JavaTypeName.create("my.package", "MyName"));
-
-        generatedTypeBuilder.addEnclosingTransferObject("myName");
-        generatedTypeBuilder.addEnclosingTransferObject("myName");
+            JavaTypeName.create("my.package", "myName")).build());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -76,14 +67,5 @@ public class AbstractGeneratedTypeBuilderTest {
 
         generatedTypeBuilder.addAnnotation("my.package", "myName");
         generatedTypeBuilder.addAnnotation("my.package", "myName");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addEnumerationIllegalArgumentTest() {
-        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder(
-            JavaTypeName.create("my.package", "MyName"));
-
-        generatedTypeBuilder.addEnumeration("myName");
-        generatedTypeBuilder.addEnumeration("myName");
     }
 }

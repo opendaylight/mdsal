@@ -16,15 +16,14 @@ import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
+import org.opendaylight.mdsal.binding.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
@@ -34,11 +33,10 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
 
     private List<AnnotationTypeBuilder> annotationBuilders = Collections.emptyList();
     private List<Type> implementsTypes = Collections.emptyList();
-    private List<EnumBuilder> enumDefinitions = Collections.emptyList();
+    private List<Enumeration> enumDefinitions = Collections.emptyList();
     private List<Constant> constants = Collections.emptyList();
     private List<MethodSignatureBuilder> methodDefinitions = Collections.emptyList();
-    private final List<GeneratedTypeBuilder> enclosedTypes = Collections.emptyList();
-    private List<GeneratedTOBuilder> enclosedTransferObjects = Collections.emptyList();
+    private List<GeneratedTransferObject> enclosedTransferObjects = Collections.emptyList();
     private List<GeneratedPropertyBuilder> properties = Collections.emptyList();
     private TypeComment comment;
     private boolean isAbstract;
@@ -66,7 +64,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         return this.implementsTypes;
     }
 
-    protected List<EnumBuilder> getEnumerations() {
+    protected List<Enumeration> getEnumerations() {
         return this.enumDefinitions;
     }
 
@@ -79,11 +77,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         return this.methodDefinitions;
     }
 
-    protected List<GeneratedTypeBuilder> getEnclosedTypes() {
-        return this.enclosedTypes;
-    }
-
-    protected List<GeneratedTOBuilder> getEnclosedTransferObjects() {
+    protected List<GeneratedTransferObject> getEnclosedTransferObjects() {
         return this.enclosedTransferObjects;
     }
 
@@ -92,22 +86,11 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     abstract AbstractEnumerationBuilder newEnumerationBuilder(JavaTypeName identifier);
 
     @Override
-    public GeneratedTOBuilder addEnclosingTransferObject(final String name) {
-        checkArgument(name != null, "Name for Enclosing Generated Transfer Object cannot be null!");
-        final GeneratedTOBuilder builder = new CodegenGeneratedTOBuilder(getIdentifier().createEnclosed(name));
-
-        checkArgument(!enclosedTransferObjects.contains(builder),
+    public T addEnclosingTransferObject(final GeneratedTransferObject genTO) {
+        checkArgument(genTO != null, "Parameter genTO cannot be null!");
+        checkArgument(!enclosedTransferObjects.contains(genTO),
             "This generated type already contains equal enclosing transfer object.");
-        this.enclosedTransferObjects = LazyCollections.lazyAdd(this.enclosedTransferObjects, builder);
-        return builder;
-    }
-
-    @Override
-    public T addEnclosingTransferObject(final GeneratedTOBuilder genTOBuilder) {
-        checkArgument(genTOBuilder != null, "Parameter genTOBuilder cannot be null!");
-        checkArgument(!enclosedTransferObjects.contains(genTOBuilder),
-            "This generated type already contains equal enclosing transfer object.");
-        this.enclosedTransferObjects = LazyCollections.lazyAdd(this.enclosedTransferObjects, genTOBuilder);
+        this.enclosedTransferObjects = LazyCollections.lazyAdd(this.enclosedTransferObjects, genTO);
         return thisInstance();
     }
 
@@ -164,17 +147,15 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     }
 
     @Override
-    public EnumBuilder addEnumeration(final String name) {
-        checkArgument(name != null, "Name of enumeration cannot be null!");
+    public void addEnumeration(final Enumeration enumeration) {
+        checkArgument(enumeration != null, "Enumeration cannot be null!");
 
         // This enumeration may be generated from a leaf, which may end up colliding with its enclosing type
         // hierarchy. If that is the case, we use a single '$' suffix to disambiguate -- that cannot come from the user
         // and hence is marking our namespace
-        final EnumBuilder builder = newEnumerationBuilder(getIdentifier().createEnclosed(name, "$"));
-        checkArgument(!enumDefinitions.contains(builder),
-            "Generated type %s already contains an enumeration for %s", this, builder);
-        this.enumDefinitions = LazyCollections.lazyAdd(this.enumDefinitions, builder);
-        return builder;
+        checkArgument(!enumDefinitions.contains(enumeration),
+            "Generated type %s already contains an enumeration for %s", this, enumeration);
+        this.enumDefinitions = LazyCollections.lazyAdd(this.enumDefinitions, enumeration);
     }
 
     @Override

@@ -665,11 +665,14 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 "Local Name in EnumTypeDefinition QName cannot be NULL!");
         Preconditions.checkArgument(typeBuilder != null, "Generated Type Builder reference cannot be NULL!");
 
-        final EnumBuilder enumBuilder = typeBuilder.addEnumeration(BindingMapping.getClassName(enumName));
-
+        final EnumBuilder enumBuilder = newEnumerationBuilder(
+            typeBuilder.getIdentifier().createEnclosed(BindingMapping.getClassName(enumName), "$"));
         addEnumDescription(enumBuilder, enumTypeDef);
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
-        return enumBuilder.toInstance();
+        final Enumeration ret = enumBuilder.toInstance();
+        typeBuilder.addEnumeration(ret);
+
+        return ret;
     }
 
     public abstract void addEnumDescription(EnumBuilder enumBuilder, EnumTypeDefinition enumTypeDef);
@@ -893,7 +896,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         Preconditions.checkState(!builders.isEmpty(), "No GeneratedTOBuilder objects generated from union %s", typedef);
 
         final GeneratedTOBuilder resultTOBuilder = builders.remove(0);
-        builders.forEach(resultTOBuilder::addEnclosingTransferObject);
+        builders.forEach(builder -> resultTOBuilder.addEnclosingTransferObject(builder.build()));
         return resultTOBuilder;
     }
 

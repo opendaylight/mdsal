@@ -50,10 +50,9 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         this.annotations = toUnmodifiableAnnotations(builder.getAnnotations());
         this.implementsTypes = makeUnmodifiable(builder.getImplementsTypes());
         this.constants = makeUnmodifiable(builder.getConstants());
-        this.enumerations = toUnmodifiableEnumerations(builder.getEnumerations());
+        this.enumerations = List.copyOf(builder.getEnumerations());
         this.methodSignatures = toUnmodifiableMethods(builder.getMethodDefinitions());
-        this.enclosedTypes = toUnmodifiableEnclosedTypes(builder.getEnclosedTypes(),
-                builder.getEnclosedTransferObjects());
+        this.enclosedTypes = List.copyOf(builder.getEnclosedTransferObjects());
         this.properties = toUnmodifiableProperties(builder.getProperties());
         this.isAbstract = builder.isAbstract();
         this.definition = builder.getYangSourceDefinition().orElse(null);
