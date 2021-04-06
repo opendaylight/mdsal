@@ -16,6 +16,7 @@ import static org.mockito.Mockito.spy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.Assume;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -29,6 +30,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class BuilderGeneratorTest {
     private static final String TEST = "test";
     private static final JavaTypeName TYPE_NAME = JavaTypeName.create(TEST, TEST);
+    private static final Boolean IS_WIN_OS = System.getProperty("os.name").toLowerCase().startsWith("win");
 
     @Test
     public void basicTest() {
@@ -37,6 +39,7 @@ public class BuilderGeneratorTest {
 
     @Test
     public void builderTemplateGenerateHashcodeWithPropertyTest() {
+        Assume.assumeFalse(IS_WIN_OS);
         final GeneratedType genType = mockGenType("get" + TEST);
 
         assertEquals("/**\n"
@@ -64,6 +67,7 @@ public class BuilderGeneratorTest {
 
     @Test
     public void builderTemplateGenerateHashCodeWithMorePropertiesTest() throws Exception {
+        Assume.assumeFalse(IS_WIN_OS);
         assertEquals("/**\n"
                 + " * Default implementation of {@link Object#hashCode()} contract for this interface.\n"
                 + " * Implementations of this interface are encouraged to defer to this method to get consistent"
@@ -85,6 +89,7 @@ public class BuilderGeneratorTest {
 
     @Test
     public void builderTemplateGenerateHashCodeWithoutPropertyWithAugmentTest() throws Exception {
+        Assume.assumeFalse(IS_WIN_OS);
         assertEquals("/**\n"
                 + " * Default implementation of {@link Object#hashCode()} contract for this interface.\n"
                 + " * Implementations of this interface are encouraged to defer to this method to get consistent"
@@ -105,6 +110,7 @@ public class BuilderGeneratorTest {
 
     @Test
     public void builderTemplateGenerateHashCodeWithPropertyWithAugmentTest() throws Exception {
+        Assume.assumeFalse(IS_WIN_OS);
         assertEquals("/**\n"
                 + " * Default implementation of {@link Object#hashCode()} contract for this interface.\n"
                 + " * Implementations of this interface are encouraged to defer to this method to get consistent"
@@ -126,6 +132,7 @@ public class BuilderGeneratorTest {
 
     @Test
     public void builderTemplateGenerateHashCodeWithMorePropertiesWithAugmentTest() throws Exception {
+        Assume.assumeFalse(IS_WIN_OS);
         assertEquals("/**\n"
                 + " * Default implementation of {@link Object#hashCode()} contract for this interface.\n"
                 + " * Implementations of this interface are encouraged to defer to this method to get consistent"
@@ -148,6 +155,7 @@ public class BuilderGeneratorTest {
 
     @Test
     public void builderTemplateGenerateToStringWithPropertyTest() {
+        Assume.assumeFalse(IS_WIN_OS);
         final GeneratedType genType = mockGenType("get" + TEST);
 
         assertEquals("/**\n"
@@ -168,6 +176,7 @@ public class BuilderGeneratorTest {
 
     @Test
     public void builderTemplateGenerateToStringWithoutAnyPropertyTest() throws Exception {
+        Assume.assumeFalse(IS_WIN_OS);
         assertEquals("/**\n"
                 + " * Default implementation of {@link Object#toString()} contract for this interface.\n"
                 + " * Implementations of this interface are encouraged to defer to this method to get consistent string"
@@ -185,6 +194,7 @@ public class BuilderGeneratorTest {
 
     @Test
     public void builderTemplateGenerateToStringWithMorePropertiesTest() throws Exception {
+        Assume.assumeFalse(IS_WIN_OS);
         assertEquals("/**\n"
                 + " * Default implementation of {@link Object#toString()} contract for this interface.\n"
                 + " * Implementations of this interface are encouraged to defer to this method to get consistent string"
@@ -204,6 +214,7 @@ public class BuilderGeneratorTest {
 
     @Test
     public void builderTemplateGenerateToStringWithoutPropertyWithAugmentTest() throws Exception {
+        Assume.assumeFalse(IS_WIN_OS);
         assertEquals("/**\n"
                 + " * Default implementation of {@link Object#toString()} contract for this interface.\n"
                 + " * Implementations of this interface are encouraged to defer to this method to get consistent string"
@@ -222,6 +233,7 @@ public class BuilderGeneratorTest {
 
     @Test
     public void builderTemplateGenerateToStringWithPropertyWithAugmentTest() throws Exception {
+        Assume.assumeFalse(IS_WIN_OS);
         assertEquals("/**\n"
                 + " * Default implementation of {@link Object#toString()} contract for this interface.\n"
                 + " * Implementations of this interface are encouraged to defer to this method to get consistent string"
@@ -241,6 +253,7 @@ public class BuilderGeneratorTest {
 
     @Test
     public void builderTemplateGenerateToStringWithMorePropertiesWithAugmentTest() throws Exception {
+        Assume.assumeFalse(IS_WIN_OS);
         assertEquals("/**\n"
                 + " * Default implementation of {@link Object#toString()} contract for this interface.\n"
                 + " * Implementations of this interface are encouraged to defer to this method to get consistent string"
