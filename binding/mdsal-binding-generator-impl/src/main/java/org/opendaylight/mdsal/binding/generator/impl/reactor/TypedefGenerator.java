@@ -7,13 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
-import static org.opendaylight.mdsal.binding.model.util.BindingTypes.TYPE_OBJECT;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -21,18 +19,12 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
-import org.opendaylight.mdsal.binding.model.util.BaseYangTypes;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.mdsal.binding.model.util.TypeConstants;
-import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
-import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition.Bit;
-import org.opendaylight.yangtools.yang.model.api.type.TypeDefinitions;
-import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 /**
@@ -90,96 +82,24 @@ final class TypedefGenerator extends AbstractTypeObjectGenerator<TypedefEffectiv
 
     @Override
     GeneratedType createRootType(final TypeBuilderFactory builderFactory) {
+        final QName typeName = type.argument();
+        final Type javaType = verifyNotNull(SIMPLE_TYPES.get(typeName), "Unhandled type %s", typeName);
+
         final ModuleGenerator module = currentModule();
         final String moduleName = module.statement().argument().getLocalName();
         final TypeDefinition<?> typedef = statement().getTypeDefinition();
-        final QName typeName = type.argument();
-
-        final GeneratedTOBuilder builder = builderFactory.newGeneratedTOBuilder(typeName());
+        final GeneratedTOBuilder builder = newGeneratedTOBuilder(builderFactory);
         builder.setTypedef(true);
 
-        final Type javaType = SIMPLE_TYPES.get(typeName);
-        if (javaType != null) {
-            builder.addImplementsType(BindingTypes.scalarTypeObject(javaType));
+        builder.addImplementsType(BindingTypes.scalarTypeObject(javaType));
 
-            final GeneratedPropertyBuilder genPropBuilder = builder.addProperty(TypeConstants.VALUE_PROP);
-            genPropBuilder.setReturnType(javaType);
-            builder.addEqualsIdentity(genPropBuilder);
-            builder.addHashIdentity(genPropBuilder);
-            builder.addToStringProperty(genPropBuilder);
+        final GeneratedPropertyBuilder genPropBuilder = builder.addProperty(TypeConstants.VALUE_PROP);
+        genPropBuilder.setReturnType(javaType);
+        builder.addEqualsIdentity(genPropBuilder);
+        builder.addHashIdentity(genPropBuilder);
+        builder.addToStringProperty(genPropBuilder);
 
-            builder.setRestrictions(BindingGeneratorUtil.getRestrictions(typedef));
-
-        } else if (TypeDefinitions.BITS.equals(typeName)) {
-            builder.addImplementsType(TYPE_OBJECT);
-            builder.setBaseType(typedef);
-
-            for (Bit bit : ((BitsTypeDefinition) typedef).getBits()) {
-                final String name = bit.getName();
-                GeneratedPropertyBuilder genPropertyBuilder = builder.addProperty(BindingMapping.getPropertyName(name));
-                genPropertyBuilder.setReadOnly(true);
-                genPropertyBuilder.setReturnType(BaseYangTypes.BOOLEAN_TYPE);
-
-                builder.addEqualsIdentity(genPropertyBuilder);
-                builder.addHashIdentity(genPropertyBuilder);
-                builder.addToStringProperty(genPropertyBuilder);
-            }
-        } else if (TypeDefinitions.UNION.equals(typeName)) {
-            builder.addImplementsType(TYPE_OBJECT);
-            builder.setIsUnion(true);
-
-//            builder.setSchemaPath(typedef.getPath());
-            builder.setModuleName(moduleName);
-//            addCodegenInformation(builder, typedef);
-
-            // Pattern string is the key, XSD regex is the value. The reason for this choice is that the pattern carries
-            // also negation information and hence guarantees uniqueness.
-            final Map<String, String> expressions = new HashMap<>();
-            for (TypeDefinition<?> unionType : ((UnionTypeDefinition) typedef).getTypes()) {
-                final String unionTypeName = unionType.getQName().getLocalName();
-
-                // If we have a base type we should follow the type definition backwards, except for identityrefs, as
-                // those do not follow type encapsulation -- we use the general case for that.
-//                if (unionType.getBaseType() != null  && !(unionType instanceof IdentityrefTypeDefinition)) {
-//                    resolveExtendedSubtypeAsUnion(builder, unionType, expressions, parentNode);
-//                } else if (unionType instanceof UnionTypeDefinition) {
-//                    generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(builder,
-//                        (UnionTypeDefinition) unionType, parentNode));
-//                } else if (unionType instanceof EnumTypeDefinition) {
-//                    final Enumeration enumeration = addInnerEnumerationToTypeBuilder((EnumTypeDefinition) unionType,
-//                        unionTypeName, builder);
-//                    updateUnionTypeAsProperty(builder, enumeration, unionTypeName);
-//                } else {
-//                    final Type javaType = javaTypeForSchemaDefinitionType(unionType, parentNode);
-//                    updateUnionTypeAsProperty(builder, javaType, unionTypeName);
-//                }
-            }
-            addStringRegExAsConstant(builder, expressions);
-
-//            final GeneratedTOBuilder resultTOBuilder = builders.remove(0);
-//            builders.forEach(resultTOBuilder::addEnclosingTransferObject);
-//            return resultTOBuilder;
-
-//            final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForUnionTypeDef(
-//                JavaTypeName.create(basePackageName, BindingMapping.getClassName(typedef.getQName())),
-//                (UnionTypeDefinition) baseTypedef, typedef);
-//            genTOBuilder.setIsUnion(true);
-//            returnType = genTOBuilder.build();
-
-            // Define a corresponding union builder. Typedefs are always anchored at a Java package root,
-            // so we are placing the builder alongside the union.
-//            final GeneratedTOBuilder unionBuilder = newGeneratedTOBuilder(
-//                JavaTypeName.create(genTOBuilder.getPackageName(), genTOBuilder.getName() + "Builder"));
-//            unionBuilder.setIsUnionBuilder(true);
-//            final MethodSignatureBuilder method = unionBuilder.addMethod("getDefaultInstance");
-//            method.setReturnType(returnType);
-//            method.addParameter(Types.STRING, "defaultValue");
-//            method.setAccessModifier(AccessModifier.PUBLIC);
-//            method.setStatic(true);
-
-        } else {
-            throw new IllegalStateException("Unhandled type " + typeName);
-        }
+        builder.setRestrictions(BindingGeneratorUtil.getRestrictions(typedef));
 
 //        builder.setSchemaPath(typedef.getPath());
         builder.setModuleName(moduleName);
@@ -221,5 +141,12 @@ final class TypedefGenerator extends AbstractTypeObjectGenerator<TypedefEffectiv
             final TypeReference refType) {
         // we should never reach here
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    GeneratedTOBuilder newGeneratedTOBuilder(final TypeBuilderFactory builderFactory) {
+        final GeneratedTOBuilder ret = super.newGeneratedTOBuilder(builderFactory);
+        ret.setTypedef(true);
+        return ret;
     }
 }

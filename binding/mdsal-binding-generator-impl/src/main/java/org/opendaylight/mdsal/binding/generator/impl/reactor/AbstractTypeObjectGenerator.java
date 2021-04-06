@@ -11,6 +11,7 @@ import static com.google.common.base.Verify.verify;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,11 +21,14 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.BaseYangTypes;
+import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.mdsal.binding.model.util.TypeConstants;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.AbstractEnumerationBuilder;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.RegexPatterns;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -35,11 +39,14 @@ import org.opendaylight.yangtools.yang.model.api.stmt.BaseEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.PathEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ReferenceEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypeEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition.Bit;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.ModifierKind;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.TypeDefinitions;
+import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -316,9 +323,97 @@ abstract class AbstractTypeObjectGenerator<T extends EffectiveStatement<?, ?>> e
             builder.setModuleName(currentModule().statement().argument().getLocalName());
             builder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
             return builder.toInstance();
-        }
+        } else if (TypeDefinitions.BITS.equals(typeName)) {
+            final TypeDefinition<?> typedef = extractTypeDefinition();
 
-        return createRootType(builderFactory);
+            final GeneratedTOBuilder builder = newGeneratedTOBuilder(builderFactory);
+            builder.addImplementsType(BindingTypes.TYPE_OBJECT);
+            builder.setBaseType(typedef);
+
+            for (Bit bit : ((BitsTypeDefinition) typedef).getBits()) {
+                final String name = bit.getName();
+                GeneratedPropertyBuilder genPropertyBuilder = builder.addProperty(BindingMapping.getPropertyName(name));
+                genPropertyBuilder.setReadOnly(true);
+                genPropertyBuilder.setReturnType(BaseYangTypes.BOOLEAN_TYPE);
+
+                builder.addEqualsIdentity(genPropertyBuilder);
+                builder.addHashIdentity(genPropertyBuilder);
+                builder.addToStringProperty(genPropertyBuilder);
+            }
+
+//          builder.setSchemaPath(typedef.getPath());
+            builder.setModuleName(currentModule().statement().argument().getLocalName());
+//            addCodegenInformation(builder, typedef);
+            annotateDeprecatedIfNecessary(typedef, builder);
+            makeSerializable(builder);
+            return builder.build();
+        } else if (TypeDefinitions.UNION.equals(typeName)) {
+            final TypeDefinition<?> typedef = extractTypeDefinition();
+
+            final GeneratedTOBuilder builder = newGeneratedTOBuilder(builderFactory);
+            builder.addImplementsType(BindingTypes.TYPE_OBJECT);
+            builder.setIsUnion(true);
+
+//            builder.setSchemaPath(typedef.getPath());
+            builder.setModuleName(currentModule().statement().argument().getLocalName());
+//            addCodegenInformation(builder, typedef);
+
+            // Pattern string is the key, XSD regex is the value. The reason for this choice is that the pattern carries
+            // also negation information and hence guarantees uniqueness.
+            final Map<String, String> expressions = new HashMap<>();
+            for (TypeDefinition<?> unionType : ((UnionTypeDefinition) typedef).getTypes()) {
+                final String unionTypeName = unionType.getQName().getLocalName();
+
+                // If we have a base type we should follow the type definition backwards, except for identityrefs, as
+                // those do not follow type encapsulation -- we use the general case for that.
+//                if (unionType.getBaseType() != null  && !(unionType instanceof IdentityrefTypeDefinition)) {
+//                    resolveExtendedSubtypeAsUnion(builder, unionType, expressions, parentNode);
+//                } else if (unionType instanceof UnionTypeDefinition) {
+//                    generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(builder,
+//                        (UnionTypeDefinition) unionType, parentNode));
+//                } else if (unionType instanceof EnumTypeDefinition) {
+//                    final Enumeration enumeration = addInnerEnumerationToTypeBuilder((EnumTypeDefinition) unionType,
+//                        unionTypeName, builder);
+//                    updateUnionTypeAsProperty(builder, enumeration, unionTypeName);
+//                } else {
+//                    final Type javaType = javaTypeForSchemaDefinitionType(unionType, parentNode);
+//                    updateUnionTypeAsProperty(builder, javaType, unionTypeName);
+//                }
+            }
+            addStringRegExAsConstant(builder, expressions);
+
+//            final GeneratedTOBuilder resultTOBuilder = builders.remove(0);
+//            builders.forEach(resultTOBuilder::addEnclosingTransferObject);
+//            return resultTOBuilder;
+
+//            final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForUnionTypeDef(
+//                JavaTypeName.create(basePackageName, BindingMapping.getClassName(typedef.getQName())),
+//                (UnionTypeDefinition) baseTypedef, typedef);
+//            genTOBuilder.setIsUnion(true);
+//            returnType = genTOBuilder.build();
+
+            // Define a corresponding union builder. Typedefs are always anchored at a Java package root,
+            // so we are placing the builder alongside the union.
+//            final GeneratedTOBuilder unionBuilder = newGeneratedTOBuilder(
+//                JavaTypeName.create(genTOBuilder.getPackageName(), genTOBuilder.getName() + "Builder"));
+//            unionBuilder.setIsUnionBuilder(true);
+//            final MethodSignatureBuilder method = unionBuilder.addMethod("getDefaultInstance");
+//            method.setReturnType(returnType);
+//            method.addParameter(Types.STRING, "defaultValue");
+//            method.setAccessModifier(AccessModifier.PUBLIC);
+//            method.setStatic(true);
+
+          annotateDeprecatedIfNecessary(typedef, builder);
+
+          makeSerializable(builder);
+          return builder.build();
+        } else {
+            return createRootType(builderFactory);
+        }
+    }
+
+    @NonNull GeneratedTOBuilder newGeneratedTOBuilder(final @NonNull TypeBuilderFactory builderFactory) {
+        return builderFactory.newGeneratedTOBuilder(typeName());
     }
 
     // FIXME: we should not rely on TypeDefinition

@@ -95,9 +95,6 @@ abstract class AbstractTypeAwareGenerator<T extends DataTreeEffectiveStatement<?
 
     @Override
     GeneratedType createRootType(final TypeBuilderFactory builderFactory) {
-        // FIXME: identityref
-        // FIXME: leafref
-        // FIXME: bits
         // FIXME: union
 
         return builderFactory.newGeneratedTOBuilder(typeName()).build();
