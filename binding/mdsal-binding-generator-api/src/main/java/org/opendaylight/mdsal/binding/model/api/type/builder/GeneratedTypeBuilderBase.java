@@ -11,26 +11,14 @@ import java.util.List;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.Constant;
+import org.opendaylight.mdsal.binding.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>> extends Type, AnnotableTypeBuilder {
-    /**
-     * Adds new Enclosing Transfer Object into definition of Generated Type and returns <code>new</code> Instance
-     * of Generated TO Builder.<br>
-     * There is no need of specifying of Package Name because enclosing Type is already defined inside Generated Type
-     * with specific package name.<br>
-     * The name of enclosing Type cannot be same as Name of parent type and if there is already defined enclosing type
-     * with the same name, the new enclosing type will simply overwrite the older definition.<br>
-     * If the name of enclosing type is <code>null</code> the method SHOULD throw {@link IllegalArgumentException}.
-     *
-     * @param name Name of Enclosing Type
-     * @return <code>new</code> Instance of Generated Type Builder.
-     */
-    GeneratedTOBuilder addEnclosingTransferObject(String name);
-
     /**
      * Adds new Enclosing Transfer Object <code>genTOBuilder</code> into definition of Generated Type.
      *
@@ -42,9 +30,9 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      * If the parameter <code>genTOBuilder</code> of enclosing type is <code>null</code> the method SHOULD throw
      * {@link IllegalArgumentException}.
      *
-     * @param genTOBuilder Name of Enclosing Type
+     * @param genTO Name of Enclosing Type
      */
-    T addEnclosingTransferObject(GeneratedTOBuilder genTOBuilder);
+    T addEnclosingTransferObject(GeneratedTransferObject genTO);
 
     /**
      * Adds String definition of comment into Method Signature definition.<br>
@@ -95,10 +83,9 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      * Name of Enumeration cannot be <code>null</code>, if it is <code>null</code> the method SHOULD throw
      * {@link IllegalArgumentException}.
      *
-     * @param name Enumeration Name
-     * @return <code>new</code> instance of Enumeration Builder.
+     * @param enumeration Enumeration to add
      */
-    EnumBuilder addEnumeration(String name);
+    void addEnumeration(Enumeration enumeration);
 
     List<MethodSignatureBuilder> getMethodDefinitions();
 

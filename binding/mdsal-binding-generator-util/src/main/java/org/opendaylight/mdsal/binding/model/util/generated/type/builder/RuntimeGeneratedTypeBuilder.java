@@ -69,8 +69,6 @@ public final class RuntimeGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         builder.append(getAnnotations());
         builder.append(", implements=");
         builder.append(getImplementsTypes());
-        builder.append(", enclosedTypes=");
-        builder.append(getEnclosedTypes());
         builder.append(", constants=");
         builder.append(getConstants());
         builder.append(", enumerations=");
