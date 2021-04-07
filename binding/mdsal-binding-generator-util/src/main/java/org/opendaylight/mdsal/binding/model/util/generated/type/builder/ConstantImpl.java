@@ -38,11 +38,6 @@ final class ConstantImpl implements Constant {
     }
 
     @Override
-    public String toFormattedString() {
-        return type + " " + name + " " + value;
-    }
-
-    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;

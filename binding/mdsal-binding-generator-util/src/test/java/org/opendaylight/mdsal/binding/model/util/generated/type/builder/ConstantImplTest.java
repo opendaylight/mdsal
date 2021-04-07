@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -30,14 +32,11 @@ public class ConstantImplTest {
         assertEquals("BaseType", constImpl.getType().getName());
         assertEquals("IpAddress", constImpl.getName());
         assertEquals("127.0.0.1", constImpl.getValue());
-        assertTrue(constImpl.toFormattedString().contains("GeneratedTransferObject"));
-        assertTrue(constImpl.toString().contains("GeneratedTransferObject"));
+        assertThat(constImpl.toString(), containsString("GeneratedTransferObject"));
         assertEquals(constImpl.hashCode(), constImpl2.hashCode());
         assertNotNull(constImpl.getType());
         assertNotNull(constImpl.getName());
         assertNotNull(constImpl.getValue());
-        assertNotNull(constImpl.toFormattedString());
-        assertNotNull(constImpl.toString());
         assertNotNull(constImpl.hashCode());
         assertFalse(constImpl.equals(null));
         assertFalse(constImpl.equals("test"));

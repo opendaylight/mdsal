@@ -79,8 +79,6 @@ public class GeneratedTypeBuilderTest {
         assertEquals("Constant [type=Type (java.lang.String), name=myConstant, value=myConstantValue]",
             constant.toString());
 
-        assertEquals("Type (java.lang.String) myConstant myConstantValue", constant.toFormattedString());
-
         GeneratedType instance = generatedTypeBuilder.build();
         List<Constant> constantDefinitions = instance.getConstantDefinitions();
         assertNotNull(constantDefinitions);
