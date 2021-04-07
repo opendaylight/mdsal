@@ -38,14 +38,4 @@ public interface Constant {
      * @return boxed value that is assigned for context.
      */
     Object getValue();
-
-    /**
-     * Returns Constant definition in formatted string. <br>
-     * <br>
-     * The expected string SHOULD be in format: <code>public final
-     * static [Type] CONSTANT_NAME = [value];</code>
-     *
-     * @return Constant definition in formatted string.
-     */
-    String toFormattedString();
 }
