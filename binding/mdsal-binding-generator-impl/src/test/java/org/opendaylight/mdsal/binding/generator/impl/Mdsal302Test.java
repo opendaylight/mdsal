@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Mdsal302Test {
     @Test
-    public void bug4145Test() {
+    public void testRpcUsesAugment() {
         List<GeneratedType> generateTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
             "/mdsal302.yang"));
         assertNotNull(generateTypes);
