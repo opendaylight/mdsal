@@ -1,5 +1,5 @@
 module grouping_uses_list {
-    
+
     namespace "urn:grouping:uses:list";
     prefix "sbd";
 

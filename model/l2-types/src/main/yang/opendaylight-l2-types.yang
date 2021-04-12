@@ -2,7 +2,7 @@ module opendaylight-l2-types {
 	namespace "urn:opendaylight:l2:types";
 	prefix "ethertype";
 
-	description 
+	description
 		"Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
 
 		This program and the accompanying materials are made available under the
@@ -14,9 +14,9 @@ module opendaylight-l2-types {
 	}
 
 	typedef vlan-pcp {
-		description 
-			"IEEE 802.1p priority. It indicates the frame priority level. 
-			 Values are from 0 (best effort) to 7 (highest); 
+		description
+			"IEEE 802.1p priority. It indicates the frame priority level.
+			 Values are from 0 (best effort) to 7 (highest);
 			 1 represents the lowest priority.";
 		type uint8 {
 			range "0..7";
@@ -24,9 +24,9 @@ module opendaylight-l2-types {
 	}
 
 	typedef vlan-dei {
-		description 
-			"Drop Eligible Indicator (DEI): a 1-bit field. (formerly CFI). 
-			 May be used separately or in conjunction with PCP to indicate frames 
+		description
+			"Drop Eligible Indicator (DEI): a 1-bit field. (formerly CFI).
+			 May be used separately or in conjunction with PCP to indicate frames
 			 eligible to be dropped in the presence of congestion.";
 		type boolean;
 	}

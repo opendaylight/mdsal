@@ -10,7 +10,7 @@ module grouping_uses {
     }
 
 
-  
+
     grouping grouping-modul-test {
         leaf leaf-grouping-modul-test {
             type string;
@@ -32,7 +32,7 @@ module grouping_uses {
     grouping grouping-case-test {
         leaf leaf-grouping-case-test1 {
             type string;
-        }     
+        }
     }
 
     grouping grouping-choice-test {
@@ -49,7 +49,7 @@ module grouping_uses {
             }
         }
     }
- 
+
     grouping grouping-list-test {
         leaf leaf-grouping-list-test {
             type string;
@@ -67,7 +67,7 @@ module grouping_uses {
         leaf-list leaflist-grouping-list-test {
             type string;
         }
-    }     
+    }
 
     grouping grouping-grouping-test {
         leaf leaf-grouping-grouping {
@@ -85,13 +85,13 @@ module grouping_uses {
             type uint8;
         }
     }
-    
+
     grouping grouping-rpc-output-test {
         leaf leaf-grouping-rpc-output-test {
             type int8;
         }
     }
-     
+
 //grouping in GROUPING
     grouping grouping-atest {
         leaf leaf-grouping-test {
@@ -99,8 +99,8 @@ module grouping_uses {
         }
         uses grouping-grouping-test;
     }
-    
-//grouping in MODUL     
+
+//grouping in MODUL
 //     uses grouping-modul-test;
 
 //grouping in RPC
@@ -111,7 +111,7 @@ module grouping_uses {
             output {
                 uses grouping-rpc-output-test;
             }
-        }     
+        }
 
 //grouping in CONTAINER
     container container-test {
@@ -121,7 +121,7 @@ module grouping_uses {
         uses grouping-container-test;
     }
 
-//grouping in CASE     
+//grouping in CASE
     container container-with-choicetest {
         choice choice-test {
             case a {
@@ -129,17 +129,17 @@ module grouping_uses {
                     type string;
                 }
             }
-            case c {                 
-                uses grouping-case-test;                 
+            case c {
+                uses grouping-case-test;
             }
-        }     
-    }  
- 
-//grouping in LIST     
+        }
+    }
+
+//grouping in LIST
     list list-test {
         leaf list-leaf-test {
             type string;
         }
         uses grouping-list-test;
-    }   
+    }
 }

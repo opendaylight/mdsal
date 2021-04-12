@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 module bit-and-union-in-leaf {
-    
+
     namespace "urn:bit:union:in:leaf";
     prefix "sbd";
 
@@ -14,9 +14,9 @@ module bit-and-union-in-leaf {
     contact "http://www.opendaylight.org/";
 
     revision 2013-06-26 {
-        
+
     }
-    
+
     typedef union-typedef {
         type union {
             type string {
@@ -25,14 +25,14 @@ module bit-and-union-in-leaf {
             type int16;
         }
     }
-    
+
     typedef union-typedef2 {
         type union {
-            type string; 
+            type string;
             type int16;
         }
-    }    
-    
+    }
+
     container parent-container {
         leaf bit-leaf {
             type bits {
@@ -41,7 +41,7 @@ module bit-and-union-in-leaf {
                 bit third-bit;
             }
         }
-        
+
         leaf union-leaf {
             type union {
                 type int32;

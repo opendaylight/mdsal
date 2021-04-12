@@ -21,10 +21,10 @@ module bit-and-union-in-leaf {
 
     typedef union-typedef2 {
         type union {
-            type string; 
+            type string;
             type int16;
         }
-    }    
+    }
 
     container parent-container {
         leaf bit-leaf {
@@ -51,8 +51,8 @@ module bit-and-union-in-leaf {
                 type uint8;
             }
         }
-        
-// nested union in leaf   
+
+// nested union in leaf
         leaf lf {
             type union {
 				type string;
@@ -63,28 +63,28 @@ module bit-and-union-in-leaf {
 					type union {
 						type string;
 						type uint64;
-					}	
+					}
 				}
-			}		
-		}        
+			}
+		}
     }
-    
 
 
-// nested union in typedef	
+
+// nested union in typedef
 	typedef type-union {
 		type union {
 			type string;
 			type union {
 				type uint32;
 				type int8;
-				type string;	
+				type string;
 				type union {
 					type string;
 					type uint64;
-				}				
+				}
 			}
-		}	
-		
-	}    
+		}
+
+	}
 }

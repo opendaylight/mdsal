@@ -17,13 +17,13 @@ module augment-network-link-attributes {
 
     augment "/at:topology/at:network-links/at:network-link/at:attributes" {
         leaf longitude {
-            type decimal64 {    
+            type decimal64 {
                 fraction-digits 2;
             }
         }
 
         leaf latitude {
-            type decimal64 {    
+            type decimal64 {
                 fraction-digits 2;
             }
         }

@@ -85,25 +85,25 @@ module choice-monitoring {
                       type tls-fingerprint-type;
                     }
                   }
-                  
+
                   case sha224 {
                     leaf sha224 {
                       type tls-fingerprint-type;
                     }
                   }
-                  
+
                   case sha256 {
                     leaf sha256 {
                       type tls-fingerprint-type;
                     }
                   }
-                  
+
                   case sha384 {
                     leaf sha384 {
                       type tls-fingerprint-type;
                     }
-                  }                
-                  
+                  }
+
                   case sha512 {
                     leaf sha512 {
                       type tls-fingerprint-type;

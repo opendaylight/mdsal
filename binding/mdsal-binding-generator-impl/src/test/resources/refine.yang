@@ -54,8 +54,8 @@ module module-refine {
             new-subnode-chc "some value from chc";
         }
         refine chc2 {
-            mandatory "false"; 
-        }            
+            mandatory "false";
+        }
         refine data {
             mandatory "false";
             must "something-else = 9";
