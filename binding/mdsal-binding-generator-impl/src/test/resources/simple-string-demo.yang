@@ -7,7 +7,7 @@ module simple-string-demo {
     contact "http://www.opendaylight.org/";
 
     revision 2013-06-18 {
-        
+
     }
 
 

@@ -1,5 +1,5 @@
 module grouping_uses_container {
-    
+
     namespace "urn:grouping:uses:container";
     prefix "sbd";
 
@@ -8,7 +8,7 @@ module grouping_uses_container {
 
     revision 2013-07-18 {
     }
-    
+
     grouping grouping-container-test {
         leaf leaf-grouping-container-test1 {
             type string;
@@ -17,7 +17,7 @@ module grouping_uses_container {
             type uint8;
         }
     }
-    
+
 //grouping in CONTAINER
     container container-test {
         leaf container-leaf-test {

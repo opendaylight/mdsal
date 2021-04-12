@@ -8,15 +8,15 @@ module module-name-test {
 
     revision 2013-09-10 {
     }
-    
+
     typedef tpdf {
     	type string;
     }
-    
+
     container cont-outter {
     	container cont-inner {
-    	}    
+    	}
     }
-    
-    
+
+
 }

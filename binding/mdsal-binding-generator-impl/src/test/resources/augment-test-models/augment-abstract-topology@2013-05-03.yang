@@ -48,7 +48,7 @@ module augment-abstract-topology {
                 leaf tunnel-id {
                     type int32;
                 }
-                
+
                 container foo {
                     leaf bar {
                         type string;

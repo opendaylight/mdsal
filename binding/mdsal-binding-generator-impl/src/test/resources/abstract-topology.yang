@@ -3,8 +3,8 @@ module abstract-topology {
     namespace "urn:model:abstract:topology";
     prefix "tp";
 
-    import ietf-inet-types { 
-        prefix "inet"; 
+    import ietf-inet-types {
+        prefix "inet";
         revision-date 2010-09-24;
     }
 
@@ -12,17 +12,17 @@ module abstract-topology {
     contact "http://www.opendaylight.org/";
 
     description
-        "This module contains the definitions of elements that creates network 
+        "This module contains the definitions of elements that creates network
     topology i.e. definition of network nodes and links. This module is not designed to be used solely for network representation. This module SHOULD be used as base module in defining the network topology.";
 
     revision "2013-02-08" {
         reference "~~~ WILL BE DEFINED LATER";
     }
-    
+
     revision "2013-01-01" {
         reference "~~~ WILL BE DEFINED LATER";
     }
-    
+
     typedef node-id-ref {
         type leafref {
             path "/tp:topology/tp:network-nodes/tp:network-node/tp:node-id";
@@ -61,7 +61,7 @@ module abstract-topology {
                 description "The list of network nodes defined for topology.";
             }
         }
-        
+
         container network-links {
             list network-link {
                 key "link-id";

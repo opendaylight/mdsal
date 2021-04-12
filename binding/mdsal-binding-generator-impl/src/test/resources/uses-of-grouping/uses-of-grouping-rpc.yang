@@ -1,5 +1,5 @@
 module grouping_uses_rpc {
-    
+
     namespace "urn:grouping:uses:rpc";
     prefix "sbd";
 
@@ -9,7 +9,7 @@ module grouping_uses_rpc {
     revision 2013-07-18 {
     }
 
-     
+
 
     grouping grouping-rpc-input-test {
         container container-grouping-rpc-input-test {
@@ -21,7 +21,7 @@ module grouping_uses_rpc {
             type uint8;
         }
     }
-    
+
     grouping grouping-rpc-output-test {
         leaf leaf-grouping-rpc-output-test {
             type int8;
