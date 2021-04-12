@@ -17,7 +17,7 @@ module grouping_uses_modul {
             type uint8;
         }
     }
-    
-//grouping in MODUL     
+
+//grouping in MODUL
     uses grouping-modul-test;
 }

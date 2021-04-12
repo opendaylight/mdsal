@@ -15,4 +15,4 @@ module foo {
     uses foo-grp;
   }
 }
-  
+

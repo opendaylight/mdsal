@@ -1,5 +1,5 @@
 module grouping_uses_grouping {
-    
+
     namespace "urn:grouping:uses:grouping";
     prefix "sbd";
 
@@ -14,7 +14,7 @@ module grouping_uses_grouping {
             type string;
         }
     }
-     
+
 
 //grouping in GROUPING
     grouping grouping-test {
@@ -23,5 +23,5 @@ module grouping_uses_grouping {
         }
         uses grouping-grouping-test;
     }
-    
+
 }

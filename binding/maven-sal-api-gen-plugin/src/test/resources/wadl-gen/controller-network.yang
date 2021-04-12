@@ -86,7 +86,7 @@ module controller-network {
 				";
 				key "topology-id";
 				leaf topology-id {
-					type topology-id; 
+					type topology-id;
 					description "
 						It is presumed that datastore will contain many topologies. To
 						distinguish between topologies it is vital to have UNIQUE
@@ -97,7 +97,7 @@ module controller-network {
 				container types {
 					description "
 						The container for definition of topology types.
-						The augmenting modules should add empty optional leaf 
+						The augmenting modules should add empty optional leaf
 						to this container to signalize topology type.
 					";
 				}
@@ -144,7 +144,7 @@ module controller-network {
 						leaf link-id {
 							type link-id;
 						}
-						container source { 
+						container source {
 							leaf source-node {
 								type node-ref;
 								description "Source node identifier.";
@@ -153,7 +153,7 @@ module controller-network {
 								type tp-ref;
 							}
 						}
-						container destination { 
+						container destination {
 							leaf dest-node {
 								type node-ref;
 								description "Destination node identifier.";
@@ -189,7 +189,7 @@ module controller-network {
              }
          }
      }
-     
+
      rpc rock-the-house {
          input {
              leaf zip-code {

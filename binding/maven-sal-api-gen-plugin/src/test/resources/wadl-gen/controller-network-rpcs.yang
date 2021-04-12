@@ -28,7 +28,7 @@ module controller-network-rpcs {
              }
          }
      }
-     
+
      rpc rock-the-house {
          input {
              leaf zip-code {

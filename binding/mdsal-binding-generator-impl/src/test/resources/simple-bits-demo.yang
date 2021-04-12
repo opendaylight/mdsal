@@ -1,13 +1,13 @@
 module simple-bits-demo {
-    
+
     namespace "urn:simple:bits:demo";
     prefix "sbd";
 
     organization "OPEN DAYLIGHT";
-    contact "http://www.opendaylight.org/";    
+    contact "http://www.opendaylight.org/";
 
     revision 2013-06-11 {
-        
+
     }
 
     typedef byte-type {
@@ -23,19 +23,19 @@ module simple-bits-demo {
             }
             bit forth-bit {
                 position 40;
-            }       
+            }
             bit fifth-bit {
                 position 50;
-            }       
+            }
             bit sixth-bit {
                 position 60;
-            }       
+            }
             bit seventh-bit {
                 position 70;
-            }       
+            }
             bit eight-bit {
                 position 80;
-            }       
+            }
         }
     }
 
@@ -43,12 +43,12 @@ module simple-bits-demo {
         type uint32;
     }
 
-    
+
     container leaf-parent-container {
         leaf byte-leaf {
             type byte-type;
         }
-        
+
     }
 
 }

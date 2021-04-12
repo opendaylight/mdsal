@@ -64,14 +64,14 @@ module bar {
 
         type enumeration {
             enum include {
-                description 
-                    "This label will be included normally in the 
+                description
+                    "This label will be included normally in the
                      matching. This seems to be a little bit longer comment. I hear you very weel my darling.
 					 Network topology is the arrangement of the various elements (links, nodes, etc.) of any other builder nodes types.";
             }
             enum exclude {
-                description 
-                    "This label will be excluded from the 
+                description
+                    "This label will be excluded from the
                     matching.  This allows removing labels that
                     would have otherwise been included because of
                     inheritence rules.";

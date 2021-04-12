@@ -10,13 +10,13 @@ module controller-openflow {
     namespace "urn:opendaylight:controller:openflow";
     prefix "of";
     import controller-network {prefix cn;}
-    
-    
+
+
     revision 2013-05-20 {
        description "Initial demo";
     }
 
-   
+
 
 
 
@@ -53,7 +53,7 @@ module controller-openflow {
             type datapath-id;
         }
     }
-    
+
     augment "/cn:network/cn:network-elements/cn:network-element" {
         leaf datapath-id {
             type datapath-id;
@@ -62,7 +62,7 @@ module controller-openflow {
         container ports {
             list port {
                 key "logical-port-id";
-                
+
                 leaf logical-port-id {
                     type int32;
                 }
