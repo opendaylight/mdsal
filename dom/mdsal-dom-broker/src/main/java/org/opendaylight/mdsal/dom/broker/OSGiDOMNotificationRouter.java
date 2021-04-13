@@ -28,8 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true, configurationPid = "org.opendaylight.mdsal.dom.notification", service = {
-        DOMNotificationService.class, DOMNotificationPublishService.class,
-        DOMNotificationSubscriptionListenerRegistry.class
+    DOMNotificationService.class, DOMNotificationPublishService.class,
+    DOMNotificationSubscriptionListenerRegistry.class
 })
 @Designate(ocd = OSGiDOMNotificationRouter.Config.class)
 public final class OSGiDOMNotificationRouter implements DOMNotificationService, DOMNotificationPublishService,
