@@ -31,10 +31,14 @@ import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 @Beta
 @NonNullByDefault
 @Singleton
+@Component(immediate = true)
 public final class YangModuleLibrarySupport implements YangLibSupport {
     private static final Revision REVISION = ModulesState.QNAME.getRevision().orElseThrow();
 
@@ -43,8 +47,10 @@ public final class YangModuleLibrarySupport implements YangLibSupport {
     private final BindingCodecTree codecTree;
 
     @Inject
-    public YangModuleLibrarySupport(final YangParserFactory parserFactory, final BindingRuntimeGenerator generator,
-            final BindingCodecTreeFactory codecFactory) throws YangParserException {
+    @Activate
+    public YangModuleLibrarySupport(@Reference final YangParserFactory parserFactory,
+            @Reference final BindingRuntimeGenerator generator, @Reference final BindingCodecTreeFactory codecFactory)
+                throws YangParserException {
         final ModuleInfoSnapshot snapshot = new ModuleInfoSnapshotBuilder(parserFactory)
                 .add(ModulesState.class)
                 .build();

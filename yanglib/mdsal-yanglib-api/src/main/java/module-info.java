@@ -7,7 +7,6 @@
  */
 module org.opendaylight.mdsal.yanglib.api {
     exports org.opendaylight.mdsal.yanglib.api;
-    exports org.opendaylight.mdsal.yanglib.spi;
 
     requires transitive org.opendaylight.yangtools.yang.model.api;
     requires transitive org.opendaylight.yangtools.rfc8528.data.api;
