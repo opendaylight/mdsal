@@ -45,6 +45,8 @@ public class BitAndUnionTOEnclosingTest {
         GeneratedTransferObject lf2Leaf = null;
         int lf2LeafCounter = 0;
         List<GeneratedType> enclosedTypes = parentContainer.getEnclosedTypes();
+        assertEquals(5, enclosedTypes.size());
+
         for (GeneratedType genType : enclosedTypes) {
             if (genType instanceof GeneratedTransferObject) {
                 if (genType.getName().equals("Lf")) {
