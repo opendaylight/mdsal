@@ -26,6 +26,7 @@ import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStoreConfigProperties;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractDataBrokerTestCustomizer {
@@ -51,7 +52,9 @@ public abstract class AbstractDataBrokerTestCustomizer {
     }
 
     public DOMStore createConfigurationDatastore() {
-        final InMemoryDOMDataStore store = new InMemoryDOMDataStore("CFG", getDataTreeChangeListenerExecutor());
+        final InMemoryDOMDataStore store = new InMemoryDOMDataStore("CFG",LogicalDatastoreType.CONFIGURATION,
+            getDataTreeChangeListenerExecutor(),
+            InMemoryDOMDataStoreConfigProperties.DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE, false);
         schemaService.registerSchemaContextListener(store);
         return store;
     }
