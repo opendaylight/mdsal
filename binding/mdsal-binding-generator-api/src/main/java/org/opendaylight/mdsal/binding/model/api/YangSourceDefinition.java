@@ -27,8 +27,6 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ModuleStatement;
 
 /**
  * DTO capturing the YANG source definition which lead to a {@link GeneratedType} being emitted.
- *
- * @author Robert Varga
  */
 @Beta
 @NonNullByDefault
@@ -79,24 +77,23 @@ public abstract class YangSourceDefinition {
     }
 
     public static Optional<YangSourceDefinition> of(final Module module) {
-        if (module instanceof ModuleEffectiveStatement) {
-            final ModuleEffectiveStatement effective = (ModuleEffectiveStatement) module;
-            final ModuleStatement declared = effective.getDeclared();
-            if (declared != null) {
-                return Optional.of(new Single(effective, module));
-            }
+        final ModuleEffectiveStatement effective = module.asEffectiveStatement();
+        final ModuleStatement declared = effective.getDeclared();
+        if (declared != null) {
+            return Optional.of(new Single(effective, module));
         }
         return Optional.empty();
     }
 
     public static Optional<YangSourceDefinition> of(final Module module, final SchemaNode node) {
-        if (module instanceof ModuleEffectiveStatement) {
-            final ModuleEffectiveStatement effective = (ModuleEffectiveStatement) module;
-            if (node instanceof EffectiveStatement) {
-                final DeclaredStatement<?> declared = ((EffectiveStatement<?, ?>) node).getDeclared();
-                if (declared != null) {
-                    return Optional.of(new Single(effective, node));
-                }
+        return of(module.asEffectiveStatement(), node);
+    }
+
+    public static Optional<YangSourceDefinition> of(final ModuleEffectiveStatement module, final SchemaNode node) {
+        if (node instanceof EffectiveStatement) {
+            final DeclaredStatement<?> declared = ((EffectiveStatement<?, ?>) node).getDeclared();
+            if (declared != null) {
+                return Optional.of(new Single(module, node));
             }
         }
         return Optional.empty();
@@ -105,13 +102,10 @@ public abstract class YangSourceDefinition {
     public static Optional<YangSourceDefinition> of(final Module module, final Collection<? extends SchemaNode> nodes) {
         checkArgument(!nodes.isEmpty());
 
-        if (module instanceof ModuleEffectiveStatement) {
-            final ModuleEffectiveStatement effective = (ModuleEffectiveStatement) module;
-            final boolean anyDeclared = nodes.stream().anyMatch(node ->
-                node instanceof EffectiveStatement && ((EffectiveStatement<?, ?>) node).getDeclared() != null);
-            if (anyDeclared) {
-                return Optional.of(new Multiple(effective, nodes));
-            }
+        final boolean anyDeclared = nodes.stream().anyMatch(
+            node -> node instanceof EffectiveStatement && ((EffectiveStatement<?, ?>) node).getDeclared() != null);
+        if (anyDeclared) {
+            return Optional.of(new Multiple(module.asEffectiveStatement(), nodes));
         }
         return Optional.empty();
     }
