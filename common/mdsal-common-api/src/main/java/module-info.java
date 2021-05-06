@@ -9,7 +9,7 @@ module org.opendaylight.mdsal.common.api {
     exports org.opendaylight.mdsal.common.api;
 
     requires transitive org.opendaylight.yangtools.yang.common;
-    requires org.opendaylight.yangtools.util;
+    requires transitive org.opendaylight.yangtools.util;
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
