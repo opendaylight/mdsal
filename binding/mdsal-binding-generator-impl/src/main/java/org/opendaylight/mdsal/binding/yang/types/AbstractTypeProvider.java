@@ -1030,7 +1030,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             }
             if (!typeExist && javaType != null) {
                 updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType,
-                    javaType.getName() + parentUnionGenTOBuilder.getName() + "Value");
+                    BindingMapping.getUnionLeafrefMemberName(parentUnionGenTOBuilder.getName(), javaType.getName()));
             }
         }
         if (baseType instanceof StringTypeDefinition) {
