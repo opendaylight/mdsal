@@ -1,0 +1,22 @@
+module foo {
+  namespace foo;
+  prefix foo;
+
+  import yang-ext {
+    prefix ext;
+  }
+
+  identity identity;
+
+  rpc routed {
+    input {
+      leaf ctx {
+        type string;
+        ext:context-reference identity;
+      }
+    }
+  }
+
+  rpc unrouted;
+}
+

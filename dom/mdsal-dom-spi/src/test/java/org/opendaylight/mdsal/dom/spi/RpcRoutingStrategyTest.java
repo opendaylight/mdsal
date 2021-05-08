@@ -12,73 +12,60 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import java.lang.reflect.Field;
-import org.junit.Before;
+import com.google.common.collect.Iterables;
+import java.util.Collection;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.extension.yang.ext.rev130709.$YangModuleInfoImpl;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.InputSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
+import org.opendaylight.yangtools.yang.model.repo.api.StatementParserMode;
+import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class RpcRoutingStrategyTest {
+    private static Collection<? extends RpcDefinition> RPCS;
 
-    private static RpcRoutingStrategy rpcRoutingStrategy;
-    private static final QName Q_NAME = QName.create("", "testQname");
-    private static final RpcDefinition RPC_DEFINITION = mock(RpcDefinition.class);
-    private static final DataSchemaNode DATA_SCHEMA_NODE = mock(DataSchemaNode.class);
-    private static final UnknownSchemaNode UNKNOWN_SCHEMA_NODE = mock(UnknownSchemaNode.class);
+    @BeforeClass
+    public static void beforeClass() {
+        final EffectiveModelContext ctx = YangParserTestUtils.parseYangSources(StatementParserMode.DEFAULT_MODE, null,
+            YangTextSchemaSource.delegateForByteSource("yang-ext.yang",
+                $YangModuleInfoImpl.getInstance().getYangTextByteSource()),
+            YangTextSchemaSource.forResource(RpcRoutingStrategy.class, "/rpc-routing-strategy.yang"));
 
-    @Before
-    public void setUp() throws Exception {
-        final InputSchemaNode containerSchemaNode = mock(InputSchemaNode.class);
-
-        doReturn(containerSchemaNode).when(RPC_DEFINITION).getInput();
-        doReturn(ImmutableSet.of(DATA_SCHEMA_NODE)).when(containerSchemaNode).getChildNodes();
-        doReturn(ImmutableList.of(UNKNOWN_SCHEMA_NODE)).when(DATA_SCHEMA_NODE).getUnknownSchemaNodes();
-        doReturn(QName.create("", "testNode")).when(UNKNOWN_SCHEMA_NODE).getNodeType();
-        doReturn(Q_NAME).when(RPC_DEFINITION).getQName();
-
-        rpcRoutingStrategy = RpcRoutingStrategy.from(RPC_DEFINITION);
-        assertNotNull(rpcRoutingStrategy);
-
-        assertEquals(Q_NAME, rpcRoutingStrategy.getIdentifier());
-        assertFalse(rpcRoutingStrategy.isContextBasedRouted());
+        RPCS = ctx.getModules().stream()
+            .filter(module -> module.getName().equals("foo"))
+            .findFirst().orElseThrow()
+            .getRpcs();
     }
 
-    @Test()
-    public void routedRpcStrategyTest() throws Exception {
-        final Field contextReferenceField = RpcRoutingStrategy.class.getDeclaredField("CONTEXT_REFERENCE");
-        contextReferenceField.setAccessible(true);
-
-        final QName contextReference = (QName) contextReferenceField.get(rpcRoutingStrategy);
-
-        reset(UNKNOWN_SCHEMA_NODE);
-        doReturn(contextReference).when(UNKNOWN_SCHEMA_NODE).getNodeType();
-        doReturn(Q_NAME).when(UNKNOWN_SCHEMA_NODE).getQName();
-        doReturn(Q_NAME).when(DATA_SCHEMA_NODE).getQName();
-        rpcRoutingStrategy = RpcRoutingStrategy.from(RPC_DEFINITION);
-
-        assertNotNull(rpcRoutingStrategy);
-
-        assertTrue(rpcRoutingStrategy.isContextBasedRouted());
-        assertEquals(Q_NAME, rpcRoutingStrategy.getContext());
-        assertEquals(Q_NAME, rpcRoutingStrategy.getLeaf());
+    @AfterClass
+    public static void afterClass() {
+        RPCS = null;
     }
 
     @Test
-    public void getLeafTest() throws Exception {
-        assertThrows(UnsupportedOperationException.class, () -> rpcRoutingStrategy.getLeaf());
+    public void unroutedRpcStrategyTest() {
+        final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(Iterables.get(RPCS, 1));
+        assertNotNull(strategy);
+
+        assertEquals(QName.create("foo", "unrouted"), strategy.getIdentifier());
+        assertFalse(strategy.isContextBasedRouted());
+        assertThrows(UnsupportedOperationException.class, () -> strategy.getLeaf());
+        assertThrows(UnsupportedOperationException.class, () -> strategy.getContext());
     }
 
     @Test
-    public void getContextTest() {
-        assertThrows(UnsupportedOperationException.class, () -> rpcRoutingStrategy.getContext());
+    public void routedRpcStrategyTest() {
+        final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(Iterables.get(RPCS, 0));
+        assertNotNull(strategy);
+
+        assertEquals(QName.create("foo", "routed"), strategy.getIdentifier());
+        assertTrue(strategy.isContextBasedRouted());
+        assertEquals(QName.create("foo", "identity"), strategy.getContext());
+        assertEquals(QName.create("foo", "ctx"), strategy.getLeaf());
     }
 }
