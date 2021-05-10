@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
@@ -28,8 +27,16 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 
 final class CollisionDomain {
     abstract class Member {
+        private List<Secondary> secondaries = List.of();
         private String currentPackage;
         private String currentClass;
+
+        final void addSecondary(final Secondary secondary) {
+            if (secondaries.isEmpty()) {
+                secondaries = new ArrayList<>();
+            }
+            secondaries.add(requireNonNull(secondary));
+        }
 
         final @NonNull String currentClass() {
             if (currentClass == null) {
@@ -53,6 +60,11 @@ final class CollisionDomain {
             solved = false;
             currentClass = null;
             currentPackage = null;
+
+            for (Secondary secondary : secondaries) {
+                secondary.primaryConflict();
+            }
+
             return true;
         }
 
@@ -68,7 +80,6 @@ final class CollisionDomain {
 
     private class Primary extends Member {
         private ClassNamingStrategy strategy;
-        private List<Secondary> secondaries = List.of();
 
         Primary(final ClassNamingStrategy strategy) {
             this.strategy = requireNonNull(strategy);
@@ -84,12 +95,6 @@ final class CollisionDomain {
             return packageString(strategy.nodeIdentifier());
         }
 
-        final void addSecondary(final Secondary secondary) {
-            if (secondaries.isEmpty()) {
-                secondaries = new ArrayList<>();
-            }
-            secondaries.add(requireNonNull(secondary));
-        }
 
         @Override
         final boolean signalConflict() {
@@ -99,11 +104,7 @@ final class CollisionDomain {
             }
 
             strategy = newStrategy;
-            super.signalConflict();
-            for (Secondary secondary : secondaries) {
-                secondary.primaryConflict();
-            }
-            return true;
+            return super.signalConflict();
         }
 
         @Override
@@ -120,9 +121,9 @@ final class CollisionDomain {
 
     private abstract class Secondary extends Member {
         private final String classSuffix;
-        final Primary classPrimary;
+        final Member classPrimary;
 
-        Secondary(final Primary primary, final String classSuffix) {
+        Secondary(final Member primary, final String classSuffix) {
             this.classPrimary = requireNonNull(primary);
             this.classSuffix = requireNonNull(classSuffix);
             primary.addSecondary(this);
@@ -144,7 +145,7 @@ final class CollisionDomain {
     }
 
     private final class LeafSecondary extends Secondary {
-        LeafSecondary(final Primary classPrimary, final String classSuffix) {
+        LeafSecondary(final Member classPrimary, final String classSuffix) {
             super(classPrimary, classSuffix);
         }
 
@@ -158,7 +159,7 @@ final class CollisionDomain {
     private final class SuffixSecondary extends Secondary {
         private final AbstractQName packageSuffix;
 
-        SuffixSecondary(final Primary primaryClass, final String classSuffix, final AbstractQName packageSuffix) {
+        SuffixSecondary(final Member primaryClass, final String classSuffix, final AbstractQName packageSuffix) {
             super(primaryClass, classSuffix);
             this.packageSuffix = requireNonNull(packageSuffix);
         }
@@ -172,7 +173,7 @@ final class CollisionDomain {
     private final class AugmentSecondary extends Secondary {
         private final SchemaNodeIdentifier packageSuffix;
 
-        AugmentSecondary(final Primary primary, final String classSuffix, final SchemaNodeIdentifier packageSuffix) {
+        AugmentSecondary(final Member primary, final String classSuffix, final SchemaNodeIdentifier packageSuffix) {
             super(primary, classSuffix);
             this.packageSuffix = requireNonNull(packageSuffix);
         }
@@ -203,21 +204,16 @@ final class CollisionDomain {
     }
 
     @NonNull Member addSecondary(final Member primary, final String classSuffix) {
-        return addMember(new LeafSecondary(castPrimary(primary), classSuffix));
+        return addMember(new LeafSecondary(primary, classSuffix));
     }
 
     @NonNull Member addSecondary(final Member primary, final String classSuffix, final AbstractQName packageSuffix) {
-        return addMember(new SuffixSecondary(castPrimary(primary), classSuffix, packageSuffix));
+        return addMember(new SuffixSecondary(primary, classSuffix, packageSuffix));
     }
 
     @NonNull Member addSecondary(final Member classPrimary, final String classSuffix,
             final SchemaNodeIdentifier packageSuffix) {
-        return addMember(new AugmentSecondary(castPrimary(classPrimary), classSuffix, packageSuffix));
-    }
-
-    private static @NonNull Primary castPrimary(final Member primary) {
-        verify(primary instanceof Primary, "Unexpected primary %s", primary);
-        return (Primary) primary;
+        return addMember(new AugmentSecondary(classPrimary, classSuffix, packageSuffix));
     }
 
     /*

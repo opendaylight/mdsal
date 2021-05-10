@@ -371,4 +371,11 @@ public class GeneratedTypesTest {
         assertEquals(11, genTypesCount);
         assertEquals(3, genTOsCount);
     }
+
+    @Test
+    public void testAugmentRpcInput() {
+        final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
+            "/augment-rpc-input.yang"));
+        assertEquals(5, genTypes.size());
+    }
 }
