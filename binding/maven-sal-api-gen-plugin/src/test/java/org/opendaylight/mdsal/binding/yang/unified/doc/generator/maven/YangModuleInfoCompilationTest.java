@@ -135,9 +135,13 @@ public class YangModuleInfoCompilationTest {
             }
         }
         assertNotNull(infoImport);
+        assertEquals("$YangModuleInfoImpl{resource=/yang-module-info/import-module.yang}", infoImport.toString());
         assertNotNull(infoSub1);
+        assertEquals("Submodule1Info{resource=/yang-module-info/submodule1.yang}", infoSub1.toString());
         assertNotNull(infoSub2);
+        assertEquals("Submodule2Info{resource=/yang-module-info/submodule2.yang}", infoSub2.toString());
         assertNotNull(infoSub3);
+        assertEquals("Submodule3Info{resource=/yang-module-info/submodule3.yang}", infoSub3.toString());
 
         cleanUp(sourcesOutputDir, compiledOutputDir);
     }
