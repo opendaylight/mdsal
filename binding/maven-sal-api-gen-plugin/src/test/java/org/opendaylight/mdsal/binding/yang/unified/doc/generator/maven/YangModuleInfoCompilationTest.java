@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.yang.unified.doc.generator.maven;
 
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -135,9 +137,13 @@ public class YangModuleInfoCompilationTest {
             }
         }
         assertNotNull(infoImport);
+        assertThat(infoImport.getYangTextCharSource().readFirstLine(), startsWith("module import-module"));
         assertNotNull(infoSub1);
+        assertThat(infoSub1.getYangTextCharSource().readFirstLine(), startsWith("submodule submodule1"));
         assertNotNull(infoSub2);
+        assertThat(infoSub2.getYangTextCharSource().readFirstLine(), startsWith("submodule submodule2"));
         assertNotNull(infoSub3);
+        assertThat(infoSub3.getYangTextCharSource().readFirstLine(), startsWith("submodule submodule3"));
 
         cleanUp(sourcesOutputDir, compiledOutputDir);
     }
