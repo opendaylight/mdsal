@@ -220,7 +220,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         Builder<File> generatedFiles = ImmutableSet.builder();
 
         final YangModuleInfoTemplate template = new YangModuleInfoTemplate(module, ctx,
-            mod -> moduleResourcePathResolver.findModuleResourcePath(module, YangTextSchemaSource.class));
+            mod -> moduleResourcePathResolver.findModuleResourcePath(mod, YangTextSchemaSource.class));
         String moduleInfoSource = template.generate();
         if (moduleInfoSource.isEmpty()) {
             throw new IllegalStateException("Generated code should not be empty!");
