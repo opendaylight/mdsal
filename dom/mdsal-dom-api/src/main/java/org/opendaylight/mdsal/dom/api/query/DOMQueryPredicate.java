@@ -22,6 +22,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -89,6 +90,10 @@ public final class DOMQueryPredicate implements Immutable {
 
         public static final <V> Match valueEquals(final V value) {
             return new MatchValueEquals<>(value);
+        }
+
+        public static final <C> Match objectEquals(final C object) {
+            return new MatchObjectEquals<>(object);
         }
 
         public static final <I> Match containsItem(final I item) {
@@ -295,6 +300,21 @@ public final class DOMQueryPredicate implements Immutable {
             return value().equals(data);
         }
     }
+    private static final class MatchObjectEquals<T> extends AbstractMatchObject<T> {
+        MatchObjectEquals(final T object) {
+            super(object);
+        }
+
+        @Override
+        String op() {
+            return "eq";
+        }
+
+        @Override
+        boolean testValue(final @Nullable Object data) {
+            return object().equals(data);
+        }
+    }
 
     private static final class MatchStringContains extends AbstractMatchString {
         MatchStringContains(final String value) {
@@ -312,7 +332,7 @@ public final class DOMQueryPredicate implements Immutable {
         }
     }
 
-    private static final class MatchStringMatches extends AbstractMatch {
+    private static final class MatchStringMatches extends AbstractLeafMatch {
         private final Pattern pattern;
 
         MatchStringMatches(final Pattern pattern) {
@@ -536,8 +556,21 @@ public final class DOMQueryPredicate implements Immutable {
         }
     }
 
-    private abstract static class AbstractMatch extends Match {
-        AbstractMatch() {
+    private abstract static class AbstractObjectMatch extends Match {
+        AbstractObjectMatch() {
+            // Hidden on purpose
+        }
+
+        @Override
+        public final boolean test(final @Nullable NormalizedNode<?, ?> data) {
+            return data instanceof DataContainerChild ? testValue(data) : testValue(null);
+        }
+
+        abstract boolean testValue(@Nullable Object data);
+    }
+
+    private abstract static class AbstractLeafMatch extends Match {
+        AbstractLeafMatch() {
             // Hidden on purpose
         }
 
@@ -583,7 +616,7 @@ public final class DOMQueryPredicate implements Immutable {
         abstract boolean testString(String str);
     }
 
-    private abstract static class AbstractMatchValue<T> extends AbstractMatch {
+    private abstract static class AbstractMatchValue<T> extends AbstractLeafMatch {
         private final @NonNull T value;
 
         AbstractMatchValue(final T value) {
@@ -597,6 +630,22 @@ public final class DOMQueryPredicate implements Immutable {
         @Override
         final void appendArgument(final StringBuilder sb) {
             sb.append(value);
+        }
+    }
+    private abstract static class AbstractMatchObject<T> extends AbstractObjectMatch {
+        private final @NonNull T object;
+
+        AbstractMatchObject(final T object) {
+            this.object = requireNonNull(object);
+        }
+
+        final @NonNull T object() {
+            return object;
+        }
+
+        @Override
+        final void appendArgument(final StringBuilder sb) {
+            sb.append(object);
         }
     }
 

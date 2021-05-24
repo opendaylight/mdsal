@@ -191,6 +191,15 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
     <C extends TypeObject> @NonNull ValueMatchBuilder<O, C> leaf(TypeObjectLeafReference<T, C> methodRef);
 
     /**
+     * Match a specific child object
+     *
+     * @param methodRef method reference to the getter method
+     * @return A {@link ObjectMatchBuilder}
+     * @throws NullPointerException if methodRef is null
+     */
+    <C extends ChildOf<O>> @NonNull ObjectMatchBuilder<O, C> specificChild(SpecificChildObjectReference<O, C> methodRef);
+
+    /**
      * Match an {@code boolean} leaf-list's value.
      *
      * @param methodRef method reference to the getter method
@@ -346,6 +355,12 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
         C dummyMethod(P parent);
     }
 
+    @FunctionalInterface
+    public interface ObjectReference<P, C> extends Serializable {
+        @Deprecated(forRemoval = true)
+        C dummyMethod(P parent);
+    }
+
     /**
      * Intermediate specialization of {@link LeafReference} for {@code leaf-list} attributes. This interface should not
      * be used directly, but rather through its specializations.
@@ -355,6 +370,11 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      */
     @FunctionalInterface
     public interface LeafListReference<P, C> extends LeafReference<P, List<C>> {
+
+    }
+
+    @FunctionalInterface
+    public interface ChildObjectReference<P, C> extends ObjectReference<P, C> {
 
     }
 
@@ -423,6 +443,10 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
 
     }
 
+    @FunctionalInterface
+    public interface SpecificChildObjectReference<P, T extends ChildOf<P>> extends ChildObjectReference<P, T> {
+
+    }
     @FunctionalInterface
     public interface TypeObjectLeafReference<P, T extends TypeObject> extends LeafReference<P, T> {
 

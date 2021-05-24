@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath.LeafReference;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.dom.adapter.query.LambdaDecoder.LambdaTarget;
@@ -80,6 +81,26 @@ final class QueryBuilderState {
         final YangInstanceIdentifier absTarget = fromBinding(bindingPath);
         final YangInstanceIdentifier relTarget = absTarget.relativeTo(absoluteSelect)
                 .orElseThrow(() -> new IllegalStateException(absoluteSelect + " is not an ancestor of " + absTarget));
+
+        return new BoundMethod(relTarget, targetCodec.yangPathArgumentChild(childId));
+    }
+
+    @NonNull BoundMethod bindMethod(final @NonNull InstanceIdentifier<?> bindingPath,
+        final MatchBuilderPath.ObjectReference<?, ?> ref) {
+        // Verify bindingPath, which will give us something to fish in
+        final BindingDataObjectCodecTreeNode<?> targetCodec = codec.getSubtreeCodec(bindingPath);
+        checkState(targetCodec != null, "Failed to find codec for %s", bindingPath);
+
+        final WithStatus targetSchema = targetCodec.getSchema();
+        verify(targetSchema instanceof DataNodeContainer, "Unexpected target schema %s", targetSchema);
+
+        final LambdaTarget targetLeaf = LambdaDecoder.resolveLambda(ref);
+        verify(targetLeaf.targetClass.equals(bindingPath.getTargetType().getName()), "Mismatched target %s and path %s",
+            targetLeaf, bindingPath);
+        final NodeIdentifier childId = factory.findChild((DataNodeContainer) targetSchema, targetLeaf.targetMethod);
+        final YangInstanceIdentifier absTarget = fromBinding(bindingPath);
+        final YangInstanceIdentifier relTarget = absTarget.relativeTo(absoluteSelect)
+            .orElseThrow(() -> new IllegalStateException(absoluteSelect + " is not an ancestor of " + absTarget));
 
         return new BoundMethod(relTarget, targetCodec.yangPathArgumentChild(childId));
     }
