@@ -36,6 +36,8 @@ import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.SystemBuilder;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.SystemKey;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.second.grp.Alarms;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.second.grp.AlarmsBuilder;
+import org.opendaylight.yang.gen.v1.mdsal.query.norev.second.grp.alarms.AlarmStatus;
+import org.opendaylight.yang.gen.v1.mdsal.query.norev.second.grp.alarms.AlarmStatusBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.top.level.list.NestedList;
@@ -43,6 +45,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.util.BindingMap;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
@@ -73,7 +76,12 @@ public class QueryBuilderTest {
                     new SystemBuilder().setName("first").setAlarms(BindingMap.of(
                         new AlarmsBuilder()
                             .setId(Uint64.ZERO)
+                            .setDerivedTypeLeaf(new AlarmMessage("message1"))
                             .setCritical(Empty.getInstance())
+                            .setAlarmStatus(new AlarmStatusBuilder()
+                                .setStatusCode(Uint16.valueOf(1))
+                                .setStatusMessage("testStatus1")
+                                .build())
                             .setAlarmMessages(Arrays.asList(
                                 new AlarmMessage("message1"),
                                 new AlarmMessage("message2"),
@@ -89,11 +97,21 @@ public class QueryBuilderTest {
                             )).build(),
                         new AlarmsBuilder()
                             .setId(Uint64.ONE)
+                            .setDerivedTypeLeaf(new AlarmMessage("message2"))
+                            .setAlarmStatus(new AlarmStatusBuilder()
+                                .setStatusCode(Uint16.valueOf(2))
+                                .setStatusMessage("testStatus2")
+                                .build())
                             .setAffectedUsers(BindingMap.of(
                                 // TODO: fill
                             )).build(),
                         new AlarmsBuilder()
                             .setId(Uint64.TWO)
+                            .setDerivedTypeLeaf(new AlarmMessage("message3"))
+                            .setAlarmStatus(new AlarmStatusBuilder()
+                                .setStatusCode(Uint16.valueOf(2))
+                                .setStatusMessage("testStatus2")
+                                .build())
                             .setCritical(Empty.getInstance())
                             .setAffectedUsers(BindingMap.of(
                                 // TODO: fill
@@ -102,6 +120,7 @@ public class QueryBuilderTest {
                         new AlarmsBuilder()
                             .setId(Uint64.ZERO)
                             .setCritical(Empty.getInstance())
+                            .setDerivedTypeLeaf(new AlarmMessage("message1"))
                             .setAlarmMessages(Arrays.asList(
                                 new AlarmMessage("message3"),
                                 new AlarmMessage("message4"),
@@ -114,7 +133,8 @@ public class QueryBuilderTest {
                                 new AlarmUnion(new AlarmMessage("nestedAlarmMessage"))))
                             .setAffectedUsers(BindingMap.of(
                             // TODO: fill
-                        )).build())).build()
+                        )).build()))
+                        .build()
                     ))
                 .build())
             .build();
@@ -153,6 +173,68 @@ public class QueryBuilderTest {
         findAlarmUnions(new AlarmUnion("123"), 2, 2);
         findAlarmUnions(new AlarmUnion(new AlarmMessage("nestedAlarmMessage")), 2, 2);
         findAlarmUnions(new AlarmUnion(new AlarmMessage("missingAlarmMessage")), 0, 0);
+    }
+
+    @Test
+    public void testFindAlarmByStatusObject() {
+        findAlarmByStatus(buildStatus(1, "testStatus1"), 1, 1);
+        findAlarmByStatus(buildStatus(2, "testStatus2"), 2, 2);
+        findAlarmByStatus(buildStatus(1, "testStatus2"), 0, 0);
+        findAlarmByStatus(buildStatus(1, null), 0, 0);
+        findAlarmByStatus(new AlarmStatusBuilder()
+            .setStatusCode((Uint16)null)
+            .setStatusMessage("testStatus2")
+            .build(), 0, 0);
+        findAlarmByStatus(new AlarmStatusBuilder().setStatusCode(Uint16.valueOf(2)).build(), 0, 0);
+        findAlarmByStatus(new AlarmStatusBuilder().setStatusMessage("testStatus2").build(), 0, 0);
+    }
+
+    @Test
+    public void testFindAlarmWithDerivedTypeLeaf() {
+        findAlarmByDerivedType(new AlarmMessage("message1"), 2, 2);
+        findAlarmByDerivedType(new AlarmMessage("message2"), 1, 1);
+        findAlarmByDerivedType(new AlarmMessage("messageX"), 0, 0);
+    }
+
+    @Test
+    public void testFindAlarmWithoutStatusObject() {
+        final Stopwatch sw = Stopwatch.createStarted();
+        final QueryExpression<Alarms> queryMessage = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+            .extractChild(System.class)
+            .extractChild(Alarms.class)
+            .matching()
+            .specificChild(Alarms::getAlarmStatus).isNull().build();
+
+        List<? extends Item<@NonNull Alarms>> items = execute(queryMessage).getItems();
+        List<? extends Alarms> values = execute(queryMessage).getValues();
+        assertEquals(1, items.size());
+        assertEquals(1, values.size());
+
+        LOG.info("Query built in {}", sw);
+    }
+
+    @Test
+    public void testFindAlarmWithNonNullStatusObject() {
+        final Stopwatch sw = Stopwatch.createStarted();
+        final QueryExpression<Alarms> queryMessage = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+            .extractChild(System.class)
+            .extractChild(Alarms.class)
+            .matching()
+            .specificChild(Alarms::getAlarmStatus).nonNull().build();
+
+        List<? extends Item<@NonNull Alarms>> items = execute(queryMessage).getItems();
+        List<? extends Alarms> values = execute(queryMessage).getValues();
+        assertEquals(3, items.size());
+        assertEquals(3, values.size());
+
+        LOG.info("Query built in {}", sw);
+    }
+
+    private AlarmStatus buildStatus(int code, String msg) {
+        return new AlarmStatusBuilder()
+            .setStatusCode(Uint16.valueOf(code))
+            .setStatusMessage(msg)
+            .build();
     }
 
     @Test
@@ -344,6 +426,38 @@ public class QueryBuilderTest {
             .extractChild(Alarms.class)
             .matching()
             .leafList(Alarms::getAlarmUnions).contains().item(union).build();
+
+        List<? extends Item<@NonNull Alarms>> items = execute(queryMessage).getItems();
+        List<? extends Alarms> values = execute(queryMessage).getValues();
+        assertEquals(expectedItems, items.size());
+        assertEquals(expectedValues, values.size());
+
+        LOG.info("Query built in {}", sw);
+    }
+
+    private void findAlarmByStatus(final AlarmStatus status, final int expectedItems, final int expectedValues) {
+        final Stopwatch sw = Stopwatch.createStarted();
+        final QueryExpression<Alarms> queryMessage = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+            .extractChild(System.class)
+            .extractChild(Alarms.class)
+            .matching()
+            .specificChild(Alarms::getAlarmStatus).valueEquals(status).build();
+
+        List<? extends Item<@NonNull Alarms>> items = execute(queryMessage).getItems();
+        List<? extends Alarms> values = execute(queryMessage).getValues();
+        assertEquals(expectedItems, items.size());
+        assertEquals(expectedValues, values.size());
+
+        LOG.info("Query built in {}", sw);
+    }
+
+    private void findAlarmByDerivedType(final AlarmMessage message, final int expectedItems, final int expectedValues) {
+        final Stopwatch sw = Stopwatch.createStarted();
+        final QueryExpression<Alarms> queryMessage = factory.querySubtree(InstanceIdentifier.create(Foo.class))
+            .extractChild(System.class)
+            .extractChild(Alarms.class)
+            .matching()
+            .leaf(Alarms::getDerivedTypeLeaf).valueEquals(message).build();
 
         List<? extends Item<@NonNull Alarms>> items = execute(queryMessage).getItems();
         List<? extends Alarms> values = execute(queryMessage).getValues();

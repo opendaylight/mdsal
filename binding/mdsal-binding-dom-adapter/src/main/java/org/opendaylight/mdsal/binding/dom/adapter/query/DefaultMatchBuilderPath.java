@@ -16,6 +16,7 @@ import org.opendaylight.mdsal.binding.api.query.LeafListComparableMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.LeafListMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.LeafListStringMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath;
+import org.opendaylight.mdsal.binding.api.query.ObjectMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.StringMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.ValueMatchBuilder;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
@@ -139,6 +140,12 @@ final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> 
     }
 
     @Override
+    public @NonNull <C extends ChildOf<O>> ObjectMatchBuilder<O, C> specificChild(
+        ChildObjectReference<O, C> methodRef) {
+        return defaultFor(methodRef);
+    }
+
+    @Override
     public LeafListMatchBuilder<O, Boolean> leafList(final BooleanLeafListReference<T> methodRef) {
         return defaultFor(methodRef);
     }
@@ -212,6 +219,10 @@ final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> 
 
     private <F> @NonNull ValueMatchBuilder<O, F> defaultFor(final LeafReference<T, F> ref) {
         return new DefaultValueMatchBuilder<>(builder, select, builder.bindMethod(target.build(), ref));
+    }
+
+    private <C extends ChildOf<O>> ObjectMatchBuilder<O, C> defaultFor(final ChildObjectReference<O, C> ref) {
+        return new DefaultObjectMatchBuilder<>(builder, select, builder.bindMethod(target.build(), ref));
     }
 
     private <F> @NonNull LeafListMatchBuilder<O, F> defaultFor(final LeafListReference<T, F> ref) {

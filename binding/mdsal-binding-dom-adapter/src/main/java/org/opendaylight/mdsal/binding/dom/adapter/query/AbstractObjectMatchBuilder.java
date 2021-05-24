@@ -11,34 +11,37 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.query.ObjectMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.ValueMatch;
-import org.opendaylight.mdsal.binding.api.query.ValueMatchBuilder;
 import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundMethod;
-import org.opendaylight.mdsal.binding.dom.codec.impl.ValueNodeCodecContext;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCodec;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Match;
+import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 
-abstract class AbstractValueMatchBuilder<T extends DataObject, V> implements ValueMatchBuilder<T, V> {
+abstract class AbstractObjectMatchBuilder<T extends DataObject, C extends ChildOf<T>>
+    implements ObjectMatchBuilder<T, C> {
     private final QueryBuilderState builder;
     private final InstanceIdentifier<T> select;
     private final BoundMethod method;
-    private final ValueNodeCodecContext valueCodec;
+    private final BindingNormalizedNodeCodec objectCodec;
 
-    AbstractValueMatchBuilder(final QueryBuilderState builder, final InstanceIdentifier<T> select,
+    AbstractObjectMatchBuilder(final QueryBuilderState builder, final InstanceIdentifier<T> select,
             final BoundMethod method) {
         this.builder = requireNonNull(builder);
         this.select = requireNonNull(select);
         this.method = requireNonNull(method);
-        checkArgument(method.methodCodec instanceof ValueNodeCodecContext, "BoundMethod is missing ValueCodec");
-        this.valueCodec = (ValueNodeCodecContext) method.methodCodec;
+        checkArgument(method.methodCodec instanceof BindingNormalizedNodeCodec,
+            "BoundMethod is missing BindingNormalizedNodeCodec");
+        this.objectCodec = (BindingNormalizedNodeCodec) method.methodCodec;
     }
 
-    final ValueNodeCodecContext getValueCodec() {
-        return this.valueCodec;
+    final BindingNormalizedNodeCodec getObjectCodec() {
+        return this.objectCodec;
     }
 
     @Override
@@ -51,21 +54,11 @@ abstract class AbstractValueMatchBuilder<T extends DataObject, V> implements Val
         return withMatch(Match.exists().negate());
     }
 
-    @Override
-    public final ValueMatch<T> valueEquals(final V value) {
-        return withMatch(Match.valueEquals(translateValue(value)));
-    }
-
-    Object translateValue(final V value) {
-        return valueCodec.getValueCodec().serialize(value);
-    }
-
     final YangInstanceIdentifier relativePath() {
         return method.parentPath.node(((DataSchemaNode) method.methodCodec.getSchema()).getQName());
     }
 
     final @NonNull ValueMatch<T> withMatch(final Match match) {
-        // FIXME: this does not quite take value codec into account :(
         builder.addPredicate(DOMQueryPredicate.of(relativePath(), match));
         return new DefaultValueMatch<>(builder, select);
     }

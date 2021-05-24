@@ -50,6 +50,10 @@ module mdsal-query {
         type empty;
       }
 
+      leaf derived-type-leaf {
+        type alarm-message;
+      }
+
       leaf-list alarm-messages {
         type alarm-message;
       }
@@ -60,6 +64,16 @@ module mdsal-query {
 
       leaf-list primitive-messages {
         type string;
+      }
+
+      container alarm-status {
+         leaf status-code {
+            type uint16;
+         }
+
+         leaf status-message {
+            type string;
+         }
       }
       uses third-grp;
     }

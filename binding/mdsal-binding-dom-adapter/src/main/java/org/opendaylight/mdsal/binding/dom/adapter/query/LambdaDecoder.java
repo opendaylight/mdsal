@@ -22,6 +22,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.function.Function;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath.LeafReference;
+import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath.ObjectReference;
 import org.opendaylight.yangtools.concepts.Immutable;
 
 /**
@@ -88,11 +89,27 @@ final class LambdaDecoder {
                 }
             });
 
+    private static final LoadingCache<ObjectReference<?, ?>, LambdaTarget> OBJECT_LAMBDA_CACHE =
+        CacheBuilder.newBuilder().weakKeys().build(new CacheLoader<>() {
+            @Override
+            public LambdaTarget load(final ObjectReference<?, ?> ref) throws Exception {
+                final Object replaced = REPLACE_CACHE.get(ref.getClass()).invoke(ref);
+                verify(replaced instanceof SerializedLambda, "Unexpected replaced object %s", replaced);
+                final SerializedLambda serialized = (SerializedLambda) replaced;
+                return new LambdaTarget(serialized.getImplClass().replace('/', '.'),
+                    serialized.getImplMethodName());
+            }
+        });
+
     private LambdaDecoder() {
         // Hidden on purpose
     }
 
     static LambdaTarget resolveLambda(final LeafReference<?, ?> lambda) {
         return LAMBDA_CACHE.getUnchecked(lambda);
+    }
+
+    static LambdaTarget resolveLambda(final ObjectReference<?, ?> lambda) {
+        return OBJECT_LAMBDA_CACHE.getUnchecked(lambda);
     }
 }
