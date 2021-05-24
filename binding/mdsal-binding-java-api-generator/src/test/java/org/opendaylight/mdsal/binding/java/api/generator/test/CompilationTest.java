@@ -712,6 +712,7 @@ public class CompilationTest extends BaseCompilationTest {
         CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
     }
 
+    @Test
     public void testMdsal533() throws Exception {
         final File sourcesOutputDir = CompilationTestUtils.generatorOutput("mdsal533");
         final File compiledOutputDir = CompilationTestUtils.compilerOutput("mdsal533");
