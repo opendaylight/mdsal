@@ -33,7 +33,7 @@ final class ChoiceGenerator extends AbstractCompositeGenerator<ChoiceEffectiveSt
         builder.addImplementsType(BindingTypes.choiceIn(DefaultType.of(getParent().typeName())));
 
         final ModuleGenerator module = currentModule();
-        module.addQNameConstant(builder, localName().getLocalName());
+        module.addQNameConstant(builder, localName());
 
         annotateDeprecatedIfNecessary(builder);
         if (builderFactory instanceof TypeBuilderFactory.Codegen) {
@@ -41,7 +41,6 @@ final class ChoiceGenerator extends AbstractCompositeGenerator<ChoiceEffectiveSt
         }
 //      newType.setSchemaPath(schemaNode.getPath());
         builder.setModuleName(module.statement().argument().getLocalName());
-
 
         return builder.build();
     }

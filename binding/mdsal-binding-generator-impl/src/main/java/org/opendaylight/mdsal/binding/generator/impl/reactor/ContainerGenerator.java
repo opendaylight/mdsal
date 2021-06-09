@@ -34,7 +34,7 @@ final class ContainerGenerator extends AbstractCompositeGenerator<ContainerEffec
         addConcreteInterfaceMethods(builder);
 
         final ModuleGenerator module = currentModule();
-        module.addQNameConstant(builder, localName().getLocalName());
+        module.addQNameConstant(builder, localName());
 
         addGetterMethods(builder, builderFactory);
 

@@ -41,7 +41,7 @@ final class GroupingGenerator extends AbstractCompositeGenerator<GroupingEffecti
         addGetterMethods(builder, builderFactory);
 
         final ModuleGenerator module = currentModule();
-        module.addQNameConstant(builder, statement().argument().getLocalName());
+        module.addQNameConstant(builder, statement().argument());
 
         annotateDeprecatedIfNecessary(builder);
         if (builderFactory instanceof TypeBuilderFactory.Codegen) {

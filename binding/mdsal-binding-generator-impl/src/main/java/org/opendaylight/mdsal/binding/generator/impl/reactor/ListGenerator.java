@@ -55,7 +55,7 @@ final class ListGenerator extends AbstractCompositeGenerator<ListEffectiveStatem
         addConcreteInterfaceMethods(builder);
 
         final ModuleGenerator module = currentModule();
-        module.addQNameConstant(builder, localName().getLocalName());
+        module.addQNameConstant(builder, localName());
 
         if (keyGen != null) {
             // Add yang.binding.Identifiable and its key() method

@@ -56,7 +56,7 @@ final class CaseGenerator extends AbstractCompositeGenerator<CaseEffectiveStatem
         addConcreteInterfaceMethods(builder);
 
         final ModuleGenerator module = currentModule();
-        module.addQNameConstant(builder, localName().getLocalName());
+        module.addQNameConstant(builder, localName());
 
         addGetterMethods(builder, builderFactory);
 

@@ -46,7 +46,7 @@ final class ActionGenerator extends AbstractCompositeGenerator<ActionEffectiveSt
         builder.addImplementsType(implementedType(builderFactory));
 
         final ModuleGenerator module = currentModule();
-        module.addQNameConstant(builder, statement().argument().getLocalName());
+        module.addQNameConstant(builder, statement().argument());
 
 //        addGetterMethods(builder, builderFactory);
 

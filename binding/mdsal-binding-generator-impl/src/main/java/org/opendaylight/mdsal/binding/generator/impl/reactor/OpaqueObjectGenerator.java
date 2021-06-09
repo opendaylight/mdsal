@@ -35,7 +35,7 @@ final class OpaqueObjectGenerator<T extends DataTreeEffectiveStatement<?>> exten
         annotateDeprecatedIfNecessary(builder);
 
         final ModuleGenerator module = currentModule();
-        module.addQNameConstant(builder, localName().getLocalName());
+        module.addQNameConstant(builder, localName());
 
         addCodegenInformation(module, statement(), builder);
         builder.setModuleName(module.statement().argument().getLocalName());

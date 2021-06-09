@@ -21,6 +21,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.mdsal.binding.model.util.TypeComments;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
+import org.opendaylight.yangtools.yang.common.AbstractQName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
@@ -136,8 +137,8 @@ public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffe
         return verifyNotNull(prefixMember);
     }
 
-    void addQNameConstant(final GeneratedTypeBuilderBase<?> builder, final String localName) {
+    void addQNameConstant(final GeneratedTypeBuilderBase<?> builder, final AbstractQName localName) {
         builder.addConstant(BindingTypes.QNAME, BindingMapping.QNAME_STATIC_FIELD_NAME,
-            Map.entry(yangModuleInfo, localName));
+            Map.entry(yangModuleInfo, localName.getLocalName()));
     }
 }

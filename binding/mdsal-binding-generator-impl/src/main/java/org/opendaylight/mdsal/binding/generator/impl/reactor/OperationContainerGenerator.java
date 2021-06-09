@@ -65,7 +65,7 @@ class OperationContainerGenerator extends AbstractCompositeGenerator<SchemaTreeE
         addGetterMethods(builder, builderFactory);
 
         final ModuleGenerator module = currentModule();
-        module.addQNameConstant(builder, localName().getLocalName());
+        module.addQNameConstant(builder, localName());
 
         annotateDeprecatedIfNecessary(builder);
         if (builderFactory instanceof TypeBuilderFactory.Codegen) {
