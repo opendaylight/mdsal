@@ -27,9 +27,15 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 
 final class CollisionDomain {
     abstract class Member {
+        private final Generator gen;
+
         private List<Secondary> secondaries = List.of();
         private String currentPackage;
         private String currentClass;
+
+        Member(final Generator gen) {
+            this.gen = requireNonNull(gen);
+        }
 
         final void addSecondary(final Secondary secondary) {
             if (secondaries.isEmpty()) {
@@ -74,14 +80,15 @@ final class CollisionDomain {
         }
 
         ToStringHelper addToStringAttributes(final ToStringHelper helper) {
-            return helper.add("class", currentClass).add("package", currentPackage);
+            return helper.add("gen", gen).add("class", currentClass).add("package", currentPackage);
         }
     }
 
     private class Primary extends Member {
         private ClassNamingStrategy strategy;
 
-        Primary(final ClassNamingStrategy strategy) {
+        Primary(final Generator gen, final ClassNamingStrategy strategy) {
+            super(gen);
             this.strategy = requireNonNull(strategy);
         }
 
@@ -114,8 +121,8 @@ final class CollisionDomain {
     }
 
     private final class Prefix extends Primary {
-        Prefix(final ClassNamingStrategy strategy) {
-            super(strategy);
+        Prefix(final Generator gen, final ClassNamingStrategy strategy) {
+            super(gen, strategy);
         }
     }
 
@@ -123,7 +130,8 @@ final class CollisionDomain {
         private final String classSuffix;
         final Member classPrimary;
 
-        Secondary(final Member primary, final String classSuffix) {
+        Secondary(final Generator gen, final Member primary, final String classSuffix) {
+            super(gen);
             this.classPrimary = requireNonNull(primary);
             this.classSuffix = requireNonNull(classSuffix);
             primary.addSecondary(this);
@@ -145,8 +153,8 @@ final class CollisionDomain {
     }
 
     private final class LeafSecondary extends Secondary {
-        LeafSecondary(final Member classPrimary, final String classSuffix) {
-            super(classPrimary, classSuffix);
+        LeafSecondary(final Generator gen, final Member classPrimary, final String classSuffix) {
+            super(gen, classPrimary, classSuffix);
         }
 
         @Override
@@ -159,8 +167,9 @@ final class CollisionDomain {
     private final class SuffixSecondary extends Secondary {
         private final AbstractQName packageSuffix;
 
-        SuffixSecondary(final Member primaryClass, final String classSuffix, final AbstractQName packageSuffix) {
-            super(primaryClass, classSuffix);
+        SuffixSecondary(final Generator gen, final Member primaryClass, final String classSuffix,
+                final AbstractQName packageSuffix) {
+            super(gen, primaryClass, classSuffix);
             this.packageSuffix = requireNonNull(packageSuffix);
         }
 
@@ -173,8 +182,9 @@ final class CollisionDomain {
     private final class AugmentSecondary extends Secondary {
         private final SchemaNodeIdentifier packageSuffix;
 
-        AugmentSecondary(final Member primary, final String classSuffix, final SchemaNodeIdentifier packageSuffix) {
-            super(primary, classSuffix);
+        AugmentSecondary(final AbstractAugmentGenerator gen, final Member primary, final String classSuffix,
+                final SchemaNodeIdentifier packageSuffix) {
+            super(gen, primary, classSuffix);
             this.packageSuffix = requireNonNull(packageSuffix);
         }
 
@@ -191,29 +201,36 @@ final class CollisionDomain {
         }
     }
 
+    private final AbstractCompositeGenerator<?> gen;
+
     private List<Member> members = List.of();
     private boolean solved;
 
-    @NonNull Member addPrefix(final ClassNamingStrategy strategy) {
+    CollisionDomain(final AbstractCompositeGenerator<?> gen) {
+        this.gen = requireNonNull(gen);
+    }
+
+    @NonNull Member addPrefix(final Generator memberGen, final ClassNamingStrategy strategy) {
         // Note that contrary to the method name, we are not adding the result to members
-        return new Prefix(strategy);
+        return new Prefix(memberGen, strategy);
     }
 
-    @NonNull Member addPrimary(final ClassNamingStrategy strategy) {
-        return addMember(new Primary(strategy));
+    @NonNull Member addPrimary(final Generator memberGen, final ClassNamingStrategy strategy) {
+        return addMember(new Primary(memberGen, strategy));
     }
 
-    @NonNull Member addSecondary(final Member primary, final String classSuffix) {
-        return addMember(new LeafSecondary(primary, classSuffix));
+    @NonNull Member addSecondary(final Generator memberGen, final Member primary, final String classSuffix) {
+        return addMember(new LeafSecondary(memberGen, primary, classSuffix));
     }
 
-    @NonNull Member addSecondary(final Member primary, final String classSuffix, final AbstractQName packageSuffix) {
-        return addMember(new SuffixSecondary(primary, classSuffix, packageSuffix));
+    @NonNull Member addSecondary(final RpcContainerGenerator memberGen, final Member primary, final String classSuffix,
+            final AbstractQName packageSuffix) {
+        return addMember(new SuffixSecondary(memberGen, primary, classSuffix, packageSuffix));
     }
 
-    @NonNull Member addSecondary(final Member classPrimary, final String classSuffix,
-            final SchemaNodeIdentifier packageSuffix) {
-        return addMember(new AugmentSecondary(classPrimary, classSuffix, packageSuffix));
+    @NonNull Member addSecondary(final AbstractAugmentGenerator memberGen, final Member classPrimary,
+            final String classSuffix, final SchemaNodeIdentifier packageSuffix) {
+        return addMember(new AugmentSecondary(memberGen, classPrimary, classSuffix, packageSuffix));
     }
 
     /*
@@ -275,12 +292,17 @@ final class CollisionDomain {
                             remaining++;
                         }
                     }
-                    checkState(remaining < 2, "Failed to resolve members %s", conflicting);
+                    checkState(remaining < 2, "Failed to solve %s due to naming conflict among %s", this, conflicting);
                 }
             }
         } while (!solved);
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("gen", gen).toString();
     }
 
     @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",

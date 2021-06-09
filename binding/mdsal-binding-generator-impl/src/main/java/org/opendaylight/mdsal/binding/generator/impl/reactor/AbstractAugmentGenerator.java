@@ -83,7 +83,7 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
         final AbstractQName explicitIdentifier = statement()
             .findFirstEffectiveSubstatementArgument(AugmentIdentifierEffectiveStatement.class).orElse(null);
         if (explicitIdentifier != null) {
-            return domain.addPrimary(new CamelCaseNamingStrategy(StatementNamespace.DEFAULT, explicitIdentifier));
+            return domain.addPrimary(this, new CamelCaseNamingStrategy(StatementNamespace.DEFAULT, explicitIdentifier));
         }
 
         final AbstractCompositeGenerator<?> target = targetGenerator();
@@ -99,7 +99,7 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
             }
         }
 
-        return domain.addSecondary(target.getMember(), String.valueOf(offset), statement().argument());
+        return domain.addSecondary(this, target.getMember(), String.valueOf(offset), statement().argument());
     }
 
     @Override

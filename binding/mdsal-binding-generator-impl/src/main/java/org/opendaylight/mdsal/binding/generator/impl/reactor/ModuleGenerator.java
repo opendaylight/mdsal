@@ -50,7 +50,7 @@ public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffe
         yangModuleInfo = JavaTypeName.create(javaPackage(), BindingMapping.MODULE_INFO_CLASS_NAME);
         placement = computePlacement();
         prefixMember = placement != ClassPlacement.NONE || haveSecondary()
-            ? domain().addPrefix(new ModuleNamingStrategy(statement.argument())) : null;
+            ? domain().addPrefix(this, new ModuleNamingStrategy(statement.argument())) : null;
     }
 
     private @NonNull ClassPlacement computePlacement() {
@@ -100,7 +100,7 @@ public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffe
 
     @Override
     Member createMember(final CollisionDomain domain) {
-        return domain.addSecondary(prefixMember, BindingMapping.DATA_ROOT_SUFFIX);
+        return domain.addSecondary(this, prefixMember, BindingMapping.DATA_ROOT_SUFFIX);
     }
 
     @Override

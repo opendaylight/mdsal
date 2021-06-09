@@ -149,7 +149,7 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
 
     @Override
     Member createMember(final CollisionDomain domain) {
-        return domain.addPrimary(new CamelCaseNamingStrategy(namespace(), localName()));
+        return domain.addPrimary(this, new CamelCaseNamingStrategy(namespace(), localName()));
     }
 
     void addAsGetterMethod(final @NonNull GeneratedTypeBuilderBase<?> builder,

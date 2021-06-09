@@ -41,6 +41,6 @@ final class RpcContainerGenerator extends OperationContainerGenerator {
 
     @Override
     Member createMember(final CollisionDomain domain) {
-        return domain.addSecondary(getParent().ensureMember(), suffix, statement().argument());
+        return domain.addSecondary(this, getParent().ensureMember(), suffix, statement().argument());
     }
 }

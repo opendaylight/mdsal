@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
 abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> extends AbstractExplicitGenerator<T> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractCompositeGenerator.class);
 
-    private final @NonNull CollisionDomain domain = new CollisionDomain();
+    private final @NonNull CollisionDomain domain = new CollisionDomain(this);
     private final List<Generator> children;
 
     private List<AbstractAugmentGenerator> augments = List.of();

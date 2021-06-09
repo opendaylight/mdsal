@@ -41,7 +41,7 @@ final class KeyGenerator extends AbstractExplicitGenerator<KeyEffectiveStatement
 
     @Override
     Member createMember(final CollisionDomain domain) {
-        return domain.addSecondary(listGen.getMember(), SUFFIX);
+        return domain.addSecondary(this, listGen.getMember(), SUFFIX);
     }
 
     @Override

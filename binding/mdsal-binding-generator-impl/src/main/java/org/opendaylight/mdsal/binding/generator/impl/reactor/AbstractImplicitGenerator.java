@@ -31,7 +31,7 @@ abstract class AbstractImplicitGenerator extends Generator {
 
     @Override
     final Member createMember(final CollisionDomain domain) {
-        return domain.addSecondary(((ModuleGenerator) getParent()).getPrefixMember(), classSuffix());
+        return domain.addSecondary(this, ((ModuleGenerator) getParent()).getPrefixMember(), classSuffix());
     }
 
     abstract @NonNull String classSuffix();
