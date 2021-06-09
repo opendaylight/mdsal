@@ -87,14 +87,14 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
         }
 
         final AbstractCompositeGenerator<?> target = targetGenerator();
-        final AbstractQName ref = target.localName();
+        final String ref = target.localName().getLocalName();
         int offset = 1;
         for (Generator gen : getParent()) {
             if (gen == this) {
                 break;
             }
             if (gen instanceof AbstractAugmentGenerator
-                && ref.equals(((AbstractAugmentGenerator) gen).targetGenerator().localName())) {
+                && ref.equals(((AbstractAugmentGenerator) gen).targetGenerator().localName().getLocalName())) {
                 offset++;
             }
         }
