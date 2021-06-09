@@ -631,7 +631,9 @@ abstract class AbstractTypeObjectGenerator<T extends EffectiveStatement<?, ?>> e
 
         annotateDeprecatedIfNecessary(typedef, builder);
 
-        if (javaType instanceof ConcreteType && "String".equals(javaType.getName()) && typedef.getBaseType() != null) {
+        if (javaType instanceof ConcreteType
+            // FIXME: This looks very suspicious: we should by checking for Types.STRING
+            && "String".equals(javaType.getName()) && typedef.getBaseType() != null) {
             addStringRegExAsConstant(builder, resolveRegExpressions(typedef));
         }
         addUnits(builder, typedef);
@@ -703,7 +705,7 @@ abstract class AbstractTypeObjectGenerator<T extends EffectiveStatement<?, ?>> e
                 } else {
                     Type baseType = SIMPLE_TYPES.get(subName);
                     if (baseType == null) {
-                        // This has to be a reference to a typedef, let's lookup it up and pick the its type
+                        // This has to be a reference to a typedef, let's lookup it up and pick up its type
                         final AbstractTypeObjectGenerator<?> baseGen = verifyNotNull(
                             dependencies.baseTypes.get(subName), "Cannot resolve base type %s in %s", subName,
                             definingStatement);
@@ -729,6 +731,8 @@ abstract class AbstractTypeObjectGenerator<T extends EffectiveStatement<?, ?>> e
                                 baseType.getName());
                         }
                     }
+
+                    expressions.putAll(resolveRegExpressions(subType.getTypeDefinition()));
 
                     generatedType = restrictType(baseType,
                         BindingGeneratorUtil.getRestrictions(type.getTypeDefinition()), builderFactory);
