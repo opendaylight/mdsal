@@ -11,6 +11,7 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -19,6 +20,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.yangtools.odlext.model.api.AugmentIdentifierEffectiveStatement;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
@@ -50,9 +52,30 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
      * <p>
      * Evaluating these in the order of increasing argument component count solves this without having to perform a full
      * analysis.
+     *
+     * <p>
+     * Another problem we are solving here is augmentation target stability, as the declared order in YANG text may
+     * change, which does not really change the semantics. If we only relied on length of argument, such a move would
+     * result in changing the results of {@link #createMember(CollisionDomain)} and make upgrades rather unpredictable.
+     * We solve this by using {@link QName#compareTo(QName)} to determine order.
      */
-    static final Comparator<? super AbstractAugmentGenerator> COMPARATOR =
-        Comparator.comparingInt(augment -> augment.statement().argument().getNodeIdentifiers().size());
+    static final Comparator<? super AbstractAugmentGenerator> COMPARATOR = (o1, o2) -> {
+        final Iterator<QName> thisIt = o1.statement().argument().getNodeIdentifiers().iterator();
+        final Iterator<QName> otherIt = o2.statement().argument().getNodeIdentifiers().iterator();
+
+        while (thisIt.hasNext()) {
+            if (!otherIt.hasNext()) {
+                return 1;
+            }
+
+            final int comp = thisIt.next().compareTo(otherIt.next());
+            if (comp != 0) {
+                return comp;
+            }
+        }
+
+        return otherIt.hasNext() ? -1 : 0;
+    };
 
     private AbstractCompositeGenerator<?> targetGen;
 
@@ -138,5 +161,4 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
     }
 
     abstract void loadTargetGenerator();
-
 }
