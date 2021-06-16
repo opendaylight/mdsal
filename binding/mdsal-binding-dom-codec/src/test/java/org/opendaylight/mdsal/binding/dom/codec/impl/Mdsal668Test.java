@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) 2021 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.opendaylight.mdsal.binding.dom.codec.impl;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+import org.junit.Test;
+import org.opendaylight.yang.gen.v1.mdsal668.norev.Foo;
+import org.opendaylight.yang.gen.v1.mdsal668.norev.FooBuilder;
+import org.opendaylight.yang.gen.v1.mdsal668.norev.bar.Bar;
+import org.opendaylight.yang.gen.v1.mdsal668.norev.bar.BarBuilder;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
+import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
+
+public class Mdsal668Test extends AbstractBindingCodecTest {
+    private static final YangInstanceIdentifier FOO_YIID = YangInstanceIdentifier.create(new NodeIdentifier(Foo.QNAME));
+    private static final InstanceIdentifier<Foo> FOO_IID = InstanceIdentifier.create(Foo.class);
+
+    @Test
+    public void testLeaflistLeafref() {
+        assertEquals(Builders.containerBuilder()
+            .withNodeIdentifier(new NodeIdentifier(Foo.QNAME))
+            .withChild(Builders.containerBuilder()
+                .withNodeIdentifier(new NodeIdentifier(Bar.QNAME))
+                .withChild(Builders.leafSetBuilder()
+                    .withNodeIdentifier(new NodeIdentifier(Bar.QNAME))
+                    .withChild(Builders.leafSetEntryBuilder()
+                        .withNodeIdentifier(new NodeWithValue<>(Bar.QNAME, FOO_YIID))
+                        .withValue(FOO_YIID)
+                        .build())
+                    .build())
+                .build())
+            .build(), codecContext.toNormalizedNode(FOO_IID, new FooBuilder()
+                .setBar(new BarBuilder().setBar(List.of(FOO_IID)).build())
+                .build()).getValue());
+    }
+}
