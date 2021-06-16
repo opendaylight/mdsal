@@ -13,7 +13,7 @@ module yang-ext {
             and is available at http://www.eclipse.org/legal/epl-v10.html";
 
     revision "2013-07-09" {
-        description "";
+        description "Initial revision.";
     }
 
     // Augmentation name
@@ -24,22 +24,81 @@ module yang-ext {
             augmentation. Augment identifier is used to identify
             specific augment statement by name.
 
-            The identifier syntax is defined formally defined by the rule
-            'identifier' in Section 12 of RFC 6020.
+            The identifier syntax is formally defined by the 'identifier' rule
+            in Section 12 of RFC 6020.
 
             All augment identifiers defined in a namespace MUST be unique.
             The namespace of augment identifiers is shared by module and
-            its submodules.";
+            its submodules. It is recommended that this namespace does not
+            collide with schema node identifier namespace.";
 
-            /*
-                Discussion:
-                This extension allows for ease of development / debug
-                of YANG modules and it is suitable for code generation,
-                where each augment statement is nicely identified by
-                unique name instead of combination of augment target
-                and when condition.
-            */
+        reference
+            "Discussion:
+                This extension allows for ease of development and debugging
+                of YANG modules.
+
+                The primary benefit is acts as a namespace anchor for namespace
+                relocation -- for example when we want to share a number of YANG
+                identifier namespaces inside a single Java identifier namespace --
+                as it establishes identifier mapping rules in face of potential
+                ambiguity.
+
+                For example, imagine following (artificial) YANG fragment:
+
+                  module foo {
+                    namespace foo;
+                    prefix foo;
+
+                    import yang-ext { prefix ext; }
+
+                    grouping foo {
+                      leaf foo { type string; }
+                    }
+
+                    container foo {
+                      uses foo;
+                    }
+
+                    augment /foo {
+                      ext:augment-identifier foo-bar;
+                      leaf bar { type uint8; }
+                    }
+
+                    augment /foo {
+                      ext:augment-identifier foo-xyzzy
+                      leaf xyxxy { type string; }
+                    }
+                  }
+
+                treating each of grouping/container/augment as competing for Foo.class.
+
+                A reasonable Java transpiler understanding this extension will treat
+                the two augment statemtents as laying claim to FooBar.class and FooXyzzy.class,
+                resulting in only grouping and container in contention";
+
         argument "identifier";
+    }
+
+    extension augment-equivalent {
+        description
+           "YANG language extension which instructs the code generator to treat
+            this augmentation as equivalent of the specified augmentation.
+
+            The argument identifies a sibling or top-level augmentation tagged with
+            the augment-identifier extension. The argument syntax is formally
+            defined by the 'node-identifier' rule in Section 12 or RFC 6020.";
+
+        reference
+            "Discussion:
+                There are a number of cases where use of a particular grouping is
+                being augmented with additional information -- for example adding
+                use of another grouping.
+
+                Each such augment results in a separate class being generated, which
+                serves to confuse as usually these differ only in name. This extension
+                allows manual suppression of such duplicates, improving ergonomics.";
+
+        argument node-identifier;
     }
 
     // Mount point marker
