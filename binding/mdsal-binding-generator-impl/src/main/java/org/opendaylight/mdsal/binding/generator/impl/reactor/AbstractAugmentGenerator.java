@@ -109,20 +109,19 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
             return domain.addPrimary(this, new CamelCaseNamingStrategy(StatementNamespace.DEFAULT, explicitIdentifier));
         }
 
-        final AbstractCompositeGenerator<?> target = targetGenerator();
-        final String ref = target.localName().getLocalName();
+        final Member target = targetGenerator().getMember();
         int offset = 1;
         for (Generator gen : getParent()) {
             if (gen == this) {
                 break;
             }
             if (gen instanceof AbstractAugmentGenerator
-                && ref.equals(((AbstractAugmentGenerator) gen).targetGenerator().localName().getLocalName())) {
+                && target.equalRoot(((AbstractAugmentGenerator) gen).targetGenerator().getMember())) {
                 offset++;
             }
         }
 
-        return domain.addSecondary(this, target.getMember(), String.valueOf(offset), statement().argument());
+        return domain.addSecondary(this, target, String.valueOf(offset), statement().argument());
     }
 
     @Override

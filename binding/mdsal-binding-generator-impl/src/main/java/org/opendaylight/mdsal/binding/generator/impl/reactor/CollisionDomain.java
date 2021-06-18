@@ -58,6 +58,8 @@ final class CollisionDomain {
             return currentPackage;
         }
 
+        abstract boolean equalRoot(@NonNull Member other);
+
         abstract String computeCurrentClass();
 
         abstract String computeCurrentPackage();
@@ -102,7 +104,6 @@ final class CollisionDomain {
             return packageString(strategy.nodeIdentifier());
         }
 
-
         @Override
         final boolean signalConflict() {
             final ClassNamingStrategy newStrategy = strategy.fallback();
@@ -117,6 +118,12 @@ final class CollisionDomain {
         @Override
         final ToStringHelper addToStringAttributes(final ToStringHelper helper) {
             return super.addToStringAttributes(helper.add("strategy", strategy));
+        }
+
+        @Override
+        boolean equalRoot(final Member other) {
+            return other instanceof Primary && strategy.nodeIdentifier().getLocalName().equals(
+                ((Primary) other).strategy.nodeIdentifier().getLocalName());
         }
     }
 
@@ -149,6 +156,15 @@ final class CollisionDomain {
 
         final void primaryConflict() {
             super.signalConflict();
+        }
+
+        @Override
+        final boolean equalRoot(final Member other) {
+            if (other instanceof Secondary) {
+                final Secondary sec = (Secondary) other;
+                return classPrimary.equalRoot(sec.classPrimary) && classSuffix.equals(sec.classSuffix);
+            }
+            return false;
         }
     }
 
