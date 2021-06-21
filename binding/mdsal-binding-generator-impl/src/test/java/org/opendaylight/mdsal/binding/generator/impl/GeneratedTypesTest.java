@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
@@ -50,10 +51,8 @@ public class GeneratedTypesTest {
         }
         assertNotNull(simpleContainer);
         assertNotNull(nestedContainer);
-        // FIXME: split this into getter/default/static asserts
-        assertEquals(7, simpleContainer.getMethodDefinitions().size());
-        // FIXME: split this into getter/default/static asserts
-        assertEquals(6, nestedContainer.getMethodDefinitions().size());
+        SupportTestUtil.assertMethods(simpleContainer.getMethodDefinitions(), Set.of(), Set.of(), Set.of());
+        SupportTestUtil.assertMethods(nestedContainer.getMethodDefinitions(), Set.of(), Set.of(), Set.of());
 
         int getFooMethodCounter = 0;
         int getBarMethodCounter = 0;
