@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
+import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -64,8 +65,12 @@ public class GenEnumResolvingTest {
 
         assertNotNull("Generated Interface cannot contain NULL reference for Method Signature Definitions!", methods);
 
-        // FIXME: split this into getter/default/static asserts
-        assertEquals(19, methods.size());
+        SupportTestUtil.assertMethods(methods,
+            Set.of("getDescription", "getEnabled", "getHigherLayerIf", "getIfIndex", "getLastChange",
+                "getLinkUpDownTrapEnable", "getLocation", "getLowerLayerIf", "getName", "getOperStatus",
+                "getPhysAddress", "getSpeed", "getStatistics", "getType", "key"),
+            Set.of("implementedInterface"), Set.of("bindingHashCode", "bindingEquals", "bindingToString"));
+
         Enumeration ianaIfType = null;
         for (final MethodSignature method : methods) {
             if (method.getName().equals("getType")) {
@@ -116,8 +121,10 @@ public class GenEnumResolvingTest {
         final List<MethodSignature> methods = genInterface.getMethodDefinitions();
         assertNotNull("Generated Type Interface cannot contain NULL reference to Enumeration types!", methods);
 
-        // FIXME: split this into getter/default/static asserts
-        assertEquals(9, methods.size());
+        SupportTestUtil.assertMethods(methods,
+            Set.of("getHigherLayerIf", "getInterfaceId", "getLinkUpDownTrapEnable", "getOperStatus", "key"),
+            Set.of("implementedInterface"), Set.of("bindingHashCode", "bindingEquals", "bindingToString"));
+
         for (final MethodSignature method : methods) {
             if (method.getName().equals("getLinkUpDownTrapEnable")) {
                 linkUpDownTrapEnable = method.getReturnType();

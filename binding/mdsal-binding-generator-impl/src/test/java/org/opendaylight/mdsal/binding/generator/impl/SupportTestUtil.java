@@ -10,7 +10,9 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -130,4 +132,24 @@ public final class SupportTestUtil {
                 interfaceFound);
     }
 
+    static void assertMethods(final List<MethodSignature> methods, final Set<String> expectedGetters,
+            final Set<String> expectedDefaults, final Set<String> expectedStatics) {
+        final Set<String> actualGetters = new HashSet<>();
+        final Set<String> actualDefaults = new HashSet<>();
+        final Set<String> actualStatics = new HashSet<>();
+
+        for (MethodSignature method : methods) {
+            if (method.isStatic()) {
+                actualStatics.add(method.getName());
+            } else if (method.isDefault()) {
+                actualDefaults.add(method.getName());
+            } else {
+                actualGetters.add(method.getName());
+            }
+        }
+
+        assertEquals(expectedGetters, actualGetters);
+        assertEquals(expectedDefaults, actualDefaults);
+        assertEquals(expectedStatics, actualStatics);
+    }
 }
