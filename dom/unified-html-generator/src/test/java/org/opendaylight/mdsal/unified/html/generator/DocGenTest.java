@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.yang.unified.doc.generator;
+package org.opendaylight.mdsal.unified.html.generator;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,6 +19,7 @@ import org.opendaylight.yangtools.plugin.generator.api.GeneratedFileType;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
+@Deprecated(forRemoval = true)
 public class DocGenTest {
     @Test
     public void testListGeneration() throws Exception {

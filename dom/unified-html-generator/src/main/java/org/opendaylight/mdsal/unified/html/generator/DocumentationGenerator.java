@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.yang.unified.doc.generator;
+package org.opendaylight.mdsal.unified.html.generator;
 
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
@@ -27,6 +27,7 @@ import org.opendaylight.yangtools.yang.model.api.TypeAware;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 
+@Deprecated(forRemoval = true)
 final class DocumentationGenerator implements FileGenerator {
 
     @Override
