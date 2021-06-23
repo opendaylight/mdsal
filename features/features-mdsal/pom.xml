@@ -152,6 +152,20 @@
             <type>xml</type>
         </dependency>
 
+        <!-- Netty datastore replication -->
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-replicate-common</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-replicate-netty</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+
         <!-- Models -->
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>

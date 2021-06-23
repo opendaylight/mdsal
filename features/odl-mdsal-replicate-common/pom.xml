@@ -16,14 +16,10 @@
         <relativePath>../feature-parent</relativePath>
     </parent>
 
-    <artifactId>odl-mdsal-exp-replicate-common</artifactId>
+    <artifactId>odl-mdsal-replicate-common</artifactId>
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Replicate :: Common</name>
-
-    <properties>
-        <skip.karaf.featureTest>true</skip.karaf.featureTest>
-    </properties>
 
     <dependencies>
         <dependency>

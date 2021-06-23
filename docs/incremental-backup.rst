@@ -51,18 +51,18 @@ will be replicated to the Sink. At this point they are synchronized again and th
 can continue without any issue.
 
 * Features
-    * odl-mdsal-exp-replicate-netty
+    * odl-mdsal-replicate-netty
         .. code-block:: xml
 
           <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-exp-replicate-common</artifactId>
+            <artifactId>odl-mdsal-replicate-common</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
           </dependency>
           <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-exp-replicate-netty</artifactId>
+            <artifactId>odl-mdsal-replicate-netty</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
           </dependency>
@@ -74,7 +74,7 @@ Configuration and Installation
 #. **Install the features on the primary and secondary site**
     .. code-block::
 
-      feature:install odl-mdsal-exp-replicate-netty odl-mdsal-exp-replicate-common
+      feature:install odl-mdsal-replicate-netty odl-mdsal-replicate-common
 
 #. **Enable Source (on the primary site)**
     .. code-block::
@@ -125,13 +125,13 @@ Running one ODL instance locally and one in Docker
 
     Karaf Terminal - Start features
       - features-mdsal - core MDSAL features
-      - odl-mdsal-exp-replicate-netty - netty replicator
+      - odl-mdsal-replicate-netty - netty replicator
       - odl-restconf-nb-bierman02 - we'll be using Postman to access datastore
       - odl-netconf-clustered-topolog - we will change data of some netconf devices
 
       .. code-block::
 
-        feature:install features-mdsal odl-mdsal-exp-replicate-netty odl-restconf-nb-bierman02 odl-netconf-clustered-topolog
+        feature:install features-mdsal odl-mdsal-replicate-netty odl-restconf-nb-bierman02 odl-netconf-clustered-topolog
 
     Start Source
       .. code-block::
@@ -149,7 +149,7 @@ Running one ODL instance locally and one in Docker
     Start features in the Docker's Karaf Terminal
       .. code-block::
 
-        feature:install features-mdsal odl-mdsal-exp-replicate-netty odl-restconf-nb-bierman02 odl-netconf-clustered-topolog
+        feature:install features-mdsal odl-mdsal-replicate-netty odl-restconf-nb-bierman02 odl-netconf-clustered-topolog
 
     Start Sink - Let's say the Docker runs at 172.17.0.2 meaning it will find the local Source is at 172.17.0.1
       .. code-block::
