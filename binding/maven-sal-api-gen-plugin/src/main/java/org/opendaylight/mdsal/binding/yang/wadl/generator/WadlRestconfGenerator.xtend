@@ -97,9 +97,41 @@ class WadlRestconfGenerator {
         <?xml version="1.0"?>
         <application xmlns="http://wadl.dev.java.net/2009/02" «module.importsAsNamespaces» xmlns:«module.prefix»="«module.namespace»">
 
-            «grammars»
+            <grammars>
+                <include href="«module.name».yang"/>
+                «FOR imprt : module.imports»
+                    <include href="«imprt.moduleName».yang"/>
+                «ENDFOR»
+            </grammars>
 
-            «resources»
+            <resources base="http://localhost:9998/restconf">
+                «IF !operationalData.nullOrEmpty»
+                <resource path="operational">
+                    «FOR schemaNode : operationalData»
+                        «schemaNode.firstResource(false)»
+                    «ENDFOR»
+                </resource>
+                «ENDIF»
+                «IF !configData.nullOrEmpty»
+                <resource path="config">
+                    «FOR schemaNode : configData»
+                        «schemaNode.mehodPost»
+                    «ENDFOR»
+                    «FOR schemaNode : configData»
+                        «schemaNode.firstResource(true)»
+                    «ENDFOR»
+                </resource>
+                «ENDIF»
+                «IF !module.rpcs.nullOrEmpty»
+                <resource path="operations">
+                    «FOR rpc : module.rpcs»
+                        <resource path="«module.name»:«rpc.QName.localName»">
+                            «methodPostRpc(rpc.input !== null, rpc.output !== null)»
+                        </resource>
+                    «ENDFOR»
+                </resource>
+                «ENDIF»
+            </resources>
         </application>
     '''
 
@@ -107,58 +139,6 @@ class WadlRestconfGenerator {
         «FOR imprt : module.imports»
             xmlns:«imprt.prefix»="«context.findModule(imprt.moduleName, imprt.revision).get.namespace»"
         «ENDFOR»
-    '''
-
-    private def grammars() '''
-        <grammars>
-            <include href="«module.name».yang"/>
-            «FOR imprt : module.imports»
-                <include href="«imprt.moduleName».yang"/>
-            «ENDFOR»
-        </grammars>
-    '''
-
-    private def resources() '''
-        <resources base="http://localhost:9998/restconf">
-            «resourceOperational»
-            «resourceConfig»
-            «resourceOperations»
-        </resources>
-    '''
-
-    private def resourceOperational() '''
-        «IF !operationalData.nullOrEmpty»
-            <resource path="operational">
-                «FOR schemaNode : operationalData»
-                    «schemaNode.firstResource(false)»
-                «ENDFOR»
-            </resource>
-        «ENDIF»
-    '''
-
-    private def resourceConfig() '''
-        «IF !configData.nullOrEmpty»
-            <resource path="config">
-                «FOR schemaNode : configData»
-                    «schemaNode.mehodPost»
-                «ENDFOR»
-                «FOR schemaNode : configData»
-                    «schemaNode.firstResource(true)»
-                «ENDFOR»
-            </resource>
-        «ENDIF»
-    '''
-
-    private def resourceOperations() '''
-        «IF !module.rpcs.nullOrEmpty»
-            <resource path="operations">
-                «FOR rpc : module.rpcs»
-                    <resource path="«module.name»:«rpc.QName.localName»">
-                        «methodPostRpc(rpc.input !== null, rpc.output !== null)»
-                    </resource>
-                «ENDFOR»
-            </resource>
-        «ENDIF»
     '''
 
     private def String firstResource(DataSchemaNode schemaNode, boolean config) '''
