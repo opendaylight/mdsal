@@ -83,12 +83,13 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- Binding MD-SAL & Java Binding -->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>maven-sal-api-gen-plugin</artifactId>
+                <artifactId>unified-html-generator</artifactId>
                 <version>8.0.0-SNAPSHOT</version>
             </dependency>
+
+            <!-- Binding MD-SAL & Java Binding -->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-generator-api</artifactId>
