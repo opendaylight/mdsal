@@ -5,8 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.yang.unified.doc.generator.maven;
+package org.opendaylight.mdsal.binding.yang.wadl.generator;
 
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import java.io.File;
@@ -14,7 +15,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import org.opendaylight.mdsal.binding.yang.unified.doc.generator.GeneratorImpl;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
@@ -22,12 +22,12 @@ import org.opendaylight.yangtools.yang2sources.spi.BuildContextAware;
 import org.opendaylight.yangtools.yang2sources.spi.ModuleResourceResolver;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
-public class DocumentationGeneratorImpl implements BasicCodeGenerator, BuildContextAware {
+public class WadlGenerator implements BasicCodeGenerator, BuildContextAware {
     private BuildContext buildContext;
 
     @Override
     public void setAdditionalConfig(final Map<String, String> additionalConfiguration) {
-        // no additional config utilized
+        // No-op
     }
 
     @Override
@@ -37,13 +37,23 @@ public class DocumentationGeneratorImpl implements BasicCodeGenerator, BuildCont
 
     @Override
     public void setResourceBaseDir(final File resourceBaseDir) {
-        // no resource processing necessary
+        // No-op
     }
 
     @Override
     public Collection<File> generateSources(final EffectiveModelContext context, final File outputBaseDir,
             final Set<Module> currentModules, final ModuleResourceResolver moduleResourcePathResolver)
             throws IOException {
-        return new GeneratorImpl(context).generate(buildContext, outputBaseDir, currentModules);
+        final File outputDir;
+        if (outputBaseDir == null) {
+            // FIXME: this hard-codes the destination
+            outputDir = new File("target" + File.separator + "generated-sources" + File.separator
+                    + "maven-sal-api-gen" + File.separator + "wadl");
+        } else {
+            outputDir = outputBaseDir;
+        }
+
+        checkState(buildContext != null, "BuildContext should have been set");
+        return new WadlRestconfGenerator(buildContext, outputDir).generate(context, currentModules);
     }
 }
