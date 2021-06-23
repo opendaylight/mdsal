@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.yang.unified.doc.generator;
+package org.opendaylight.mdsal.unified.html.generator;
 
 import java.util.Map;
 import org.kohsuke.MetaInfServices;
@@ -13,6 +13,7 @@ import org.opendaylight.yangtools.plugin.generator.api.AbstractFileGeneratorFact
 import org.opendaylight.yangtools.plugin.generator.api.FileGenerator;
 import org.opendaylight.yangtools.plugin.generator.api.FileGeneratorFactory;
 
+@Deprecated(forRemoval = true)
 @MetaInfServices(value = FileGeneratorFactory.class)
 public final class DocumentationGeneratorFactory extends AbstractFileGeneratorFactory {
     public DocumentationGeneratorFactory() {

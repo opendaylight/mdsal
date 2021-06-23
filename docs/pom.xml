@@ -52,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>maven-sal-api-gen-plugin</artifactId>
+            <artifactId>unified-html-generator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>

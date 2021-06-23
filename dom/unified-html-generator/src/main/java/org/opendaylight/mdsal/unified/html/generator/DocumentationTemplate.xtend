@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.yang.unified.doc.generator
+package org.opendaylight.mdsal.unified.html.generator
 
 import static java.util.Objects.requireNonNull
 
@@ -49,6 +49,7 @@ import org.opendaylight.yangtools.yang.model.api.type.LengthRestrictedTypeDefini
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint
 import org.opendaylight.yangtools.yang.model.api.type.RangeRestrictedTypeDefinition
 
+@Deprecated(forRemoval = true)
 final class DocumentationTemplate {
     val Map<String, String> imports = new HashMap
     val Map<TypeDefinition<?>, SchemaPath> types
@@ -114,25 +115,25 @@ final class DocumentationTemplate {
             return ''
         }
         return '''
-        <div>
-            <h3>Type Definitions Summary</h3>
-            <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                </tr>
-                «FOR typedef : typedefs»
-                <tr>
-                    <td>
-                    «anchorLink(typedef.QName.localName, strong(typedef.QName.localName))»
-                    </td>
-                    <td>
-                    «typedef.description»
-                    </td>
-                </tr>
-                «ENDFOR»
-            </table>
-        </div>
+            <div>
+                <h3>Type Definitions Summary</h3>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                    </tr>
+                    «FOR typedef : typedefs»
+                        <tr>
+                            <td>
+                            «anchorLink(typedef.QName.localName, strong(typedef.QName.localName))»
+                            </td>
+                            <td>
+                            «typedef.description»
+                            </td>
+                        </tr>
+                    «ENDFOR»
+                </table>
+            </div>
         '''
     }
 
@@ -184,23 +185,23 @@ final class DocumentationTemplate {
             return ''
         }
         return '''
-        <h3>Identities Summary</h3>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-            «FOR identity : module.identities»
-            <tr>
-                <td>
-                «anchorLink(identity.QName.localName, strong(identity.QName.localName))»
-                </td>
-                <td>
-                «identity.description»
-                </td>
-            </tr>
-            «ENDFOR»
-        </table>
+            <h3>Identities Summary</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                «FOR identity : module.identities»
+                    <tr>
+                        <td>
+                        «anchorLink(identity.QName.localName, strong(identity.QName.localName))»
+                        </td>
+                        <td>
+                        «identity.description»
+                        </td>
+                    </tr>
+                «ENDFOR»
+            </table>
         '''
     }
 
@@ -231,23 +232,23 @@ final class DocumentationTemplate {
             return ''
         }
         return '''
-        <h3>Groupings Summary</h3>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-            «FOR grouping : module.groupings»
-            <tr>
-                <td>
-                «anchorLink(grouping.QName.localName, strong(grouping.QName.localName))»
-                </td>
-                <td>
-                «grouping.description»
-                </td>
-            </tr>
-            «ENDFOR»
-        </table>
+            <h3>Groupings Summary</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                «FOR grouping : module.groupings»
+                    <tr>
+                        <td>
+                        «anchorLink(grouping.QName.localName, strong(grouping.QName.localName))»
+                        </td>
+                        <td>
+                        «grouping.description»
+                        </td>
+                    </tr>
+                «ENDFOR»
+            </table>
         '''
     }
 
@@ -285,9 +286,9 @@ final class DocumentationTemplate {
                         «childNode.printSchemaNodeInfo»
                     «ENDFOR»
 
-                    <h3>Example</h3>
-                    «createAugmentChildNodesAsString(new ArrayList(augment.childNodes))»
-                    «printNodeChildren(parseTargetPath(augment.targetPath))»
+                <h3>Example</h3>
+                «createAugmentChildNodesAsString(new ArrayList(augment.childNodes))»
+                «printNodeChildren(parseTargetPath(augment.targetPath))»
                 </li>
             «ENDFOR»
             </ul>
@@ -354,9 +355,9 @@ final class DocumentationTemplate {
 
         return
         '''
-        <pre>
-        «printAugmentedNode(childNodes.get(0))»
-        </pre>
+            <pre>
+            «printAugmentedNode(childNodes.get(0))»
+            </pre>
         '''
     }
 
@@ -367,24 +368,24 @@ final class DocumentationTemplate {
 
         return
         '''
-        «IF child instanceof ContainerSchemaNode»
-            «printContainerNode(child)»
-        «ENDIF»
-        «IF child instanceof AnyxmlSchemaNode»
-            «printAnyXmlNode(child)»
-        «ENDIF»
-        «IF child instanceof LeafSchemaNode»
-            «printLeafNode(child)»
-        «ENDIF»
-        «IF child instanceof LeafListSchemaNode»
-            «printLeafListNode(child)»
-        «ENDIF»
-        «IF child instanceof ListSchemaNode»
-            «printListNode(child)»
-        «ENDIF»
-        «IF child instanceof ChoiceSchemaNode»
-            «printChoiceNode(child)»
-        «ENDIF»
+            «IF child instanceof ContainerSchemaNode»
+                «printContainerNode(child)»
+            «ENDIF»
+            «IF child instanceof AnyxmlSchemaNode»
+                «printAnyXmlNode(child)»
+            «ENDIF»
+            «IF child instanceof LeafSchemaNode»
+                «printLeafNode(child)»
+            «ENDIF»
+            «IF child instanceof LeafListSchemaNode»
+                «printLeafListNode(child)»
+            «ENDIF»
+            «IF child instanceof ListSchemaNode»
+                «printListNode(child)»
+            «ENDIF»
+            «IF child instanceof ChoiceSchemaNode»
+                «printChoiceNode(child)»
+            «ENDIF»
         '''
     }
 
@@ -447,24 +448,24 @@ final class DocumentationTemplate {
             return ''
         }
         return '''
-        <h3>Augmentations Summary</h3>
-        <table>
-            <tr>
-                <th>Target</th>
-                <th>Description</th>
-            </tr>
-            «FOR augment : module.augmentations»
-            <tr>
-                <td>
-                «anchorLink(schemaPathToString(augment.targetPath, augment),
+            <h3>Augmentations Summary</h3>
+            <table>
+                <tr>
+                    <th>Target</th>
+                    <th>Description</th>
+                </tr>
+                «FOR augment : module.augmentations»
+                    <tr>
+                        <td>
+                        «anchorLink(schemaPathToString(augment.targetPath, augment),
                 strong(schemaPathToString(augment.targetPath, augment)))»
-                </td>
-                <td>
-                «augment.description»
-                </td>
-            </tr>
-            «ENDFOR»
-        </table>
+                        </td>
+                        <td>
+                        «augment.description»
+                        </td>
+                    </tr>
+                «ENDFOR»
+            </table>
         '''
     }
 
@@ -478,11 +479,11 @@ final class DocumentationTemplate {
             <h2>Notifications</h2>
             «FOR notificationdef : notificationdefs»
 
-                <h3 id="«notificationdef.path.schemaPathToId»">«notificationdef.nodeName»</h3>
-                    «notificationdef.descAndRef»
-                    «FOR childNode : notificationdef.childNodes»
-                        «childNode.printSchemaNodeInfo»
-                    «ENDFOR»
+                    <h3 id="«notificationdef.path.schemaPathToId»">«notificationdef.nodeName»</h3>
+                        «notificationdef.descAndRef»
+                        «FOR childNode : notificationdef.childNodes»
+                            «childNode.printSchemaNodeInfo»
+                        «ENDFOR»
             «ENDFOR»
         '''
     }
@@ -492,23 +493,23 @@ final class DocumentationTemplate {
             return ''
         }
         return '''
-        <h3>Notifications Summary</h3>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-            «FOR notification : module.notifications»
-            <tr>
-                <td>
-                «anchorLink(notification.path.schemaPathToId, strong(notification.QName.localName))»
-                </td>
-                <td>
-                «notification.description»
-                </td>
-            </tr>
-            «ENDFOR»
-        </table>
+            <h3>Notifications Summary</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                «FOR notification : module.notifications»
+                    <tr>
+                        <td>
+                        «anchorLink(notification.path.schemaPathToId, strong(notification.QName.localName))»
+                        </td>
+                        <td>
+                        «notification.description»
+                        </td>
+                    </tr>
+                «ENDFOR»
+            </table>
         '''
     }
 
@@ -536,23 +537,23 @@ final class DocumentationTemplate {
             return ''
         }
         return '''
-        <h3>RPCs Summary</h3>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-            «FOR rpc : module.rpcs»
-            <tr>
-                <td>
-                «anchorLink(rpc.QName.localName, strong(rpc.QName.localName))»
-                </td>
-                <td>
-                «rpc.description»
-                </td>
-            </tr>
-            «ENDFOR»
-        </table>
+            <h3>RPCs Summary</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                «FOR rpc : module.rpcs»
+                    <tr>
+                        <td>
+                        «anchorLink(rpc.QName.localName, strong(rpc.QName.localName))»
+                        </td>
+                        <td>
+                        «rpc.description»
+                        </td>
+                    </tr>
+                «ENDFOR»
+            </table>
         '''
     }
 
@@ -576,23 +577,23 @@ final class DocumentationTemplate {
             return ''
         }
         return '''
-        <h3>Extensions Summary</h3>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-            «FOR ext : module.extensionSchemaNodes»
-            <tr>
-                <td>
-                «anchorLink(ext.QName.localName, strong(ext.QName.localName))»
-                </td>
-                <td>
-                «ext.description»
-                </td>
-            </tr>
-            «ENDFOR»
-        </table>
+            <h3>Extensions Summary</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                «FOR ext : module.extensionSchemaNodes»
+                    <tr>
+                        <td>
+                        «anchorLink(ext.QName.localName, strong(ext.QName.localName))»
+                        </td>
+                        <td>
+                        «ext.description»
+                        </td>
+                    </tr>
+                «ENDFOR»
+            </table>
         '''
     }
 
@@ -621,23 +622,23 @@ final class DocumentationTemplate {
             return ''
         }
         return '''
-        <h3>Features Summary</h3>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-            «FOR feature : module.features»
-            <tr>
-                <td>
-                «anchorLink(feature.QName.localName, strong(feature.QName.localName))»
-                </td>
-                <td>
-                «feature.description»
-                </td>
-            </tr>
-            «ENDFOR»
-        </table>
+            <h3>Features Summary</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                «FOR feature : module.features»
+                    <tr>
+                        <td>
+                        «anchorLink(feature.QName.localName, strong(feature.QName.localName))»
+                        </td>
+                        <td>
+                        «feature.description»
+                        </td>
+                    </tr>
+                «ENDFOR»
+            </table>
         '''
     }
 
@@ -646,23 +647,23 @@ final class DocumentationTemplate {
             return ''
         }
         return '''
-        <h3>Child Nodes Summary</h3>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-            «FOR childNode : module.childNodes»
-            <tr>
-                <td>
-                «anchorLink(childNode.QName.localName, strong(childNode.QName.localName))»
-                </td>
-                <td>
-                «childNode.description»
-                </td>
-            </tr>
-            «ENDFOR»
-        </table>
+            <h3>Child Nodes Summary</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                «FOR childNode : module.childNodes»
+                    <tr>
+                        <td>
+                        «anchorLink(childNode.QName.localName, strong(childNode.QName.localName))»
+                        </td>
+                        <td>
+                        «childNode.description»
+                        </td>
+                    </tr>
+                «ENDFOR»
+            </table>
         '''
     }
 
@@ -681,8 +682,8 @@ final class DocumentationTemplate {
             </tr>
             <tr>
                 «IF module.revision.isPresent»
-                <td>«strong("revision")»</td>
-                <td>«module.revision.get.toString»</td>
+                    <td>«strong("revision")»</td>
+                    <td>«module.revision.get.toString»</td>
                 «ENDIF»
             </tr>
             <tr>
@@ -881,7 +882,7 @@ final class DocumentationTemplate {
             «listItem("reference", node.reference.orElse(null))»
             «IF node instanceof DataSchemaNode»
                 «IF node.whenCondition.present»
-                «listItem("when condition", node.whenCondition.get.toString)»
+                    «listItem("when condition", node.whenCondition.get.toString)»
                 «ENDIF»
             «ENDIF»
             «IF node instanceof ElementCountConstraintAware»
@@ -928,30 +929,30 @@ final class DocumentationTemplate {
         val lists = nodes.filter(ListSchemaNode)
         return '''
             «IF ((anyxmlNodes.size + leafNodes.size + leafListNodes.size + containers.size + lists.size) > 0)»
-            <h3>Direct children</h3>
-            <ul>
-            «FOR childNode : anyxmlNodes»
-                «childNode.printShortInfo(level,path)»
-            «ENDFOR»
-            «FOR childNode : leafNodes»
-                «childNode.printShortInfo(level,path)»
-            «ENDFOR»
-            «FOR childNode : leafListNodes»
-                «childNode.printShortInfo(level,path)»
-            «ENDFOR»
-            «FOR childNode : containers»
-                «childNode.printShortInfo(level,path)»
-            «ENDFOR»
-            «FOR childNode : lists»
-                «childNode.printShortInfo(level,path)»
-            «ENDFOR»
-            </ul>
+                <h3>Direct children</h3>
+                <ul>
+                «FOR childNode : anyxmlNodes»
+                    «childNode.printShortInfo(level,path)»
+                «ENDFOR»
+                «FOR childNode : leafNodes»
+                    «childNode.printShortInfo(level,path)»
+                «ENDFOR»
+                «FOR childNode : leafListNodes»
+                    «childNode.printShortInfo(level,path)»
+                «ENDFOR»
+                «FOR childNode : containers»
+                    «childNode.printShortInfo(level,path)»
+                «ENDFOR»
+                «FOR childNode : lists»
+                    «childNode.printShortInfo(level,path)»
+                «ENDFOR»
+                </ul>
             «ENDIF»
 
             «IF path.pathArguments.iterator.hasNext»
-            <h3>XML example</h3>
-            «nodes.xmlExample(path.pathArguments.last.nodeType,path)»
-            </h3>
+                <h3>XML example</h3>
+                «nodes.xmlExample(path.pathArguments.last.nodeType,path)»
+                </h3>
             «ENDIF»
             «FOR childNode : containers»
                 «childNode.printInfo(level,path)»
@@ -969,16 +970,16 @@ final class DocumentationTemplate {
     }
 
     def CharSequence xmlExample(Iterable<? extends DataSchemaNode> nodes, QName name, YangInstanceIdentifier path) '''
-    <pre>
-        «xmlExampleTag(name,nodes.xmplExampleTags(path))»
-    </pre>
+        <pre>
+            «xmlExampleTag(name,nodes.xmplExampleTags(path))»
+        </pre>
     '''
 
     def CharSequence xmplExampleTags(Iterable<? extends DataSchemaNode> nodes, YangInstanceIdentifier identifier) '''
         <!-- Child nodes -->
         «FOR node : nodes»
-        <!-- «node.QName.localName» -->
-            «node.asXmlExampleTag(identifier)»
+            <!-- «node.QName.localName» -->
+                «node.asXmlExampleTag(identifier)»
         «ENDFOR»
 
     '''
@@ -989,21 +990,21 @@ final class DocumentationTemplate {
         }
         if (node instanceof LeafListSchemaNode) {
             return '''
-            &lt!-- This node could appear multiple times --&gt
-            «node.QName.xmlExampleTag("...")»
+                &lt!-- This node could appear multiple times --&gt
+                «node.QName.xmlExampleTag("...")»
             '''
         }
         if (node instanceof ContainerSchemaNode) {
             return '''
-            &lt!-- See «localLink(identifier.append(node),"definition")» for child nodes.  --&gt
-            «node.QName.xmlExampleTag("...")»
+                &lt!-- See «localLink(identifier.append(node),"definition")» for child nodes.  --&gt
+                «node.QName.xmlExampleTag("...")»
             '''
         }
         if (node instanceof ListSchemaNode) {
             return '''
-            &lt!-- See «localLink(identifier.append(node),"definition")» for child nodes.  --&gt
-            &lt!-- This node could appear multiple times --&gt
-            «node.QName.xmlExampleTag("...")»
+                &lt!-- See «localLink(identifier.append(node),"definition")» for child nodes.  --&gt
+                &lt!-- This node could appear multiple times --&gt
+                «node.QName.xmlExampleTag("...")»
             '''
         }
         return "<!-- noop -->"
@@ -1235,9 +1236,9 @@ final class DocumentationTemplate {
         «IF path !== null»
             «code(path)»
                 «IF node !== null»
-                <ul>
-                «node.descAndRefLi»
-                </ul>
+                    <ul>
+                    «node.descAndRefLi»
+                    </ul>
             «ENDIF»
         «ENDIF»
     '''
@@ -1321,7 +1322,7 @@ final class DocumentationTemplate {
 
     def toBaseStmt(TypeDefinition<?> baseType) '''
         «IF baseType !== null»
-        «listItem("Base type", typeAnchorLink(types.get(baseType), baseType.QName.localName))»
+            «listItem("Base type", typeAnchorLink(types.get(baseType), baseType.QName.localName))»
         «ENDIF»
     '''
 
