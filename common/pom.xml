@@ -26,7 +26,6 @@
 
     <modules>
         <module>mdsal-common-api</module>
-        <module>mdsal-common-util</module>
     </modules>
 
     <properties>
