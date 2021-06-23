@@ -453,14 +453,14 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>odl-mdsal-exp-replicate-common</artifactId>
+                <artifactId>odl-mdsal-replicate-common</artifactId>
                 <version>8.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>odl-mdsal-exp-replicate-netty</artifactId>
+                <artifactId>odl-mdsal-replicate-netty</artifactId>
                 <version>8.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>

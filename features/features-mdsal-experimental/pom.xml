@@ -61,18 +61,5 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
-
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-exp-replicate-common</artifactId>
-            <classifier>features</classifier>
-            <type>xml</type>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-exp-replicate-netty</artifactId>
-            <classifier>features</classifier>
-            <type>xml</type>
-        </dependency>
     </dependencies>
 </project>

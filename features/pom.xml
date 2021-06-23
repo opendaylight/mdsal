@@ -65,8 +65,8 @@
         <module>odl-mdsal-rfc8294-netty</module>
 
         <!-- Datastore replication -->
-        <module>odl-mdsal-exp-replicate-common</module>
-        <module>odl-mdsal-exp-replicate-netty</module>
+        <module>odl-mdsal-replicate-common</module>
+        <module>odl-mdsal-replicate-netty</module>
 
         <!-- Models -->
         <!-- Standards -->

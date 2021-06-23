@@ -16,7 +16,7 @@
         <relativePath>../feature-parent</relativePath>
     </parent>
 
-    <artifactId>odl-mdsal-exp-replicate-netty</artifactId>
+    <artifactId>odl-mdsal-replicate-netty</artifactId>
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Replicate :: Netty</name>
@@ -27,8 +27,26 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.opendaylight.odlparent</groupId>
+            <artifactId>odl-netty-4</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>odl-yangtools-codec</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-exp-replicate-common</artifactId>
+            <artifactId>odl-mdsal-replicate-common</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-singleton-common</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
