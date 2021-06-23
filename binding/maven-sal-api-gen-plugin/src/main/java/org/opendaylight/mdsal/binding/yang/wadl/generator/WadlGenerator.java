@@ -7,53 +7,31 @@
  */
 package org.opendaylight.mdsal.binding.yang.wadl.generator;
 
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.requireNonNull;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 import java.util.Set;
+import org.opendaylight.yangtools.plugin.generator.api.FileGenerator;
+import org.opendaylight.yangtools.plugin.generator.api.GeneratedFile;
+import org.opendaylight.yangtools.plugin.generator.api.GeneratedFileLifecycle;
+import org.opendaylight.yangtools.plugin.generator.api.GeneratedFilePath;
+import org.opendaylight.yangtools.plugin.generator.api.GeneratedFileType;
+import org.opendaylight.yangtools.plugin.generator.api.ModuleResourceResolver;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
-import org.opendaylight.yangtools.yang2sources.spi.BuildContextAware;
-import org.opendaylight.yangtools.yang2sources.spi.ModuleResourceResolver;
-import org.sonatype.plexus.build.incremental.BuildContext;
 
-public class WadlGenerator implements BasicCodeGenerator, BuildContextAware {
-    private BuildContext buildContext;
-
+final class WadlGenerator implements FileGenerator {
     @Override
-    public void setAdditionalConfig(final Map<String, String> additionalConfiguration) {
-        // No-op
-    }
+    public Table<GeneratedFileType, GeneratedFilePath, GeneratedFile> generateFiles(final EffectiveModelContext context,
+            final Set<Module> localModules, final ModuleResourceResolver moduleResourcePathResolver) {
+        final var result = ImmutableTable.<GeneratedFileType, GeneratedFilePath, GeneratedFile>builder();
 
-    @Override
-    public void setBuildContext(final BuildContext buildContext) {
-        this.buildContext = requireNonNull(buildContext);
-    }
-
-    @Override
-    public void setResourceBaseDir(final File resourceBaseDir) {
-        // No-op
-    }
-
-    @Override
-    public Collection<File> generateSources(final EffectiveModelContext context, final File outputBaseDir,
-            final Set<Module> currentModules, final ModuleResourceResolver moduleResourcePathResolver)
-            throws IOException {
-        final File outputDir;
-        if (outputBaseDir == null) {
-            // FIXME: this hard-codes the destination
-            outputDir = new File("target" + File.separator + "generated-sources" + File.separator
-                    + "maven-sal-api-gen" + File.separator + "wadl");
-        } else {
-            outputDir = outputBaseDir;
+        for (Module module : localModules) {
+            final CharSequence body = new WadlTemplate(context, module).body();
+            if (body != null) {
+                result.put(GeneratedFileType.RESOURCE, GeneratedFilePath.ofPath(module.getName() + ".wadl"),
+                    GeneratedFile.of(GeneratedFileLifecycle.TRANSIENT, body));
+            }
         }
-
-        checkState(buildContext != null, "BuildContext should have been set");
-        return new WadlRestconfGenerator(buildContext, outputDir).generate(context, currentModules);
+        return result.build();
     }
 }

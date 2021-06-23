@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2021 PANTHEON.tech, s.r.o.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,17 +8,10 @@
  */
 package org.opendaylight.mdsal.binding.yang.wadl.generator
 
-import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.io.BufferedWriter
-import java.io.File
-import java.io.IOException
-import java.io.OutputStreamWriter
-import java.nio.charset.StandardCharsets
 import java.util.ArrayList
-import java.util.Collection
-import java.util.HashSet
 import java.util.List
 import org.opendaylight.yangtools.yang.common.XMLNamespace
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
@@ -27,70 +21,37 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
 import org.opendaylight.yangtools.yang.model.api.Module
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.sonatype.plexus.build.incremental.BuildContext
 
-class WadlRestconfGenerator {
-
-    static val Logger LOG = LoggerFactory.getLogger(WadlRestconfGenerator)
-
+final class WadlTemplate {
     static val PATH_DELIMETER = '/'
-    val BuildContext buildContext;
-    val File path
-    var EffectiveModelContext context;
-    var List<DataSchemaNode> configData;
-    var List<DataSchemaNode> operationalData;
-    var Module module;
-    var List<LeafSchemaNode> pathListParams;
 
-    new(BuildContext buildContext, File targetPath) {
-        if (!targetPath.exists) {
-            checkState(targetPath.mkdirs, "Unable to create directory: %s", targetPath);
-        }
-        path = targetPath
-        this.buildContext = buildContext
-    }
+    val EffectiveModelContext context
+    val Module module
+    val List<DataSchemaNode> configData = new ArrayList
+    val List<DataSchemaNode> operationalData = new ArrayList
 
-    def generate(EffectiveModelContext context, Collection<? extends Module> modules) {
-        val result = new HashSet;
-        this.context = context
-        for (module : modules) {
-            val dataContainers = module.childNodes.filter[it|it.listOrContainer]
-            if (!dataContainers.empty || !module.rpcs.nullOrEmpty) {
-                configData = new ArrayList
-                operationalData = new ArrayList
+    var List<LeafSchemaNode> pathListParams
 
-                for (data : dataContainers) {
-                    if (data.configuration) {
-                        configData.add(data)
-                    } else {
-                        operationalData.add(data)
-                    }
+    new(EffectiveModelContext context, Module module) {
+        this.context = requireNonNull(context)
+        this.module = requireNonNull(module)
+
+        for (child : module.childNodes) {
+            if (child instanceof ContainerSchemaNode || child instanceof ListSchemaNode) {
+                if (child.configuration) {
+                    configData.add(child)
+                } else {
+                    operationalData.add(child)
                 }
-
-                this.module = module
-                val destination = new File(path, '''«module.name».wadl''')
-                var OutputStreamWriter fw
-                var BufferedWriter bw
-                try {
-                    fw = new OutputStreamWriter(buildContext.newFileOutputStream(destination), StandardCharsets.UTF_8)
-                    bw = new BufferedWriter(fw)
-                    bw.append(application);
-                } catch (IOException e) {
-                    LOG.error("Failed to emit file {}", destination, e);
-                } finally {
-                    if (bw !== null) {
-                        bw.close();
-                    }
-                    if (fw !== null) {
-                        fw.close();
-                    }
-                }
-                result.add(destination)
             }
         }
-        return result
+    }
+
+    def body() {
+        if (!module.rpcs.empty || !configData.empty || !operationalData.empty) {
+            return application()
+        }
+        return null
     }
 
     private def application() '''
@@ -160,10 +121,7 @@ class WadlRestconfGenerator {
         if (schemaNode instanceof ListSchemaNode) {
             for (listKey : schemaNode.keyDefinition) {
                 pathListParams.add((schemaNode as DataNodeContainer).getDataChildByName(listKey) as LeafSchemaNode)
-                path.append(PATH_DELIMETER)
-                path.append('{')
-                path.append(listKey.localName)
-                path.append('}')
+                path.append(PATH_DELIMETER).append('{').append(listKey.localName).append('}')
             }
         }
         return path.toString
@@ -177,7 +135,7 @@ class WadlRestconfGenerator {
         «val children = (schemaNode as DataNodeContainer).childNodes.filter[it|it.listOrContainer]»
         «IF config»
             «schemaNode.methodDelete»
-            «schemaNode.mehodPut»
+            «schemaNode.methodPut»
             «FOR child : children»
                 «child.mehodPost»
             «ENDFOR»
@@ -196,7 +154,7 @@ class WadlRestconfGenerator {
         «ENDFOR»
     '''
 
-    private def methodGet(DataSchemaNode schemaNode) '''
+    private static def methodGet(DataSchemaNode schemaNode) '''
         <method name="GET">
             <response>
                 «representation(schemaNode.QName.namespace, schemaNode.QName.localName)»
@@ -204,7 +162,7 @@ class WadlRestconfGenerator {
         </method>
     '''
 
-    private def mehodPut(DataSchemaNode schemaNode) '''
+    private static def methodPut(DataSchemaNode schemaNode) '''
         <method name="PUT">
             <request>
                 «representation(schemaNode.QName.namespace, schemaNode.QName.localName)»
@@ -212,7 +170,7 @@ class WadlRestconfGenerator {
         </method>
     '''
 
-    private def mehodPost(DataSchemaNode schemaNode) '''
+    private static def mehodPost(DataSchemaNode schemaNode) '''
         <method name="POST">
             <request>
                 «representation(schemaNode.QName.namespace, schemaNode.QName.localName)»
@@ -220,7 +178,7 @@ class WadlRestconfGenerator {
         </method>
     '''
 
-    private def methodPostRpc(boolean input, boolean output) '''
+    private static def methodPostRpc(boolean input, boolean output) '''
         <method name="POST">
             «IF input»
             <request>
@@ -235,11 +193,11 @@ class WadlRestconfGenerator {
         </method>
     '''
 
-    private def methodDelete(DataSchemaNode schemaNode) '''
+    private static def methodDelete(DataSchemaNode schemaNode) '''
         <method name="DELETE" />
     '''
 
-    private def representation(XMLNamespace prefix, String name) '''
+    private static def representation(XMLNamespace prefix, String name) '''
         «val elementData = name»
         <representation mediaType="application/xml" element="«elementData»"/>
         <representation mediaType="text/xml" element="«elementData»"/>
@@ -250,8 +208,7 @@ class WadlRestconfGenerator {
 
     @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
                 justification = "https://github.com/spotbugs/spotbugs/issues/811")
-    private def boolean isListOrContainer(DataSchemaNode schemaNode) {
-        return (schemaNode instanceof ListSchemaNode || schemaNode instanceof ContainerSchemaNode)
+    private static def boolean isListOrContainer(DataSchemaNode schemaNode) {
+        return schemaNode instanceof ListSchemaNode || schemaNode instanceof ContainerSchemaNode
     }
-
 }
