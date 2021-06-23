@@ -7,15 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.yang.unified.doc.generator
 
-import java.io.BufferedWriter
-import java.io.File
-import java.io.IOException
-import java.io.OutputStreamWriter
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
+import static java.util.Objects.requireNonNull
+
 import java.util.ArrayList
 import java.util.Collection
-import java.util.IdentityHashMap
 import java.util.HashMap
 import java.util.HashSet
 import java.util.LinkedHashMap
@@ -23,7 +18,6 @@ import java.util.List
 import java.util.Map
 import java.util.Optional
 import java.util.Set
-import org.gaul.modernizer_maven_annotations.SuppressModernizer
 import org.opendaylight.yangtools.yang.common.QName
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates
@@ -46,143 +40,78 @@ import org.opendaylight.yangtools.yang.model.api.Module
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition
 import org.opendaylight.yangtools.yang.model.api.SchemaNode
 import org.opendaylight.yangtools.yang.model.api.SchemaPath
-import org.opendaylight.yangtools.yang.model.api.TypeAware
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition
 import org.opendaylight.yangtools.yang.model.api.UsesNode
-import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint
 import org.opendaylight.yangtools.yang.model.api.type.LengthRestrictedTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint
 import org.opendaylight.yangtools.yang.model.api.type.RangeRestrictedTypeDefinition
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.sonatype.plexus.build.incremental.BuildContext
 
-@SuppressModernizer
-class GeneratorImpl {
-
-    static val Logger LOG = LoggerFactory.getLogger(GeneratorImpl)
-
+final class DocumentationTemplate {
     val Map<String, String> imports = new HashMap
-    val Map<TypeDefinition<?>, SchemaPath> types = new IdentityHashMap
-    var Module currentModule
-    var EffectiveModelContext ctx
-    var File path
+    val Map<TypeDefinition<?>, SchemaPath> types
+    val EffectiveModelContext ctx
+    val Module module
 
     StringBuilder augmentChildNodesAsString
 
     DataSchemaNode lastNodeInTargetPath = null
 
-    new(EffectiveModelContext context) {
-        this.ctx = context
-        fillTypes(SchemaPath.ROOT, context.moduleStatements.values)
-    }
-
-    private def void fillTypes(SchemaPath path, Collection<? extends EffectiveStatement<?, ?>> stmts) {
-        for (stmt : stmts) {
-            val arg = stmt.argument
-            if (arg instanceof QName) {
-                val stmtPath = path.createChild(arg)
-                if (stmt instanceof TypeDefinition) {
-                    types.putIfAbsent(stmt, stmtPath)
-                } else if (stmt instanceof TypeAware) {
-                    val type = stmt.type
-                    val typePath = stmtPath.createChild(type.QName)
-                    types.putIfAbsent(type, typePath)
-                }
-
-                fillTypes(stmtPath, stmt.effectiveSubstatements)
-            }
-        }
-    }
-
-    def generate(BuildContext buildContext, File targetPath, Set<Module> modulesToGen) throws IOException {
-        path = targetPath
-        Files.createDirectories(path.getParentFile().toPath())
-        val it = new HashSet
-        for (module : modulesToGen) {
-            add(generateDocumentation(buildContext, module))
-        }
-        return it;
-    }
-
-    def generateDocumentation(BuildContext buildContext, Module module) {
-        val destination = new File(path, '''«module.name».html''')
+    new(EffectiveModelContext context, Map<TypeDefinition<?>, SchemaPath> types, Module module) {
+        this.ctx = requireNonNull(context)
+        this.types = requireNonNull(types)
+        this.module = requireNonNull(module)
         module.imports.forEach[importModule | this.imports.put(importModule.prefix, importModule.moduleName)]
-        var OutputStreamWriter fw
-        var BufferedWriter bw
-        try {
-            fw = new OutputStreamWriter(buildContext.newFileOutputStream(destination), StandardCharsets.UTF_8)
-            bw = new BufferedWriter(fw)
-            currentModule = module
-            bw.append(generate(module, ctx))
-        } catch (IOException e) {
-            LOG.error("Failed to emit file {}", destination, e);
-        } finally {
-            if (bw !== null) {
-                bw.close();
-            }
-            if (fw !== null) {
-                fw.close();
-            }
-        }
-        return destination
     }
 
-    def generate(Module module, EffectiveModelContext ctx) '''
+    def generate() '''
         <!DOCTYPE html>
         <html lang="en">
           <head>
             <title>«module.name»</title>
           </head>
           <body>
-            «body(module, ctx)»
+            «header»
+
+            «typeDefinitionsSummary»
+            «identitiesSummary»
+            «groupingsSummary»
+            «augmentationsSummary»
+            «objectsSummary»
+            «notificationsSummary»
+            «rpcsSummary»
+            «extensionsSummary»
+            «featuresSummary»
+
+            «typeDefinitions»
+
+            «identities»
+
+            «groupings»
+
+            «dataStore»
+
+            «childNodes»
+
+            «notifications»
+
+            «augmentations»
+
+            «rpcs»
+
+            «extensions»
+
+            «features»
           </body>
         </html>
     '''
 
-    def body(Module module, EffectiveModelContext ctx) '''
-        «header(module)»
-
-        «typeDefinitionsSummary(module)»
-        «identitiesSummary(module)»
-        «groupingsSummary(module)»
-        «augmentationsSummary(module, ctx)»
-        «objectsSummary(module)»
-        «notificationsSummary(module)»
-        «rpcsSummary(module)»
-        «extensionsSummary(module)»
-        «featuresSummary(module)»
-
-        «typeDefinitions(module)»
-
-        «identities(module)»
-
-        «groupings(module)»
-
-        «dataStore(module)»
-
-        «childNodes(module)»
-
-        «notifications(module)»
-
-        «augmentations(module, ctx)»
-
-        «rpcs(module)»
-
-        «extensions(module)»
-
-        «features(module)»
-
-    '''
-
-
-    private def typeDefinitionsSummary(Module module) {
+    private def typeDefinitionsSummary() {
         val Collection<? extends TypeDefinition<?>> typedefs = module.typeDefinitions
         if (typedefs.empty) {
-            return '';
+            return ''
         }
         return '''
         <div>
@@ -207,10 +136,10 @@ class GeneratorImpl {
         '''
     }
 
-    def typeDefinitions(Module module) {
+    private def typeDefinitions() {
         val Collection<? extends TypeDefinition<?>> typedefs = module.typeDefinitions
         if (typedefs.empty) {
-            return '';
+            return ''
         }
         return '''
             <h2>Type Definitions</h2>
@@ -228,9 +157,9 @@ class GeneratorImpl {
         '''
     }
 
-    private def identities(Module module) {
+    private def identities() {
         if (module.identities.empty) {
-            return '';
+            return ''
         }
         return '''
             <h2>Identities</h2>
@@ -250,9 +179,9 @@ class GeneratorImpl {
         '''
     }
 
-    private def identitiesSummary(Module module) {
+    private def identitiesSummary() {
         if (module.identities.empty) {
-            return '';
+            return ''
         }
         return '''
         <h3>Identities Summary</h3>
@@ -275,9 +204,9 @@ class GeneratorImpl {
         '''
     }
 
-    private def groupings(Module module) {
+    private def groupings() {
         if (module.groupings.empty) {
-            return '';
+            return ''
         }
         return '''
             <h2>Groupings</h2>
@@ -297,9 +226,9 @@ class GeneratorImpl {
         '''
     }
 
-    private def groupingsSummary(Module module) {
+    private def groupingsSummary() {
         if (module.groupings.empty) {
-            return '';
+            return ''
         }
         return '''
         <h3>Groupings Summary</h3>
@@ -322,9 +251,9 @@ class GeneratorImpl {
         '''
     }
 
-    def dataStore(Module module) {
+    private def dataStore() {
         if (module.childNodes.empty) {
-            return '';
+            return ''
         }
         return '''
             <h2>Datastore Structure</h2>
@@ -332,9 +261,9 @@ class GeneratorImpl {
         '''
     }
 
-    def augmentations(Module module, EffectiveModelContext context) {
+    private def augmentations() {
         if (module.augmentations.empty) {
-            return '';
+            return ''
         }
         return '''
             <h2>Augmentations</h2>
@@ -342,8 +271,8 @@ class GeneratorImpl {
             <ul>
             «FOR augment : module.augmentations»
                 <li>
-                    <h3 id="«schemaPathToString(module, augment.targetPath, context, augment)»">
-                    Target [«typeAnchorLink(augment.targetPath.asSchemaPath, schemaPathToString(module, augment.targetPath, context, augment))»]</h3>
+                    <h3 id="«schemaPathToString(augment.targetPath, augment)»">
+                    Target [«typeAnchorLink(augment.targetPath.asSchemaPath, schemaPathToString(augment.targetPath, augment))»]</h3>
                     «augment.description»
                         Status: «strong(String.valueOf(augment.status))»
                     «IF augment.reference !== null»
@@ -471,7 +400,7 @@ class GeneratorImpl {
     private def printListNode(ListSchemaNode listNode) {
         return
         '''
-            &lt;«listNode.QName.localName»«IF !listNode.QName.namespace.equals(currentModule.namespace)» xmlns="«listNode.QName.namespace»"«ENDIF»&gt;
+            &lt;«listNode.QName.localName»«IF !listNode.QName.namespace.equals(module.namespace)» xmlns="«listNode.QName.namespace»"«ENDIF»&gt;
                 «FOR child : listNode.childNodes»
                     «printAugmentedNode(child)»
                 «ENDFOR»
@@ -482,7 +411,7 @@ class GeneratorImpl {
     private def printContainerNode(ContainerSchemaNode containerNode) {
         return
         '''
-            &lt;«containerNode.QName.localName»«IF !containerNode.QName.namespace.equals(currentModule.namespace)» xmlns="«containerNode.QName.namespace»"«ENDIF»&gt;
+            &lt;«containerNode.QName.localName»«IF !containerNode.QName.namespace.equals(module.namespace)» xmlns="«containerNode.QName.namespace»"«ENDIF»&gt;
                 «FOR child : containerNode.childNodes»
                     «printAugmentedNode(child)»
                 «ENDFOR»
@@ -513,9 +442,9 @@ class GeneratorImpl {
         '''
     }
 
-    private def augmentationsSummary(Module module, EffectiveModelContext context) {
+    private def augmentationsSummary() {
         if (module.augmentations.empty) {
-            return '';
+            return ''
         }
         return '''
         <h3>Augmentations Summary</h3>
@@ -527,8 +456,8 @@ class GeneratorImpl {
             «FOR augment : module.augmentations»
             <tr>
                 <td>
-                «anchorLink(schemaPathToString(module, augment.targetPath, context, augment),
-                strong(schemaPathToString(module, augment.targetPath, context, augment)))»
+                «anchorLink(schemaPathToString(augment.targetPath, augment),
+                strong(schemaPathToString(augment.targetPath, augment)))»
                 </td>
                 <td>
                 «augment.description»
@@ -539,10 +468,10 @@ class GeneratorImpl {
         '''
     }
 
-    def notifications(Module module) {
+    private def notifications() {
         val Collection<? extends NotificationDefinition> notificationdefs = module.notifications
         if (notificationdefs.empty) {
-            return '';
+            return ''
         }
 
         return '''
@@ -558,9 +487,9 @@ class GeneratorImpl {
         '''
     }
 
-    private def notificationsSummary(Module module) {
+    private def notificationsSummary() {
         if (module.notifications.empty) {
-            return '';
+            return ''
         }
         return '''
         <h3>Notifications Summary</h3>
@@ -583,9 +512,9 @@ class GeneratorImpl {
         '''
     }
 
-    def rpcs(Module module) {
+    private def rpcs() {
         if (module.rpcs.empty) {
-            return '';
+            return ''
         }
 
         return '''
@@ -602,9 +531,9 @@ class GeneratorImpl {
         '''
     }
 
-    private def rpcsSummary(Module module) {
+    private def rpcsSummary() {
         if (module.rpcs.empty) {
-            return '';
+            return ''
         }
         return '''
         <h3>RPCs Summary</h3>
@@ -627,9 +556,9 @@ class GeneratorImpl {
         '''
     }
 
-    def extensions(Module module) {
+    private def extensions() {
         if (module.extensionSchemaNodes.empty) {
-            return '';
+            return ''
         }
         return '''
             <h2>Extensions</h2>
@@ -642,9 +571,9 @@ class GeneratorImpl {
         '''
     }
 
-    private def extensionsSummary(Module module) {
+    private def extensionsSummary() {
         if (module.extensionSchemaNodes.empty) {
-            return '';
+            return ''
         }
         return '''
         <h3>Extensions Summary</h3>
@@ -667,9 +596,9 @@ class GeneratorImpl {
         '''
     }
 
-    def features(Module module) {
+    private def features() {
         if (module.features.empty) {
-            return '';
+            return ''
         }
         return '''
             <h2>Features</h2>
@@ -687,9 +616,9 @@ class GeneratorImpl {
         '''
     }
 
-    private def featuresSummary(Module module) {
+    private def featuresSummary() {
         if (module.features.empty) {
-            return '';
+            return ''
         }
         return '''
         <h3>Features Summary</h3>
@@ -712,9 +641,9 @@ class GeneratorImpl {
         '''
     }
 
-    private def objectsSummary(Module module) {
+    private def objectsSummary() {
         if (module.childNodes.empty) {
-            return '';
+            return ''
         }
         return '''
         <h3>Child Nodes Summary</h3>
@@ -737,8 +666,7 @@ class GeneratorImpl {
         '''
     }
 
-    def header(Module module)
-    '''
+    private def header() '''
         <h1>«module.name»</h1>
 
         <h2>Base Information</h2>
@@ -829,7 +757,7 @@ class GeneratorImpl {
         «node.childNodes.treeSet(newPath)»
     '''
 
-    def CharSequence childNodes(Module module) '''
+    private def CharSequence childNodes() '''
         «val childNodes = module.childNodes»
         «IF !childNodes.nullOrEmpty»
             <h2>Child nodes</h2>
@@ -873,7 +801,7 @@ class GeneratorImpl {
         if(path !== null) {
             val lastElement = path.lastComponent
             val ns = lastElement.namespace
-            if (ns == this.currentModule.namespace) {
+            if (ns.equals(module.namespace)) {
                 return '''<a href="#«path.schemaPathToId»">«text»</a>'''
             } else {
                 return '''(«ns»)«text»'''
@@ -978,7 +906,7 @@ class GeneratorImpl {
                 </ul>
             </li>
             «FOR augment : usesNode.augmentations»
-                «typeAnchorLink(augment.targetPath.asSchemaPath, schemaPathToString(currentModule, augment.targetPath, ctx, augment))»
+                «typeAnchorLink(augment.targetPath.asSchemaPath, schemaPathToString(augment.targetPath, augment))»
             «ENDFOR»
             </ul>
         '''
@@ -1225,7 +1153,7 @@ class GeneratorImpl {
 
     def asRestconfPath(YangInstanceIdentifier identifier) {
         val it = new StringBuilder();
-        append(currentModule.name)
+        append(module.name)
         append(':')
         var previous = false;
         for(arg : identifier.pathArguments) {
@@ -1244,8 +1172,7 @@ class GeneratorImpl {
         return it.toString;
     }
 
-    private def String schemaPathToString(Module module, SchemaNodeIdentifier schemaPath, EffectiveModelContext ctx,
-            DataNodeContainer dataNode) {
+    private def String schemaPathToString(SchemaNodeIdentifier schemaPath, DataNodeContainer dataNode) {
         val path = schemaPath.nodeIdentifiers
         val StringBuilder pathString = new StringBuilder()
         if (schemaPath instanceof Absolute) {
@@ -1364,7 +1291,7 @@ class GeneratorImpl {
             <ul>
             «FOR length : lengths.get.allowedRanges.asRanges»
                 <li>
-                «IF length.lowerEndpoint == length.upperEndpoint»
+                «IF length.lowerEndpoint.equals(length.upperEndpoint)»
                     «length.lowerEndpoint»
                 «ELSE»
                     &lt;«length.lowerEndpoint», «length.upperEndpoint»&gt;
@@ -1381,7 +1308,7 @@ class GeneratorImpl {
             <ul>
             «FOR range : constraint.get.allowedRanges.asRanges»
                 <li>
-                «IF range.lowerEndpoint == range.upperEndpoint»
+                «IF range.lowerEndpoint.equals(range.upperEndpoint)»
                     «range.lowerEndpoint»
                 «ELSE»
                     &lt;«range.lowerEndpoint», «range.upperEndpoint»&gt;
