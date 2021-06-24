@@ -7,7 +7,6 @@
  */
 module org.opendaylight.mdsal.binding.generator.api {
     exports org.opendaylight.mdsal.binding.generator.api;
-    exports org.opendaylight.mdsal.binding.generator.spi;
     exports org.opendaylight.mdsal.binding.model.api;
     exports org.opendaylight.mdsal.binding.model.api.type.builder;
 
