@@ -1,0 +1,16 @@
+module mdsal503 {
+  namespace mdsal503;
+  prefix mdsal503;
+
+  typedef foo {
+    type binary;
+  }
+
+  container bar {
+    leaf baz {
+      type foo {
+        length 1;
+      }
+    }
+  }
+}
