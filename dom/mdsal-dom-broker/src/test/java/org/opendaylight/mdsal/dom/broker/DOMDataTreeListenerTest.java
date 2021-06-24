@@ -418,7 +418,6 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     }
 
     static class TestDataTreeListener implements DOMDataTreeChangeListener {
-
         private final List<Collection<DataTreeCandidate>> receivedChanges = new ArrayList<>();
         private final CountDownLatch latch;
 
@@ -432,7 +431,12 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
             latch.countDown();
         }
 
-        public List<Collection<DataTreeCandidate>> getReceivedChanges() {
+        @Override
+        public void onInitialData() {
+            // noop
+        }
+
+        List<Collection<DataTreeCandidate>> getReceivedChanges() {
             return receivedChanges;
         }
     }
