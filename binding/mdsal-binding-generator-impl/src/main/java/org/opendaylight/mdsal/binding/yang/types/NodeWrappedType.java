@@ -9,8 +9,7 @@ package org.opendaylight.mdsal.binding.yang.types;
 
 import org.opendaylight.yangtools.util.TopologicalSort.NodeImpl;
 
-// FIXME: 8.0.0: hide this class
-public final class NodeWrappedType extends NodeImpl {
+final class NodeWrappedType extends NodeImpl {
     /**
      * The payload which is saved inside Node.
      */
