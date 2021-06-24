@@ -6,12 +6,8 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 module org.opendaylight.mdsal.binding.generator.util {
-    exports org.opendaylight.mdsal.binding.generator.util;
     exports org.opendaylight.mdsal.binding.model.util;
     exports org.opendaylight.mdsal.binding.model.util.generated.type.builder;
-
-    // FIXME: 8.0.0: is this a service?
-    // provides TypeProvider with BaseYangTypesProvider;
 
     requires transitive org.opendaylight.mdsal.binding.generator.api;
     requires org.opendaylight.mdsal.binding.spec.util;

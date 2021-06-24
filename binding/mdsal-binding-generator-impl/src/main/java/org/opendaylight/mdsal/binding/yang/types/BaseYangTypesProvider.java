@@ -5,9 +5,8 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.generator.util;
+package org.opendaylight.mdsal.binding.yang.types;
 
-import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
@@ -17,10 +16,9 @@ import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
-@Beta
-public final class BaseYangTypesProvider implements TypeProvider {
-    // FIXME: 8.0.0: we want to expose this as a proper singleton I guess
-    public static final @NonNull BaseYangTypesProvider INSTANCE = new BaseYangTypesProvider();
+@Deprecated(forRemoval = true)
+final class BaseYangTypesProvider implements TypeProvider {
+    static final @NonNull BaseYangTypesProvider INSTANCE = new BaseYangTypesProvider();
 
     private BaseYangTypesProvider() {
         // Hidden on purpose

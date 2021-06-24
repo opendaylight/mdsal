@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
-import org.opendaylight.mdsal.binding.generator.util.BaseYangTypesProvider;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
