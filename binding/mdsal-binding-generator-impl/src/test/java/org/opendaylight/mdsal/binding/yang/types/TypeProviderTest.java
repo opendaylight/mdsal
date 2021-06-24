@@ -53,6 +53,7 @@ import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
  * @see org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider
  * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
+// FIXME: rewrite tests without TypeProvider interface
 @Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class TypeProviderTest {

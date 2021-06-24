@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.yang.types;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.TYPE_OBJECT;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -66,8 +65,9 @@ import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.spi.ModuleDependencySort;
 
-@Beta
-public abstract class AbstractTypeProvider implements TypeProvider {
+// FIXME: remove this class
+@Deprecated(forRemoval = true)
+abstract class AbstractTypeProvider implements TypeProvider {
     private static final JavaTypeName DEPRECATED_ANNOTATION = JavaTypeName.create(Deprecated.class);
 
     /**
@@ -83,7 +83,6 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     private final Map<SchemaPath, Type> referencedTypes = new HashMap<>();
     private final Map<Module, Set<GeneratedType>> additionalTypes = new HashMap<>();
-    private final Map<SchemaNode, JavaTypeName> renames;
 
     /**
      * Creates new instance of class <code>TypeProviderImpl</code>.
@@ -92,9 +91,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      * @param renames renaming table
      * @throws IllegalArgumentException if <code>schemaContext</code> equal null.
      */
-    AbstractTypeProvider(final EffectiveModelContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
+    AbstractTypeProvider(final EffectiveModelContext schemaContext) {
         this.schemaContext = requireNonNull(schemaContext);
-        this.renames = requireNonNull(renames);
 
         resolveTypeDefsFromContext();
     }
@@ -738,12 +736,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     private GeneratedTOBuilder typedefToTransferObject(final String basePackageName,
             final TypeDefinition<?> typedef, final String moduleName) {
-        JavaTypeName name = renames.get(typedef);
-        if (name == null) {
-            name = JavaTypeName.create(
+        final JavaTypeName name = JavaTypeName.create(
                 BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typedef.getPath()),
                 BindingMapping.getClassName(typedef.getQName().getLocalName()));
-        }
 
         final GeneratedTOBuilder newType = newGeneratedTOBuilder(name);
         newType.setSchemaPath(typedef.getPath());

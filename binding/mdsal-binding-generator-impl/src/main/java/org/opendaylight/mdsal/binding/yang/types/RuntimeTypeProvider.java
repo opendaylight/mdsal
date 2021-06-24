@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.yang.types;
 
-import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
@@ -22,24 +21,16 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.RuntimeE
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.RuntimeGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.RuntimeGeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 
-/**
- * {@link AbstractTypeProvider} which generates enough type information for runtime support. For a codegen-compatible
- * provider use {@link CodegenTypeProvider}.
- */
-@Beta
-public final class RuntimeTypeProvider extends AbstractTypeProvider {
-    public RuntimeTypeProvider(final EffectiveModelContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
-        super(schemaContext, renames);
-    }
-
+// FIXME: remove this class
+@Deprecated(forRemoval = true)
+final class RuntimeTypeProvider extends AbstractTypeProvider {
     @VisibleForTesting
     RuntimeTypeProvider(final EffectiveModelContext schemaContext) {
-        this(schemaContext, ImmutableMap.of());
+        super(schemaContext);
     }
 
     @Override
