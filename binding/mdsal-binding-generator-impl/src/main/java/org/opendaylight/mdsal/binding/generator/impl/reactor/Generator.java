@@ -25,7 +25,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
-import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -280,7 +279,7 @@ public abstract class Generator implements Iterable<Generator> {
             break;
         }
 
-        builder.addImplementsType(BindingTypes.childOf(DefaultType.of(ancestor.typeName())));
+        builder.addImplementsType(BindingTypes.childOf(Type.of(ancestor.typeName())));
     }
 
     /**
@@ -398,7 +397,7 @@ public abstract class Generator implements Iterable<Generator> {
      * @param builder Target builder
      */
     static final void defaultImplementedInterace(final GeneratedTypeBuilder builder) {
-        defineImplementedInterfaceMethod(builder, DefaultType.of(builder)).setDefault(true);
+        defineImplementedInterfaceMethod(builder, Type.of(builder)).setDefault(true);
     }
 
     static final <T extends EffectiveStatement<?, ?>> AbstractExplicitGenerator<T> getChild(final Generator parent,

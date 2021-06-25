@@ -7,9 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
@@ -46,8 +46,8 @@ public class GeneratedTOBuilderTest {
     public void testToString() {
         final GeneratedTOBuilder genTypeBuilder = new CodegenGeneratedTOBuilder(
             JavaTypeName.create("org.opendaylight.controller", "AnnotClassCache"));
-        String toString = genTypeBuilder.toString();
-        assertTrue(toString.contains("GeneratedTransferObject"));
+        assertThat(genTypeBuilder.toString(),
+            startsWith("CodegenGeneratedTOBuilder{identifier=org.opendaylight.controller.AnnotClassCache"));
     }
 
     @Test
@@ -55,18 +55,7 @@ public class GeneratedTOBuilderTest {
         final GeneratedTOBuilder genTypeBuilder1 = new CodegenGeneratedTOBuilder(
             JavaTypeName.create("org.opendaylight.controller", "AnnotClassCache"));
 
-        genTypeBuilder1.setTypedef(true);
         GeneratedTransferObject genTO = genTypeBuilder1.build();
-        String toString = genTO.toString();
-        assertFalse(toString.contains("GeneratedTransferObject"));
-
-        final GeneratedTOBuilder genTypeBuilder2 = new CodegenGeneratedTOBuilder(
-            JavaTypeName.create("org.opendaylight.controller", "AnnotClassCache"));
-
-        genTypeBuilder2.setTypedef(false);
-        genTO = genTypeBuilder2.build();
-        toString = genTO.toString();
-
-        assertTrue(toString.contains("GeneratedTransferObject"));
+        assertThat(genTO.toString(), startsWith("GTO{identifier=org.opendaylight.controller.AnnotClassCache"));
     }
 }

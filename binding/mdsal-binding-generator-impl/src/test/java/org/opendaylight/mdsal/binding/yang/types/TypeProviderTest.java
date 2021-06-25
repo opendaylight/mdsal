@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
-import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -306,7 +305,6 @@ public class TypeProviderTest {
 
         final Type leafrefResolvedType1 = provider.javaTypeForSchemaDefinitionType(leafType, leaf);
         assertNotNull(leafrefResolvedType1);
-        assertTrue(leafrefResolvedType1 instanceof DefaultType);
 
         final QName leafListNode = QName.create(module.getQNameModule(), "enums");
         final DataSchemaNode enumListNode = module.findDataChildByName(leafListNode).get();
@@ -324,13 +322,13 @@ public class TypeProviderTest {
             "resolve-direct-use-of-enum");
         final TypeDefinition<?> enumLeafTypedef = enumLeafNode.getType();
         provider.putReferencedType(enumLeafNode.getPath(),
-            DefaultType.of(provider.javaTypeForSchemaDefinitionType(enumLeafTypedef, enumLeafNode)));
+            Type.of(provider.javaTypeForSchemaDefinitionType(enumLeafTypedef, enumLeafNode)));
 
         final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(TEST_TYPE_PROVIDER,
             "foo", "list-of-enums");
         final TypeDefinition<?> enumLeafListTypedef = enumListNode.getType();
         provider.putReferencedType(enumListNode.getPath(),
-            DefaultType.of(provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode)));
+            Type.of(provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode)));
     }
 
     @Test

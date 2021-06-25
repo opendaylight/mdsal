@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
-import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
@@ -62,7 +61,7 @@ final class NotificationGenerator extends AbstractCompositeGenerator<Notificatio
             return BindingTypes.NOTIFICATION;
         }
 
-        final Type parentType = DefaultType.of(parent.typeName());
+        final Type parentType = Type.of(parent.typeName());
         if (parent instanceof ListGenerator) {
             final KeyGenerator keyGen = ((ListGenerator) parent).keyGenerator();
             if (keyGen != null) {

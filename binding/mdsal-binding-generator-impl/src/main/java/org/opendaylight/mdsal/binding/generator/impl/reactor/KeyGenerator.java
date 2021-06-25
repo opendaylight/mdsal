@@ -11,8 +11,8 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Set;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
-import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
@@ -48,7 +48,7 @@ final class KeyGenerator extends AbstractExplicitGenerator<KeyEffectiveStatement
     GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
         final GeneratedTOBuilder builder = builderFactory.newGeneratedTOBuilder(typeName());
 
-        builder.addImplementsType(BindingTypes.identifier(DefaultType.of(listGen.typeName())));
+        builder.addImplementsType(BindingTypes.identifier(Type.of(listGen.typeName())));
 
         final Set<QName> leafNames = statement().argument();
         for (Generator listChild : listGen) {

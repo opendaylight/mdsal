@@ -40,9 +40,9 @@ public class Mdsal269Test {
 
         assertEquals("mplsLabelGeneralUse", general.getName());
         assertEquals("org.opendaylight.yang.gen.v1.mdsal269.rev180130.MplsLabelGeneralUse",
-            general.getReturnType().toString());
+            general.getReturnType().getFullyQualifiedName());
 
         assertEquals("mplsLabelSpecialPurpose", special.getName());
-        assertEquals("Type (java.lang.Class)", special.getReturnType().toString());
+        assertEquals("java.lang.Class", special.getReturnType().getFullyQualifiedName());
     }
 }

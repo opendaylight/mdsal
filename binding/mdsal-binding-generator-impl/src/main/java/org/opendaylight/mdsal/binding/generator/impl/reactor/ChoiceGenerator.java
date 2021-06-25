@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
-import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
@@ -30,7 +30,7 @@ final class ChoiceGenerator extends AbstractCompositeGenerator<ChoiceEffectiveSt
     @Override
     GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
         final GeneratedTypeBuilder builder = builderFactory.newGeneratedTypeBuilder(typeName());
-        builder.addImplementsType(BindingTypes.choiceIn(DefaultType.of(getParent().typeName())));
+        builder.addImplementsType(BindingTypes.choiceIn(Type.of(getParent().typeName())));
 
         final ModuleGenerator module = currentModule();
         module.addQNameConstant(builder, localName());

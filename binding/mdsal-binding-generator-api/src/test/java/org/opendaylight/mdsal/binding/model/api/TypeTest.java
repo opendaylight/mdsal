@@ -12,16 +12,16 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class DefaultTypeTest {
+public class TypeTest {
     @Test
     public void testCreateNewReferencedType() {
-        DefaultType refType = DefaultType.of(JavaTypeName.create("org.opendaylight.yangtools.test", "RefTypeTest"));
+        Type refType = Type.of(JavaTypeName.create("org.opendaylight.yangtools.test", "RefTypeTest"));
         assertEquals("RefTypeTest", refType.getName());
     }
 
     @Test
     public void testToStringMethod() {
-        DefaultType refType = DefaultType.of(JavaTypeName.create("org.opendaylight.yangtools.test", "RefTypeTest"));
+        Type refType = Type.of(JavaTypeName.create("org.opendaylight.yangtools.test", "RefTypeTest"));
         assertTrue(refType.toString().contains("RefTypeTest"));
     }
 }
