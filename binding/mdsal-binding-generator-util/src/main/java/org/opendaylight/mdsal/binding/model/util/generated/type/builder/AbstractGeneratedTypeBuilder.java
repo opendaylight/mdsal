@@ -10,10 +10,11 @@ package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
+import org.opendaylight.mdsal.binding.model.api.AbstractType;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -28,7 +29,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
 
-abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T>> extends AbstractBaseType
+abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T>> extends AbstractType
         implements GeneratedTypeBuilderBase<T> {
 
     private List<AnnotationTypeBuilder> annotationBuilders = Collections.emptyList();
@@ -214,9 +215,19 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         return Optional.ofNullable(yangSourceDefinition);
     }
 
-
     @Override
     public void setYangSourceDefinition(final YangSourceDefinition definition) {
         yangSourceDefinition = requireNonNull(definition);
+    }
+
+    @Override
+    protected ToStringHelper addToStringAttributes(final ToStringHelper toStringHelper) {
+        return super.addToStringAttributes(toStringHelper).omitNullValues()
+            .add("comment", comment == null ? null : comment.getJavadoc())
+            .add("constants", constants)
+            .add("enumerations", enumDefinitions)
+            .add("methods", methodDefinitions)
+            .add("annotations", annotationBuilders)
+            .add("implements", implementsTypes);
     }
 }

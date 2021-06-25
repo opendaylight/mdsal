@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
+import org.opendaylight.mdsal.binding.model.api.AbstractType;
 import org.opendaylight.mdsal.binding.model.api.BaseTypeWithRestrictions;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -289,7 +289,7 @@ public final class Types {
     /**
      * Represents concrete JAVA type.
      */
-    private static final class ConcreteTypeImpl extends AbstractBaseType implements ConcreteType {
+    private static final class ConcreteTypeImpl extends AbstractType implements ConcreteType {
         private final Restrictions restrictions;
 
         /**
@@ -312,7 +312,7 @@ public final class Types {
     /**
      * Represents concrete JAVA type with changed restriction values.
      */
-    private static final class BaseTypeWithRestrictionsImpl extends AbstractBaseType implements
+    private static final class BaseTypeWithRestrictionsImpl extends AbstractType implements
             BaseTypeWithRestrictions {
         private final Restrictions restrictions;
 
@@ -336,7 +336,7 @@ public final class Types {
     /**
      * Represents parametrized JAVA type.
      */
-    private static class ParametrizedTypeImpl extends AbstractBaseType implements ParameterizedType {
+    private static class ParametrizedTypeImpl extends AbstractType implements ParameterizedType {
         /**
          * Array of JAVA actual type parameters.
          */
@@ -377,7 +377,7 @@ public final class Types {
     /**
      * Represents JAVA bounded wildcard type.
      */
-    private static class WildcardTypeImpl extends AbstractBaseType implements WildcardType {
+    private static class WildcardTypeImpl extends AbstractType implements WildcardType {
         /**
          * Creates instance of this class with concrete package and type name.
          *

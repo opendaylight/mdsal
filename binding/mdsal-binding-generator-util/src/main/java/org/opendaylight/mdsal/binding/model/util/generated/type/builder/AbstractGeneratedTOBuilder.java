@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.List;
@@ -91,30 +92,11 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
     }
 
     @Override
-    public final String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("GeneratedTransferObject [packageName=");
-        builder.append(getPackageName());
-        builder.append(", name=");
-        builder.append(getName());
-        builder.append(", comment=");
-        builder.append(getComment());
-        builder.append(", constants=");
-        builder.append(getConstants());
-        builder.append(", enumerations=");
-        builder.append(getEnumerations());
-        builder.append(", equalsProperties=");
-        builder.append(this.equalsProperties);
-        builder.append(", hashCodeProperties=");
-        builder.append(this.hashProperties);
-        builder.append(", stringProperties=");
-        builder.append(this.toStringProperties);
-        builder.append(", annotations=");
-        builder.append(getAnnotations());
-        builder.append(", methods=");
-        builder.append(getMethodDefinitions());
-        builder.append("]");
-        return builder.toString();
+    protected ToStringHelper addToStringAttributes(final ToStringHelper toStringHelper) {
+        return super.addToStringAttributes(toStringHelper)
+            .add("equalsProperties", equalsProperties)
+            .add("hashCodeProperties", hashProperties)
+            .add("stringProperties", toStringProperties);
     }
 
     @Override
@@ -211,44 +193,24 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
         }
 
         @Override
-        public final String toString() {
-            if (this.isTypedef) {
-                return serializeTypedef(this);
-            }
-            final StringBuilder builder = new StringBuilder();
-            builder.append("GeneratedTransferObject [packageName=");
-            builder.append(getPackageName());
-            builder.append(", name=");
-            builder.append(getName());
-            builder.append(", comment=");
-            builder.append(", annotations=");
-            builder.append(getAnnotations());
-            builder.append(getComment());
-            builder.append(", extends=");
-            builder.append(getSuperType());
-            builder.append(", implements=");
-            builder.append(getImplements());
-            builder.append(", enclosedTypes=");
-            builder.append(getEnclosedTypes());
-            builder.append(", constants=");
-            builder.append(getConstantDefinitions());
-            builder.append(", enumerations=");
-            builder.append(getEnumerations());
-            builder.append(", properties=");
-            builder.append(getProperties());
-            builder.append(", equalsProperties=");
-            builder.append(this.equalsProperties);
-            builder.append(", hashCodeProperties=");
-            builder.append(this.hashCodeProperties);
-            builder.append(", stringProperties=");
-            builder.append(this.stringProperties);
-            builder.append(", methods=");
-            builder.append(getMethodDefinitions());
-            builder.append("]");
-            return builder.toString();
+        protected ToStringHelper addToStringAttributes(final ToStringHelper toStringHelper) {
+            return super.addToStringAttributes(toStringHelper)
+                .omitNullValues()
+                .add("annotations", getAnnotations())
+                .add("comment", getComment())
+                .add("extends", getSuperType())
+                .add("implements", getImplements())
+                .add("enclosedTypes", getEnclosedTypes())
+                .add("constants", getConstantDefinitions())
+                .add("enumerations", getEnumerations())
+                .add("properties", getProperties())
+                .add("equalsProperties", equalsProperties)
+                .add("hashCodeProperties", hashCodeProperties)
+                .add("stringProperties", stringProperties)
+                .add("methods", getMethodDefinitions());
         }
 
-        public final String serializeTypedef(final Type type) {
+        public static final String serializeTypedef(final Type type) {
             if (!(type instanceof ParameterizedType)) {
                 return type.getFullyQualifiedName();
             }

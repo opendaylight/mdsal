@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.model.api;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
@@ -48,5 +49,17 @@ public interface Type extends Identifiable<JavaTypeName> {
      */
     default String getFullyQualifiedName() {
         return getIdentifier().toString();
+    }
+
+    static @NonNull Type of(final JavaTypeName identifier) {
+        return new DefaultType(identifier);
+    }
+
+    static @NonNull Type of(final Identifiable<JavaTypeName> type) {
+        return of(type.getIdentifier());
+    }
+
+    static @NonNull Type of(final Class<?> type) {
+        return of(JavaTypeName.create(type));
     }
 }

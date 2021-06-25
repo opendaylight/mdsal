@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
+import org.opendaylight.mdsal.binding.model.api.AbstractType;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -36,7 +37,7 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPair;
 
 // FIXME: public because EnumBuilder does not have setters we are exposing
-public abstract class AbstractEnumerationBuilder extends AbstractBaseType implements EnumBuilder {
+public abstract class AbstractEnumerationBuilder extends AbstractType implements EnumBuilder {
     private List<Enumeration.Pair> values = ImmutableList.of();
     private List<AnnotationTypeBuilder> annotationBuilders = ImmutableList.of();
 
@@ -70,22 +71,9 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
     abstract AbstractPair createEnumPair(String name, String mappedName, int value, Status status, String description,
             String reference);
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
     @Override
-    public final String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("EnumerationBuilderImpl [packageName=");
-        builder.append(getPackageName());
-        builder.append(", name=");
-        builder.append(getName());
-        builder.append(", values=");
-        builder.append(values);
-        builder.append("]");
-        return builder.toString();
+    protected ToStringHelper addToStringAttributes(final ToStringHelper toStringHelper) {
+        return super.addToStringAttributes(toStringHelper).add("values", values);
     }
 
     @Override
@@ -161,7 +149,7 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
         }
     }
 
-    abstract static class AbstractEnumeration extends AbstractBaseType implements Enumeration {
+    abstract static class AbstractEnumeration extends AbstractType implements Enumeration {
         private final List<AnnotationType> annotations;
         private final List<Pair> values;
 
@@ -214,16 +202,8 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
         }
 
         @Override
-        public final String toString() {
-            final StringBuilder builder = new StringBuilder();
-            builder.append("Enumeration [packageName=");
-            builder.append(getPackageName());
-            builder.append(", name=");
-            builder.append(getName());
-            builder.append(", values=");
-            builder.append(this.values);
-            builder.append("]");
-            return builder.toString();
+        protected ToStringHelper addToStringAttributes(final ToStringHelper toStringHelper) {
+            return super.addToStringAttributes(toStringHelper).add("values", values);
         }
 
         @Override

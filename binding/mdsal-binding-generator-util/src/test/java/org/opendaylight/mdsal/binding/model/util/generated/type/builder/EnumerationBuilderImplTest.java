@@ -131,15 +131,14 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void testEnumerationToString() {
-        assertEquals("Enumeration [packageName=" + packageName + ", name=" + name
-            + ", values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]", enumeration.toString());
+        assertEquals("EnumerationImpl{identifier=org.opendaylight.test.TestName, "
+            + "values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]}", enumeration.toString());
         assertEquals("public enum " + name + " {\n"
             + "\t TestValue " + "(12 );\n"
             + "}", enumeration.toFormattedString());
 
-        assertEquals("EnumerationBuilderImpl [packageName=org.opendaylight.test, name=TestName, "
-                + "values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]",
-                enumerationBuilder.toString());
+        assertEquals("CodegenEnumerationBuilder{identifier=org.opendaylight.test.TestName, "
+            + "values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]}", enumerationBuilder.toString());
     }
 
     @Test

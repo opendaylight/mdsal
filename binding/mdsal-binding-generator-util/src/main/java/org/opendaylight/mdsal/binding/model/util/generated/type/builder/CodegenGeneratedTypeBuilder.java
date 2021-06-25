@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
-import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -45,34 +44,6 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     @Override
     public void setReference(final String reference) {
         this.reference = reference;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("GeneratedTransferObject [packageName=");
-        builder.append(getPackageName());
-        builder.append(", name=");
-        builder.append(getName());
-
-        final TypeComment comment = getComment();
-        if (comment != null) {
-            builder.append(", comment=");
-            builder.append(comment.getJavadoc());
-        }
-        builder.append(", annotations=");
-        builder.append(getAnnotations());
-        builder.append(", implements=");
-        builder.append(getImplementsTypes());
-        builder.append(", constants=");
-        builder.append(getConstants());
-        builder.append(", enumerations=");
-        builder.append(getEnumerations());
-        builder.append(", properties=");
-        builder.append(", methods=");
-        builder.append(getMethodDefinitions());
-        builder.append("]");
-        return builder.toString();
     }
 
     @Override

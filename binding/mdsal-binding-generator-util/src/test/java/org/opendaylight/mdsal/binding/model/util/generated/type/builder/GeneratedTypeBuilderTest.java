@@ -77,7 +77,8 @@ public class GeneratedTypeBuilderTest {
         assertFalse(constant.hashCode() == constant4.hashCode());
         assertTrue(constant.hashCode() == constant5.hashCode());
 
-        assertEquals("Constant [type=Type (java.lang.String), name=myConstant, value=myConstantValue]",
+        assertEquals(
+            "Constant [type=ConcreteTypeImpl{identifier=java.lang.String}, name=myConstant, value=myConstantValue]",
             constant.toString());
 
         GeneratedType instance = generatedTypeBuilder.build();
@@ -289,10 +290,8 @@ public class GeneratedTypeBuilderTest {
         generatedTypeBuilder.setSchemaPath(SchemaPath.create(true, QName.create("test", "path")));
         assertNotNull(generatedTypeBuilder.addComment(TypeComments.javadoc("My comment..").get()));
 
-        assertEquals(
-                "GeneratedTransferObject [packageName=my.package, name=MyName, comment=My comment.., annotations=[], "
-                        + "implements=[], constants=[], enumerations=[], properties=, methods=[]]",
-                        generatedTypeBuilder.toString());
+        assertEquals("CodegenGeneratedTypeBuilder{identifier=my.package.MyName, comment=My comment.., constants=[], "
+            + "enumerations=[], methods=[], annotations=[], implements=[]}", generatedTypeBuilder.toString());
 
         GeneratedType instance = generatedTypeBuilder.build();
 

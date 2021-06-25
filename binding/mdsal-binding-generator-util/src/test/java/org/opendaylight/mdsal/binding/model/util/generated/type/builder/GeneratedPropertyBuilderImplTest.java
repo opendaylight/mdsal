@@ -31,9 +31,9 @@ public class GeneratedPropertyBuilderImplTest {
         generatedPropertyBuilderImpl.setAccessModifier(AccessModifier.PUBLIC);
         generatedPropertyBuilderImpl.setReturnType(Types.BOOLEAN);
 
-        assertEquals("GeneratedPropertyImpl [name=myPropertyName, annotations=[], comment=null, returnType=Type "
-                + "(java.lang.Boolean), isFinal=true, isReadOnly=false, modifier=PUBLIC]",
-                generatedPropertyBuilderImpl.toString());
+        assertEquals("GeneratedPropertyImpl [name=myPropertyName, annotations=[], comment=null, "
+            + "returnType=ConcreteTypeImpl{identifier=java.lang.Boolean}, isFinal=true, isReadOnly=false, "
+            + "modifier=PUBLIC]", generatedPropertyBuilderImpl.toString());
 
         GeneratedProperty instance = generatedPropertyBuilderImpl.toInstance();
 

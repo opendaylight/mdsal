@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.model.api.DefaultType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
@@ -68,12 +67,12 @@ final class ActionGenerator extends AbstractCompositeGenerator<ActionEffectiveSt
         if (parent instanceof ListGenerator) {
             final KeyGenerator keyGen = ((ListGenerator) parent).keyGenerator();
             if (keyGen != null) {
-                return BindingTypes.keyedListAction(DefaultType.of(parent.typeName()),
-                    keyGen.getGeneratedType(builderFactory), input, output);
+                return BindingTypes.keyedListAction(Type.of(parent.typeName()), keyGen.getGeneratedType(builderFactory),
+                    input, output);
             }
         }
 
-        return BindingTypes.action(DefaultType.of(parent.typeName()), input, output);
+        return BindingTypes.action(Type.of(parent.typeName()), input, output);
     }
 
     @Override

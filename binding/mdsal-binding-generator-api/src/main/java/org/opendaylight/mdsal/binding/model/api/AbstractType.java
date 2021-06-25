@@ -7,54 +7,31 @@
  */
 package org.opendaylight.mdsal.binding.model.api;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.common.annotations.Beta;
-import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.concepts.AbstractSimpleIdentifiable;
 
 /**
  * It is used only as ancestor for other <code>Type</code>s. Note this forms the equality domain over most types, please
  * consider joining the party.
  */
 @Beta
-public class AbstractBaseType implements Type {
-    /**
-     * Name of this <code>Type</code>.
-     */
-    private final @NonNull JavaTypeName identifier;
-
+public abstract class AbstractType extends AbstractSimpleIdentifiable<JavaTypeName> implements Type {
     /**
      * Constructs the instance of this class with a JavaTypeName.
      *
      * @param identifier for this <code>Type</code>
      */
-    protected AbstractBaseType(final JavaTypeName identifier) {
-        this.identifier = requireNonNull(identifier);
-    }
-
-    @Override
-    public final JavaTypeName getIdentifier() {
-        return this.identifier;
+    protected AbstractType(final JavaTypeName identifier) {
+        super(identifier);
     }
 
     @Override
     public final int hashCode() {
-        return identifier.hashCode();
+        return getIdentifier().hashCode();
     }
 
     @Override
     public final boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof Type)) {
-            return false;
-        }
-        return identifier.equals(((Type) obj).getIdentifier());
-    }
-
-    @Override
-    public String toString() {
-        return "Type (" + getFullyQualifiedName() + ")";
+        return this == obj || obj instanceof Type && getIdentifier().equals(((Type) obj).getIdentifier());
     }
 }

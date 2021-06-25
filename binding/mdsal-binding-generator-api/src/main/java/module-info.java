@@ -10,6 +10,7 @@ module org.opendaylight.mdsal.binding.generator.api {
     exports org.opendaylight.mdsal.binding.model.api;
     exports org.opendaylight.mdsal.binding.model.api.type.builder;
 
+    requires transitive org.opendaylight.yangtools.concepts;
     requires transitive org.opendaylight.yangtools.yang.model.api;
 
     // Annotations

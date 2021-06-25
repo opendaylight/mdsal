@@ -7,13 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.opendaylight.mdsal.binding.model.api.AbstractBaseType;
+import org.opendaylight.mdsal.binding.model.api.AbstractType;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -31,8 +32,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 
-abstract class AbstractGeneratedType extends AbstractBaseType implements GeneratedType {
-
+abstract class AbstractGeneratedType extends AbstractType implements GeneratedType {
     private final TypeComment comment;
     private final List<AnnotationType> annotations;
     private final List<Type> implementsTypes;
@@ -212,25 +212,14 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     }
 
     @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("GeneratedType [packageName=");
-        builder.append(getPackageName());
-        builder.append(", name=");
-        builder.append(getName());
-        builder.append(", comment=");
-        builder.append(this.comment);
-        builder.append(", annotations=");
-        builder.append(this.annotations);
-        builder.append(", enclosedTypes=");
-        builder.append(this.enclosedTypes);
-        builder.append(", enumerations=");
-        builder.append(this.enumerations);
-        builder.append(", constants=");
-        builder.append(this.constants);
-        builder.append(", methodSignatures=");
-        builder.append(this.methodSignatures);
-        builder.append("]");
-        return builder.toString();
+    protected ToStringHelper addToStringAttributes(final ToStringHelper toStringHelper) {
+        return super.addToStringAttributes(toStringHelper)
+            .omitNullValues()
+            .add("comment", comment)
+            .add("annotations", annotations)
+            .add("enclosedTypes", enclosedTypes)
+            .add("enumerations", enumerations)
+            .add("constants", constants)
+            .add("methodSignatures", methodSignatures);
     }
 }
