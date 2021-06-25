@@ -25,9 +25,9 @@
     <description>${project.artifactId}</description>
 
     <modules>
-        <module>mdsal-binding-generator-api</module>
-        <module>mdsal-binding-generator-util</module>
-        <module>mdsal-binding-generator-impl</module>
+        <module>mdsal-binding-model-api</module>
+        <module>mdsal-binding-model-ri</module>
+        <module>mdsal-binding-generator</module>
         <module>mdsal-binding-java-api-generator</module>
         <!-- FIXME: should be probably renamed to mdsal-model-binding-parent -->
         <module>binding-parent</module>
