@@ -16,7 +16,7 @@
         <relativePath>../../dom/dom-parent</relativePath>
     </parent>
 
-    <artifactId>mdsal-binding-generator-impl</artifactId>
+    <artifactId>mdsal-binding-generator</artifactId>
     <packaging>bundle</packaging>
 
     <dependencies>
@@ -30,11 +30,11 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-generator-api</artifactId>
+            <artifactId>mdsal-binding-model-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-generator-util</artifactId>
+            <artifactId>mdsal-binding-model-ri</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>

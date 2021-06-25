@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-module org.opendaylight.mdsal.binding.generator.util {
+module org.opendaylight.mdsal.binding.model.ri {
     exports org.opendaylight.mdsal.binding.model.util;
     exports org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 

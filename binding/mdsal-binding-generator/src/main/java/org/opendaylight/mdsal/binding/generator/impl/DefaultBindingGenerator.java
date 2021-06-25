@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.kohsuke.MetaInfServices;
-import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.binding.generator.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.Generator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.GeneratorReactor;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.ModuleGenerator;
