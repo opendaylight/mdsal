@@ -38,4 +38,5 @@ module org.opendaylight.mdsal.binding.generator {
     requires static javax.inject;
     requires static metainf.services;
     requires static org.osgi.service.component.annotations;
+    requires org.opendaylight.yangtools.rfc8040.model.api;
 }
