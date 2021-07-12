@@ -113,7 +113,7 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      * The effects of a successful commit of data depends on listeners and commit participants that are registered with
      * the data broker.
      *
-     * <h3>Example usage:</h3>
+     * <h4>Example usage:</h4>
      * <pre>
      *  private void doWrite(final int tries) {
      *      WriteTransaction writeTx = dataBroker.newWriteOnlyTransaction();
@@ -141,7 +141,7 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      * doWrite(2);
      * </pre>
      *
-     * <h2>Failure scenarios</h2>
+     * <h4>Failure scenarios</h4>
      *
      * <p>
      * Transaction may fail because of multiple reasons, such as
@@ -164,7 +164,7 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      *   </li>
      * </ul>
      *
-     * <h3>Change compatibility</h3>
+     * <h4>Change compatibility</h4>
      * There are several sets of changes which could be considered incompatible between two transactions which are
      * derived from same initial state. Rules for conflict detection applies recursively for each subtree level.
      *
@@ -411,9 +411,9 @@ public interface WriteTransaction extends Transaction, WriteOperations {
      * </table>
      *
      *
-     * <h3>Examples of failure scenarios</h3>
+     * <h4>Examples of failure scenarios</h4>
      *
-     * <h4>Conflict of two transactions</h4>
+     * <h5>Conflict of two transactions</h5>
      * This example illustrates two concurrent transactions, which derived from same initial state
      * of data tree and proposes conflicting modifications.
      *
