@@ -5,42 +5,29 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.dom.codec.impl;
+package org.opendaylight.mdsal.binding.dom.codec.impl.di;
 
 import com.google.common.annotations.Beta;
+import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
+import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * Default implementation of {@link BindingCodecTreeFactory}.
+ */
 @Beta
-@MetaInfServices
 @Singleton
-@Component(immediate = true)
 public final class DefaultBindingCodecTreeFactory implements BindingCodecTreeFactory {
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultBindingCodecTreeFactory.class);
+    @Inject
+    public DefaultBindingCodecTreeFactory() {
+        // Exposed for DI
+    }
 
     @Override
     public BindingCodecTree create(final BindingRuntimeContext context) {
         return new BindingCodecContext(context);
-    }
-
-    @Activate
-    @SuppressWarnings("static-method")
-    void activate() {
-        LOG.info("Binding-DOM Codec enabled");
-    }
-
-
-    @Deactivate
-    @SuppressWarnings("static-method")
-    void deactivate() {
-        LOG.info("Binding-DOM Codec disabled");
     }
 }
