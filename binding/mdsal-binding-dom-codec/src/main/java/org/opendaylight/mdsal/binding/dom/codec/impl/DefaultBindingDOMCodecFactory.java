@@ -8,6 +8,8 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import com.google.common.annotations.Beta;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.kohsuke.MetaInfServices;
@@ -28,17 +30,18 @@ import org.slf4j.LoggerFactory;
 public final class DefaultBindingDOMCodecFactory implements BindingDOMCodecFactory {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultBindingDOMCodecFactory.class);
 
+    @Inject
+    @Activate
+    public DefaultBindingDOMCodecFactory() {
+        LOG.info("Binding/DOM Codec enabled");
+    }
+
     @Override
     public BindingDOMCodecServices createBindingDOMCodec(final BindingRuntimeContext context) {
         return new BindingCodecContext(context);
     }
 
-    @Activate
-    @SuppressWarnings("static-method")
-    void activate() {
-        LOG.info("Binding/DOM Codec enabled");
-    }
-
+    @PreDestroy
     @Deactivate
     @SuppressWarnings("static-method")
     void deactivate() {

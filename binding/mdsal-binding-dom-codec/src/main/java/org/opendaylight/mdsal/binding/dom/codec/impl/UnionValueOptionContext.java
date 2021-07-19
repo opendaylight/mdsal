@@ -9,9 +9,11 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
@@ -27,24 +29,31 @@ final class UnionValueOptionContext {
     private final MethodHandle getter;
     private final MethodHandle unionCtor;
 
+    // FIXME: UnionValueOptionContextTest needs this for its mock classes
+    @VisibleForTesting
     UnionValueOptionContext(final Class<?> unionType, final Class<?> valueType, final Method getter,
-            final IllegalArgumentCodec<Object, Object> codec) {
-        this.bindingType = requireNonNull(valueType);
+            final IllegalArgumentCodec<Object, Object> codec, final Lookup lookup) {
+        bindingType = requireNonNull(valueType);
         this.codec = requireNonNull(codec);
 
         try {
-            this.getter = MethodHandles.publicLookup().unreflect(getter).asType(OBJECT_TYPE);
+            this.getter = lookup.unreflect(getter).asType(OBJECT_TYPE);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Failed to access method " + getter, e);
         }
 
         try {
-            this.unionCtor = MethodHandles.publicLookup().findConstructor(unionType,
-                MethodType.methodType(void.class, valueType)).asType(OBJECT_TYPE);
+            unionCtor = lookup.findConstructor(unionType, MethodType.methodType(void.class, valueType))
+                .asType(OBJECT_TYPE);
         } catch (IllegalAccessException | NoSuchMethodException e) {
             throw new IllegalStateException(String.format("Failed to access constructor for %s in type %s", valueType,
                     unionType), e);
         }
+    }
+
+    UnionValueOptionContext(final Class<?> unionType, final Class<?> valueType, final Method getter,
+            final IllegalArgumentCodec<Object, Object> codec) {
+        this(unionType, valueType, getter, codec, MethodHandles.publicLookup());
     }
 
     Object serialize(final Object input) {

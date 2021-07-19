@@ -8,33 +8,34 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Method;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class UnionValueOptionContextTest {
     private static UnionValueOptionContext TEST_UVOC_1;
     private static UnionValueOptionContext TEST_UVOC_2;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        final Lookup lookup = MethodHandles.lookup();
         final Method methodFoo1 = TestDataObject1.class.getMethod("foo");
         final Method methodFoo2 = TestDataObject2.class.getMethod("foo");
         TEST_UVOC_1 = new UnionValueOptionContext(TestUnion.class, TestDataObject1.class, methodFoo1,
-            SchemaUnawareCodec.NOOP_CODEC);
+            SchemaUnawareCodec.NOOP_CODEC, lookup);
         TEST_UVOC_2 = new UnionValueOptionContext(TestUnion.class, TestDataObject2.class, methodFoo2,
-            SchemaUnawareCodec.NOOP_CODEC);
+            SchemaUnawareCodec.NOOP_CODEC, lookup);
     }
 
     @Test
     public void hashCodeTest() throws Exception {
         final Method methodFoo1 = TestDataObject1.class.getMethod("foo");
         final UnionValueOptionContext test_uvoc = new UnionValueOptionContext(TestUnion.class, TestDataObject1.class,
-            methodFoo1, SchemaUnawareCodec.NOOP_CODEC);
+            methodFoo1, SchemaUnawareCodec.NOOP_CODEC, MethodHandles.lookup());
 
         assertEquals("HashCode", test_uvoc.hashCode(), TEST_UVOC_1.hashCode());
         assertNotEquals("HashCode", TEST_UVOC_1.hashCode(), TEST_UVOC_2.hashCode());
@@ -44,19 +45,19 @@ public class UnionValueOptionContextTest {
     public void equalsTest() throws Exception {
         final Method methodFoo1 = TestDataObject1.class.getMethod("foo");
         final UnionValueOptionContext test_uvoc = new UnionValueOptionContext(TestUnion.class, TestDataObject1.class,
-            methodFoo1, SchemaUnawareCodec.NOOP_CODEC);
+            methodFoo1, SchemaUnawareCodec.NOOP_CODEC, MethodHandles.lookup());
 
-        assertTrue("Equals", TEST_UVOC_1.equals(test_uvoc));
-        assertFalse("Not equals", TEST_UVOC_1.equals(TEST_UVOC_2));
+        assertEquals(TEST_UVOC_1, test_uvoc);
+        assertNotEquals(TEST_UVOC_1, TEST_UVOC_2);
     }
 
-    protected static final class TestDataObject1 {
+    public static final class TestDataObject1 {
         public void foo() {
 
         }
     }
 
-    protected static final class TestDataObject2 {
+    public static final class TestDataObject2 {
         public void foo() {
 
         }
