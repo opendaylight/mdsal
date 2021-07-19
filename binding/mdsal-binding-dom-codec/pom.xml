@@ -85,6 +85,7 @@
                     <instructions>
                         <Bundle-Name>${project.groupId}.${project.artifactId}</Bundle-Name>
                         <Private-Package>
+                            org.opendaylight.mdsal.binding.dom.codec.di,
                             org.opendaylight.mdsal.binding.dom.codec.impl,
                             org.opendaylight.mdsal.binding.dom.codec.loader,
                         </Private-Package>
