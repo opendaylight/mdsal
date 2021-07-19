@@ -7,23 +7,24 @@
  */
 package org.opendaylight.mdsal.yanglib.rfc8525;
 
+import java.util.ServiceLoader;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
-import org.opendaylight.mdsal.binding.dom.codec.impl.DefaultBindingCodecTreeFactory;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 
 abstract class AbstractYangLibraryTest {
-    private static final BindingRuntimeGenerator BINDING_RUNTIME_GENERATOR = new DefaultBindingRuntimeGenerator();
-    private static final YangParserFactory YANG_PARSER_FACTORY = new DefaultYangParserFactory();
-    private static final BindingCodecTreeFactory CODEC_FACTORY = new DefaultBindingCodecTreeFactory();
+    private static final BindingRuntimeGenerator BINDING_RUNTIME_GENERATOR =
+        ServiceLoader.load(BindingRuntimeGenerator.class).findFirst().orElseThrow();
+    private static final YangParserFactory YANG_PARSER_FACTORY = ServiceLoader.load(YangParserFactory.class).findFirst()
+        .orElseThrow();
+    private static final BindingCodecTreeFactory CODEC_FACTORY = ServiceLoader.load(BindingCodecTreeFactory.class)
+        .findFirst().orElseThrow();
 
     static BindingRuntimeContext runtimeContext;
     static BindingCodecTree codecTree;

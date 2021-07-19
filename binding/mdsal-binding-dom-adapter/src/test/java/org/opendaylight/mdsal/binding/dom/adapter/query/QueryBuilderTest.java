@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.common.base.Stopwatch;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.junit.AfterClass;
@@ -24,7 +25,7 @@ import org.opendaylight.mdsal.binding.api.query.QueryFactory;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.api.query.QueryResult.Item;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
-import org.opendaylight.mdsal.binding.dom.codec.impl.DefaultBindingCodecTreeFactory;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.Foo;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.FooBuilder;
@@ -53,7 +54,8 @@ public class QueryBuilderTest {
 
     @BeforeClass
     public static final void beforeClass() {
-        CODEC = new DefaultBindingCodecTreeFactory().create(BindingRuntimeHelpers.createRuntimeContext());
+        CODEC = ServiceLoader.load(BindingCodecTreeFactory.class).findFirst().orElseThrow()
+            .create(BindingRuntimeHelpers.createRuntimeContext());
     }
 
     @AfterClass
