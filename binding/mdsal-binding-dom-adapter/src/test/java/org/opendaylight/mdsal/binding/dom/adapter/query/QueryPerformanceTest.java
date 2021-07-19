@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.junit.AfterClass;
@@ -28,7 +29,7 @@ import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryFactory;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
-import org.opendaylight.mdsal.binding.dom.codec.impl.DefaultBindingCodecTreeFactory;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.Foo;
@@ -69,7 +70,8 @@ public class QueryPerformanceTest extends AbstractDataBrokerTest {
     @Override
     protected void setupWithRuntimeContext(final BindingRuntimeContext runtimeContext) {
         super.setupWithRuntimeContext(runtimeContext);
-        factory = new DefaultQueryFactory(new DefaultBindingCodecTreeFactory().create(runtimeContext));
+        factory = new DefaultQueryFactory(ServiceLoader.load(BindingCodecTreeFactory.class).findFirst().orElseThrow()
+            .create(runtimeContext));
     }
 
     @Override
