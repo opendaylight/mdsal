@@ -50,13 +50,13 @@ public class UnionValueOptionContextTest {
         assertFalse("Not equals", TEST_UVOC_1.equals(TEST_UVOC_2));
     }
 
-    protected static final class TestDataObject1 {
+    public static final class TestDataObject1 {
         public void foo() {
 
         }
     }
 
-    protected static final class TestDataObject2 {
+    public static final class TestDataObject2 {
         public void foo() {
 
         }
