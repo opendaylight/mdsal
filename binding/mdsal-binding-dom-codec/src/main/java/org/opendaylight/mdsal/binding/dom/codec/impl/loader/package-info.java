@@ -7,7 +7,7 @@
  */
 /**
  * {@link java.lang.ClassLoader} support for Binding/DOM codec translation code generators. This package provides one
- * core class, {@link org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader}, which allows lookup of
+ * core class, {@link org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader}, which allows lookup of
  * compile-time-generated Binding classes for the purpose of referencing them within code generators and which
  * serves as the ClassLoader holding runtime-generated codecs.
  *
@@ -15,4 +15,4 @@
  * While the interfaces and classes in this package may be publicly accessible, they are an implementation detail and
  * may change incompatibly at any time.
  */
-package org.opendaylight.mdsal.binding.dom.codec.loader;
+package org.opendaylight.mdsal.binding.dom.codec.impl.loader;
