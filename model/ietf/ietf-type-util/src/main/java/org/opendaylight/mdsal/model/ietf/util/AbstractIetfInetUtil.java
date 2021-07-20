@@ -170,26 +170,26 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         }
     }
 
+    public final @NonNull P ipPrefixFor(final @NonNull A addr) {
+        final A4 v4 = maybeIpv4Address(addr);
+        return v4 != null ? ipv4Prefix(ipv4PrefixFor(v4)) : ipv6Prefix(ipv6PrefixFor(coerceIpv6Address(addr)));
+    }
+
+    public final @NonNull P ipPrefixForNoZone(final @NonNull ANZ addr) {
+        final A4NZ v4 = maybeIpv4AddressNoZone(addr);
+        return v4 != null ? ipv4Prefix(ipv4PrefixFor(inet4AddressForNoZone(v4)))
+            : ipv6Prefix(ipv6PrefixFor(coerceIpv6AddressNoZone(addr)));
+    }
+
     public final @NonNull InetAddress inetAddressFor(final @NonNull A addr) {
         final A4 v4 = maybeIpv4Address(addr);
-        if (v4 != null) {
-            return inet4AddressFor(v4);
-        }
-        final A6 v6 = maybeIpv6Address(addr);
-        checkArgument(v6 != null, "Address %s is neither IPv4 nor IPv6", addr);
-        return inet6AddressFor(v6);
+        return v4 != null ? inet4AddressFor(v4) : inet6AddressFor(coerceIpv6Address(addr));
     }
 
     public final @NonNull InetAddress inetAddressForNoZone(final @NonNull ANZ addr) {
         final A4NZ v4 = maybeIpv4AddressNoZone(addr);
-        if (v4 != null) {
-            return inet4AddressForNoZone(v4);
-        }
-        final A6NZ v6 = maybeIpv6AddressNoZone(addr);
-        checkArgument(v6 != null, "Address %s is neither IPv4 nor IPv6", addr);
-        return inet6AddressForNoZone(v6);
+        return v4 != null ? inet4AddressForNoZone(v4) : inet6AddressForNoZone(coerceIpv6AddressNoZone(addr));
     }
-
 
     public final @NonNull Inet4Address inet4AddressFor(final @NonNull A4 addr) {
         try {
@@ -680,5 +680,17 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         sb.append('/').append(mask);
 
         return prefix4Factory.newInstance(sb.toString());
+    }
+
+    private @NonNull A6 coerceIpv6Address(final @NonNull A addr) {
+        final A6 ret = maybeIpv6Address(addr);
+        checkArgument(ret != null, "Address %s is neither IPv4 nor IPv6", addr);
+        return ret;
+    }
+
+    private @NonNull A6NZ coerceIpv6AddressNoZone(final @NonNull ANZ addr) {
+        final A6NZ ret = maybeIpv6AddressNoZone(addr);
+        checkArgument(ret != null, "Address %s is neither IPv4 nor IPv6", addr);
+        return ret;
     }
 }
