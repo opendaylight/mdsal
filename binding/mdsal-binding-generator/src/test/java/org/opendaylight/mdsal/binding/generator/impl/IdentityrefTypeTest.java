@@ -61,7 +61,7 @@ public class IdentityrefTypeTest {
 
         MethodSignature methodSignature = methodSignatures.get(0);
         assertEquals("getLf", methodSignature.getName());
-        assertEquals("requireLf", methodSignatures.get(1).getName());
+        assertEquals("require¤Lf", methodSignatures.get(1).getName());
 
         assertEquals("org.opendaylight.yang.gen.v1.urn.identityref.module.rev131109.SomeIdentity",
             methodSignature.getReturnType().getFullyQualifiedName());
