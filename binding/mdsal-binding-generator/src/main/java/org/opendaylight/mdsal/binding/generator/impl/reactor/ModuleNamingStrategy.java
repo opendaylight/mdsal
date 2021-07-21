@@ -7,12 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 
 @NonNullByDefault
 final class ModuleNamingStrategy extends YangIdentifierClassNamingStrategy {
+
     ModuleNamingStrategy(final AbstractQName name) {
         super(name);
     }

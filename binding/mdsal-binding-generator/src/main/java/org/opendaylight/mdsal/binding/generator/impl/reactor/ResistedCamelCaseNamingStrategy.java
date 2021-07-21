@@ -29,4 +29,5 @@ final class ResistedCamelCaseNamingStrategy extends FallbackCamelCaseNamingStrat
     @NonNull ClassNamingStrategy fallback() {
         return new CamelCaseWithNamespaceNamingStrategy(delegate());
     }
+
 }

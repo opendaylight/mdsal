@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  * A fallback {@link ClassNamingStrategy} derived from a {@link CamelCaseNamingStrategy}.
  */
 @NonNullByDefault
-abstract class FallbackCamelCaseNamingStrategy extends ClassNamingStrategy {
+abstract non-sealed class FallbackCamelCaseNamingStrategy extends ClassNamingStrategy {
     private final CamelCaseNamingStrategy delegate;
 
     FallbackCamelCaseNamingStrategy(final CamelCaseNamingStrategy delegate) {

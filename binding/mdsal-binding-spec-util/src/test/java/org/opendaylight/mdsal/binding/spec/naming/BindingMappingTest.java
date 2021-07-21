@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.spec.naming;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,9 +17,11 @@ import org.junit.Test;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.UnresolvedQName;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 
 public class BindingMappingTest {
+
     @Test
     public void testGetModelRootPackageName() {
         assertEquals("org.opendaylight.yang.gen.v1.test.rev990939",
@@ -101,6 +104,17 @@ public class BindingMappingTest {
             List.of("ľaľaho papľuhu", "ľaľaho  papľuhu"));
     }
 
+    @Test
+    public void testBijectiveMapping() {
+        assertBijectiveMapping("¤a", "a");
+        assertBijectiveMapping("¤A", "A");
+        assertBijectiveMapping("¤_", "_");
+        assertBijectiveMapping("¤a﹎", "a.");
+        assertBijectiveMapping("¤a﹍", "a-");
+        assertBijectiveMapping("¤_﹎_﹍﹎0", "_._-.0");
+        assertBijectiveMapping("¤_﹍_﹎﹍9", "_-_.-9");
+    }
+
     private static void assertEqualMapping(final String mapped, final String yang) {
         assertEqualMapping(List.of(mapped), List.of(yang));
     }
@@ -125,5 +139,18 @@ public class BindingMappingTest {
         assertEquals("$ľaľaho$20$papľuhu", BindingMapping.mapYangDataName("ľaľaho papľuhu"));
         // latin1 non-compliant - all non-compliant characters encoded
         assertEquals("$привет$20$papľuhu", BindingMapping.mapYangDataName("привет papľuhu"));
+    }
+
+    private static void assertBijectiveMapping(final String expected, final String input) {
+        // basic expectation
+        final String actual = BindingMapping.createUniqueJavaIdentifer(UnresolvedQName.Unqualified.of(input));
+        assertTrue(BindingMapping.isUniqueJavaIdentifier(actual));
+        assertEquals(expected, actual);
+
+        // implied: has to be lexically a Java identifier
+        assertTrue(Character.isJavaIdentifierStart(actual.charAt(0)));
+        for (int i = 0; i < actual.length(); ++i) {
+            assertTrue(Character.isJavaIdentifierPart(actual.charAt(i)));
+        }
     }
 }

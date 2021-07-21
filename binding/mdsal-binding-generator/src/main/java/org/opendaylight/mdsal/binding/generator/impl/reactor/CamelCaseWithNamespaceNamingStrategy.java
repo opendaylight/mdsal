@@ -8,7 +8,10 @@
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
+
+@NonNullByDefault
 final class CamelCaseWithNamespaceNamingStrategy extends FallbackCamelCaseNamingStrategy {
     CamelCaseWithNamespaceNamingStrategy(final @NonNull CamelCaseNamingStrategy delegate) {
         super(delegate);
@@ -20,12 +23,10 @@ final class CamelCaseWithNamespaceNamingStrategy extends FallbackCamelCaseNaming
     }
 
     @Override
-    ClassNamingStrategy fallback() {
-        // FIXME: MDSAL-502: add a BijectiveNamingStrategy
-        //        The algorithm needs to essentially fall back to using escape-based translation scheme, where each
-        //        localName results in a unique name, while not conflicting with any possible preferredName. The exact
-        //        mechanics for that are TBD. A requirement for that mapping is that it must not rely on definition
-        //        order.
-        return null;
+    @NonNull ClassNamingStrategy fallback() {
+        // TODO: We might do an intermediate step: since we are assigning 14 different statements into the default
+        //       namespace (which did not add a suffix), we can try to assign a statement-derived suffix. To make
+        //       things easier, we use two-characters: AC, AD, AU, AX, CA, CH, CO, IP, LE, LI, LL, NO, OP, RP.
+        return new BijectiveNamingStrategy(delegate());
     }
 }
