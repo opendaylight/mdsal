@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 
 import java.util.UUID;
 import org.junit.Test;
@@ -20,13 +20,13 @@ public class AbstractIetfYangUtilTest {
     private static final String CANON = "01:02:1e:5a:fb:88";
 
     @Test
-    public void testBytesToMac() throws Exception {
+    public void testBytesToMac() {
         final MacClass mac = UTIL.macAddressFor(BYTES);
         assertEquals(CANON, mac.getValue());
     }
 
     @Test
-    public void testMacToBytes() throws Exception {
+    public void testMacToBytes() {
         final byte[] bytes1 = UTIL.macAddressBytes(new MacClass(CANON));
         assertArrayEquals(BYTES, bytes1);
 
@@ -91,13 +91,14 @@ public class AbstractIetfYangUtilTest {
     }
 
     @Test
-    public void canonizeMACTest() throws Exception {
+    public void canonizeMACTest() {
         assertEquals(CANON, UTIL.canonizeMacAddress(new MacClass("01:02:1E:5A:FB:88")).getValue());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void hexValueWithExceptionTest() throws Exception {
-        AbstractIetfYangUtil.hexValue(Character.highSurrogate(1000));
-        fail("Expected invalid character exception");
+    @Test
+    public void hexValueWithExceptionTest() {
+        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+            () -> AbstractIetfYangUtil.hexValue(Character.highSurrogate(1000)));
+        assertEquals("Invalid character 'ퟀ' encountered", ex.getMessage());
     }
 }

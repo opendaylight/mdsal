@@ -7,10 +7,12 @@
  */
 package org.opendaylight.mdsal.model.ietf.util;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -36,7 +38,7 @@ public class AbstractIetfInetUtilTest {
     }
 
     @Test
-    public void testIpToBytesAndBack() throws Exception {
+    public void testIpToBytesAndBack() {
         assertV4Equals("1.2.3.4");
         assertV4Equals("12.23.34.45");
         assertV4Equals("255.254.253.252");
@@ -72,69 +74,75 @@ public class AbstractIetfInetUtilTest {
                         UTIL.inetAddressFor(new IpClass("FE80::2002:B3FF:FE1E:8329"))).getValue().toLowerCase());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void illegalArrayLengthForAddressTest() throws Exception {
-        UTIL.ipAddressFor(new byte[] { 0, 0, 0 });
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void unhandledAddressTest() throws Exception {
-        final InetAddress adr = mock(InetAddress.class);
-        doReturn("testAddress").when(adr).toString();
-        UTIL.ipAddressFor(adr);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void illegalArrayLengthforPrefixTest() throws Exception {
-        UTIL.ipPrefixFor(new byte[] { 0, 0, 0 }, 0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void illegalAddressforPrefixTest() throws Exception {
-        final InetAddress adr = mock(InetAddress.class);
-        doReturn("testAddress").when(adr).toString();
-        UTIL.ipPrefixFor(adr, 0);
+    @Test
+    public void illegalArrayLengthForAddressTest() {
+        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+            () -> UTIL.ipAddressFor(new byte[] { 0, 0, 0 }));
+        assertEquals("Invalid array length 3", ex.getMessage());
     }
 
     @Test
-    public void ipv4Tests() throws Exception {
-        IpClass ipClass = new IpClass("1.2.3.4/16");
-        assertEquals("1.2.3.4", UTIL.ipv4AddressFrom(ipClass).getValue());
-        assertTrue(UTIL.ipv4PrefixFor(UTIL.ipv4AddressBytes(ipClass)).getValue().contains("/32"));
-        ipClass = new IpClass("1.2.3.4");
-        assertTrue(UTIL.ipv4PrefixFor(UTIL.inetAddressFor(ipClass)).getValue().contains("/32"));
-        assertTrue(UTIL.ipv4PrefixFor(ipClass).getValue().contains("/32"));
-        assertTrue(UTIL.ipv4PrefixFor(ipClass, 16).getValue().contains("/16"));
+    public void unhandledAddressTest() {
+        final InetAddress adr = mock(InetAddress.class);
+        doReturn("testAddress").when(adr).toString();
+        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> UTIL.ipAddressFor(adr));
+        assertEquals("Unhandled address testAddress", ex.getMessage());
+    }
 
-        assertTrue(UTIL.ipv4PrefixForShort(UTIL.ipv4AddressBytes(ipClass), 0).getValue().equals("0.0.0.0/0"));
-        assertTrue(UTIL.ipv4PrefixForShort(UTIL.ipv4AddressBytes(ipClass), 32).getValue().equals("1.2.3.4/32"));
-        assertTrue(UTIL.ipv4PrefixForShort(UTIL.ipv4AddressBytes(ipClass), 0, 0).getValue().equals("0.0.0.0/0"));
-        assertTrue(UTIL.ipv4PrefixForShort(UTIL.ipv4AddressBytes(ipClass), 0, 32).getValue().equals("1.2.3.4/32"));
-        assertTrue(UTIL.ipv4PrefixForShort(new byte[] { 1, 2, 3, 4, 5 }, 1, 32).getValue().equals("2.3.4.5/32"));
-        assertTrue(UTIL.ipv4PrefixForShort(new byte[] { 1, 2, 3, 4, 5 }, 0, 1).getValue().equals("1.0.0.0/1"));
+    @Test
+    public void illegalArrayLengthforPrefixTest() {
+        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+            () -> UTIL.ipPrefixFor(new byte[] { 0, 0, 0 }, 0));
+        assertEquals("Invalid array length 3", ex.getMessage());
+    }
 
-        assertTrue(UTIL.splitIpv4Prefix(new IpClass("1.2.3.4/16")).getKey().getValue().equals("1.2.3.4"));
-        assertTrue(UTIL.splitIpv4Prefix(new IpClass("1.2.3.4/16")).getValue().equals(16));
+    @Test
+    public void illegalAddressforPrefixTest() {
+        final InetAddress adr = mock(InetAddress.class);
+        doReturn("testAddress").when(adr).toString();
+
+        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+            () -> UTIL.ipPrefixFor(adr, 0));
+        assertEquals("Unhandled address testAddress", ex.getMessage());
+    }
+
+    @Test
+    public void ipv4Tests() {
+        assertEquals("1.2.3.4", UTIL.ipv4AddressFrom(new IpClass("1.2.3.4/16")).getValue());
+        final IpClass ipClass = new IpClass("1.2.3.4");
+        assertEquals("1.2.3.4/32", UTIL.ipv4PrefixFor(UTIL.ipv4AddressBytes(ipClass)).getValue());
+        assertEquals("1.2.3.4/32", UTIL.ipv4PrefixFor(UTIL.inetAddressFor(ipClass)).getValue());
+        assertEquals("1.2.3.4/32", UTIL.ipv4PrefixFor(ipClass).getValue());
+        assertEquals("1.2.3.4/16", UTIL.ipv4PrefixFor(ipClass, 16).getValue());
+
+        assertEquals("0.0.0.0/0", UTIL.ipv4PrefixForShort(UTIL.ipv4AddressBytes(ipClass), 0).getValue());
+        assertEquals("1.2.3.4/32", UTIL.ipv4PrefixForShort(UTIL.ipv4AddressBytes(ipClass), 32).getValue());
+        assertEquals("0.0.0.0/0", UTIL.ipv4PrefixForShort(UTIL.ipv4AddressBytes(ipClass), 0, 0).getValue());
+        assertEquals("1.2.3.4/32", UTIL.ipv4PrefixForShort(UTIL.ipv4AddressBytes(ipClass), 0, 32).getValue());
+        assertEquals("2.3.4.5/32", UTIL.ipv4PrefixForShort(new byte[] { 1, 2, 3, 4, 5 }, 1, 32).getValue());
+        assertEquals("1.0.0.0/1", UTIL.ipv4PrefixForShort(new byte[] { 1, 2, 3, 4, 5 }, 0, 1).getValue());
+
+        assertEquals("1.2.3.4", UTIL.splitIpv4Prefix(new IpClass("1.2.3.4/16")).getKey().getValue());
+        assertEquals((Integer) 16, UTIL.splitIpv4Prefix(new IpClass("1.2.3.4/16")).getValue());
         assertArrayEquals(new byte[] { 1,2,3,4,16 }, UTIL.ipv4PrefixToBytes(new IpClass("1.2.3.4/16")));
     }
 
     @Test
-    public void ipv6Tests() throws Exception {
-        IpClass ipClass = new IpClass("::0/128");
-        assertEquals("::0", UTIL.ipv6AddressFrom(ipClass).getValue());
-        ipClass = new IpClass("::0");
-        assertTrue(UTIL.ipv6PrefixFor(UTIL.ipv6AddressBytes(ipClass)).getValue().contains("/128"));
-        assertTrue(UTIL.ipv6PrefixFor(UTIL.inetAddressFor(ipClass)).getValue().contains("/128"));
-        assertTrue(UTIL.ipv6PrefixFor(ipClass).getValue().contains("/128"));
-        assertTrue(UTIL.ipv6PrefixFor(ipClass, 16).getValue().contains("/16"));
+    public void ipv6Tests() {
+        assertEquals("::0", UTIL.ipv6AddressFrom(new IpClass("::0/128")).getValue());
+        final IpClass ipClass = new IpClass("::0");
+        assertEquals("::/128", UTIL.ipv6PrefixFor(UTIL.ipv6AddressBytes(ipClass)).getValue());
+        assertEquals("::/128", UTIL.ipv6PrefixFor(UTIL.inetAddressFor(ipClass)).getValue());
+        assertEquals("::0/128", UTIL.ipv6PrefixFor(ipClass).getValue());
+        assertEquals("::0/16", UTIL.ipv6PrefixFor(ipClass, 16).getValue());
 
-        assertTrue(UTIL.ipv6PrefixForShort(UTIL.ipv6AddressBytes(ipClass), 0).getValue().equals("::0/0"));
-        assertTrue(UTIL.ipv6PrefixForShort(UTIL.ipv6AddressBytes(ipClass), 64).getValue().equals("::/64"));
-        assertTrue(UTIL.ipv6PrefixForShort(UTIL.ipv6AddressBytes(ipClass), 0, 0).getValue().equals("::0/0"));
-        assertTrue(UTIL.ipv6PrefixForShort(UTIL.ipv6AddressBytes(ipClass), 0, 32).getValue().equals("::/32"));
+        assertEquals("::0/0", UTIL.ipv6PrefixForShort(UTIL.ipv6AddressBytes(ipClass), 0).getValue());
+        assertEquals("::/64", UTIL.ipv6PrefixForShort(UTIL.ipv6AddressBytes(ipClass), 64).getValue());
+        assertEquals("::0/0", UTIL.ipv6PrefixForShort(UTIL.ipv6AddressBytes(ipClass), 0, 0).getValue());
+        assertEquals("::/32", UTIL.ipv6PrefixForShort(UTIL.ipv6AddressBytes(ipClass), 0, 32).getValue());
 
-        assertTrue(UTIL.splitIpv6Prefix(new IpClass("::/32")).getKey().getValue().equals("::"));
-        assertTrue(UTIL.splitIpv6Prefix(new IpClass("::/32")).getValue().equals(32));
+        assertEquals("::", UTIL.splitIpv6Prefix(new IpClass("::/32")).getKey().getValue());
+        assertEquals((Integer) 32, UTIL.splitIpv6Prefix(new IpClass("::/32")).getValue());
         assertArrayEquals(new byte[] { 0, 10, 0, 0, 0, 0, 0, 0, 0, 11, 0, 12, 0, 13, 0, 14, 64 },
                 UTIL.ipv6PrefixToBytes(new IpClass("A::B:C:D:E/64")));
 
@@ -145,40 +153,45 @@ public class AbstractIetfInetUtilTest {
     }
 
     @Test
-    public void prefixTest() throws Exception {
-        assertTrue(UTIL.ipPrefixFor(UTIL.inetAddressFor(new IpClass("0.0.0.0")), 16).getValue().equals("0.0.0.0/16"));
-        assertTrue(UTIL.ipPrefixFor(UTIL.inetAddressFor(new IpClass("::")), 64)
-                .getValue().equals("::/64"));
+    public void prefixTest() {
+        assertEquals("0.0.0.0/16", UTIL.ipPrefixFor(UTIL.inetAddressFor(new IpClass("0.0.0.0")), 16).getValue());
+        assertEquals("::/64", UTIL.ipPrefixFor(UTIL.inetAddressFor(new IpClass("::")), 64).getValue());
 
-        assertTrue(UTIL.ipPrefixFor(new byte[] { 0, 0, 0, 0 }, 16).getValue().equals("0.0.0.0/16"));
-        assertTrue(UTIL.ipPrefixFor(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 64)
-                .getValue().equals("::/64"));
+        assertEquals("0.0.0.0/16", UTIL.ipPrefixFor(new byte[] { 0, 0, 0, 0 }, 16).getValue());
+        assertEquals("::/64",
+            UTIL.ipPrefixFor(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 64).getValue());
     }
 
     @Test
-    public void inetAddressTest() throws Exception {
-        assertTrue(UTIL.inetAddressFor(new IpClass("1.2.3.4")) instanceof Inet4Address);
-        assertTrue(UTIL.inetAddressFor(new IpClass("FE80::2002:B3FF:FE1E:8329")) instanceof Inet6Address);
+    public void inetAddressTest() {
+        assertThat(UTIL.inetAddressFor(new IpClass("1.2.3.4")), instanceOf(Inet4Address.class));
+        assertThat(UTIL.inetAddressFor(new IpClass("FE80::2002:B3FF:FE1E:8329")), instanceOf(Inet6Address.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void inet4AddressForWithExceptionTest() throws Exception {
+    @Test
+    public void inet4AddressForWithExceptionTest() {
         final IpClass ipClass = mock(IpClass.class);
         doReturn("testClass").when(ipClass).toString();
         doAnswer(inv -> {
             throw new UnknownHostException();
         }).when(ipClass).getValue();
-        UTIL.inet4AddressFor(ipClass);
+
+        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+            () -> UTIL.inet4AddressFor(ipClass));
+        assertEquals("Invalid address testClass", ex.getMessage());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void inet6AddressForWithExceptionTest() throws Exception {
+    @Test
+    public void inet6AddressForWithExceptionTest() {
         final IpClass ipClass = mock(IpClass.class);
         doReturn("testClass").when(ipClass).toString();
         doAnswer(inv -> {
             throw new UnknownHostException();
         }).when(ipClass).getValue();
-        UTIL.inet6AddressFor(ipClass);
+
+        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+            () -> UTIL.inet6AddressFor(ipClass));
+        assertEquals("Invalid address testClass", ex.getMessage());
     }
 
     @Test
