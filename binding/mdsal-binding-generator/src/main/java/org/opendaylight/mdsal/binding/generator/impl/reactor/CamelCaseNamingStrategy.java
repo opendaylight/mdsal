@@ -12,8 +12,12 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 
+/**
+ * Original Binding Specification naming, backed by {@link BindingMapping#getClassName(String)}.
+ */
 @NonNullByDefault
 final class CamelCaseNamingStrategy extends ClassNamingStrategy {
     private final StatementNamespace namespace;
@@ -31,6 +35,11 @@ final class CamelCaseNamingStrategy extends ClassNamingStrategy {
 
     StatementNamespace namespace() {
         return namespace;
+    }
+
+    @Override
+    String simpleClassName() {
+        return BindingMapping.getClassName(nodeIdentifier().getLocalName());
     }
 
     @Override
