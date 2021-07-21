@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+ * Copyright (c) 2023 PANTHEON.tech, s.r.o. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -12,8 +12,12 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 
+/**
+ * Original Binding Specification naming, backed by {@link Naming#getClassName(String)}.
+ */
 @NonNullByDefault
 final class CamelCaseNamingStrategy extends YangIdentifierClassNamingStrategy {
     private final StatementNamespace namespace;
