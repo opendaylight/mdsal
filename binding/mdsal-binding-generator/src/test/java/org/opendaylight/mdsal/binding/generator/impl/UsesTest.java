@@ -109,7 +109,7 @@ public class UsesTest {
                 .size());
         containsMethods(groupingCaseTest.getMethodDefinitions(),
             new NameTypePattern("getLeafGroupingCaseTest1", "String"),
-            new NameTypePattern("requireLeafGroupingCaseTest1", "String"));
+            new NameTypePattern("require¤Leaf﹍grouping﹍case﹍test1", "String"));
     }
 
     @Test
@@ -155,13 +155,13 @@ public class UsesTest {
 
         containsMethods(groupingContainerTest.getMethodDefinitions(),
             new NameTypePattern("getLeafGroupingContainerTest1", "String"),
-            new NameTypePattern("requireLeafGroupingContainerTest1", "String"),
+            new NameTypePattern("require¤Leaf﹍grouping﹍container﹍test1", "String"),
             new NameTypePattern("getLeafGroupingContainerTest2", "Uint8"),
-            new NameTypePattern("requireLeafGroupingContainerTest2", "Uint8"));
+            new NameTypePattern("require¤Leaf﹍grouping﹍container﹍test2", "Uint8"));
 
         containsMethods(containerTest.getMethodDefinitions(),
             new NameTypePattern("getContainerLeafTest", "String"),
-            new NameTypePattern("requireContainerLeafTest", "String"));
+            new NameTypePattern("require¤Container﹍leaf﹍test", "String"));
     }
 
     @Test
@@ -205,11 +205,11 @@ public class UsesTest {
 
         containsMethods(groupingGroupingTest.getMethodDefinitions(),
             new NameTypePattern("getLeafGroupingGrouping", "String"),
-            new NameTypePattern("requireLeafGroupingGrouping", "String"));
+            new NameTypePattern("require¤Leaf﹍grouping﹍grouping", "String"));
 
         containsMethods(groupingTest.getMethodDefinitions(),
             new NameTypePattern("getLeafGroupingTest", "Byte"),
-            new NameTypePattern("requireLeafGroupingTest", "Byte"));
+            new NameTypePattern("require¤Leaf﹍grouping﹍test", "Byte"));
     }
 
     @Test
@@ -281,9 +281,9 @@ public class UsesTest {
         containsMethods(groupingListTest.getMethodDefinitions(),
             new NameTypePattern("getContainerGroupingListTest", "ContainerGroupingListTest"),
             new NameTypePattern("getLeafGroupingListTest", "String"),
-            new NameTypePattern("requireLeafGroupingListTest", "String"),
+            new NameTypePattern("require¤Leaf﹍grouping﹍list﹍test", "String"),
             new NameTypePattern("getLeaffllistGroupingListTest", "Set<String>"),
-            new NameTypePattern("requireLeaffllistGroupingListTest", "Set<String>"),
+            new NameTypePattern("require¤Leaffllist﹍grouping﹍list﹍test", "Set<String>"),
             new NameTypePattern("getListGroupingListTest", "List<ListGroupingListTest>"));
         containsMethods(listTest.getMethodDefinitions(), new NameTypePattern("getListLeafTest", "String"));
         containsMethods(containerGroupingListTest.getMethodDefinitions(), new NameTypePattern(
@@ -335,9 +335,9 @@ public class UsesTest {
 
         containsMethods(groupingModulTest.getMethodDefinitions(),
             new NameTypePattern("getLeafGroupingModulTest", "String"),
-            new NameTypePattern("requireLeafGroupingModulTest", "String"),
+            new NameTypePattern("require¤Leaf﹍grouping﹍modul﹍test", "String"),
             new NameTypePattern("getLeafGroupingModulTest2", "Uint8"),
-            new NameTypePattern("requireLeafGroupingModulTest2", "Uint8"));
+            new NameTypePattern("require¤Leaf﹍grouping﹍modul﹍test2", "Uint8"));
     }
 
     @Test
@@ -423,7 +423,7 @@ public class UsesTest {
         containsMethods(groupingRpcInputTest.getMethodDefinitions(),
             new NameTypePattern("getContainerGroupingRpcInputTest", "ContainerGroupingRpcInputTest"),
             new NameTypePattern("getLeaflistGroupingRpcInputTest", "List<Uint8>"),
-            new NameTypePattern("requireLeaflistGroupingRpcInputTest", "List<Uint8>"));
+            new NameTypePattern("require¤Leaflist﹍grouping﹍rpc﹍input﹍test", "List<Uint8>"));
         containsMethods(groupingRpcOutputTest.getMethodDefinitions(),
             new NameTypePattern("getLeafGroupingRpcOutputTest", "Byte"));
         containsMethods(containerGroupingRpcInputTest.getMethodDefinitions(),
@@ -474,7 +474,7 @@ public class UsesTest {
 
         containsMethods(groupingAugmentTest.getMethodDefinitions(),
             new NameTypePattern("getLeafGroupingAugmentTest", "String"),
-            new NameTypePattern("requireLeafGroupingAugmentTest", "String"));
+            new NameTypePattern("require¤Leaf﹍grouping﹍augment﹍test", "String"));
     }
 
     @Test
@@ -540,10 +540,10 @@ public class UsesTest {
         containsMethods(groupingNotificationTest.getMethodDefinitions(),
             new NameTypePattern("getContainerGroupingNotificationTest", "ContainerGroupingNotificationTest"),
             new NameTypePattern("getLeaffllistGroupingNotificationTest", "Set<String>"),
-            new NameTypePattern("requireLeaffllistGroupingNotificationTest", "Set<String>"));
+            new NameTypePattern("require¤Leaffllist﹍grouping﹍notification﹍test", "Set<String>"));
         containsMethods(containerGroupingNotificationTest.getMethodDefinitions(),
             new NameTypePattern("getLeafContainerGroupingNotificationTest", "Uint32"),
-            new NameTypePattern("requireLeafContainerGroupingNotificationTest", "Uint32"));
+            new NameTypePattern("require¤Leaf﹍container﹍grouping﹍notification﹍test", "Uint32"));
     }
 
 }
