@@ -31,7 +31,7 @@ final class CamelCaseWithNamespaceNamingStrategy extends ClassNamingStrategy {
 
     @Override
     ClassNamingStrategy fallback() {
-        // FIXME: MDSAL-503: add a BijectiveNamingStrategy
+        // FIXME: MDSAL-502: add a BijectiveNamingStrategy
         //        The algorithm needs to essentially fall back to using escape-based translation scheme, where each
         //        localName results in a unique name, while not conflicting with any possible preferredName. The exact
         //        mechanics for that are TBD. A requirement for that mapping is that it must not rely on definition
