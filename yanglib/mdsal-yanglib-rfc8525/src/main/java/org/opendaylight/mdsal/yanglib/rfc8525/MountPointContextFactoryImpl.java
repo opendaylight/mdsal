@@ -128,8 +128,8 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
         for (var module : modState.nonnullModule().values()) {
             final var modRef = sourceRefFor(module, module.getSchema());
 
-            final var namespace = XMLNamespace.of(module.requireNamespace().getValue());
-            for (var feature : module.requireFeature()) {
+            final var namespace = XMLNamespace.of(module.require¤Namespace().getValue());
+            for (var feature : module.require¤Feature()) {
                 supportedFeatures.add(QName.create(namespace, feature.getValue()).intern());
             }
 
@@ -204,8 +204,9 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
         }
         for (var mod : modSet.nonnullModule().values()) {
             fillSource(requiredSources, mod.getName(), toYangCommon(mod.getRevision()), mod.getLocation());
-            final var namespace = XMLNamespace.of(mod.requireNamespace().getValue());
-            mod.requireFeature().forEach(feature -> supportedFeatures.add(QName.create(namespace, feature.getValue())));
+            final var namespace = XMLNamespace.of(mod.require¤Namespace().getValue());
+            mod.require¤Feature().forEach(
+                feature -> supportedFeatures.add(QName.create(namespace, feature.getValue())));
             mod.nonnullSubmodule().values().forEach(sub -> {
                 fillSource(librarySources, sub.getName(), toYangCommon(sub.getRevision()), sub.getLocation());
             });
