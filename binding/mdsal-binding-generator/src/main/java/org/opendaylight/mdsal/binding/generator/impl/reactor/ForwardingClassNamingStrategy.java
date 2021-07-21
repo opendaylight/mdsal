@@ -11,40 +11,36 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 
+/**
+ * A naming strategy which is forwarding some requests to a delegate.
+ */
 @NonNullByDefault
-final class ModuleNamingStrategy extends ClassNamingStrategy {
-    private final AbstractQName name;
+abstract sealed class ForwardingClassNamingStrategy extends ClassNamingStrategy permits BijectiveNamingStrategy,
+    BijectiveWithNamespaceNamingStrategy, CamelCaseWithNamespaceNamingStrategy {
+    private final ClassNamingStrategy delegate;
 
-    ModuleNamingStrategy(final AbstractQName name) {
-        this.name = requireNonNull(name);
+    ForwardingClassNamingStrategy(final ClassNamingStrategy delegate) {
+        this.delegate = requireNonNull(delegate);
     }
 
     @Override
-    AbstractQName nodeIdentifier() {
-        return name;
+    final AbstractQName nodeIdentifier() {
+        return delegate.nodeIdentifier();
     }
 
     @Override
-    String simpleClassName() {
-        return BindingMapping.getClassName(nodeIdentifier().getLocalName());
+    final StatementNamespace namespace() {
+        return delegate.namespace();
     }
 
-    @Override
-    StatementNamespace namespace() {
-        return StatementNamespace.DEFAULT;
-    }
-
-    @Override
-    @Nullable ClassNamingStrategy fallback() {
-        return null;
+    final ClassNamingStrategy delegate() {
+        return delegate;
     }
 
     @Override
     ToStringHelper addToStringAttributes(final ToStringHelper helper) {
-        return helper.add("localName", name.getLocalName());
+        return helper.add("delegate", delegate);
     }
 }
