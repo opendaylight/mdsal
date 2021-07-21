@@ -28,6 +28,7 @@ import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.ScalarTypeObject;
+import org.opendaylight.yangtools.yang.common.AbstractQName;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
@@ -134,6 +135,22 @@ public final class BindingMapping {
     public static final @NonNull String RPC_OUTPUT_SUFFIX = "Output";
 
     private static final Interner<String> PACKAGE_INTERNER = Interners.newWeakInterner();
+
+    /**
+     * Initial character in names which follow bijective mapping (as opposed to camel-cased). This is defined to be
+     * <a href="https://www.fileformat.info/info/unicode/char/00a4/index.htm">CURRENCY SIGN</a>.
+     */
+    private static final char BIJECTIVE_START = '¤';
+    /**
+     * The character used as replacement for {@code .}. This is defined to be
+     * <a href="https://www.fileformat.info/info/unicode/char/fe4d/index.htm">DASHED LOW LINE</a>.
+     */
+    private static final char BIJECTIVE_DASH = '﹍';
+    /**
+     * The character used as replacement for {@code .}. This is defined to be
+     * <a href="https://www.fileformat.info/info/unicode/char/fe4e/index.htm">CENTERLINE LOW LINE</a>.
+     */
+    private static final char BIJECTIVE_DOT = '﹎';
 
     private BindingMapping() {
         // Hidden on purpose
@@ -277,6 +294,64 @@ public final class BindingMapping {
             return "xmlClass";
         }
         return potential;
+    }
+
+    // FIXME: add documentation
+    public static boolean isUniqueJavaIdentifier(final String str) {
+        return !str.isEmpty() && str.charAt(0) == BIJECTIVE_START;
+    }
+
+    // FIXME: add documentation
+    public static @NonNull String createUniqueJavaIdentifer(final AbstractQName identifier) {
+        final String localName = identifier.getLocalName();
+
+        // Find the first character that needs escaping. If there is none use a simple concatenation
+        final int offset = indexOfDotOrDash(localName, 0);
+        return offset != -1 ? createUniqueJavaIdentifer(localName, offset) : BIJECTIVE_START + localName;
+    }
+
+    private static @NonNull String createUniqueJavaIdentifer(final String localName, final int firstOffset) {
+        // Allocate enough capacity and append the initial character
+        final StringBuilder sb = new StringBuilder(localName.length() + 1).append(BIJECTIVE_START);
+
+        int start = 0;
+        int end = firstOffset;
+        do {
+            // Determine the appropriate escape character
+            final char escaped;
+            switch (localName.charAt(end)) {
+                case '.':
+                    escaped = BIJECTIVE_DOT;
+                    break;
+                case '-':
+                    escaped = BIJECTIVE_DASH;
+                    break;
+                default:
+                    throw new IllegalStateException("Unhandled character at " + end + " of " + localName);
+            }
+
+            // Append the non-escaped part and then the escape character
+            sb.append(localName, start, end).append(escaped);
+
+            // Adjust start and search for next escape
+            start = end + 1;
+            end = indexOfDotOrDash(localName, start);
+        } while (end != -1);
+
+        // Deal with the last unescaped segment and return
+        return sb.append(localName, start, localName.length()).toString();
+    }
+
+    private static int indexOfDotOrDash(final String str, final int fromIndex) {
+        final int dot = str.indexOf('.', fromIndex);
+        final int dash = str.indexOf('-', fromIndex);
+        if (dot == -1) {
+            return dash;
+        } else if (dash == -1) {
+            return dot;
+        } else {
+            return Math.min(dot, dash);
+        }
     }
 
     // FIXME: this is legacy union/leafref property handling. The resulting value is *not* normalized for use as a
