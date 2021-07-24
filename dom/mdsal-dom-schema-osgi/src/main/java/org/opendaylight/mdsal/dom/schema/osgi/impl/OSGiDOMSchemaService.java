@@ -43,7 +43,7 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
     private static final Logger LOG = LoggerFactory.getLogger(OSGiDOMSchemaService.class);
 
     @Reference(target = "(component.factory=" + EffectiveModelContextImpl.FACTORY_NAME + ")")
-    ComponentFactory listenerFactory = null;
+    ComponentFactory<EffectiveModelContextImpl> listenerFactory = null;
 
     private final List<EffectiveModelContextListener> listeners = new CopyOnWriteArrayList<>();
 
@@ -101,7 +101,8 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
 
     private @NonNull ListenerRegistration<EffectiveModelContextListener> registerListener(
             final @NonNull EffectiveModelContextListener listener) {
-        final ComponentInstance reg = listenerFactory.newInstance(EffectiveModelContextImpl.props(listener));
+        final ComponentInstance<EffectiveModelContextImpl> reg =
+            listenerFactory.newInstance(EffectiveModelContextImpl.props(listener));
         return new ListenerRegistration<>() {
             @Override
             public EffectiveModelContextListener getInstance() {
