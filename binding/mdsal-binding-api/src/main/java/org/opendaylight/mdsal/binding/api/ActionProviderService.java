@@ -43,7 +43,7 @@ public interface ActionProviderService extends BindingService {
      */
     <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
         ObjectRegistration<S> registerImplementation(Class<T> actionInterface, S implementation,
-                LogicalDatastoreType datastore, Set<DataTreeIdentifier<O>> validNodes);
+                LogicalDatastoreType datastore, Set<InstanceIdentifier<O>> validNodes);
 
     default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
         ObjectRegistration<S> registerImplementation(final Class<T> actionInterface, final S implementation,
