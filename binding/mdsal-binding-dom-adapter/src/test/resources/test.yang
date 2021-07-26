@@ -1,4 +1,4 @@
-module test{
+module test {
     namespace "urn:test";
     prefix tst;
 
@@ -10,7 +10,7 @@ module test{
         }
     }
 
-    container cont{
+    container cont {
         leaf vlan-id {
             type union {
               type id;
@@ -21,6 +21,6 @@ module test{
               }
             }
             mandatory true;
-          }
+        }
     }
 }

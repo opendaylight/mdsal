@@ -1,0 +1,75 @@
+module actions {
+    yang-version 1.1;
+    prefix act;
+    namespace "urn:odl:actions";
+
+    container cont {
+        action foo {
+            input {
+                leaf xyzzy {
+                    type string;
+                }
+            }
+        }
+    }
+
+    list lst {
+        key key;
+        leaf key {
+            type string;
+        }
+        action foo {
+
+        }
+    }
+
+    list lstio {
+        key keyio;
+        leaf keyio {
+            type string;
+        }
+        action fooio {
+            input {
+                leaf fooi {
+                    type string;
+                }
+            }
+            output {
+                leaf fooo {
+                    type string;
+                }
+            }
+        }
+    }
+
+    grouping grp {
+        action bar {
+            output {
+                leaf xyzzy {
+                    type string;
+                }
+            }
+        }
+    }
+
+    grouping other {
+        uses grp;
+    }
+
+    container grpcont {
+        uses grp;
+    }
+
+    list grplst {
+        key key;
+        leaf key {
+            type string;
+        }
+        uses grp;
+    }
+
+    container othercont {
+        uses other;
+    }
+}
+
