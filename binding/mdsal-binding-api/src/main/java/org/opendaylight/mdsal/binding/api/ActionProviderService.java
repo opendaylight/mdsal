@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.api;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
-import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.Action;
@@ -26,7 +26,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author Robert Varga
  */
 @Beta
-@NonNullByDefault
 public interface ActionProviderService extends BindingService {
     /**
      * Register an implementation of an action, potentially constrained to a set of nodes.
@@ -42,17 +41,19 @@ public interface ActionProviderService extends BindingService {
      * @throws UnsupportedOperationException if this service cannot handle requested datastore
      */
     <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
-        ObjectRegistration<S> registerImplementation(Class<T> actionInterface, S implementation,
-                LogicalDatastoreType datastore, Set<DataTreeIdentifier<O>> validNodes);
+        @NonNull ObjectRegistration<S> registerImplementation(@NonNull Class<T> actionInterface,
+            @NonNull S implementation, @NonNull LogicalDatastoreType datastore,
+            @NonNull Set<InstanceIdentifier<O>> validNodes);
 
     default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
-        ObjectRegistration<S> registerImplementation(final Class<T> actionInterface, final S implementation,
-                final LogicalDatastoreType datastore) {
+        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull Class<T> actionInterface,
+            final @NonNull S implementation, final @NonNull LogicalDatastoreType datastore) {
         return registerImplementation(actionInterface, implementation, datastore, ImmutableSet.of());
     }
 
     default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
-        ObjectRegistration<S> registerImplementation(final Class<T> actionInterface, final S implementation) {
+        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull Class<T> actionInterface,
+            final @NonNull S implementation) {
         return registerImplementation(actionInterface, implementation, LogicalDatastoreType.OPERATIONAL);
     }
 }

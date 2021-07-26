@@ -12,16 +12,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.opendaylight.yangtools.yang.common.YangConstants.operationInputQName;
-import static org.opendaylight.yangtools.yang.common.YangConstants.operationOutputQName;
-import static org.opendaylight.yangtools.yang.data.impl.schema.Builders.containerBuilder;
-import static org.opendaylight.yangtools.yang.data.impl.schema.Builders.leafBuilder;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,29 +30,12 @@ import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
-import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.Input;
-import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.InputBuilder;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.Output;
-import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.OutputBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.RpcOutput;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class ActionServiceAdapterTest extends AbstractAdapterTest {
-    private static final NodeIdentifier FOO_INPUT = NodeIdentifier.create(operationInputQName(Foo.QNAME.getModule()));
-    private static final NodeIdentifier FOO_OUTPUT = NodeIdentifier.create(operationOutputQName(Foo.QNAME.getModule()));
-    private static final NodeIdentifier FOO_XYZZY = NodeIdentifier.create(QName.create(Foo.QNAME, "xyzzy"));
-    private static final ContainerNode DOM_FOO_INPUT = containerBuilder().withNodeIdentifier(FOO_INPUT)
-            .withChild(leafBuilder().withNodeIdentifier(FOO_XYZZY).withValue("xyzzy").build())
-            .build();
-    private static final ContainerNode DOM_FOO_OUTPUT = containerBuilder().withNodeIdentifier(FOO_OUTPUT).build();
-    private static final Input BINDING_FOO_INPUT = new InputBuilder().setXyzzy("xyzzy").build();
-    private static final RpcOutput BINDING_FOO_OUTPUT = new OutputBuilder().build();
-
+public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
     @Mock
     private DOMActionService delegate;
 
@@ -77,16 +56,15 @@ public class ActionServiceAdapterTest extends AbstractAdapterTest {
 
     @Test
     public void testInvocation() throws ExecutionException {
-        final Foo handle = service.getActionHandle(Foo.class, ImmutableSet.of());
+        final Foo handle = service.getActionHandle(Foo.class, Set.of());
         final ListenableFuture<RpcResult<Output>> future = handle.invoke(InstanceIdentifier.create(Cont.class),
             BINDING_FOO_INPUT);
         assertNotNull(future);
         assertFalse(future.isDone());
-        domResult.set(new SimpleDOMActionResult(DOM_FOO_OUTPUT, ImmutableList.of()));
+        domResult.set(new SimpleDOMActionResult(DOM_FOO_OUTPUT, List.of()));
         final RpcResult<Output> bindingResult = Futures.getDone(future);
 
-        assertEquals(ImmutableList.of(), bindingResult.getErrors());
+        assertEquals(List.of(), bindingResult.getErrors());
         assertEquals(BINDING_FOO_OUTPUT, bindingResult.getResult());
     }
-
 }
