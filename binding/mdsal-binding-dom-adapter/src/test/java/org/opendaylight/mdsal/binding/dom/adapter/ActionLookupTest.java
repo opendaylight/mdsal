@@ -25,6 +25,7 @@ public class ActionLookupTest {
         CurrentAdapterSerializer codec = new CurrentAdapterSerializer(new BindingCodecContext(
             BindingRuntimeHelpers.createRuntimeContext()));
 
+
         assertEquals(Absolute.of(Cont.QNAME, Foo.QNAME), codec.getActionPath(Foo.class));
         assertEquals(Absolute.of(Grpcont.QNAME, Bar.QNAME), codec.getActionPath(Bar.class));
         assertEquals(Absolute.of(Othercont.QNAME, Bar.QNAME),
