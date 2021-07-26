@@ -14,12 +14,14 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
+import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -64,12 +66,18 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
     @Override
     public <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
             ObjectRegistration<S> registerImplementation(final Class<T> actionInterface, final S implementation,
-                final LogicalDatastoreType datastore, final Set<DataTreeIdentifier<O>> validNodes) {
-        final Absolute path = currentSerializer().getActionPath(actionInterface);
+                final LogicalDatastoreType datastore, final Set<InstanceIdentifier<O>> validNodes) {
+        final CurrentAdapterSerializer serializer = currentSerializer();
+        final Absolute actionPath = serializer.getActionPath(actionInterface);
+
         final ObjectRegistration<DOMActionImplementation> reg = getDelegate().registerActionImplementation(
             new Impl(adapterContext(),
-                NodeIdentifier.create(YangConstants.operationOutputQName(path.lastNodeIdentifier().getModule())),
-                actionInterface, implementation), ImmutableSet.of());
+                NodeIdentifier.create(YangConstants.operationOutputQName(actionPath.lastNodeIdentifier().getModule())),
+                actionInterface, implementation),
+            Set.of(DOMActionInstance.of(actionPath, validNodes.stream()
+                .map(iid -> serializer.toDOMDataTreeIdentifier(DataTreeIdentifier.create(datastore, iid)))
+                .collect(Collectors.toUnmodifiableSet()))));
+
         return new AbstractObjectRegistration<>(implementation) {
             @Override
             protected void removeRegistration() {
