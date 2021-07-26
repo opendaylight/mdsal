@@ -441,7 +441,7 @@ public final class DOMRpcRouter extends AbstractRegistration
     private final class ActionProviderServiceFacade implements DOMActionProviderService {
         @Override
         public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
-            final T implementation, final Set<DOMActionInstance> instances) {
+                final T implementation, final Set<DOMActionInstance> instances) {
 
             synchronized (DOMRpcRouter.this) {
                 final DOMActionRoutingTable oldTable = actionRoutingTable;
@@ -464,8 +464,19 @@ public final class DOMRpcRouter extends AbstractRegistration
                 final T implementation, final Absolute type, final Set<LogicalDatastoreType> datastores) {
             checkArgument(!datastores.isEmpty(), "datastores");
 
-            // FIXME: implement this
-            throw new UnsupportedOperationException();
+            synchronized (DOMRpcRouter.this) {
+                final DOMActionRoutingTable oldTable = actionRoutingTable;
+
+                // FIXME: implement this
+                throw new UnsupportedOperationException("Not implemented yet");
+            }
+
+//            return new AbstractObjectRegistration<>(implementation) {
+//                @Override
+//                protected void removeRegistration() {
+//                    // FIXME: call back
+//                }
+//            };
         }
     }
 
