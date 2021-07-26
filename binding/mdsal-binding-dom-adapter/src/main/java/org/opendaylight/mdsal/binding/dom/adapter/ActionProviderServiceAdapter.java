@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
+import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -31,6 +32,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.YangConstants;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
@@ -65,11 +67,13 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
     public <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
             ObjectRegistration<S> registerImplementation(final Class<T> actionInterface, final S implementation,
                 final LogicalDatastoreType datastore, final Set<DataTreeIdentifier<O>> validNodes) {
-        final Absolute path = currentSerializer().getActionPath(actionInterface);
+        final Absolute type = currentSerializer().getActionPath(actionInterface);
+        final DOMActionInstance instance = DOMActionInstance.of(type, datastore,
+                YangInstanceIdentifier.of(type.asSchemaPath().getParent().getLastComponent()));
         final ObjectRegistration<DOMActionImplementation> reg = getDelegate().registerActionImplementation(
             new Impl(adapterContext(),
-                NodeIdentifier.create(YangConstants.operationOutputQName(path.lastNodeIdentifier().getModule())),
-                actionInterface, implementation), ImmutableSet.of());
+                NodeIdentifier.create(YangConstants.operationOutputQName(type.lastNodeIdentifier().getModule())),
+                actionInterface, implementation), Set.of(instance));
         return new AbstractObjectRegistration<>(implementation) {
             @Override
             protected void removeRegistration() {
