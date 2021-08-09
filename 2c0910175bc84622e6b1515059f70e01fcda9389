@@ -259,6 +259,30 @@
     },
     {
       "key": {
+        "uuid": "b63b8d6b_39bd8eb8",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/resources/actions.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T18:14:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cf02445c_3f0d65e1",
+      "range": {
+        "startLine": 1,
+        "startChar": 7,
+        "endLine": 1,
+        "endChar": 14
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bf924c90_ddc6d66f",
         "filename": "binding/mdsal-binding-dom-adapter/src/test/resources/actions.yang",
         "patchSetId": 4
@@ -279,6 +303,30 @@
       "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "529b7c03_9cc4add9",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/resources/actions.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T18:14:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bf924c90_ddc6d66f",
+      "range": {
+        "startLine": 4,
+        "startChar": 15,
+        "endLine": 4,
+        "endChar": 30
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     },
     {
       "key": {
