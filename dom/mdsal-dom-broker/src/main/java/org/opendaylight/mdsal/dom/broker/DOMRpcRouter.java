@@ -441,7 +441,8 @@ public final class DOMRpcRouter extends AbstractRegistration
     private final class ActionProviderServiceFacade implements DOMActionProviderService {
         @Override
         public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
-            final T implementation, final Set<DOMActionInstance> instances) {
+                final T implementation, final Set<DOMActionInstance> instances) {
+            checkArgument(!instances.isEmpty(), "instances");
 
             synchronized (DOMRpcRouter.this) {
                 final DOMActionRoutingTable oldTable = actionRoutingTable;
