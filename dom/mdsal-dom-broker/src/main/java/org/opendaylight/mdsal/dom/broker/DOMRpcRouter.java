@@ -453,6 +453,7 @@ public final class DOMRpcRouter extends AbstractRegistration
         @Override
         public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
                 final T implementation, final Set<DOMActionInstance> instances) {
+            checkArgument(!instances.isEmpty(), "Instances must not be empty");
 
             synchronized (DOMRpcRouter.this) {
                 final DOMActionRoutingTable oldTable = actionRoutingTable;
