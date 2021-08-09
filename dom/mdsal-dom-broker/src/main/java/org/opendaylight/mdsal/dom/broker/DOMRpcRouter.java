@@ -394,13 +394,13 @@ public final class DOMRpcRouter extends AbstractRegistration
         @Override
         public ListenableFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
                 final DOMDataTreeIdentifier path, final ContainerNode input) {
-            final DOMActionRoutingTableEntry entry = (DOMActionRoutingTableEntry) actionRoutingTable.getEntry(type);
-            if (entry == null) {
-                return Futures.immediateFailedFuture(
-                    new DOMActionNotAvailableException("No implementation of Action %s available", type));
-            }
+            final YangInstanceIdentifier pathRoot = path.getRootIdentifier();
+            checkArgument(!pathRoot.isEmpty(), "Action path must not be empty");
 
-            return OperationInvocation.invoke(entry, type, path, requireNonNull(input));
+            final DOMActionRoutingTableEntry entry = (DOMActionRoutingTableEntry) actionRoutingTable.getEntry(type);
+            return entry != null ? OperationInvocation.invoke(entry, type, path, requireNonNull(input))
+                : Futures.immediateFailedFuture(
+                    new DOMActionNotAvailableException("No implementation of Action %s available", type));
         }
     }
 
@@ -413,7 +413,7 @@ public final class DOMRpcRouter extends AbstractRegistration
 
         @Override
         public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
-            final T implementation, final Set<DOMActionInstance> instances) {
+                final T implementation, final Set<DOMActionInstance> instances) {
 
             synchronized (DOMRpcRouter.this) {
                 final DOMActionRoutingTable oldTable = actionRoutingTable;
@@ -491,10 +491,14 @@ public final class DOMRpcRouter extends AbstractRegistration
 
         static ListenableFuture<? extends DOMActionResult> invoke(final DOMActionRoutingTableEntry entry,
                 final SchemaPath type, final DOMDataTreeIdentifier path, final ContainerNode input) {
-            final List<DOMActionImplementation> impls = entry.getImplementations(path);
+            List<DOMActionImplementation> impls = entry.getImplementations(path);
             if (impls == null) {
-                return Futures.immediateFailedFuture(
-                    new DOMActionNotAvailableException("No implementation of Action %s available for %s", type, path));
+                impls = entry.getImplementations(
+                    new DOMDataTreeIdentifier(path.getDatastoreType(), YangInstanceIdentifier.empty()));
+                if (impls == null) {
+                    return Futures.immediateFailedFuture(new DOMActionNotAvailableException(
+                        "No implementation of Action %s available for %s", type, path));
+                }
             }
 
             return impls.get(0).invokeAction(type, path, input);

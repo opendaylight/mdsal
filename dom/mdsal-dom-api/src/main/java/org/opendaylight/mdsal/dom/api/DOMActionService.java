@@ -32,6 +32,7 @@ public interface DOMActionService extends DOMExtensibleService<DOMActionService,
      * @param input Input argument
      * @return A FluentFuture which completes with the result of invocation
      * @throws NullPointerException if any of the arguments is null
+     * @throws IllegalArgumentException if {@code path} is empty
      */
     ListenableFuture<? extends DOMActionResult> invokeAction(SchemaPath type, DOMDataTreeIdentifier path,
             ContainerNode input);
