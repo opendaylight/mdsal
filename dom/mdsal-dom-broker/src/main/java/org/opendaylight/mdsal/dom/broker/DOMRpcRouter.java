@@ -43,6 +43,7 @@ import javax.inject.Singleton;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
@@ -457,6 +458,15 @@ public final class DOMRpcRouter extends AbstractRegistration
                 }
             };
         }
+
+        @Override
+        public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
+                final T implementation, final Absolute type, final Set<LogicalDatastoreType> datastores) {
+            checkArgument(!datastores.isEmpty(), "datastores");
+
+            // FIXME: implement this
+            throw new UnsupportedOperationException();
+        }
     }
 
     private final class RpcServiceFacade implements DOMRpcService {
@@ -539,7 +549,13 @@ public final class DOMRpcRouter extends AbstractRegistration
 
         static ListenableFuture<? extends DOMActionResult> invoke(final DOMActionRoutingTableEntry entry,
                 final Absolute type, final DOMDataTreeIdentifier path, final ContainerNode input) {
-            return entry.getImplementations(path).get(0).invokeAction(type, path, input);
+            final List<DOMActionImplementation> impls = entry.getImplementations(path);
+            if (impls == null) {
+                return Futures.immediateFailedFuture(
+                    new DOMActionNotAvailableException("No implementation of Action %s available for %s", type, path));
+            }
+
+            return impls.get(0).invokeAction(type, path, input);
         }
 
         static ListenableFuture<? extends DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
