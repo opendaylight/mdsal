@@ -11,7 +11,9 @@ import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * A {@link DOMService} which allows registration of action implementations with a conceptual router. The client
@@ -31,7 +33,7 @@ public interface DOMActionProviderService
      * @throws IllegalArgumentException if {@code instances} is empty
      */
     <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(T implementation,
-            Set<DOMActionInstance> instances);
+        Set<DOMActionInstance> instances);
 
     default <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
             final T implementation, final DOMActionInstance instance) {
@@ -41,5 +43,18 @@ public interface DOMActionProviderService
     default <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
             final T implementation, final DOMActionInstance... instances) {
         return registerActionImplementation(implementation, ImmutableSet.copyOf(instances));
+    }
+
+    <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(T implementation,
+        Absolute type, Set<LogicalDatastoreType> datastores);
+
+    default <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
+            final T implementation, final Absolute path, final LogicalDatastoreType datastore) {
+        return registerActionImplementation(implementation, path, ImmutableSet.of(datastore));
+    }
+
+    default <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
+            final T implementation, final Absolute path, final LogicalDatastoreType... datastores) {
+        return registerActionImplementation(implementation, path, ImmutableSet.copyOf(datastores));
     }
 }
