@@ -96,6 +96,29 @@
     },
     {
       "key": {
+        "uuid": "96fe8dae_18b874ec",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/ActionProviderServiceAdapter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T16:13:53Z",
+      "side": 1,
+      "message": "actually this needs to derived from validNodes",
+      "range": {
+        "startLine": 76,
+        "startChar": 50,
+        "endLine": 76,
+        "endChar": 66
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "40f8efaf_7e50ac5c",
         "filename": "binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/ActionProviderServiceTest.java",
         "patchSetId": 4
@@ -200,6 +223,30 @@
       "side": 1,
       "message": "Probably I will need to rework this because the test is using binding classes generated from another package and schema context from its own package.",
       "parentUuid": "0ebb8c81_3df14c69",
+      "range": {
+        "startLine": 1,
+        "startChar": 7,
+        "endLine": 1,
+        "endChar": 14
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf02445c_3f0d65e1",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/resources/actions.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T16:13:53Z",
+      "side": 1,
+      "message": "right, and for that we have the binding-test-model artifact, where these should live (and hence the model/namespace requirement).",
+      "parentUuid": "a8ad986c_66cedd24",
       "range": {
         "startLine": 1,
         "startChar": 7,
