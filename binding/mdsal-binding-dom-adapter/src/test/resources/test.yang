@@ -1,4 +1,4 @@
-module test{
+module test {
     namespace "urn:test";
     prefix tst;
 
@@ -6,21 +6,21 @@ module test{
 
     typedef id {
         type uint16 {
-          range "1..4094";
+            range "1..4094";
         }
     }
 
-    container cont{
+    container cont {
         leaf vlan-id {
             type union {
-              type id;
-              type enumeration {
-                enum "any" {
-                  value 4096;
+                type id;
+                type enumeration {
+                    enum "any" {
+                        value 4096;
+                    }
                 }
-              }
             }
             mandatory true;
-          }
+        }
     }
 }
