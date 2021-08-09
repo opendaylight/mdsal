@@ -22,22 +22,41 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
 public interface DOMActionProviderService
         extends DOMExtensibleService<DOMActionProviderService, DOMActionProviderServiceExtension> {
     /**
-     * Register an {@link DOMActionImplementation} object with this service.
+     * Register an {@link DOMActionImplementation} object with this service, servicing specified action instances.
      *
      * @param implementation action implementation, must not be null
      * @param instances Set of supported operation identifiers. Must not be null, empty, or contain a null element.
      * @return A {@link ObjectRegistration} object, guaranteed to be non-null.
-     * @throws NullPointerException if implementation or types is null
+     * @throws NullPointerException if {@code implementation} or {@code instances} is null, or if {@code instances}
+     *                              contains a null element.
      * @throws IllegalArgumentException if {@code instances} is empty
      */
     <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(T implementation,
-            Set<DOMActionInstance> instances);
+        Set<DOMActionInstance> instances);
 
+    /**
+     * Register an {@link DOMActionImplementation} object with this service, servicing specified action instance.
+     *
+     * @param implementation action implementation, must not be null
+     * @param instance supported operation identifier. Must not be null.
+     * @return A {@link ObjectRegistration} object, guaranteed to be non-null.
+     * @throws NullPointerException if any argument is null
+     */
     default <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
             final T implementation, final DOMActionInstance instance) {
         return registerActionImplementation(implementation, ImmutableSet.of(instance));
     }
 
+    /**
+     * Register an {@link DOMActionImplementation} object with this service, servicing specified action instances.
+     *
+     * @param implementation action implementation, must not be null
+     * @param instances Set of supported operation identifiers. Must not be null, empty, or contain a null element.
+     * @return A {@link ObjectRegistration} object, guaranteed to be non-null.
+     * @throws NullPointerException if {@code implementation} or {@code instances} is null, or if {@code instances}
+     *                              contains a null element.
+     * @throws IllegalArgumentException if {@code instances} is empty
+     */
     default <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
             final T implementation, final DOMActionInstance... instances) {
         return registerActionImplementation(implementation, ImmutableSet.copyOf(instances));
