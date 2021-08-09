@@ -45,6 +45,167 @@
       "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "40f8efaf_7e50ac5c",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/ActionProviderServiceTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T09:09:42Z",
+      "side": 1,
+      "message": "this is superfluous because ...",
+      "range": {
+        "startLine": 76,
+        "startChar": 8,
+        "endLine": 76,
+        "endChar": 51
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b57585ff_25d71647",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/ActionProviderServiceTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T09:09:42Z",
+      "side": 1,
+      "message": "assertEquals(Optional.of(...), ...)",
+      "range": {
+        "startLine": 77,
+        "startChar": 8,
+        "endLine": 77,
+        "endChar": 18
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a58214b_cdfb9060",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/ActionProviderServiceTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T09:09:42Z",
+      "side": 1,
+      "message": "assertEquals(List.of(), ...",
+      "range": {
+        "startLine": 78,
+        "startChar": 8,
+        "endLine": 78,
+        "endChar": 19
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0ebb8c81_3df14c69",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/resources/actions.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T09:09:42Z",
+      "side": 1,
+      "message": "mdsal679",
+      "range": {
+        "startLine": 1,
+        "startChar": 7,
+        "endLine": 1,
+        "endChar": 14
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf924c90_ddc6d66f",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/resources/actions.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T09:09:42Z",
+      "side": 1,
+      "message": "mdsal679",
+      "range": {
+        "startLine": 4,
+        "startChar": 15,
+        "endLine": 4,
+        "endChar": 30
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ce8428b3_f46abf8a",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/resources/actions.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T09:09:42Z",
+      "side": 1,
+      "message": ";",
+      "range": {
+        "startLine": 21,
+        "startChar": 18,
+        "endLine": 21,
+        "endChar": 20
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6a2cfa31_4cd42855",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/resources/test.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T09:09:42Z",
+      "side": 1,
+      "message": "this looks completely unrelated, split this out into a separate patch",
+      "range": {
+        "startLine": 1,
+        "startChar": 11,
+        "endLine": 1,
+        "endChar": 12
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
     }
   ]
 }
