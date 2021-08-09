@@ -16,7 +16,6 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapDifference;
@@ -401,12 +400,12 @@ public final class DOMRpcRouter extends AbstractRegistration
         @Override
         public <T extends AvailabilityListener> ListenerRegistration<T> registerAvailabilityListener(final T listener) {
             synchronized (DOMRpcRouter.this) {
-                final ActionRegistration<T> ret = new ActionRegistration<>(DOMRpcRouter.this,
-                    listener, actionRoutingTable.getOperations(listener));
-                final Builder<ActionRegistration<?>> b = ImmutableList.builder();
-                b.addAll(actionListeners);
-                b.add(ret);
-                actionListeners = b.build();
+                final ActionRegistration<T> ret = new ActionRegistration<>(DOMRpcRouter.this, listener,
+                    actionRoutingTable.getOperations(listener));
+                actionListeners = ImmutableList.<ActionRegistration<?>>builder()
+                    .addAll(actionListeners)
+                    .add(ret)
+                    .build();
 
                 listenerNotifier.execute(ret::initialTable);
                 return ret;
@@ -477,10 +476,7 @@ public final class DOMRpcRouter extends AbstractRegistration
             synchronized (DOMRpcRouter.this) {
                 final Registration<T> ret = new Registration<>(DOMRpcRouter.this, listener,
                     routingTable.getOperations(listener));
-                final Builder<Registration<?>> b = ImmutableList.builder();
-                b.addAll(listeners);
-                b.add(ret);
-                listeners = b.build();
+                listeners = ImmutableList.<Registration<?>>builder().addAll(listeners).add(ret).build();
 
                 listenerNotifier.execute(ret::initialTable);
                 return ret;
