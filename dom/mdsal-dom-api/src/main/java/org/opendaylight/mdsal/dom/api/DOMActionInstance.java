@@ -27,28 +27,30 @@ public final class DOMActionInstance implements Immutable {
     private final Set<DOMDataTreeIdentifier> dataTrees;
     private final SchemaPath type;
 
-    DOMActionInstance(final SchemaPath type, final Set<DOMDataTreeIdentifier> dataTrees) {
+    private DOMActionInstance(final SchemaPath type, final ImmutableSet<DOMDataTreeIdentifier> dataTrees) {
         this.type = requireNonNull(type);
-        this.dataTrees = ImmutableSet.copyOf(dataTrees);
+        this.dataTrees = requireNonNull(dataTrees);
         checkArgument(!dataTrees.isEmpty());
     }
 
     public static DOMActionInstance of(final SchemaPath type, final Set<DOMDataTreeIdentifier> dataTrees) {
-        return new DOMActionInstance(type, dataTrees);
+        return new DOMActionInstance(type, ImmutableSet.copyOf(dataTrees));
     }
 
     public static DOMActionInstance of(final SchemaPath type, final DOMDataTreeIdentifier... dataTrees) {
-        return of(type, ImmutableSet.copyOf(dataTrees));
+        return new DOMActionInstance(type, ImmutableSet.copyOf(dataTrees));
     }
 
     public static DOMActionInstance of(final SchemaPath type, final LogicalDatastoreType datastore,
             final YangInstanceIdentifier path) {
-        return of(type, ImmutableSet.of(new DOMDataTreeIdentifier(datastore, path)));
+        return new DOMActionInstance(type, ImmutableSet.of(new DOMDataTreeIdentifier(datastore, path)));
     }
 
     /**
      * Return the set of data trees on which this action is available. These identifiers are required to point
-     * to concrete items, i.e. they may not be wildcards.
+     * to concrete items, i.e. they may not be wildcards. Identifiers which return an empty
+     * {@link DOMDataTreeIdentifier#getRootIdentifier()} are considered to match all items in that particular datastore
+     * and are expected to be treated as lower-priority alternatives to exact matches.
      *
      * @return Set of trees on which this action is available.
      */
@@ -57,9 +59,9 @@ public final class DOMActionInstance implements Immutable {
     }
 
     /**
-     * Return the operation type.
+     * Return the action type, i.e. the absolute schema node identifier of the action.
      *
-     * @return operation type.
+     * @return action type.
      */
     public SchemaPath getType() {
         return type;

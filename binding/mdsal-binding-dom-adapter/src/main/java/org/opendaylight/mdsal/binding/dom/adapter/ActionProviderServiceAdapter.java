@@ -33,6 +33,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.YangConstants;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -70,11 +71,16 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
         final CurrentAdapterSerializer serializer = currentSerializer();
         final SchemaPath actionPath = serializer.getActionPath(actionInterface);
         final Impl impl = new Impl(adapterContext(), actionPath, actionInterface, implementation);
+        final DOMActionInstance instance = validNodes.isEmpty()
+            // Register on the entire datastore
+            ? DOMActionInstance.of(actionPath, new DOMDataTreeIdentifier(datastore, YangInstanceIdentifier.empty()))
+                // Register on specific instances
+                : DOMActionInstance.of(actionPath, validNodes.stream()
+                    .map(node -> serializer.toDOMDataTreeIdentifier(DataTreeIdentifier.create(datastore, node)))
+                    .collect(Collectors.toUnmodifiableSet()));
 
-        final ObjectRegistration<DOMActionImplementation> reg = getDelegate().registerActionImplementation(impl,
-            DOMActionInstance.of(actionPath, validNodes.stream()
-                .map(instance -> serializer.toDOMDataTreeIdentifier(DataTreeIdentifier.create(datastore, instance)))
-                .collect(Collectors.toUnmodifiableSet())));
+
+        final ObjectRegistration<?> reg = getDelegate().registerActionImplementation(impl, instance);
 
         return new AbstractObjectRegistration<>(implementation) {
             @Override
