@@ -34,6 +34,11 @@ public interface DOMActionProviderService
             Set<DOMActionInstance> instances);
 
     default <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
+            final T implementation, final DOMActionInstance instance) {
+        return registerActionImplementation(implementation, ImmutableSet.of(instance));
+    }
+
+    default <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
             final T implementation, final DOMActionInstance... instances) {
         return registerActionImplementation(implementation, ImmutableSet.copyOf(instances));
     }
