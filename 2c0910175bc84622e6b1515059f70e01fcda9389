@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8a663404_7d1741b0",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/ActionProviderServiceAdapter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2021-08-09T14:59:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0f333ade_04863f10",
+      "range": {
+        "startLine": 71,
+        "startChar": 32,
+        "endLine": 71,
+        "endChar": 40
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d3b1ea51_dd558344",
         "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/ActionProviderServiceAdapter.java",
         "patchSetId": 4
@@ -45,6 +69,30 @@
       "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d073e9dc_0d329365",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/ActionProviderServiceAdapter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2021-08-09T14:59:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3b1ea51_dd558344",
+      "range": {
+        "startLine": 72,
+        "startChar": 47,
+        "endLine": 72,
+        "endChar": 61
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     },
     {
       "key": {
@@ -128,6 +176,30 @@
       "writtenOn": "2021-08-09T09:09:42Z",
       "side": 1,
       "message": "mdsal679",
+      "range": {
+        "startLine": 1,
+        "startChar": 7,
+        "endLine": 1,
+        "endChar": 14
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a8ad986c_66cedd24",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/resources/actions.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2021-08-09T14:59:19Z",
+      "side": 1,
+      "message": "Probably I will need to rework this because the test is using binding classes generated from another package and schema context from its own package.",
+      "parentUuid": "0ebb8c81_3df14c69",
       "range": {
         "startLine": 1,
         "startChar": 7,
