@@ -43,6 +43,7 @@ import javax.inject.Singleton;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
@@ -440,7 +441,7 @@ public final class DOMRpcRouter extends AbstractRegistration
     private final class ActionProviderServiceFacade implements DOMActionProviderService {
         @Override
         public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
-            final T implementation, final Set<DOMActionInstance> instances) {
+                final T implementation, final Set<DOMActionInstance> instances) {
 
             synchronized (DOMRpcRouter.this) {
                 final DOMActionRoutingTable oldTable = actionRoutingTable;
@@ -456,6 +457,26 @@ public final class DOMRpcRouter extends AbstractRegistration
                     removeActionImplementation(getInstance(), instances);
                 }
             };
+        }
+
+        @Override
+        public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
+                final T implementation, final Absolute type, final Set<LogicalDatastoreType> datastores) {
+            checkArgument(!datastores.isEmpty(), "datastores");
+
+            synchronized (DOMRpcRouter.this) {
+                final DOMActionRoutingTable oldTable = actionRoutingTable;
+
+                // FIXME: implement this
+                throw new UnsupportedOperationException("Not implemented yet");
+            }
+
+//            return new AbstractObjectRegistration<>(implementation) {
+//                @Override
+//                protected void removeRegistration() {
+//                    // FIXME: call back
+//                }
+//            };
         }
     }
 
