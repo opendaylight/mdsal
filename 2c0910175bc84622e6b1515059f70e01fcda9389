@@ -325,6 +325,30 @@
       "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee0eac1b_4325cf51",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/resources/test.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-08-09T18:11:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6a2cfa31_4cd42855",
+      "range": {
+        "startLine": 1,
+        "startChar": 11,
+        "endLine": 1,
+        "endChar": 12
+      },
+      "revId": "2c0910175bc84622e6b1515059f70e01fcda9389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
