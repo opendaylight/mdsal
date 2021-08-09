@@ -55,4 +55,11 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
             new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
                 YangInstanceIdentifier.create(new NodeIdentifier(Cont.QNAME))))));
     }
+
+    @Test
+    public void testWildcardRegistration() {
+        adapter.registerImplementation(Foo.class, FOO);
+        verify(actionProvider).registerActionImplementation(any(), eq(DOMActionInstance.of(FOO_PATH,
+            LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty())));
+    }
 }

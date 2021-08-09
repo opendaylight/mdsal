@@ -158,6 +158,28 @@ public class DOMRpcRouterTest extends TestUtils {
         }
     }
 
+    @Test
+    public void testActionDatastoreRouting() throws ExecutionException {
+        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+            rpcRouter.onModelContextUpdated(ACTIONS_CONTEXT);
+
+            final DOMActionProviderService actionProvider = rpcRouter.getActionProviderService();
+            assertNotNull(actionProvider);
+            final DOMActionService actionConsumer = rpcRouter.getActionService();
+            assertNotNull(actionConsumer);
+
+            try (ObjectRegistration<?> reg = actionProvider.registerActionImplementation(IMPL,
+                DOMActionInstance.of(BAZ_TYPE, LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty()))) {
+
+                assertAvailable(actionConsumer, BAZ_PATH_GOOD);
+                assertAvailable(actionConsumer, BAZ_PATH_BAD);
+            }
+
+            assertUnavailable(actionConsumer, BAZ_PATH_BAD);
+            assertUnavailable(actionConsumer, BAZ_PATH_GOOD);
+        }
+    }
+
     private static void assertAvailable(final DOMActionService actionService, final YangInstanceIdentifier path) {
         final DOMActionResult result;
         try {
