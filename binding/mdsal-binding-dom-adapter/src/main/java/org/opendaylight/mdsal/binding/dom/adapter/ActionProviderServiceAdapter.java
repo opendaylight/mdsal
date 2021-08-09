@@ -71,10 +71,13 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
         final Absolute actionPath = serializer.getActionPath(actionInterface);
         final Impl impl = new Impl(adapterContext(), actionPath, actionInterface, implementation);
 
-        final ObjectRegistration<DOMActionImplementation> reg = getDelegate().registerActionImplementation(impl,
-            DOMActionInstance.of(actionPath, validNodes.stream()
-                .map(instance -> serializer.toDOMDataTreeIdentifier(DataTreeIdentifier.create(datastore, instance)))
-                .collect(Collectors.toUnmodifiableSet())));
+        final ObjectRegistration<DOMActionImplementation> reg = validNodes.isEmpty()
+            // Register on the entire datastore
+            ? getDelegate().registerActionImplementation(impl, actionPath, datastore)
+                // Register on specific instances
+                : getDelegate().registerActionImplementation(impl, DOMActionInstance.of(actionPath, validNodes.stream()
+                    .map(instance -> serializer.toDOMDataTreeIdentifier(DataTreeIdentifier.create(datastore, instance)))
+                    .collect(Collectors.toUnmodifiableSet())));
 
         return new AbstractObjectRegistration<>(implementation) {
             @Override
