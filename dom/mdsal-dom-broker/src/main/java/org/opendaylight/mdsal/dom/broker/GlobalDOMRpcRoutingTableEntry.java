@@ -22,14 +22,14 @@ final class GlobalDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
 
     // We do not need the RpcDefinition, but this makes sure we do not
     // forward something we don't know to be an RPC.
-    GlobalDOMRpcRoutingTableEntry(final RpcDefinition def, final Map<YangInstanceIdentifier,
-            List<DOMRpcImplementation>> impls) {
+    GlobalDOMRpcRoutingTableEntry(final RpcDefinition def,
+            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
         super(DOMRpcIdentifier.create(def.getQName()), impls);
     }
 
     @Override
-    protected GlobalDOMRpcRoutingTableEntry newInstance(final Map<YangInstanceIdentifier,
-            List<DOMRpcImplementation>> impls) {
+    protected GlobalDOMRpcRoutingTableEntry newInstance(
+            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
         return new GlobalDOMRpcRoutingTableEntry(getRpcId(), impls);
     }
 }
