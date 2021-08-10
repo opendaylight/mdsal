@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 @Beta
 @Component(immediate = true, service = DOMRpcRouterServices.class)
+// FIXME: 9.0.0: merge with DOMRpcRouter
 public final class OSGiDOMRpcRouter implements DOMRpcRouterServices {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiDOMRpcRouter.class);
 
