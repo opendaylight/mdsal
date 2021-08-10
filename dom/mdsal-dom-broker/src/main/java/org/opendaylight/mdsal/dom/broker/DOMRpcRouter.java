@@ -539,7 +539,13 @@ public final class DOMRpcRouter extends AbstractRegistration
 
         static ListenableFuture<? extends DOMActionResult> invoke(final DOMActionRoutingTableEntry entry,
                 final Absolute type, final DOMDataTreeIdentifier path, final ContainerNode input) {
-            return entry.getImplementations(path).get(0).invokeAction(type, path, input);
+            final List<DOMActionImplementation> impls = entry.getImplementations(path);
+            if (impls == null) {
+                return Futures.immediateFailedFuture(
+                    new DOMActionNotAvailableException("No implementation of Action %s available for %s", type, path));
+            }
+
+            return impls.get(0).invokeAction(type, path, input);
         }
 
         static ListenableFuture<? extends DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
