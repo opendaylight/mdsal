@@ -22,7 +22,6 @@ import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -52,7 +51,6 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
             Set.of(InstanceIdentifier.create(Cont.class)));
 
         verify(actionProvider).registerActionImplementation(any(), eq(DOMActionInstance.of(FOO_PATH,
-            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-                YangInstanceIdentifier.create(new NodeIdentifier(Cont.QNAME))))));
+            LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.create(new NodeIdentifier(Cont.QNAME)))));
     }
 }
