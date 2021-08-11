@@ -24,6 +24,9 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 @Beta
 final class DOMActionRoutingTableEntry extends AbstractDOMRoutingTableEntry<DOMDataTreeIdentifier,
         DOMActionImplementation, AvailabilityListener> {
+    private static final Comparator<DOMActionImplementation> COMPARATOR =
+        Comparator.comparingLong(DOMActionImplementation::invocationCost);
+
     DOMActionRoutingTableEntry(final SchemaPath type,
             final Map<DOMDataTreeIdentifier, List<DOMActionImplementation>> implementations) {
         super(type, implementations);
@@ -37,7 +40,7 @@ final class DOMActionRoutingTableEntry extends AbstractDOMRoutingTableEntry<DOMD
 
     @Override
     protected Comparator<DOMActionImplementation> implComparator() {
-        return Comparator.comparingLong(DOMActionImplementation::invocationCost);
+        return COMPARATOR;
     }
 
     @Override
