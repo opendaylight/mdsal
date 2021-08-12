@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.replicate.netty;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.time.Duration;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
@@ -64,7 +65,7 @@ public final class NettyReplicationSource {
     void activate(final Config config) {
         final Duration keepaliveInterval = Duration.ofSeconds(config.keepAliveIntervalSeconds());
 
-        createSource(bootstrapSupport, dataBroker, singletonService, config.enabled(), config.listenPort(),
+        reg = createSource(bootstrapSupport, dataBroker, singletonService, config.enabled(), config.listenPort(),
                 keepaliveInterval, config.maxMissedKeepalives());
     }
 
@@ -74,6 +75,7 @@ public final class NettyReplicationSource {
         reg = null;
     }
 
+    @VisibleForTesting
     static Registration createSource(final BootstrapSupport bootstrap, final DOMDataBroker broker,
                                     final ClusterSingletonServiceProvider singleton, final boolean enabled,
                                     final int listenPort, final Duration keepaliveInterval,
