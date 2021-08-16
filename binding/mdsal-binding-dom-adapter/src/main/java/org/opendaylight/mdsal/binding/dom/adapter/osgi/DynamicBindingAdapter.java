@@ -53,21 +53,21 @@ public final class DynamicBindingAdapter {
     @Reference
     AdapterFactory factory = null;
     @Reference(target = "(component.factory=" + OSGiActionService.FACTORY_NAME + ")")
-    ComponentFactory actionServiceFactory = null;
+    ComponentFactory<OSGiActionService> actionServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiActionProviderService.FACTORY_NAME + ")")
-    ComponentFactory actionProviderServiceFactory = null;
+    ComponentFactory<OSGiActionProviderService> actionProviderServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiDataBroker.FACTORY_NAME + ")")
-    ComponentFactory dataBrokerFactory = null;
+    ComponentFactory<OSGiDataBroker> dataBrokerFactory = null;
     @Reference(target = "(component.factory=" + OSGiMountPointService.FACTORY_NAME + ")")
-    ComponentFactory mountPointServiceFactory = null;
+    ComponentFactory<OSGiMountPointService> mountPointServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiNotificationService.FACTORY_NAME + ")")
-    ComponentFactory notificationServiceFactory = null;
+    ComponentFactory<OSGiNotificationService> notificationServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiNotificationPublishService.FACTORY_NAME + ")")
-    ComponentFactory notificationPublishServiceFactory = null;
+    ComponentFactory<OSGiNotificationPublishService> notificationPublishServiceFactory = null;
     @Reference(target = "(component.factory=" + OSGiRpcConsumerRegistry.FACTORY_NAME + ")")
-    ComponentFactory rpcConsumerRegistryFactory = null;
+    ComponentFactory<OSGiRpcConsumerRegistry> rpcConsumerRegistryFactory = null;
     @Reference(target = "(component.factory=" + OSGiRpcProviderService.FACTORY_NAME + ")")
-    ComponentFactory rpcProviderServiceFactory = null;
+    ComponentFactory<OSGiRpcProviderService> rpcProviderServiceFactory = null;
 
     @Activate
     void activate(final BundleContext ctx) {
