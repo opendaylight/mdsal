@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
-import static java.util.Objects.requireNonNull;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import net.bytebuddy.asm.AsmVisitorWrapper;
@@ -25,9 +23,6 @@ import net.bytebuddy.implementation.bytecode.member.FieldAccess.Defined;
 import net.bytebuddy.implementation.bytecode.member.MethodInvocation;
 import net.bytebuddy.jar.asm.ClassVisitor;
 import net.bytebuddy.jar.asm.ClassWriter;
-import net.bytebuddy.jar.asm.Label;
-import net.bytebuddy.jar.asm.MethodVisitor;
-import net.bytebuddy.jar.asm.Opcodes;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.pool.TypePool;
 
@@ -46,14 +41,6 @@ final class ByteBuddyUtils {
 
     static AsmVisitorWrapper computeFrames() {
         return ComputeFrames.INSTANCE;
-    }
-
-    static StackManipulation ifEq(final Label label) {
-        return new IfEq(label);
-    }
-
-    static StackManipulation markLabel(final Label label) {
-        return new Mark(label);
     }
 
     static StackManipulation getField(final Field field) {
@@ -102,54 +89,6 @@ final class ByteBuddyUtils {
                 final TypePool tp, final FieldList<FieldDescription.InDefinedShape> fields, final MethodList<?> methods,
                 final int wflags, final int rflags) {
             return cv;
-        }
-    }
-
-    /**
-     * IFEQ opcode invocation, jumping to a particular label.
-     */
-    private static final class IfEq implements StackManipulation {
-        private static final StackManipulation.Size SIZE = new StackManipulation.Size(-1, 0);
-
-        private final Label label;
-
-        IfEq(final Label label) {
-            this.label = requireNonNull(label);
-        }
-
-        @Override
-        public boolean isValid() {
-            return true;
-        }
-
-        @Override
-        public StackManipulation.Size apply(final MethodVisitor mv, final Implementation.Context ctx) {
-            mv.visitJumpInsn(Opcodes.IFEQ, label);
-            return SIZE;
-        }
-    }
-
-    /**
-     * A label definition, marking the spot where IfEq should jump.
-     */
-    private static final class Mark implements StackManipulation {
-        private static final StackManipulation.Size SIZE = new StackManipulation.Size(0, 0);
-
-        private final Label label;
-
-        Mark(final Label label) {
-            this.label = requireNonNull(label);
-        }
-
-        @Override
-        public boolean isValid() {
-            return true;
-        }
-
-        @Override
-        public StackManipulation.Size apply(final MethodVisitor mv, final Implementation.Context ctx) {
-            mv.visitLabel(label);
-            return SIZE;
         }
     }
 
