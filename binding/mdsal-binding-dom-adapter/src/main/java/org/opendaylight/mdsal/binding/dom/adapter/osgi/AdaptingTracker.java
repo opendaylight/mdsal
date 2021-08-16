@@ -32,9 +32,9 @@ final class AdaptingTracker<D extends DOMService, B extends BindingService>
         extends ServiceTracker<D, AdaptingTracker.ComponentHolder<B>> {
     static final class ComponentHolder<B extends BindingService> {
         final B binding;
-        ComponentInstance component;
+        ComponentInstance<? extends B> component;
 
-        ComponentHolder(final B binding, final ComponentInstance component) {
+        ComponentHolder(final B binding, final ComponentInstance<? extends B> component) {
             this.binding = requireNonNull(binding);
             this.component = requireNonNull(component);
         }
@@ -44,10 +44,10 @@ final class AdaptingTracker<D extends DOMService, B extends BindingService>
 
     private final Function<D, B> bindingFactory;
     private final @NonNull Class<B> bindingClass;
-    private final ComponentFactory componentFactory;
+    private final ComponentFactory<? extends B> componentFactory;
 
     AdaptingTracker(final BundleContext ctx, final Class<D> domClass, final Class<B> bindingClass,
-            final Function<D, B> bindingFactory, final ComponentFactory componentFactory) {
+            final Function<D, B> bindingFactory, final ComponentFactory<? extends B> componentFactory) {
         super(ctx, domClass, null);
         this.bindingClass = requireNonNull(bindingClass);
         this.bindingFactory = requireNonNull(bindingFactory);
