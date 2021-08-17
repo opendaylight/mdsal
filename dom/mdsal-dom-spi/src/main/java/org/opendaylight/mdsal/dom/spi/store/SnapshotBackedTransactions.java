@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 @Beta
 public final class SnapshotBackedTransactions {
     private SnapshotBackedTransactions() {
-        throw new UnsupportedOperationException("Utility class");
+        // Hidden on purpose
     }
 
     /**
