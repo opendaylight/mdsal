@@ -17,11 +17,16 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal</groupId>
-    <artifactId>mdsal-dom</artifactId>
+    <artifactId>dom-aggregator</artifactId>
     <version>8.0.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+    </properties>
 
     <modules>
         <module>dom-parent</module>
@@ -34,9 +39,4 @@
 
         <module>unified-html-generator</module>
     </modules>
-
-    <properties>
-        <maven.deploy.skip>true</maven.deploy.skip>
-        <maven.install.skip>true</maven.install.skip>
-    </properties>
 </project>
