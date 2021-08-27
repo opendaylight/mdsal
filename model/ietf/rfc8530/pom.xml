@@ -24,7 +24,7 @@
     <packaging>bundle</packaging>
 
     <name>${project.artifactId}</name>
-    <description>RFC8529 Logical Network Elements</description>
+    <description>RFC8530 Logical Network Elements</description>
 
     <dependencies>
         <dependency>
