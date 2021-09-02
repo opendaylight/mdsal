@@ -31,7 +31,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMDataTreeCommitCohortAdapterTest {
