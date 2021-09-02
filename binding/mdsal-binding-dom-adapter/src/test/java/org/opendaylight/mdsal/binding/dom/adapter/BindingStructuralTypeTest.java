@@ -14,7 +14,7 @@ import static org.mockito.Mockito.mock;
 import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 
 public class BindingStructuralTypeTest {
     @Test

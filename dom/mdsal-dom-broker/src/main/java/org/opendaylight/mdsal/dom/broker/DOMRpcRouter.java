@@ -25,7 +25,6 @@ import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -156,8 +155,6 @@ public final class DOMRpcRouter extends AbstractRegistration
         return rpcProviderService;
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private synchronized void removeRpcImplementation(final DOMRpcImplementation implementation,
             final Set<DOMRpcIdentifier> rpcs) {
         final DOMRpcRoutingTable oldTable = routingTable;
@@ -167,8 +164,6 @@ public final class DOMRpcRouter extends AbstractRegistration
         listenerNotifier.execute(() -> notifyRemoved(newTable, implementation));
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private synchronized void removeRpcImplementations(final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
         final DOMRpcRoutingTable oldTable = routingTable;
         final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.removeAll(map);
@@ -177,8 +172,6 @@ public final class DOMRpcRouter extends AbstractRegistration
         listenerNotifier.execute(() -> notifyRemoved(newTable, map.values()));
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private synchronized void removeActionImplementation(final DOMActionImplementation implementation,
             final Set<DOMActionInstance> actions) {
         final DOMActionRoutingTable oldTable = actionRoutingTable;
@@ -188,28 +181,20 @@ public final class DOMRpcRouter extends AbstractRegistration
         listenerNotifier.execute(() -> notifyActionChanged(newTable, implementation));
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private synchronized void removeListener(final ListenerRegistration<? extends DOMRpcAvailabilityListener> reg) {
         listeners = ImmutableList.copyOf(Collections2.filter(listeners, input -> !reg.equals(input)));
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private synchronized void removeActionListener(final ListenerRegistration<? extends AvailabilityListener> reg) {
         actionListeners = ImmutableList.copyOf(Collections2.filter(actionListeners, input -> !reg.equals(input)));
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private synchronized void notifyAdded(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
         for (Registration<?> l : listeners) {
             l.addRpc(newTable, impl);
         }
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private synchronized void notifyAdded(final DOMRpcRoutingTable newTable,
             final Collection<? extends DOMRpcImplementation> impls) {
         for (Registration<?> l : listeners) {
@@ -219,16 +204,12 @@ public final class DOMRpcRouter extends AbstractRegistration
         }
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private synchronized void notifyRemoved(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
         for (Registration<?> l : listeners) {
             l.removeRpc(newTable, impl);
         }
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private synchronized void notifyRemoved(final DOMRpcRoutingTable newTable,
             final Collection<? extends DOMRpcImplementation> impls) {
         for (Registration<?> l : listeners) {
