@@ -30,14 +30,15 @@ import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedTransactions;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
-import org.opendaylight.yangtools.yang.common.RpcError.ErrorSeverity;
-import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
+import org.opendaylight.yangtools.yang.common.ErrorSeverity;
+import org.opendaylight.yangtools.yang.common.ErrorTag;
+import org.opendaylight.yangtools.yang.common.ErrorType;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.ConflictingModificationAppliedException;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataValidationFailedException;
+import org.opendaylight.yangtools.yang.data.tree.api.ConflictingModificationAppliedException;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
+import org.opendaylight.yangtools.yang.data.tree.api.DataValidationFailedException;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class InMemoryDOMStoreThreePhaseCommitCohortTest {
@@ -83,7 +84,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         final var error = errors.get(0);
         assertEquals(ErrorSeverity.ERROR, error.getSeverity());
         assertEquals(ErrorType.APPLICATION, error.getErrorType());
-        assertEquals("resource-denied", error.getTag());
+        assertEquals(ErrorTag.RESOURCE_DENIED, error.getTag());
     }
 
     @Test
@@ -99,7 +100,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         final var error = errors.get(0);
         assertEquals(ErrorSeverity.ERROR, error.getSeverity());
         assertEquals(ErrorType.APPLICATION, error.getErrorType());
-        assertEquals("operation-failed", error.getTag());
+        assertEquals(ErrorTag.OPERATION_FAILED, error.getTag());
     }
 
     @Test
