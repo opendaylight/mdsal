@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.api;
 import java.util.Collection;
 import java.util.EventListener;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 
 /**
  * Interface implemented by classes interested in receiving notifications about data tree changes. It provides
