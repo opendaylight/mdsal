@@ -12,8 +12,8 @@ import static java.util.Objects.requireNonNull;
 import org.opendaylight.mdsal.dom.spi.store.AbstractSnapshotBackedTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
 final class DOMStoreTransactionChainImpl extends AbstractSnapshotBackedTransactionChain<String> {
     private final InMemoryDOMDataStore store;

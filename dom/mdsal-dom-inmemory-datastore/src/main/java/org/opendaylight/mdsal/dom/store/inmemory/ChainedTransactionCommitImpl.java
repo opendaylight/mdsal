@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 
 final class ChainedTransactionCommitImpl extends InMemoryDOMStoreThreePhaseCommitCohort {
     private final DOMStoreTransactionChainImpl txChain;
@@ -31,5 +31,4 @@ final class ChainedTransactionCommitImpl extends InMemoryDOMStoreThreePhaseCommi
         txChain.transactionCommited(getTransaction());
         return ret;
     }
-
 }
