@@ -62,7 +62,7 @@ final class BindingRuntimeTypesFactory implements Mutable {
         LOG.debug("Indexed {} generators in {}", moduleGens.size(), sw);
 
         return new BindingRuntimeTypes(context, factory.augmentationToSchema, factory.typeToSchema,
-            factory.schemaToType, factory.identities);
+            factory.schemaToType, Map.of(), factory.identities);
     }
 
     private void indexTypes(final Iterable<? extends Generator> generators) {
