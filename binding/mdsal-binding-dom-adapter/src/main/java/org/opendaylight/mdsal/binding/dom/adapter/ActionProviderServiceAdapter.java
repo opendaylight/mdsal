@@ -34,7 +34,8 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
+import org.opendaylight.yangtools.yang.common.ErrorTag;
+import org.opendaylight.yangtools.yang.common.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.YangConstants;
@@ -125,13 +126,14 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
                 // Not representable: return an error
                 LOG.debug("Path {} is not representable in binding, rejecting invocation", path);
                 return Futures.immediateFuture(new SimpleDOMActionResult(List.of(RpcResultBuilder.newError(
-                    ErrorType.APPLICATION, "invalid-value", "Supplied path cannot be represented"))));
+                    ErrorType.APPLICATION, ErrorTag.INVALID_VALUE, "Supplied path cannot be represented"))));
             }
             if (instance.isWildcarded()) {
                 // A wildcard path: return an error
                 LOG.debug("Path {} maps to a wildcard {}, rejecting invocation", path, instance);
                 return Futures.immediateFuture(new SimpleDOMActionResult(List.of(RpcResultBuilder.newError(
-                    ErrorType.APPLICATION, "invalid-value", "Supplied path does not identify a concrete instance"))));
+                    ErrorType.APPLICATION, ErrorTag.INVALID_VALUE,
+                    "Supplied path does not identify a concrete instance"))));
             }
 
             final ListenableFuture<RpcResult<?>> userFuture = implementation.invoke(instance,

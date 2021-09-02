@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.api;
 import java.util.EventListener;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 
 /**
  * Interface implemented by classes interested in receiving notifications about data tree changes. It provides
@@ -31,8 +31,8 @@ public interface DOMDataTreeChangeListener extends EventListener {
      * A data change event may be triggered spuriously, e.g. such that data before and after compare as equal.
      * Implementations of this interface are expected to recover from such events. Event producers are expected to exert
      * reasonable effort to suppress such events. In other words, it is completely acceptable to observe
-     * a {@link org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode}, which reports
-     * a {@link org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType} other than UNMODIFIED, while
+     * a {@link org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode}, which reports
+     * a {@link org.opendaylight.yangtools.yang.data.tree.api.ModificationType} other than UNMODIFIED, while
      * the before- and after- data items compare as equal.
      *
      * @param changes List of change events, may not be null or empty.

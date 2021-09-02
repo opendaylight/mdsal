@@ -12,10 +12,10 @@ import static java.util.Objects.requireNonNull;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.DataTreeCandidateInputOutput;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeDataOutput;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.NormalizedNodeStreamVersion;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 
 abstract class AbstractSourceMessage {
     private static final class Empty extends AbstractSourceMessage {
