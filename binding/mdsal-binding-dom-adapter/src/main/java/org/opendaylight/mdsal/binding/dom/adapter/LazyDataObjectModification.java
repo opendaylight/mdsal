@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
-import static org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType.UNMODIFIED;
+import static org.opendaylight.yangtools.yang.data.tree.api.ModificationType.UNMODIFIED;
 
 import com.google.common.base.MoreObjects;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
