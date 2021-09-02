@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.common.api;
 import static java.util.Objects.requireNonNull;
 
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
+import org.opendaylight.yangtools.yang.common.ErrorTag;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
@@ -29,7 +30,7 @@ public class DataValidationFailedException extends TransactionCommitFailedExcept
 
     public <P extends HierarchicalIdentifier<P>> DataValidationFailedException(final Class<P> pathType, final P path,
             final String message, final Throwable cause) {
-        super(message, cause, RpcResultBuilder.newError(ErrorType.APPLICATION, "invalid-value", message, null,
+        super(message, cause, RpcResultBuilder.newError(ErrorType.APPLICATION, ErrorTag.INVALID_VALUE, message, null,
             path != null ? path.toString() : null, cause));
         this.pathType = requireNonNull(pathType, "path type must not be null");
         this.path = requireNonNull(path, "path must not be null.");
