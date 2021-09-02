@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.generator.impl.rt;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ImmutableList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,9 +36,7 @@ final class TargetAugmentEffectiveStatement implements AugmentEffectiveStatement
         for (var stmt : stmts) {
             if (stmt instanceof SchemaTreeEffectiveStatement) {
                 final var qname = ((SchemaTreeEffectiveStatement<?>) stmt).getIdentifier();
-                final Optional<? extends SchemaTreeEffectiveStatement<?>> child =
-                    target.get(SchemaTreeAwareEffectiveStatement.Namespace.class, qname);
-                child.ifPresent(builder::add);
+                target.get(SchemaTreeNamespace.class, qname).ifPresent(builder::add);
             } else {
                 builder.add(stmt);
             }
@@ -64,8 +61,7 @@ final class TargetAugmentEffectiveStatement implements AugmentEffectiveStatement
     }
 
     @Override
-    public <K, V, N extends IdentifierNamespace<K, V>> Optional<? extends V> get(final Class<N> namespace,
-            final K identifier) {
+    public <K, V, N extends IdentifierNamespace<K, V>> Optional<V> get(final Class<N> namespace, final K identifier) {
         return Optional.empty();
     }
 
@@ -75,7 +71,7 @@ final class TargetAugmentEffectiveStatement implements AugmentEffectiveStatement
     }
 
     @Override
-    public Collection<? extends EffectiveStatement<?, ?>> effectiveSubstatements() {
+    public List<? extends EffectiveStatement<?, ?>> effectiveSubstatements() {
         return substatements;
     }
 }

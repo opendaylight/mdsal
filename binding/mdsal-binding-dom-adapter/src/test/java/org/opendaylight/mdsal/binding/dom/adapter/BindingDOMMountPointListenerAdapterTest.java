@@ -12,7 +12,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import com.google.common.util.concurrent.MoreExecutors;
 import org.junit.Before;
@@ -60,13 +60,13 @@ public class BindingDOMMountPointListenerAdapterTest {
     public void onMountPointCreatedWithExceptionTest() throws Exception {
         reset(listener);
         bindingDOMMountPointListenerAdapter.onMountPointCreated(YangInstanceIdentifier.empty());
-        verifyZeroInteractions(listener);
+        verifyNoInteractions(listener);
     }
 
     @Test
     public void onMountPointRemovedWithExceptionTest() throws Exception {
         reset(listener);
         bindingDOMMountPointListenerAdapter.onMountPointRemoved(YangInstanceIdentifier.empty());
-        verifyZeroInteractions(listener);
+        verifyNoInteractions(listener);
     }
 }
