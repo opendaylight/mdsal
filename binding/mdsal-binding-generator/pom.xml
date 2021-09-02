@@ -29,6 +29,10 @@
             <artifactId>odlext-model-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>rfc8040-model-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-model-api</artifactId>
         </dependency>

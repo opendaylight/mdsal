@@ -22,6 +22,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.yangtools.rfc8040.model.api.YangDataEffectiveStatement;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
 import org.opendaylight.yangtools.yang.model.api.CopyableNode;
@@ -284,6 +285,8 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
                         tmpAug.add(new UsesAugmentGenerator((AugmentEffectiveStatement) usesSub, this, uses));
                     }
                 }
+            } else if (stmt instanceof YangDataEffectiveStatement) {
+                tmp.add(new ContainerGenerator(((YangDataEffectiveStatement) stmt).getContainer(), this));
             } else {
                 LOG.trace("Ignoring statement {}", stmt);
                 continue;
