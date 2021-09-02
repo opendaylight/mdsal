@@ -97,7 +97,7 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
 
     @Override
     public final Absolute getActionIdentifier(final Class<? extends Action<?, ?, ?>> cls) {
-        return getTypes().findSchemaNodeIdentifier(Type.of(cls)).orElse(null);
+        return getTypes().findActionIdentifier(Type.of(cls)).orElse(null);
     }
 
     @Override
@@ -326,7 +326,7 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
         return Optional.empty();
     }
 
-    private static @Nullable SchemaNode originalNodeOf(final SchemaNode node) {
-        return node instanceof DerivableSchemaNode ? ((DerivableSchemaNode) node).getOriginal().orElse(null) : null;
+    private static @Nullable DerivableSchemaNode<?> originalNodeOf(final SchemaNode node) {
+        return node instanceof DerivableSchemaNode ? ((DerivableSchemaNode<?>) node).getOriginal().orElse(null) : null;
     }
 }
