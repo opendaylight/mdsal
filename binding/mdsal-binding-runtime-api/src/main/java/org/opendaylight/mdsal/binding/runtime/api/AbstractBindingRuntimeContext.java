@@ -357,7 +357,7 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
         return Optional.empty();
     }
 
-    private static @Nullable SchemaNode originalNodeOf(final SchemaNode node) {
-        return node instanceof DerivableSchemaNode ? ((DerivableSchemaNode) node).getOriginal().orElse(null) : null;
+    private static @Nullable DerivableSchemaNode<?> originalNodeOf(final SchemaNode node) {
+        return node instanceof DerivableSchemaNode ? ((DerivableSchemaNode<?>) node).getOriginal().orElse(null) : null;
     }
 }
