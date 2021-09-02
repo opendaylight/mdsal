@@ -413,9 +413,9 @@ class JavaFileTemplate {
 
                 if (node instanceof SchemaNode) {
                     final SchemaNode schema = (SchemaNode) node;
-                    sb.append("The schema path to identify an instance is\n");
-                    appendPath(sb.append("<i>"), def.getModule(), schema.getPath().getPathFromRoot());
-                    sb.append("</i>\n");
+//                    sb.append("The schema path to identify an instance is\n");
+//                    appendPath(sb.append("<i>"), def.getModule(), schema.getPath().getPathFromRoot());
+//                    sb.append("</i>\n");
 
                     if (hasBuilderClass(schema)) {
                         final String builderName = type.getName() + BindingMapping.BUILDER_SUFFIX;
