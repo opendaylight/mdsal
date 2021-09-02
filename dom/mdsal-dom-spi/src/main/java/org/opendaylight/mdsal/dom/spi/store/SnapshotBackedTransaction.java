@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.spi.store;
 import com.google.common.annotations.Beta;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
+import org.opendaylight.yangtools.yang.data.tree.api.DataTreeSnapshot;
 
 /**
  * Interface implemented by {@link DOMStoreTransaction}s which are backed by a {@link DataTreeSnapshot}.

@@ -18,7 +18,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Iterator;
@@ -341,8 +340,6 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
      * @param path Schema path of RPC input/output data container
      * @return Notification schema or null, if notification is not present in schema context.
      */
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-        justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private static @Nullable ContainerLike getRpcDataSchema(final @NonNull EffectiveModelContext schema,
             final @NonNull Absolute path) {
         requireNonNull(schema, "Schema context must not be null.");

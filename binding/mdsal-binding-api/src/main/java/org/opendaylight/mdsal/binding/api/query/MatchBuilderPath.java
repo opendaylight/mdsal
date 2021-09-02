@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.api.query;
 
 import com.google.common.annotations.Beta;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
@@ -19,6 +18,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
+import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
@@ -79,7 +79,7 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      * @return A {@link ValueMatchBuilder}
      * @throws NullPointerException if methodRef is null
      */
-    @NonNull ComparableMatchBuilder<O, BigDecimal> leaf(Decimal64LeafReference<T> methodRef);
+    @NonNull ComparableMatchBuilder<O, Decimal64> leaf(Decimal64LeafReference<T> methodRef);
 
     /**
      * Match an {@code empty} leaf's value.
@@ -223,7 +223,7 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
     }
 
     @FunctionalInterface
-    public interface Decimal64LeafReference<P> extends LeafReference<P, BigDecimal> {
+    public interface Decimal64LeafReference<P> extends LeafReference<P, Decimal64> {
 
     }
 
