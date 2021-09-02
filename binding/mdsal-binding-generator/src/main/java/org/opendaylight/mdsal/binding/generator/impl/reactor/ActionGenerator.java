@@ -16,14 +16,20 @@ import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 /**
  * Generator corresponding to a {@code action} statement.
  */
-final class ActionGenerator extends AbstractCompositeGenerator<ActionEffectiveStatement> {
+public final class ActionGenerator extends AbstractCompositeGenerator<ActionEffectiveStatement> {
     ActionGenerator(final ActionEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
         super(statement, parent);
+    }
+
+    public @NonNull Absolute absolutePath() {
+        // FIXME: implement this
+        throw new UnsupportedOperationException("Action " + this);
     }
 
     @Override
