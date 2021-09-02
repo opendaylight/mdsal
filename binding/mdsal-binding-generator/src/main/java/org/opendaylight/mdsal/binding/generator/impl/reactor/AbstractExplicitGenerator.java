@@ -301,9 +301,11 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
         }
         if (isAddedByUses()) {
             // If this generator has been added by a uses node, it is already taken care of by the corresponding
-            // grouping. There is one exception to this rule: 'type leafref' can use a relative path to point
-            // outside of its home grouping. In this case we need to examine the instantiation until we succeed in
-            // resolving the reference.
+            // grouping. Exceptions:
+            // a) 'type leafref' can use a relative path to point outside of its home grouping. In this case
+            // we need to examine the instantiation until we succeed in resolving the reference.
+            // b) 'rc:yang-data' container which points root container of a group directly and requires a getter
+            // for generated module type
             addAsGetterMethodOverride(builder, builderFactory);
             return;
         }
