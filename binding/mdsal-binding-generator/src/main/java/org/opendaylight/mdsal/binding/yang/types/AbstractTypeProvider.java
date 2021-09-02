@@ -574,7 +574,8 @@ abstract class AbstractTypeProvider {
 
         final GeneratedTOBuilder unionGenTOBuilder = newGeneratedTOBuilder(typeName);
         unionGenTOBuilder.setIsUnion(true);
-        unionGenTOBuilder.setSchemaPath(typedef.getPath());
+        // FIXME: set EffectiveStatementInference ?
+        // unionGenTOBuilder.setSchemaPath(typedef.getPath());
         unionGenTOBuilder.setModuleName(module.getName());
         unionGenTOBuilder.addImplementsType(TYPE_OBJECT);
         addCodegenInformation(unionGenTOBuilder, typedef);
@@ -765,11 +766,12 @@ abstract class AbstractTypeProvider {
     private GeneratedTOBuilder typedefToTransferObject(final String basePackageName,
             final TypeDefinition<?> typedef, final String moduleName) {
         final JavaTypeName name = JavaTypeName.create(
-                packageNameForGeneratedType(basePackageName, typedef.getPath()),
+                packageNameForGeneratedType(basePackageName, null),
                 BindingMapping.getClassName(typedef.getQName().getLocalName()));
 
         final GeneratedTOBuilder newType = newGeneratedTOBuilder(name);
-        newType.setSchemaPath(typedef.getPath());
+        // FIXME: set EffectiveStatementInference ?i
+        // newType.setSchemaPath(typedef.getPath());
         newType.setModuleName(moduleName);
         addCodegenInformation(newType, typedef);
         return newType;
@@ -825,7 +827,8 @@ abstract class AbstractTypeProvider {
     public GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final JavaTypeName typeName,
             final BitsTypeDefinition typeDef, final String moduleName) {
         final GeneratedTOBuilder genTOBuilder = newGeneratedTOBuilder(typeName);
-        genTOBuilder.setSchemaPath(typeDef.getPath());
+        // FIXME: set EffectiveStatementInference ?
+        // genTOBuilder.setSchemaPath(typeDef.getPath());
         genTOBuilder.setModuleName(moduleName);
         genTOBuilder.setBaseType(typeDef);
         genTOBuilder.addImplementsType(TYPE_OBJECT);
@@ -889,7 +892,8 @@ abstract class AbstractTypeProvider {
 
         final GeneratedTOBuilder genTOBuilder = newGeneratedTOBuilder(JavaTypeName.create(basePackageName,
             BindingMapping.getClassName(typedef.getQName())));
-        genTOBuilder.setSchemaPath(typedef.getPath());
+        // FIXME: set EffectiveStatementInference ?
+        // genTOBuilder.setSchemaPath(typedef.getPath());
         genTOBuilder.setModuleName(moduleName);
         genTOBuilder.setTypedef(true);
         addCodegenInformation(genTOBuilder, typedef);
