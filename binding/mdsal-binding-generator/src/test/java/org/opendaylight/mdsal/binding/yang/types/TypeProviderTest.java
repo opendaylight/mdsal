@@ -39,7 +39,6 @@ import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -57,9 +56,6 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class TypeProviderTest {
     static EffectiveModelContext SCHEMA_CONTEXT;
     static Module TEST_TYPE_PROVIDER;
-
-    @Mock
-    public SchemaPath schemaPath;
 
     @Mock
     public SchemaNode schemaNode;
