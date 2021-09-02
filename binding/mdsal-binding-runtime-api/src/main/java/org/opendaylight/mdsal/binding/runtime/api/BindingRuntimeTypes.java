@@ -55,6 +55,7 @@ public final class BindingRuntimeTypes implements EffectiveModelContextProvider,
     private final ImmutableMap<Type, WithStatus> typeToSchema;
     private final ImmutableMultimap<Type, Type> choiceToCases;
     private final ImmutableMap<QName, Type> identities;
+
     // Not Immutable as we use two different implementations
     private final Map<WithStatus, Type> schemaToType;
 
@@ -72,7 +73,6 @@ public final class BindingRuntimeTypes implements EffectiveModelContextProvider,
         this.identities = ImmutableMap.copyOf(identities);
 
         // Careful to use identity for SchemaNodes, but only if needed
-        // FIXME: 8.0.0: YT should be switching to identity for equals(), so this should become unnecessary
         Map<WithStatus, Type> copy;
         try {
             copy = ImmutableMap.copyOf(schemaToType);
