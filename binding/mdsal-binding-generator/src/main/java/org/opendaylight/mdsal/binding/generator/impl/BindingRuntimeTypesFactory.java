@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static com.google.common.base.Verify.verify;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -32,6 +34,7 @@ import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.IdentityEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +44,8 @@ final class BindingRuntimeTypesFactory implements Mutable {
 
     private final Map<Type, AugmentationSchemaNode> augmentationToSchema = new HashMap<>();
     private final Map<Type, WithStatus> typeToSchema = new HashMap<>();
+    // FIXME: this field needs to be populated
+    private final BiMap<Absolute, Type> actions = HashBiMap.create();
     private final Map<QName, Type> identities = new HashMap<>();
 
     // Note: we are keying through WithStatus, but these nodes compare on semantics, so equivalent schema nodes
@@ -62,7 +67,7 @@ final class BindingRuntimeTypesFactory implements Mutable {
         LOG.debug("Indexed {} generators in {}", moduleGens.size(), sw);
 
         return new BindingRuntimeTypes(context, factory.augmentationToSchema, factory.typeToSchema,
-            factory.schemaToType, factory.identities);
+            factory.schemaToType, factory.actions, factory.identities);
     }
 
     private void indexTypes(final Iterable<? extends Generator> generators) {
