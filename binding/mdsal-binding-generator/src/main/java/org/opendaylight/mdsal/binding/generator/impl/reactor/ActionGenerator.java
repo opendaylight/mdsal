@@ -7,23 +7,43 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import java.util.ArrayDeque;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 /**
  * Generator corresponding to a {@code action} statement.
  */
-final class ActionGenerator extends AbstractCompositeGenerator<ActionEffectiveStatement> {
+public final class ActionGenerator extends AbstractCompositeGenerator<ActionEffectiveStatement> {
     ActionGenerator(final ActionEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
         super(statement, parent);
+    }
+
+    public @NonNull Absolute absolutePath(final EffectiveModelContext context) {
+        final var deque = new ArrayDeque<AbstractExplicitGenerator<?>>();
+
+        AbstractExplicitGenerator<?> current = this;
+        while (true) {
+            deque.addFirst(current);
+            if (current instanceof ModuleGenerator) {
+                break;
+            }
+            current = current.getParent();
+        }
+
+        final var stack = SchemaInferenceStack.of(context);
+        deque.forEach(gen -> gen.pushToInference(stack));
+        return stack.toSchemaNodeIdentifier();
     }
 
     @Override

@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
  * A generator corresponding to a {@code augment} statement. This class is further specialized for the two distinct uses
  * an augment is used.
  */
-abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<AugmentEffectiveStatement> {
+public abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<AugmentEffectiveStatement> {
     /**
      * Comparator comparing target path length. This is useful for quickly determining order the order in which two
      * (or more) {@link AbstractAugmentGenerator}s need to be evaluated. This is necessary when augments are layered on

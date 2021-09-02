@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 /**
  * Generator corresponding to a {@code identity} statement.
  */
-final class IdentityGenerator extends AbstractDependentGenerator<IdentityEffectiveStatement> {
+public final class IdentityGenerator extends AbstractDependentGenerator<IdentityEffectiveStatement> {
     private List<IdentityGenerator> baseIdentities = null;
 
     IdentityGenerator(final IdentityEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {

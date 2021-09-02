@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static com.google.common.base.Verify.verify;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Stopwatch;
 import java.util.Collection;
@@ -15,9 +16,12 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.generator.impl.reactor.AbstractAugmentGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.AbstractExplicitGenerator;
+import org.opendaylight.mdsal.binding.generator.impl.reactor.ActionGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.Generator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.GeneratorReactor;
+import org.opendaylight.mdsal.binding.generator.impl.reactor.IdentityGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.ModuleGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.TypeBuilderFactory;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -30,8 +34,8 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
-import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.IdentityEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,14 +45,16 @@ final class BindingRuntimeTypesFactory implements Mutable {
 
     private final Map<Type, AugmentationSchemaNode> augmentationToSchema = new HashMap<>();
     private final Map<Type, WithStatus> typeToSchema = new HashMap<>();
+    private final Map<Type, Absolute> actions = new HashMap<>();
     private final Map<QName, Type> identities = new HashMap<>();
+    private final EffectiveModelContext context;
 
     // Note: we are keying through WithStatus, but these nodes compare on semantics, so equivalent schema nodes
     //       can result in two distinct types. We certainly need to keep them separate.
     private final Map<WithStatus, Type> schemaToType = new IdentityHashMap<>();
 
-    private BindingRuntimeTypesFactory() {
-        // Hidden on purpose
+    private BindingRuntimeTypesFactory(final EffectiveModelContext context) {
+        this.context = requireNonNull(context);
     }
 
     static @NonNull BindingRuntimeTypes createTypes(final @NonNull EffectiveModelContext context) {
@@ -57,12 +63,12 @@ final class BindingRuntimeTypesFactory implements Mutable {
             .values();
 
         final Stopwatch sw = Stopwatch.createStarted();
-        final BindingRuntimeTypesFactory factory = new BindingRuntimeTypesFactory();
+        final BindingRuntimeTypesFactory factory = new BindingRuntimeTypesFactory(context);
         factory.indexTypes(moduleGens);
         LOG.debug("Indexed {} generators in {}", moduleGens.size(), sw);
 
         return new BindingRuntimeTypes(context, factory.augmentationToSchema, factory.typeToSchema,
-            factory.schemaToType, factory.identities);
+            factory.schemaToType, factory.actions, factory.identities);
     }
 
     private void indexTypes(final Iterable<? extends Generator> generators) {
@@ -75,11 +81,14 @@ final class BindingRuntimeTypesFactory implements Mutable {
     private void indexType(final @NonNull Generator generator, final @NonNull GeneratedType type) {
         if (generator instanceof AbstractExplicitGenerator) {
             final EffectiveStatement<?, ?> stmt = ((AbstractExplicitGenerator<?>) generator).statement();
-            if (stmt instanceof IdentityEffectiveStatement) {
+            if (generator instanceof IdentityGenerator) {
+                verify(stmt instanceof IdentityEffectiveStatement, "Unexpected statement %s", stmt);
                 identities.put(((IdentityEffectiveStatement) stmt).argument(), type);
-            } else if (stmt instanceof AugmentEffectiveStatement) {
+            } else if (generator instanceof AbstractAugmentGenerator) {
                 verify(stmt instanceof AugmentationSchemaNode, "Unexpected statement %s", stmt);
                 augmentationToSchema.put(type, (AugmentationSchemaNode) stmt);
+            } else if (generator instanceof ActionGenerator) {
+                actions.put(type, ((ActionGenerator) generator).absolutePath(context));
             }
 
             final WithStatus schema;
