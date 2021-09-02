@@ -96,6 +96,7 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
     @Nullable DataSchemaNode findChildSchemaDefinition(DataNodeContainer parentSchema, QNameModule parentNamespace,
         Class<?> childClass);
 
+    // FIXME: this can be neatly catered for via SchemaTreeInference
     @Nullable ActionDefinition getActionDefinition(Class<? extends Action<?, ?, ?>> cls);
 
     @NonNull Entry<AugmentationIdentifier, AugmentationSchemaNode> getResolvedAugmentationSchema(
