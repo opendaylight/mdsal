@@ -11,7 +11,6 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -102,8 +101,6 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         this.commitAndThrowException = true;
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private FluentFuture<? extends CommitInfo> handleCommit(
             final Supplier<FluentFuture<? extends CommitInfo>> commitMethod) {
         if (howManyFailingCommits.decrementAndGet() == -1) {

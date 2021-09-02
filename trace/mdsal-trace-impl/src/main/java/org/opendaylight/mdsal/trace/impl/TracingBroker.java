@@ -214,8 +214,6 @@ public class TracingBroker implements TracingDOMDataBroker {
         writeWatches.add(watch);
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private boolean isRegistrationWatched(final YangInstanceIdentifier iid, final LogicalDatastoreType store) {
         if (registrationWatches.isEmpty()) {
             return true;
