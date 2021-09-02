@@ -11,12 +11,14 @@ module org.opendaylight.mdsal.dom.spi {
     exports org.opendaylight.mdsal.dom.spi.store;
 
     requires transitive org.opendaylight.mdsal.dom.api;
+    requires transitive org.opendaylight.yangtools.yang.data.tree.api;
     requires transitive org.opendaylight.yangtools.yang.model.api;
     requires transitive org.opendaylight.yangtools.yang.repo.api;
     requires transitive org.opendaylight.yangtools.yang.repo.spi;
     requires org.opendaylight.yangtools.odlext.model.api;
     requires org.opendaylight.yangtools.util;
     requires org.opendaylight.yangtools.yang.data.api;
+    requires org.opendaylight.yangtools.yang.data.tree.spi;
     requires org.slf4j;
 
     // Annotations
