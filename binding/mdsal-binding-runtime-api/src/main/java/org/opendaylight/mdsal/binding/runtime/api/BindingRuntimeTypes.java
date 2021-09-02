@@ -49,9 +49,12 @@ public final class BindingRuntimeTypes implements EffectiveModelContextProvider,
 
     private final @NonNull EffectiveModelContext schemaContext;
     private final ImmutableMap<Type, AugmentationSchemaNode> typeToAugmentation;
-    private final ImmutableMap<Type, WithStatus> typeToSchema;
     private final ImmutableMultimap<Type, Type> choiceToCases;
     private final ImmutableMap<QName, Type> identities;
+
+    // FIXME: 9.0.0: lookup by SchemaNode is becoming unreliable, we should be using a EffectiveStatementInference or
+    //               a similar hierarchical addressing construct
+    private final ImmutableMap<Type, WithStatus> typeToSchema;
     // Not Immutable as we use two different implementations
     private final Map<WithStatus, Type> schemaToType;
 
@@ -65,7 +68,6 @@ public final class BindingRuntimeTypes implements EffectiveModelContextProvider,
         this.identities = ImmutableMap.copyOf(identities);
 
         // Careful to use identity for SchemaNodes, but only if needed
-        // FIXME: 8.0.0: YT should be switching to identity for equals(), so this should become unnecessary
         Map<WithStatus, Type> copy;
         try {
             copy = ImmutableMap.copyOf(schemaToType);

@@ -44,7 +44,6 @@ import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.DerivableSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.util.EffectiveAugmentationSchema;
@@ -357,7 +356,7 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
         return Optional.empty();
     }
 
-    private static @Nullable SchemaNode originalNodeOf(final SchemaNode node) {
-        return node instanceof DerivableSchemaNode ? ((DerivableSchemaNode) node).getOriginal().orElse(null) : null;
+    private static @Nullable DerivableSchemaNode<?> originalNodeOf(final SchemaNode node) {
+        return node instanceof DerivableSchemaNode ? ((DerivableSchemaNode<?>) node).getOriginal().orElse(null) : null;
     }
 }
