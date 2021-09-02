@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.dom.adapter.query;
 
 import static java.util.Objects.requireNonNull;
 
-import java.math.BigDecimal;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.query.ComparableMatchBuilder;
 import org.opendaylight.mdsal.binding.api.query.MatchBuilderPath;
@@ -24,6 +23,7 @@ import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
+import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
@@ -71,7 +71,7 @@ final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> 
     }
 
     @Override
-    public ComparableMatchBuilder<O, BigDecimal> leaf(final Decimal64LeafReference<T> methodRef) {
+    public ComparableMatchBuilder<O, Decimal64> leaf(final Decimal64LeafReference<T> methodRef) {
         return comparableFor(methodRef);
     }
 
