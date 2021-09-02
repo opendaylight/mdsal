@@ -254,10 +254,10 @@ abstract class BaseTemplate extends JavaFileTemplate {
                 sb.append("</pre>")
 
                 if (node instanceof SchemaNode) {
-                    sb.append("The schema path to identify an instance is\n")
-                    .append("<i>")
-                    .append(formatSchemaPath(def.module.argument.localName, node.path.pathFromRoot))
-                    .append("</i>\n")
+//                    sb.append("The schema path to identify an instance is\n")
+//                    .append("<i>")
+//                    .append(formatSchemaPath(def.module.argument.localName, node.path.pathFromRoot))
+//                    .append("</i>\n")
 
                     if (hasBuilderClass(node)) {
                         val builderName = type.name + "Builder";
