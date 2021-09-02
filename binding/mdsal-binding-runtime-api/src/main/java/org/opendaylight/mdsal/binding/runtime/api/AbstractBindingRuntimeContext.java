@@ -97,7 +97,7 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
 
     @Override
     public final Absolute getActionIdentifier(final Class<? extends Action<?, ?, ?>> cls) {
-        return getTypes().findSchemaNodeIdentifier(Type.of(cls)).orElse(null);
+        return getTypes().findActionIdentifier(Type.of(cls)).orElse(null);
     }
 
     @Override
