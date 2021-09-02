@@ -22,7 +22,7 @@ import org.eclipse.jdt.annotation.Nullable;
  *
  * @author Michael Vorburger.ch
  */
-class CloseTrackedTrait<T extends CloseTracked<T>> implements CloseTracked<T> {
+final class CloseTrackedTrait<T extends CloseTracked<T>> implements CloseTracked<T> {
 
     // NB: It's important that we keep a Throwable here, and not directly the StackTraceElement[] !
     // This is because creating a new Throwable() is a lot less expensive in terms of runtime overhead
@@ -32,7 +32,7 @@ class CloseTrackedTrait<T extends CloseTracked<T>> implements CloseTracked<T> {
     private final CloseTrackedRegistry<T> closeTrackedRegistry;
     private final CloseTracked<T> realCloseTracked;
 
-    CloseTrackedTrait(CloseTrackedRegistry<T> transactionChainRegistry, CloseTracked<T> realCloseTracked) {
+    CloseTrackedTrait(final CloseTrackedRegistry<T> transactionChainRegistry, final CloseTracked<T> realCloseTracked) {
         if (transactionChainRegistry.isDebugContextEnabled()) {
             // NB: We're NOT doing the (expensive) getStackTrace() here just yet (only below)
             // TODO When we're on Java 9, then instead use the new java.lang.StackWalker API..

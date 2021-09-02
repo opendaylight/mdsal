@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.api.query;
 
-import java.math.BigDecimal;
 import org.mockito.Mock;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.Foo;
 import org.opendaylight.yang.gen.v1.mdsal.query.norev.first.grp.System;
@@ -17,6 +16,7 @@ import org.opendaylight.yang.gen.v1.mdsal.query.norev.third.grp.AffectedUsers;
 import org.opendaylight.yang.gen.v1.mdsal426.norev.BooleanCont;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.DecimalContainer;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 @SuppressWarnings("exports")
@@ -150,7 +150,7 @@ public class QueryBuilderExamples {
                 .querySubtree(InstanceIdentifier.create(DecimalContainer.class))
                 .matching()
                     .leaf(DecimalContainer::getDecimalLeaf5)
-                    .valueEquals(BigDecimal.ONE)
+                    .valueEquals(Decimal64.valueOf("1.0"))
                 .build();
     }
 }
