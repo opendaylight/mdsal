@@ -39,7 +39,6 @@ import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -57,9 +56,6 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class TypeProviderTest {
     static EffectiveModelContext SCHEMA_CONTEXT;
     static Module TEST_TYPE_PROVIDER;
-
-    @Mock
-    public SchemaPath schemaPath;
 
     @Mock
     public SchemaNode schemaNode;
@@ -260,17 +256,17 @@ public class TypeProviderTest {
     }
 
     private static void setReferencedTypeForTypeProvider(final AbstractTypeProvider provider) {
-        final LeafSchemaNode enumLeafNode = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo",
-            "resolve-direct-use-of-enum");
-        final TypeDefinition<?> enumLeafTypedef = enumLeafNode.getType();
-        provider.putReferencedType(enumLeafNode.getPath(),
-            Type.of(provider.javaTypeForSchemaDefinitionType(enumLeafTypedef, enumLeafNode)));
-
-        final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(TEST_TYPE_PROVIDER,
-            "foo", "list-of-enums");
-        final TypeDefinition<?> enumLeafListTypedef = enumListNode.getType();
-        provider.putReferencedType(enumListNode.getPath(),
-            Type.of(provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode)));
+//        final LeafSchemaNode enumLeafNode = provideLeafNodeFromTopLevelContainer(TEST_TYPE_PROVIDER, "foo",
+//            "resolve-direct-use-of-enum");
+//        final TypeDefinition<?> enumLeafTypedef = enumLeafNode.getType();
+//        provider.putReferencedType(enumLeafNode.getPath(),
+//            Type.of(provider.javaTypeForSchemaDefinitionType(enumLeafTypedef, enumLeafNode)));
+//
+//        final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(TEST_TYPE_PROVIDER,
+//            "foo", "list-of-enums");
+//        final TypeDefinition<?> enumLeafListTypedef = enumListNode.getType();
+//        provider.putReferencedType(enumListNode.getPath(),
+//            Type.of(provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode)));
     }
 
     @Test
