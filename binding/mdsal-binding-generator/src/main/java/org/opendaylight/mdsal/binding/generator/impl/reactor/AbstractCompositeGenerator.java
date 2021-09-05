@@ -83,16 +83,69 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
     }
 
     @Override
-    final @Nullable AbstractExplicitGenerator<?> findGenerator(final EffectiveStatement<?, ?> stmt) {
+    final @Nullable AbstractExplicitGenerator<?> findGenerator(final List<EffectiveStatement<?, ?>> stmtPath) {
+        // FIXME: MDSAL-694: This matching needs to do the right thing with
+        //                   respect what AbstractCompositeGenerator.{augments,groupings} tracks. That in turn means
+        //                   following back to the originating grouping to find the generator which corresponds to the
+        //                   EffectiveStatement's source in that grouping. This is probably quite involved and may
+        //                   require some amount of backtracking: DerivableSchemaNode.getOriginal() does *not* point to
+        //                   the previous incarnation, but the the root definition, i.e. more than one step away along
+        //                   AbstractCompositeGenerator.groupings axis.
+        final EffectiveStatement<?, ?> stmt = stmtPath.get(0);
+
+        // Try direct children first, which is simple
         for (Generator gen : children) {
             if (gen instanceof AbstractExplicitGenerator) {
                 final AbstractExplicitGenerator<?> ret = (AbstractExplicitGenerator<?>) gen;
                 if (ret.statement() == stmt) {
-                    return ret;
+                    final int size = stmtPath.size();
+                    return size == 1 ? ret : ret.findGenerator(stmtPath.subList(1, size));
                 }
             }
         }
+
+        // Now we are swimming in the opposite direction of YANG instantiation.
+        final Object qname = verifyQName(stmt);
+
+        // ... then let's try groupings ...
+        for (GroupingGenerator gen : groupings) {
+            LOG.debug("Find {} in {}", stmt, gen);
+        }
+
+        // ... finally let's try augmentations ...
+        for (AbstractAugmentGenerator gen : augments) {
+            LOG.debug("Find {} in {}", stmt, gen);
+            for (Generator genChild : gen) {
+                if (genChild instanceof AbstractExplicitGenerator) {
+                    final AbstractExplicitGenerator<?> ret = (AbstractExplicitGenerator<?>) genChild;
+                    final EffectiveStatement<?, ?> augStmt = ret.statement();
+                    LOG.debug("Match {} to {}", stmt, augStmt);
+
+                    final QName augQName = verifyQName(augStmt);
+                    if (qname.equals(augQName)) {
+                        final int size = stmtPath.size();
+                        // FIXME: this does not quite work ;( the problem is that children are also masked, i.e. our
+                        //        search needs to have a QNameModule and match the QName there!
+                        return size == 1 ? ret : ret.findGenerator(stmtPath.subList(1, size));
+                    }
+                }
+            }
+        }
+
+        // if (match == null && stmt instanceof DerivableSchemaNode) {
+        //     final SchemaNode orig = ((DerivableSchemaNode) stmt).getOriginal().orElse(null);
+        //     if (orig instanceof EffectiveStatement) {
+        //         match = leafGenerators.get(orig);
+        //     }
+        // }
+
         return null;
+    }
+
+    private static @NonNull QName verifyQName(final EffectiveStatement<?, ?> stmt) {
+        final Object arg = stmt.argument();
+        verify(arg instanceof QName, "Unexpected argument %s in %s", arg, stmt);
+        return (QName) arg;
     }
 
     final @NonNull CollisionDomain domain() {
