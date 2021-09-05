@@ -83,15 +83,34 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
     }
 
     @Override
-    final @Nullable AbstractExplicitGenerator<?> findGenerator(final EffectiveStatement<?, ?> stmt) {
+    final @Nullable AbstractExplicitGenerator<?> findGenerator(final List<EffectiveStatement<?, ?>> stmtPath,
+            final int index) {
+        // FIXME: MDSAL-694: This matching needs to do the right thing with
+        //                   respect what AbstractCompositeGenerator.{augments,groupings} tracks. That in turn means
+        //                   following back to the originating grouping to find the generator which corresponds to the
+        //                   EffectiveStatement's source in that grouping. This is probably quite involved and may
+        //                   require some amount of backtracking: DerivableSchemaNode.getOriginal() does *not* point to
+        //                   the previous incarnation, but the the root definition, i.e. more than one step away along
+        //                   AbstractCompositeGenerator.groupings axis.
+        final EffectiveStatement<?, ?> stmt = stmtPath.get(index);
+
         for (Generator gen : children) {
             if (gen instanceof AbstractExplicitGenerator) {
                 final AbstractExplicitGenerator<?> ret = (AbstractExplicitGenerator<?>) gen;
                 if (ret.statement() == stmt) {
-                    return ret;
+                    final int nextIndex = index + 1;
+                    return nextIndex == stmtPath.size() ? ret : ret.findGenerator(stmtPath, nextIndex);
                 }
             }
         }
+
+        // if (match == null && stmt instanceof DerivableSchemaNode) {
+        //      final SchemaNode orig = ((DerivableSchemaNode) stmt).getOriginal().orElse(null);
+        //      if (orig instanceof EffectiveStatement) {
+        //          match = leafGenerators.get(orig);
+        //      }
+        //  }
+
         return null;
     }
 
