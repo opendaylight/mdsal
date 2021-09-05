@@ -11,9 +11,8 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.YangStatementPath;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
-import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
     public RuntimeGeneratedTOBuilder(final JavaTypeName identifier) {
@@ -41,7 +40,7 @@ public class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
     }
 
     @Override
-    public final void setSchemaPath(final SchemaPath schemaPath) {
+    public final void setStatementPath(final YangStatementPath statementPath) {
         // No-op
     }
 
@@ -81,7 +80,7 @@ public class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
         }
 
         @Override
-        public final Iterable<QName> getSchemaPath() {
+        public final YangStatementPath statementPath() {
             throw unsupported();
         }
 
