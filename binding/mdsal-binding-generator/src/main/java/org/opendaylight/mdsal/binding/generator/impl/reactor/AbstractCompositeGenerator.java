@@ -83,17 +83,47 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
     }
 
     @Override
-    final @Nullable AbstractExplicitGenerator<?> findGenerator(final EffectiveStatement<?, ?> stmt) {
-        for (Generator gen : children) {
-            if (gen instanceof AbstractExplicitGenerator) {
-                final AbstractExplicitGenerator<?> ret = (AbstractExplicitGenerator<?>) gen;
-                if (ret.statement() == stmt) {
-                    return ret;
-                }
+    final @Nullable AbstractExplicitGenerator<?> findGenerator(final Iterator<EffectiveStatement<?, ?>> stmtPath,
+            final GeneratorMatcher childMatcher) {
+        // FIXME: MDSAL-694: This matching needs to do the right thing with
+        //                   respect what AbstractCompositeGenerator.{augments,groupings} tracks. That in turn means
+        //                   following back to the originating grouping to find the generator which corresponds to the
+        //                   EffectiveStatement's source in that grouping. This is probably quite involved and may
+        //                   require some amount of backtracking: DerivableSchemaNode.getOriginal() does *not* point to
+        //                   the previous incarnation, but the the root definition, i.e. more than one step away along
+        //                   AbstractCompositeGenerator.groupings axis.
+        final EffectiveStatement<?, ?> stmt = stmtPath.next();
+
+        // Try direct children first, which is simple
+        AbstractExplicitGenerator<?> ret = childMatcher.findGenerator(stmt, children);
+        if (ret != null) {
+            return stmtPath.hasNext() ? ret.findGenerator(stmtPath, childMatcher) : ret;
+        }
+
+        // ... then let's try groupings ...
+        for (GroupingGenerator gen : groupings) {
+            LOG.debug("Find {} in {}", stmt, gen);
+        }
+
+        // ... finally let's try augmentations ...
+        for (AbstractAugmentGenerator gen : augments) {
+            LOG.debug("Find {} in {}", stmt, gen);
+            ret = GeneratorMatcher.AUGMENT.findGenerator(stmt, gen);
+            if (ret != null) {
+                return stmtPath.hasNext() ? ret.findGenerator(stmtPath, GeneratorMatcher.AUGMENT) : ret;
             }
         }
+
+        // if (match == null && stmt instanceof DerivableSchemaNode) {
+        //     final SchemaNode orig = ((DerivableSchemaNode) stmt).getOriginal().orElse(null);
+        //     if (orig instanceof EffectiveStatement) {
+        //         match = leafGenerators.get(orig);
+        //     }
+        // }
+
         return null;
     }
+
 
     final @NonNull CollisionDomain domain() {
         return domain;
