@@ -42,6 +42,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ListEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.UsesEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.ri.type.TypeBuilder;
@@ -83,12 +84,37 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
     }
 
     @Override
-    final @Nullable AbstractExplicitGenerator<?> findGenerator(final EffectiveStatement<?, ?> stmt) {
-        for (Generator gen : children) {
-            if (gen instanceof AbstractExplicitGenerator) {
-                final AbstractExplicitGenerator<?> ret = (AbstractExplicitGenerator<?>) gen;
-                if (ret.statement() == stmt) {
-                    return ret;
+    final @Nullable AbstractExplicitGenerator<?> findGenerator(final Iterator<EffectiveStatement<?, ?>> stmtPath,
+            final MatchStrategy childStrategy) {
+        final EffectiveStatement<?, ?> stmt = stmtPath.next();
+
+        // Try direct children first, which is simple
+        AbstractExplicitGenerator<?> ret = childStrategy.findGenerator(stmt, children);
+        if (ret != null) {
+            return stmtPath.hasNext() ? ret.findGenerator(stmtPath, childStrategy) : ret;
+        }
+
+        // At this point we are about to fork for augments or groupings. In either case only schema tree statements can
+        // be found this way. The fun part is that if we find a match and need to continue, we will use the same
+        // strategy for children as well. We now know that this (and subsequent) statements need to have a QName
+        // argument.
+        if (stmt instanceof SchemaTreeEffectiveStatement) {
+            // grouping -> uses instantiation changes the namespace to the local namespace of the uses site. We are
+            // going the opposite direction, hence we are changing namespace from local to the grouping's namespace.
+            for (GroupingGenerator gen : groupings) {
+                final MatchStrategy strat = MatchStrategy.grouping(gen);
+                ret = strat.findGenerator(stmt, gen);
+                if (ret != null) {
+                    return stmtPath.hasNext() ? ret.findGenerator(stmtPath, strat) : ret;
+                }
+            }
+
+            // All augments are dead simple: they need to match on argument (which we expect to be a QName)
+            final MatchStrategy strat = MatchStrategy.augment();
+            for (AbstractAugmentGenerator gen : augments) {
+                ret = strat.findGenerator(stmt, gen);
+                if (ret != null) {
+                    return stmtPath.hasNext() ? ret.findGenerator(stmtPath, strat) : ret;
                 }
             }
         }
