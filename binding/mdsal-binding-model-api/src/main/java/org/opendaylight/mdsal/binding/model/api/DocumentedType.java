@@ -7,12 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.model.api;
 
-import org.opendaylight.yangtools.yang.common.QName;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
- * Implementing this interface allows an object to hold information which are
- * essential for generating java doc from type definition.
+ * Implementing this interface allows an object to hold information which are essential for generating Javadoc from type
+ * definition.
  */
+// FIXME: clarify nullability and cleanup foo/getFoo()/findFoo() methods as needed
+// FIXME: perhaps this is codegen-specific interface?
 public interface DocumentedType {
 
     /**
@@ -34,13 +36,11 @@ public interface DocumentedType {
     String getReference();
 
     /**
-     * Returns a list of QNames which represent schema path in schema tree from
-     * actual concrete type to the root.
+     * Source statement's path in YANG statement tree.
      *
-     * @return a schema path in schema tree from actual concrete schema node
-     *         identifier to the root.
+     * @return Path of the statement leading to this definition
      */
-    Iterable<QName> getSchemaPath();
+    @Nullable YangStatementPath statementPath();
 
     /**
      * Returns the name of the module, in which generated type was specified.
