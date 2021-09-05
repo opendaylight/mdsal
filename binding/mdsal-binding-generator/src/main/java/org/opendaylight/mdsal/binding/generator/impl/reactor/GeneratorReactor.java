@@ -301,28 +301,32 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
     }
 
     private @NonNull AbstractTypeAwareGenerator<?> strictResolvePath(final @NonNull PathExpression path) {
-        final EffectiveStatement<?, ?> stmt;
         try {
-            stmt = inferenceStack.resolvePathExpression(path);
+            inferenceStack.resolvePathExpression(path);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Failed to find leafref target " + path.getOriginalString(), e);
         }
-        return mapToGenerator(stmt);
+        return mapToGenerator();
     }
 
     private @Nullable AbstractTypeAwareGenerator<?> lenientResolveLeafref(final @NonNull PathExpression path) {
-        final EffectiveStatement<?, ?> stmt;
         try {
-            stmt = inferenceStack.resolvePathExpression(path);
+            inferenceStack.resolvePathExpression(path);
         } catch (IllegalArgumentException e) {
             LOG.debug("Ignoring unresolved path {}", path, e);
             return null;
         }
-        return mapToGenerator(stmt);
+        return mapToGenerator();
     }
 
     // Map a statement to the corresponding generator
-    private @NonNull AbstractTypeAwareGenerator<?> mapToGenerator(final EffectiveStatement<?, ?> stmt) {
+    private @NonNull AbstractTypeAwareGenerator<?> mapToGenerator() {
+        // FIXME: this approach breaks down when we take away SchemaPath.getPath(), because we suddenly get statement
+        //        reuse where there was none. That reuse triggers conflict detection, as suddenly we seem to have
+        //        multiple generators for a particular statement.
+        //        What we really need to look at is the inferenceStack.toInference().statementPath() and match that to
+        //        our generator hierarchy.
+        final EffectiveStatement<?, ?> stmt = inferenceStack.currentStatement();
         if (leafGenerators == null) {
             final Map<EffectiveStatement<?, ?>, AbstractTypeAwareGenerator<?>> map = new IdentityHashMap<>();
             indexLeafGenerators(map, children);
