@@ -7,13 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.model.ri.generated.type.builder;
 
+import static java.util.Objects.requireNonNull;
+
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.YangStatementPath;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
-import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
     private Restrictions restrictions;
@@ -21,7 +22,7 @@ public class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
     private String reference;
     private String description;
     private String moduleName;
-    private SchemaPath schemaPath;
+    private YangStatementPath statementPath;
 
     public CodegenGeneratedTOBuilder(final JavaTypeName identifier) {
         super(identifier);
@@ -48,8 +49,8 @@ public class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
     }
 
     @Override
-    public final void setSchemaPath(final SchemaPath schemaPath) {
-        this.schemaPath = schemaPath;
+    public final void setStatementPath(final YangStatementPath statementPath) {
+        this.statementPath = requireNonNull(statementPath);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
         private final String reference;
         private final String description;
         private final String moduleName;
-        private final SchemaPath schemaPath;
+        private final YangStatementPath statementPath;
 
         GTO(final CodegenGeneratedTOBuilder builder) {
             super(builder);
@@ -76,7 +77,7 @@ public class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
             this.reference = builder.reference;
             this.description = builder.description;
             this.moduleName = builder.moduleName;
-            this.schemaPath = builder.schemaPath;
+            this.statementPath = builder.statementPath;
 
             if (builder.suid == null) {
                 this.suid = null;
@@ -106,8 +107,8 @@ public class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
         }
 
         @Override
-        public Iterable<QName> getSchemaPath() {
-            return this.schemaPath.getPathFromRoot();
+        public YangStatementPath statementPath() {
+            return this.statementPath;
         }
 
         @Override
