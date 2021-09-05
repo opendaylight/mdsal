@@ -301,28 +301,40 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
     }
 
     private @NonNull AbstractTypeAwareGenerator<?> strictResolvePath(final @NonNull PathExpression path) {
-        final EffectiveStatement<?, ?> stmt;
         try {
-            stmt = inferenceStack.resolvePathExpression(path);
+            inferenceStack.resolvePathExpression(path);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Failed to find leafref target " + path.getOriginalString(), e);
         }
-        return mapToGenerator(stmt);
+        return mapToGenerator();
     }
 
     private @Nullable AbstractTypeAwareGenerator<?> lenientResolveLeafref(final @NonNull PathExpression path) {
-        final EffectiveStatement<?, ?> stmt;
         try {
-            stmt = inferenceStack.resolvePathExpression(path);
+            inferenceStack.resolvePathExpression(path);
         } catch (IllegalArgumentException e) {
             LOG.debug("Ignoring unresolved path {}", path, e);
             return null;
         }
-        return mapToGenerator(stmt);
+        return mapToGenerator();
     }
 
     // Map a statement to the corresponding generator
-    private @NonNull AbstractTypeAwareGenerator<?> mapToGenerator(final EffectiveStatement<?, ?> stmt) {
+    private @NonNull AbstractTypeAwareGenerator<?> mapToGenerator() {
+        // FIXME: MDSAL-694: This approach breaks down if any LeafEffectiveStatement is mapped to two LeafGenerators.
+        //                   While it is exceedingly unlikely with SchemaNode.getPath(), it still happens with the TAPI
+        //                   models. Once we take SchemaNode.getPath() away, this done by YANGTOOLS-1066, we reliably
+        //                   broke down on our test suite.
+        //
+        //                   What we really need to look at is the inferenceStack.toInference().statementPath() and
+        //                   match that to our generator hierarchy. This matching needs to do the right thing with
+        //                   respect what AbstractCompositeGenerator.{augments,groupings} tracks. That in turn means
+        //                   following back to the originating grouping to find the generator which corresponds to the
+        //                   EffectiveStatement's source in that grouping. This is probably quite involved and may
+        //                   require some amount of backtracking: DerivableSchemaNode.getOriginal() does *not* point to
+        //                   the previous incarnation, but the the root definition, i.e. more than one step away along
+        //                   AbstractCompositeGenerator.groupings axis.
+        final EffectiveStatement<?, ?> stmt = inferenceStack.currentStatement();
         if (leafGenerators == null) {
             final Map<EffectiveStatement<?, ?>, AbstractTypeAwareGenerator<?>> map = new IdentityHashMap<>();
             indexLeafGenerators(map, children);
