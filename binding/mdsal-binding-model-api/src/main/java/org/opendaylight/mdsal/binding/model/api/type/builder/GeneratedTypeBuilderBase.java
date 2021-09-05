@@ -16,7 +16,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.mdsal.binding.model.api.YangStatementPath;
 
 public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>> extends Type, AnnotableTypeBuilder {
     /**
@@ -153,11 +153,11 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
     void setModuleName(String moduleName);
 
     /**
-     * Schema path in schema tree from actual concrete type to the root.
+     * Set source statement's path in YANG statement tree.
      *
-     * @param schemaPath schema path in schema tree
+     * @param statementPath Path of the statement leading to this definition
      */
-    void setSchemaPath(SchemaPath schemaPath);
+    void setStatementPath(YangStatementPath statementPath);
 
     /**
      * Set a string that is used to specify a textual cross-reference to an external document, either another module

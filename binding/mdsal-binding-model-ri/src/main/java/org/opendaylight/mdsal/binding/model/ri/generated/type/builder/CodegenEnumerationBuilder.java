@@ -14,15 +14,14 @@ import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
-import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.mdsal.binding.model.api.YangStatementPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 
 public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder {
     private String description;
     private String reference;
     private String moduleName;
-    private SchemaPath schemaPath;
+    private YangStatementPath statementPath;
 
     public CodegenEnumerationBuilder(final JavaTypeName identifier) {
         super(identifier);
@@ -39,8 +38,8 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
     }
 
     @Override
-    public void setSchemaPath(final SchemaPath schemaPath) {
-        this.schemaPath = schemaPath;
+    public void setStatementPath(final YangStatementPath statementPath) {
+        this.statementPath = requireNonNull(statementPath);
     }
 
     @Override
@@ -93,13 +92,13 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
         private final String description;
         private final String reference;
         private final String moduleName;
-        private final SchemaPath schemaPath;
+        private final YangStatementPath statementPath;
 
         EnumerationImpl(final CodegenEnumerationBuilder builder) {
             super(builder);
             this.description = builder.description;
             this.moduleName = builder.moduleName;
-            this.schemaPath = builder.schemaPath;
+            this.statementPath = builder.statementPath;
             this.reference = builder.reference;
         }
 
@@ -119,8 +118,8 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
         }
 
         @Override
-        public Iterable<QName> getSchemaPath() {
-            return this.schemaPath.getPathFromRoot();
+        public YangStatementPath statementPath() {
+            return this.statementPath;
         }
 
         @Override
