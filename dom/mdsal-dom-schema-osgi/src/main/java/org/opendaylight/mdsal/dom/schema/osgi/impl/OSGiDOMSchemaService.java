@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
@@ -27,7 +28,6 @@ import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -46,12 +46,13 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
     ComponentFactory listenerFactory = null;
 
     private final List<EffectiveModelContextListener> listeners = new CopyOnWriteArrayList<>();
+    private final AtomicReference<ModuleInfoSnapshot> currentSnapshot = new AtomicReference<>();
 
-    private volatile ModuleInfoSnapshot currentSnapshot;
+    private boolean deactivated;
 
     @Override
-    public EffectiveModelContext getGlobalContext() {
-        return currentSnapshot.getEffectiveModelContext();
+    public @NonNull EffectiveModelContext getGlobalContext() {
+        return currentSnapshot.get().getEffectiveModelContext();
     }
 
     @Override
@@ -62,16 +63,25 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
 
     @Override
     public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
-        return currentSnapshot.getSource(sourceIdentifier);
+        return currentSnapshot.get().getSource(sourceIdentifier);
     }
 
-    @Reference(fieldOption = FieldOption.REPLACE)
+    @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     void bindSnapshot(final OSGiModuleInfoSnapshot newContext) {
-        LOG.trace("Updating context to generation {}", newContext.getGeneration());
+        LOG.info("Updating context to generation {}", newContext.getGeneration());
         final ModuleInfoSnapshot snapshot = newContext.getService();
         final EffectiveModelContext ctx = snapshot.getEffectiveModelContext();
-        currentSnapshot = snapshot;
+        final ModuleInfoSnapshot previous = currentSnapshot.getAndSet(snapshot);
+        LOG.debug("Snapshot updated from {} to {}", previous, snapshot);
+
         listeners.forEach(listener -> notifyListener(ctx, listener));
+    }
+
+    void unbindSnapshot(final OSGiModuleInfoSnapshot oldContext) {
+        final ModuleInfoSnapshot snapshot = oldContext.getService();
+        if (currentSnapshot.compareAndSet(snapshot, null) && !deactivated) {
+            LOG.info("Lost final generation {}", oldContext.getGeneration());
+        }
     }
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
@@ -94,9 +104,9 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
     }
 
     @Deactivate
-    @SuppressWarnings("static-method")
     void deactivate() {
         LOG.info("DOM Schema services deactivated");
+        deactivated = true;
     }
 
     private @NonNull ListenerRegistration<EffectiveModelContextListener> registerListener(
@@ -116,7 +126,7 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    private static void notifyListener(final EffectiveModelContext context,
+    private static void notifyListener(final @NonNull EffectiveModelContext context,
             final EffectiveModelContextListener listener) {
         try {
             listener.onModelContextUpdated(context);
