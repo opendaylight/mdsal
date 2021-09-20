@@ -29,11 +29,11 @@ import org.slf4j.LoggerFactory;
 final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
     private static final Logger LOG = LoggerFactory.getLogger(RegularYangModuleInfoRegistry.class);
 
-    private final ComponentFactory contextFactory;
+    private final ComponentFactory<OSGiModuleInfoSnapshotImpl> contextFactory;
     private final ModuleInfoSnapshotResolver moduleInfoRegistry;
 
     @GuardedBy("this")
-    private ComponentInstance currentInstance;
+    private ComponentInstance<OSGiModuleInfoSnapshotImpl> currentInstance;
     @GuardedBy("this")
     private ModuleInfoSnapshot currentSnapshot;
     @GuardedBy("this")
@@ -41,7 +41,8 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
 
     private volatile boolean ignoreScanner = true;
 
-    RegularYangModuleInfoRegistry(final ComponentFactory contextFactory, final YangParserFactory factory) {
+    RegularYangModuleInfoRegistry(final ComponentFactory<OSGiModuleInfoSnapshotImpl> contextFactory,
+            final YangParserFactory factory) {
         this.contextFactory = requireNonNull(contextFactory);
         moduleInfoRegistry = new ModuleInfoSnapshotResolver("binding-dom-codec", factory);
     }
@@ -96,7 +97,7 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
         }
 
 
-        final ComponentInstance newInstance = contextFactory.newInstance(
+        final ComponentInstance<OSGiModuleInfoSnapshotImpl> newInstance = contextFactory.newInstance(
             OSGiModuleInfoSnapshotImpl.props(nextGeneration(), newSnapshot));
         if (currentInstance != null) {
             currentInstance.dispose();
