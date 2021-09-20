@@ -19,8 +19,8 @@ import org.osgi.service.component.ComponentFactory;
  * Update SchemaContext service in Service Registry each time new YangModuleInfo is added or removed.
  */
 abstract class YangModuleInfoRegistry {
-    static @NonNull YangModuleInfoRegistry create(final BundleContext ctx, final ComponentFactory contextFactory,
-            final YangParserFactory factory) {
+    static @NonNull YangModuleInfoRegistry create(final BundleContext ctx,
+            final ComponentFactory<OSGiModuleInfoSnapshotImpl> contextFactory, final YangParserFactory factory) {
         return KarafFeaturesSupport.wrap(ctx, new RegularYangModuleInfoRegistry(contextFactory, factory));
     }
 
