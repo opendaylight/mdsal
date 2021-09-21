@@ -162,6 +162,7 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
 
     protected abstract String getQuadValue(Q dottedQuad);
 
+    // FIXME: Replace with HexFormat.fromHexDigit(ch) when we have JDK17+
     static byte hexValue(final char ch) {
         byte value;
         try {
@@ -212,6 +213,7 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
      * @throws NullPointerException if input is null
      * @throws IllegalArgumentException if length of input is not 6 bytes
      */
+    // TODO: HexFormat.ofDelimiter(":").withUpperCase().formatHex(bytes) when we have JDK17+? Compare performance
     private static @NonNull String bytesToString(final byte @NonNull[] bytes, final int charHint) {
         final StringBuilder sb = new StringBuilder(charHint);
         appendHexByte(sb, bytes[0]);
@@ -222,6 +224,7 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
         return sb.toString();
     }
 
+    // FIXME: Replace with HexFormat.toHexDigits(sb, byteVal) when we have JDK17+, but note we prefer capital letters
     private static void appendHexByte(final StringBuilder sb, final byte byteVal) {
         final int intVal = Byte.toUnsignedInt(byteVal);
         sb.append(HEX_CHARS[intVal >>> 4]).append(HEX_CHARS[intVal & 15]);
