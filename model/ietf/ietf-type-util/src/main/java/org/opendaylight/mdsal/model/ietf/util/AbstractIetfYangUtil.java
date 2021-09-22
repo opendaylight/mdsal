@@ -195,7 +195,8 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
         for (int i = 0; i < chars.length; ++i) {
             final char c = chars[i];
             if (c >= 'A' && c <= 'F') {
-                chars[i] = Character.toLowerCase(c);
+                // Weird notation to ensure constant folding to '(char) (c + 32)'
+                chars[i] = (char) (c + ('a' - 'A'));
                 ret = true;
             }
         }
