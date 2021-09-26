@@ -51,6 +51,13 @@
         <module>mdsal-binding-util</module>
         <module>mdsal-binding-test-utils</module>
         <module>mdsal-binding-dom-adapter</module>
+
+        <!-- Integration with Service Component Runtime -->
+        <module>mdsal-binding-scr-api</module>
+        <module>mdsal-binding-scr-spi</module>
+        <module>mdsal-binding-scr-osgi</module>
+        <module>mdsal-binding-scr-processor</module>
+        <module>mdsal-binding-scr-it</module>
     </modules>
 
     <properties>
