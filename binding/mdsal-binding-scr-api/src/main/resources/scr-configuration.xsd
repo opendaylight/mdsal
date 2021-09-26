@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi: set et smarttab sw=4 tabstop=4: -->
+<!--
+ Copyright (c) 2021 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:cfg="http://org.opendaylight.mdsal/xmlns/scr-configuration/v0.1.0"
+        targetNamespace="http://org.opendaylight.mdsal/xmlns/scr-configuration/v0.1.0"
+        attributeFormDefault="unqualified", elementFormDefault="unqualified", version="0.1.0">
+    <annotation>
+        <documentation xml:lang="en">
+            This is the XML Schema for initial configuration datastore element
+            definition for injection into the Service Component Runtime (SCR).
+        </documentation>
+    </annotation>
+
+    <element name="initial" type="cfg:Tinitial" />
+    <complexType name="Tinitial">
+        <sequence>
+            <element name="field" type="cfg:Tfield" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+    </complexType>
+
+    <complexType name="Tfield">
+        <sequence>
+            <element name="package" type="xs:string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation xml:lang="en">
+                        Java package name, corresponding to java.lang.Class.getPackageName().
+                    </documentation>
+                </annotation>
+            </element>
+            <element name="class" type="xs:string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation xml:lang="en">
+                        Package-local name of the class hosting this field. When combined as
+                        package + "." + class, it needs to form a Fully-Qualified Class Name,
+                        as returned by java.lang.Class.getName().
+                    </documentation>
+                </annotation>
+            </element>
+            <element name="name" type="scr:Tfield" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation xml:lang="en">
+                        Field name, corresponding to java.lang.reflect.Field.getName(). At
+                        runtime must locate the correct field via
+                        java.lang.Class.getDeclaredField(name). 
+                    </documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+</schema>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi: set et smarttab sw=4 tabstop=4: -->
+<!--
+ Copyright (c) 2021 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+-->
+<!-- 
+    Example of an scr-configuration.xml file. This is expected to match the output of the src-it component. 
+
+    FIXME: extract comments into XSD
+ -->
+<cfg:initial xmlns:cfg="http://org.opendaylight.mdsal/xmlns/scr-configuration/v0.1.0">
+             <!-- Java Binding interface DataObject now, but should be possible to extend to any BindingObject type. -->
+      <field type="org.opendaylight.yang.gen.v1.urn.test.rev170101.Cont">
+           <package>org.opendaylight.mdsal.binding.scr.it</package>
+           <!--  Package-local class name which holds the runtime-constant value -->
+           <class>ExampleTestImplementation</class>
+           <!--  Field name -->
+           <name>INITIAL_CONT</name>
+      </field>
+</cfg:initial>

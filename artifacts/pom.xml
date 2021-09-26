@@ -243,6 +243,24 @@
                 <version>8.0.6-SNAPSHOT</version>
             </dependency>
 
+            <!-- Service Component Runtime integration -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-binding-scr-api</artifactId>
+                <version>8.0.6-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-binding-scr-processor</artifactId>
+                <version>8.0.6-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-binding-scr-it</artifactId>
+                <version>8.0.6-SNAPSHOT</version>
+            </dependency>
+
+            <!-- Tracing -->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-trace-api</artifactId>
