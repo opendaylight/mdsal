@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi: set et smarttab sw=4 tabstop=4: -->
+<!--
+ Copyright (c) 2021 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:cfg="http://org.opendaylight.mdsal/xmlns/scr-configuration/v0.1.0"
+        targetNamespace="http://org.opendaylight.mdsal/xmlns/scr-configuration/v0.1.0"
+        attributeFormDefault="unqualified" elementFormDefault="unqualified" version="0.1.0">
+    <annotation>
+        <documentation xml:lang="en">
+            This is the XML Schema for initial configuration datastore element
+            definition for injection into the Service Component Runtime (SCR).
+        </documentation>
+    </annotation>
+
+    <element name="initial" type="cfg:Tinitial" />
+    <complexType name="Tinitial">
+        <sequence>
+            <element name="field" type="cfg:Tfield" minOccurs="1" maxOccurs="unbounded" />
+        </sequence>
+    </complexType>
+
+    <complexType name="Tfield">
+        <attribute name="type" type="cfg:Tstring" use="required">
+            <annotation>
+                <documentation xml:lang="en">
+                     A Fully-Qualified Class Name of the BindingObject type this field
+                     references.
+                </documentation>
+            </annotation>
+        </attribute>
+        <attribute name="package" type="cfg:Tstring" use="required">
+            <annotation>
+                <documentation xml:lang="en">
+                    Java package name, corresponding to java.lang.Class.getPackageName().
+                </documentation>
+            </annotation>
+        </attribute>
+        <attribute name="class" type="cfg:Tstring" use="required">
+            <annotation>
+                <documentation xml:lang="en">
+                    Package-local name of the class hosting this field. When combined as
+                    package + "." + class, it needs to form a Fully-Qualified Class Name,
+                    as returned by java.lang.Class.getName().
+                </documentation>
+            </annotation>
+        </attribute>
+        <attribute name="name" type="cfg:Tstring" use="required">
+            <annotation>
+                <documentation xml:lang="en">
+                    Field name, corresponding to java.lang.reflect.Field.getName(). At
+                    runtime must locate the correct field via
+                    java.lang.Class.getDeclaredField(name). 
+                </documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+
+    <simpleType name="Tstring">
+        <restriction base="string">
+            <minLength value="1" />
+        </restriction>
+    </simpleType>
+</schema>
