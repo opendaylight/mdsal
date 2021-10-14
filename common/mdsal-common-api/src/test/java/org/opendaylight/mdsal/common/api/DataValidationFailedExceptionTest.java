@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.common.api;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
 public class DataValidationFailedExceptionTest {
 
@@ -26,7 +26,9 @@ public class DataValidationFailedExceptionTest {
         throw dataValidationFailedException;
     }
 
-    private final class TestClass implements Path<TestClass> {
+    private static final class TestClass implements HierarchicalIdentifier<TestClass> {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public boolean contains(final TestClass other) {
             return false;
