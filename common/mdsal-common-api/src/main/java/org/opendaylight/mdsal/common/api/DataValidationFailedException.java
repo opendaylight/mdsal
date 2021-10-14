@@ -9,8 +9,7 @@ package org.opendaylight.mdsal.common.api;
 
 import static java.util.Objects.requireNonNull;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
@@ -23,15 +22,12 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
  * by this transaction is invalid.
  */
 public class DataValidationFailedException extends TransactionCommitFailedException {
-
     private static final long serialVersionUID = 1L;
 
-    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Interfaces do not specify Serializable")
-    private final Path<?> path;
+    private final HierarchicalIdentifier<?> path;
+    private final Class<? extends HierarchicalIdentifier<?>> pathType;
 
-    private final Class<? extends Path<?>> pathType;
-
-    public <P extends Path<P>> DataValidationFailedException(final Class<P> pathType, final P path,
+    public <P extends HierarchicalIdentifier<P>> DataValidationFailedException(final Class<P> pathType, final P path,
             final String message, final Throwable cause) {
         super(message, cause, RpcResultBuilder.newError(ErrorType.APPLICATION, "invalid-value", message, null,
             path != null ? path.toString() : null, cause));
@@ -39,16 +35,16 @@ public class DataValidationFailedException extends TransactionCommitFailedExcept
         this.path = requireNonNull(path, "path must not be null.");
     }
 
-    public <P extends Path<P>> DataValidationFailedException(final Class<P> pathType, final P path,
+    public <P extends HierarchicalIdentifier<P>> DataValidationFailedException(final Class<P> pathType, final P path,
             final String message) {
         this(pathType, path, message, null);
     }
 
-    public final Path<?> getPath() {
+    public final HierarchicalIdentifier<?> getPath() {
         return path;
     }
 
-    public final Class<? extends Path<?>> getPathType() {
+    public final Class<? extends HierarchicalIdentifier<?>> getPathType() {
         return pathType;
     }
 }
