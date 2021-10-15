@@ -34,6 +34,8 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
@@ -92,8 +94,8 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
     }
 
     @Override
-    public final DataSchemaNode findChildSchemaDefinition(final DataNodeContainer parentSchema,
-            final QNameModule parentNamespace, final Class<?> childClass) {
+    public final Entry<Item<?>, DataSchemaNode> resolveBindingChild(final Class<? extends DataObject> parentClass,
+            final DataNodeContainer parentSchema, final QNameModule parentNamespace, final Class<?> childClass) {
         final DataSchemaNode origDef = getSchemaDefinition(childClass);
         if (origDef == null) {
             // Weird, the child does not have an associated definition
@@ -108,7 +110,7 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
             // - exactly same schema node, or
             // - instantiated node was added via uses statement and is instantiation of same grouping
             if (origDef.equals(sameName) || origDef.equals(getRootOriginalIfPossible(sameName))) {
-                return sameName;
+                return createChild(parentClass, parentSchema, childClass, sameName);
             }
 
             // Node has same name, but clearly is different
@@ -119,9 +121,19 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
         final DataSchemaNode potential = parentSchema.dataChildByName(origName.bindTo(parentNamespace));
         // We check if it is really instantiated from same definition as class was derived
         if (potential != null && origDef.equals(getRootOriginalIfPossible(potential))) {
-            return potential;
+            return createChild(parentClass, parentSchema, childClass, potential);
         }
         return null;
+    }
+
+    private static Entry<Item<?>, DataSchemaNode> createChild(final Class<? extends DataObject> parentClass,
+            final DataNodeContainer parentSchema, final Class<?> childClass, final DataSchemaNode childSchema) {
+        // FIXME: MDSAL-697: we should understand parentSchema's predicament here, perhaps with a Set<CaseSchemaNode>,
+        //                   containing those CaseSchemaNodes, which are isAddedByUses()
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        final Item<?> item = parentSchema instanceof CaseSchemaNode && ((CaseSchemaNode) parentSchema).isAddedByUses()
+            ? Item.of((Class) parentClass, (Class) childClass) : Item.of((Class<? extends DataObject>) childClass);
+        return Map.entry(item, childSchema);
     }
 
     private static @Nullable SchemaNode getRootOriginalIfPossible(final SchemaNode data) {
