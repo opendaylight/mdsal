@@ -161,6 +161,19 @@ public final class BindingRuntimeTypes implements EffectiveModelContextProvider,
         return Optional.ofNullable(schemaToType.get(schema));
     }
 
+    public Optional<Type> findOriginalAugmentationType(final AugmentationSchemaNode augment) {
+        // FIXME: We should have enough information from mdsal-binding-generator to receive a (sparse) Map for this
+        //        traversal
+        AugmentationSchemaNode current = augment;
+        while (true) {
+            final Optional<AugmentationSchemaNode> original = current.getOriginalDefinition();
+            if (original.isEmpty()) {
+                return findType(current);
+            }
+            current = original.orElseThrow();
+        }
+    }
+
     public Multimap<Type, Type> getChoiceToCases() {
         return choiceToCases;
     }

@@ -288,16 +288,10 @@ public abstract class AbstractBindingRuntimeContext implements BindingRuntimeCon
             final BindingRuntimeTypes types = getTypes();
             for (final AugmentationSchemaNode augment : ((AugmentationTarget) container).getAvailableAugmentations()) {
                 // Augmentation must have child nodes if is to be used with Binding classes
-                AugmentationSchemaNode augOrig = augment;
-                while (augOrig.getOriginalDefinition().isPresent()) {
-                    augOrig = augOrig.getOriginalDefinition().get();
-                }
-
                 if (!augment.getChildNodes().isEmpty()) {
-                    final Optional<Type> augType = types.findType(augOrig);
-                    if (augType.isPresent()) {
-                        identifierToType.put(getAugmentationIdentifier(augment), augType.get());
-                    }
+                    types.findOriginalAugmentationType(augment).ifPresent(augType -> {
+                        identifierToType.put(getAugmentationIdentifier(augment), augType);
+                    });
                 }
             }
             return ImmutableMap.copyOf(identifierToType);
