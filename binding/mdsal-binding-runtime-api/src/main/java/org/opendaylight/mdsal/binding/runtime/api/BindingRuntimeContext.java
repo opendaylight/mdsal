@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
@@ -94,8 +95,8 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
     @Nullable DataSchemaNode getSchemaDefinition(Class<?> cls);
 
     // FIXME: document this thing and perhaps move it to BindingRuntimeTypes?
-    @Nullable DataSchemaNode findChildSchemaDefinition(DataNodeContainer parentSchema, QNameModule parentNamespace,
-        Class<?> childClass);
+    @Nullable ResolvedChild resolveBindingChild(Class<? extends DataObject> parentClass,
+        DataNodeContainer parentSchema, QNameModule parentNamespace, Class<?> childClass);
 
     @Nullable ActionDefinition getActionDefinition(Class<? extends Action<?, ?, ?>> cls);
 
