@@ -13,13 +13,20 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingGenerator;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GroupingDefinitionDependencySortTest {
     @Test
@@ -89,5 +96,32 @@ public class GroupingDefinitionDependencySortTest {
         final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
             () -> GroupingDefinitionDependencySort.sort(null));
         assertEquals("Set of Type Definitions cannot be NULL!", ex.getMessage());
+    }
+
+    @Test
+    public void groupingSortIncludesActions() {
+        final EffectiveModelContext context = YangParserTestUtils.parseYangResource("/mdsal448.yang");
+        final Collection<? extends GroupingDefinition> groupings = context.findModule("mdsal448").get().getGroupings();
+        assertEquals(2, groupings.size());
+
+        final List<GroupingDefinition> ordered = sortGroupings(Iterables.get(groupings, 0),
+            Iterables.get(groupings, 1));
+        assertEquals(2, ordered.size());
+        // "the-grouping" needs to be first
+        assertEquals("the-grouping", ordered.get(0).getQName().getLocalName());
+        assertEquals("action-grouping", ordered.get(1).getQName().getLocalName());
+
+        // Sort needs to be stable
+        final List<GroupingDefinition> reverse = sortGroupings(Iterables.get(groupings, 1),
+            Iterables.get(groupings, 0));
+        assertEquals(ordered, reverse);
+
+        final List<GeneratedType> types = new DefaultBindingGenerator().generateTypes(context, context.getModules());
+        assertNotNull(types);
+        assertEquals(9, types.size());
+    }
+
+    private static List<GroupingDefinition> sortGroupings(final GroupingDefinition... groupings) {
+        return GroupingDefinitionDependencySort.sort(Arrays.asList(groupings));
     }
 }
