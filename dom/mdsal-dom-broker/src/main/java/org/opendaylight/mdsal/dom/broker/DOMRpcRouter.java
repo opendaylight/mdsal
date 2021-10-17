@@ -28,7 +28,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -101,10 +100,10 @@ public final class DOMRpcRouter extends AbstractRegistration
     private final @NonNull DOMRpcService rpcService = new RpcServiceFacade();
 
     @GuardedBy("this")
-    private Collection<Registration<?>> listeners = Collections.emptyList();
+    private ImmutableList<Registration<?>> listeners = ImmutableList.of();
 
     @GuardedBy("this")
-    private Collection<ActionRegistration<?>> actionListeners = Collections.emptyList();
+    private ImmutableList<ActionRegistration<?>> actionListeners = ImmutableList.of();
 
     private volatile DOMRpcRoutingTable routingTable = DOMRpcRoutingTable.EMPTY;
 
@@ -269,7 +268,7 @@ public final class DOMRpcRouter extends AbstractRegistration
     }
 
     @VisibleForTesting
-    synchronized Collection<?> listeners() {
+    synchronized List<?> listeners() {
         return listeners;
     }
 
@@ -297,7 +296,7 @@ public final class DOMRpcRouter extends AbstractRegistration
         }
 
         void initialTable() {
-            final Collection<DOMRpcIdentifier> added = new ArrayList<>();
+            final List<DOMRpcIdentifier> added = new ArrayList<>();
             for (Entry<QName, Set<YangInstanceIdentifier>> e : prevRpcs.entrySet()) {
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
             }
@@ -315,7 +314,7 @@ public final class DOMRpcRouter extends AbstractRegistration
             final Map<QName, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(l));
             final MapDifference<QName, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
-            final Collection<DOMRpcIdentifier> added = new ArrayList<>();
+            final List<DOMRpcIdentifier> added = new ArrayList<>();
             for (Entry<QName, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnRight().entrySet()) {
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
             }
@@ -340,7 +339,7 @@ public final class DOMRpcRouter extends AbstractRegistration
             final Map<QName, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(l));
             final MapDifference<QName, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
-            final Collection<DOMRpcIdentifier> removed = new ArrayList<>();
+            final List<DOMRpcIdentifier> removed = new ArrayList<>();
             for (Entry<QName, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnLeft().entrySet()) {
                 removed.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
             }
@@ -377,7 +376,7 @@ public final class DOMRpcRouter extends AbstractRegistration
         }
 
         void initialTable() {
-            final Collection<DOMActionInstance> added = new ArrayList<>();
+            final List<DOMActionInstance> added = new ArrayList<>();
             for (Entry<Absolute, Set<DOMDataTreeIdentifier>> e : prevActions.entrySet()) {
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
             }
