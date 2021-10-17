@@ -46,7 +46,7 @@ public final class TestModel {
             YangInstanceIdentifier.builder(ANOTHER_SHARD_PATH).node(NEW_SHARD_LIST).build();
 
     private TestModel() {
-        throw new UnsupportedOperationException();
+        // Hidden on purpose
     }
 
     public static EffectiveModelContext createTestContext() {
