@@ -1,0 +1,8 @@
+module rpcs {
+  namespace rpcs;
+  prefix rpcs;
+
+  rpc foo;
+
+  rpc bar;
+}

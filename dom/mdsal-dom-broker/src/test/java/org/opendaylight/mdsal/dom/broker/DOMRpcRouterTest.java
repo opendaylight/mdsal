@@ -10,11 +10,9 @@ package org.opendaylight.mdsal.dom.broker;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
@@ -27,9 +25,9 @@ import static org.opendaylight.mdsal.dom.broker.TestUtils.getTestRpcImplementati
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -58,63 +56,50 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
-import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DOMRpcRouterTest {
-    private static final QName FOO = QName.create("actions", "foo");
-    private static final QName BAR = QName.create(FOO, "bar");
-    private static final QName BAZ = QName.create(FOO, "baz");
-    private static final QName INPUT = QName.create(FOO, "input");
-    private static final QName OUTPUT = QName.create(FOO, "output");
-
-    private static final Absolute BAZ_TYPE = Absolute.of(FOO, BAZ);
     private static final YangInstanceIdentifier BAZ_PATH_BAD = YangInstanceIdentifier.create(
-        new NodeIdentifier(FOO), NodeIdentifierWithPredicates.of(FOO, BAR, "bad"));
+        new NodeIdentifier(Actions.FOO), NodeIdentifierWithPredicates.of(Actions.FOO, Actions.BAR, "bad"));
     private static final YangInstanceIdentifier BAZ_PATH_GOOD = YangInstanceIdentifier.create(
-        new NodeIdentifier(FOO), NodeIdentifierWithPredicates.of(FOO, BAR, "good"));
+        new NodeIdentifier(Actions.FOO), NodeIdentifierWithPredicates.of(Actions.FOO, Actions.BAR, "good"));
 
     private static final DOMActionImplementation IMPL =
         (type, path, input) -> Futures.immediateFuture(new SimpleDOMActionResult(
-            Builders.containerBuilder().withNodeIdentifier(new NodeIdentifier(OUTPUT)).build()));
-
-    private static EffectiveModelContext ACTIONS_CONTEXT;
-
-    @BeforeClass
-    public static void beforeClass() {
-        ACTIONS_CONTEXT = YangParserTestUtils.parseYangResource("/actions.yang");
-    }
+            Builders.containerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.OUTPUT)).build()));
 
     @Test
     public void registerRpcImplementation() {
-        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
-            DOMRpcRoutingTable routingTable = rpcRouter.routingTable();
-            assertFalse(routingTable.getOperations().containsKey(TestModel.TEST_QNAME));
+        try (DOMRpcRouter rpcRouter = rpcsRouter()) {
+            assertOperationKeys(rpcRouter);
 
-            rpcRouter.getRpcProviderService().registerRpcImplementation(getTestRpcImplementation(),
-                DOMRpcIdentifier.create(TestModel.TEST_QNAME, null));
-            routingTable = rpcRouter.routingTable();
-            assertTrue(routingTable.getOperations().containsKey(TestModel.TEST_QNAME));
+            final Registration fooReg = rpcRouter.getRpcProviderService().registerRpcImplementation(
+                getTestRpcImplementation(), DOMRpcIdentifier.create(Rpcs.FOO, null));
+            assertOperationKeys(rpcRouter, Rpcs.FOO);
 
-            rpcRouter.getRpcProviderService().registerRpcImplementation(getTestRpcImplementation(),
-                DOMRpcIdentifier.create(TestModel.TEST2_QNAME, null));
-            routingTable = rpcRouter.routingTable();
-            assertTrue(routingTable.getOperations().containsKey(TestModel.TEST2_QNAME));
+            final Registration barReg = rpcRouter.getRpcProviderService().registerRpcImplementation(
+                getTestRpcImplementation(), DOMRpcIdentifier.create(Rpcs.BAR, null));
+            assertOperationKeys(rpcRouter, Rpcs.FOO, Rpcs.BAR);
+
+            fooReg.close();
+            assertOperationKeys(rpcRouter, Rpcs.BAR);
+            barReg.close();
+            assertOperationKeys(rpcRouter);
         }
+    }
+
+    private static void assertOperationKeys(final DOMRpcRouter router, final QName... keys) {
+        assertEquals(Set.of(keys), router.routingTable().getOperations().keySet());
     }
 
     @Test
     public void testFailedInvokeRpc() {
-        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
-            final ListenableFuture<?> future = rpcRouter.getRpcService().invokeRpc(TestModel.TEST_QNAME, null);
+        try (DOMRpcRouter rpcRouter = rpcsRouter()) {
+            final ListenableFuture<?> future = rpcRouter.getRpcService().invokeRpc(Rpcs.FOO, null);
             final Throwable cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
             assertThat(cause, instanceOf(DOMRpcImplementationNotAvailableException.class));
-            assertEquals("No implementation of RPC "
-                + "(urn:opendaylight:params:xml:ns:yang:controller:md:sal:dom:store:test?revision=2014-03-13)test "
-                + "available", cause.getMessage());
+            assertEquals("No implementation of RPC (rpcs)foo available", cause.getMessage());
         }
     }
 
@@ -133,7 +118,7 @@ public class DOMRpcRouterTest {
             assertEquals(List.of(reg), rpcRouter.listeners());
 
             final Registration implReg = rpcRouter.getRpcProviderService().registerRpcImplementation(
-                getTestRpcImplementation(), DOMRpcIdentifier.create(TestModel.TEST_QNAME, null));
+                getTestRpcImplementation(), DOMRpcIdentifier.create(Rpcs.FOO, null));
             verify(listener, timeout(1000)).onRpcAvailable(any());
 
             implReg.close();
@@ -165,13 +150,9 @@ public class DOMRpcRouterTest {
     @Test
     public void onGlobalContextUpdated() {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
-
             final DOMRpcRoutingTable routingTableOriginal = rpcRouter.routingTable();
-
             rpcRouter.onModelContextUpdated(TestModel.createTestContext());
-
-            final DOMRpcRoutingTable routingTableChanged = rpcRouter.routingTable();
-            assertNotEquals(routingTableOriginal, routingTableChanged);
+            assertNotEquals(routingTableOriginal, rpcRouter.routingTable());
         }
     }
 
@@ -187,21 +168,19 @@ public class DOMRpcRouterTest {
 
         final DOMRpcProviderService svc = rpcRouter.getRpcProviderService();
         assertThrows(RejectedExecutionException.class, () -> svc.registerRpcImplementation(getTestRpcImplementation(),
-            DOMRpcIdentifier.create(TestModel.TEST_QNAME, null)));
+            DOMRpcIdentifier.create(Rpcs.FOO, null)));
     }
 
     @Test
     public void testActionInstanceRouting() throws ExecutionException {
-        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
-            rpcRouter.onModelContextUpdated(ACTIONS_CONTEXT);
-
+        try (DOMRpcRouter rpcRouter = actionsRouter()) {
             final DOMActionProviderService actionProvider = rpcRouter.getActionProviderService();
             assertNotNull(actionProvider);
             final DOMActionService actionConsumer = rpcRouter.getActionService();
             assertNotNull(actionConsumer);
 
             try (ObjectRegistration<?> reg = actionProvider.registerActionImplementation(IMPL,
-                DOMActionInstance.of(BAZ_TYPE, LogicalDatastoreType.OPERATIONAL, BAZ_PATH_GOOD))) {
+                DOMActionInstance.of(Actions.BAZ_TYPE, LogicalDatastoreType.OPERATIONAL, BAZ_PATH_GOOD))) {
 
                 assertAvailable(actionConsumer, BAZ_PATH_GOOD);
                 assertUnavailable(actionConsumer, BAZ_PATH_BAD);
@@ -214,16 +193,15 @@ public class DOMRpcRouterTest {
 
     @Test
     public void testActionDatastoreRouting() throws ExecutionException {
-        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
-            rpcRouter.onModelContextUpdated(ACTIONS_CONTEXT);
-
+        try (DOMRpcRouter rpcRouter = actionsRouter()) {
             final DOMActionProviderService actionProvider = rpcRouter.getActionProviderService();
             assertNotNull(actionProvider);
             final DOMActionService actionConsumer = rpcRouter.getActionService();
             assertNotNull(actionConsumer);
 
             try (ObjectRegistration<?> reg = actionProvider.registerActionImplementation(IMPL,
-                DOMActionInstance.of(BAZ_TYPE, LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty()))) {
+                DOMActionInstance.of(Actions.BAZ_TYPE, LogicalDatastoreType.OPERATIONAL,
+                    YangInstanceIdentifier.empty()))) {
 
                 assertAvailable(actionConsumer, BAZ_PATH_GOOD);
                 assertAvailable(actionConsumer, BAZ_PATH_BAD);
@@ -232,6 +210,18 @@ public class DOMRpcRouterTest {
             assertUnavailable(actionConsumer, BAZ_PATH_BAD);
             assertUnavailable(actionConsumer, BAZ_PATH_GOOD);
         }
+    }
+
+    private static DOMRpcRouter actionsRouter() {
+        final DOMRpcRouter router = new DOMRpcRouter();
+        router.onModelContextUpdated(Actions.CONTEXT);
+        return router;
+    }
+
+    private static DOMRpcRouter rpcsRouter() {
+        final DOMRpcRouter router = new DOMRpcRouter();
+        router.onModelContextUpdated(Rpcs.CONTEXT);
+        return router;
     }
 
     private static void assertAvailable(final DOMActionService actionService, final YangInstanceIdentifier path) {
@@ -252,7 +242,8 @@ public class DOMRpcRouterTest {
 
     private static ListenableFuture<? extends DOMActionResult> invokeBaz(final DOMActionService actionService,
             final YangInstanceIdentifier path) {
-        return actionService.invokeAction(BAZ_TYPE, new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, path),
-            Builders.containerBuilder().withNodeIdentifier(new NodeIdentifier(INPUT)).build());
+        return actionService.invokeAction(Actions.BAZ_TYPE,
+            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, path),
+            Builders.containerBuilder().withNodeIdentifier(new NodeIdentifier(Actions.INPUT)).build());
     }
 }
