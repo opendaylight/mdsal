@@ -2,7 +2,29 @@ module rpcs {
   namespace rpcs;
   prefix rpcs;
 
+  import yang-ext {
+    prefix ext;
+  }
+
   rpc foo;
 
-  rpc bar;
+  identity context-type;
+
+  rpc bar {
+    input {
+      leaf ctx {
+        type instance-identifier;
+        ext:context-reference context-type;
+      }
+    }
+  }
+
+  list baz {
+    key name;
+    leaf name {
+      type string;
+    }
+
+    ext:context-instance context-type;
+  }
 }
