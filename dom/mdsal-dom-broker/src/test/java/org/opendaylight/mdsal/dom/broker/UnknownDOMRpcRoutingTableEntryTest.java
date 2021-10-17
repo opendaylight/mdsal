@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.dom.broker;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.opendaylight.mdsal.dom.broker.TestUtils.TEST_CONTAINER;
+import static org.opendaylight.mdsal.dom.broker.TestUtils.getTestRpcImplementation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +23,7 @@ import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.OperationInvocation;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-public class UnknownDOMRpcRoutingTableEntryTest extends TestUtils {
+public class UnknownDOMRpcRoutingTableEntryTest {
     private static final List<DOMRpcImplementation> TEST_LIST = new ArrayList<>();
 
     @Test

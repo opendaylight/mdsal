@@ -27,7 +27,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
 
-abstract class TestUtils {
+final class TestUtils {
 
     private static final MapNode OUTER_LIST = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
             .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1)).build();
@@ -60,6 +60,10 @@ abstract class TestUtils {
             .build();
 
     static final String EXCEPTION_TEXT = "TestRpcImplementationException";
+
+    private TestUtils() {
+        // Hidden on purpose
+    }
 
     static TestRpcImplementation getTestRpcImplementation() {
         return new TestRpcImplementation();
