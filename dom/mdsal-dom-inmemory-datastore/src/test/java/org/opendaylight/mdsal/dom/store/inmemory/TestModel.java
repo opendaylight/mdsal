@@ -38,7 +38,7 @@ public final class TestModel {
             YangInstanceIdentifier.of(MANDATORY_DATA_TEST_QNAME);
 
     private TestModel() {
-        throw new UnsupportedOperationException();
+        // Hidden on purpose
     }
 
     public static EffectiveModelContext createTestContext() {
