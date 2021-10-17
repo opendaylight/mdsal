@@ -15,17 +15,26 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension;
+import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
@@ -35,19 +44,25 @@ import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
+import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DOMRpcRouterTest extends TestUtils {
     private static final QName FOO = QName.create("actions", "foo");
     private static final QName BAR = QName.create(FOO, "bar");
@@ -91,25 +106,58 @@ public class DOMRpcRouterTest extends TestUtils {
     }
 
     @Test
-    public void invokeRpc() {
+    public void testFailedInvokeRpc() {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
-            assertNotNull(rpcRouter.getRpcService().invokeRpc(TestModel.TEST_QNAME, null));
+            final ListenableFuture<?> future = rpcRouter.getRpcService().invokeRpc(TestModel.TEST_QNAME, null);
+            final Throwable cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
+            assertThat(cause, instanceOf(DOMRpcImplementationNotAvailableException.class));
+            assertEquals("No implementation of RPC "
+                + "(urn:opendaylight:params:xml:ns:yang:controller:md:sal:dom:store:test?revision=2014-03-13)test "
+                + "available", cause.getMessage());
         }
     }
 
     @Test
-    public void registerRpcListener() {
+    public void testRpcListener() {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+            assertEquals(List.of(), rpcRouter.listeners());
+
             final DOMRpcAvailabilityListener listener = mock(DOMRpcAvailabilityListener.class);
+            doCallRealMethod().when(listener).acceptsImplementation(any());
+            doNothing().when(listener).onRpcAvailable(any());
+            doNothing().when(listener).onRpcUnavailable(any());
 
-            final Collection<?> listenersOriginal = rpcRouter.listeners();
+            final Registration reg = rpcRouter.getRpcService().registerRpcListener(listener);
+            assertNotNull(reg);
+            assertEquals(List.of(reg), rpcRouter.listeners());
 
-            assertNotNull(rpcRouter.getRpcService().registerRpcListener(listener));
+            final Registration implReg = rpcRouter.getRpcProviderService().registerRpcImplementation(
+                getTestRpcImplementation(), DOMRpcIdentifier.create(TestModel.TEST_QNAME, null));
+            verify(listener, timeout(1000)).onRpcAvailable(any());
 
-            final Collection<?> listenersChanged = rpcRouter.listeners();
-            assertNotEquals(listenersOriginal, listenersChanged);
-            assertTrue(listenersOriginal.isEmpty());
-            assertFalse(listenersChanged.isEmpty());
+            implReg.close();
+            verify(listener, timeout(1000)).onRpcUnavailable(any());
+
+            reg.close();
+            assertEquals(List.of(), rpcRouter.listeners());
+        }
+    }
+
+    @Test
+    public void testActionListener() {
+        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+            assertEquals(List.of(), rpcRouter.actionListeners());
+
+            final AvailabilityListener listener = mock(AvailabilityListener.class);
+            final Registration reg = rpcRouter.getActionService().getExtensions()
+                .getInstance(DOMActionAvailabilityExtension.class).registerAvailabilityListener(listener);
+            assertNotNull(reg);
+            assertEquals(List.of(reg), rpcRouter.actionListeners());
+
+            // FIXME: register implementation and verify notification
+
+            reg.close();
+            assertEquals(List.of(), rpcRouter.actionListeners());
         }
     }
 
@@ -127,8 +175,13 @@ public class DOMRpcRouterTest extends TestUtils {
     }
 
     @Test
-    public void close() {
-        final DOMRpcRouter rpcRouter = new DOMRpcRouter();
+    public void testClose() {
+        final ListenerRegistration<EffectiveModelContextListener> reg = mock(ListenerRegistration.class);
+        doNothing().when(reg).close();
+        final DOMSchemaService schema = mock(DOMSchemaService.class);
+        doReturn(reg).when(schema).registerSchemaContextListener(any());
+
+        final DOMRpcRouter rpcRouter = new DOMRpcRouter(schema);
         rpcRouter.close();
 
         final DOMRpcProviderService svc = rpcRouter.getRpcProviderService();

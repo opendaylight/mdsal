@@ -273,6 +273,11 @@ public final class DOMRpcRouter extends AbstractRegistration
     }
 
     @VisibleForTesting
+    synchronized List<?> actionListeners() {
+        return actionListeners;
+    }
+
+    @VisibleForTesting
     DOMRpcRoutingTable routingTable() {
         return routingTable;
     }
