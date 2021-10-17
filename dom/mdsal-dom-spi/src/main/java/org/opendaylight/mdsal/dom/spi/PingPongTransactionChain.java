@@ -92,7 +92,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
     public PingPongTransactionChain(final Function<DOMTransactionChainListener, DOMTransactionChain> delegateFactory,
             final DOMTransactionChainListener listener) {
         this.listener = requireNonNull(listener);
-        this.delegate = delegateFactory.apply(new DOMTransactionChainListener() {
+        delegate = delegateFactory.apply(new DOMTransactionChainListener() {
             @Override
             public void onTransactionChainFailed(final DOMTransactionChain chain,
                     final DOMDataTreeTransaction transaction, final Throwable cause) {
@@ -401,62 +401,13 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
 
     @Override
     public DOMDataTreeReadTransaction newReadOnlyTransaction() {
-        final PingPongTransaction tx = allocateTransaction();
-
-        return new DOMDataTreeReadTransaction() {
-            @Override
-            public FluentFuture<Optional<NormalizedNode>> read(
-                    final LogicalDatastoreType store, final YangInstanceIdentifier path) {
-                return tx.getTransaction().read(store, path);
-            }
-
-            @Override
-            public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
-                return tx.getTransaction().exists(store, path);
-            }
-
-            @Override
-            public Object getIdentifier() {
-                return tx.getTransaction().getIdentifier();
-            }
-
-            @Override
-            public void close() {
-                readyTransaction(tx);
-            }
-        };
+        return new PingPongReadTransaction(allocateTransaction());
     }
 
     @Override
     public DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
         final PingPongTransaction tx = allocateTransaction();
-        final DOMDataTreeReadWriteTransaction ret = new ForwardingDOMDataReadWriteTransaction() {
-            private boolean isOpen = true;
-
-            @Override
-            protected DOMDataTreeReadWriteTransaction delegate() {
-                return tx.getTransaction();
-            }
-
-            @Override
-            public FluentFuture<? extends CommitInfo> commit() {
-                readyTransaction(tx);
-                isOpen = false;
-                return tx.getCommitFuture().transform(ignored -> CommitInfo.empty(), MoreExecutors.directExecutor());
-            }
-
-            @Override
-            public boolean cancel() {
-                if (isOpen) {
-                    cancelTransaction(tx, this);
-                    isOpen = false;
-                    return true;
-                }
-
-                return false;
-            }
-        };
-
+        final DOMDataTreeReadWriteTransaction ret = new PingPongReadWriteTransaction(tx);
         tx.recordFrontendTransaction(ret);
         return ret;
     }
@@ -464,5 +415,67 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
     @Override
     public DOMDataTreeWriteTransaction newWriteOnlyTransaction() {
         return newReadWriteTransaction();
+    }
+
+    private final class PingPongReadTransaction implements DOMDataTreeReadTransaction {
+        private final @NonNull PingPongTransaction tx;
+
+        PingPongReadTransaction(final PingPongTransaction tx) {
+            this.tx = requireNonNull(tx);
+        }
+
+        @Override
+        public FluentFuture<Optional<NormalizedNode>> read(final LogicalDatastoreType store,
+                final YangInstanceIdentifier path) {
+            return tx.getTransaction().read(store, path);
+        }
+
+        @Override
+        public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
+            return tx.getTransaction().exists(store, path);
+        }
+
+        @Override
+        public Object getIdentifier() {
+            return tx.getTransaction().getIdentifier();
+        }
+
+        @Override
+        public void close() {
+            readyTransaction(tx);
+        }
+    }
+
+    private final class PingPongReadWriteTransaction extends ForwardingDOMDataReadWriteTransaction {
+        private final @NonNull PingPongTransaction tx;
+
+        private boolean isOpen = true;
+
+        PingPongReadWriteTransaction(final PingPongTransaction tx) {
+            this.tx = requireNonNull(tx);
+        }
+
+        @Override
+        public FluentFuture<? extends CommitInfo> commit() {
+            readyTransaction(tx);
+            isOpen = false;
+            return tx.getCommitFuture().transform(ignored -> CommitInfo.empty(), MoreExecutors.directExecutor());
+        }
+
+        @Override
+        public boolean cancel() {
+            if (isOpen) {
+                cancelTransaction(tx, this);
+                isOpen = false;
+                return true;
+            }
+
+            return false;
+        }
+
+        @Override
+        protected DOMDataTreeReadWriteTransaction delegate() {
+            return tx.getTransaction();
+        }
     }
 }
