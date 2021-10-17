@@ -12,7 +12,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
-import static org.opendaylight.mdsal.dom.broker.TestUtils.TEST_CHILD;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Futures;
@@ -27,6 +26,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.OperationInvocation;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
@@ -52,12 +53,20 @@ public class RoutedDOMRpcRoutingTableEntryTest {
 
     @Test
     public void testUnregistered()  {
-        final ListenableFuture<?> future = OperationInvocation.invoke(entry, TEST_CHILD);
+        // FIXME: create proper structure
+        assertRpcUnavailable(TestUtils.TEST_CHILD, TestModel.TEST2_QNAME);
+    }
+
+    @Test
+    public void testRegisteredWrong() {
+        // FIXME: create properly wrong structure
+        assertRpcUnavailable(TestUtils.TEST_CHILD, TestModel.TEST2_QNAME);
+    }
+
+    private void assertRpcUnavailable(final NormalizedNode input, final QName qname) {
+        final ListenableFuture<?> future = OperationInvocation.invoke(entry, input);
         final Throwable cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
         assertThat(cause, instanceOf(DOMRpcImplementationNotAvailableException.class));
-        assertEquals("No implementation of RPC "
-            + "(urn:opendaylight:params:xml:ns:yang:controller:md:sal:dom:store:test?revision=2014-03-13)test2 "
-            + "available",
-            cause.getMessage());
+        assertEquals("No implementation of RPC " + qname + " available", cause.getMessage());
     }
 }
