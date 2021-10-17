@@ -16,6 +16,9 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.opendaylight.mdsal.dom.broker.TestUtils.EXCEPTION_TEXT;
+import static org.opendaylight.mdsal.dom.broker.TestUtils.TEST_CONTAINER;
+import static org.opendaylight.mdsal.dom.broker.TestUtils.getTestRpcImplementation;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -32,7 +35,7 @@ import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 
-public class GlobalDOMRpcRoutingTableEntryTest extends TestUtils {
+public class GlobalDOMRpcRoutingTableEntryTest {
     @Test
     public void basicTest() {
         final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> rpcImplementations = new HashMap<>();

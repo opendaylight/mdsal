@@ -13,6 +13,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.opendaylight.mdsal.dom.broker.TestUtils.TEST_CHILD;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.OperationInvocation;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 
-public class RoutedDOMRpcRoutingTableEntryTest extends TestUtils {
+public class RoutedDOMRpcRoutingTableEntryTest {
     @Test
     public void basicTest()  {
         final RpcDefinition rpcDefinition = mock(RpcDefinition.class);

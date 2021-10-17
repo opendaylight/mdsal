@@ -22,6 +22,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
+import static org.opendaylight.mdsal.dom.broker.TestUtils.getTestRpcImplementation;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -63,7 +64,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class DOMRpcRouterTest extends TestUtils {
+public class DOMRpcRouterTest {
     private static final QName FOO = QName.create("actions", "foo");
     private static final QName BAR = QName.create(FOO, "bar");
     private static final QName BAZ = QName.create(FOO, "baz");

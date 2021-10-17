@@ -17,6 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.opendaylight.mdsal.dom.broker.TestUtils.TEST_CHILD;
 
 import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -36,7 +37,7 @@ import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
-public class DOMNotificationRouterTest extends TestUtils {
+public class DOMNotificationRouterTest {
 
     @Test
     public void create() throws Exception {
@@ -170,8 +171,8 @@ public class DOMNotificationRouterTest extends TestUtils {
         }
 
         @Override
-        ListenableFuture<? extends Object> publish(DOMNotification notification,
-                Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers) {
+        ListenableFuture<? extends Object> publish(final DOMNotification notification,
+                final Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers) {
             if (triggerRejected) {
                 return REJECTED;
             }
