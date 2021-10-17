@@ -7,26 +7,26 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static com.google.common.base.Verify.verifyNotNull;
-
 import com.google.common.annotations.Beta;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.spi.ForwardingDOMActionService;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 @Beta
 @Component(immediate = true, service = DOMActionService.class)
 public final class OSGiDOMActionService extends ForwardingDOMActionService {
-    private DOMActionService delegate;
+    private final @NonNull DOMActionService delegate;
+
+    @Activate
+    public OSGiDOMActionService(@Reference final DOMRpcRouterServices router) {
+        delegate = router.getActionService();
+    }
 
     @Override
     protected DOMActionService delegate() {
-        return verifyNotNull(delegate);
-    }
-
-    @Reference
-    void bindRpcRouter(final DOMRpcRouterServices router) {
-        delegate = router.getActionService();
+        return delegate;
     }
 }
