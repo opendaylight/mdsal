@@ -26,6 +26,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
@@ -39,6 +41,12 @@ import org.opendaylight.yangtools.util.concurrent.EqualityQueuedNotificationMana
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +58,19 @@ import org.slf4j.LoggerFactory;
  * Internal implementation one by using a {@link QueuedNotificationManager}.
  *</p>
  */
+@Component(immediate = true, configurationPid = "org.opendaylight.mdsal.dom.notification", service = {
+    DOMNotificationService.class, DOMNotificationPublishService.class,
+    DOMNotificationSubscriptionListenerRegistry.class
+})
+@Designate(ocd = DOMNotificationRouter.Config.class)
+// Non-final for testing
 public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPublishService,
         DOMNotificationService, DOMNotificationSubscriptionListenerRegistry {
+    @ObjectClassDefinition()
+    public @interface Config {
+        @AttributeDefinition(name = "notification-queue-depth")
+        int queueDepth() default 65536;
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(DOMNotificationRouter.class);
     private static final ListenableFuture<Void> NO_LISTENERS = FluentFutures.immediateNullFluentFuture();
@@ -66,17 +85,28 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     private volatile Multimap<Absolute, AbstractListenerRegistration<? extends DOMNotificationListener>> listeners =
             ImmutableMultimap.of();
 
-    @VisibleForTesting
-    DOMNotificationRouter(int maxQueueCapacity) {
-        observer = new ScheduledThreadPoolExecutor(1,
-            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("DOMNotificationRouter-observer-%d").build());
-        executor = Executors.newCachedThreadPool(
-            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("DOMNotificationRouter-listeners-%d").build());
+    @Inject
+    public DOMNotificationRouter(final int maxQueueCapacity) {
+        observer = new ScheduledThreadPoolExecutor(1, new ThreadFactoryBuilder()
+            .setDaemon(true)
+            .setNameFormat("DOMNotificationRouter-observer-%d")
+            .build());
+        executor = Executors.newCachedThreadPool(new ThreadFactoryBuilder()
+            .setDaemon(true)
+            .setNameFormat("DOMNotificationRouter-listeners-%d")
+            .build());
         queueNotificationManager = new EqualityQueuedNotificationManager<>("DOMNotificationRouter", executor,
                 maxQueueCapacity, DOMNotificationRouter::deliverEvents);
     }
 
-    public static DOMNotificationRouter create(int maxQueueCapacity) {
+    @Activate
+    public DOMNotificationRouter(final Config config) {
+        this(config.queueDepth());
+        LOG.info("DOM Notification Router started");
+    }
+
+    @Deprecated(forRemoval = true)
+    public static DOMNotificationRouter create(final int maxQueueCapacity) {
         return new DOMNotificationRouter(maxQueueCapacity);
     }
 
@@ -144,7 +174,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
 
 
     @VisibleForTesting
-    ListenableFuture<? extends Object> publish(DOMNotification notification,
+    ListenableFuture<? extends Object> publish(final DOMNotification notification,
             final Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers) {
         final List<ListenableFuture<Void>> futures = new ArrayList<>(subscribers.size());
         subscribers.forEach(subscriber -> {
@@ -207,10 +237,13 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         }
     }
 
+    @PreDestroy
+    @Deactivate
     @Override
     public void close() {
         observer.shutdown();
         executor.shutdown();
+        LOG.info("DOM Notification Router stopped");
     }
 
     @VisibleForTesting
