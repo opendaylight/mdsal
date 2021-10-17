@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.checkerframework.checker.lock.qual.GuardedBy;
@@ -76,12 +77,20 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.RequireServiceComponentRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
+@Component(immediate = true, service = DOMRpcRouterServices.class)
+@RequireServiceComponentRuntime
 public final class DOMRpcRouter extends AbstractRegistration
         implements DOMRpcRouterServices, EffectiveModelContextListener {
+    private static final Logger LOG = LoggerFactory.getLogger(DOMRpcRouter.class);
     private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat(
             "DOMRpcRouter-listener-%s").setDaemon(true).build();
 
@@ -103,11 +112,29 @@ public final class DOMRpcRouter extends AbstractRegistration
 
     private ListenerRegistration<?> listenerRegistration;
 
+    @Deprecated
+    @VisibleForTesting
+    // FIXME: 9.0.0: make this constructor package-private
+    public DOMRpcRouter() {
+
+    }
+
     @Inject
+    @Activate
+    public DOMRpcRouter(@Reference final DOMSchemaService schemaService) {
+        listenerRegistration = schemaService.registerSchemaContextListener(this);
+        LOG.info("DOM RPC/Action router started");
+    }
+
+    @Deprecated(forRemoval = true)
     public static DOMRpcRouter newInstance(final DOMSchemaService schemaService) {
-        final DOMRpcRouter rpcRouter = new DOMRpcRouter();
-        rpcRouter.listenerRegistration = schemaService.registerSchemaContextListener(rpcRouter);
-        return rpcRouter;
+        return new DOMRpcRouter(schemaService);
+    }
+
+    @PreDestroy
+    @Deactivate
+    public void shutdown() {
+        close();
     }
 
     @Override
@@ -238,6 +265,7 @@ public final class DOMRpcRouter extends AbstractRegistration
             listenerRegistration = null;
         }
         listenerNotifier.shutdown();
+        LOG.info("DOM RPC/Action router stopped");
     }
 
     @VisibleForTesting
