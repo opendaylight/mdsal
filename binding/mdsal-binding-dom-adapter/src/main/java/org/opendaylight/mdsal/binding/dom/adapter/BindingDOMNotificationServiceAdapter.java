@@ -54,6 +54,12 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
         return domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications());
     }
 
+    @Override
+    public Registration registerCompositeListener(final CompositeListener listener, final Executor executor) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     @Deprecated(since = "10.0.0", forRemoval = true)
     private static final class ListenerRegistrationImpl<T extends NotificationListener>
             extends AbstractListenerRegistration<T> {
