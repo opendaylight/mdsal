@@ -7,10 +7,17 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.annotations.Beta;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.EventListener;
 import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.NotificationService.CompositeListener.Type;
+import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -132,6 +139,33 @@ public interface NotificationService extends BindingService {
     }
 
     /**
+     * Registers a {@link Listener} to receive callbacks for {@link Notification}s of a particular type.
+     *
+     * @param listener Composite listener containing listener implementations that will receive notifications
+     * @param executor Executor to use for invoking the listener's methods
+     * @return a {@link Registration} instance that should be used to unregister the listener by invoking the
+     *        {@link Registration#close()} method when no longer needed
+     */
+    @Beta
+    @NonNull Registration registerCompositeListener(CompositeListener listener, Executor executor);
+
+    /**
+     * Registers a {@link Listener} to receive callbacks for {@link Notification}s of a particular type.
+     *
+     * @implSpec
+     *     This method is equivalent to {@code registerCompositeListener(listener, MoreExecutors.directExecutor())},
+     *     i.e. listeners will be invoked on some implementation-specific thread.
+     *
+     * @param listener Composite listener containing listener implementations that will receive notifications
+     * @return a {@link Registration} instance that should be used to unregister the listener by invoking the
+     *        {@link Registration#close()} method when no longer needed
+     */
+    @Beta
+    default @NonNull Registration registerCompositeListener(final CompositeListener listener) {
+        return registerCompositeListener(listener, MoreExecutors.directExecutor());
+    }
+
+    /**
      * Interface for listeners on global (YANG 1.0) notifications. Such notifications are identified by their generated
      * interface which extends {@link Notification}. Each listener instance can listen to only a single notification
      * type.
@@ -146,5 +180,26 @@ public interface NotificationService extends BindingService {
          * @param notification Notification body
          */
         void onNotification(@NonNull N notification);
+    }
+
+    /**
+     * A composite listener. This class allows registering multiple {@link Listener}s in a single operation. Constituent
+     * listeners are available through {@link #constituents()}.
+     */
+    @Beta
+    record CompositeListener(@NonNull ImmutableMap<Type<?>, Listener<?>> constituents) implements Immutable {
+        @Beta
+        public record Type<T extends Notification<?> & DataObject>(@NonNull Class<T> cls) implements Immutable {
+            public Type {
+                requireNonNull(cls);
+                checkArgument(DataObject.class.isAssignableFrom(cls), "%s is not a DataObject", cls);
+                checkArgument(Notification.class.isAssignableFrom(cls), "%s is not a Notification", cls);
+            }
+        }
+
+        public CompositeListener {
+            requireNonNull(constituents);
+            checkArgument(!constituents.isEmpty(), "Composite listener requires at least one constituent listener");
+        }
     }
 }
