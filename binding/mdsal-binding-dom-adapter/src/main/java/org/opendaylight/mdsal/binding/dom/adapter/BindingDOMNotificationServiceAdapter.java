@@ -12,10 +12,13 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.binding.api.NotificationService.CompositeListener;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
+import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
@@ -24,6 +27,7 @@ import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 @VisibleForTesting
 // FIXME: 10.0.0: make this class final
@@ -52,6 +56,17 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
             final Listener<N> listener, final Executor executor) {
         final var domListener = new SingleBindingDOMNotificationAdapter<>(adapterContext, type, listener, executor);
         return domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications());
+    }
+
+    @Override
+    public Registration registerCompositeListener(final CompositeListener listener, final Executor executor) {
+        final var exec = requireNonNull(executor);
+        final var listeners = new HashMap<Absolute, DOMNotificationListener>();
+        for (var e : listener.constituents().entrySet()) {
+            // FIXME: fill this up
+        }
+
+        return domNotifService.registerNotificationListeners(listeners);
     }
 
     @Deprecated(since = "10.0.0", forRemoval = true)
