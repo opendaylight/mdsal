@@ -13,10 +13,12 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import org.opendaylight.mdsal.binding.api.NotificationService.Listener;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
-final class SingleBindingDOMNotificationAdapter<N extends Notification> extends AbstractDOMNotificationListenerAdapter {
+final class SingleBindingDOMNotificationAdapter<N extends Notification<N> & DataObject>
+        extends AbstractDOMNotificationListenerAdapter {
     private final Listener<N> delegate;
     private final Executor executor;
     private final Class<N> type;

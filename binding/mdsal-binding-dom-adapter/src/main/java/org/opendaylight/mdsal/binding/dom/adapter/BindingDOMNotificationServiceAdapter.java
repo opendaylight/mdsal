@@ -21,6 +21,7 @@ import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
@@ -47,8 +48,8 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
     }
 
     @Override
-    public <N extends Notification> Registration registerListener(final Class<N> type, final Listener<N> listener,
-            final Executor executor) {
+    public <N extends Notification<N> & DataObject> Registration registerListener(final Class<N> type,
+            final Listener<N> listener, final Executor executor) {
         final var domListener = new SingleBindingDOMNotificationAdapter<>(adapterContext, type, listener, executor);
         return domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications());
     }
