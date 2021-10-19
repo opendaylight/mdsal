@@ -14,6 +14,7 @@ import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.NotificationService.Listener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.osgi.service.component.annotations.Activate;
@@ -37,8 +38,8 @@ public final class OSGiNotificationService extends AbstractAdaptedService<Notifi
     }
 
     @Override
-    public <N extends Notification> Registration registerListener(final Class<N> type, final Listener<N> listener,
-            final Executor executor) {
+    public <N extends Notification<N> & DataObject> Registration registerListener(final Class<N> type,
+            final Listener<N> listener, final Executor executor) {
         return delegate().registerListener(type, listener, executor);
     }
 

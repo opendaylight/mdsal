@@ -13,6 +13,7 @@ import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
@@ -110,7 +111,7 @@ public interface NotificationService extends BindingService {
      * @return a {@link Registration} instance that should be used to unregister the listener by invoking the
      *        {@link Registration#close()} method when no longer needed
      */
-    <N extends Notification> @NonNull Registration registerListener(Class<N> type, Listener<N> listener,
+    <N extends Notification<N> & DataObject> @NonNull Registration registerListener(Class<N> type, Listener<N> listener,
         Executor executor);
 
     /**
@@ -126,7 +127,7 @@ public interface NotificationService extends BindingService {
      * @return a {@link Registration} instance that should be used to unregister the listener by invoking the
      *        {@link Registration#close()} method when no longer needed
      */
-    default <N extends Notification> @NonNull Registration registerListener(final Class<N> type,
+    default <N extends Notification<N> & DataObject> @NonNull Registration registerListener(final Class<N> type,
             final Listener<N> listener) {
         return registerListener(type, listener, MoreExecutors.directExecutor());
     }
@@ -139,7 +140,7 @@ public interface NotificationService extends BindingService {
      * @param N Notification type
      */
     @FunctionalInterface
-    interface Listener<N extends Notification> extends EventListener {
+    interface Listener<N extends Notification<N> & DataObject> extends EventListener {
         /**
          * Process a global notification.
          *
