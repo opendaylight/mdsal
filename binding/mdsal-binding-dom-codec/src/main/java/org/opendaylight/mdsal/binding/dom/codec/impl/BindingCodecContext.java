@@ -157,9 +157,9 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     @Inject
     public BindingCodecContext(final BindingRuntimeContext context) {
         this.context = requireNonNull(context, "Binding Runtime Context is required.");
-        this.root = SchemaRootCodecContext.create(this);
-        this.identityCodec = new IdentityCodec(context);
-        this.instanceIdentifierCodec = new InstanceIdentifierCodec(this);
+        root = SchemaRootCodecContext.create(this);
+        identityCodec = new IdentityCodec(context);
+        instanceIdentifierCodec = new InstanceIdentifierCodec(this);
     }
 
     @Override
@@ -218,7 +218,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     @Override
-    public BindingStreamEventWriter newNotificationWriter(final Class<? extends Notification> notification,
+    public BindingStreamEventWriter newNotificationWriter(final Class<? extends Notification<?>> notification,
             final NormalizedNodeStreamWriter domWriter) {
         return root.getNotification(notification).createWriter(domWriter);
     }
@@ -573,10 +573,11 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST")
-    public ContainerNode toNormalizedNodeNotification(@NonNull final Notification data) {
+    public ContainerNode toNormalizedNodeNotification(@NonNull final Notification<?> data) {
         // FIXME: Should the cast to DataObject be necessary?
         return serializeDataObject((DataObject) data,
-            (ctx, iface, domWriter) -> ctx.newNotificationWriter(iface.asSubclass(Notification.class), domWriter));
+            (ctx, iface, domWriter) -> ctx.newNotificationWriter(
+                (Class<? extends Notification<?>>) iface.asSubclass(Notification.class), domWriter));
     }
 
     @Override
