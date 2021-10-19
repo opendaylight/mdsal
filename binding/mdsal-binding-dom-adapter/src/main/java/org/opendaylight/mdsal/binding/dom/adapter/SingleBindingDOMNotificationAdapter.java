@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Set;
 import java.util.concurrent.Executor;
+import org.opendaylight.mdsal.binding.api.NotificationService.CompositeListener.Component;
 import org.opendaylight.mdsal.binding.api.NotificationService.Listener;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -29,6 +30,11 @@ final class SingleBindingDOMNotificationAdapter<N extends Notification<N> & Data
         this.type = requireNonNull(type);
         this.delegate = requireNonNull(delegate);
         this.executor = requireNonNull(executor);
+    }
+
+    SingleBindingDOMNotificationAdapter(final AdapterContext adapterContext, final Component<N> component,
+            final Executor executor) {
+        this(adapterContext, component.type(), component.listener(), executor);
     }
 
     @Override
