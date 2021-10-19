@@ -13,12 +13,15 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
 @VisibleForTesting
@@ -41,6 +44,17 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
         final ListenerRegistration<BindingDOMNotificationListenerAdapter> domRegistration =
                 domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications());
         return new ListenerRegistrationImpl<>(listener, domRegistration);
+    }
+
+    @Override
+    public <N extends Notification> Registration registerListener(final Class<N> type, final Listener<N> listener,
+            final Executor executor) {
+        final var domListener = new SingleBindingDOMNotificationAdapter<>(adapterContext, type, listener, executor);
+        return domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications());
+    }
+
+    public DOMNotificationService getDomService() {
+        return domNotifService;
     }
 
     private static class ListenerRegistrationImpl<T extends NotificationListener>
@@ -73,9 +87,5 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
         public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
             return ImmutableSet.of(DOMNotificationService.class);
         }
-    }
-
-    public DOMNotificationService getDomService() {
-        return domNotifService;
     }
 }

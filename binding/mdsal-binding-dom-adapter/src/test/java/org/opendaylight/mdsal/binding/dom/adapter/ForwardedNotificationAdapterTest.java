@@ -9,10 +9,8 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,9 +18,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.junit.Assert;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.NotificationService.Listener;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractNotificationBrokerTest;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.OpendaylightMdsalBindingTestListener;
@@ -30,101 +29,147 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TwoLevelListChangedBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.binding.util.BindingMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ForwardedNotificationAdapterTest extends AbstractNotificationBrokerTest {
-
     private static final Logger LOG = LoggerFactory.getLogger(ForwardedNotificationAdapterTest.class);
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
-        return ImmutableSet.of(BindingReflections.getModuleInfo(TwoLevelListChanged.class));
-
-    }
-
-    private static TwoLevelListChanged createTestData() {
-        final TopLevelListKey key = new TopLevelListKey("test");
-        return new TwoLevelListChangedBuilder()
-                .setTopLevelList(ImmutableMap.of(key, new TopLevelListBuilder().withKey(key).build()))
-                .build();
+        return Set.of(BindingReflections.getModuleInfo(TwoLevelListChanged.class));
     }
 
     @Test
-    public void testNotifSubscription() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final TwoLevelListChanged testData = createTestData();
+    public void testPutSubscription() throws InterruptedException {
+        final var listener = new TestNotifListener(1);
+        try (var reg = getNotificationService().registerNotificationListener(listener)) {
+            assertPutSubscription(listener);
+        }
+    }
 
-        final TestNotifListener testNotifListener = new TestNotifListener(latch);
-        final ListenerRegistration<TestNotifListener> listenerRegistration = getNotificationService()
-                .registerNotificationListener(testNotifListener);
+    @Test
+    public void testPutSubscriptionSimple() throws InterruptedException {
+        final var listener = new SimpleNotifListener(1);
+        try (var reg = getNotificationService().registerListener(TwoLevelListChanged.class, listener)) {
+            assertPutSubscription(listener);
+        }
+    }
+
+    private void assertPutSubscription(final AbstractNotifListener listener) throws InterruptedException {
+        final var testData = createTestData();
         getNotificationPublishService().putNotification(testData);
 
-        latch.await();
-        assertTrue(testNotifListener.getReceivedNotifications().size() == 1);
-        assertEquals(testData, testNotifListener.getReceivedNotifications().get(0));
-
-        listenerRegistration.close();
+        final var received = listener.awaitNotifications();
+        assertEquals(1, received.size());
+        assertSame(testData, received.get(0));
     }
 
     @Test
-    public void testNotifSubscription2() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final TwoLevelListChanged testData = createTestData();
+    public void testOfferSubscription() throws InterruptedException {
+        final var listener = new TestNotifListener(1);
+        try (var reg = getNotificationService().registerNotificationListener(listener)) {
+            assertOfferNotification(listener);
+        }
+    }
 
-        final TestNotifListener testNotifListener = new TestNotifListener(latch);
-        final ListenerRegistration<TestNotifListener> listenerRegistration = getNotificationService()
-                .registerNotificationListener(testNotifListener);
+    @Test
+    public void testOfferSubscriptionSimple() throws InterruptedException {
+        final var listener = new SimpleNotifListener(1);
+        try (var reg = getNotificationService().registerListener(TwoLevelListChanged.class, listener)) {
+            assertOfferNotification(listener);
+        }
+    }
+
+    private void assertOfferNotification(final AbstractNotifListener listener) throws InterruptedException {
+        final var testData = createTestData();
+
         try {
             getNotificationPublishService().offerNotification(testData).get(1, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException e) {
-            LOG.error("Notification delivery failed", e);
-            Assert.fail("notification should be delivered");
+            throw new AssertionError("Notification should be delivered", e);
         }
 
-        latch.await();
-        assertTrue(testNotifListener.getReceivedNotifications().size() == 1);
-        assertEquals(testData, testNotifListener.getReceivedNotifications().get(0));
-
-        listenerRegistration.close();
+        final var received = listener.awaitNotifications();
+        assertEquals(1, received.size());
+        assertSame(testData, received.get(0));
     }
 
     @Test
-    public void testNotifSubscription3() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final TwoLevelListChanged testData = createTestData();
-
-        final TestNotifListener testNotifListener = new TestNotifListener(latch);
-        final ListenerRegistration<TestNotifListener> listenerRegistration = getNotificationService()
-                .registerNotificationListener(testNotifListener);
-        assertNotSame(NotificationPublishService.REJECTED,
-                getNotificationPublishService().offerNotification(testData, 5, TimeUnit.SECONDS));
-
-        latch.await();
-        assertTrue(testNotifListener.getReceivedNotifications().size() == 1);
-        assertEquals(testData, testNotifListener.getReceivedNotifications().get(0));
-
-        listenerRegistration.close();
+    public void testOfferTimedNotification() throws InterruptedException {
+        final var listener = new TestNotifListener(1);
+        try (var reg = getNotificationService().registerNotificationListener(listener)) {
+            assertOfferTimedNotification(listener);
+        }
     }
 
-    private static class TestNotifListener implements OpendaylightMdsalBindingTestListener {
+    @Test
+    public void testOfferTimedNotificationSimple() throws InterruptedException {
+        final var listener = new SimpleNotifListener(1);
+        try (var reg = getNotificationService().registerListener(TwoLevelListChanged.class, listener)) {
+            assertOfferTimedNotification(listener);
+        }
+    }
+
+    private void assertOfferTimedNotification(final AbstractNotifListener listener) throws InterruptedException {
+        final var testData = createTestData();
+
+        assertNotSame(NotificationPublishService.REJECTED,
+            getNotificationPublishService().offerNotification(testData, 5, TimeUnit.SECONDS));
+
+        final var received = listener.awaitNotifications();
+        assertEquals(1, received.size());
+        assertSame(testData, received.get(0));
+    }
+
+
+    private static @NonNull TwoLevelListChanged createTestData() {
+        return new TwoLevelListChangedBuilder()
+            .setTopLevelList(BindingMap.of(new TopLevelListBuilder().withKey(new TopLevelListKey("test")).build()))
+            .build();
+    }
+
+    private abstract static class AbstractNotifListener {
         private final List<TwoLevelListChanged> receivedNotifications = new ArrayList<>();
         private final CountDownLatch latch;
 
-        TestNotifListener(final CountDownLatch latch) {
-            this.latch = latch;
+        AbstractNotifListener(final int expectedCount) {
+            latch = new CountDownLatch(expectedCount);
         }
 
-        @Override
-        public void onTwoLevelListChanged(final TwoLevelListChanged notification) {
+        final void receiveNotification(final TwoLevelListChanged notification) {
             receivedNotifications.add(notification);
             latch.countDown();
         }
 
-        public List<TwoLevelListChanged> getReceivedNotifications() {
+        final List<TwoLevelListChanged> awaitNotifications() throws InterruptedException {
+            latch.await();
             return receivedNotifications;
+        }
+    }
+
+    private static class SimpleNotifListener extends AbstractNotifListener implements Listener<TwoLevelListChanged> {
+        SimpleNotifListener(final int expectedCount) {
+            super(expectedCount);
+        }
+
+        @Override
+        public void onNotification(final TwoLevelListChanged notification) {
+            receiveNotification(notification);
+        }
+    }
+
+    private static class TestNotifListener extends AbstractNotifListener
+            implements OpendaylightMdsalBindingTestListener {
+        TestNotifListener(final int expectedCount) {
+            super(expectedCount);
+        }
+
+        @Override
+        public void onTwoLevelListChanged(final TwoLevelListChanged notification) {
+            receiveNotification(notification);
         }
     }
 }
