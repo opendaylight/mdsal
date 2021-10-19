@@ -50,7 +50,7 @@ public interface NotificationPublishService extends BindingService {
      * @throws InterruptedException if interrupted while waiting
      * @throws NullPointerException if the notification is null
      */
-    void putNotification(@NonNull Notification notification) throws InterruptedException;
+    void putNotification(@NonNull Notification<?> notification) throws InterruptedException;
 
     /**
      * Publishes a notification to subscribed listeners. This initiates the process of sending the
@@ -66,7 +66,7 @@ public interface NotificationPublishService extends BindingService {
      *         resource constraints prevent
      * @throws NullPointerException if the notification is null
      */
-    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull Notification notification);
+    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull Notification<?> notification);
 
     /**
      * Publishes a notification to subscribed listeners. This initiates the process of sending the
@@ -84,6 +84,6 @@ public interface NotificationPublishService extends BindingService {
      * @throws NullPointerException if the notification or unit is null
      * @throws IllegalArgumentException if timeout is negative.
      */
-    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull Notification notification,
+    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull Notification<?> notification,
             int timeout, @NonNull TimeUnit unit) throws InterruptedException;
 }
