@@ -7,8 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import com.google.common.util.concurrent.MoreExecutors;
+import java.util.EventListener;
+import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
 /**
@@ -88,10 +93,58 @@ public interface NotificationService extends BindingService {
      * {@link NotificationListener}. The listener is registered for all notifications present in
      * the implemented interface.
      *
-     * <p>
+     * @param <T> NotificationListener type
      * @param listener the listener implementation that will receive notifications.
      * @return a {@link ListenerRegistration} instance that should be used to unregister the listener
      *         by invoking the {@link ListenerRegistration#close()} method when no longer needed.
      */
     <T extends NotificationListener> @NonNull ListenerRegistration<T> registerNotificationListener(@NonNull T listener);
+
+    /**
+     * Registers a {@link Listener} to receive callbacks for {@link Notification}s of a particular type.
+     *
+     * @param <N> Notification type
+     * @param type Notification type class
+     * @param listener The listener implementation that will receive notifications
+     * @param executor Executor to use for invoking the listener's methods
+     * @return a {@link Registration} instance that should be used to unregister the listener by invoking the
+     *        {@link Registration#close()} method when no longer needed
+     */
+    <N extends Notification> @NonNull Registration registerListener(Class<N> type, Listener<N> listener,
+        Executor executor);
+
+    /**
+     * Registers a {@link Listener} to receive callbacks for {@link Notification}s of a particular type.
+     *
+     * @implSpec
+     *     This method is equivalent to {@code registerListener(type, listener, MoreExecutors.directExecutor())}, i.e.
+     *     the listener will be invoked on some implementation-specific thread.
+     *
+     * @param <N> Notification type
+     * @param type Notification type class
+     * @param listener The listener implementation that will receive notifications
+     * @return a {@link Registration} instance that should be used to unregister the listener by invoking the
+     *        {@link Registration#close()} method when no longer needed
+     */
+    default <N extends Notification> @NonNull Registration registerListener(final Class<N> type,
+            final Listener<N> listener) {
+        return registerListener(type, listener, MoreExecutors.directExecutor());
+    }
+
+    /**
+     * Interface for listeners on global (YANG 1.0) notifications. Such notifications are identified by their generated
+     * interface which extends {@link Notification}. Each listener instance can listen to only a single notification
+     * type.
+     *
+     * @param N Notification type
+     */
+    @FunctionalInterface
+    interface Listener<N extends Notification> extends EventListener {
+        /**
+         * Process a global notification.
+         *
+         * @param notification Notification body
+         */
+        void onNotification(@NonNull N notification);
+    }
 }

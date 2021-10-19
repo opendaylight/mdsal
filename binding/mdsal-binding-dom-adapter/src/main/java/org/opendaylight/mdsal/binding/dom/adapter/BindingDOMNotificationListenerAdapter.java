@@ -18,48 +18,23 @@ import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.NotificationListenerInvoker;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
-import org.opendaylight.mdsal.dom.api.DOMEvent;
-import org.opendaylight.mdsal.dom.api.DOMNotification;
-import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
-class BindingDOMNotificationListenerAdapter implements DOMNotificationListener {
-
-    private final AdapterContext adapterContext;
-    private final NotificationListener delegate;
+class BindingDOMNotificationListenerAdapter extends AbstractDOMNotificationListenerAdapter {
     private final ImmutableMap<Absolute, NotificationListenerInvoker> invokers;
+    private final NotificationListener delegate;
 
     BindingDOMNotificationListenerAdapter(final AdapterContext adapterContext, final NotificationListener delegate) {
-        this.adapterContext = requireNonNull(adapterContext);
+        super(adapterContext);
         this.delegate = requireNonNull(delegate);
-        this.invokers = createInvokerMapFor(delegate.getClass());
+        invokers = createInvokerMapFor(delegate.getClass());
     }
 
     @Override
-    public void onNotification(final DOMNotification notification) {
-        final Notification baNotification = deserialize(notification);
-        final QName notificationQName = notification.getType().lastNodeIdentifier();
-        getInvoker(notification.getType()).invokeNotification(delegate, notificationQName, baNotification);
-    }
-
-    private Notification deserialize(final DOMNotification notification) {
-        if (notification instanceof LazySerializedDOMNotification) {
-            // TODO: This is a routed-back notification, for which we may end up losing event time here, but that is
-            //       okay, for now at least.
-            return ((LazySerializedDOMNotification) notification).getBindingData();
-        }
-
-        final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
-        return notification instanceof DOMEvent ? serializer.fromNormalizedNodeNotification(notification.getType(),
-            notification.getBody(), ((DOMEvent) notification).getEventInstant())
-                : serializer.fromNormalizedNodeNotification(notification.getType(), notification.getBody());
-    }
-
-    private NotificationListenerInvoker getInvoker(final Absolute type) {
-        return invokers.get(type);
+    final void onNotification(final Absolute domType, final Notification notification) {
+        invokers.get(domType).invokeNotification(delegate, domType.lastNodeIdentifier(), notification);
     }
 
     protected Set<Absolute> getSupportedNotifications() {
