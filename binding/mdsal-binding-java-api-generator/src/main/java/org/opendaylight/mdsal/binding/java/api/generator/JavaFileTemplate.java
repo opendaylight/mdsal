@@ -394,12 +394,11 @@ class JavaFileTemplate {
      *
      * @param method method signature from which is the method name and return type obtained
      * @return generated property instance for the getter <code>method</code>
-     * @throws IllegalArgumentException <ul>
-     *  <li>if the <code>method</code> equals <code>null</code></li>
-     *  <li>if the name of the <code>method</code> equals <code>null</code></li>
-     *  <li>if the name of the <code>method</code> is empty</li>
-     *  <li>if the return type of the <code>method</code> equals <code>null</code></li>
-     * </ul>
+     * @throws IllegalArgumentException if:
+     *         - the <code>method</code> equals <code>null</code>, or
+     *         - the name of the <code>method</code> equals <code>null</code>, or
+     *         - the name of the <code>method</code> is empty, or
+     *         - the return type of the <code>method</code> equals <code>null</code>
      */
     private static BuilderGeneratedProperty propertyFromGetter(final MethodSignature method) {
         checkArgument(method != null);
