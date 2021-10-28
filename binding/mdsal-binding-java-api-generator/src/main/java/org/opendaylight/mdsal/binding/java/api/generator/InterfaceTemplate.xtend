@@ -203,7 +203,11 @@ class InterfaceTemplate extends BaseTemplate {
 
     def private generateDefaultMethod(MethodSignature method) {
         if (method.name.isNonnullMethodName) {
-            generateNonnullMethod(method)
+            if (Types.isListType(method.returnType) || Types.isMapType(method.returnType)) {
+                generateNonnullMethod(method)
+            } else {
+                generateNonnullForNonSemantics(method)
+            }
         } else if (method.name.isRequireMethodName) {
             generateRequireMethod(method)
         } else {
@@ -363,6 +367,16 @@ class InterfaceTemplate extends BaseTemplate {
         «method.annotations.generateAnnotations»
         default «ret.importedNonNull» «name»() {
             return «CODEHELPERS.importedName».nonnull(«name.getGetterMethodForNonnull»());
+        }
+    '''
+
+    def private generateNonnullForNonSemantics(MethodSignature method) '''
+        «val ret = method.returnType»
+        «val name = method.name»
+        «accessorJavadoc(method, ", or an empty instance if it is not present.")»
+        «method.annotations.generateAnnotations»
+        default «ret.importedNonNull» «name»() {
+            return «MoreObjects.importedName».firstNonNull(«name.getGetterMethodForNonnull»(), «ret.fullyQualifiedName»Builder.EMPTY_INSTANCE);
         }
     '''
 

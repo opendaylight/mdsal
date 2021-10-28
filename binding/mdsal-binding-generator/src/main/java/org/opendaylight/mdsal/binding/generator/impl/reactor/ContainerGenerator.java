@@ -8,7 +8,13 @@
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.stmt.ContainerEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
@@ -46,5 +52,19 @@ final class ContainerGenerator extends AbstractCompositeGenerator<ContainerEffec
 //      builder.setSchemaPath(node.getPath());
 
         return builder.build();
+    }
+
+    @Override
+    MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+        final MethodSignatureBuilder ret = super.constructGetter(builder, returnType)
+                .setMechanics(ValueMechanics.NORMAL);
+
+        final MethodSignatureBuilder nonnull = builder
+                .addMethod(BindingMapping.getNonnullMethodName(localName().getLocalName()))
+                .setReturnType(returnType)
+                .setDefault(true);
+        annotateDeprecatedIfNecessary(nonnull);
+
+        return ret;
     }
 }
