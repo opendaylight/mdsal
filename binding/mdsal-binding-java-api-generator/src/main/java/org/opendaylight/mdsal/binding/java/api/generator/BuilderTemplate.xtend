@@ -11,6 +11,7 @@ import static extension org.apache.commons.text.StringEscapeUtils.escapeJava
 import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.DATA_OBJECT
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BUILDER_SUFFIX
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
 import com.google.common.collect.ImmutableList
@@ -82,9 +83,12 @@ class BuilderTemplate extends AbstractBuilderTemplate {
 
             «generateMethodFieldsFrom()»
 
+            «IF isNonPresenceContainer(targetType)»
+                «generateEmptyInstance()»
+            «ENDIF»
+
             «generateGetters(false)»
             «IF augmentType !== null»
-
                 «generateAugmentation()»
             «ENDIF»
 
@@ -196,6 +200,20 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «ENDIF»
     '''
 
+    /**
+    * Generate EMPTY instance
+    */
+    def private generateEmptyInstance() '''
+        private static «targetType.name» EMPTY_INSTANCE;
+
+        public static «targetType.name» empty() {
+            if (EMPTY_INSTANCE == null) {
+                EMPTY_INSTANCE = new «targetType.name»«BUILDER_SUFFIX»().build();
+            }
+            return EMPTY_INSTANCE;
+        }
+    '''
+
     def private generateMethodFieldsFromComment(GeneratedType type) '''
         /**
          * Set fields from given grouping argument. Valid argument is instance of one of following types:
@@ -289,6 +307,11 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             names.add(type.importedName)
         }
         return names
+    }
+
+    private def boolean isNonPresenceContainer(GeneratedType genType) {
+        // TODO
+        return true
     }
 
     def private constantsDeclarations() '''
