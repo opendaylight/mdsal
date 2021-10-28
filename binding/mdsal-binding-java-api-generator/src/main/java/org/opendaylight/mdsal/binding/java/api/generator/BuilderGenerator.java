@@ -8,17 +8,24 @@
 package org.opendaylight.mdsal.binding.java.api.generator;
 
 import com.google.common.annotations.VisibleForTesting;
+import java.util.List;
+import java.util.Optional;
+import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.CodeGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.generated.type.builder.CodegenGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.ri.generated.type.builder.CodegenGeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.PresenceEffectiveStatement;
 
 /**
  * Transformator of the data from the virtual form to JAVA programming language. The result source code represent java
@@ -70,12 +77,44 @@ public final class BuilderGenerator implements CodeGenerator {
         final JavaTypeName origName = type.getIdentifier();
         final JavaTypeName builderName = origName.createSibling(origName.simpleName() + BindingMapping.BUILDER_SUFFIX);
 
-        return new BuilderTemplate(new CodegenGeneratedTypeBuilder(builderName)
-            .addEnclosingTransferObject(new CodegenGeneratedTOBuilder(
-                builderName.createEnclosed(origName.simpleName() + "Impl"))
-                .addImplementsType(type)
-                .build())
-            .build(), type, getKey(type));
+        final GeneratedTypeBuilder builder = new CodegenGeneratedTypeBuilder(builderName).addEnclosingTransferObject(
+                new CodegenGeneratedTOBuilder(builderName.createEnclosed(origName.simpleName() + "Impl"))
+                        .addImplementsType(type).build());
+
+        //final YangSourceDefinition definition = type.getYangSourceDefinition().get();
+        //final DocumentedNode node = ((YangSourceDefinition.Single) definition).getNode();
+        //((ContainerSchemaNode) node).isPresenceContainer();
+
+        // FIXME
+        builder.addMethod("empty")
+                .setReturnType(type)
+                .setAccessModifier(AccessModifier.PUBLIC);
+
+        builder.addProperty("EMPTY_INSTANCE")
+                .setReturnType(type)
+                .setStatic(true)
+                .setAccessModifier(AccessModifier.PRIVATE);
+
+        return new BuilderTemplate(builder.build(), type, getKey(type));
+    }
+
+    public static boolean isPresenceContainer(final GeneratedType type) {
+        // FIXME
+        final Optional<YangSourceDefinition> definition = type.getYangSourceDefinition();
+        if (definition.isPresent()) {
+            if (definition.get() instanceof YangSourceDefinition.Multiple) {
+                final List<? extends SchemaNode> nodes = ((YangSourceDefinition.Multiple) definition.get()).getNodes();
+                var presence = false;
+                for (var node : nodes) {
+                    if (node instanceof PresenceEffectiveStatement) {
+                        presence = true;
+                        break;
+                    }
+                }
+                return presence;
+            }
+        }
+        return false;
     }
 
     private static Type getKey(final GeneratedType type) {
