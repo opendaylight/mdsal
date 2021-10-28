@@ -19,6 +19,7 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTA
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_EQUALS_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_HASHCODE_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_TO_STRING_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BUILDER_SUFFIX
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
 import com.google.common.annotations.VisibleForTesting;
@@ -26,6 +27,7 @@ import com.google.common.base.MoreObjects
 import java.util.List
 import java.util.Locale
 import java.util.Map.Entry
+import java.util.Objects
 import java.util.Set
 import org.gaul.modernizer_maven_annotations.SuppressModernizer
 import org.opendaylight.mdsal.binding.model.api.AnnotationType
@@ -203,7 +205,11 @@ class InterfaceTemplate extends BaseTemplate {
 
     def private generateDefaultMethod(MethodSignature method) {
         if (method.name.isNonnullMethodName) {
-            generateNonnullMethod(method)
+            if (Types.isListType(method.returnType) || Types.isMapType(method.returnType)) {
+                generateNonnullMethod(method)
+            } else {
+                generateNonnullForNonSemantics(method)
+            }
         } else if (method.name.isRequireMethodName) {
             generateRequireMethod(method)
         } else {
@@ -363,6 +369,16 @@ class InterfaceTemplate extends BaseTemplate {
         «method.annotations.generateAnnotations»
         default «ret.importedNonNull» «name»() {
             return «CODEHELPERS.importedName».nonnull(«name.getGetterMethodForNonnull»());
+        }
+    '''
+
+    def private generateNonnullForNonSemantics(MethodSignature method) '''
+        «val ret = method.returnType»
+        «val name = method.name»
+        «accessorJavadoc(method, ", or an empty instance if it is not present.")»
+        «method.annotations.generateAnnotations»
+        default «ret.importedNonNull» «name»() {
+            return «Objects.importedName».requireNonNullElse(«name.getGetterMethodForNonnull»(), «ret.fullyQualifiedName»«BUILDER_SUFFIX».empty());
         }
     '''
 
