@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
@@ -23,8 +24,11 @@ import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.WildcardType;
+import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.ri.TypeConstants;
 import org.opendaylight.mdsal.binding.model.ri.Types;
+import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 
 public final class GeneratorUtil {
     private GeneratorUtil() {
@@ -320,5 +324,24 @@ public final class GeneratorUtil {
             propertiesOfAllParents.addAll(getPropertiesOfAllParents(genTO.getSuperType()));
         }
         return propertiesOfAllParents;
+    }
+
+    /**
+     * Check if the {@code type} represents presence container.
+     *
+     * @param type {@link GeneratedType} to be checked if represents container with presence statement.
+     * @return {@code true} if specified {@code type} is a container with presence statement, {@code false} otherwise.
+     */
+    static boolean isPresenceContainer(final GeneratedType type) {
+        final Optional<YangSourceDefinition> definition = type.getYangSourceDefinition();
+        if (definition.isPresent()) {
+            if (definition.get() instanceof YangSourceDefinition.Single) {
+                final DocumentedNode node = ((YangSourceDefinition.Single) definition.get()).getNode();
+                if  (node instanceof ContainerSchemaNode) {
+                    return ((ContainerSchemaNode) node).isPresenceContainer();
+                }
+            }
+        }
+        return false;
     }
 }
