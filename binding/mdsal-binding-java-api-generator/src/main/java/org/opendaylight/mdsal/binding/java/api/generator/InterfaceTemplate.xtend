@@ -362,7 +362,11 @@ class InterfaceTemplate extends BaseTemplate {
         «accessorJavadoc(method, ", or an empty list if it is not present.")»
         «method.annotations.generateAnnotations»
         default «ret.importedNonNull» «name»() {
+        «IF ret instanceof List»
             return «CODEHELPERS.importedName».nonnull(«name.getGetterMethodForNonnull»());
+        «ELSE»
+            return null;
+        <<ENDIF>>
         }
     '''
 
