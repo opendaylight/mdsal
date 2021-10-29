@@ -27,8 +27,10 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeTypeContainer;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -46,8 +48,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.DistinctNodeContainer;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -269,10 +271,12 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
     }
 
     private DataContainerCodecPrototype<?> loadChildPrototype(final Class<?> childClass) {
-        final DataSchemaNode childSchema = childNonNull(
-            factory().getRuntimeContext().findChildSchemaDefinition(getSchema(), namespace(), childClass), childClass,
-            "Node %s does not have child named %s", getSchema(), childClass);
-        return DataContainerCodecPrototype.from(createBindingArg(childClass, childSchema), childSchema, factory());
+        // FIXME: ugly cast
+        final var type = (RuntimeTypeContainer) getType();
+        final var child = childNonNull(type.bindingChild(JavaTypeName.create(childClass)), childClass,
+            "Node %s does not have child named %s", type, childClass);
+
+        return DataContainerCodecPrototype.from(createBindingArg(childClass, child.schema()), child, factory());
     }
 
     // FIXME: MDSAL-697: move this method into BindingRuntimeContext
@@ -282,7 +286,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
     //                   the equivalent of Map.Entry<Item, DataSchemaNode>, along with the override we create here. One
     //                   more input we may need to provide is our bindingClass().
     @SuppressWarnings("unchecked")
-    Item<?> createBindingArg(final Class<?> childClass, final DataSchemaNode childSchema) {
+    Item<?> createBindingArg(final Class<?> childClass, final EffectiveStatement<?, ?> childSchema) {
         return Item.of((Class<? extends DataObject>) childClass);
     }
 
