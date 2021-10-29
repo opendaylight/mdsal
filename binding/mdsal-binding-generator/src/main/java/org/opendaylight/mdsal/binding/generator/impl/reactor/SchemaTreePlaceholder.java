@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStateme
  *
  */
 final class SchemaTreePlaceholder<S extends SchemaTreeEffectiveStatement<?>,
-        G extends AbstractExplicitGenerator<S> & SchemaTreeChild<S, G>> implements SchemaTreeChild<S, G> {
+        G extends AbstractExplicitGenerator<S, ?> & SchemaTreeChild<S, G>> implements SchemaTreeChild<S, G> {
     private final @NonNull Class<G> generatorType;
     private final @NonNull S statement;
 
@@ -46,7 +46,7 @@ final class SchemaTreePlaceholder<S extends SchemaTreeEffectiveStatement<?>,
         return local;
     }
 
-    void setGenerator(final AbstractCompositeGenerator<?> parent) {
+    void setGenerator(final AbstractCompositeGenerator<?, ?> parent) {
         verify(generator == null, "Attempted to set generator for %s", this);
         final var qname = getIdentifier();
         generator = generatorType.cast(verifyNotNull(parent.findSchemaTreeGenerator(qname),

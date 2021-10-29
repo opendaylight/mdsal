@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStateme
  */
 // FIXME: do not reference Generator once we have the codegen and runtime views well-defined
 public interface SchemaTreeChild<S extends SchemaTreeEffectiveStatement<?>,
-        G extends AbstractExplicitGenerator<S> & SchemaTreeChild<S, G>> extends Identifiable<QName> {
+        G extends AbstractExplicitGenerator<S, ?> & SchemaTreeChild<S, G>> extends Identifiable<QName> {
     @Override
     default QName getIdentifier() {
         return statement().argument();
