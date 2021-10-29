@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * The result of BindingGenerator run. Contains mapping between Types and SchemaNodes.
  */
 @Beta
-public final class BindingRuntimeTypes implements EffectiveModelContextProvider, Immutable {
+public final class BindingRuntimeTypes implements EffectiveModelContextProvider, RuntimeTypeContainer, Immutable {
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeTypes.class);
 
     private final @NonNull EffectiveModelContext schemaContext;

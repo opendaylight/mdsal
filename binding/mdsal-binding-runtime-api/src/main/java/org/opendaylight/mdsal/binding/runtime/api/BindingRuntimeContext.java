@@ -75,6 +75,7 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
      * @param augClass Augmentation class
      * @return Schema of augmentation or null if augmentation is not known in this context
      */
+    // FIXME: 9.0.0: this needs to return AugmentationRuntimeType
     <T extends Augmentation<?>> @Nullable AugmentationSchemaNode getAugmentationDefinition(Class<T> augClass);
 
     /**
@@ -90,14 +91,17 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
      * @param cls Class which represents list, container, choice or case.
      * @return Schema node, from which class was generated.
      */
+    // FIXME: 9.0.0: this needs to return RuntimeType
     @Nullable DataSchemaNode getSchemaDefinition(Class<?> cls);
 
-    // FIXME: document this thing and perhaps move it to BindingRuntimeTypes?
+    // FIXME: 9.0.0: this should be part of CompositeRuntimeType and needs to return RuntimeType
     @Nullable DataSchemaNode findChildSchemaDefinition(DataNodeContainer parentSchema, QNameModule parentNamespace,
         Class<?> childClass);
 
+    // FIXME: 9.0.0: this needs to return ActionRuntimeType
     @Nullable ActionDefinition getActionDefinition(Class<? extends Action<?, ?, ?>> cls);
 
+    // FIXME: 9.0.0: this needs to be part of CompositeRuntimeType and return AugmentationRuntimeType
     @NonNull Entry<AugmentationIdentifier, AugmentationSchemaNode> getResolvedAugmentationSchema(
             DataNodeContainer target, Class<? extends Augmentation<?>> aug);
 
@@ -110,6 +114,7 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
      *         the given context.
      * @throws IllegalArgumentException If supplied class does not represent case.
      */
+    // FIXME: 9.0.0: this should be part of ChoiceRuntimeType and return Optional<CaseRuntimeType>
     @NonNull Optional<CaseSchemaNode> getCaseSchemaDefinition(ChoiceSchemaNode schema, Class<?> childClass);
 
     /**
@@ -123,12 +128,15 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
      *     {@link DataSchemaNode}, {@link AugmentationSchemaNode} or {@link TypeDefinition}
      *     which was used to generate supplied class.
      */
+    // FIXME: 9.0.0: this should return RuntimeType
     @NonNull Entry<GeneratedType, WithStatus> getTypeWithSchema(Class<?> type);
 
+    // FIXME: 9.0.0: this should be part of ChoiceRuntimeType
     @NonNull Map<Type, Entry<Type, Type>> getChoiceCaseChildren(DataNodeContainer schema);
 
     @NonNull Set<Class<?>> getCases(Class<?> choice);
 
+    // FIXME: 9.0.0: this needs to accept an EffectiveStatementInference
     @NonNull Class<?> getClassForSchema(SchemaNode childSchema);
 
     /**
@@ -139,6 +147,7 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
      * @param container {@link DataNodeContainer} to examine
      * @return a mapping from local {@link AugmentationIdentifier}s to their corresponding Binding augmentations
      */
+    // FIXME: 9.0.0: this should be part of CompositeRuntimeType
     @NonNull ImmutableMap<AugmentationIdentifier, Type> getAvailableAugmentationTypes(DataNodeContainer container);
 
     @NonNull Class<?> getIdentityClass(QName input);
