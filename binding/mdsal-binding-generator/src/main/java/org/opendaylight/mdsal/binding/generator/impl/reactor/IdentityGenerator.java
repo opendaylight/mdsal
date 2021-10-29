@@ -10,10 +10,13 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.BASE_IDENTITY;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultIdentityRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.runtime.api.IdentityRuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.BaseEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.IdentityEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
@@ -21,7 +24,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 /**
  * Generator corresponding to a {@code identity} statement.
  */
-final class IdentityGenerator extends AbstractDependentGenerator<IdentityEffectiveStatement> {
+public final class IdentityGenerator extends AbstractDependentGenerator<IdentityEffectiveStatement> {
     private List<IdentityGenerator> baseIdentities = null;
 
     IdentityGenerator(final IdentityEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
@@ -65,6 +68,11 @@ final class IdentityGenerator extends AbstractDependentGenerator<IdentityEffecti
 //        builder.setSchemaPath(identity.getPath());
 
         return builder.build();
+    }
+
+    @Override
+    public Optional<IdentityRuntimeType> runtimeType() {
+        return generatedType().map(type -> new DefaultIdentityRuntimeType(type, statement()));
     }
 
     @Override
