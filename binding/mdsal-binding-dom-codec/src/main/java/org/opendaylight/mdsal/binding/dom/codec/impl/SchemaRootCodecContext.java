@@ -108,10 +108,9 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         CacheBuilder.newBuilder().build(new CacheLoader<>() {
             @Override
             public RpcInputCodec<?> load(final Absolute key) {
-                final ContainerLike schema = getRpcDataSchema(getSchema(), key);
                 @SuppressWarnings("unchecked")
                 final Class<? extends DataContainer> cls = (Class<? extends DataContainer>)
-                    factory().getRuntimeContext().getClassForSchema(schema);
+                    factory().getRuntimeContext().getClassForSchema(key);
                 return getRpc(cls);
             }
         });

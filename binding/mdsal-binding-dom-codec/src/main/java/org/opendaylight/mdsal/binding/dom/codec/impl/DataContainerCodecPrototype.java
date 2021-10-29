@@ -38,6 +38,7 @@ import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// FIXME: 9.0.0: T extends CompositeRuntimeType
 final class DataContainerCodecPrototype<T extends WithStatus> implements NodeContextSupplier {
     private static final Logger LOG = LoggerFactory.getLogger(DataContainerCodecPrototype.class);
 
