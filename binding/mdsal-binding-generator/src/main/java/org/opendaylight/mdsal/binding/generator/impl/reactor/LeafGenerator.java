@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import java.util.Optional;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultLeafRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.LeafRuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.LeafEffectiveStatement;
 
 /**
@@ -15,5 +18,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.LeafEffectiveStatement;
 final class LeafGenerator extends AbstractTypeAwareGenerator<LeafEffectiveStatement, LeafGenerator> {
     LeafGenerator(final LeafEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
         super(statement, parent);
+    }
+
+    @Override
+    public Optional<LeafRuntimeType> toRuntimeType() {
+        return generatedType().map(type -> new DefaultLeafRuntimeType(type, statement()));
     }
 }

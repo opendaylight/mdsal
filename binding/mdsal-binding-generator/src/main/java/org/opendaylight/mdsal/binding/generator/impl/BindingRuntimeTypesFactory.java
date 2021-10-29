@@ -10,21 +10,25 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static com.google.common.base.Verify.verify;
 
 import com.google.common.base.Stopwatch;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.AbstractExplicitGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.Generator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.GeneratorReactor;
+import org.opendaylight.mdsal.binding.generator.impl.reactor.IdentityGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.ModuleGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.TypeBuilderFactory;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
+import org.opendaylight.mdsal.binding.runtime.api.IdentityRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.ModuleRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -39,31 +43,73 @@ import org.slf4j.LoggerFactory;
 final class BindingRuntimeTypesFactory implements Mutable {
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeTypesFactory.class);
 
-    private final Map<Type, AugmentationSchemaNode> augmentationToSchema = new HashMap<>();
-    private final Map<Type, WithStatus> typeToSchema = new HashMap<>();
-    private final Map<QName, Type> identities = new HashMap<>();
+    // Modules, indexed by their QNameModule
+    private final Map<QNameModule, ModuleRuntimeType> modules = new HashMap<>();
 
-    // Note: we are keying through WithStatus, but these nodes compare on semantics, so equivalent schema nodes
-    //       can result in two distinct types. We certainly need to keep them separate.
-    private final Map<WithStatus, Type> schemaToType = new IdentityHashMap<>();
+    // Identities, indexed by their QName
+    private final Map<QName, IdentityRuntimeType> identities = new HashMap<>();
+
+    // All known types, indexed by their JavaTypeName
+    private final Map<JavaTypeName, RuntimeType> allTypes = new HashMap<>();
 
     private BindingRuntimeTypesFactory() {
         // Hidden on purpose
     }
 
     static @NonNull BindingRuntimeTypes createTypes(final @NonNull EffectiveModelContext context) {
-        final Collection<ModuleGenerator> moduleGens = new GeneratorReactor(context)
-            .execute(TypeBuilderFactory.runtime())
-            .values();
+        final var moduleGens = new GeneratorReactor(context).execute(TypeBuilderFactory.runtime());
 
         final Stopwatch sw = Stopwatch.createStarted();
         final BindingRuntimeTypesFactory factory = new BindingRuntimeTypesFactory();
-        factory.indexTypes(moduleGens);
+        factory.indexModules(moduleGens);
         LOG.debug("Indexed {} generators in {}", moduleGens.size(), sw);
 
-        return new BindingRuntimeTypes(context, factory.augmentationToSchema, factory.typeToSchema,
-            factory.schemaToType, factory.identities);
+//        return new BindingRuntimeTypes(context, factory.augmentationToSchema, factory.typeToSchema,
+//            factory.schemaToType, factory.identities);
+
+        throw new UnsupportedOperationException();
     }
+
+    private void indexModules(final Map<QNameModule, ModuleGenerator> moduleGens) {
+        for (var entry : moduleGens.entrySet()) {
+            final var modGen = entry.getValue();
+
+            // index the module's runtime type
+            modGen.toRuntimeType().ifPresent(type -> {
+                // FIXME: fix return type and ditch this cast
+                safePut(modules, "modules", entry.getKey(), (ModuleRuntimeType) type);
+                putType(type);
+            });
+
+            // index module's identities
+            for (var gen : modGen) {
+                if (gen instanceof IdentityGenerator) {
+                    ((IdentityGenerator) gen).toRuntimeType().ifPresent(identity -> {
+                        safePut(identities, "identities", identity.schema().argument(), identity);
+                        putType(identity);
+                    });
+                }
+            }
+        }
+
+        // FIXME: we need to index groupings, typedefs, etc.
+        // FIXME: toRuntimeType() needs to be idempotent
+    }
+
+    private void putType(final RuntimeType type) {
+        final var name = type.getIdentifier();
+        final var prev = allTypes.put(name, type);
+        verify(prev == null || prev == type, "Conflict on runtime type mapping of %s between %s and %s", name, prev,
+            type);
+    }
+
+    private static <K, V> void safePut(final Map<K, V> map, final String name, final K key, final V value) {
+        final var prev = map.put(key, value);
+        verify(prev == null, "Conflict in %s, key %s conflicts on %s versus %s", name, key, prev, value);
+    }
+
+    // FIXME: remove code below
+
 
     private void indexTypes(final Iterable<? extends Generator> generators) {
         for (Generator gen : generators) {
@@ -79,7 +125,9 @@ final class BindingRuntimeTypesFactory implements Mutable {
                 identities.put(((IdentityEffectiveStatement) stmt).argument(), type);
             } else if (stmt instanceof AugmentEffectiveStatement) {
                 verify(stmt instanceof AugmentationSchemaNode, "Unexpected statement %s", stmt);
-                augmentationToSchema.put(type, (AugmentationSchemaNode) stmt);
+                // FIXME: bad cast
+                verify(generator instanceof AugmentRuntimeType);
+                augmentationToSchema.put(type, (AugmentRuntimeType) generator);
             }
 
             final WithStatus schema;

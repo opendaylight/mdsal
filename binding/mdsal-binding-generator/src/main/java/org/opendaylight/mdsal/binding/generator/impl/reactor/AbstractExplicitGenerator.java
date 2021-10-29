@@ -12,6 +12,7 @@ import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
+import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
@@ -21,6 +22,7 @@ import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotableTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -73,6 +75,8 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
     public final @NonNull T statement() {
         return statement;
     }
+
+    public abstract Optional<? extends RuntimeType> toRuntimeType();
 
     @Override
     public final boolean isAddedByUses() {
