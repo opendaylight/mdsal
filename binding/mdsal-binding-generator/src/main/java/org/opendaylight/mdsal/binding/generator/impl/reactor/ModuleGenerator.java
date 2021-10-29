@@ -9,17 +9,23 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import static com.google.common.base.Verify.verifyNotNull;
 
+import java.util.List;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultModuleRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.ModuleRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
@@ -29,7 +35,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
  * Generator corresponding to a {@code module} statement. These generators are roots for generating types for a
  * particular {@link QNameModule} as mapped into the root package.
  */
-public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffectiveStatement> {
+public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffectiveStatement, ModuleRuntimeType> {
     private final @NonNull JavaTypeName yangModuleInfo;
     private final @NonNull ClassPlacement placement;
 
@@ -81,7 +87,7 @@ public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffe
     }
 
     @Override
-    AbstractCompositeGenerator<?> getPackageParent() {
+    AbstractCompositeGenerator<?, ?> getPackageParent() {
         return this;
     }
 
@@ -117,6 +123,12 @@ public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffe
         builderFactory.addCodegenInformation(statement(), builder);
 
         return builder.build();
+    }
+
+    @Override
+    ModuleRuntimeType createRuntimeType(final GeneratedType type,
+            final Map<RuntimeType, EffectiveStatement<?, ?>> children, final List<AugmentRuntimeType> augments) {
+        return new DefaultModuleRuntimeType(type, statement(), children, augments);
     }
 
     @NonNull Member getPrefixMember() {

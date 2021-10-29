@@ -7,16 +7,24 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import java.util.List;
+import java.util.Map;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultContainerRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.ContainerRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ContainerEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 /**
  * Generator corresponding to a {@code container} statement.
  */
-final class ContainerGenerator extends CompositeSchemaTreeGenerator<ContainerEffectiveStatement, ContainerGenerator> {
-    ContainerGenerator(final ContainerEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
+final class ContainerGenerator
+        extends CompositeSchemaTreeGenerator<ContainerEffectiveStatement, ContainerRuntimeType, ContainerGenerator> {
+    ContainerGenerator(final ContainerEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
     }
 
@@ -44,5 +52,11 @@ final class ContainerGenerator extends CompositeSchemaTreeGenerator<ContainerEff
 //      builder.setSchemaPath(node.getPath());
 
         return builder.build();
+    }
+
+    @Override
+    ContainerRuntimeType createRuntimeType(final GeneratedType type,
+            final Map<RuntimeType, EffectiveStatement<?, ?>> children, final List<AugmentRuntimeType> augments) {
+        return new DefaultContainerRuntimeType(type, statement(), children, augments);
     }
 }
