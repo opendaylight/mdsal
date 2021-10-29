@@ -11,6 +11,7 @@ module org.opendaylight.mdsal.binding.runtime.spi {
     requires transitive org.opendaylight.yangtools.yang.parser.api;
     requires transitive org.opendaylight.mdsal.binding.runtime.api;
     requires org.opendaylight.yangtools.concepts;
+    requires org.opendaylight.yangtools.yang.model.api;
     requires org.opendaylight.yangtools.yang.parser.impl;
     requires org.opendaylight.mdsal.binding.spec.util;
     requires org.opendaylight.yangtools.util;

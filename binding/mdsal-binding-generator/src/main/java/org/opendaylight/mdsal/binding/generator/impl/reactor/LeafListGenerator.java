@@ -7,8 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultLeafListRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.ri.Types;
+import org.opendaylight.mdsal.binding.runtime.api.LeafListRuntimeType;
 import org.opendaylight.yangtools.yang.common.Ordering;
 import org.opendaylight.yangtools.yang.model.api.stmt.LeafListEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OrderedByEffectiveStatement;
@@ -16,8 +18,9 @@ import org.opendaylight.yangtools.yang.model.api.stmt.OrderedByEffectiveStatemen
 /**
  * Generator corresponding to a {@code leaf-list} statement.
  */
-final class LeafListGenerator extends AbstractTypeAwareGenerator<LeafListEffectiveStatement, LeafListGenerator> {
-    LeafListGenerator(final LeafListEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
+final class LeafListGenerator
+        extends AbstractTypeAwareGenerator<LeafListEffectiveStatement, LeafListRuntimeType, LeafListGenerator> {
+    LeafListGenerator(final LeafListEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
     }
 
@@ -37,5 +40,12 @@ final class LeafListGenerator extends AbstractTypeAwareGenerator<LeafListEffecti
             default:
                 throw new IllegalStateException("Unexpected ordering " + ordering);
         }
+    }
+
+    @Override
+    LeafListRuntimeType createRuntimeType() {
+        // FIXME: this is not quite right: even if we did not generate a type, we still want to create a runtime type
+        //        i.e. we need to reference methodReturnElementType()'s result somehow
+        return generatedType().map(type -> new DefaultLeafListRuntimeType(type, statement())).orElse(null);
     }
 }
