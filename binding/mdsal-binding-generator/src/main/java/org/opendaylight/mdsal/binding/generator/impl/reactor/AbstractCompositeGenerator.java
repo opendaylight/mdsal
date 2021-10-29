@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -22,6 +23,8 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
@@ -79,6 +82,15 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
     public final Iterator<Generator> iterator() {
         return children.iterator();
     }
+
+    @Override
+    public final CompositeRuntimeType toRuntimeType(final TypeBuilderFactory builderFactory) {
+        // FIXME: index children properly
+        return toRuntimeType(getGeneratedType(builderFactory), Map.of());
+    }
+
+    abstract @NonNull CompositeRuntimeType toRuntimeType(@NonNull GeneratedType type,
+        @NonNull Map<RuntimeType, EffectiveStatement<?, ?>> children);
 
     @Override
     final boolean isEmpty() {
@@ -303,11 +315,11 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
                 }
             } else if (stmt instanceof AnydataEffectiveStatement) {
                 if (!isAugmenting(stmt)) {
-                    tmp.add(new OpaqueObjectGenerator<>((AnydataEffectiveStatement) stmt, this));
+                    tmp.add(new OpaqueObjectGenerator.Anydata((AnydataEffectiveStatement) stmt, this));
                 }
             } else if (stmt instanceof AnyxmlEffectiveStatement) {
                 if (!isAugmenting(stmt)) {
-                    tmp.add(new OpaqueObjectGenerator<>((AnyxmlEffectiveStatement) stmt, this));
+                    tmp.add(new OpaqueObjectGenerator.Anyxml((AnyxmlEffectiveStatement) stmt, this));
                 }
             } else if (stmt instanceof CaseEffectiveStatement) {
                 tmp.add(new CaseGenerator((CaseEffectiveStatement) stmt, this));
