@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeTypeContainer;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
@@ -90,13 +92,16 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     private final LoadingCache<QName, DataContainerCodecContext<?,?>> childrenByQName =
         CacheBuilder.newBuilder().build(new CacheLoader<>() {
             @Override
-            public DataContainerCodecContext<?, ?> load(final QName qname) {
-                final DataSchemaNode childSchema = getSchema().dataChildByName(qname);
-                childNonNull(childSchema, qname, "Argument %s is not valid child of %s", qname, getSchema());
+            public DataContainerCodecContext<?, ?> load(final QName qname) throws ClassNotFoundException {
+                // FIXME: bad cast
+                final var type = (RuntimeTypeContainer) getType();
+                final var child = childNonNull(type.schemaTreeChild(qname), qname,
+                    "Argument %s is not valid child of %s", qname, type);
+                final var childSchema = child.schema();
                 if (childSchema instanceof DataNodeContainer || childSchema instanceof ChoiceSchemaNode) {
                     @SuppressWarnings("unchecked")
                     final Class<? extends DataObject> childCls = (Class<? extends DataObject>)
-                        factory().getRuntimeContext().getClassForSchema(childSchema);
+                        factory().getRuntimeContext().loadClass(child.javaType());
                     return streamChild(childCls);
                 }
 
@@ -108,10 +113,9 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         CacheBuilder.newBuilder().build(new CacheLoader<>() {
             @Override
             public RpcInputCodec<?> load(final Absolute key) {
-                final ContainerLike schema = getRpcDataSchema(getSchema(), key);
                 @SuppressWarnings("unchecked")
                 final Class<? extends DataContainer> cls = (Class<? extends DataContainer>)
-                    factory().getRuntimeContext().getClassForSchema(schema);
+                    factory().getRuntimeContext().getClassForSchema(key);
                 return getRpc(cls);
             }
         });
@@ -313,7 +317,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         final DataSchemaNode schema = factory().getRuntimeContext().getSchemaDefinition(choiceClass);
         checkArgument(schema instanceof ChoiceSchemaNode, "Class %s does not refer to a choice", caseType);
 
-        final DataContainerCodecContext<?, ChoiceSchemaNode> choice = DataContainerCodecPrototype.from(choiceClass,
+        final DataContainerCodecContext<?, ChoiceRuntimeType> choice = DataContainerCodecPrototype.from(choiceClass,
             (ChoiceSchemaNode)schema, factory()).get();
         Verify.verify(choice instanceof ChoiceNodeCodecContext);
         return (ChoiceNodeCodecContext<?>) choice;
