@@ -10,11 +10,15 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -25,7 +29,11 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
 import org.opendaylight.yangtools.yang.model.api.CopyableNode;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
@@ -36,6 +44,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.CaseEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ContainerEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeAwareEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.GroupingEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.IdentityEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
@@ -112,8 +121,8 @@ import org.slf4j.LoggerFactory;
  * with linking original instances in the tree iteration order. The part dealing with augment attachment lives mostly
  * in {@link AugmentRequirement}.
  */
-public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>>
-        extends AbstractExplicitGenerator<T> implements SchemaTreeParent<T> {
+public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>, R extends CompositeRuntimeType>
+        extends AbstractExplicitGenerator<T, R> implements SchemaTreeParent<T> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractCompositeGenerator.class);
 
     // FIXME: we want to allocate this lazily to lower memory footprint
@@ -142,7 +151,7 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
      * have some children which have not completed linking. Once we have completed linking of all children, including
      * {@link #unlinkedChildren}, this will be set to {@code null}.
      */
-    private List<AbstractCompositeGenerator<?>> unlinkedComposites = List.of();
+    private List<AbstractCompositeGenerator<?, ?>> unlinkedComposites = List.of();
     /**
      * List of children which have not had their original linked. This list starts of as null. When we first attempt
      * linkage, it becomes non-null.
@@ -157,7 +166,7 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
         schemaTreeChildren = children.getValue();
     }
 
-    AbstractCompositeGenerator(final T statement, final AbstractCompositeGenerator<?> parent) {
+    AbstractCompositeGenerator(final T statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
 
         final var children = createChildren(statement);
@@ -181,21 +190,55 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
     }
 
     @Override
+    public final R createRuntimeType() {
+        return generatedType()
+            .map(type -> {
+                final var childMap = new HashMap<RuntimeType, EffectiveStatement<?, ?>>();
+
+                for (var child : schemaTreeChildren) {
+                    RuntimeType childType = null;
+                    AbstractExplicitGenerator<?, ?> gen = child.generator();
+                    do {
+                        childType = gen.runtimeType().orElse(null);
+                        gen = gen.previous();
+                    } while (childType == null && gen != null);
+
+                    if (childType != null) {
+                        childMap.put(childType, child.statement());
+                    }
+                }
+
+                return createRuntimeType(type, childMap, augments.stream()
+                    .map(AbstractAugmentGenerator::runtimeType)
+                    .filter(Optional::isPresent)
+                    .map(Optional::orElseThrow)
+                    .collect(ImmutableMap.toImmutableMap(augType -> new AugmentationIdentifier(
+                        augType.statement().getAll(DataTreeAwareEffectiveStatement.Namespace.class).keySet()),
+                        Function.identity())));
+            })
+            .orElse(null);
+    }
+
+    abstract @NonNull R createRuntimeType(@NonNull GeneratedType type,
+        @NonNull Map<RuntimeType, EffectiveStatement<?, ?>> children,
+        @NonNull Map<AugmentationIdentifier, AugmentRuntimeType> augments);
+
+    @Override
     final boolean isEmpty() {
         return childGenerators.isEmpty();
     }
 
-    final @Nullable AbstractExplicitGenerator<?> findGenerator(final List<EffectiveStatement<?, ?>> stmtPath) {
+    final @Nullable AbstractExplicitGenerator<?, ?> findGenerator(final List<EffectiveStatement<?, ?>> stmtPath) {
         return findGenerator(MatchStrategy.identity(), stmtPath, 0);
     }
 
-    final @Nullable AbstractExplicitGenerator<?> findGenerator(final MatchStrategy childStrategy,
+    final @Nullable AbstractExplicitGenerator<?, ?> findGenerator(final MatchStrategy childStrategy,
             // TODO: Wouldn't this method be nicer with Deque<EffectiveStatement<?, ?>> ?
             final List<EffectiveStatement<?, ?>> stmtPath, final int offset) {
         final EffectiveStatement<?, ?> stmt = stmtPath.get(offset);
 
         // Try direct children first, which is simple
-        AbstractExplicitGenerator<?> ret = childStrategy.findGenerator(stmt, childGenerators);
+        AbstractExplicitGenerator<?, ?> ret = childStrategy.findGenerator(stmt, childGenerators);
         if (ret != null) {
             final int next = offset + 1;
             if (stmtPath.size() == next) {
@@ -204,7 +247,7 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
             }
             if (ret instanceof AbstractCompositeGenerator) {
                 // We know how to descend down
-                return ((AbstractCompositeGenerator<?>) ret).findGenerator(childStrategy, stmtPath, next);
+                return ((AbstractCompositeGenerator<?, ?>) ret).findGenerator(childStrategy, stmtPath, next);
             }
             // Yeah, don't know how to continue here
             return null;
@@ -272,7 +315,7 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
                 requirements.add(((UsesAugmentGenerator) child).startLinkage());
             }
             if (child instanceof AbstractCompositeGenerator) {
-                ((AbstractCompositeGenerator<?>) child).startUsesAugmentLinkage(requirements);
+                ((AbstractCompositeGenerator<?, ?>) child).startUsesAugmentLinkage(requirements);
             }
         }
     }
@@ -299,7 +342,7 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
         if (unlinkedChildren == null) {
             unlinkedChildren = childGenerators.stream()
                 .filter(AbstractExplicitGenerator.class::isInstance)
-                .map(child -> (AbstractExplicitGenerator<?>) child)
+                .map(child -> (AbstractExplicitGenerator<?, ?>) child)
                 .collect(Collectors.toList());
         }
 
@@ -310,7 +353,7 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
             while (it.hasNext()) {
                 final var child = it.next();
                 if (child instanceof AbstractExplicitGenerator) {
-                    if (((AbstractExplicitGenerator<?>) child).linkOriginalGenerator()) {
+                    if (((AbstractExplicitGenerator<?, ?>) child).linkOriginalGenerator()) {
                         progress = LinkageProgress.SOME;
                         it.remove();
 
@@ -319,7 +362,7 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
                             if (unlinkedComposites.isEmpty()) {
                                 unlinkedComposites = new ArrayList<>();
                             }
-                            unlinkedComposites.add((AbstractCompositeGenerator<?>) child);
+                            unlinkedComposites.add((AbstractCompositeGenerator<?, ?>) child);
                         }
                     }
                 }
@@ -354,20 +397,21 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
     }
 
     @Override
-    final AbstractCompositeGenerator<T> getOriginal() {
-        return (AbstractCompositeGenerator<T>) super.getOriginal();
+    final AbstractCompositeGenerator<T, R> getOriginal() {
+        return (AbstractCompositeGenerator<T, R>) super.getOriginal();
     }
 
     @Override
-    final AbstractCompositeGenerator<T> tryOriginal() {
-        return (AbstractCompositeGenerator<T>) super.tryOriginal();
+    final AbstractCompositeGenerator<T, R> tryOriginal() {
+        return (AbstractCompositeGenerator<T, R>) super.tryOriginal();
     }
 
-    final <S extends EffectiveStatement<?, ?>> @Nullable OriginalLink<S> originalChild(final QName childQName) {
+    final <X extends EffectiveStatement<?, ?>, Y extends RuntimeType> @Nullable OriginalLink<X, Y> originalChild(
+            final QName childQName) {
         // First try groupings/augments ...
         var found = findInferredGenerator(childQName);
         if (found != null) {
-            return (OriginalLink<S>) OriginalLink.partial(found);
+            return (OriginalLink<X, Y>) OriginalLink.partial(found);
         }
 
         // ... no luck, we really need to start looking at our origin
@@ -376,7 +420,7 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
             final QName prevQName = childQName.bindTo(prev.getQName().getModule());
             found = prev.findSchemaTreeGenerator(prevQName);
             if (found != null) {
-                return (OriginalLink<S>) found.originalLink();
+                return (OriginalLink<X, Y>) found.originalLink();
             }
         }
 
@@ -384,8 +428,8 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
     }
 
     @Override
-    final AbstractExplicitGenerator<?> findSchemaTreeGenerator(final QName qname) {
-        final AbstractExplicitGenerator<?> found = super.findSchemaTreeGenerator(qname);
+    final AbstractExplicitGenerator<?, ?> findSchemaTreeGenerator(final QName qname) {
+        final AbstractExplicitGenerator<?, ?> found = super.findSchemaTreeGenerator(qname);
         return found != null ? found : findInferredGenerator(qname);
     }
 
@@ -409,7 +453,7 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
         return null;
     }
 
-    private @Nullable AbstractExplicitGenerator<?> findInferredGenerator(final QName qname) {
+    private @Nullable AbstractExplicitGenerator<?, ?> findInferredGenerator(final QName qname) {
         // First search our local groupings ...
         for (var grouping : groupings) {
             final var gen = grouping.findSchemaTreeGenerator(qname.bindTo(grouping.statement().argument().getModule()));
@@ -450,7 +494,7 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
         for (Generator child : this) {
             // Only process explicit generators here
             if (child instanceof AbstractExplicitGenerator) {
-                ((AbstractExplicitGenerator<?>) child).addAsGetterMethod(builder, builderFactory);
+                ((AbstractExplicitGenerator<?, ?>) child).addAsGetterMethod(builder, builderFactory);
             }
 
             final GeneratedType enclosedType = child.enclosedType(builderFactory);
@@ -481,16 +525,16 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
             } else if (stmt instanceof AnydataEffectiveStatement) {
                 final var cast = (AnydataEffectiveStatement) stmt;
                 if (isAugmenting(stmt)) {
-                    tmpSchema.add(new SchemaTreePlaceholder<>(cast, OpaqueObjectGenerator.class));
+                    tmpSchema.add(new SchemaTreePlaceholder<>(cast, OpaqueObjectGenerator.Anydata.class));
                 } else {
-                    tmp.add(new OpaqueObjectGenerator<>(cast, this));
+                    tmp.add(new OpaqueObjectGenerator.Anydata(cast, this));
                 }
             } else if (stmt instanceof AnyxmlEffectiveStatement) {
                 final var cast = (AnyxmlEffectiveStatement) stmt;
                 if (isAugmenting(stmt)) {
-                    tmpSchema.add(new SchemaTreePlaceholder<>(cast, OpaqueObjectGenerator.class));
+                    tmpSchema.add(new SchemaTreePlaceholder<>(cast, OpaqueObjectGenerator.Anyxml.class));
                 } else {
-                    tmp.add(new OpaqueObjectGenerator<>(cast, this));
+                    tmp.add(new OpaqueObjectGenerator.Anyxml(cast, this));
                 }
             } else if (stmt instanceof CaseEffectiveStatement) {
                 tmp.add(new CaseGenerator((CaseEffectiveStatement) stmt, this));
@@ -514,9 +558,10 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
             } else if (stmt instanceof IdentityEffectiveStatement) {
                 tmp.add(new IdentityGenerator((IdentityEffectiveStatement) stmt, this));
             } else if (stmt instanceof InputEffectiveStatement) {
+                final var cast = (InputEffectiveStatement) stmt;
                 // FIXME: do not generate legacy RPC layout
-                tmp.add(this instanceof RpcGenerator ? new RpcContainerGenerator((InputEffectiveStatement) stmt, this)
-                    : new OperationContainerGenerator((InputEffectiveStatement) stmt, this));
+                tmp.add(this instanceof RpcGenerator ? new RpcInputGenerator(cast, this)
+                    : new InputGenerator(cast, this));
             } else if (stmt instanceof LeafEffectiveStatement) {
                 final var cast = (LeafEffectiveStatement) stmt;
                 if (isAugmenting(stmt)) {
@@ -552,9 +597,10 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
                     tmp.add(new NotificationGenerator(cast, this));
                 }
             } else if (stmt instanceof OutputEffectiveStatement) {
+                final var cast = (OutputEffectiveStatement) stmt;
                 // FIXME: do not generate legacy RPC layout
-                tmp.add(this instanceof RpcGenerator ? new RpcContainerGenerator((OutputEffectiveStatement) stmt, this)
-                    : new OperationContainerGenerator((OutputEffectiveStatement) stmt, this));
+                tmp.add(this instanceof RpcGenerator ? new RpcOutputGenerator(cast, this)
+                    : new OutputGenerator(cast, this));
             } else if (stmt instanceof RpcEffectiveStatement) {
                 tmp.add(new RpcGenerator((RpcEffectiveStatement) stmt, this));
             } else if (stmt instanceof TypedefEffectiveStatement) {
