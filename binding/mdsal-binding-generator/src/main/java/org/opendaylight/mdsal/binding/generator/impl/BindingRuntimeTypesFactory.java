@@ -22,6 +22,7 @@ import org.opendaylight.mdsal.binding.generator.impl.reactor.ModuleGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.TypeBuilderFactory;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
 final class BindingRuntimeTypesFactory implements Mutable {
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeTypesFactory.class);
 
-    private final Map<Type, AugmentationSchemaNode> augmentationToSchema = new HashMap<>();
+    private final Map<Type, AugmentRuntimeType> augmentationToSchema = new HashMap<>();
     private final Map<Type, WithStatus> typeToSchema = new HashMap<>();
     private final Map<QName, Type> identities = new HashMap<>();
 
@@ -79,7 +80,9 @@ final class BindingRuntimeTypesFactory implements Mutable {
                 identities.put(((IdentityEffectiveStatement) stmt).argument(), type);
             } else if (stmt instanceof AugmentEffectiveStatement) {
                 verify(stmt instanceof AugmentationSchemaNode, "Unexpected statement %s", stmt);
-                augmentationToSchema.put(type, (AugmentationSchemaNode) stmt);
+                // FIXME: bad cast
+                verify(generator instanceof AugmentRuntimeType);
+                augmentationToSchema.put(type, (AugmentRuntimeType) generator);
             }
 
             final WithStatus schema;

@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -25,6 +26,8 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
 import org.opendaylight.yangtools.yang.model.api.CopyableNode;
@@ -179,6 +182,15 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
         }
         return schemaTreeChildren;
     }
+
+    @Override
+    public final Optional<? extends CompositeRuntimeType> toRuntimeType() {
+        // FIXME: index children properly
+        return generatedType().map(type -> toRuntimeType(type, Map.of()));
+    }
+
+    abstract @NonNull CompositeRuntimeType toRuntimeType(@NonNull GeneratedType type,
+        @NonNull Map<RuntimeType, EffectiveStatement<?, ?>> children);
 
     @Override
     final boolean isEmpty() {
@@ -481,16 +493,16 @@ public abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?,
             } else if (stmt instanceof AnydataEffectiveStatement) {
                 final var cast = (AnydataEffectiveStatement) stmt;
                 if (isAugmenting(stmt)) {
-                    tmpSchema.add(new SchemaTreePlaceholder<>(cast, OpaqueObjectGenerator.class));
+                    tmpSchema.add(new SchemaTreePlaceholder<>(cast, OpaqueObjectGenerator.Anydata.class));
                 } else {
-                    tmp.add(new OpaqueObjectGenerator<>(cast, this));
+                    tmp.add(new OpaqueObjectGenerator.Anydata(cast, this));
                 }
             } else if (stmt instanceof AnyxmlEffectiveStatement) {
                 final var cast = (AnyxmlEffectiveStatement) stmt;
                 if (isAugmenting(stmt)) {
-                    tmpSchema.add(new SchemaTreePlaceholder<>(cast, OpaqueObjectGenerator.class));
+                    tmpSchema.add(new SchemaTreePlaceholder<>(cast, OpaqueObjectGenerator.Anyxml.class));
                 } else {
-                    tmp.add(new OpaqueObjectGenerator<>(cast, this));
+                    tmp.add(new OpaqueObjectGenerator.Anyxml(cast, this));
                 }
             } else if (stmt instanceof CaseEffectiveStatement) {
                 tmp.add(new CaseGenerator((CaseEffectiveStatement) stmt, this));
