@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotableTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -64,6 +65,8 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
     public final @NonNull T statement() {
         return statement;
     }
+
+    public abstract @NonNull RuntimeType toRuntimeType(TypeBuilderFactory builderFactory);
 
     @Override
     public final boolean isAddedByUses() {
