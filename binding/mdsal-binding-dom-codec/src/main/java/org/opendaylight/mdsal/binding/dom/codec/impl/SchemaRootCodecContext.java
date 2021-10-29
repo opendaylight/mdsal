@@ -26,6 +26,11 @@ import java.util.List;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
+import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeTypeContainer;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
@@ -48,6 +53,7 @@ import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerLike;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
@@ -55,7 +61,7 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 
-final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCodecContext<D, EffectiveModelContext> {
+final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCodecContext<D, BindingRuntimeTypes> {
 
     private final LoadingCache<Class<? extends DataObject>, DataContainerCodecContext<?, ?>> childrenByClass =
         CacheBuilder.newBuilder().build(new CacheLoader<>() {
@@ -90,13 +96,16 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     private final LoadingCache<QName, DataContainerCodecContext<?,?>> childrenByQName =
         CacheBuilder.newBuilder().build(new CacheLoader<>() {
             @Override
-            public DataContainerCodecContext<?, ?> load(final QName qname) {
-                final DataSchemaNode childSchema = getSchema().dataChildByName(qname);
-                childNonNull(childSchema, qname, "Argument %s is not valid child of %s", qname, getSchema());
+            public DataContainerCodecContext<?, ?> load(final QName qname) throws ClassNotFoundException {
+                // FIXME: bad cast
+                final var type = (RuntimeTypeContainer) getType();
+                final var child = childNonNull(type.schemaTreeChild(qname), qname,
+                    "Argument %s is not valid child of %s", qname, type);
+                final var childSchema = child.schema();
                 if (childSchema instanceof DataNodeContainer || childSchema instanceof ChoiceSchemaNode) {
                     @SuppressWarnings("unchecked")
                     final Class<? extends DataObject> childCls = (Class<? extends DataObject>)
-                        factory().getRuntimeContext().getClassForSchema(childSchema);
+                        factory().getRuntimeContext().loadClass(child.javaType());
                     return streamChild(childCls);
                 }
 
@@ -108,10 +117,9 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         CacheBuilder.newBuilder().build(new CacheLoader<>() {
             @Override
             public RpcInputCodec<?> load(final Absolute key) {
-                final ContainerLike schema = getRpcDataSchema(getSchema(), key);
                 @SuppressWarnings("unchecked")
                 final Class<? extends DataContainer> cls = (Class<? extends DataContainer>)
-                    factory().getRuntimeContext().getClassForSchema(schema);
+                    factory().getRuntimeContext().getClassForSchema(key);
                 return getRpc(cls);
             }
         });
@@ -131,7 +139,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
             }
         });
 
-    private SchemaRootCodecContext(final DataContainerCodecPrototype<EffectiveModelContext> dataPrototype) {
+    private SchemaRootCodecContext(final DataContainerCodecPrototype<BindingRuntimeTypes> dataPrototype) {
         super(dataPrototype);
     }
 
@@ -144,6 +152,11 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
      */
     static SchemaRootCodecContext<?> create(final CodecContextFactory factory) {
         return new SchemaRootCodecContext<>(DataContainerCodecPrototype.rootPrototype(factory));
+    }
+
+    @Override
+    public WithStatus getSchema() {
+        return getType().getEffectiveModelContext();
     }
 
     @SuppressWarnings("unchecked")
@@ -189,8 +202,9 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     }
 
     DataContainerCodecContext<?,?> createDataTreeChildContext(final Class<?> key) {
+        // TODO: we should be able to work with bindingChild() instead of schemaTreeChild() here
         final QName qname = BindingReflections.findQName(key);
-        final DataSchemaNode childSchema = childNonNull(getSchema().dataChildByName(qname), key,
+        final RuntimeType childSchema = childNonNull(getType().schemaTreeChild(qname), key,
             "%s is not top-level item.", key);
         return DataContainerCodecPrototype.from(key, childSchema, factory()).get();
     }
@@ -301,10 +315,13 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     NotificationCodecContext<?> createNotificationDataContext(final Class<?> notificationType) {
         checkArgument(Notification.class.isAssignableFrom(notificationType));
         checkArgument(notificationType.isInterface(), "Supplied class must be interface.");
+
+        // TODO: we should be able to work with bindingChild() instead of schemaTreeChild() here
         final QName qname = BindingReflections.findQName(notificationType);
-        final NotificationDefinition schema = getSchema().findNotification(qname).orElseThrow(
-            () -> new IllegalArgumentException("Supplied " + notificationType + " is not valid notification"));
-        return new NotificationCodecContext<>(notificationType, schema, factory());
+        final RuntimeType child = getType().schemaTreeChild(qname);
+        checkArgument(child instanceof NotificationRuntimeType, "Supplied %s is not valid notification",
+            notificationType);
+        return new NotificationCodecContext<>(notificationType, (NotificationRuntimeType) child, factory());
     }
 
     ChoiceNodeCodecContext<?> createChoiceDataContext(final Class<? extends DataObject> caseType) {
@@ -313,7 +330,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         final DataSchemaNode schema = factory().getRuntimeContext().getSchemaDefinition(choiceClass);
         checkArgument(schema instanceof ChoiceSchemaNode, "Class %s does not refer to a choice", caseType);
 
-        final DataContainerCodecContext<?, ChoiceSchemaNode> choice = DataContainerCodecPrototype.from(choiceClass,
+        final DataContainerCodecContext<?, ChoiceRuntimeType> choice = DataContainerCodecPrototype.from(choiceClass,
             (ChoiceSchemaNode)schema, factory()).get();
         Verify.verify(choice instanceof ChoiceNodeCodecContext);
         return (ChoiceNodeCodecContext<?>) choice;
