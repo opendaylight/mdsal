@@ -7,30 +7,30 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.Map;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
-import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
-import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.ContainerLikeRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 /**
  * Generator corresponding to an {@code input} or an {@code output} statement.
  */
-class OperationContainerGenerator
-        extends CompositeSchemaTreeGenerator<SchemaTreeEffectiveStatement<?>, OperationContainerGenerator> {
+abstract class OperationContainerGenerator<S extends DataTreeEffectiveStatement<?>, R extends CompositeRuntimeType,
+        G extends OperationContainerGenerator<S, R, G>> extends CompositeSchemaTreeGenerator<S, R, G> {
     private final ConcreteType baseInterface;
 
-    OperationContainerGenerator(final InputEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
+    OperationContainerGenerator(final S statement, final AbstractCompositeGenerator<?, ?> parent,
+            final ConcreteType baseInterface) {
         super(statement, parent);
-        baseInterface = BindingTypes.RPC_INPUT;
-    }
-
-    OperationContainerGenerator(final OutputEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
-        super(statement, parent);
-        baseInterface = BindingTypes.RPC_OUTPUT;
+        this.baseInterface = requireNonNull(baseInterface);
     }
 
     @Override
@@ -40,7 +40,7 @@ class OperationContainerGenerator
 
     @Override
     final GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
-        final AbstractCompositeGenerator<?> parent = getParent();
+        final AbstractCompositeGenerator<?, ?> parent = getParent();
         if (parent instanceof ActionGenerator && ((ActionGenerator) parent).isAddedByUses()) {
             //        final ActionDefinition orig = findOrigAction(parentSchema, action).get();
             //        // Original definition may live in a different module, make sure we account for that
@@ -70,4 +70,8 @@ class OperationContainerGenerator
 
         return builder.build();
     }
+
+    @Override
+    abstract ContainerLikeRuntimeType<?, ?> toRuntimeType(GeneratedType type,
+        Map<RuntimeType, EffectiveStatement<?, ?>> children);
 }

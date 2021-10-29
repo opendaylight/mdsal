@@ -9,7 +9,9 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.identifiable;
 
+import java.util.Map;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultListRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -17,8 +19,11 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.ri.Types;
+import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.Ordering;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.KeyEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ListEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OrderedByEffectiveStatement;
@@ -27,10 +32,10 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 /**
  * Generator corresponding to a {@code list} statement.
  */
-final class ListGenerator extends CompositeSchemaTreeGenerator<ListEffectiveStatement, ListGenerator> {
+final class ListGenerator extends CompositeSchemaTreeGenerator<ListEffectiveStatement, ListRuntimeType, ListGenerator> {
     private final @Nullable KeyGenerator keyGen;
 
-    ListGenerator(final ListEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
+    ListGenerator(final ListEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
         keyGen = statement.findFirstEffectiveSubstatement(KeyEffectiveStatement.class)
             .map(key -> new KeyGenerator(key, parent, this))
@@ -74,6 +79,12 @@ final class ListGenerator extends CompositeSchemaTreeGenerator<ListEffectiveStat
         //    builder.setSchemaPath(node.getPath());
 
         return builder.build();
+    }
+
+    @Override
+    ListRuntimeType toRuntimeType(final GeneratedType type,
+            final Map<RuntimeType, EffectiveStatement<?, ?>> children) {
+        return new DefaultListRuntimeType(type, statement(), children);
     }
 
     @Override

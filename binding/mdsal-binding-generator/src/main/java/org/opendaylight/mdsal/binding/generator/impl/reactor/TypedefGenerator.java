@@ -11,9 +11,12 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.TypedefRuntimeType;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
@@ -21,15 +24,21 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 /**
  * Generator corresponding to a {@code typedef} statement.
  */
-final class TypedefGenerator extends AbstractTypeObjectGenerator<TypedefEffectiveStatement> {
+final class TypedefGenerator extends AbstractTypeObjectGenerator<TypedefEffectiveStatement, TypedefRuntimeType> {
     /**
      * List of all generators for types directly derived from this typedef. We populate this list during initial type
      * linking. It allows us to easily cascade inferences made by this typedef down the type derivation tree.
      */
-    private List<AbstractTypeObjectGenerator<?>> derivedGenerators = null;
+    private List<AbstractTypeObjectGenerator<?, ?>> derivedGenerators = null;
 
-    TypedefGenerator(final TypedefEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
+    TypedefGenerator(final TypedefEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
+    }
+
+    @Override
+    public Optional<RuntimeType> runtimeType() {
+        // FIXME: implement this
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -42,7 +51,7 @@ final class TypedefGenerator extends AbstractTypeObjectGenerator<TypedefEffectiv
         dataTree.enterTypedef(statement().argument());
     }
 
-    void addDerivedGenerator(final AbstractTypeObjectGenerator<?> derivedGenerator) {
+    void addDerivedGenerator(final AbstractTypeObjectGenerator<?, ?> derivedGenerator) {
         if (derivedGenerators == null) {
             derivedGenerators = new ArrayList<>(4);
         }
@@ -53,7 +62,7 @@ final class TypedefGenerator extends AbstractTypeObjectGenerator<TypedefEffectiv
     void bindDerivedGenerators(final TypeReference reference) {
         // Trigger any derived resolvers ...
         if (derivedGenerators != null) {
-            for (AbstractTypeObjectGenerator<?> derived : derivedGenerators) {
+            for (AbstractTypeObjectGenerator<?, ?> derived : derivedGenerators) {
                 derived.bindTypeDefinition(reference);
             }
         }
