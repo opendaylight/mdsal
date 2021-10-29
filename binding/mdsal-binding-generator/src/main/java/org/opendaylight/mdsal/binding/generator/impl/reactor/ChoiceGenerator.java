@@ -7,10 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import java.util.Map;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultChoiceRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
@@ -43,5 +48,11 @@ final class ChoiceGenerator extends AbstractCompositeGenerator<ChoiceEffectiveSt
         builder.setModuleName(module.statement().argument().getLocalName());
 
         return builder.build();
+    }
+
+    @Override
+    ChoiceRuntimeType toRuntimeType(final GeneratedType type,
+            final Map<RuntimeType, EffectiveStatement<?, ?>> children) {
+        return new DefaultChoiceRuntimeType(type, statement(), children);
     }
 }

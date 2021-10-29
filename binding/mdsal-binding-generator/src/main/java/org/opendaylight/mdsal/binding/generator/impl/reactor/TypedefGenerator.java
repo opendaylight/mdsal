@@ -14,6 +14,7 @@ import java.util.List;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
@@ -30,6 +31,12 @@ final class TypedefGenerator extends AbstractTypeObjectGenerator<TypedefEffectiv
 
     TypedefGenerator(final TypedefEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
         super(statement, parent);
+    }
+
+    @Override
+    public RuntimeType toRuntimeType(final TypeBuilderFactory builderFactory) {
+        // FIXME: implement this
+        throw new UnsupportedOperationException();
     }
 
     @Override
