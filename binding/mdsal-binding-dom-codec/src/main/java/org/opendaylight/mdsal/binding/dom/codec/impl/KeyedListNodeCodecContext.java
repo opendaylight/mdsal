@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
@@ -28,7 +29,7 @@ abstract class KeyedListNodeCodecContext<I extends Identifier<D>, D extends Data
         extends ListNodeCodecContext<D> {
     private static final class Ordered<I extends Identifier<D>, D extends DataObject & Identifiable<I>>
             extends KeyedListNodeCodecContext<I, D> {
-        Ordered(final DataContainerCodecPrototype<ListSchemaNode> prototype, final Method keyMethod,
+        Ordered(final DataContainerCodecPrototype<ListRuntimeType> prototype, final Method keyMethod,
                 final IdentifiableItemCodec codec) {
             super(prototype, keyMethod, codec);
         }
@@ -36,7 +37,7 @@ abstract class KeyedListNodeCodecContext<I extends Identifier<D>, D extends Data
 
     static final class Unordered<I extends Identifier<D>, D extends DataObject & Identifiable<I>>
             extends KeyedListNodeCodecContext<I, D> {
-        Unordered(final DataContainerCodecPrototype<ListSchemaNode> prototype, final Method keyMethod,
+        Unordered(final DataContainerCodecPrototype<ListRuntimeType> prototype, final Method keyMethod,
                 final IdentifiableItemCodec codec) {
             super(prototype, keyMethod, codec);
         }
@@ -49,14 +50,14 @@ abstract class KeyedListNodeCodecContext<I extends Identifier<D>, D extends Data
 
     private final IdentifiableItemCodec codec;
 
-    KeyedListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype,
+    KeyedListNodeCodecContext(final DataContainerCodecPrototype<ListRuntimeType> prototype,
             final Method keyMethod, final IdentifiableItemCodec codec) {
         super(prototype, keyMethod);
         this.codec = requireNonNull(codec);
     }
 
     @SuppressWarnings("rawtypes")
-    static KeyedListNodeCodecContext create(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
+    static KeyedListNodeCodecContext create(final DataContainerCodecPrototype<ListRuntimeType> prototype) {
         final Class<?> bindingClass = prototype.getBindingClass();
         final Method keyMethod;
         try {
