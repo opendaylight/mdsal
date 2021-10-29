@@ -7,10 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import java.util.Map;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultInputRuntimeType;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultOutputRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
@@ -70,5 +76,18 @@ class OperationContainerGenerator extends AbstractCompositeGenerator<SchemaTreeE
         builder.setModuleName(module.statement().argument().getLocalName());
 
         return builder.build();
+    }
+
+    @Override
+    final CompositeRuntimeType toRuntimeType(final GeneratedType type,
+            final Map<RuntimeType, EffectiveStatement<?, ?>> children) {
+        final var stmt = statement();
+        if (stmt instanceof InputEffectiveStatement) {
+            return new DefaultInputRuntimeType(type, (InputEffectiveStatement) stmt, children);
+        } else if (stmt instanceof OutputEffectiveStatement) {
+            return new DefaultOutputRuntimeType(type, (OutputEffectiveStatement) stmt, children);
+        } else {
+            throw new IllegalStateException("Unexpected statement " + stmt);
+        }
     }
 }

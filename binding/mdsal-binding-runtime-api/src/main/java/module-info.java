@@ -8,6 +8,8 @@
 module org.opendaylight.mdsal.binding.runtime.api {
     exports org.opendaylight.mdsal.binding.runtime.api;
 
+    requires transitive org.opendaylight.yangtools.concepts;
+    requires transitive org.opendaylight.yangtools.yang.common;
     requires transitive org.opendaylight.yangtools.yang.data.api;
     requires transitive org.opendaylight.yangtools.yang.model.api;
     requires transitive org.opendaylight.yangtools.yang.binding;

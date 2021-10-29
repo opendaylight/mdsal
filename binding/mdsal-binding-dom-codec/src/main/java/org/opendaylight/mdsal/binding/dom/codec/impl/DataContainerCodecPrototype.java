@@ -13,6 +13,11 @@ import java.lang.invoke.VarHandle;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode.ChildAddressabilitySummary;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
+import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
@@ -30,15 +35,15 @@ import org.opendaylight.yangtools.yang.model.api.ContainerLike;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class DataContainerCodecPrototype<T extends WithStatus> implements NodeContextSupplier {
+final class DataContainerCodecPrototype<T extends CompositeRuntimeType> implements NodeContextSupplier {
     private static final Logger LOG = LoggerFactory.getLogger(DataContainerCodecPrototype.class);
 
     private static final VarHandle INSTANCE;
@@ -52,7 +57,7 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
         }
     }
 
-    private final T schema;
+    private final T type;
     private final QNameModule namespace;
     private final CodecContextFactory factory;
     private final Item<?> bindingArg;
@@ -64,16 +69,16 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
     private volatile DataContainerCodecContext<?, T> instance;
 
     @SuppressWarnings("unchecked")
-    private DataContainerCodecPrototype(final Class<?> cls, final PathArgument arg, final T nodeSchema,
+    private DataContainerCodecPrototype(final Class<?> cls, final PathArgument arg, final T type,
             final CodecContextFactory factory) {
-        this(Item.of((Class<? extends DataObject>) cls), arg, nodeSchema, factory);
+        this(Item.of((Class<? extends DataObject>) cls), arg, type, factory);
     }
 
-    private DataContainerCodecPrototype(final Item<?> bindingArg, final PathArgument arg, final T nodeSchema,
+    private DataContainerCodecPrototype(final Item<?> bindingArg, final PathArgument arg, final T type,
             final CodecContextFactory factory) {
         this.bindingArg = bindingArg;
         this.yangArg = arg;
-        this.schema = nodeSchema;
+        this.type = type;
         this.factory = factory;
 
         if (arg instanceof AugmentationIdentifier) {
@@ -83,10 +88,11 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
             this.namespace = arg.getNodeType().getModule();
         }
 
-        this.childAddressabilitySummary = computeChildAddressabilitySummary(nodeSchema);
+        this.childAddressabilitySummary = computeChildAddressabilitySummary(type.schema());
     }
 
-    private static ChildAddressabilitySummary computeChildAddressabilitySummary(final WithStatus nodeSchema) {
+    private static ChildAddressabilitySummary computeChildAddressabilitySummary(
+            final EffectiveStatement<?, ?> nodeSchema) {
         if (nodeSchema instanceof DataNodeContainer) {
             boolean haveAddressable = false;
             boolean haveUnaddressable = false;
@@ -103,7 +109,8 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
                         || child instanceof TypedDataSchemaNode) {
                     haveUnaddressable = true;
                 } else if (child instanceof ChoiceSchemaNode) {
-                    switch (computeChildAddressabilitySummary(child)) {
+                    // FIXME: bad cast
+                    switch (computeChildAddressabilitySummary((EffectiveStatement<?, ?>) child)) {
                         case ADDRESSABLE:
                             haveAddressable = true;
                             break;
@@ -132,7 +139,8 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
             boolean haveAddressable = false;
             boolean haveUnaddressable = false;
             for (CaseSchemaNode child : ((ChoiceSchemaNode) nodeSchema).getCases()) {
-                switch (computeChildAddressabilitySummary(child)) {
+                // FIXME: bad cast
+                switch (computeChildAddressabilitySummary((EffectiveStatement<?, ?>) child)) {
                     case ADDRESSABLE:
                         haveAddressable = true;
                         break;
@@ -165,17 +173,17 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
         return new DataContainerCodecPrototype<>(DataRoot.class, arg, schema, factory);
     }
 
-    static <T extends DataSchemaNode> DataContainerCodecPrototype<T> from(final Class<?> cls, final T schema,
+    static <T extends CompositeRuntimeType> DataContainerCodecPrototype<T> from(final Class<?> cls, final T schema,
             final CodecContextFactory factory) {
         return new DataContainerCodecPrototype<>(cls, NodeIdentifier.create(schema.getQName()), schema, factory);
     }
 
-    static <T extends DataSchemaNode> DataContainerCodecPrototype<T> from(final Item<?> bindingArg, final T schema,
-            final CodecContextFactory factory) {
+    static <T extends CompositeRuntimeType> DataContainerCodecPrototype<T> from(final Item<?> bindingArg,
+            final T schema, final CodecContextFactory factory) {
         return new DataContainerCodecPrototype<>(bindingArg, NodeIdentifier.create(schema.getQName()), schema, factory);
     }
 
-    static DataContainerCodecPrototype<AugmentationSchemaNode> from(final Class<?> augClass,
+    static DataContainerCodecPrototype<AugmentRuntimeType> from(final Class<?> augClass,
             final AugmentationIdentifier arg, final AugmentationSchemaNode schema, final CodecContextFactory factory) {
         return new DataContainerCodecPrototype<>(augClass, arg, schema, factory);
     }
@@ -186,8 +194,8 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
         return new DataContainerCodecPrototype<>(augClass,arg, schema, factory);
     }
 
-    T getSchema() {
-        return schema;
+    @NonNull T getType() {
+        return type;
     }
 
     ChildAddressabilitySummary getChildAddressabilitySummary() {
@@ -232,21 +240,17 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
         // FIXME: make protected abstract
         if (schema instanceof ContainerLike) {
             return new ContainerNodeCodecContext(this);
-        } else if (schema instanceof ListSchemaNode) {
+        } else if (type instanceof ListRuntimeType) {
             return Identifiable.class.isAssignableFrom(getBindingClass())
                     ? KeyedListNodeCodecContext.create((DataContainerCodecPrototype<ListSchemaNode>) this)
                             : new ListNodeCodecContext(this);
-        } else if (schema instanceof ChoiceSchemaNode) {
+        } else if (type instanceof ChoiceRuntimeType) {
             return new ChoiceNodeCodecContext(this);
-        } else if (schema instanceof AugmentationSchemaNode) {
+        } else if (type instanceof AugmentRuntimeType) {
             return new AugmentationNodeContext(this);
-        } else if (schema instanceof CaseSchemaNode) {
+        } else if (type instanceof CaseRuntimeType) {
             return new CaseNodeCodecContext(this);
         }
-        throw new IllegalArgumentException("Unsupported type " + getBindingClass() + " " + schema);
-    }
-
-    boolean isChoice() {
-        return schema instanceof ChoiceSchemaNode;
+        throw new IllegalArgumentException("Unsupported type " + getBindingClass() + " " + type);
     }
 }
