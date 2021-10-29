@@ -12,6 +12,7 @@ import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
+import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
@@ -21,6 +22,7 @@ import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotableTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -35,8 +37,8 @@ import org.slf4j.LoggerFactory;
 /**
  * An explicit {@link Generator}, associated with a particular {@link EffectiveStatement}.
  */
-public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, ?>> extends Generator
-        implements CopyableNode {
+public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, ?>, R extends RuntimeType>
+        extends Generator implements CopyableNode {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractExplicitGenerator.class);
 
     private final @NonNull T statement;
@@ -50,17 +52,17 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
      *   <li>a generator which is one step closer to the original definition</li>
      * </ul>
      */
-    private AbstractExplicitGenerator<T> prev;
+    private AbstractExplicitGenerator<T, R> prev;
     /**
      * Field holding the original incarnation, i.e. the terminal node along {@link #prev} links.
      */
-    private AbstractExplicitGenerator<T> orig;
+    private AbstractExplicitGenerator<T, R> orig;
 
     AbstractExplicitGenerator(final T statement) {
         this.statement = requireNonNull(statement);
     }
 
-    AbstractExplicitGenerator(final T statement, final AbstractCompositeGenerator<?> parent) {
+    AbstractExplicitGenerator(final T statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(parent);
         this.statement = requireNonNull(statement);
     }
@@ -73,6 +75,8 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
     public final @NonNull T statement() {
         return statement;
     }
+
+    public abstract Optional<? extends RuntimeType> runtimeType();
 
     @Override
     public final boolean isAddedByUses() {
@@ -104,7 +108,7 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
                 return true;
             }
 
-            final var link = getParent().<T>originalChild(getQName());
+            final var link = getParent().<T, R>originalChild(getQName());
             if (link == null) {
                 LOG.trace("Cannot link {} yet", this);
                 return false;
@@ -134,7 +138,7 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
      *
      * @return Previous incarnation or {@code null}
      */
-    final @Nullable AbstractExplicitGenerator<T> previous() {
+    final @Nullable AbstractExplicitGenerator<T, R> previous() {
         final var local = verifyNotNull(prev, "Generator %s does not have linkage to previous instance resolved", this);
         return local == this ? null : local;
     }
@@ -144,11 +148,11 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
      *
      * @return Original incarnation of this generator
      */
-    @NonNull AbstractExplicitGenerator<T> getOriginal() {
+    @NonNull AbstractExplicitGenerator<T, R> getOriginal() {
         return verifyNotNull(orig, "Generator %s does not have linkage to original instance resolved", this);
     }
 
-    @Nullable AbstractExplicitGenerator<T> tryOriginal() {
+    @Nullable AbstractExplicitGenerator<T, R> tryOriginal() {
         return orig;
     }
 
@@ -157,7 +161,7 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
      *
      * @return Link towards the original generator.
      */
-    final @NonNull OriginalLink<T> originalLink() {
+    final @NonNull OriginalLink<T, R> originalLink() {
         final var local = prev;
         if (local == null) {
             return OriginalLink.partial(this);
@@ -168,14 +172,14 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
         }
     }
 
-    @Nullable AbstractExplicitGenerator<?> findSchemaTreeGenerator(final QName qname) {
+    @Nullable AbstractExplicitGenerator<?, ?> findSchemaTreeGenerator(final QName qname) {
         return findLocalSchemaTreeGenerator(qname);
     }
 
-    final @Nullable AbstractExplicitGenerator<?> findLocalSchemaTreeGenerator(final QName qname) {
+    final @Nullable AbstractExplicitGenerator<?, ?> findLocalSchemaTreeGenerator(final QName qname) {
         for (Generator child : this) {
             if (child instanceof AbstractExplicitGenerator) {
-                final AbstractExplicitGenerator<?> gen = (AbstractExplicitGenerator<?>) child;
+                final AbstractExplicitGenerator<?, ?> gen = (AbstractExplicitGenerator<?, ?>) child;
                 final EffectiveStatement<?, ?> stmt = gen.statement();
                 if (stmt instanceof SchemaTreeEffectiveStatement && qname.equals(stmt.argument())) {
                     return gen;
