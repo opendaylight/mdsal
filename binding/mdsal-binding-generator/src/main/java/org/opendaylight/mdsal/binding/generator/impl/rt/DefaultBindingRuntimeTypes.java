@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.generator.impl;
+package org.opendaylight.mdsal.binding.generator.impl.rt;
 
 import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
@@ -27,9 +27,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
+import org.opendaylight.mdsal.binding.runtime.api.IdentityRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.ModuleRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -38,19 +44,31 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
+/**
+ * The result of BindingGenerator run. Contains mapping between Types and SchemaNodes.
+ */
+public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultBindingRuntimeTypes.class);
 
     private final @NonNull EffectiveModelContext schemaContext;
-    private final ImmutableMap<Type, AugmentationSchemaNode> typeToAugmentation;
+    private final ImmutableMap<Type, AugmentRuntimeType> typeToAugmentation;
     private final ImmutableMap<Type, WithStatus> typeToSchema;
     private final ImmutableMultimap<Type, Type> choiceToCases;
     private final ImmutableMap<QName, Type> identities;
     // Not Immutable as we use two different implementations
     private final Map<WithStatus, Type> schemaToType;
 
+    // FIXME: MDSAL-696: populate these two
+    private final Map<QName, RuntimeType> childBySchemaTree = Map.of();
+    private final Map<JavaTypeName, RuntimeType> childByBinding = Map.of();
+
+    public DefaultBindingRuntimeTypes(final Map<QNameModule, ModuleRuntimeType> modules,
+            final Map<JavaTypeName, RuntimeType> allTypes, final Map<QName, IdentityRuntimeType> identities2) {
+        // TODO Auto-generated constructor stub
+    }
+
     DefaultBindingRuntimeTypes(final EffectiveModelContext schemaContext,
-            final Map<Type, AugmentationSchemaNode> typeToAugmentation,
+            final Map<Type, AugmentRuntimeType> typeToAugmentation,
             final Map<Type, WithStatus> typeToSchema, final Map<WithStatus, Type> schemaToType,
             final Map<QName, Type> identities) {
         this.schemaContext = requireNonNull(schemaContext);
@@ -104,7 +122,7 @@ final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
     }
 
     DefaultBindingRuntimeTypes(final EffectiveModelContext schemaContext,
-            final Map<Type, AugmentationSchemaNode> typeToAugmentation,
+            final Map<Type, AugmentRuntimeType> typeToAugmentation,
             final BiMap<Type, WithStatus> typeToDefiningSchema, final Map<QName, Type> identities) {
         this(schemaContext, typeToAugmentation, typeToDefiningSchema, typeToDefiningSchema.inverse(), identities);
     }
@@ -115,7 +133,7 @@ final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
     }
 
     @Override
-    public Optional<AugmentationSchemaNode> findAugmentation(final Type type) {
+    public Optional<AugmentRuntimeType> findAugmentation(final Type type) {
         return Optional.ofNullable(typeToAugmentation.get(type));
     }
 
@@ -171,12 +189,22 @@ final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
     }
 
     @Override
+    public RuntimeType bindingChild(final JavaTypeName typeName) {
+        return childByBinding.get(requireNonNull(typeName));
+    }
+
+    @Override
+    public RuntimeType schemaTreeChild(final QName qname) {
+        return childBySchemaTree.get(requireNonNull(qname));
+    }
+
+    @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("typeToAugmentation", typeToAugmentation)
-                .add("typeToSchema", typeToSchema)
-                .add("choiceToCases", choiceToCases)
-                .add("identities", identities)
-                .toString();
+            .add("typeToAugmentation", typeToAugmentation)
+            .add("typeToSchema", typeToSchema)
+            .add("choiceToCases", choiceToCases)
+            .add("identities", identities)
+            .toString();
     }
 }
