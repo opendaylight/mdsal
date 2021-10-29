@@ -27,7 +27,7 @@ abstract class GeneratorContext {
      * @throws NullPointerException if {@code path} is {@code null}
      * @throws IllegalStateException if this generator is not inside a {@code grouping} and the path cannot be resolved
      */
-    abstract @Nullable AbstractTypeObjectGenerator<?> resolveLeafref(@NonNull PathExpression path);
+    abstract @Nullable AbstractTypeObjectGenerator<?, ?> resolveLeafref(@NonNull PathExpression path);
 
     /**
      * Resolve a tree-scoped namespace reference. This covers {@code typedef} and {@code grouping} statements, as per
@@ -40,7 +40,7 @@ abstract class GeneratorContext {
      * @throws NullPointerException if any argument is null
      * @throws IllegalStateException if the generator cannot be found
      */
-    abstract <E extends EffectiveStatement<QName, ?>, G extends AbstractExplicitGenerator<E>>
+    abstract <E extends EffectiveStatement<QName, ?>, G extends AbstractExplicitGenerator<E, ?>>
         @NonNull G resolveTreeScoped(@NonNull Class<G> type, @NonNull QName argument);
 
     abstract @NonNull ModuleGenerator resolveModule(@NonNull QNameModule namespace);
