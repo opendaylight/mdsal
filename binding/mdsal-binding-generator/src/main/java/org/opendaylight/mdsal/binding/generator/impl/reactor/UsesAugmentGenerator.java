@@ -24,7 +24,7 @@ final class UsesAugmentGenerator extends AbstractAugmentGenerator {
     private GroupingGenerator grouping;
 
     UsesAugmentGenerator(final AugmentEffectiveStatement statement, final UsesEffectiveStatement uses,
-            final AbstractCompositeGenerator<?> parent) {
+            final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
         this.uses = requireNonNull(uses);
     }
