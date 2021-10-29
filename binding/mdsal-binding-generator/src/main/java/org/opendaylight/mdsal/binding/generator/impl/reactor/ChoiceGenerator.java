@@ -7,18 +7,23 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import java.util.List;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultChoiceRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 /**
  * Generator corresponding to a {@code choice} statement.
  */
-final class ChoiceGenerator extends CompositeSchemaTreeGenerator<ChoiceEffectiveStatement, ChoiceGenerator> {
-    ChoiceGenerator(final ChoiceEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
+final class ChoiceGenerator extends CompositeSchemaTreeGenerator<ChoiceEffectiveStatement, ChoiceRuntimeType> {
+    ChoiceGenerator(final ChoiceEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
     }
 
@@ -41,5 +46,12 @@ final class ChoiceGenerator extends CompositeSchemaTreeGenerator<ChoiceEffective
         builder.setModuleName(module.statement().argument().getLocalName());
 
         return builder.build();
+    }
+
+    @Override
+    ChoiceRuntimeType createRuntimeType(final GeneratedType type, final ChoiceEffectiveStatement statement,
+            final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
+        // FIXME: look at augments to discover further case statements!
+        return new DefaultChoiceRuntimeType(type, statement, children, augments);
     }
 }
