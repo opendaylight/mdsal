@@ -29,6 +29,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaForClassException;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -43,7 +44,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeS
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 
-abstract class DataContainerCodecContext<D extends DataObject, T extends WithStatus> extends NodeCodecContext
+abstract class DataContainerCodecContext<D extends DataObject, T extends CompositeRuntimeType> extends NodeCodecContext
         implements BindingDataObjectCodecTreeNode<D>  {
     private static final VarHandle EVENT_STREAM_SERIALIZER;
 
@@ -67,8 +68,13 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends WithSta
     }
 
     @Override
-    public final T getSchema() {
-        return prototype.getSchema();
+    public final WithStatus getSchema() {
+        // FIXME: Bad cast, we should be returning an EffectiveStatement perhaps?
+        return (WithStatus) getType().schema();
+    }
+
+    public final @NonNull T getType() {
+        return prototype.getType();
     }
 
     @Override
