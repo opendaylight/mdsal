@@ -12,13 +12,42 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.AnydataRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.AnyxmlRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.OpaqueRuntimeType;
+import org.opendaylight.yangtools.yang.model.api.stmt.AnydataEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.AnyxmlEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 /**
  * Common generator for {@code anydata} and {@code anyxml}.
  */
-final class OpaqueObjectGenerator<T extends DataTreeEffectiveStatement<?>> extends AbstractExplicitGenerator<T> {
+abstract class OpaqueObjectGenerator<T extends DataTreeEffectiveStatement<?>> extends AbstractExplicitGenerator<T> {
+    static final class Anydata extends OpaqueObjectGenerator<AnydataEffectiveStatement> {
+        Anydata(final AnydataEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
+            super(statement, parent);
+        }
+
+        @Override
+        public AnydataRuntimeType toRuntimeType(final TypeBuilderFactory builderFactory) {
+            // FIXME: implement this
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    static final class Anyxml extends OpaqueObjectGenerator<AnyxmlEffectiveStatement> {
+        Anyxml(final AnyxmlEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
+            super(statement, parent);
+        }
+
+        @Override
+        public AnyxmlRuntimeType toRuntimeType(final TypeBuilderFactory builderFactory) {
+            // FIXME: implement this
+            throw new UnsupportedOperationException();
+        }
+    }
+
     OpaqueObjectGenerator(final T statement, final AbstractCompositeGenerator<?> parent) {
         super(statement, parent);
     }
@@ -45,6 +74,9 @@ final class OpaqueObjectGenerator<T extends DataTreeEffectiveStatement<?>> exten
 
         return builder.build();
     }
+
+    @Override
+    public abstract OpaqueRuntimeType toRuntimeType(TypeBuilderFactory builderFactory);
 
     @Override
     void constructRequire(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
