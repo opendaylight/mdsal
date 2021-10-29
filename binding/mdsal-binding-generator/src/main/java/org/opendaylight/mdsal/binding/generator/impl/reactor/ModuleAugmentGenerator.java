@@ -14,7 +14,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
  * Generator corresponding to a {@code augment} statement used as a child of a {@code module} statement.
  */
 final class ModuleAugmentGenerator extends AbstractAugmentGenerator {
-    ModuleAugmentGenerator(final AugmentEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
+    ModuleAugmentGenerator(final AugmentEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
     }
 
