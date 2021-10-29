@@ -11,17 +11,18 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
+import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.impl.tree.SchemaTreeChild;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 
 /**
  * A placeholder {@link SchemaTreeChild}.
- *
  */
-final class SchemaTreePlaceholder<S extends SchemaTreeEffectiveStatement<?>,
-        G extends AbstractExplicitGenerator<S> & SchemaTreeChild<S, G>> implements SchemaTreeChild<S, G> {
+final class SchemaTreePlaceholder<S extends SchemaTreeEffectiveStatement<?>, R extends RuntimeType,
+        G extends AbstractExplicitGenerator<S, R> & SchemaTreeChild<S, R>> implements SchemaTreeChild<S, R> {
     private final @NonNull Class<G> generatorType;
     private final @NonNull S statement;
 
@@ -38,15 +39,11 @@ final class SchemaTreePlaceholder<S extends SchemaTreeEffectiveStatement<?>,
     }
 
     @Override
-    public G generator() {
-        final var local = generator;
-        if (local == null) {
-            throw new IllegalStateException("Unresolved generator in " + this);
-        }
-        return local;
+    public Optional<R> recursiveRuntimeType() {
+        return verifyNotNull(generator, "Unresolved generator in %s", this).runtimeTypeOf(statement);
     }
 
-    void setGenerator(final AbstractCompositeGenerator<?> parent) {
+    void setGenerator(final AbstractCompositeGenerator<?, ?> parent) {
         verify(generator == null, "Attempted to set generator for %s", this);
         final var qname = getIdentifier();
         generator = generatorType.cast(verifyNotNull(parent.findSchemaTreeGenerator(qname),
