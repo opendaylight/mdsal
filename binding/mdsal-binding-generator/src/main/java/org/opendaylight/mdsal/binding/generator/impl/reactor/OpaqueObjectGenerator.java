@@ -7,27 +7,58 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultAnydataRuntimeType;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultAnyxmlRuntimeType;
 import org.opendaylight.mdsal.binding.generator.impl.tree.SchemaTreeChild;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.AnydataRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.AnyxmlRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.OpaqueRuntimeType;
+import org.opendaylight.yangtools.yang.model.api.stmt.AnydataEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.AnyxmlEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 /**
  * Common generator for {@code anydata} and {@code anyxml}.
  */
-final class OpaqueObjectGenerator<T extends DataTreeEffectiveStatement<?>> extends AbstractExplicitGenerator<T>
-        implements SchemaTreeChild<T, OpaqueObjectGenerator<T>> {
-    OpaqueObjectGenerator(final T statement, final AbstractCompositeGenerator<?> parent) {
+abstract class OpaqueObjectGenerator<T extends DataTreeEffectiveStatement<?>, R extends OpaqueRuntimeType,
+        G extends OpaqueObjectGenerator<T, R, G>>
+        extends AbstractExplicitGenerator<T, R> implements SchemaTreeChild<T, G> {
+    static final class Anydata extends OpaqueObjectGenerator<AnydataEffectiveStatement, AnydataRuntimeType, Anydata> {
+        Anydata(final AnydataEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
+            super(statement, parent);
+        }
+
+        @Override
+        AnydataRuntimeType createRuntimeType() {
+            return generatedType().map(type -> new DefaultAnydataRuntimeType(type, statement())).orElse(null);
+        }
+    }
+
+    static final class Anyxml extends OpaqueObjectGenerator<AnyxmlEffectiveStatement, AnyxmlRuntimeType, Anyxml> {
+        Anyxml(final AnyxmlEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
+            super(statement, parent);
+        }
+
+        @Override
+        AnyxmlRuntimeType createRuntimeType() {
+            return generatedType().map(type -> new DefaultAnyxmlRuntimeType(type, statement())).orElse(null);
+        }
+    }
+
+    OpaqueObjectGenerator(final T statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
     }
 
     @Override
-    public OpaqueObjectGenerator<T> generator() {
-        return this;
+    @SuppressWarnings("unchecked")
+    public final G generator() {
+        return (G) this;
     }
 
     @Override
