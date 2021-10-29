@@ -167,7 +167,8 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     private Method findRpcMethod(final Class<? extends RpcService> key, final RpcDefinition rpcDef)
             throws NoSuchMethodException {
         final String methodName = BindingMapping.getRpcMethodName(rpcDef.getQName());
-        final Class<?> inputClz = getRuntimeContext().getClassForSchema(rpcDef.getInput());
+        final Class<?> inputClz = getRuntimeContext().getClassForSchema(
+            Absolute.of(rpcDef.getQName(),rpcDef.getInput().getQName()));
         return key.getMethod(methodName, inputClz);
     }
 }
