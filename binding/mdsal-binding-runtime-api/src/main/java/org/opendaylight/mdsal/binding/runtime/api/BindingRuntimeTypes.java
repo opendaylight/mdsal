@@ -27,7 +27,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -37,6 +39,7 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
 import org.opendaylight.yangtools.yang.model.api.stmt.CaseEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,19 +47,23 @@ import org.slf4j.LoggerFactory;
  * The result of BindingGenerator run. Contains mapping between Types and SchemaNodes.
  */
 @Beta
-public final class BindingRuntimeTypes implements EffectiveModelContextProvider, Immutable {
+public final class BindingRuntimeTypes implements EffectiveModelContextProvider, RuntimeTypeContainer, Immutable {
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeTypes.class);
 
     private final @NonNull EffectiveModelContext schemaContext;
-    private final ImmutableMap<Type, AugmentationSchemaNode> typeToAugmentation;
+    private final ImmutableMap<Type, AugmentRuntimeType> typeToAugmentation;
     private final ImmutableMap<Type, WithStatus> typeToSchema;
     private final ImmutableMultimap<Type, Type> choiceToCases;
     private final ImmutableMap<QName, Type> identities;
     // Not Immutable as we use two different implementations
     private final Map<WithStatus, Type> schemaToType;
 
+    // FIXME: MDSAL-696: populate these two
+    private final Map<QName, RuntimeType> childBySchemaTree = Map.of();
+    private final Map<JavaTypeName, RuntimeType> childByBinding = Map.of();
+
     public BindingRuntimeTypes(final EffectiveModelContext schemaContext,
-            final Map<Type, AugmentationSchemaNode> typeToAugmentation,
+            final Map<Type, AugmentRuntimeType> typeToAugmentation,
             final Map<Type, WithStatus> typeToSchema, final Map<WithStatus, Type> schemaToType,
             final Map<QName, Type> identities) {
         this.schemaContext = requireNonNull(schemaContext);
@@ -110,7 +117,7 @@ public final class BindingRuntimeTypes implements EffectiveModelContextProvider,
     }
 
     public BindingRuntimeTypes(final EffectiveModelContext schemaContext,
-            final Map<Type, AugmentationSchemaNode> typeToAugmentation,
+            final Map<Type, AugmentRuntimeType> typeToAugmentation,
             final BiMap<Type, WithStatus> typeToDefiningSchema, final Map<QName, Type> identities) {
         this(schemaContext, typeToAugmentation, typeToDefiningSchema, typeToDefiningSchema.inverse(), identities);
     }
@@ -120,7 +127,7 @@ public final class BindingRuntimeTypes implements EffectiveModelContextProvider,
         return schemaContext;
     }
 
-    public Optional<AugmentationSchemaNode> findAugmentation(final Type type) {
+    public Optional<AugmentRuntimeType> findAugmentation(final Type type) {
         return Optional.ofNullable(typeToAugmentation.get(type));
     }
 
@@ -167,6 +174,25 @@ public final class BindingRuntimeTypes implements EffectiveModelContextProvider,
 
     public Collection<Type> findCases(final Type choiceType) {
         return choiceToCases.get(choiceType);
+    }
+
+    @Override
+    public RuntimeType bindingChild(final JavaTypeName typeName) {
+        return childByBinding.get(requireNonNull(typeName));
+    }
+
+    @Override
+    public RuntimeType schemaTreeChild(final QName qname) {
+        return childBySchemaTree.get(requireNonNull(qname));
+    }
+
+    public @Nullable RuntimeType schemaTreeChild(final Absolute path) {
+        final var it = path.getNodeIdentifiers().iterator();
+        var tmp = schemaTreeChild(it.next());
+        while (it.hasNext() && tmp instanceof RuntimeTypeContainer) {
+            tmp = ((RuntimeTypeContainer) tmp).schemaTreeChild(it.next());
+        }
+        return tmp;
     }
 
     @Override

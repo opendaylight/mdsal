@@ -7,8 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import java.util.Map;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
@@ -33,6 +37,12 @@ final class RpcGenerator extends CompositeSchemaTreeGenerator<RpcEffectiveStatem
 
     @Override
     GeneratedType createTypeImpl(final TypeBuilderFactory builderFactory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    CompositeRuntimeType toRuntimeType(final GeneratedType type,
+            final Map<RuntimeType, EffectiveStatement<?, ?>> children) {
         throw new UnsupportedOperationException();
     }
 
