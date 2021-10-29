@@ -17,8 +17,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 
 final class CaseNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<D, CaseSchemaNode> {
     CaseNodeCodecContext(final DataContainerCodecPrototype<CaseSchemaNode> prototype) {
@@ -27,10 +28,11 @@ final class CaseNodeCodecContext<D extends DataObject> extends DataObjectCodecCo
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    Item<?> createBindingArg(final Class<?> childClass, final DataSchemaNode childSchema) {
+    Item<?> createBindingArg(final Class<?> childClass, final EffectiveStatement<?, ?> childSchema) {
         // FIXME: MDSAL-697: see overridden method for further guidance
-        return childSchema.isAddedByUses() ? Item.of((Class)getBindingClass(), (Class)childClass)
-            : super.createBindingArg(childClass, childSchema);
+        return childSchema instanceof AddedByUsesAware && childSchema.isAddedByUses()
+            ? Item.of((Class)getBindingClass(), (Class)childClass)
+                : super.createBindingArg(childClass, childSchema);
     }
 
     @Override

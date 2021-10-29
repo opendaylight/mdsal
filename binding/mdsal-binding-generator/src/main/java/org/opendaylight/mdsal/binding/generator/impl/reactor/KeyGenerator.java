@@ -17,6 +17,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBu
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.KeyRuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.stmt.KeyEffectiveStatement;
@@ -71,6 +72,11 @@ final class KeyGenerator extends AbstractExplicitGenerator<KeyEffectiveStatement
         addSerialVersionUID(builder);
 
         return builder.build();
+    }
+
+    @Override
+    public KeyRuntimeType toRuntimeType(final TypeBuilderFactory builderFactory) {
+        return new DefaultKeyRuntimeType(getGeneratedType(builderFactory), statement());
     }
 
     @Override

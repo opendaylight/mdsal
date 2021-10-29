@@ -7,11 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import java.util.Map;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
@@ -48,6 +52,12 @@ final class NotificationGenerator extends AbstractCompositeGenerator<Notificatio
         annotateDeprecatedIfNecessary(builder);
 
         return builder.build();
+    }
+
+    @Override
+    NotificationRuntimeType toRuntimeType(final GeneratedType type,
+            final Map<RuntimeType, EffectiveStatement<?, ?>> children) {
+        return new DefaultNotificationRuntimeType(type, statement(), children);
     }
 
     @Override

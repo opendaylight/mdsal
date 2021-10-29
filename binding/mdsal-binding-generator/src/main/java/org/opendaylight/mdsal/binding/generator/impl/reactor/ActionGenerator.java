@@ -7,12 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.mdsal.binding.runtime.api.ActionRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
@@ -55,6 +59,12 @@ final class ActionGenerator extends AbstractCompositeGenerator<ActionEffectiveSt
         }
 
         return builder.build();
+    }
+
+    @Override
+    ActionRuntimeType toRuntimeType(final GeneratedType type,
+            final Map<RuntimeType, EffectiveStatement<?, ?>> children) {
+        return new DefaultActionRuntimeType(type, statement(), children);
     }
 
     private @NonNull Type implementedType(final TypeBuilderFactory builderFactory) {
