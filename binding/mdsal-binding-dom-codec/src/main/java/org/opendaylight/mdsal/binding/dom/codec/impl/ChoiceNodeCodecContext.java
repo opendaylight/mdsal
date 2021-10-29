@@ -110,6 +110,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             SetMultimapBuilder.hashKeys().hashSetValues().build();
         final Set<Class<?>> potentialSubstitutions = new HashSet<>();
         // Walks all cases for supplied choice in current runtime context
+        // FIXME: 9.0.0: factory short-circuits to prototype, just as getBindingClass() does
         for (final Class<?> caze : factory().getRuntimeContext().getCases(getBindingClass())) {
             // We try to load case using exact match thus name
             // and original schema must equals
