@@ -9,9 +9,7 @@ package org.opendaylight.mdsal.binding.runtime.api;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -21,27 +19,20 @@ import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * Runtime Context for Java YANG Binding classes. It provides information derived from the backing effective model,
  * which is not captured in generated classes (and hence cannot be obtained from {@code BindingReflections}.
- *
- * <p>Some of this information are for example list of all available children for cases
- * {@link #getChoiceCaseChildren(DataNodeContainer)}, since choices are augmentable and new choices may be introduced
- * by additional models. Same goes for all possible augmentations.
  */
 @Beta
 // FIXME: refactor return to follow foo()/getFoo()/findFoo() naming
@@ -75,6 +66,7 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
      * @param augClass Augmentation class
      * @return Schema of augmentation or null if augmentation is not known in this context
      */
+    // FIXME: 9.0.0: this needs to return AugmentationRuntimeType
     <T extends Augmentation<?>> @Nullable AugmentationSchemaNode getAugmentationDefinition(Class<T> augClass);
 
     /**
@@ -90,27 +82,15 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
      * @param cls Class which represents list, container, choice or case.
      * @return Schema node, from which class was generated.
      */
+    // FIXME: 9.0.0: this needs to return RuntimeType
     @Nullable DataSchemaNode getSchemaDefinition(Class<?> cls);
 
-    // FIXME: document this thing and perhaps move it to BindingRuntimeTypes?
-    @Nullable DataSchemaNode findChildSchemaDefinition(DataNodeContainer parentSchema, QNameModule parentNamespace,
-        Class<?> childClass);
-
+    // FIXME: 9.0.0: this needs to return ActionRuntimeType
     @Nullable ActionDefinition getActionDefinition(Class<? extends Action<?, ?, ?>> cls);
 
+    // FIXME: 9.0.0: this needs to be part of CompositeRuntimeType and return AugmentationRuntimeType
     @NonNull Entry<AugmentationIdentifier, AugmentationSchemaNode> getResolvedAugmentationSchema(
             DataNodeContainer target, Class<? extends Augmentation<?>> aug);
-
-    /**
-     * Returns resolved case schema for supplied class.
-     *
-     * @param schema Resolved parent choice schema
-     * @param childClass Class representing case.
-     * @return Optionally a resolved case schema,.empty if the choice is not legal in
-     *         the given context.
-     * @throws IllegalArgumentException If supplied class does not represent case.
-     */
-    @NonNull Optional<CaseSchemaNode> getCaseSchemaDefinition(ChoiceSchemaNode schema, Class<?> childClass);
 
     /**
      * Returns schema ({@link DataSchemaNode}, {@link AugmentationSchemaNode} or {@link TypeDefinition})
@@ -123,13 +103,13 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
      *     {@link DataSchemaNode}, {@link AugmentationSchemaNode} or {@link TypeDefinition}
      *     which was used to generate supplied class.
      */
+    // FIXME: 9.0.0: this should return RuntimeType
     @NonNull Entry<GeneratedType, WithStatus> getTypeWithSchema(Class<?> type);
-
-    @NonNull Map<Type, Entry<Type, Type>> getChoiceCaseChildren(DataNodeContainer schema);
 
     @NonNull Set<Class<?>> getCases(Class<?> choice);
 
-    @NonNull Class<?> getClassForSchema(SchemaNode childSchema);
+    // FIXME: 9.0.0: this needs to accept an EffectiveStatementInference
+    @NonNull Class<?> getClassForSchema(Absolute schema);
 
     /**
      * Return the mapping of a particular {@link DataNodeContainer}'s available augmentations. This method deals with
@@ -139,6 +119,7 @@ public interface BindingRuntimeContext extends EffectiveModelContextProvider, Im
      * @param container {@link DataNodeContainer} to examine
      * @return a mapping from local {@link AugmentationIdentifier}s to their corresponding Binding augmentations
      */
+    // FIXME: 9.0.0: this should be part of CompositeRuntimeType
     @NonNull ImmutableMap<AugmentationIdentifier, Type> getAvailableAugmentationTypes(DataNodeContainer container);
 
     @NonNull Class<?> getIdentityClass(QName input);

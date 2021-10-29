@@ -19,6 +19,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,12 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -45,9 +50,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DistinctNodeContainer;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * This class is an implementation detail. It is public only due to technical reasons and may change at any time.
  */
 @Beta
-public abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeContainer & WithStatus>
+public abstract class DataObjectCodecContext<D extends DataObject, T extends CompositeRuntimeType>
         extends DataContainerCodecContext<D, T> {
     private static final Logger LOG = LoggerFactory.getLogger(DataObjectCodecContext.class);
     private static final MethodType CONSTRUCTOR_TYPE = MethodType.methodType(void.class,
@@ -128,7 +132,8 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
             tmpDataObjects.put(method, childProto.getBindingClass());
             byStreamClassBuilder.put(childProto.getBindingClass(), childProto);
             byYangBuilder.put(childProto.getYangArg(), childProto);
-            if (childProto.isChoice()) {
+
+            if (childProto.getType() instanceof ChoiceRuntimeType) {
                 final ChoiceNodeCodecContext<?> choice = (ChoiceNodeCodecContext<?>) childProto.get();
                 for (final Class<?> cazeChild : choice.getCaseChildrenClasses()) {
                     byBindingArgClassBuilder.put(cazeChild, childProto);
@@ -146,13 +151,13 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         this.byBindingArgClass = byStreamClassBuilder.equals(byBindingArgClassBuilder) ? this.byStreamClass
                 : ImmutableMap.copyOf(byBindingArgClassBuilder);
 
-        final ImmutableMap<AugmentationIdentifier, Type> possibleAugmentations;
+        final Collection<AugmentRuntimeType> possibleAugmentations;
         if (Augmentable.class.isAssignableFrom(bindingClass)) {
-            possibleAugmentations = factory().getRuntimeContext().getAvailableAugmentationTypes(getSchema());
+            possibleAugmentations = getType().augments().values();
             generatedClass = CodecDataObjectGenerator.generateAugmentable(prototype.getFactory().getLoader(),
                 bindingClass, tmpLeaves, tmpDataObjects, keyMethod);
         } else {
-            possibleAugmentations = ImmutableMap.of();
+            possibleAugmentations = List.of();
             generatedClass = CodecDataObjectGenerator.generate(prototype.getFactory().getLoader(), bindingClass,
                 tmpLeaves, tmpDataObjects, keyMethod);
         }
@@ -160,8 +165,8 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         // Iterate over all possible augmentations, indexing them as needed
         final Map<PathArgument, DataContainerCodecPrototype<?>> augByYang = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> augByStream = new HashMap<>();
-        for (final Type augment : possibleAugmentations.values()) {
-            final DataContainerCodecPrototype<?> augProto = getAugmentationPrototype(augment);
+        for (final AugmentRuntimeType augment : possibleAugmentations) {
+            final DataContainerCodecPrototype<?> augProto = getAugmentationPrototype(augment.javaType());
             final PathArgument augYangArg = augProto.getYangArg();
             if (augByYang.putIfAbsent(augYangArg, augProto) == null) {
                 LOG.trace("Discovered new YANG mapping {} -> {} in {}", augYangArg, augProto, this);
@@ -182,6 +187,12 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         }
 
         proxyConstructor = ctor.asType(DATAOBJECT_TYPE);
+    }
+
+    @Override
+    public final WithStatus getSchema() {
+        // FIXME: Bad cast, we should be returning an EffectiveStatement perhaps?
+        return (WithStatus) getType().schema();
     }
 
     @SuppressWarnings("unchecked")
@@ -269,10 +280,11 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
     }
 
     private DataContainerCodecPrototype<?> loadChildPrototype(final Class<?> childClass) {
-        final DataSchemaNode childSchema = childNonNull(
-            factory().getRuntimeContext().findChildSchemaDefinition(getSchema(), namespace(), childClass), childClass,
-            "Node %s does not have child named %s", getSchema(), childClass);
-        return DataContainerCodecPrototype.from(createBindingArg(childClass, childSchema), childSchema, factory());
+        final var type = getType();
+        final var child = childNonNull(type.bindingChild(JavaTypeName.create(childClass)), childClass,
+            "Node %s does not have child named %s", type, childClass);
+
+        return DataContainerCodecPrototype.from(createBindingArg(childClass, child.schema()), child, factory());
     }
 
     // FIXME: MDSAL-697: move this method into BindingRuntimeContext
@@ -282,7 +294,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
     //                   the equivalent of Map.Entry<Item, DataSchemaNode>, along with the override we create here. One
     //                   more input we may need to provide is our bindingClass().
     @SuppressWarnings("unchecked")
-    Item<?> createBindingArg(final Class<?> childClass, final DataSchemaNode childSchema) {
+    Item<?> createBindingArg(final Class<?> childClass, final EffectiveStatement<?, ?> childSchema) {
         return Item.of((Class<? extends DataObject>) childClass);
     }
 
