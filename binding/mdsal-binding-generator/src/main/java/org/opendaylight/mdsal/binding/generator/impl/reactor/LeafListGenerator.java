@@ -7,8 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import java.util.Optional;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultLeafListRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.ri.Types;
+import org.opendaylight.mdsal.binding.runtime.api.LeafListRuntimeType;
 import org.opendaylight.yangtools.yang.common.Ordering;
 import org.opendaylight.yangtools.yang.model.api.stmt.LeafListEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OrderedByEffectiveStatement;
@@ -19,6 +22,11 @@ import org.opendaylight.yangtools.yang.model.api.stmt.OrderedByEffectiveStatemen
 final class LeafListGenerator extends AbstractTypeAwareGenerator<LeafListEffectiveStatement, LeafListGenerator> {
     LeafListGenerator(final LeafListEffectiveStatement statement, final AbstractCompositeGenerator<?> parent) {
         super(statement, parent);
+    }
+
+    @Override
+    public Optional<LeafListRuntimeType> runtimeType() {
+        return generatedType().map(type -> new DefaultLeafListRuntimeType(type, statement()));
     }
 
     @Override
