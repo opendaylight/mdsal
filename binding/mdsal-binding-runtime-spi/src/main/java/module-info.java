@@ -23,4 +23,5 @@ module org.opendaylight.mdsal.binding.runtime.spi {
     requires static transitive org.eclipse.jdt.annotation;
     requires static com.github.spotbugs.annotations;
     requires static org.checkerframework.checker.qual;
+    requires org.opendaylight.yangtools.yang.model.api;
 }

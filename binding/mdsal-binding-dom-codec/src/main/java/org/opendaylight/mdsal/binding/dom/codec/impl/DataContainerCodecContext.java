@@ -29,6 +29,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaForClassException;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -42,9 +43,10 @@ import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStre
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 
-abstract class DataContainerCodecContext<D extends DataObject, T extends WithStatus> extends NodeCodecContext
-        implements BindingDataObjectCodecTreeNode<D>  {
+abstract class DataContainerCodecContext<D extends DataObject, S extends EffectiveStatement<?, ?>,
+        T extends CompositeRuntimeType<S>> extends NodeCodecContext implements BindingDataObjectCodecTreeNode<D>  {
     private static final VarHandle EVENT_STREAM_SERIALIZER;
 
     static {
@@ -67,8 +69,12 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends WithSta
     }
 
     @Override
-    public final T getSchema() {
-        return prototype.getSchema();
+    public final S getSchema() {
+        return getType().getSchema();
+    }
+
+    public final @NonNull T getType() {
+        return prototype.getType();
     }
 
     @Override

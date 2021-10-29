@@ -29,6 +29,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
@@ -110,6 +112,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             SetMultimapBuilder.hashKeys().hashSetValues().build();
         final Set<Class<?>> potentialSubstitutions = new HashSet<>();
         // Walks all cases for supplied choice in current runtime context
+        // FIXME: 9.0.0: factory short-circuits to prototype, just as getBindingClass() does
         for (final Class<?> caze : factory().getRuntimeContext().getCases(getBindingClass())) {
             // We try to load case using exact match thus name
             // and original schema must equals
@@ -213,14 +216,15 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
     }
 
     protected DataContainerCodecPrototype<CaseSchemaNode> loadCase(final Class<?> childClass) {
-        final Optional<CaseSchemaNode> childSchema = factory().getRuntimeContext().getCaseSchemaDefinition(getSchema(),
-            childClass);
-        if (childSchema.isPresent()) {
-            return DataContainerCodecPrototype.from(childClass, childSchema.get(), factory());
+        // FIXME: ugly cast
+        final var type = (ChoiceRuntimeType) getType();
+        final var child = type.bindingCaseChild(JavaTypeName.create(childClass));
+        if (child == null) {
+            LOG.debug("Supplied class {} is not valid case in schema {}", childClass, getSchema());
+            return null;
         }
 
-        LOG.debug("Supplied class {} is not valid case in schema {}", childClass, getSchema());
-        return null;
+        return DataContainerCodecPrototype.from(childClass, child, factory());
     }
 
     @Override
