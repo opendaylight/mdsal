@@ -78,12 +78,6 @@
                 <scope>test</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>unified-html-generator</artifactId>
-                <version>8.0.8-SNAPSHOT</version>
-            </dependency>
-
             <!-- Binding MD-SAL & Java Binding -->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>

@@ -36,7 +36,5 @@
         <module>mdsal-dom-inmemory-datastore</module>
         <module>mdsal-dom-inmemory-datastore-benchmark</module>
         <module>mdsal-dom-schema-osgi</module>
-
-        <module>unified-html-generator</module>
     </modules>
 </project>
