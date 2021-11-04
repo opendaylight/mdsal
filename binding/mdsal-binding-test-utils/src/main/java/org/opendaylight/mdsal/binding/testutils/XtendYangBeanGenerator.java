@@ -40,16 +40,6 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 class XtendYangBeanGenerator extends XtendBeanGenerator {
 
     @Override
-    public String getExpression(final Object bean) {
-        final String beanText = super.getExpression(bean);
-        if (useBuilderExtensions(bean)) {
-            return new StringBuilder("import static extension ").append(XtendBuilderExtensions.class.getName())
-                    .append(".operator_doubleGreaterThan\n\n").append(beanText).toString();
-        }
-        return beanText;
-    }
-
-    @Override
     protected boolean isUsingBuilder(final Object bean, final Class<?> builderClass) {
         return !useBuilderExtensions(bean) && super.isUsingBuilder(bean, builderClass);
     }
