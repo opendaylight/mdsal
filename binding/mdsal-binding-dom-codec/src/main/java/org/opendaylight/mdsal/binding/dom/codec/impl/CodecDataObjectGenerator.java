@@ -31,6 +31,7 @@ import net.bytebuddy.description.type.TypeDescription.ForLoadedType;
 import net.bytebuddy.description.type.TypeDescription.Generic;
 import net.bytebuddy.dynamic.DynamicType.Builder;
 import net.bytebuddy.dynamic.scaffold.InstrumentedType;
+import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.implementation.bytecode.ByteCodeAppender;
 import net.bytebuddy.implementation.bytecode.StackManipulation;
@@ -216,6 +217,9 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
                 final TypeDescription retType = TypeDescription.ForLoadedType.of(method.getReturnType());
                 tmp = tmp.defineMethod(methodName, retType, PUB_FINAL).intercept(
                     new StructuredGetterMethodImplementation(methodName, retType, entry.getValue()));
+                // TODO
+                tmp = tmp.defineMethod("nonnull" + methodName.replace("get", ""), retType, PUB_FINAL)
+                        .intercept(FixedValue.nullValue());
             }
 
             return tmp;
