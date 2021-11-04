@@ -25,8 +25,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  *
  * @author Michael Vorburger
  */
+@Deprecated(since = "8.0.9", forRemoval = true)
 public class AssertDataObjectsTest extends AbstractDataBrokerTest {
-
     private static final String HEADER = "import static extension org.opendaylight.mdsal.binding.testutils."
             + "XtendBuilderExtensions.operator_doubleGreaterThan\n\n";
 
@@ -100,8 +100,8 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
         AssertDataObjects.assertEqualByText(expectedTopText, actualTop);
     }
 
-    <T extends DataObject> void put(WriteTransaction tx, LogicalDatastoreType store,
-            Entry<InstanceIdentifier<T>, T> obj) {
+    <T extends DataObject> void put(final WriteTransaction tx, final LogicalDatastoreType store,
+            final Entry<InstanceIdentifier<T>, T> obj) {
         tx.put(OPERATIONAL, obj.getKey(), obj.getValue());
     }
 

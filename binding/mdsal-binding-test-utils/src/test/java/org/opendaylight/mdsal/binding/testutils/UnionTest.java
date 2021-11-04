@@ -19,6 +19,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.yangtool
  *
  * @author Michael Vorburger
  */
+@Deprecated(since = "8.0.9", forRemoval = true)
 public class UnionTest {
     @Test
     public void testUnionType() {
