@@ -27,6 +27,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  *
  * @author Michael Vorburger
  */
+@Deprecated(since = "8.0.9", forRemoval = true)
 public class AssertNonDataObjectsTest {
 
     public static class SomeBean {

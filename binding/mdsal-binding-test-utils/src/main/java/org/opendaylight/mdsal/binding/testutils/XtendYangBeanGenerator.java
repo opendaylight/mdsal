@@ -37,6 +37,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @author Michael Vorburger
  */
 // package-local: no need to expose this, consider it an implementation detail; public API is the AssertDataObjects
+@Deprecated(since = "8.0.9", forRemoval = true)
 class XtendYangBeanGenerator extends XtendBeanGenerator {
 
     @Override

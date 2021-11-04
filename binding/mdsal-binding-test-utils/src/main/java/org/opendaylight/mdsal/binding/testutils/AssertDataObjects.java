@@ -32,13 +32,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author Michael Vorburger
  */
+@Deprecated(since = "8.0.9", forRemoval = true)
 public final class AssertDataObjects {
-
     private static final Logger LOG = LoggerFactory.getLogger(AssertDataObjects.class);
-
     private static final XtendYangBeanGenerator GENERATOR = new XtendYangBeanGenerator();
 
     private AssertDataObjects() {
+        // Hidden on purpose
     }
 
     /**
