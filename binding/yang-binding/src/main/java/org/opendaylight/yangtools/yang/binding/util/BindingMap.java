@@ -492,8 +492,7 @@ public final class BindingMap {
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
      */
-    public abstract static class Builder<K extends Identifier<V>, V extends Identifiable<K>>
-            implements org.opendaylight.yangtools.concepts.Builder<Map<K, V>> {
+    public abstract static class Builder<K extends Identifier<V>, V extends Identifiable<K>> {
         static final int DEFAULT_INITIAL_CAPACITY = 4;
 
         Builder() {
@@ -535,6 +534,8 @@ public final class BindingMap {
             addEntries(Collections2.transform(values, value -> Map.entry(value.key(), value)));
             return this;
         }
+
+        public abstract Map<K, V> build();
 
         abstract void addEntry(K key, V value);
 
