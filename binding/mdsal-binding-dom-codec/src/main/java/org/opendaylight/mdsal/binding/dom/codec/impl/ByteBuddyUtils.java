@@ -7,9 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import net.bytebuddy.description.field.FieldDescription.ForLoadedField;
+import net.bytebuddy.description.method.MethodDescription.ForLoadedConstructor;
 import net.bytebuddy.description.method.MethodDescription.ForLoadedMethod;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.implementation.bytecode.StackManipulation;
@@ -29,6 +31,15 @@ final class ByteBuddyUtils {
 
     static StackManipulation invokeMethod(final Class<?> clazz, final String name, final Class<?>... args) {
         return MethodInvocation.invoke(describe(clazz, name, args));
+    }
+
+    static StackManipulation invokeConstructor(final Class<?> clazz) {
+        return MethodInvocation.invoke(describe(getConstructor(clazz)));
+    }
+
+    static StackManipulation invokeMethod(final String clazz, final ClassLoader loader, final String name,
+            final Class<?>... args) {
+        return MethodInvocation.invoke(describe(getClass(clazz, loader), name, args));
     }
 
     static StackManipulation getField(final Field field) {
@@ -56,9 +67,29 @@ final class ByteBuddyUtils {
             .getOnly());
     }
 
+    private static Class<?> getClass(final String clazz, final ClassLoader loader) {
+        try {
+            return loader.loadClass(clazz);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     private static Method getMethod(final Class<?> clazz, final String name, final Class<?>... args) {
         try {
             return clazz.getDeclaredMethod(name, args);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static ForLoadedConstructor describe(final Constructor<?> constructor) {
+        return new ForLoadedConstructor(constructor);
+    }
+
+    private static Constructor<?> getConstructor(final Class<?> clazz) {
+        try {
+            return clazz.getConstructor();
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException(e);
         }

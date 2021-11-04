@@ -20,6 +20,7 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_EQUALS_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_HASHCODE_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_TO_STRING_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BUILDER_SUFFIX
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.List
@@ -194,6 +195,8 @@ class InterfaceTemplate extends BaseTemplate {
                     «generateStaticMethod(m)»
                 «ELSEIF m.parameters.empty && m.name.isGetterMethodName»
                     «generateAccessorMethod(m)»
+                «ELSEIF m.parameters.empty && m.name.isNonnullMethodName»
+                    «generateNonnullAccessorMethod(m)»
                 «ELSE»
                     «generateMethod(m)»
                 «ENDIF»
@@ -264,6 +267,14 @@ class InterfaceTemplate extends BaseTemplate {
             «accessorJavadoc(method, ", or {@code null} if it is not present.")»
             «method.generateAccessorAnnotations»
             «method.returnType.nullableType» «method.name»();
+        '''
+    }
+
+    def private generateNonnullAccessorMethod(MethodSignature method) {
+        return '''
+            «accessorJavadoc(method, ", or an empty instance if it is not present.")»
+            «method.annotations.generateAnnotations»
+            «method.returnType.importedNonNull» «method.name»();
         '''
     }
 
