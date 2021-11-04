@@ -27,9 +27,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public class AssertDataObjectsTest extends AbstractDataBrokerTest {
 
-    private static final String HEADER = "import static extension org.opendaylight.mdsal.binding.testutils."
-            + "XtendBuilderExtensions.operator_doubleGreaterThan\n\n";
-
     @Test
     public void testAssertDataObjectsWithTopLevelListKey() {
         AssertDataObjects.assertEqualByText("new TopLevelListKey(\"test\")", new TopLevelListKey("test"));
@@ -37,12 +34,12 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
 
     @Test
     public void testAssertDataObjectsWithEmptyTop() {
-        AssertDataObjects.assertEqualByText(HEADER + "new TopBuilder", ExampleYangObjects.topEmpty().getValue());
+        AssertDataObjects.assertEqualByText("new TopBuilder", ExampleYangObjects.topEmpty().getValue());
     }
 
     @Test
     public void testAssertDataObjectsWithComplexTopWithKey() {
-        AssertDataObjects.assertEqualByText(HEADER + "new TopBuilder >> [\n"
+        AssertDataObjects.assertEqualByText("new TopBuilder >> [\n"
                 + "    topLevelList = #{\n"
                 + "        new TopLevelListKey(\"foo\") -> new TopLevelListBuilder >> [\n"
                 + "            name = \"foo\"\n"
@@ -60,7 +57,7 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
     public void testAssertDataObjectsWithTopLevelList() {
         AssertDataObjects.assertEqualBeans(ExpectedObjects.topLevelList(),
                 ExampleYangObjects.topLevelList().getValue());
-        AssertDataObjects.assertEqualByText(HEADER + "new TopLevelListBuilder >> [\n"
+        AssertDataObjects.assertEqualByText("new TopLevelListBuilder >> [\n"
                 + "    name = \"foo\"\n"
                 + "    addAugmentation(TreeComplexUsesAugment, new TreeComplexUsesAugmentBuilder >> [\n"
                 + "        containerWithUses = new ContainerWithUsesBuilder >> [\n"
@@ -83,9 +80,7 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
 
         AssertDataObjects.assertEqualBeans(ExpectedObjects.top(), actualTop);
 
-        String expectedTopText = "import static extension org.opendaylight.mdsal.binding.testutils."
-                + "XtendBuilderExtensions.operator_doubleGreaterThan\n\n"
-                + "new TopBuilder >> [\n"
+        String expectedTopText = "new TopBuilder >> [\n"
                 + "    topLevelList = #{\n"
                 + "        new TopLevelListKey(\"foo\") -> new TopLevelListBuilder >> [\n"
                 + "            name = \"foo\"\n"
@@ -104,5 +99,4 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
             Entry<InstanceIdentifier<T>, T> obj) {
         tx.put(OPERATIONAL, obj.getKey(), obj.getValue());
     }
-
 }
