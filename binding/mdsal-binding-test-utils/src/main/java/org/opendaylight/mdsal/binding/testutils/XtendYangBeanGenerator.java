@@ -27,27 +27,16 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * cannot find the Builder or the property getters for them without a bit of help,
  * which this class provides;
  *
- * <p>(b) to integrate it with the {@link XtendBuilderExtensions}
- * (for ">>" instead of "->" and no build() method calls);
+ * <p>(b) to show ">>" instead of "->" and deal with build() method calls
  *
- * <p>(c) to integrate it with the {@link AugmentableExtension}.
+ * <p>(c) to deal with augmentations.
  *
  * @see XtendBeanGenerator
  *
  * @author Michael Vorburger
  */
 // package-local: no need to expose this, consider it an implementation detail; public API is the AssertDataObjects
-class XtendYangBeanGenerator extends XtendBeanGenerator {
-
-    @Override
-    public String getExpression(final Object bean) {
-        final String beanText = super.getExpression(bean);
-        if (useBuilderExtensions(bean)) {
-            return new StringBuilder("import static extension ").append(XtendBuilderExtensions.class.getName())
-                    .append(".operator_doubleGreaterThan\n\n").append(beanText).toString();
-        }
-        return beanText;
-    }
+final class XtendYangBeanGenerator extends XtendBeanGenerator {
 
     @Override
     protected boolean isUsingBuilder(final Object bean, final Class<?> builderClass) {
