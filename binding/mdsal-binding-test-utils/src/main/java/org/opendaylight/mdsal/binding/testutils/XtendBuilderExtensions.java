@@ -31,7 +31,9 @@ import org.opendaylight.yangtools.concepts.Builder;
  * <p>See also org.eclipse.xtext.xbase.lib.ObjectExtensions.operator_doubleArrow for background.
  *
  * @author Michael Vorburger
+ * @deprecated This class is not needed and will be removed in the next release.
  */
+@Deprecated(forRemoval = true)
 public final class XtendBuilderExtensions {
 
     private XtendBuilderExtensions() {
