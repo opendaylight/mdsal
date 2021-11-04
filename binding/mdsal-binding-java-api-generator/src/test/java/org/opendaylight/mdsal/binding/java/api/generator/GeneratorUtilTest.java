@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
@@ -33,6 +34,15 @@ import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
+import org.opendaylight.yangtools.concepts.Immutable;
+import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.stmt.ContainerStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.ModuleStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.PresenceEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.ri.stmt.impl.eff.ContainerEffectiveStatementImpl;
 
 public class GeneratorUtilTest {
     private static final JavaTypeName ANNOTATION = JavaTypeName.create("tst.package", "tstAnnotationName");
@@ -93,7 +103,7 @@ public class GeneratorUtilTest {
         doReturn(ImmutableList.of(enclosedType)).when(generatedType).getEnclosedTypes();
         final Map<String, String> generated = GeneratorUtil.createChildImports(generatedType);
         assertNotNull(generated);
-        assertTrue(generated.get("tstName").equals("tst.package"));
+        assertEquals("tst.package", generated.get("tstName"));
     }
 
     public void constructTest() throws ReflectiveOperationException {
@@ -146,6 +156,38 @@ public class GeneratorUtilTest {
 
         assertTrue(GeneratorUtil.getExplicitType(generatedType, parameterizedType,
                 createImports(generatedType)).contains(parameterizedType.getName()));
+    }
 
+    @Test
+    public void nonContainerIsNonPresenceContainerTest() {
+        assertFalse(GeneratorUtil.isNonPresenceContainer(generatedType));
+    }
+
+    @Test
+    public void presenceContainerIsNonPresenceContainerTest() {
+        final ContainerSchemaNode schemaNode = new ContainerEffectiveStatementImpl(mock(ContainerStatement.class),
+                ImmutableList.of(mock(PresenceEffectiveStatement.class)), mock(Immutable.class), 0x0080, null);
+        final ModuleEffectiveStatement effective = mock(ModuleEffectiveStatement.class);
+        doReturn(mock(ModuleStatement.class)).when(effective).getDeclared();
+        final Module module = mock(Module.class);
+        doReturn(effective).when(module).asEffectiveStatement();
+        final Optional<YangSourceDefinition> definition = YangSourceDefinition.of(module, schemaNode);
+        doReturn(definition).when(generatedType).getYangSourceDefinition();
+
+        assertFalse(GeneratorUtil.isNonPresenceContainer(generatedType));
+    }
+
+    @Test
+    public void nonPresenceContainerIsNonPresenceContainerTest() {
+        final ContainerSchemaNode schemaNode = new ContainerEffectiveStatementImpl(mock(ContainerStatement.class),
+                ImmutableList.of(), mock(Immutable.class), 0x0300, null);
+        final ModuleEffectiveStatement effective = mock(ModuleEffectiveStatement.class);
+        doReturn(mock(ModuleStatement.class)).when(effective).getDeclared();
+        final Module module = mock(Module.class);
+        doReturn(effective).when(module).asEffectiveStatement();
+        final Optional<YangSourceDefinition> definition = YangSourceDefinition.of(module, schemaNode);
+        doReturn(definition).when(generatedType).getYangSourceDefinition();
+
+        assertTrue(GeneratorUtil.isNonPresenceContainer(generatedType));
     }
 }
