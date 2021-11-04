@@ -7,11 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
+import static extension org.opendaylight.mdsal.binding.java.api.generator.GeneratorUtil.isNonPresenceContainer;
 import static org.opendaylight.mdsal.binding.model.ri.Types.STRING;
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_EQUALS_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_HASHCODE_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_TO_STRING_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BUILDER_SUFFIX
 
 import java.util.Collection
 import java.util.List
@@ -50,6 +52,8 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
 
             «generateGetters()»
 
+            «generateNonnullGetters()»
+
             «generateHashCode()»
 
             «generateEquals()»
@@ -73,6 +77,18 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
         «IF !properties.empty»
             «FOR field : properties SEPARATOR '\n'»
                 «field.getterMethod»
+            «ENDFOR»
+        «ENDIF»
+    '''
+
+    def private generateNonnullGetters() '''
+        «IF !properties.empty»
+            «FOR field : properties SEPARATOR '\n'»
+                «IF field.returnType instanceof GeneratedType»
+                    «IF isNonPresenceContainer(field.returnType as GeneratedType)»
+                        «field.nonNullGetterMethod»
+                    «ENDIF»
+                «ENDIF»
             «ENDFOR»
         «ENDIF»
     '''
@@ -102,6 +118,14 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
             «ELSE»
                 return «fieldName»;
             «ENDIF»
+        }
+    '''
+
+    private def nonNullGetterMethod(GeneratedProperty field) '''
+        @«OVERRIDE.importedName»
+        «val type = field.returnType»
+        public «type.importedName» «field.nonnullMethodName»() {
+            return «JU_OBJECTS.importedName».requireNonNullElse(«field.getterMethodName»(), «type.fullyQualifiedName»«BUILDER_SUFFIX».empty());
         }
     '''
 
