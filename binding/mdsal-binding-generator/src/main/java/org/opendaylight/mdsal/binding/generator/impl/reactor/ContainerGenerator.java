@@ -10,11 +10,17 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultContainerRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ContainerRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.stmt.ContainerEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.PresenceEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 /**
@@ -55,5 +61,21 @@ final class ContainerGenerator extends CompositeSchemaTreeGenerator<ContainerEff
     ContainerRuntimeType createRuntimeType(final GeneratedType type, final ContainerEffectiveStatement statement,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
         return new DefaultContainerRuntimeType(type, statement, children, augments);
+    }
+
+    @Override
+    MethodSignatureBuilder constructGetter(final GeneratedTypeBuilderBase<?> builder, final Type returnType) {
+        final MethodSignatureBuilder ret = super.constructGetter(builder, returnType)
+                .setMechanics(ValueMechanics.NORMAL);
+
+        if (statement().findFirstEffectiveSubstatement(PresenceEffectiveStatement.class).isEmpty()) {
+            final MethodSignatureBuilder nonnull = builder
+                .addMethod(BindingMapping.getNonnullMethodName(localName().getLocalName()))
+                .setReturnType(returnType)
+                .setDefault(false);
+            annotateDeprecatedIfNecessary(nonnull);
+        }
+
+        return ret;
     }
 }
