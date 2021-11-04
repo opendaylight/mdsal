@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
+import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -83,6 +84,11 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
     protected final Object codecMember(final VarHandle handle, final NodeContextSupplier supplier) {
         final Object cached = handle.getAcquire(this);
         return cached != null ? unmaskNull(cached) : loadMember(handle, supplier.get());
+    }
+
+    protected final Object nonnullMember(final VarHandle handle, final Object empty,
+            final Class<? extends DataObject> bindingClass) {
+        return Objects.requireNonNullElse(codecMember(handle, bindingClass), empty);
     }
 
     protected final @NonNull Object codecKey(final VarHandle handle) {
