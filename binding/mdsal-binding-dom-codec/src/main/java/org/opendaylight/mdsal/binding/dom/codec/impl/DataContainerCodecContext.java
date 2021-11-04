@@ -259,4 +259,7 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
             throw new IllegalStateException("Failed to serialize Binding DTO",e);
         }
     }
+
+    // FIXME: implement this as appropriate
+    protected abstract Object emptyObject();
 }
