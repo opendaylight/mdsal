@@ -213,9 +213,12 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
                 final Method method = entry.getKey();
                 LOG.trace("Generating for structured method {}", method);
                 final String methodName = method.getName();
+                final String nonnullName = "nonnull" + methodName.replace("get", "");
                 final TypeDescription retType = TypeDescription.ForLoadedType.of(method.getReturnType());
                 tmp = tmp.defineMethod(methodName, retType, PUB_FINAL).intercept(
                     new StructuredGetterMethodImplementation(methodName, retType, entry.getValue()));
+                tmp = tmp.defineMethod(nonnullName, retType, PUB_FINAL)
+                        .intercept(new NonnullGetterMethodImplementation(nonnullName, retType, entry.getValue()));
             }
 
             return tmp;
@@ -465,6 +468,31 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
                 CODEC_MEMBER,
                 TypeCasting.to(retType),
                 MethodReturn.REFERENCE);
+        }
+    }
+
+    private static final class NonnullGetterMethodImplementation extends AbstractMethodImplementation {
+        private static final StackManipulation NONNULL_MEMBER = invokeMethod(CodecDataObject.class,
+                "nonnullMember", VarHandle.class, Class.class);
+
+        private final Class<?> bindingClass;
+
+        NonnullGetterMethodImplementation(final String methodName, final TypeDescription retType,
+                final Class<?> bindingClass) {
+            super(methodName, retType);
+            this.bindingClass = requireNonNull(bindingClass);
+        }
+
+        @Override
+        public ByteCodeAppender appender(final Target implementationTarget) {
+            return new ByteCodeAppender.Simple(
+                    // return (FooType) nonnullMember(getFoo(), FooType.class);
+                    loadThis(),
+                    getField(implementationTarget.getInstrumentedType(), handleName),
+                    ClassConstant.of(TypeDefinition.Sort.describe(bindingClass).asErasure()),
+                    NONNULL_MEMBER,
+                    TypeCasting.to(retType),
+                    MethodReturn.REFERENCE);
         }
     }
 

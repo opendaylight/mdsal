@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
@@ -33,6 +34,16 @@ import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.stmt.AnyxmlStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.ContainerStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.ModuleStatement;
+import org.opendaylight.yangtools.yang.model.ri.stmt.impl.eff.EmptyAnyxmlEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.ri.stmt.impl.eff.RegularContainerEffectiveStatement;
 
 public class GeneratorUtilTest {
     private static final JavaTypeName ANNOTATION = JavaTypeName.create("tst.package", "tstAnnotationName");
@@ -146,6 +157,57 @@ public class GeneratorUtilTest {
 
         assertTrue(GeneratorUtil.getExplicitType(generatedType, parameterizedType,
                 createImports(generatedType)).contains(parameterizedType.getName()));
+    }
 
+    /**
+     * Test that type which is NOT container is NOT recognized as non-presence container.
+     */
+    @Test
+    public void nonContainerIsNonPresenceContainerTest() {
+        final EmptyAnyxmlEffectiveStatement schemaNode = new EmptyAnyxmlEffectiveStatement(mock(AnyxmlStatement.class),
+                mock(QName.class), 0);
+        final ModuleEffectiveStatement effective = mock(ModuleEffectiveStatement.class);
+        doReturn(mock(ModuleStatement.class)).when(effective).getDeclared();
+        final Module module = mock(Module.class);
+        doReturn(effective).when(module).asEffectiveStatement();
+        final Optional<YangSourceDefinition> definition = YangSourceDefinition.of(module, schemaNode);
+        doReturn(definition).when(generatedType).getYangSourceDefinition();
+
+        assertFalse(GeneratorUtil.isNonPresenceContainer(generatedType));
+    }
+
+    /**
+     * Test that presence container is NOT recognized as non-presence container.
+     */
+    @Test
+    public void presenceContainerIsNonPresenceContainerTest() {
+        final int presenceFlags = 0x0080;
+        final ContainerSchemaNode schemaNode = new RegularContainerEffectiveStatement(mock(ContainerStatement.class),
+                ImmutableList.of(), mock(QName.class), presenceFlags);
+        final ModuleEffectiveStatement effective = mock(ModuleEffectiveStatement.class);
+        doReturn(mock(ModuleStatement.class)).when(effective).getDeclared();
+        final Module module = mock(Module.class);
+        doReturn(effective).when(module).asEffectiveStatement();
+        final Optional<YangSourceDefinition> definition = YangSourceDefinition.of(module, schemaNode);
+        doReturn(definition).when(generatedType).getYangSourceDefinition();
+
+        assertFalse(GeneratorUtil.isNonPresenceContainer(generatedType));
+    }
+
+    /**
+     * Test that non-presence container IS recognized as non-presence container.
+     */
+    @Test
+    public void nonPresenceContainerIsNonPresenceContainerTest() {
+        final ContainerSchemaNode schemaNode = new RegularContainerEffectiveStatement(mock(ContainerStatement.class),
+                ImmutableList.of(), mock(QName.class), 0);
+        final ModuleEffectiveStatement effective = mock(ModuleEffectiveStatement.class);
+        doReturn(mock(ModuleStatement.class)).when(effective).getDeclared();
+        final Module module = mock(Module.class);
+        doReturn(effective).when(module).asEffectiveStatement();
+        final Optional<YangSourceDefinition> definition = YangSourceDefinition.of(module, schemaNode);
+        doReturn(definition).when(generatedType).getYangSourceDefinition();
+
+        assertTrue(GeneratorUtil.isNonPresenceContainer(generatedType));
     }
 }
