@@ -9,10 +9,13 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ContainerLikeRuntimeType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 
 final class ContainerNodeCodecContext<D extends DataObject>
         extends DataObjectCodecContext<D, ContainerLikeRuntimeType<?, ?>>
@@ -31,5 +34,14 @@ final class ContainerNodeCodecContext<D extends DataObject>
     @Override
     protected Object deserializeObject(final NormalizedNode normalizedNode) {
         return deserialize(normalizedNode);
+    }
+
+    @Override
+    @NonNull Object emptyObject() {
+        checkState(getDomPathArgument() instanceof YangInstanceIdentifier.NodeIdentifier,
+                "Unexpected identifier %s", getDomPathArgument());
+        return deserialize(ImmutableContainerNodeBuilder.create()
+                .withNodeIdentifier((YangInstanceIdentifier.NodeIdentifier) getDomPathArgument())
+                .build());
     }
 }
