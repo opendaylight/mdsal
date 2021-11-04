@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
-import org.opendaylight.yangtools.concepts.CheckedBuilder;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
@@ -30,7 +29,7 @@ import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
 
 @Beta
-public final class ModuleInfoSnapshotBuilder implements CheckedBuilder<ModuleInfoSnapshot, YangParserException> {
+public final class ModuleInfoSnapshotBuilder {
     private final Set<YangModuleInfo> moduleInfos = new HashSet<>();
     private final YangParserFactory parserFactory;
 
@@ -78,7 +77,6 @@ public final class ModuleInfoSnapshotBuilder implements CheckedBuilder<ModuleInf
         return this;
     }
 
-    @Override
     public ModuleInfoSnapshot build() throws YangParserException {
         final YangParser parser = parserFactory.createParser();
         final Map<SourceIdentifier, YangModuleInfo> mappedInfos = new HashMap<>();
