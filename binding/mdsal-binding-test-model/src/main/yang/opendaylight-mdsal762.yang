@@ -1,0 +1,49 @@
+module opendaylight-mdsal762 {
+    namespace "urn:test:opendaylight-mdsal762";
+    prefix mdsal762;
+
+    list bar {
+        leaf foo-enum {
+            type enumeration {
+                enum implement {
+                }
+                enum import {
+                }
+            }
+        }
+        leaf foo-int {
+            type int32 {
+                range "1..4 | 10..20";
+            }
+        }
+        leaf foo-string {
+            type string {
+                length "1..255";
+            }
+        }
+        leaf foo-bits {
+            type bits {
+                bit disable-nagle {
+                    position 0;
+                }
+                bit auto-sense-speed {
+                    position 1;
+                }
+                bit ten-mb-only {
+                    position 2;
+                }
+            }
+        }
+        leaf foo-emty {
+            type empty;
+        }
+        leaf foo-union {
+            type union {
+                type int32;
+                type enumeration {
+                    enum "unbounded";
+                }
+            }
+        }
+    }
+}
