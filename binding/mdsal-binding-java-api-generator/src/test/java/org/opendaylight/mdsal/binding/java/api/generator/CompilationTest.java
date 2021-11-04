@@ -118,7 +118,7 @@ public class CompilationTest extends BaseCompilationTest {
         // Test generated 'list links'
         assertTrue(linksClass.isInterface());
         CompilationTestUtils.assertImplementsIfc(linksClass, keyArgsClass);
-        assertEquals(7, abstractMethods(linksClass).size());
+        assertEquals(8, abstractMethods(linksClass).size());
         CompilationTestUtils.assertContainsMethod(linksClass,
             "org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.links.Text", "getText", loader);
         CompilationTestUtils.assertContainsMethod(linksClass,
@@ -130,6 +130,46 @@ public class CompilationTest extends BaseCompilationTest {
         final Field suid = CompilationTestUtils.assertContainsField(linksKeyClass, "serialVersionUID", Long.TYPE);
         suid.setAccessible(true);
         assertEquals(-8829501012356283881L, suid.getLong(null));
+
+        CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
+    }
+
+    @Test
+    public void testContainerGettersGeneration() throws Exception {
+        final File sourcesOutputDir = CompilationTestUtils.generatorOutput("containers-gen");
+        final File compiledOutputDir = CompilationTestUtils.compilerOutput("containers-gen");
+        generateTestSources("/compilation/containers-gen", sourcesOutputDir);
+
+        // Test if all sources were generated from 'module containers'
+        File parent = new File(sourcesOutputDir, CompilationTestUtils.NS_TEST);
+        assertTrue(new File(parent, "RootContainer.java").exists());
+        assertTrue(new File(parent, "rootcontainer/PresenceContainer.java").exists());
+        assertTrue(new File(parent, "rootcontainer/NonPresenceContainer.java").exists());
+        CompilationTestUtils.assertFilesCount(parent, 5);
+
+        // Test if sources are compilable
+        CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
+
+        final ClassLoader loader = new URLClassLoader(new URL[] { compiledOutputDir.toURI().toURL() });
+        final Class<?> rootClass = Class.forName(CompilationTestUtils.BASE_PKG
+                + ".urn.opendaylight.test.rev131008.RootContainer", true, loader);
+
+        // Test generated 'container root'
+        assertTrue(rootClass.isInterface());
+        assertEquals(3, abstractMethods(rootClass).size());
+
+        // Test generated getter for semantics
+        CompilationTestUtils.assertContainsMethod(rootClass,
+                "org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.rootcontainer.PresenceContainer",
+                "getPresenceContainer", loader);
+
+        // Test generated getter and nonnull methods for non-semantics
+        CompilationTestUtils.assertContainsMethod(rootClass,
+                "org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.rootcontainer.NonPresenceContainer",
+                "getNonPresenceContainer", loader);
+        CompilationTestUtils.assertContainsMethod(rootClass,
+                "org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.rootcontainer.NonPresenceContainer",
+                "nonnullNonPresenceContainer", loader);
 
         CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
     }
