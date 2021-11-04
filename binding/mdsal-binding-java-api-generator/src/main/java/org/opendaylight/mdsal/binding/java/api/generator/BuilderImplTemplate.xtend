@@ -7,11 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
+import static org.opendaylight.mdsal.binding.java.api.generator.GeneratorUtil.isPresenceContainer;
+
 import static org.opendaylight.mdsal.binding.model.ri.Types.STRING;
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_EQUALS_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_HASHCODE_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_TO_STRING_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BUILDER_SUFFIX
 
 import java.util.Collection
 import java.util.List
@@ -50,6 +53,8 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
 
             «generateGetters()»
 
+            «generateNonnullGetters()»
+
             «generateHashCode()»
 
             «generateEquals()»
@@ -73,6 +78,16 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
         «IF !properties.empty»
             «FOR field : properties SEPARATOR '\n'»
                 «field.getterMethod»
+            «ENDFOR»
+        «ENDIF»
+    '''
+
+    def private generateNonnullGetters() '''
+        «IF !properties.empty»
+            «FOR field : properties SEPARATOR '\n'»
+                «IF false» //FIXME
+                    «field.nonNullGetterMethod»
+                «ENDIF»
             «ENDFOR»
         «ENDIF»
     '''
@@ -102,6 +117,13 @@ class BuilderImplTemplate extends AbstractBuilderTemplate {
             «ELSE»
                 return «fieldName»;
             «ENDIF»
+        }
+    '''
+
+    def nonNullGetterMethod(GeneratedProperty field) '''
+        @«OVERRIDE.importedName»
+        public «field.returnType.importedName» «field.nonnullMethodName»() {
+            return «field.returnType.importedName»«BUILDER_SUFFIX».empty();
         }
     '''
 
