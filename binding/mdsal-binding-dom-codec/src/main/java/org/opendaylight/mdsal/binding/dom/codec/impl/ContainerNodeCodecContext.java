@@ -12,16 +12,14 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-final class ContainerNodeCodecContext<D extends DataObject>
-        extends DataObjectCodecContext<D, ContainerLikeRuntimeType<?, ?>>
+class ContainerNodeCodecContext<D extends DataObject> extends DataObjectCodecContext<D, ContainerLikeRuntimeType<?, ?>>
         implements RpcInputCodec<D> {
-
     ContainerNodeCodecContext(final DataContainerCodecPrototype<ContainerLikeRuntimeType<?, ?>> prototype) {
         super(prototype);
     }
 
     @Override
-    public D deserialize(final NormalizedNode data) {
+    public final D deserialize(final NormalizedNode data) {
         if (data instanceof ContainerNode container) {
             return createBindingProxy(container);
         }
@@ -29,7 +27,7 @@ final class ContainerNodeCodecContext<D extends DataObject>
     }
 
     @Override
-    protected Object deserializeObject(final NormalizedNode normalizedNode) {
+    protected final Object deserializeObject(final NormalizedNode normalizedNode) {
         return deserialize(normalizedNode);
     }
 }

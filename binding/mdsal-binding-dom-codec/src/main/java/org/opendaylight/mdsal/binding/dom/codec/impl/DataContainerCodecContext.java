@@ -259,4 +259,8 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
             throw new IllegalStateException("Failed to serialize Binding DTO",e);
         }
     }
+
+    @NonNull D emptyObject() {
+        throw new UnsupportedOperationException("No empty object for " + this);
+    }
 }
