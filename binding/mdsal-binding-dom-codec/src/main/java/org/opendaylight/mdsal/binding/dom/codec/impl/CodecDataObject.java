@@ -11,9 +11,11 @@ import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.schema.DistinctNodeContainer;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
@@ -83,6 +85,17 @@ public abstract class CodecDataObject<T extends DataObject> implements DataObjec
     protected final Object codecMember(final VarHandle handle, final NodeContextSupplier supplier) {
         final Object cached = handle.getAcquire(this);
         return cached != null ? unmaskNull(cached) : loadMember(handle, supplier.get());
+    }
+
+    protected final Object nonnullMember(final VarHandle handle, final Class<? extends DataObject> bindingClass)
+            throws Throwable {
+        final Object member = loadMember(handle, context.streamChild(bindingClass));
+        if (member == null) {
+            return MethodHandles.publicLookup().findStatic(Class.forName(bindingClass.getName() + "Builder", false,
+                            CodecClassLoader.create()), "empty", MethodType.methodType(bindingClass)).invoke();
+        } else {
+            return member;
+        }
     }
 
     protected final @NonNull Object codecKey(final VarHandle handle) {
