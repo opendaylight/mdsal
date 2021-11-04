@@ -8,14 +8,21 @@
 package org.opendaylight.mdsal.binding.api.query;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.yangtools.concepts.CheckedBuilder;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
- * A specialization of {@link CheckedBuilder}, whose {@code build()} method throws a {@link QueryStructureException}.
+ * Builder object which {@code build()} method produces a product or throws {@link QueryStructureException}.
  *
  * @param <P> Product of builder
  */
 @Beta
-public interface StructuralBuilder<P> extends CheckedBuilder<P, QueryStructureException> {
-
+public interface StructuralBuilder<P> {
+    /**
+     * Returns instance of the product. Multiple calls to this method are not required to return same instance if
+     * the state of the builder has changed.
+     *
+     * @return A newly-built instance
+     * @throws QueryStructureException if the builder's state is not sufficiently initialized
+     */
+    @NonNull P build() throws QueryStructureException;
 }
