@@ -11,13 +11,18 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 import static net.bytebuddy.implementation.bytecode.member.MethodVariableAccess.loadThis;
+import static net.bytebuddy.matcher.ElementMatchers.isDefaultMethod;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.not;
 import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.getField;
 import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.invokeMethod;
 import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.putField;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -215,7 +220,10 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
                 final String methodName = method.getName();
                 final TypeDescription retType = TypeDescription.ForLoadedType.of(method.getReturnType());
                 tmp = tmp.defineMethod(methodName, retType, PUB_FINAL).intercept(
-                    new StructuredGetterMethodImplementation(methodName, retType, entry.getValue()));
+                        new StructuredGetterMethodImplementation(methodName, retType, entry.getValue()));
+                final String nonnullName = "nonnull" + methodName.replace("get", "");
+                tmp = tmp.method(named(nonnullName).and(not(isDefaultMethod())))
+                        .intercept(new NonnullGetterMethodImplementation(nonnullName, retType, entry.getValue()));
             }
 
             return tmp;
@@ -465,6 +473,43 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
                 CODEC_MEMBER,
                 TypeCasting.to(retType),
                 MethodReturn.REFERENCE);
+        }
+    }
+
+    private static final class NonnullGetterMethodImplementation extends AbstractMethodImplementation {
+        private static final StackManipulation FIND_METHOD_HANDLE = invokeMethod(Lookup.class,
+                "findStatic", Class.class, String.class, MethodType.class);
+        private static final StackManipulation NONNULL_MEMBER = invokeMethod(CodecDataObject.class,
+                "nonnullMember", VarHandle.class, Object.class, Class.class);
+
+        private final Class<?> bindingClass;
+
+        NonnullGetterMethodImplementation(final String methodName, final TypeDescription retType,
+                final Class<?> bindingClass) {
+            super(methodName, retType);
+            this.bindingClass = requireNonNull(bindingClass);
+        }
+
+        @Override
+        public ByteCodeAppender appender(final Target implementationTarget) {
+            final Class<?> builderClass;
+            try {
+                builderClass = CodecClassLoader.create().loadClass(bindingClass.getName() + "Builder");
+            } catch (final Exception e) {
+                Throwables.throwIfUnchecked(e);
+                throw new RuntimeException(e);
+            }
+
+            return new ByteCodeAppender.Simple(
+                    // return (FooType) nonnullMember(getFoo(), empty, FooType.class);
+                    loadThis(),
+                    // TODO just quick-fix
+                    getField(implementationTarget.getInstrumentedType(), "get" + retType.getSimpleName() + "$$$V"),
+                    invokeMethod(builderClass, "empty"),
+                    ClassConstant.of(TypeDefinition.Sort.describe(bindingClass).asErasure()),
+                    NONNULL_MEMBER,
+                    TypeCasting.to(retType),
+                    MethodReturn.REFERENCE);
         }
     }
 
