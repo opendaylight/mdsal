@@ -1,0 +1,29 @@
+module presence-container {
+    yang-version 1.1;
+    namespace "urn:opendaylight:presence-container";
+    prefix pc;
+
+    revision 2022-03-17 {
+        description
+        "Initial revision.";
+    }
+
+    container directory {
+        list user {
+            key userId;
+            leaf userId {
+                type string;
+            }
+        }
+
+        container data {
+            leaf value {
+                type string;
+            }
+        }
+
+        container scp {
+            presence "If present SCP is enabled.";
+        }
+    }
+}
