@@ -7,10 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
+import static org.opendaylight.mdsal.binding.java.api.generator.GeneratorUtil.isNonPresenceContainer;
+
 import static extension org.apache.commons.text.StringEscapeUtils.escapeJava
 import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.DATA_OBJECT
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BUILDER_SUFFIX
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.DATA_CONTAINER_IMPLEMENTED_INTERFACE_NAME
 
 import com.google.common.collect.ImmutableList
@@ -81,6 +84,10 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             public «generateCopyConstructor(targetType, type.enclosedTypes.get(0))»
 
             «generateMethodFieldsFrom()»
+
+            «IF isNonPresenceContainer(targetType)»
+                «generateEmptyInstance()»
+            «ENDIF»
 
             «generateGetters(false)»
             «IF augmentType !== null»
@@ -194,6 +201,20 @@ class BuilderTemplate extends AbstractBuilderTemplate {
                 }
             «ENDIF»
         «ENDIF»
+    '''
+
+    /**
+    * Generate EMPTY instance
+    */
+    def private generateEmptyInstance() '''
+        private static «targetType.name» EMPTY_INSTANCE;
+
+        public static «targetType.name» empty() {
+            if (EMPTY_INSTANCE == null) {
+                EMPTY_INSTANCE = new «targetType.name»«BUILDER_SUFFIX»().build();
+            }
+            return EMPTY_INSTANCE;
+        }
     '''
 
     def private generateMethodFieldsFromComment(GeneratedType type) '''
