@@ -8,10 +8,12 @@
 package org.opendaylight.mdsal.binding.java.api.generator
 
 import static extension org.apache.commons.text.StringEscapeUtils.escapeJava
+import static extension org.opendaylight.mdsal.binding.java.api.generator.GeneratorUtil.isNonPresenceContainer;
 import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.DATA_OBJECT
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTABLE_AUGMENTATION_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.AUGMENTATION_FIELD
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_CONTRACT_IMPLEMENTED_INTERFACE_NAME
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BUILDER_SUFFIX
 
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
@@ -93,6 +95,10 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             public «generateCopyConstructor(targetType, type.enclosedTypes.get(0))»
 
             «generateMethodFieldsFrom()»
+
+            «IF isNonPresenceContainer(targetType)»
+                «generateEmptyInstance()»
+            «ENDIF»
 
             «generateGetters(false)»
             «IF augmentType !== null»
@@ -214,6 +220,31 @@ class BuilderTemplate extends AbstractBuilderTemplate {
                 }
             «ENDIF»
         «ENDIF»
+    '''
+
+    /**
+    * Generate EMPTY instance which is lazily initialized in empty() method.
+    */
+    def private generateEmptyInstance() '''
+        /**
+         * Lazy initialized empty instance of «targetType.name».
+         */
+        private static «targetType.name» EMPTY_INSTANCE;
+
+        /**
+         * Get empty instance of «targetType.name».
+         *
+         * When empty instance is not initialized then create it and return. Otherwise just return already
+         * initialized empty instance.
+         *
+         * @return {@link «targetType.name»} an empty instance.
+         */
+        public static «targetType.name» empty() {
+            if (EMPTY_INSTANCE == null) {
+                EMPTY_INSTANCE = new «targetType.name»«BUILDER_SUFFIX»().build();
+            }
+            return EMPTY_INSTANCE;
+        }
     '''
 
     def private generateMethodFieldsFromComment(GeneratedType type) '''
