@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.model.api.type.builder;
 
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
-import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
 /**
@@ -18,8 +17,7 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
  *
  * @see GeneratedTransferObject
  */
-public interface GeneratedTOBuilder extends GeneratedTypeBuilderBase<GeneratedTOBuilder>,
-        Builder<GeneratedTransferObject> {
+public interface GeneratedTOBuilder extends GeneratedTypeBuilderBase<GeneratedTOBuilder> {
 
     /**
      * Add Generated Transfer Object from which will be extended current Generated Transfer Object.<br>
@@ -70,7 +68,6 @@ public interface GeneratedTOBuilder extends GeneratedTypeBuilderBase<GeneratedTO
      *
      * @return generated transfer object instance
      */
-    @Override
     GeneratedTransferObject build();
 
     void setTypedef(boolean isTypedef);
