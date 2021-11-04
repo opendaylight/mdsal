@@ -31,6 +31,11 @@ final class ByteBuddyUtils {
         return MethodInvocation.invoke(describe(clazz, name, args));
     }
 
+    static StackManipulation invokeMethod(final String clazz, final ClassLoader loader, final String name,
+            final Class<?>... args) {
+        return MethodInvocation.invoke(describe(getClass(clazz, loader), name, args));
+    }
+
     static StackManipulation getField(final Field field) {
         return FieldAccess.forField(new ForLoadedField(field).asDefined()).read();
     }
@@ -54,6 +59,14 @@ final class ByteBuddyUtils {
     private static Defined fieldAccess(final TypeDescription instrumentedType, final String fieldName) {
         return FieldAccess.forField(instrumentedType.getDeclaredFields().filter(ElementMatchers.named(fieldName))
             .getOnly());
+    }
+
+    private static Class<?> getClass(final String clazz, final ClassLoader loader) {
+        try {
+            return loader.loadClass(clazz);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private static Method getMethod(final Class<?> clazz, final String name, final Class<?>... args) {
