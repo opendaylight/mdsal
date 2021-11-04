@@ -31,16 +31,16 @@ import org.opendaylight.yangtools.concepts.Builder;
  * <p>See also org.eclipse.xtext.xbase.lib.ObjectExtensions.operator_doubleArrow for background.
  *
  * @author Michael Vorburger
+ * @deprecated This class is not needed and will be removed in the next release.
  */
+@Deprecated(since = "8.0.9", forRemoval = true)
 public final class XtendBuilderExtensions {
-
     private XtendBuilderExtensions() {
-
+        // Hidden on purpose
     }
 
-    public static <P extends Object, T extends Builder<P>> P operator_doubleGreaterThan(
-            final T object, final Procedure1<? super T> block) {
-
+    public static <P extends Object, T extends Builder<P>> P operator_doubleGreaterThan(final T object,
+            final Procedure1<? super T> block) {
         block.apply(object);
         return object.build();
     }
