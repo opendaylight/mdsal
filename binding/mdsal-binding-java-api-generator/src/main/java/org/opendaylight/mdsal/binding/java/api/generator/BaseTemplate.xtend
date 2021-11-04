@@ -88,6 +88,10 @@ abstract class BaseTemplate extends JavaFileTemplate {
         return '''«BindingMapping.GETTER_PREFIX»«field.name.toFirstUpper»'''
     }
 
+    final protected def nonnullMethodName(GeneratedProperty field) {
+        return '''«BindingMapping.NONNULL_PREFIX»«field.name.toFirstUpper»'''
+    }
+
     /**
      * Template method which generates the setter method for <code>field</code>
      *
