@@ -48,6 +48,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterF
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
+import org.opendaylight.mdsal.binding.dom.codec.local.Codec;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingSchemaMapping;
@@ -55,7 +56,6 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.concepts.Delegator;
-import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.Action;
@@ -370,7 +370,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                     // FIXME: MDSAL-670: this is not right as we need to find a concrete type, but this may return
                     //                   Object.class
                     final Class<?> valueType = method.getReturnType();
-                    final IllegalArgumentCodec<Object, Object> codec = getCodec(valueType, leafSchema.getType());
+                    final Codec<Object, Object> codec = getCodec(valueType, leafSchema.getType());
                     valueNode = LeafNodeCodecContext.of(leafSchema, codec, method.getName(), valueType,
                         context.getEffectiveModelContext());
                 } else if (schema instanceof LeafListSchemaNode) {
@@ -392,7 +392,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                     }
 
                     final LeafListSchemaNode leafListSchema = (LeafListSchemaNode) schema;
-                    final IllegalArgumentCodec<Object, Object> codec = getCodec(valueType, leafListSchema.getType());
+                    final Codec<Object, Object> codec = getCodec(valueType, leafListSchema.getType());
                     valueNode = new LeafSetNodeCodecContext(leafListSchema, codec, method.getName());
                 } else if (schema instanceof AnyxmlSchemaNode) {
                     valueNode = new OpaqueNodeCodecContext.Anyxml<>((AnyxmlSchemaNode) schema, method.getName(),
@@ -413,14 +413,14 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     // FIXME: this is probably not right w.r.t. nulls
-    IllegalArgumentCodec<Object, Object> getCodec(final Class<?> valueType, final TypeDefinition<?> instantiatedType) {
+    Codec<Object, Object> getCodec(final Class<?> valueType, final TypeDefinition<?> instantiatedType) {
         if (Class.class.equals(valueType)) {
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            final IllegalArgumentCodec<Object, Object> casted = (IllegalArgumentCodec) identityCodec;
+            final Codec<Object, Object> casted = (Codec) identityCodec;
             return casted;
         } else if (InstanceIdentifier.class.equals(valueType)) {
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            final IllegalArgumentCodec<Object, Object> casted = (IllegalArgumentCodec) instanceIdentifierCodec;
+            final Codec<Object, Object> casted = (Codec) instanceIdentifierCodec;
             return casted;
         } else if (BindingReflections.isBindingClass(valueType)) {
             return getCodecForBindingClass(valueType, instantiatedType);
@@ -432,7 +432,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @SuppressWarnings("checkstyle:illegalCatch")
     // FIXME: this is probably not right w.r.t. nulls
-    private IllegalArgumentCodec<Object, Object> getCodecForBindingClass(final Class<?> valueType,
+    private Codec<Object, Object> getCodecForBindingClass(final Class<?> valueType,
             final TypeDefinition<?> typeDef) {
         if (typeDef instanceof IdentityrefTypeDefinition) {
             return ValueTypeCodec.encapsulatedValueCodecFor(valueType, typeDef, identityCodec);

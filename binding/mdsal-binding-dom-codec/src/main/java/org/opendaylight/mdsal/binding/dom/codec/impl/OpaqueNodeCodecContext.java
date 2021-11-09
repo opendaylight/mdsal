@@ -24,8 +24,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingOpaqueObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader;
 import org.opendaylight.mdsal.binding.dom.codec.loader.CodecClassLoader.GeneratorResult;
-import org.opendaylight.yangtools.concepts.AbstractIllegalArgumentCodec;
-import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
+import org.opendaylight.mdsal.binding.dom.codec.local.Codec;
 import org.opendaylight.yangtools.yang.binding.OpaqueData;
 import org.opendaylight.yangtools.yang.binding.OpaqueObject;
 import org.opendaylight.yangtools.yang.data.api.schema.AnydataNode;
@@ -84,9 +83,9 @@ abstract class OpaqueNodeCodecContext<T extends OpaqueObject<T>> extends ValueNo
     private static final Builder<CodecOpaqueObject> TEMPLATE = new ByteBuddy().subclass(CodecOpaqueObject.class)
             .modifiers(Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL | Opcodes.ACC_SYNTHETIC);
 
-    private final IllegalArgumentCodec<Object, Object> valueCodec = new AbstractIllegalArgumentCodec<>() {
+    private final Codec<Object, Object> valueCodec = new Codec<>() {
         @Override
-        protected Object serializeImpl(final Object input) {
+        public Object serialize(final Object input) {
             checkArgument(bindingClass.isInstance(input), "Unexpected input %s", input);
             // FIXME: this works for DOMSource only, for generalization we need to pass down the object model, too
             final OpaqueData<?> opaqueData = bindingClass.cast(input).getValue();
@@ -96,7 +95,7 @@ abstract class OpaqueNodeCodecContext<T extends OpaqueObject<T>> extends ValueNo
         }
 
         @Override
-        protected Object deserializeImpl(final Object input) {
+        public Object deserialize(final Object input) {
             checkArgument(input instanceof NormalizedNode, "Unexpected input %s", input);
             return OpaqueNodeCodecContext.this.deserializeObject((NormalizedNode) input);
         }
@@ -140,7 +139,7 @@ abstract class OpaqueNodeCodecContext<T extends OpaqueObject<T>> extends ValueNo
     }
 
     @Override
-    IllegalArgumentCodec<Object, Object> getValueCodec() {
+    Codec<Object, Object> getValueCodec() {
         return valueCodec;
     }
 

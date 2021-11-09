@@ -144,6 +144,11 @@
                 <artifactId>mdsal-binding-dom-codec-api</artifactId>
                 <version>8.0.8-SNAPSHOT</version>
             </dependency>
+			<dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-binding-dom-codec-local</artifactId>
+                <version>8.0.8-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-codec-spi</artifactId>
