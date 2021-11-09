@@ -11,8 +11,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import org.opendaylight.mdsal.binding.dom.codec.api.DomLocalCodec;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
-import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
@@ -20,8 +20,7 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 /**
  * Value codec, which serializes / deserializes values from DOM simple values.
  */
-// FIXME: IllegalArgumentCodec is perhaps not appropriate here due to null behavior
-abstract class ValueTypeCodec implements IllegalArgumentCodec<Object, Object> {
+abstract class ValueTypeCodec implements DomLocalCodec<Object, Object> {
     /*
      * Use identity comparison for keys and allow classes to be GCd themselves.
      *
@@ -39,8 +38,7 @@ abstract class ValueTypeCodec implements IllegalArgumentCodec<Object, Object> {
      * Marker interface for codecs, which functionality will not be affected by schema change (introduction of new YANG
      * modules) they may have one static instance generated when first time needed.
      */
-    // FIXME: IllegalArgumentCodec is perhaps not appropriate here due to null behavior
-    interface SchemaUnawareCodec extends IllegalArgumentCodec<Object, Object> {
+    interface SchemaUnawareCodec extends DomLocalCodec<Object, Object> {
 
     }
 
@@ -93,7 +91,7 @@ abstract class ValueTypeCodec implements IllegalArgumentCodec<Object, Object> {
 
     @SuppressWarnings("rawtypes")
     static ValueTypeCodec encapsulatedValueCodecFor(final Class<?> typeClz, final TypeDefinition<?> typeDef,
-             final IllegalArgumentCodec delegate) {
+             final DomLocalCodec delegate) {
         SchemaUnawareCodec extractor = getCachedSchemaUnawareCodec(typeClz,
             EncapsulatedValueCodec.loader(typeClz, typeDef));
         return new CompositeValueCodec(extractor, delegate);
