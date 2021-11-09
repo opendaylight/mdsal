@@ -7,16 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
-import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
+import org.opendaylight.mdsal.binding.dom.codec.local.Codec;
 
 final class CompositeValueCodec extends ValueTypeCodec {
     private final SchemaUnawareCodec bindingToSimpleType;
     @SuppressWarnings("rawtypes")
     // FIXME: this is probably not right w.r.t. null
-    private final IllegalArgumentCodec bindingToDom;
+    private final Codec bindingToDom;
 
     CompositeValueCodec(final SchemaUnawareCodec extractor,
-            @SuppressWarnings("rawtypes") final IllegalArgumentCodec delegate) {
+            @SuppressWarnings("rawtypes") final Codec delegate) {
         this.bindingToSimpleType = extractor;
         this.bindingToDom = delegate;
     }

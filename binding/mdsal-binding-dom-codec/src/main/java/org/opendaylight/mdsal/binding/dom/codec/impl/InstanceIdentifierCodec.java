@@ -15,15 +15,14 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCodec;
-import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
+import org.opendaylight.mdsal.binding.dom.codec.local.Codec;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 final class InstanceIdentifierCodec implements BindingInstanceIdentifierCodec,
-        //FIXME: this is not really an IllegalArgumentCodec, as it can legally return null from deserialize()
-        IllegalArgumentCodec<YangInstanceIdentifier, InstanceIdentifier<?>> {
+        Codec<YangInstanceIdentifier, InstanceIdentifier<?>> {
     private final BindingCodecContext context;
 
     InstanceIdentifierCodec(final BindingCodecContext context) {
