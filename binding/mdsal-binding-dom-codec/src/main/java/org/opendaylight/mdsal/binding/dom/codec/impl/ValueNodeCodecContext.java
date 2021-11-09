@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 
@@ -20,16 +19,16 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
  */
 abstract class ValueNodeCodecContext extends NodeCodecContext implements NodeContextSupplier {
     abstract static class WithCodec extends ValueNodeCodecContext {
-        private final @NonNull IllegalArgumentCodec<Object, Object> valueCodec;
+        private final @NonNull DomLocalCodec<Object, Object> valueCodec;
 
-        WithCodec(final DataSchemaNode schema, final IllegalArgumentCodec<Object, Object> codec,
+        WithCodec(final DataSchemaNode schema, final DomLocalCodec<Object, Object> codec,
                 final String getterName, final Object defaultObject) {
             super(schema, getterName, defaultObject);
             this.valueCodec = requireNonNull(codec);
         }
 
         @Override
-        final IllegalArgumentCodec<Object, Object> getValueCodec() {
+        final DomLocalCodec<Object, Object> getValueCodec() {
             return valueCodec;
         }
     }
@@ -60,7 +59,7 @@ abstract class ValueNodeCodecContext extends NodeCodecContext implements NodeCon
         return getterName;
     }
 
-    abstract IllegalArgumentCodec<Object, Object> getValueCodec();
+    abstract DomLocalCodec<Object, Object> getValueCodec();
 
     @Override
     public final DataSchemaNode getSchema() {

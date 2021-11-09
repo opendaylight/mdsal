@@ -14,7 +14,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +22,12 @@ final class UnionValueOptionContext {
     private static final Logger LOG = LoggerFactory.getLogger(UnionValueOptionContext.class);
 
     private final Class<?> bindingType;
-    private final IllegalArgumentCodec<Object,Object> codec;
+    private final DomLocalCodec<Object,Object> codec;
     private final MethodHandle getter;
     private final MethodHandle unionCtor;
 
     UnionValueOptionContext(final Class<?> unionType, final Class<?> valueType, final Method getter,
-            final IllegalArgumentCodec<Object, Object> codec) {
+            final DomLocalCodec<Object, Object> codec) {
         this.bindingType = requireNonNull(valueType);
         this.codec = requireNonNull(codec);
 

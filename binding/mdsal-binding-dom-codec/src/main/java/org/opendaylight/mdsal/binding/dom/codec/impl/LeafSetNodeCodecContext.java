@@ -10,14 +10,13 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import java.util.Collection;
-import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 
 final class LeafSetNodeCodecContext extends ValueNodeCodecContext.WithCodec {
-    LeafSetNodeCodecContext(final LeafListSchemaNode schema, final IllegalArgumentCodec<Object, Object> codec,
+    LeafSetNodeCodecContext(final LeafListSchemaNode schema, final DomLocalCodec<Object, Object> codec,
         final String getterName) {
         // FIXME: add support for defaults
         super(schema, codec, getterName, null);
@@ -28,7 +27,7 @@ final class LeafSetNodeCodecContext extends ValueNodeCodecContext.WithCodec {
         if (normalizedNode instanceof LeafSetNode<?>) {
             @SuppressWarnings("unchecked")
             final Collection<LeafSetEntryNode<Object>> domValues = ((LeafSetNode<Object>) normalizedNode).body();
-            final IllegalArgumentCodec<Object, Object> codec = getValueCodec();
+            final DomLocalCodec<Object, Object> codec = getValueCodec();
             final Builder<Object> builder = ImmutableList.builderWithExpectedSize(domValues.size());
             for (final LeafSetEntryNode<Object> valueNode : domValues) {
                 builder.add(codec.deserialize(valueNode.body()));

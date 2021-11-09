@@ -20,7 +20,6 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeGeneratedUnion;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 
@@ -47,7 +46,7 @@ final class UnionTypeCodec extends ReflectionBasedCodec {
                 final String getterName = BindingMapping.GETTER_PREFIX + BindingMapping.toFirstUpper(it.next());
                 final Method valueGetter = unionCls.getMethod(getterName);
                 final Class<?> valueType = valueGetter.getReturnType();
-                final IllegalArgumentCodec<Object, Object> codec = codecContext.getCodec(valueType, subtype);
+                final DomLocalCodec<Object, Object> codec = codecContext.getCodec(valueType, subtype);
 
                 values.add(new UnionValueOptionContext(unionCls, valueType, valueGetter, codec));
             }
