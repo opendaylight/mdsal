@@ -7,26 +7,31 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.ExecutionException;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedTransactions;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
+import org.opendaylight.yangtools.yang.common.RpcError.ErrorSeverity;
+import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.ConflictingModificationAppliedException;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
@@ -34,149 +39,126 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataValidationFailedException;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class InMemoryDOMStoreThreePhaseCommitCohortTest {
-
-    private static InMemoryDOMStoreThreePhaseCommitCohort inMemoryDOMStoreThreePhaseCommitCohort = null;
-
     @Mock
-    private static InMemoryDOMDataStore IN_MEMORY_DOM_DATA_STORE;
-
+    private InMemoryDOMDataStore dataStore;
     @Mock
-    private static DataTreeCandidate DATA_TREE_CANDIDATE;
-
+    private DataTreeCandidate candidate;
     @Mock
-    private static TransactionReadyPrototype<String> TRANSACTION_READY_PROTOTYPE;
-
+    private TransactionReadyPrototype<String> prototype;
     @Mock
-    private static DataTreeSnapshot DATA_TREE_SNAPSHOT;
-
+    private DataTreeSnapshot snapshot;
     @Mock
-    private static DataTreeModification DATA_TREE_MODIFICATION;
-
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-        doReturn(DATA_TREE_MODIFICATION).when(DATA_TREE_SNAPSHOT).newModification();
-        doReturn("testModification").when(DATA_TREE_MODIFICATION).toString();
-        inMemoryDOMStoreThreePhaseCommitCohort =
-                new InMemoryDOMStoreThreePhaseCommitCohort(IN_MEMORY_DOM_DATA_STORE,
-                        SnapshotBackedTransactions.newWriteTransaction(
-                                "test", false, DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE),
-                        DATA_TREE_MODIFICATION,
-                        null);
-    }
+    private DataTreeModification modification;
 
     @Test
     public void canCommitTest() throws Exception {
-        doNothing().when(IN_MEMORY_DOM_DATA_STORE).validate(any());
-        inMemoryDOMStoreThreePhaseCommitCohort.canCommit();
-        verify(IN_MEMORY_DOM_DATA_STORE).validate(any());
+        doNothing().when(dataStore).validate(any());
+        prepareSimpleCohort().canCommit();
+        verify(dataStore).validate(any());
     }
 
     @Test
     public void canCommitWithOperationError() throws Exception {
-        RuntimeException operationError = new RuntimeException();
-        inMemoryDOMStoreThreePhaseCommitCohort =
-                new InMemoryDOMStoreThreePhaseCommitCohort(IN_MEMORY_DOM_DATA_STORE,
-                        SnapshotBackedTransactions.newWriteTransaction(
-                                "test", false, DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE),
-                        DATA_TREE_MODIFICATION,
-                        operationError);
-        doNothing().when(IN_MEMORY_DOM_DATA_STORE).validate(any());
-        try {
-            inMemoryDOMStoreThreePhaseCommitCohort.canCommit().get();
-            fail("Expected exception");
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause() == operationError);
-        }
+        doReturn(modification).when(snapshot).newModification();
+        final var operationError = new RuntimeException();
+        final var cohort = new InMemoryDOMStoreThreePhaseCommitCohort(dataStore,
+            SnapshotBackedTransactions.newWriteTransaction("test", false, snapshot, prototype), modification,
+            operationError);
+
+        assertSame(operationError, assertFailsCanCommit(cohort));
     }
 
-    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
-    @Test(expected = OptimisticLockFailedException.class)
-    public void canCommitTestWithOptimisticLockFailedException() throws Throwable {
-        doThrow(new ConflictingModificationAppliedException(YangInstanceIdentifier.empty(), "testException"))
-                .when(IN_MEMORY_DOM_DATA_STORE).validate(any());
-        try {
-            inMemoryDOMStoreThreePhaseCommitCohort.canCommit().get();
-            fail("Expected exception");
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause() instanceof OptimisticLockFailedException);
-            throw e.getCause();
-        }
+    @Test
+    public void canCommitTestWithOptimisticLockFailedException() throws Exception {
+        final var cause = new ConflictingModificationAppliedException(YangInstanceIdentifier.empty(), "testException");
+        doThrow(cause).when(dataStore).validate(any());
+
+        final var ex = assertFailsCanCommit(prepareSimpleCohort());
+        assertThat(ex, instanceOf(OptimisticLockFailedException.class));
+        assertSame(cause, ex.getCause());
+        final var errors = ((OptimisticLockFailedException) ex).getErrorList();
+        assertEquals(1, errors.size());
+        final var error = errors.get(0);
+        assertEquals(ErrorSeverity.ERROR, error.getSeverity());
+        assertEquals(ErrorType.APPLICATION, error.getErrorType());
+        assertEquals("resource-denied", error.getTag());
     }
 
-    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
-    @Test(expected = TransactionCommitFailedException.class)
-    public void canCommitTestWithTransactionCommitFailedException() throws Throwable {
-        doThrow(new DataValidationFailedException(YangInstanceIdentifier.empty(), "testException"))
-                .when(IN_MEMORY_DOM_DATA_STORE).validate(any());
-        try {
-            inMemoryDOMStoreThreePhaseCommitCohort.canCommit().get();
-            fail("Expected exception");
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause() instanceof TransactionCommitFailedException);
-            throw e.getCause();
-        }
+    @Test
+    public void canCommitTestWithTransactionCommitFailedException() throws Exception {
+        final var cause = new DataValidationFailedException(YangInstanceIdentifier.empty(), "testException");
+        doThrow(cause).when(dataStore).validate(any());
+
+        final var ex = assertFailsCanCommit(prepareSimpleCohort());
+        assertThat(ex, instanceOf(TransactionCommitFailedException.class));
+        assertSame(cause, ex.getCause());
+        final var errors = ((TransactionCommitFailedException) ex).getErrorList();
+        assertEquals(1, errors.size());
+        final var error = errors.get(0);
+        assertEquals(ErrorSeverity.ERROR, error.getSeverity());
+        assertEquals(ErrorType.APPLICATION, error.getErrorType());
+        assertEquals("operation-failed", error.getTag());
     }
 
-    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
-    @Test(expected = UnsupportedOperationException.class)
-    public void canCommitTestWithUnknownException() throws Throwable {
-        doThrow(new UnsupportedOperationException("testException"))
-                .when(IN_MEMORY_DOM_DATA_STORE).validate(any());
-        try {
-            inMemoryDOMStoreThreePhaseCommitCohort.canCommit().get();
-            fail("Expected exception");
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause() instanceof UnsupportedOperationException);
-            throw e.getCause();
-        }
+    @Test
+    public void canCommitTestWithUnknownException() throws Exception {
+        final var cause = new UnsupportedOperationException("testException");
+        doThrow(cause).when(dataStore).validate(any());
+
+        assertSame(cause, assertFailsCanCommit(prepareSimpleCohort()));
     }
 
     @Test
     public void preCommitTest() throws Exception {
-        doReturn(DATA_TREE_CANDIDATE).when(IN_MEMORY_DOM_DATA_STORE).prepare(any());
-        inMemoryDOMStoreThreePhaseCommitCohort.preCommit().get();
-        verify(IN_MEMORY_DOM_DATA_STORE).prepare(any());
+        doReturn(candidate).when(dataStore).prepare(any());
+        prepareSimpleCohort().preCommit().get();
+        verify(dataStore).prepare(any());
     }
 
-    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
-    @Test(expected = UnsupportedOperationException.class)
-    public void preCommitTestWithUnknownException() throws Throwable {
-        doThrow(new UnsupportedOperationException("testException"))
-                .when(IN_MEMORY_DOM_DATA_STORE).prepare(any());
-        try {
-            inMemoryDOMStoreThreePhaseCommitCohort.preCommit().get();
-            fail("Expected exception");
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause() instanceof UnsupportedOperationException);
-            throw e.getCause();
-        }
+    @Test
+    public void preCommitTestWithUnknownException() throws Exception {
+        final var cause = new UnsupportedOperationException("testException");
+        doThrow(cause).when(dataStore).prepare(any());
+
+        final var future = prepareSimpleCohort().preCommit();
+        final var ex = assertThrows(ExecutionException.class, future::get).getCause();
+        assertSame(cause, ex);
     }
 
     @Test
     public void abortTest() throws Exception {
-        doReturn(DATA_TREE_CANDIDATE).when(IN_MEMORY_DOM_DATA_STORE).prepare(any());
-        doReturn("testDataTreeCandidate").when(DATA_TREE_CANDIDATE).toString();
-        final Field candidateField = InMemoryDOMStoreThreePhaseCommitCohort.class.getDeclaredField("candidate");
-        candidateField.setAccessible(true);
+        doReturn(candidate).when(dataStore).prepare(any());
 
-        inMemoryDOMStoreThreePhaseCommitCohort.preCommit();
-        DataTreeCandidate candidate =
-                (DataTreeCandidate) candidateField.get(inMemoryDOMStoreThreePhaseCommitCohort);
+        final var cohort = prepareSimpleCohort();
+        cohort.preCommit();
+        assertNotNull(cohort.candidate);
 
-        assertNotNull(candidate);
-        inMemoryDOMStoreThreePhaseCommitCohort.abort();
-        candidate = (DataTreeCandidate) candidateField.get(inMemoryDOMStoreThreePhaseCommitCohort);
-        assertNull(candidate);
+        cohort.abort();
+        assertNull(cohort.candidate);
     }
 
     @Test
     public void commitTest() throws Exception {
-        doNothing().when(IN_MEMORY_DOM_DATA_STORE).commit(any());
-        doReturn(DATA_TREE_CANDIDATE).when(IN_MEMORY_DOM_DATA_STORE).prepare(any());
-        inMemoryDOMStoreThreePhaseCommitCohort.preCommit();
-        inMemoryDOMStoreThreePhaseCommitCohort.commit();
-        verify(IN_MEMORY_DOM_DATA_STORE).commit(any());
+        doNothing().when(dataStore).commit(any());
+        doReturn(candidate).when(dataStore).prepare(any());
+
+        final var cohort = prepareSimpleCohort();
+        cohort.preCommit();
+        cohort.commit();
+        verify(dataStore).commit(any());
+    }
+
+    private InMemoryDOMStoreThreePhaseCommitCohort prepareSimpleCohort() {
+        doReturn(modification).when(snapshot).newModification();
+        return new InMemoryDOMStoreThreePhaseCommitCohort(dataStore,
+            SnapshotBackedTransactions.newWriteTransaction("test", false, snapshot, prototype),
+            modification, null);
+    }
+
+    private static Throwable assertFailsCanCommit(final DOMStoreThreePhaseCommitCohort cohort) {
+        final var future = cohort.canCommit();
+        return assertThrows(ExecutionException.class, future::get).getCause();
     }
 }
