@@ -11,6 +11,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
@@ -29,16 +30,18 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMStoreThreePhaseCommitCohort.class);
     private static final ListenableFuture<Void> SUCCESSFUL_FUTURE = Futures.immediateFuture(null);
     private static final ListenableFuture<Boolean> CAN_COMMIT_FUTURE = Futures.immediateFuture(Boolean.TRUE);
+
     private final SnapshotBackedWriteTransaction<String> transaction;
     private final DataTreeModification modification;
     private final InMemoryDOMDataStore store;
-    private DataTreeCandidate candidate;
     private final Exception operationError;
 
+    @VisibleForTesting
+    DataTreeCandidate candidate;
+
     InMemoryDOMStoreThreePhaseCommitCohort(final InMemoryDOMDataStore store,
-                                           final SnapshotBackedWriteTransaction<String> writeTransaction,
-                                           final DataTreeModification modification,
-                                           final Exception operationError) {
+            final SnapshotBackedWriteTransaction<String> transaction, final DataTreeModification modification,
+            final Exception operationError) {
         this.transaction = requireNonNull(writeTransaction);
         this.modification = requireNonNull(modification);
         this.store = requireNonNull(store);
