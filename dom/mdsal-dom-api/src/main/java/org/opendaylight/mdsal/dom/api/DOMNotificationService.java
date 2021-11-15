@@ -14,8 +14,7 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
- * A {@link DOMService} which allows its users to subscribe to receive
- * {@link DOMNotification}s.
+ * A {@link DOMService} which allows its users to subscribe to receive top-level (YANG 1.0) {@link DOMNotification}s.
  */
 public interface DOMNotificationService extends DOMService {
     /**
