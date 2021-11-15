@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -28,6 +29,10 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationListener;
+import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationPublishService;
+import org.opendaylight.mdsal.dom.api.DOMInstanceNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
@@ -36,10 +41,12 @@ import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.util.concurrent.EqualityQueuedNotificationManager;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -60,12 +67,14 @@ import org.slf4j.LoggerFactory;
  */
 @Component(immediate = true, configurationPid = "org.opendaylight.mdsal.dom.notification", service = {
     DOMNotificationService.class, DOMNotificationPublishService.class,
-    DOMNotificationSubscriptionListenerRegistry.class
+    DOMNotificationSubscriptionListenerRegistry.class,
+    DOMInstanceNotificationService.class, DOMInstanceNotificationPublishService.class
 })
 @Designate(ocd = DOMNotificationRouter.Config.class)
 // Non-final for testing
 public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPublishService,
-        DOMNotificationService, DOMNotificationSubscriptionListenerRegistry {
+        DOMNotificationService, DOMNotificationSubscriptionListenerRegistry, DOMInstanceNotificationService,
+        DOMInstanceNotificationPublishService {
     @ObjectClassDefinition()
     public @interface Config {
         @AttributeDefinition(name = "notification-queue-depth")
@@ -138,6 +147,13 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         return reg;
     }
 
+    @Override
+    public Registration registerNotificationListener(final DOMDataTreeIdentifier path, final QName type,
+            final DOMInstanceNotificationListener listener, final Executor executor) {
+        // FIXME: implement this Auto-generated method stub
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Swaps registered listeners and triggers notification update.
      *
@@ -199,6 +215,13 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     }
 
     @Override
+    public ListenableFuture<? extends Object> putNotification(final DOMDataTreeIdentifier path,
+            final DOMNotification notification) throws InterruptedException {
+        // FIXME: implement this Auto-generated method stub
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public ListenableFuture<? extends Object> offerNotification(final DOMNotification notification) {
         final Collection<AbstractListenerRegistration<? extends DOMNotificationListener>> subscribers =
                 listeners.get(notification.getType());
@@ -235,6 +258,20 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         } catch (InterruptedException e) {
             return DOMNotificationPublishService.REJECTED;
         }
+    }
+
+    @Override
+    public ListenableFuture<? extends Object> offerNotification(final DOMDataTreeIdentifier path,
+            final DOMNotification notification) {
+        // FIXME: implement this Auto-generated method stub
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ListenableFuture<? extends Object> offerNotification(final DOMDataTreeIdentifier path,
+            final DOMNotification notification, final long timeout, final TimeUnit unit) throws InterruptedException {
+        // FIXME: implement this Auto-generated method stub
+        throw new UnsupportedOperationException();
     }
 
     @PreDestroy
