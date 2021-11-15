@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac20d077_257ce0d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2021-11-15T09:41:49Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "658eb3d8_5e52c978",
+      "revId": "e9315fe7736925455b47ba161182d1c45c144ac3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8cf5d3c4_4253b78f",
@@ -31,6 +49,30 @@
       "writtenOn": "2021-11-15T06:05:04Z",
       "side": 1,
       "message": "should not be exposed from API",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 38
+      },
+      "revId": "e9315fe7736925455b47ba161182d1c45c144ac3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7f73a9fb_b4667991",
+        "filename": "binding/mdsal-binding-dom-codec-api/src/main/java/org/opendaylight/mdsal/binding/dom/codec/api/DomLocalCodec.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2021-11-15T09:41:49Z",
+      "side": 1,
+      "message": "Moved to org.opendaylight.mdsal.binding.dom.codec.impl.",
+      "parentUuid": "8cf5d3c4_4253b78f",
       "range": {
         "startLine": 16,
         "startChar": 0,
