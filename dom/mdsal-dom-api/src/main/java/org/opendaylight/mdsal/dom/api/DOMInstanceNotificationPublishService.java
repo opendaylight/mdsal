@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2021 PANTHEON.tech, s.r.o. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
 import org.checkerframework.checker.index.qual.NonNegative;
@@ -14,7 +15,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 /**
- * A {@link DOMService} which allows its user to publish top-level (YANG 1.0) {@link DOMNotification}s. It provides two
+ * A {@link DOMService} which allows its user to publish instance (YANG 1.1) {@link DOMNotification}s. It provides two
  * styles of initiating the notification delivery, similar to {@link java.util.concurrent.BlockingQueue}:
  * <ul>
  *   <li>a put-style method which waits until the implementation can accept the notification for delivery, and</li>
@@ -22,7 +23,8 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
  *       should never wait, or put an upper bound on how long it is going to wait</li>
  * </ul>
  */
-public interface DOMNotificationPublishService extends DOMService {
+@Beta
+public interface DOMInstanceNotificationPublishService extends DOMService {
     /**
      * Well-known value indicating that the implementation is currently not
      * able to accept a notification.
@@ -54,14 +56,15 @@ public interface DOMNotificationPublishService extends DOMService {
      * notification. This does not mean that all existing registrants have seen the notification.
      * Most importantly, the delivery process at other cluster nodes may have not begun yet.
      *
+     * @param path parent reference path
      * @param notification Notification to be published.
      * @return A listenable future which will report completion when the service has finished
      *         propagating the notification to its immediate registrants.
      * @throws InterruptedException if interrupted while waiting
      * @throws NullPointerException if notification is null.
      */
-    @NonNull ListenableFuture<? extends Object> putNotification(@NonNull DOMNotification notification)
-            throws InterruptedException;
+    @NonNull ListenableFuture<? extends Object> putNotification(@NonNull DOMDataTreeIdentifier path,
+            @NonNull DOMNotification notification) throws InterruptedException;
 
     /**
      * Attempt to publish a notification. The result of this method is a {@link ListenableFuture}
@@ -71,6 +74,7 @@ public interface DOMNotificationPublishService extends DOMService {
      * {@link #putNotification(DOMNotification)}, this method is guaranteed not to block if the
      * underlying implementation encounters contention.
      *
+     * @param path parent reference path
      * @param notification Notification to be published.
      * @return A listenable future which will report completion when the service has finished
      *         propagating the notification to its immediate registrants, or {@link #REJECTED} if
@@ -78,7 +82,8 @@ public interface DOMNotificationPublishService extends DOMService {
      *         delivery.
      * @throws NullPointerException if notification is null.
      */
-    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull DOMNotification notification);
+    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull DOMDataTreeIdentifier path,
+        @NonNull DOMNotification notification);
 
     /**
      * Attempt to publish a notification. The result of this method is a {@link ListenableFuture}
@@ -88,6 +93,7 @@ public interface DOMNotificationPublishService extends DOMService {
      * {@link #putNotification(DOMNotification)}, this method is guaranteed to block more than the
      * specified timeout.
      *
+     * @param path parent reference path
      * @param notification Notification to be published.
      * @param timeout how long to wait before giving up, in units of unit
      * @param unit a TimeUnit determining how to interpret the timeout parameter
@@ -99,6 +105,7 @@ public interface DOMNotificationPublishService extends DOMService {
      * @throws NullPointerException if notification or unit is null.
      * @throws IllegalArgumentException if timeout is negative.
      */
-    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull DOMNotification notification,
-            @NonNegative long timeout, @NonNull TimeUnit unit) throws InterruptedException;
+    @NonNull ListenableFuture<? extends Object> offerNotification(@NonNull DOMDataTreeIdentifier path,
+        @NonNull DOMNotification notification, @NonNegative long timeout, @NonNull TimeUnit unit)
+            throws InterruptedException;
 }
