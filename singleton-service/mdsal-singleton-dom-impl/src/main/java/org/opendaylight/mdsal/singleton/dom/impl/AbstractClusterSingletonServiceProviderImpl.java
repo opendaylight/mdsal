@@ -32,7 +32,7 @@ import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,8 @@ import org.slf4j.LoggerFactory;
  * @param <S> the GenericEntityOwnershipService type
  * @param <R> the GenericEntityOwnershipListenerRegistration type
  */
-public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path<P>, E extends GenericEntity<P>,
+public abstract class AbstractClusterSingletonServiceProviderImpl<P extends HierarchicalIdentifier<P>,
+        E extends GenericEntity<P>,
         C extends GenericEntityOwnershipChange<P, E>,
         G extends GenericEntityOwnershipListener<P, C>,
         S extends GenericEntityOwnershipService<P, E, G>,

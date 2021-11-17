@@ -5,21 +5,19 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.singleton.dom.impl.util;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
 import java.util.List;
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
 /**
- * Test helper class. {@link Path} for testing only
+ * Test helper class. {@link HierarchicalIdentifier} for testing only.
  */
-public class TestInstanceIdentifier implements Path<TestInstanceIdentifier> {
-
-    static final TestInstanceIdentifier EMPTY_INSTANCE = new TestInstanceIdentifier(ImmutableList.of());
+public class TestInstanceIdentifier implements HierarchicalIdentifier<TestInstanceIdentifier> {
+    private static final long serialVersionUID = 1L;
 
     private final ImmutableList<String> path;
 
@@ -38,7 +36,7 @@ public class TestInstanceIdentifier implements Path<TestInstanceIdentifier> {
 
     @Override
     public boolean contains(final TestInstanceIdentifier other) {
-        return path.contains(other);
+        throw new UnsupportedOperationException();
     }
 
 }

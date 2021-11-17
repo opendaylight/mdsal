@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.eos.common.api;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
-import org.opendaylight.yangtools.concepts.Path;
 
 /**
  * An interface that records a request to register a ownership status change listener for a given Entity.
@@ -20,7 +20,7 @@ import org.opendaylight.yangtools.concepts.Path;
  *
  * @param <P> the instance identifier path type
  */
-public interface GenericEntityOwnershipListenerRegistration<P extends Path<P>,
+public interface GenericEntityOwnershipListenerRegistration<P extends HierarchicalIdentifier<P>,
         L extends GenericEntityOwnershipListener<P, ?
                 extends GenericEntityOwnershipChange<P, ? extends GenericEntity<P>>>>
                     extends ObjectRegistration<L> {

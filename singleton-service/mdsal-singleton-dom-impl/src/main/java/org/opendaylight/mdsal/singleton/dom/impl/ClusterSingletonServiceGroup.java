@@ -14,8 +14,8 @@ import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.concepts.Identifiable;
-import org.opendaylight.yangtools.concepts.Path;
 
 /**
  * {@link ClusterSingletonServiceGroup} maintains a group of {@link ClusterSingletonService} instances.
@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <E> the GenericEntity type
  * @param <C> the GenericEntityOwnershipChange type
  */
-abstract class ClusterSingletonServiceGroup<P extends Path<P>, E extends GenericEntity<P>,
+abstract class ClusterSingletonServiceGroup<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>,
                                        C extends GenericEntityOwnershipChange<P, E>> implements Identifiable<String> {
 
     /**

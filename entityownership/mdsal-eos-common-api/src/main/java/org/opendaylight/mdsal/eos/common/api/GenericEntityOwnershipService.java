@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.eos.common.api;
 
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
 /**
  * <p>
@@ -27,7 +27,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <P> the instance identifier path type
  * @param <E> the GenericEntity type
  */
-public interface GenericEntityOwnershipService<P extends Path<P>, E extends GenericEntity<P>,
+public interface GenericEntityOwnershipService<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>,
         L extends GenericEntityOwnershipListener<P, ? extends GenericEntityOwnershipChange<P, E>>> {
 
     /**

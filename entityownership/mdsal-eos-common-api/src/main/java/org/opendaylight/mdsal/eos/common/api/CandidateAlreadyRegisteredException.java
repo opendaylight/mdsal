@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.eos.common.api;
 import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
 /**
  * Thrown when a Candidate has already been registered for a given Entity. This could be due to a component doing a
@@ -21,7 +21,8 @@ public class CandidateAlreadyRegisteredException extends Exception {
 
     private final @NonNull GenericEntity<?> entity;
 
-    public <T extends Path<T>> CandidateAlreadyRegisteredException(@NonNull final GenericEntity<T> entity) {
+    public <T extends HierarchicalIdentifier<T>> CandidateAlreadyRegisteredException(
+            final @NonNull GenericEntity<T> entity) {
         super("Candidate has already been registered for " + entity);
         this.entity = requireNonNull(entity, "entity should not be null");
     }
@@ -34,7 +35,7 @@ public class CandidateAlreadyRegisteredException extends Exception {
      * @return the entity.
      */
     @SuppressWarnings("unchecked")
-    public <T extends Path<T>> @NonNull GenericEntity<T> getEntity() {
+    public <T extends HierarchicalIdentifier<T>> @NonNull GenericEntity<T> getEntity() {
         return (GenericEntity<T>) entity;
     }
 }

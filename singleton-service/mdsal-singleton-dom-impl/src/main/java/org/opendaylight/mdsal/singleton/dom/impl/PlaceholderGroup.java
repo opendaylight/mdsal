@@ -19,7 +19,7 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * Intermediate place-holder to catch user requests while asynchronous shutdown of previous incarnation of
  * a {@link ClusterSingletonServiceGroup} finishes.
  */
-final class PlaceholderGroup<P extends Path<P>, E extends GenericEntity<P>,
+final class PlaceholderGroup<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>,
         C extends GenericEntityOwnershipChange<P, E>> extends ClusterSingletonServiceGroup<P, E, C> {
     private static final Logger LOG = LoggerFactory.getLogger(PlaceholderGroup.class);
 

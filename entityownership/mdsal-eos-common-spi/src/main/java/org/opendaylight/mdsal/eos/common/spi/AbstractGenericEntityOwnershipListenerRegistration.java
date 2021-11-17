@@ -15,7 +15,7 @@ import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListenerRegistration;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
 /**
  * Abstract base class for an {@link GenericEntityOwnershipListenerRegistration}.
@@ -23,7 +23,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <P> the instance identifier path type
  * @param <L> the GenericEntityOwnershipListener type
  */
-public abstract class AbstractGenericEntityOwnershipListenerRegistration<P extends Path<P>,
+public abstract class AbstractGenericEntityOwnershipListenerRegistration<P extends HierarchicalIdentifier<P>,
     L extends GenericEntityOwnershipListener<P, ? extends GenericEntityOwnershipChange<P, ? extends GenericEntity<P>>>>
         extends AbstractObjectRegistration<L>
         implements GenericEntityOwnershipListenerRegistration<P, L> {
@@ -40,5 +40,4 @@ public abstract class AbstractGenericEntityOwnershipListenerRegistration<P exten
     public String getEntityType() {
         return entityType;
     }
-
 }

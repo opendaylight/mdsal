@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.eos.common.api;
 
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
-import org.opendaylight.yangtools.concepts.Path;
 
 /**
  * An interface that records a request to register a Candidate for a given Entity. Calling close on the
@@ -19,8 +19,8 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <P> the instance identifier type
  * @param <E> the GenericEntity type
  */
-public interface GenericEntityOwnershipCandidateRegistration<P extends Path<P>, E extends GenericEntity<P>>
-        extends ObjectRegistration<E> {
+public interface GenericEntityOwnershipCandidateRegistration<P extends HierarchicalIdentifier<P>,
+        E extends GenericEntity<P>> extends ObjectRegistration<E> {
 
     /**
      * Unregister the candidate.

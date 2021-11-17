@@ -13,15 +13,15 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
 public class GenericEntityTest {
 
     @Test
     public void basicTest() throws Exception {
         final TestClass testClass = new TestClass();
-        final GenericEntity genericEntity = new GenericEntity<>("testType", testClass);
-        final GenericEntity genericEntityDiff = new GenericEntity<>("differentTestType", new TestClassDiff());
+        final GenericEntity<?> genericEntity = new GenericEntity<>("testType", testClass);
+        final GenericEntity<?> genericEntityDiff = new GenericEntity<>("differentTestType", new TestClassDiff());
 
         assertEquals(TestClass.class, genericEntity.getIdentifier().getClass());
         assertEquals("testType", genericEntity.getType());
@@ -34,16 +34,20 @@ public class GenericEntityTest {
         assertFalse(genericEntity.equals(new GenericEntity<>("differentTestType", testClass)));
     }
 
-    private final class TestClass implements Path {
+    private static final class TestClass implements HierarchicalIdentifier<TestClass> {
+        private static final long serialVersionUID = 1L;
+
         @Override
-        public boolean contains(final Path other) {
+        public boolean contains(final TestClass other) {
             return false;
         }
     }
 
-    private final class TestClassDiff implements Path {
+    private static final class TestClassDiff implements HierarchicalIdentifier<TestClassDiff> {
+        private static final long serialVersionUID = 1L;
+
         @Override
-        public boolean contains(final Path other) {
+        public boolean contains(final TestClassDiff other) {
             return false;
         }
     }

@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
 /**
  * Abstract base class for an EntityOwnershipCandidateRegistration.
@@ -19,7 +19,8 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <P> the instance identifier path type
  * @param <E> the GenericEntity type
  */
-public abstract class AbstractGenericEntityOwnershipCandidateRegistration<P extends Path<P>, E extends GenericEntity<P>>
+public abstract class AbstractGenericEntityOwnershipCandidateRegistration<P extends HierarchicalIdentifier<P>,
+        E extends GenericEntity<P>>
         extends AbstractObjectRegistration<E> implements GenericEntityOwnershipCandidateRegistration<P, E> {
 
     protected AbstractGenericEntityOwnershipCandidateRegistration(final @NonNull E entity) {

@@ -11,8 +11,8 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.concepts.Identifiable;
-import org.opendaylight.yangtools.concepts.Path;
 
 /**
  * A clustered Entity is something which is shared by multiple applications across a cluster. An Entity has a type
@@ -41,7 +41,7 @@ import org.opendaylight.yangtools.concepts.Path;
  *
  * @param <T> the entity identifier type
  */
-public class GenericEntity<T extends Path<T>> implements Serializable, Identifiable<T> {
+public class GenericEntity<T extends HierarchicalIdentifier<T>> implements Serializable, Identifiable<T> {
     private static final long serialVersionUID = 1L;
 
     private final @NonNull String type;

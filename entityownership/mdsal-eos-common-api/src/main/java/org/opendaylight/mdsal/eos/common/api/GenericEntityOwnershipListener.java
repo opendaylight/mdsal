@@ -5,10 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.eos.common.api;
 
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
 /**
  * An interface for a class that listens for entity ownership changes.
@@ -18,7 +17,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <P> the instance identifier path type
  * @param <C> the GenericEntityOwnershipChange type
  */
-public interface GenericEntityOwnershipListener<P extends Path<P>,
+public interface GenericEntityOwnershipListener<P extends HierarchicalIdentifier<P>,
         C extends GenericEntityOwnershipChange<P, ? extends GenericEntity<P>>> {
 
     /**

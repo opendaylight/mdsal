@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.eos.common.api;
 import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.Path;
+import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
 /**
  * A DTO that encapsulates an ownership change for an entity.
@@ -20,7 +20,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <P> the instance identifier path type
  * @param <E> the GenericEntity type
  */
-public class GenericEntityOwnershipChange<P extends Path<P>, E extends GenericEntity<P>> {
+public class GenericEntityOwnershipChange<P extends HierarchicalIdentifier<P>, E extends GenericEntity<P>> {
     private final @NonNull E entity;
     private final @NonNull EntityOwnershipChangeState state;
     private final boolean inJeopardy;
