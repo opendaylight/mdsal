@@ -69,7 +69,7 @@ public class QueryBuilderTest {
                     new SystemBuilder().setName("first").setAlarms(BindingMap.of(
                         new AlarmsBuilder()
                             .setId(Uint64.ZERO)
-                            .setCritical(Empty.getInstance())
+                            .setCritical(Empty.value())
                             .setAffectedUsers(BindingMap.of(
                                 // TODO: fill
                             )).build(),
@@ -80,14 +80,14 @@ public class QueryBuilderTest {
                             )).build(),
                         new AlarmsBuilder()
                             .setId(Uint64.TWO)
-                            .setCritical(Empty.getInstance())
+                            .setCritical(Empty.value())
                             .setAffectedUsers(BindingMap.of(
                                 // TODO: fill
                                 )).build())).build(),
                     new SystemBuilder().setName("second").setAlarms(BindingMap.of(
                         new AlarmsBuilder()
                         .setId(Uint64.ZERO)
-                        .setCritical(Empty.getInstance())
+                        .setCritical(Empty.value())
                         .setAffectedUsers(BindingMap.of(
                             // TODO: fill
                         )).build())).build()
