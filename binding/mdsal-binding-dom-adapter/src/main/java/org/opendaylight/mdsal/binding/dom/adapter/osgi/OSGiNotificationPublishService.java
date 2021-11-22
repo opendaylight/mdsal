@@ -29,17 +29,17 @@ public final class OSGiNotificationPublishService extends AbstractAdaptedService
     }
 
     @Override
-    public void putNotification(final Notification notification) throws InterruptedException {
+    public void putNotification(final Notification<?> notification) throws InterruptedException {
         delegate().putNotification(notification);
     }
 
     @Override
-    public ListenableFuture<? extends Object> offerNotification(final Notification notification) {
+    public ListenableFuture<? extends Object> offerNotification(final Notification<?> notification) {
         return delegate().offerNotification(notification);
     }
 
     @Override
-    public ListenableFuture<? extends Object> offerNotification(final Notification notification, final int timeout,
+    public ListenableFuture<? extends Object> offerNotification(final Notification<?> notification, final int timeout,
             final TimeUnit unit) throws InterruptedException {
         return delegate().offerNotification(notification, timeout, unit);
     }

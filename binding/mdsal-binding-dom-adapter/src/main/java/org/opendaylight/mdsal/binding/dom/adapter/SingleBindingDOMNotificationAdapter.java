@@ -32,7 +32,7 @@ final class SingleBindingDOMNotificationAdapter<N extends Notification<N> & Data
     }
 
     @Override
-    void onNotification(final Absolute domType, final Notification notification) {
+    void onNotification(final Absolute domType, final Notification<?> notification) {
         executor.execute(() -> delegate.onNotification(type.cast(notification)));
     }
 

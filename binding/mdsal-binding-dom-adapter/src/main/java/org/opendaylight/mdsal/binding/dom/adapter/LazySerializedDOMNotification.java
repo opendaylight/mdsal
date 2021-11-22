@@ -44,13 +44,13 @@ final class LazySerializedDOMNotification implements DOMNotification, DOMEvent {
         });
 
     private final @NonNull BindingNormalizedNodeSerializer codec;
-    private final @NonNull Notification data;
+    private final @NonNull Notification<?> data;
     private final @NonNull Absolute type;
     private final @NonNull Instant eventInstant;
 
     private volatile ContainerNode domBody;
 
-    LazySerializedDOMNotification(final BindingNormalizedNodeSerializer codec, final Notification data,
+    LazySerializedDOMNotification(final BindingNormalizedNodeSerializer codec, final Notification<?> data,
             final Absolute type, final Instant eventInstant) {
         this.codec = requireNonNull(codec);
         this.data = requireNonNull(data);
@@ -58,7 +58,7 @@ final class LazySerializedDOMNotification implements DOMNotification, DOMEvent {
         this.eventInstant = requireNonNull(eventInstant);
     }
 
-    static @NonNull DOMNotification create(final BindingNormalizedNodeSerializer codec, final Notification data,
+    static @NonNull DOMNotification create(final BindingNormalizedNodeSerializer codec, final Notification<?> data,
             final Instant eventInstant) {
         final Absolute type = PATHS.getUnchecked(data.implementedInterface());
         return new LazySerializedDOMNotification(codec, data, type, eventInstant);
@@ -83,7 +83,7 @@ final class LazySerializedDOMNotification implements DOMNotification, DOMEvent {
         return eventInstant;
     }
 
-    @NonNull Notification getBindingData() {
+    @NonNull Notification<?> getBindingData() {
         return data;
     }
 }

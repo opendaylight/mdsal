@@ -39,12 +39,12 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
     }
 
     @Override
-    public void putNotification(final Notification notification) throws InterruptedException {
+    public void putNotification(final Notification<?> notification) throws InterruptedException {
         getDelegate().putNotification(toDomNotification(notification));
     }
 
     @Override
-    public ListenableFuture<? extends Object> offerNotification(final Notification notification) {
+    public ListenableFuture<? extends Object> offerNotification(final Notification<?> notification) {
         ListenableFuture<?> offerResult = getDelegate().offerNotification(toDomNotification(notification));
         return DOMNotificationPublishService.REJECTED.equals(offerResult)
                 ? NotificationPublishService.REJECTED
@@ -52,8 +52,8 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
     }
 
     @Override
-    public ListenableFuture<? extends Object> offerNotification(final Notification notification,
-                                                 final int timeout, final TimeUnit unit) throws InterruptedException {
+    public ListenableFuture<? extends Object> offerNotification(final Notification<?> notification, final int timeout,
+            final TimeUnit unit) throws InterruptedException {
         ListenableFuture<?> offerResult = getDelegate().offerNotification(toDomNotification(notification), timeout,
             unit);
         return DOMNotificationPublishService.REJECTED.equals(offerResult)
@@ -61,7 +61,7 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
                 : offerResult;
     }
 
-    private @NonNull DOMNotification toDomNotification(final Notification notification) {
+    private @NonNull DOMNotification toDomNotification(final Notification<?> notification) {
         final Instant instant = notification instanceof EventInstantAware
                 ? ((EventInstantAware) notification).eventInstant() : Instant.now();
         return LazySerializedDOMNotification.create(currentSerializer(), notification, instant);

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.NotificationListenerInvoker;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.Notification;
@@ -24,7 +25,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 
 final class BindingDOMNotificationListenerAdapter extends AbstractDOMNotificationListenerAdapter {
     private final ImmutableMap<Absolute, NotificationListenerInvoker> invokers;
-    private final NotificationListener delegate;
+    private final @NonNull NotificationListener delegate;
 
     BindingDOMNotificationListenerAdapter(final AdapterContext adapterContext, final NotificationListener delegate) {
         super(adapterContext);
@@ -33,7 +34,7 @@ final class BindingDOMNotificationListenerAdapter extends AbstractDOMNotificatio
     }
 
     @Override
-    void onNotification(final Absolute domType, final Notification notification) {
+    void onNotification(final Absolute domType, final Notification<?> notification) {
         invokers.get(domType).invokeNotification(delegate, domType.lastNodeIdentifier(), notification);
     }
 

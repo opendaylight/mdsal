@@ -31,11 +31,11 @@ abstract class AbstractDOMNotificationListenerAdapter implements DOMNotification
         onNotification(notification.getType(), verifyNotNull(deserialize(notification)));
     }
 
-    abstract void onNotification(@NonNull Absolute domType, @NonNull Notification notification);
+    abstract void onNotification(@NonNull Absolute domType, @NonNull Notification<?> notification);
 
     abstract Set<Absolute> getSupportedNotifications();
 
-    private Notification deserialize(final DOMNotification notification) {
+    private Notification<?> deserialize(final DOMNotification notification) {
         if (notification instanceof LazySerializedDOMNotification) {
             // TODO: This is a routed-back notification, for which we may end up losing event time here, but that is
             //       okay, for now at least.

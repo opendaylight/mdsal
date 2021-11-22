@@ -17,6 +17,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.WrongMethodTypeException;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -60,7 +61,7 @@ public class NotificationListenerInvokerTest {
         void onTestNotificationInterface(TestNotificationInterface notif);
     }
 
-    public interface TestNotificationInterface extends Notification {
+    public interface TestNotificationInterface extends DataObject, Notification<TestNotificationInterface> {
         QName QNAME = QName.create("test", "test");
     }
 }
