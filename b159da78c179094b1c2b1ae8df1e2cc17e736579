@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6121c14b_adc1131e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-11-24T15:23:59Z",
+      "side": 1,
+      "message": "Please split this into three separate patches:\n- obvious non-breaking changes, with proper javadocs on build() methods\n- mdsal-binding-test-utils removal (needs to go through deprecation)\n- java-api-generator changes (again, the build() method needs to have proper javadoc)",
+      "revId": "b159da78c179094b1c2b1ae8df1e2cc17e736579",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
