@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dace0b55_38abc17d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 17
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2021-11-24T15:27:19Z",
+      "side": 1,
+      "message": "Hmm, the tie between Foo and BooBuilder does not seem to be a grand idea after all.\nPlease make the method non-default, with builder-based implementations doing the constant thing.\nThe binding-dom-codec implementations need to do their own thing.\nAlso please add an explicit tests for both (i.e. test code which will prove these work as intented)",
+      "revId": "9cfb834955757d5597621c1e9333a66c38c42db1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
