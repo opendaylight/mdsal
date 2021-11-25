@@ -16,35 +16,31 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
-@NonNullByDefault
 final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> implements InvocationHandler {
-    private final Class<? extends Action<?, ?, ?>> type;
-    private final NodeIdentifier inputName;
-    private final Absolute actionPath;
+    private final @NonNull ActionSpec<?, ?> spec;
+    private final @NonNull NodeIdentifier inputName;
+    private final @NonNull Absolute actionPath;
 
-    ActionAdapter(final AdapterContext codec, final DOMActionService delegate,
-            final Class<? extends Action<?, ?, ?>> type) {
+    ActionAdapter(final AdapterContext codec, final DOMActionService delegate, final ActionSpec<?, ?> spec) {
         super(codec, delegate);
-        this.type = requireNonNull(type);
-        this.actionPath = currentSerializer().getActionPath(type);
-        this.inputName = NodeIdentifier.create(operationInputQName(actionPath.lastNodeIdentifier().getModule()));
+        this.spec = requireNonNull(spec);
+        actionPath = currentSerializer().getActionPath(spec);
+        inputName = NodeIdentifier.create(operationInputQName(actionPath.lastNodeIdentifier().getModule()));
     }
 
     @Override
-    public @Nullable Object invoke(final @Nullable Object proxy, final @Nullable Method method,
-            final Object @Nullable [] args) throws Throwable {
+    public Object invoke(final Object proxy, final Method method, final Object [] args) throws NoSuchMethodError {
         switch (method.getName()) {
             case "equals":
                 if (args.length == 1) {
@@ -58,7 +54,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                 break;
             case "toString":
                 if (args.length == 0) {
-                    return type.getName() + "$Adapter{delegate=" + getDelegate() + "}";
+                    return spec.type().getName() + "$Adapter{delegate=" + getDelegate() + "}";
                 }
                 break;
             case "invoke":
@@ -69,7 +65,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                     final ListenableFuture<? extends DOMActionResult> future = getDelegate().invokeAction(actionPath,
                         new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
                             serializer.toYangInstanceIdentifier(path)),
-                        serializer.toLazyNormalizedNodeActionInput(type, inputName, input));
+                        serializer.toLazyNormalizedNodeActionInput(spec.type(), inputName, input));
 
                     // Invocation returned a future we know about -- return that future instead
                     if (ENABLE_CODEC_SHORTCUT && future instanceof BindingRpcFutureAware) {
@@ -78,7 +74,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
 
                     return Futures.transform(future,
                         dom -> RpcResultUtil.rpcResultFromDOM(dom.getErrors(), dom.getOutput()
-                            .map(output -> serializer.fromNormalizedNodeActionOutput(type, output))
+                            .map(output -> serializer.fromNormalizedNodeActionOutput(spec.type(), output))
                             .orElse(null)),
                         MoreExecutors.directExecutor());
                 }

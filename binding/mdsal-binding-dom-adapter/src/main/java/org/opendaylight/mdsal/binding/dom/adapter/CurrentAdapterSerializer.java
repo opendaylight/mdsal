@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
@@ -28,7 +29,6 @@ import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcService;
@@ -81,9 +81,9 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         return subtrees.stream().map(this::toDOMDataTreeIdentifier).collect(Collectors.toSet());
     }
 
-    @NonNull Absolute getActionPath(final @NonNull Class<? extends Action<?, ?, ?>> type) {
-        final Absolute identifier = getRuntimeContext().getActionIdentifier(type);
-        checkArgument(identifier != null, "Failed to find schema for %s", type);
+    @NonNull Absolute getActionPath(final @NonNull ActionSpec<?, ?> spec) {
+        final Absolute identifier = getRuntimeContext().getActionIdentifier(spec.type());
+        checkArgument(identifier != null, "Failed to find schema for %s", spec.type());
         return identifier;
     }
 

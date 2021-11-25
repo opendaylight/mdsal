@@ -10,13 +10,16 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Grpcont;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Nestedcont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Othercont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.grpcont.Bar;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.nested.Baz;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class ActionLookupTest {
@@ -25,9 +28,15 @@ public class ActionLookupTest {
         CurrentAdapterSerializer codec = new CurrentAdapterSerializer(new BindingCodecContext(
             BindingRuntimeHelpers.createRuntimeContext()));
 
-        assertEquals(Absolute.of(Cont.QNAME, Foo.QNAME), codec.getActionPath(Foo.class));
-        assertEquals(Absolute.of(Grpcont.QNAME, Bar.QNAME), codec.getActionPath(Bar.class));
-        assertEquals(Absolute.of(Othercont.QNAME, Bar.QNAME),
-            codec.getActionPath(org.opendaylight.yang.gen.v1.urn.odl.actions.norev.othercont.Bar.class));
+        assertEquals(Absolute.of(Cont.QNAME, Foo.QNAME), codec.getActionPath(
+            ActionSpec.builder(Cont.class).build(Foo.class)));
+        assertEquals(Absolute.of(Grpcont.QNAME, Bar.QNAME), codec.getActionPath(
+            ActionSpec.builder(Grpcont.class).build(Bar.class)));
+        assertEquals(Absolute.of(Othercont.QNAME, Bar.QNAME), codec.getActionPath(
+            ActionSpec.builder(Othercont.class).build(
+                org.opendaylight.yang.gen.v1.urn.odl.actions.norev.othercont.Bar.class)));
+        assertEquals(Absolute.of(Nestedcont.QNAME), codec.getActionPath(
+            ActionSpec.builder(Nestedcont.class).withPathChild(Baz.class).build(
+                org.opendaylight.yang.gen.v1.urn.odl.actions.norev.nested.baz.Bar.class)));
     }
 }
