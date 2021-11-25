@@ -11,15 +11,19 @@ import com.google.common.annotations.Beta;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.ActionService;
+import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
 @Beta
+@NonNullByDefault
 @Component(factory = OSGiActionService.FACTORY_NAME)
 public final class OSGiActionService extends AbstractAdaptedService<ActionService> implements ActionService {
     // OSGi DS Component Factory name
@@ -30,9 +34,9 @@ public final class OSGiActionService extends AbstractAdaptedService<ActionServic
     }
 
     @Override
-    public <O extends @NonNull DataObject, T extends @NonNull Action<?, ?, ?>> T getActionHandle(
-            final Class<T> actionInterface, final Set<@NonNull DataTreeIdentifier<O>> validNodes) {
-        return delegate().getActionHandle(actionInterface, validNodes);
+    public <P extends DataObject, A extends Action<InstanceIdentifier<P>, ?, ?>> A getActionHandle(
+            final ActionSpec<A, P> spec, final Set<@NonNull DataTreeIdentifier<P>> validNodes) {
+        return delegate().getActionHandle(spec, validNodes);
     }
 
     @Activate
