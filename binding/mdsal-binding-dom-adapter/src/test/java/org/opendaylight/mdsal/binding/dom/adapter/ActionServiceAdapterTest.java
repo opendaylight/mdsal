@@ -17,7 +17,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.ActionService;
+import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
@@ -56,7 +56,7 @@ public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
 
     @Test
     public void testInvocation() throws ExecutionException {
-        final Foo handle = service.getActionHandle(Foo.class, Set.of());
+        final Foo handle = service.getActionHandle(ActionSpec.builder(Cont.class).build(Foo.class));
         final ListenableFuture<RpcResult<Output>> future = handle.invoke(InstanceIdentifier.create(Cont.class),
             BINDING_FOO_INPUT);
         assertNotNull(future);

@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
+import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
@@ -48,8 +49,8 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
 
     @Test
     public void testInstanceRegistration() {
-        adapter.registerImplementation(Foo.class, FOO, LogicalDatastoreType.OPERATIONAL,
-            Set.of(InstanceIdentifier.create(Cont.class)));
+        adapter.registerImplementation(ActionSpec.builder(Cont.class).build(Foo.class), FOO,
+            LogicalDatastoreType.OPERATIONAL, Set.of(InstanceIdentifier.create(Cont.class)));
 
         verify(actionProvider).registerActionImplementation(any(), eq(DOMActionInstance.of(FOO_PATH,
             new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
@@ -58,7 +59,7 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
 
     @Test
     public void testWildcardRegistration() {
-        adapter.registerImplementation(Foo.class, FOO);
+        adapter.registerImplementation(ActionSpec.builder(Cont.class).build(Foo.class), FOO);
         verify(actionProvider).registerActionImplementation(any(), eq(DOMActionInstance.of(FOO_PATH,
             LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty())));
     }
