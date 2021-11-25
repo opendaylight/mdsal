@@ -30,7 +30,7 @@ public interface ActionProviderService extends BindingService {
     /**
      * Register an implementation of an action, potentially constrained to a set of nodes.
      *
-     * @param actionInterface Generated Action interface
+     * @param spec Action instance specification
      * @param implementation Implementation of {@code actionInterface}
      * @param datastore {@link LogicalDatastoreType} on which the implementation operates
      * @param validNodes Set of nodes this implementation is constrained to, empty if this implementation can handle
@@ -40,20 +40,19 @@ public interface ActionProviderService extends BindingService {
      * @throws IllegalArgumentException if any of the {@code validNodes} does not match {@code datastore}
      * @throws UnsupportedOperationException if this service cannot handle requested datastore
      */
-    <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
-        @NonNull ObjectRegistration<S> registerImplementation(@NonNull Class<T> actionInterface,
-            @NonNull S implementation, @NonNull LogicalDatastoreType datastore,
-            @NonNull Set<InstanceIdentifier<O>> validNodes);
+    <P extends DataObject, A extends Action<InstanceIdentifier<P>, ?, ?>, S extends A>
+        @NonNull ObjectRegistration<S> registerImplementation(@NonNull ActionSpec<A, P> spec, @NonNull S implementation,
+            @NonNull LogicalDatastoreType datastore, @NonNull Set<InstanceIdentifier<P>> validNodes);
 
-    default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
-        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull Class<T> actionInterface,
+    default <P extends DataObject, T extends Action<InstanceIdentifier<P>, ?, ?>, S extends T>
+        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull ActionSpec<T, P> spec,
             final @NonNull S implementation, final @NonNull LogicalDatastoreType datastore) {
-        return registerImplementation(actionInterface, implementation, datastore, ImmutableSet.of());
+        return registerImplementation(spec, implementation, datastore, ImmutableSet.of());
     }
 
-    default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
-        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull Class<T> actionInterface,
+    default <P extends DataObject, T extends Action<InstanceIdentifier<P>, ?, ?>, S extends T>
+        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull ActionSpec<T, P> spec,
             final @NonNull S implementation) {
-        return registerImplementation(actionInterface, implementation, LogicalDatastoreType.OPERATIONAL);
+        return registerImplementation(spec, implementation, LogicalDatastoreType.OPERATIONAL);
     }
 }
