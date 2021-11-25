@@ -30,7 +30,7 @@ public interface ActionProviderService extends BindingService {
     /**
      * Register an implementation of an action, potentially constrained to a set of nodes.
      *
-     * @param actionInterface Generated Action interface
+     * @param actionInstance Action instance
      * @param implementation Implementation of {@code actionInterface}
      * @param datastore {@link LogicalDatastoreType} on which the implementation operates
      * @param validNodes Set of nodes this implementation is constrained to, empty if this implementation can handle
@@ -41,19 +41,19 @@ public interface ActionProviderService extends BindingService {
      * @throws UnsupportedOperationException if this service cannot handle requested datastore
      */
     <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
-        @NonNull ObjectRegistration<S> registerImplementation(@NonNull Class<T> actionInterface,
+        @NonNull ObjectRegistration<S> registerImplementation(@NonNull ActionInstance<T, P> actionInstance,
             @NonNull S implementation, @NonNull LogicalDatastoreType datastore,
             @NonNull Set<InstanceIdentifier<O>> validNodes);
 
     default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
-        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull Class<T> actionInterface,
+        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull ActionInstance<T, P> actionInstance,
             final @NonNull S implementation, final @NonNull LogicalDatastoreType datastore) {
-        return registerImplementation(actionInterface, implementation, datastore, ImmutableSet.of());
+        return registerImplementation(actionInstance, implementation, datastore, ImmutableSet.of());
     }
 
     default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
-        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull Class<T> actionInterface,
+        @NonNull ObjectRegistration<S> registerImplementation(final @NonNull ActionInstance<T, P> actionInstance,
             final @NonNull S implementation) {
-        return registerImplementation(actionInterface, implementation, LogicalDatastoreType.OPERATIONAL);
+        return registerImplementation(actionInstance, implementation, LogicalDatastoreType.OPERATIONAL);
     }
 }

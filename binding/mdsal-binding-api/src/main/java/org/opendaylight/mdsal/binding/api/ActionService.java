@@ -47,32 +47,33 @@ public interface ActionService extends BindingService {
      * The returned proxy is automatically updated with the most recent registered implementation, hence there is no
      * guarantee that multiple consecutive invocations will be handled by the same implementation.
      *
-     * @param actionInterface Generated Action interface
+     * @param actionInstance Action instance
      * @param validNodes Set of nodes this service will be constrained to, empty if no constraints are known
      * @return A proxy implementation of the generated interface
      * @throws NullPointerException if {@code actionInterface} is null
      * @throws IllegalArgumentException when {@code actionInterface} does not conform to the Binding Specification
      */
-    <O extends DataObject, T extends Action<?, ?, ?>> T getActionHandle(Class<T> actionInterface,
-            Set<DataTreeIdentifier<O>> validNodes);
+    <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>> T getActionHandle(
+            ActionInstance<T, P> actionInstance, Set<DataTreeIdentifier<O>> validNodes);
 
     default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>> T getActionHandle(
-            final Class<T> actionInterface) {
-        return getActionHandle(actionInterface, ImmutableSet.of());
+            final ActionInstance<T, P> actionInstance) {
+        return getActionHandle(actionInstance, ImmutableSet.of());
     }
 
     default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>> T getActionHandle(
-            final Class<T> actionInterface, final LogicalDatastoreType dataStore, final P path) {
-        return getActionHandle(actionInterface, ImmutableSet.of(DataTreeIdentifier.create(dataStore, path)));
+            final ActionInstance<T, P> actionInstance, final LogicalDatastoreType dataStore, final P path) {
+        return getActionHandle(actionInstance, ImmutableSet.of(DataTreeIdentifier.create(dataStore, path)));
     }
 
     default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>> T getActionHandle(
-            final Class<T> actionInterface, final P path) {
-        return getActionHandle(actionInterface, LogicalDatastoreType.OPERATIONAL, path);
+            final ActionInstance<T, P> actionInstance, final P path) {
+        return getActionHandle(actionInstance, LogicalDatastoreType.OPERATIONAL, path);
     }
 
     default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>> T getActionHandle(
-            final Class<T> actionInterface, @SuppressWarnings("unchecked") final DataTreeIdentifier<O>... nodes) {
-        return getActionHandle(actionInterface, ImmutableSet.copyOf(nodes));
+            final ActionInstance<T, P> actionInstance,
+            @SuppressWarnings("unchecked") final DataTreeIdentifier<O>... nodes) {
+        return getActionHandle(actionInstance, ImmutableSet.copyOf(nodes));
     }
 }

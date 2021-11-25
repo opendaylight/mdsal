@@ -16,6 +16,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.binding.api.ActionInstance;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
@@ -66,8 +67,9 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
 
     @Override
     public <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
-            ObjectRegistration<S> registerImplementation(final Class<T> actionInterface, final S implementation,
-                final LogicalDatastoreType datastore, final Set<InstanceIdentifier<O>> validNodes) {
+            ObjectRegistration<S> registerImplementation(final ActionInstance<T, P> actionInstance,
+                final S implementation, final LogicalDatastoreType datastore,
+                final Set<InstanceIdentifier<O>> validNodes) {
         final CurrentAdapterSerializer serializer = currentSerializer();
         final Absolute actionPath = serializer.getActionPath(actionInterface);
         final Impl impl = new Impl(adapterContext(), actionPath, actionInterface, implementation);
@@ -99,7 +101,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
         Impl(final AdapterContext adapterContext, final Absolute actionPath,
                 final Class<? extends Action<?, ?, ?>> actionInterface, final Action<?, ?, ?> implementation) {
             this.adapterContext = requireNonNull(adapterContext);
-            this.outputName = NodeIdentifier.create(
+            outputName = NodeIdentifier.create(
                 YangConstants.operationOutputQName(actionPath.lastNodeIdentifier().getModule()));
             this.actionInterface = requireNonNull(actionInterface);
             this.implementation = requireNonNull(implementation);

@@ -17,6 +17,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Proxy;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.binding.api.ActionInstance;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
@@ -82,11 +83,12 @@ final class ActionServiceAdapter
     }
 
     @Override
-    public <O extends DataObject, T extends Action<?, ?, ?>> T getActionHandle(final Class<T> actionInterface,
-            final Set<DataTreeIdentifier<O>> nodes) {
-        return !nodes.isEmpty() ? (T) new ConstrainedAction(getActionHandle(actionInterface, ImmutableSet.of()), nodes)
-                : (T) Proxy.newProxyInstance(actionInterface.getClassLoader(), new Class[] { actionInterface },
-                    getAdapter(actionInterface));
+    public <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>> T getActionHandle(
+            final ActionInstance<T, P> actionInstance, final Set<DataTreeIdentifier<O>> nodes) {
+        final var iface = actionInstance.type();
+        final var proxy = (T) Proxy.newProxyInstance(iface.getClassLoader(), new Class[] { iface },
+            getAdapter(actionInstance));
+        return nodes.isEmpty() ? proxy : (T) new ConstrainedAction(proxy, nodes);
     }
 
     @Override
