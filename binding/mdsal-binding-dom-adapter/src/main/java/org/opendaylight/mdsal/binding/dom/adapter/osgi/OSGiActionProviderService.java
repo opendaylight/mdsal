@@ -11,6 +11,7 @@ import com.google.common.annotations.Beta;
 import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
+import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.Action;
@@ -32,10 +33,10 @@ public final class OSGiActionProviderService extends AbstractAdaptedService<Acti
     }
 
     @Override
-    public <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
-        ObjectRegistration<S> registerImplementation(final Class<T> actionInterface, final S implementation,
-            final LogicalDatastoreType datastore, final Set<InstanceIdentifier<O>> validNodes) {
-        return delegate().registerImplementation(actionInterface, implementation, datastore, validNodes);
+    public <P extends DataObject, A extends Action<InstanceIdentifier<P>, ?, ?>, S extends A>
+        ObjectRegistration<S> registerImplementation(final ActionSpec<A, P> spec, final S implementation,
+            final LogicalDatastoreType datastore, final Set<InstanceIdentifier<P>> validNodes) {
+        return delegate().registerImplementation(spec, implementation, datastore, validNodes);
     }
 
     @Activate

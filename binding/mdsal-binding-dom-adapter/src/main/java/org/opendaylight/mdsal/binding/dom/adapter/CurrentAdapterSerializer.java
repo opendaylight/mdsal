@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
@@ -28,16 +29,19 @@ import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
+import org.opendaylight.yangtools.yang.model.api.stmt.ListEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,10 +85,31 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         return subtrees.stream().map(this::toDOMDataTreeIdentifier).collect(Collectors.toSet());
     }
 
-    @NonNull Absolute getActionPath(final @NonNull Class<? extends Action<?, ?, ?>> type) {
-        final Absolute identifier = getRuntimeContext().getActionIdentifier(type);
-        checkArgument(identifier != null, "Failed to find schema for %s", type);
-        return identifier;
+    @NonNull Absolute getActionPath(final @NonNull ActionSpec<?, ?> spec) {
+        final var stack = SchemaInferenceStack.of(getRuntimeContext().getEffectiveModelContext());
+        final var it = toYangInstanceIdentifier(spec.path()).getPathArguments().iterator();
+        verify(it.hasNext(), "Unexpected empty instance identifier for %s", spec);
+
+        do {
+            final var arg = it.next();
+            if (arg instanceof AugmentationIdentifier) {
+                // Skip over augmentations
+                continue;
+            }
+            final var stmt = stack.enterDataTree(arg.getNodeType());
+            if (stmt instanceof ListEffectiveStatement) {
+                // Lists have two steps
+                verify(it.hasNext(), "Unexpected list termination at %s in %s", stmt, spec);
+                // Verify just to make sure we are doing the right thing
+                final var skipped = it.next();
+                verify(skipped instanceof NodeIdentifier, "Unexpected skipped list entry item %s in %s", skipped, spec);
+                verify(stmt.argument().equals(skipped.getNodeType()), "Mismatched list entry item %s in %s", skipped,
+                    spec);
+            }
+        } while (it.hasNext());
+
+        stack.enterSchemaTree(BindingReflections.findQName(spec.type()));
+        return stack.toSchemaNodeIdentifier();
     }
 
     // FIXME: This should be probably part of Binding Runtime context

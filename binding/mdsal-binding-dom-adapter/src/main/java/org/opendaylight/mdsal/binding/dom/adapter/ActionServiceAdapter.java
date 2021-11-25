@@ -18,6 +18,7 @@ import java.lang.reflect.Proxy;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.ActionService;
+import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -34,7 +35,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 
 @NonNullByDefault
 final class ActionServiceAdapter
-        extends AbstractBindingLoadingAdapter<DOMActionService, Class<? extends Action<?, ?, ?>>, ActionAdapter>
+        extends AbstractBindingLoadingAdapter<DOMActionService, ActionSpec<?, ?>, ActionAdapter>
         implements ActionService {
     private static final class Builder extends BindingDOMAdapterBuilder<ActionService> {
         Builder(final AdapterContext adapterContext) {
@@ -82,17 +83,23 @@ final class ActionServiceAdapter
     }
 
     @Override
-    public <O extends DataObject, T extends Action<?, ?, ?>> T getActionHandle(final Class<T> actionInterface,
-            final Set<DataTreeIdentifier<O>> nodes) {
-        return !nodes.isEmpty() ? (T) new ConstrainedAction(getActionHandle(actionInterface, ImmutableSet.of()), nodes)
-                : (T) Proxy.newProxyInstance(actionInterface.getClassLoader(), new Class[] { actionInterface },
-                    getAdapter(actionInterface));
+    public <P extends DataObject, A extends Action<InstanceIdentifier<P>, ?, ?>> A getActionHandle(
+            final ActionSpec<A, P> spec, final Set<DataTreeIdentifier<P>> nodes) {
+        final var type = spec.type();
+        @SuppressWarnings("unchecked")
+        final var proxy = (A) Proxy.newProxyInstance(type.getClassLoader(), new Class[] { type }, getAdapter(spec));
+        // FIXME: constraints
+        return proxy;
+
+//        // FIXME: the constrained bit probably does not work
+//        return nodes.isEmpty() ? proxy : (A) new ConstrainedAction(proxy, nodes);
     }
 
     @Override
-    ActionAdapter loadAdapter(final Class<? extends Action<?, ?, ?>> key) {
-        checkArgument(BindingReflections.isBindingClass(key));
-        checkArgument(key.isInterface(), "Supplied Action type must be an interface.");
+    ActionAdapter loadAdapter(final ActionSpec<?, ?> key) {
+        final var type = key.type();
+        checkArgument(BindingReflections.isBindingClass(type));
+        checkArgument(type.isInterface(), "Supplied Action type must be an interface.");
         return new ActionAdapter(adapterContext(), getDelegate(), key);
     }
 }
