@@ -239,14 +239,6 @@
             <artifactId>rfc7223</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
-            <artifactId>iana-if-type</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
-            <artifactId>rfc7224-20180703-iana-if-type</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
             <artifactId>rfc7895</artifactId>
         </dependency>
@@ -261,10 +253,6 @@
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
             <artifactId>rfc8294-ietf-routing-types</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
-            <artifactId>iana-routing-types</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
@@ -329,10 +317,6 @@
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
             <artifactId>rfc8348-ietf-hardware-state</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
-            <artifactId>iana-hardware</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
@@ -409,6 +393,18 @@
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
             <artifactId>rfc8795-ietf-te-topology-state</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+            <artifactId>iana-hardware</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+            <artifactId>iana-if-type</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+            <artifactId>iana-routing-types</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
