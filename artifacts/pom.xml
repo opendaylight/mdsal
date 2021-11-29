@@ -485,14 +485,6 @@
                 <version>9.0.0-SNAPSHOT</version>
             </dependency>
 
-            <!-- RFC7223 -->
-            <!-- FIXME: upgrade this to RFC8343 (2018-02-20, NMDA) -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc7223</artifactId>
-                <version>9.0.0-SNAPSHOT</version>
-            </dependency>
-
             <!-- RFC7224, updated from: http://www.iana.org/assignments/yang-parameters/ -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
@@ -780,13 +772,6 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc6991</artifactId>
-                <version>9.0.0-SNAPSHOT</version>
-                <classifier>features</classifier>
-                <type>xml</type>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>odl-mdsal-model-rfc7223</artifactId>
                 <version>9.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
