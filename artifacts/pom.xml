@@ -507,14 +507,6 @@
                 <version>9.0.0-SNAPSHOT</version>
             </dependency>
 
-            <!-- RFC7277 -->
-            <!-- FIXME: upgrade this to RFC8344 (2018-02-22, NMDA) -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc7277</artifactId>
-                <version>9.0.0-SNAPSHOT</version>
-            </dependency>
-
             <!-- RFC7895 -->
             <!-- FIXME: upgrade this to RFC8525 (2019-01-04, NMDA) -->
             <dependency>
@@ -809,13 +801,6 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc7224</artifactId>
-                <version>9.0.0-SNAPSHOT</version>
-                <classifier>features</classifier>
-                <type>xml</type>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>odl-mdsal-model-rfc7277</artifactId>
                 <version>9.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
