@@ -12,7 +12,7 @@ module iana-routing-types {
              Los Angeles, CA  90094-2536
              United States of America
      Tel:    +1 310 301 5800
-     <mailto:iana@iana.org>";
+     <mailto:iana&iana.org>";
 
   description
     "This module contains a collection of YANG data types
@@ -32,12 +32,64 @@ module iana-routing-types {
      This version of this YANG module is part of RFC 8294; see
      the RFC itself for full legal notices.";
 
+   revision 2021-10-19 {
+     description "Added Address Family Number value 16399.";
+  }
+
+   revision 2021-09-08 {
+     description "Added SAFI value 79.";
+  }
+
+   revision 2021-05-26 {
+     description "Added ‘OBSOLETE’ to description field for SAFI value 7.";
+  }
+  
+   revision 2021-05-18 {
+     description "Added Address Family Number value 31, 
+                  SAFI value 9.";
+  }
+  
+   revision 2021-03-23 {
+     description "Added SAFI value 78.";
+  }
+
+   revision 2020-12-31 {
+     description "Non-backwards-compatible change of SAFI names
+                  (SAFI values 133, 134).";
+     reference
+       "RFC 8955: Dissemination of Flow Specification Rules.";
+  }
+
+   revision 2020-11-19 {
+     description "Added SAFI value 77.";
+  }
+
+   revision 2020-07-02 {
+     description "Added SAFI value 76.";
+  }
+  
+   revision 2020-05-12 {
+     description "Added Address Family Number value 16398, 
+                  SAFI value 75.";
+  }
+
+   revision 2019-11-04 {
+     description "Added Address Family Number value 16397.";
+  }
+
+   revision 2018-10-29 {
+     description "Added SAFI value 74.";
+  }
+
    revision 2017-12-04 {
      description "Initial revision.";
      reference
        "RFC 8294: Common YANG Data Types for the Routing Area.
         Section 4.";
   }
+
+
+
 
   /*** Collection of IANA types related to routing ***/
   /*** IANA Address Family enumeration ***/
@@ -131,6 +183,10 @@ module iana-routing-types {
           "Banyan Vines Address Family.";
       }
 
+
+
+
+
       enum e164-nsap {
         value 15;
         description
@@ -223,10 +279,22 @@ module iana-routing-types {
           "Multi-Topology IPv4 Address Family.";
       }
 
+
+
+
+
       enum mt-v6 {
         value 30;
         description
           "Multi-Topology IPv6 Address Family.";
+      }
+
+      enum bgp-sfc {
+        value 31;
+        description
+          "BGP SFC Address Family.";
+        reference
+          "RFC 9015: BGP Control Plane for the Network Service Header in Service Function Chaining.";
       }
 
       enum eigrp-common-sf {
@@ -267,6 +335,9 @@ module iana-routing-types {
         description
           "IEEE 48-bit MAC Address Family.";
       }
+
+
+
 
       enum mac-64 {
         value 16390;
@@ -312,7 +383,28 @@ module iana-routing-types {
         description
           "TRILL Nickname Address Family.";
       }
+
+      enum universally-unique-identifier {
+        value 16397;
+        description
+          "Universally Unique Identifier (UUID).";
+      }
+
+      enum routing-policy {
+        value 16398;
+        description
+          "Routing Policy Address Family.";
+      }
+
+      enum mpls-namespaces {
+        value 16399;
+        description
+          "MPLS Namespaces Address Family.";
+      }
+
     }
+
+
 
     description
       "Enumeration containing all the IANA-defined
@@ -358,13 +450,22 @@ module iana-routing-types {
       enum tunnel-encap-safi {
         value 7;
         description
-          "Tunnel Encap SAFI.";
+          "Tunnel Encap SAFI (OBSOLETE).";
       }
+
 
       enum mcast-vpls-safi {
         value 8;
         description
           "Multicast Virtual Private LAN Service (VPLS) SAFI.";
+      }
+
+      enum bgp-sfc-safi {
+        value 9;
+        description
+          "BGP SFC SAFI.";
+        reference
+          "RFC 9015: BGP Control Plane for the Network Service Header in Service Function Chaining.";
       }
 
       enum tunnel-safi {
@@ -427,6 +528,42 @@ module iana-routing-types {
           "Segment Routing - Traffic Engineering (SR-TE) SAFI.";
       }
 
+      enum sd-wan-capabilities-safi {
+        value 74;
+        description
+          "SD-WAN Capabilities SAFI.";
+      }
+
+      enum routing-policy-safi {
+        value 75;
+        description
+          "Routing Policy SAFI.";
+      }
+	  
+      enum classful-transport-safi {
+        value 76;
+        description
+          "Classful-Transport SAFI.";
+      }
+
+      enum tunneled-traffic-flowspec-safi {
+        value 77;
+        description
+          "Tunneled Traffic Flowspec SAFI.";
+      }
+
+      enum mcast-tree-safi {
+        value 78;
+        description
+          "MCAST-TREE SAFI.";
+      }
+
+      enum bgp-dps-safi {
+        value 79;
+        description
+          "BGP-DPS (Dynamic Path Selection) SAFI.";
+      }
+
       enum labeled-vpn-safi {
         value 128;
         description
@@ -445,16 +582,16 @@ module iana-routing-types {
           "Route Target SAFI.";
       }
 
-      enum ipv4-flow-spec-safi {
+      enum flow-spec-safi {
         value 133;
         description
-          "IPv4 Flow Specification SAFI.";
+          "Dissemination of Flow Specification rules SAFI.";
       }
 
-      enum vpnv4-flow-spec-safi {
+      enum l3vpn-flow-spec-safi {
         value 134;
         description
-          "IPv4 VPN Flow Specification SAFI.";
+          "L3VPN Dissemination of Flow Specification rules SAFI.";
       }
 
       enum vpn-auto-discovery-safi {

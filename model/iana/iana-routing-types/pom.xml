@@ -23,5 +23,5 @@
     <packaging>bundle</packaging>
 
     <name>${project.artifactId}</name>
-    <description>iana-routing-types@2017-12-04</description>
+    <description>iana-routing-types@2021-10-19</description>
 </project>
