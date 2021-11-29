@@ -21,12 +21,12 @@
     <packaging>feature</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Model :: RFC7224</name>
-    <description>Models from RFC7224 with RFC7223</description>
+    <description>Models from RFC7224</description>
 
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>odl-mdsal-model-rfc7223</artifactId>
+            <artifactId>odl-mdsal-model-rfc8343</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>

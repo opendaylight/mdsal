@@ -23,12 +23,12 @@
     <packaging>bundle</packaging>
 
     <name>${project.artifactId}</name>
-    <description>iana-if-type@2017-01-19.yang</description>
+    <description>iana-if-type@2021-06-21.yang</description>
 
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc7223</artifactId>
+            <artifactId>rfc8343</artifactId>
         </dependency>
     </dependencies>
 </project>
