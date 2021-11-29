@@ -71,7 +71,6 @@
         <!-- Models -->
         <!-- Standards -->
         <module>odl-mdsal-model-rfc6991</module>
-        <module>odl-mdsal-model-rfc7223</module>
         <module>odl-mdsal-model-rfc7224</module>
         <module>odl-mdsal-model-rfc7895</module>
         <module>odl-mdsal-model-rfc7952</module>
