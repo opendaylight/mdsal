@@ -50,7 +50,7 @@ public final class SimpleQueryExecutor implements QueryExecutor {
         return new Builder(codec);
     }
 
-    public static final class Builder implements org.opendaylight.yangtools.concepts.Builder<SimpleQueryExecutor> {
+    public static final class Builder {
         private final DataContainerNodeBuilder<NodeIdentifier, ContainerNode> rootBuilder = Builders.containerBuilder()
             .withNodeIdentifier(new NodeIdentifier(SchemaContext.NAME));
         private final BindingCodecTree codec;
@@ -67,8 +67,12 @@ public final class SimpleQueryExecutor implements QueryExecutor {
             return this;
         }
 
-        @Override
-        public SimpleQueryExecutor build() {
+        /**
+         * Build an instance of {@link SimpleQueryExecutor}.
+         *
+         * @return An {@link SimpleQueryExecutor} instance
+         */
+        public @NonNull SimpleQueryExecutor build() {
             return new SimpleQueryExecutor(rootBuilder.build());
         }
     }

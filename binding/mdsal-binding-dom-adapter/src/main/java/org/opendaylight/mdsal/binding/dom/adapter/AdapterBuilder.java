@@ -7,15 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.Builder;
 
-public abstract class AdapterBuilder<T,D> implements Builder<T> {
+public abstract class AdapterBuilder<T, D> {
 
     private final ClassToInstanceMap<D> delegates = MutableClassToInstanceMap.create();
 
@@ -25,7 +25,7 @@ public abstract class AdapterBuilder<T,D> implements Builder<T> {
 
     private void checkAllRequiredServices() {
         for (final Class<? extends D> type : getRequiredDelegates()) {
-            Preconditions.checkState(delegates.get(type) != null, "Requires service %s is not defined.",type);
+            checkState(delegates.get(type) != null, "Requires service %s is not defined.", type);
         }
     }
 
@@ -33,10 +33,14 @@ public abstract class AdapterBuilder<T,D> implements Builder<T> {
         delegates.put(type,impl);
     }
 
-    @Override
-    public final  T build() {
+    /**
+     * Check that all required {@code delegates} are present and return an instance of type {@code T}.
+     *
+     * @return Instance of {@code T}
+     * @throws IllegalStateException if a required delegate instance is missing
+     */
+    public final @NonNull T build() {
         checkAllRequiredServices();
         return createInstance(ImmutableClassToInstanceMap.copyOf(delegates));
     }
-
 }
