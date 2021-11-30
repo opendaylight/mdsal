@@ -13,9 +13,8 @@ import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.Builder;
 
-public abstract class AdapterBuilder<T,D> implements Builder<T> {
+public abstract class AdapterBuilder<T,D> {
 
     private final ClassToInstanceMap<D> delegates = MutableClassToInstanceMap.create();
 
@@ -33,10 +32,14 @@ public abstract class AdapterBuilder<T,D> implements Builder<T> {
         delegates.put(type,impl);
     }
 
-    @Override
-    public final  T build() {
+    /**
+     * Check that all required {@code delegates} are present and return an instance of type {@code T}.
+     *
+     * @return Instance of {@code T} or {@code null} if such type
+     *     is not present in {@code delegates} {@link ClassToInstanceMap}
+     */
+    public final T build() {
         checkAllRequiredServices();
         return createInstance(ImmutableClassToInstanceMap.copyOf(delegates));
     }
-
 }
