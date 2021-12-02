@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.broker;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractDatastoreTest {
