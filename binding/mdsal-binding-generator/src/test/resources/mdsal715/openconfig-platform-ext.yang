@@ -1,0 +1,662 @@
+module openconfig-platform-ext {
+
+    yang-version "1";
+
+    // namespace
+    namespace "http://openconfig.net/yang/platform/extension";
+
+    prefix "oc-pf-ext";
+
+    import openconfig-extensions { prefix "oc-ext"; }
+    import openconfig-platform { prefix oc-pf; }
+    import openconfig-platform-transceiver { prefix oc-transceiver; }
+    import openconfig-platform-types {prefix oc-pf-types; }
+    import ietf-yang-types {
+        prefix yang;
+    }
+
+    organization "SONiC";
+    contact
+        "SONiC";
+    description
+        "An OpenConfig model extension of platform configuration and operational state.";
+
+    oc-ext:openconfig-version "0.12.2";
+
+    revision 2020-09-03 {
+        description
+            "Add RS and FC fec types for forward error correction";
+    reference "0.12.3";
+    }
+
+    revision 2019-10-11 {
+        description
+            "Initial revision.";
+        reference "0.12.2";
+    }
+
+    identity FEC_RS {
+        base oc-pf-types:FEC_MODE_TYPE;
+        description "FEC is set to RS (Reed-Solomon code).";
+    }
+
+    identity FEC_FC {
+        base oc-pf-types:FEC_MODE_TYPE;
+        description "FEC is set to FC (Fire code).";
+    }
+
+    grouping platform-ext-software-state {
+        description "Platform software fields";
+        leaf software-version {
+            type string;
+            description "Software Version";
+        }
+        leaf product-version {
+            type string;
+            description "Product Version";
+        }
+        leaf distribution-version {
+            type string;
+            description "Debian Version";
+        }
+        leaf kernel-version {
+            type string;
+            description "Kernel Version";
+        }
+        leaf config-db-version {
+            type string;
+            description "Configuration Database Version";
+        }
+        leaf product-description {
+            type string;
+            description "Product Description";
+        }
+        leaf build-commit {
+            type string;
+            description "Build Commit ID";
+        }
+        leaf build-date {
+            type string;
+            description "Date of Build commit";
+        }
+        leaf built-by {
+            type string;
+            description "Built by";
+        }
+        leaf platform-name {
+            type string;
+            description "Platform Name";
+        }
+        leaf hwsku-version {
+            type string;
+            description "Hardware SKU version";
+        }
+        leaf asic-version {
+            type string;
+            description "asic version";
+        }
+        leaf hardware-version {
+            type string;
+            description "Hardware Version";
+        }
+        leaf serial-number {
+            type string;
+            description "Serial Number of Software";
+        }
+        leaf up-time {
+            type string;
+            description "System up-time";
+        }
+        leaf mfg-name {
+            type string;
+            description "Manufacturing Name";
+        }
+        container docker {
+            description "docker information";
+            list docker-version {
+                key "docker-name";
+                description "list of docker and their versions";
+                leaf docker-name {
+                    type leafref {
+                        path "../state/docker-name";
+                    }
+                    description
+                        "name of the docker";
+                }
+                container state {
+                    config false;
+                    description "docker version state";
+                    leaf docker-name {
+                        type string;
+                        description
+                            "name of the docker";
+                    }
+
+                    leaf docker-tag-id{
+                        type string;
+                        description
+                            "version of the docker-image";
+                    }
+                    leaf docker-image-id {
+                        type string;
+                        description
+                            "Image ID of the docker";
+                    }
+                    leaf docker-size{
+                        type string;
+                        description
+                            "Size of the docker-image";
+                    }
+                }
+            }
+        }
+    }
+
+    grouping platform-ext-extra-sensor-reading-state {
+        description "group for sensor readings";
+        list sensor-category {
+            key "category";
+            description
+                "List of sensor category";
+            leaf category {
+                type leafref {
+                    path "../state/category";
+                }
+                description
+                    "Sensor Category Name";
+            }
+            container sensors {
+                description "Sensor information";
+                list sensor {
+                    key "name";
+                    description
+                        "List of sensors";
+                    leaf name {
+                        type leafref {
+                            path "../state/name";
+                        }
+                        description "Sensor name";
+                    }
+                    container state {
+                        config false;
+                        description "sensor state";
+                        leaf name {
+                            type string;
+                            description
+                                "Sensor Name";
+                        }
+                        leaf state {
+                            type string;
+                            description "Sensor State";
+                        }
+                    }
+                }
+            }
+
+            container state {
+                config false;
+                description "sensor state";
+                leaf category {
+                    type string;
+                    description
+                        "Sensor Category Name";
+                }
+            }
+        }
+    }
+
+    augment /oc-pf:components/oc-pf:component {
+        description
+            "Add container for software-component information";
+        container software {
+            config false;
+            description "Fields for software component";
+            uses platform-ext-software-state;
+        }
+    }
+
+    augment /oc-pf:components/oc-pf:component/oc-pf:subcomponents/oc-pf:subcomponent/oc-pf:state {
+        description "subcomponent for sensor readings";
+        uses platform-ext-extra-sensor-reading-state;
+    }
+
+    augment /oc-pf:components/oc-pf:component/oc-pf:state {
+        description "Additional fields for component state";
+        leaf service-tag {
+            type string;
+            description "System service tag";
+        }
+
+        leaf base-mac-address {
+            type string;
+            description "Base MAC address";
+        }
+
+        leaf mac-addresses {
+            type int32;
+            description "Number of MAC addresses";
+        }
+
+        leaf onie-version {
+            type string;
+            description "ONIE version";
+        }
+
+        leaf manufacture-country {
+            type string;
+            description "Manufacture country";
+        }
+
+        leaf vendor-name {
+            type string;
+            description "Vendor name";
+        }
+
+        leaf diag-version {
+            type string;
+            description "Diag version";
+        }
+
+        leaf fans {
+            type uint32;
+            description "Number of fans";
+        }
+
+        leaf status-led {
+            type string;
+            description "LED status color";
+        }
+    }
+
+    augment /oc-pf:components/oc-pf:component/oc-pf:fan/oc-pf:state {
+        description "Additional fields for fan state";
+        leaf direction {
+            type string;
+            description "Fan direction";
+        }
+
+        leaf speed-tolerance {
+            type uint32;
+            description "Percentage of variance from target speed which is considered tolerable";
+        }
+
+        leaf target-speed {
+            type uint32;
+            units rpm;
+            description "Target speed of fans";
+        }
+    }
+
+    augment /oc-pf:components/oc-pf:component/oc-transceiver:transceiver/oc-transceiver:state {
+        description "Additional fields for transceiver";
+        leaf cable-length{
+            type decimal64 {
+                fraction-digits 1;
+            }
+            description "The length of cable (in meters) on the xcvr module";
+        }
+
+        leaf max-port-power{
+            type decimal64 {
+                fraction-digits 2;
+            }
+            description "The maximum power the port is allowed to provide (in watts)";
+        }
+
+        leaf max-module-power{
+            type decimal64 {
+                fraction-digits 2;
+            }
+            description "The maximum power the xcvr can draw (in watts)";
+        }
+
+        leaf display-name{
+            type string;
+            description "Name used for identifying the xcvr module";
+        }
+
+        leaf vendor-oui{
+            type string;
+            description "OUI of the xcvr module vendor";
+        }
+    }
+
+    augment /oc-pf:components/oc-pf:component/oc-pf:power-supply/oc-pf:state {
+        description "Additional fields for power-supply component";
+        leaf power-type {
+            type enumeration {
+                enum VOLT_AC {
+                    value 1;
+                    description
+                        "A measure of the eletric potential (alternating current).";
+                }
+                enum VOLT_DC {
+                    value 2;
+                    description
+                        "A measure of the eletric potential (direct current).";
+                }
+            }
+            description "Type of power (AC/DC).";
+        }
+    }
+
+    augment /oc-pf:components/oc-pf:component/oc-pf:state/oc-pf:temperature {
+        description "Additional fields for component temperature";
+        leaf current {
+            type decimal64 {
+                fraction-digits 1;
+            }
+            units celsius;
+            description
+              "The current temperature";
+        }
+
+        leaf high-threshold {
+            type decimal64 {
+                fraction-digits 1;
+            }
+            units celsius;
+            description
+              "The high threshold temperature for the sensor";
+        }
+
+        leaf critical-high-threshold {
+            type decimal64 {
+                fraction-digits 1;
+            }
+            units celsius;
+            description
+              "The critical high threshold temperature for the sensor";
+        }
+
+        leaf low-threshold {
+            type decimal64 {
+                fraction-digits 1;
+            }
+            units celsius;
+            description
+              "The low threshold temperature for the sensor";
+        }
+
+        leaf critical-low-threshold {
+            type decimal64 {
+                fraction-digits 1;
+            }
+            units celsius;
+            description
+              "The critical low threshold temperature for the sensor";
+        }
+
+        leaf warning-status {
+            type boolean;
+            description
+              "Temperature sensor warning status";
+        }
+
+        leaf timestamp {
+            type yang:date-and-time;
+            description
+              "Temperature sensor reading timestamp";
+        }
+    }
+
+    augment /oc-pf:components/oc-pf:component/oc-transceiver:transceiver/oc-transceiver:config {
+      description "Additional fields for transceiver diagnostics.";
+      leaf lb-media-side-output-enable {
+        type string;
+        description "Loopback at TP2.";
+      }
+      leaf lb-media-side-input-enable {
+        type string;
+        description "Loopback from TP3 to TP2.";
+      }
+      leaf lb-host-side-output-enable {
+        type string;
+        description "Loopback from TP1a to TP4.";
+      }
+      leaf lb-host-side-input-enable {
+        type string;
+        description "Loopback at TP1a.";
+      }
+      leaf lb-per-lane-host-side-enable {
+        type string;
+        description "Per-lane Host Side Loopback.";
+      }
+      leaf lb-per-lane-media-side-enable {
+        type string;
+        description "Per-lane Media Side Loopback.";
+      }
+      leaf lb-simul-host-media-side-enable {
+        type string;
+        description "Simultaneous Host-side and Media-side Loopback.";
+      }
+    }
+
+    augment /oc-pf:components/oc-pf:component/oc-transceiver:transceiver/oc-transceiver:state {
+      description "Additional fields for transceiver diagnostics and operational parameters";
+      leaf lb-media-side-output-enable {
+        type string;
+        description "Loopback at TP2.";
+      }
+      leaf lb-media-side-input-enable {
+        type string;
+        description "Loopback from TP3 to TP2.";
+      }
+      leaf lb-host-side-output-enable {
+        type string;
+        description "Loopback from TP1a to TP4.";
+      }
+      leaf lb-host-side-input-enable {
+        type string;
+        description "Loopback at TP1a.";
+      }
+      leaf lb-per-lane-host-side-enable {
+        type string;
+        description "Per-lane Host Side Loopback.";
+      }
+      leaf lb-per-lane-media-side-enable {
+        type string;
+        description "Per-lane Media Side Loopback.";
+      }
+      leaf lb-simul-host-media-side-enable {
+        type string;
+        description "Simultaneous Host-side and Media-side Loopback.";
+      }
+      leaf lb-media-side-output-support {
+        type string;
+        description "Is loopback at TP2 supported.";
+      }
+      leaf lb-media-side-input-support {
+        type string;
+        description "Is loopback from TP3 to TP2 supported.";
+      }
+      leaf lb-host-side-output-support {
+        type string;
+        description "Is loopback from TP1a to TP4 supported.";
+      }
+      leaf lb-host-side-input-support {
+        type string;
+        description "Is loopback at TP1a supported.";
+      }
+      leaf lb-per-lane-host-side-support {
+        type string;
+        description "Is per-lane Host Side Loopback supported.";
+      }
+      leaf lb-per-lane-media-side-support {
+        type string;
+        description "Is per-lane Media Side Loopback supported.";
+      }
+      leaf lb-simul-host-media-side-support {
+        type string;
+        description "Is simultaneous Host-side and Media-side Loopback supported.";
+      }
+      leaf voltage {
+          type string;
+          description "Instantaneous transceiver voltage.";
+      }
+      leaf temperature {
+          type string;
+          description "Instantaneous transceiver temperature.";
+      }
+      leaf lol-lane-1 {
+        type string;
+        description "LOL";
+      }
+      leaf lol-lane-2 {
+        type string;
+        description "LOL";
+      }
+      leaf lol-lane-3 {
+        type string;
+        description "LOL";
+      }
+      leaf lol-lane-4 {
+        type string;
+        description "LOL";
+      }
+      leaf lol-lane-5 {
+        type string;
+        description "LOL";
+      }
+      leaf lol-lane-6 {
+        type string;
+        description "LOL";
+      }
+      leaf lol-lane-7 {
+        type string;
+        description "LOL";
+      }
+      leaf lol-lane-8 {
+        type string;
+        description "LOL";
+      }
+      leaf los-lane-1 {
+        type string;
+        description "LOS";
+      }
+      leaf los-lane-2 {
+        type string;
+        description "LOS";
+      }
+      leaf los-lane-3 {
+        type string;
+        description "LOS";
+      }
+      leaf los-lane-4 {
+        type string;
+        description "LOS";
+      }
+      leaf los-lane-5 {
+        type string;
+        description "LOS";
+      }
+      leaf los-lane-6 {
+        type string;
+        description "LOS";
+      }
+      leaf los-lane-7 {
+        type string;
+        description "LOS";
+      }
+      leaf los-lane-8 {
+        type string;
+        description "LOS";
+      }
+      leaf tx-power-lane-1 {
+        type string;
+        description "Tx Power in dBm.";
+      }
+      leaf tx-power-lane-2 {
+        type string;
+        description "Tx Power in dBm.";
+      }
+      leaf tx-power-lane-3 {
+        type string;
+        description "Tx Power in dBm.";
+      }
+      leaf tx-power-lane-4 {
+        type string;
+        description "Tx Power in dBm.";
+      }
+      leaf tx-power-lane-5 {
+        type string;
+        description "Tx Power in dBm.";
+      }
+      leaf tx-power-lane-6 {
+        type string;
+        description "Tx Power in dBm.";
+      }
+      leaf tx-power-lane-7 {
+        type string;
+        description "Tx Power in dBm.";
+      }
+      leaf tx-power-lane-8 {
+        type string;
+        description "Tx Power in dBm.";
+      }
+      leaf rx-power-lane-1 {
+        type string;
+        description "Rx power in dBm.";
+      }
+      leaf rx-power-lane-2 {
+        type string;
+        description "Rx power in dBm.";
+      }
+      leaf rx-power-lane-3 {
+        type string;
+        description "Rx power in dBm.";
+      }
+      leaf rx-power-lane-4 {
+        type string;
+        description "Rx power in dBm.";
+      }
+      leaf rx-power-lane-5 {
+        type string;
+        description "Rx power in dBm.";
+      }
+      leaf rx-power-lane-6 {
+        type string;
+        description "Rx power in dBm.";
+      }
+      leaf rx-power-lane-7 {
+        type string;
+        description "Rx power in dBm.";
+      }
+      leaf rx-power-lane-8 {
+        type string;
+        description "Rx power in dBm.";
+      }
+      leaf tx-bias-lane-1 {
+        type string;
+        description "Tx bias current in 2 uA.";
+      }
+      leaf tx-bias-lane-2 {
+        type string;
+        description "Tx bias current in 2 uA.";
+      }
+      leaf tx-bias-lane-3 {
+        type string;
+        description "Tx bias current in 2 uA.";
+      }
+      leaf tx-bias-lane-4 {
+        type string;
+        description "Tx bias current in 2 uA.";
+      }
+      leaf tx-bias-lane-5 {
+        type string;
+        description "Tx bias current in 2 uA.";
+      }
+      leaf tx-bias-lane-6 {
+        type string;
+        description "Tx bias current in 2 uA.";
+      }
+      leaf tx-bias-lane-7 {
+        type string;
+        description "Tx bias current in 2 uA.";
+      }
+      leaf tx-bias-lane-8 {
+        type string;
+        description "Tx bias current in 2 uA.";
+      }
+    }
+}

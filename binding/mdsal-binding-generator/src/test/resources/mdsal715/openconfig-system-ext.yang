@@ -1,0 +1,625 @@
+module openconfig-system-ext {
+
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/system/extension";
+
+    prefix "oc-sys-ext";
+
+    import openconfig-network-instance { prefix oc-ni; }
+    import openconfig-system { prefix oc-sys; }
+    import openconfig-inet-types { prefix inet; }
+    import openconfig-kdump { prefix oc-kdump; }
+    import openconfig-switch-resource { prefix oc-swresource; }
+    import openconfig-interfaces { prefix "oc-if"; }
+    import openconfig-infra { prefix "oc-infra"; }
+    import openconfig-tpcm { prefix "oc-tpcm"; }
+    import openconfig-systemd-coredump { prefix oc-systemd-coredump; }
+    import openconfig-extensions { prefix "oc-ext"; }
+
+    // meta
+    organization "OpenConfig working group";
+
+    oc-ext:openconfig-version "0.9.0";
+
+    contact
+        "OpenConfig working group
+        netopenconfig@googlegroups.com";
+
+    description
+        "Model for managing TACACS+ configurations .";
+
+    revision 2020-06-29 {
+        description
+            "Fixed a few OC-Yang Lint/Conventions.";
+        reference "0.9.0";
+    }
+
+    revision 2020-06-10 {
+        description
+            "Add augments and deviations for NTP.";
+        reference "0.8.0";
+    }
+
+    revision 2020-06-02 {
+        description
+            "Moved RADIUS extensions to separate file.";
+        reference "0.4.0";
+    }
+
+    revision 2020-05-02 {
+        description
+            "Added DNS source IP support and allowed domain name as well for Radius/TACACS+ server configuration.";
+         reference "0.7.0";
+    }
+
+    revision 2020-03-30 {
+        description
+            "Added NAS-IP|IPV6-Address attribute for RADIUS.";
+        reference "0.2.0";
+    }
+
+    revision 2019-11-05 {
+        description
+            "Initial augment file.";
+         reference "0.7.0";
+    }
+
+    // grouping statements
+
+    grouping system-ext-aaa-authentication-config {
+        description "Grouping extensions for Authentication configuration";
+        leaf failthrough {
+            type string;
+            description "Should authentication failthrough be enabled/disabled";
+        }
+    }
+
+    grouping system-ext-aaa-server-group-server-config {
+        description "Grouping extensions for AAA server config";
+        leaf  auth-type {
+            type string;
+            description "The server authentication type pap/chap/mschap/mschapv2";
+        }
+        leaf  priority {
+            type uint16;
+            description "The server priority";
+        }
+        leaf vrf {
+            type string;
+            description "The server's VRF";
+        }
+    }
+
+    // augment statements
+
+    augment /oc-sys:system {
+        description "Kernel dump information";
+        uses oc-kdump:kdump-top;
+    }
+
+    augment /oc-sys:system {
+        description "Coredump information";
+        uses oc-systemd-coredump:systemd-coredump-top;
+    }
+
+    augment /oc-sys:system {
+        description "Switch Resources Management";
+        uses oc-swresource:switch-resource-top;
+    }
+
+    augment "/oc-sys:system/oc-sys:aaa/oc-sys:authentication/oc-sys:config" {
+        description "Additional fields for Authentication configuration";
+        uses system-ext-aaa-authentication-config;
+    }
+
+    augment "/oc-sys:system/oc-sys:aaa/oc-sys:authentication/oc-sys:state" {
+        description "Additional fields for Authentication state data";
+        uses system-ext-aaa-authentication-config;
+    }
+
+    augment "/oc-sys:system/oc-sys:aaa/oc-sys:server-groups/oc-sys:server-group/oc-sys:servers/oc-sys:server/oc-sys:config" {
+        description "Additional fields for AAA server config";
+        uses system-ext-aaa-server-group-server-config;
+    }
+
+    augment "/oc-sys:system/oc-sys:aaa/oc-sys:server-groups/oc-sys:server-group/oc-sys:servers/oc-sys:server/oc-sys:state" {
+        description "Additional fields for AAA server state data";
+        uses system-ext-aaa-server-group-server-config;
+    }
+
+    grouping system-ext-aaa-server-groups-config {
+        description "AAA server group";
+        leaf  source-address {
+            type inet:ip-address;
+            description "The global source ip";
+        }
+        leaf  auth-type {
+            type string;
+            default "pap";
+            description "The global authentication type pap/chap/mschap/mschapv2";
+        }
+        leaf  secret-key {
+            type string;
+            description "The global authentication passkey";
+        }
+        leaf  timeout {
+            type uint16;
+            default 5;
+            description "The global authentication timeout";
+        }
+        leaf retransmit-attempts {
+            type uint8;
+            description
+                "Number of times the system may resend a request to the
+                RADIUS server when it is unresponsive";
+        }
+        leaf source-interface {
+            type leafref {
+                path "/oc-if:interfaces/oc-if:interface/oc-if:name";
+            }
+            description
+                "Source interface to pick the source IP address for the packets to TACACS+ servers";
+        }
+    }
+
+    augment "/oc-sys:system/oc-sys:aaa/oc-sys:server-groups/oc-sys:server-group/oc-sys:config" {
+        description "Additional fields for server-group config";
+        uses system-ext-aaa-server-groups-config;
+    }
+
+    augment "/oc-sys:system/oc-sys:aaa/oc-sys:server-groups/oc-sys:server-group/oc-sys:state" {
+        description "Additional fields for server-group state";
+        uses system-ext-aaa-server-groups-config;
+    }
+
+    grouping system-ext-ssh-vrf-config {
+      description
+       "Configuration data for ssh server vrf";
+        leaf vrf-name {
+            type string {
+                pattern "mgmt|Vrf[a-zA-Z0-9_-]+" {
+                    error-message "Invalid VRF name for SSH server";
+                    error-app-tag vrf-name-ssh-invalid;
+                }
+            }
+            description
+                "VRF name";
+        }
+        leaf port {
+            type uint16;
+            default 22;
+            description
+                "SSH port number";
+        }
+    }
+
+    augment "/oc-sys:system/oc-sys:ssh-server" {
+        description "Additional fields for ssh server";
+        container ssh-server-vrfs {
+          description
+           "Container for ssh server vrfs";
+            list ssh-server-vrf {
+                key "vrf-name";
+                max-elements 15;
+                description
+                  "list of ssh server vrf";
+
+                leaf vrf-name {
+                    type leafref {
+                        path "../config/vrf-name";
+                    }
+                    description "VRF name";
+                }
+
+                container config {
+                    description
+                      "Configuration data for ssh server vrf";
+                    uses system-ext-ssh-vrf-config;
+                }
+                container state {
+                    config false;
+                    description
+                      "Operational state data for ssh server vrf";
+                    uses system-ext-ssh-vrf-config;
+                }
+            }
+        }
+    }
+
+    grouping system-ext-dns-source-config {
+        description "Grouping for DNS configuration";
+        leaf source-interface {
+            type leafref {
+                path "/oc-if:interfaces/oc-if:interface/oc-if:name";
+            }
+            description
+                "Source interface to pick the source IP address for the packets to DNS name server";
+        }
+    }
+
+    augment "/oc-sys:system/oc-sys:dns/oc-sys:config" {
+        description "Additional fields for DNS config";
+        uses system-ext-dns-source-config;
+    }
+
+    augment "/oc-sys:system/oc-sys:dns/oc-sys:state" {
+        description "Additional fields for DNS state";
+        uses system-ext-dns-source-config;
+    }
+
+    typedef server-address {
+        type inet:host;
+        description
+            "The host type represents either an unzoned IP address or a DNS
+            domain name.";
+    }
+
+	//syslog parameters
+    grouping system-ext-logging-remote-config {
+        description
+			"Grouping for remote server source-interface and vrf configuration";
+        leaf source-interface {
+            type leafref {
+                path "/oc-if:interfaces/oc-if:interface/oc-if:name";
+            }
+            description
+                "Source interface ip to be used as source ip for sending syslog packets";
+        }
+        leaf vrf-name {
+            type leafref {
+                path "/oc-ni:network-instances/oc-ni:network-instance/oc-ni:name";
+            }
+            description
+                "VRF name";
+        }
+    }
+
+    augment "/oc-sys:system/oc-sys:logging/oc-sys:remote-servers/oc-sys:remote-server/oc-sys:config" {
+        description "Additional parameters for remote server config";
+        uses system-ext-logging-remote-config;
+	}
+    augment "/oc-sys:system/oc-sys:logging/oc-sys:remote-servers/oc-sys:remote-server/oc-sys:state" {
+        description "Additional parameters for remote server state";
+        uses system-ext-logging-remote-config;
+	}
+
+    //infra paraemters
+    augment /oc-sys:system {
+        description "System infra";
+        uses oc-infra:infra-top;
+    }
+
+   //tpcm paraemters
+    augment /oc-sys:system {
+        description "Additional fields TPCM";
+        uses oc-tpcm:tpcm-top;
+    }
+
+    augment "/oc-sys:system/oc-sys:ntp/oc-sys:config" {
+        leaf ntp-source-interface {
+            type oc-if:base-interface-ref;
+            description
+                "NTP source interface name";
+        }
+
+        description
+            "NTP source interface name";
+    }
+
+    augment "/oc-sys:system/oc-sys:ntp/oc-sys:state" {
+        leaf ntp-source-interface {
+            type oc-if:base-interface-ref;
+            description
+                "NTP source interface name";
+        }
+
+        description
+            "NTP source interface name";
+    }
+
+    augment "/oc-sys:system/oc-sys:ntp/oc-sys:config" {
+        leaf vrf {
+            type string;
+            description
+                "The VRF instance NTP is enabled in.";
+        }
+
+        description
+            "The VRF instance NTP is enabled in.";
+    }
+
+    augment "/oc-sys:system/oc-sys:ntp/oc-sys:state" {
+        leaf vrf {
+            type string;
+            description
+                "The VRF instance NTP is enabled in.";
+        }
+
+        description
+            "The VRF instance NTP is enabled in.";
+    }
+
+    augment "/oc-sys:system/oc-sys:ntp/oc-sys:servers/oc-sys:server/oc-sys:state" {
+        leaf peerdelay {
+            type decimal64 {
+                fraction-digits 3;
+            }
+            description
+                "The round-trip delay to the server using type decimal64, in milliseconds";
+        }
+
+        leaf peeroffset {
+            type decimal64 {
+                fraction-digits 3;
+            }
+            description
+                "Estimate of the current time offset from the peer.  This is
+                 the time difference between the local and reference clock.
+                 Using type decimal64, in milliseconds.";
+
+        }
+
+        leaf peerjitter {
+            type decimal64 {
+                fraction-digits 3;
+            }
+            description
+                "The mean deviation of multiple time samples from this peer.";
+        }
+
+        leaf selmode {
+            type string {
+                length "1";
+            }
+            description
+                "Character before the peer address or peer name:
+                * Synchronized to this peer
+                # Almost synchronized to this peer
+                + Peer selected for possible synchronization
+                - Peer is a candidate for selection
+                ~ Peer is statically configured.";
+        }
+
+        leaf refid {
+            type inet:host;
+            description
+                "Reference clock type or address for the peer.";
+        }
+
+        leaf peertype {
+            type string {
+                length "1";
+            }
+            description
+                "Type of the peer.
+                u: unicast or manycast client
+                b: broadcast or multicast client
+                l: local reference clock
+                s: symmetric peer
+                A: manycast server
+                B: boadcast server
+                M: multicast server.";
+        }
+
+        leaf now {
+            type uint32;
+            description
+                "Indicates the time sine the NTP packet was not received or
+                last synchronized, in seconds.";
+         }
+
+         leaf reach {
+             type uint8;
+             description
+                 "Indicates the reachability of the configured server or peer.";
+         }
+
+        description
+            "NTP server status.";
+    }
+
+  rpc tpcm-install {
+    description
+      "Install the TPC image into SONiC system";
+    input {
+      leaf docker-name{
+        type string;
+        description
+          "docker name for the TPC image to be installed";
+      }
+      leaf image-source{
+        type string;
+        description
+          "image download source: url, image, pull, file, scp, sftp";
+      }
+      leaf image-name{
+        type string;
+        description
+          "image name for the TPC container to be installed";
+      }
+      leaf remote-server {
+        type string;
+        description
+          "the remote server name for scp and sftp";
+      }
+      leaf username{
+        type string;
+        description
+          "the remote server login username";
+      }
+      leaf password{
+        type string;
+        description
+          "the remote server login password";
+      }
+      leaf args {
+        type string;
+        description
+          "additional startup args to the container";
+      }
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf-list status-detail {
+            type string;
+            description "The detailed status of the operation execution request.";
+      }
+    }
+  }
+
+  rpc tpcm-uninstall{
+    description
+      "Uninstall the TPC image from SONiC system";
+    input {
+      leaf clean-data {
+        type string;
+        description
+          "Delete the TPC data: yes or no";
+      }
+     leaf docker-name{
+        type string;
+        description
+          "docker name for the TPC image to be uninstalled";
+      }
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf-list status-detail {
+            type string;
+            description "The detailed status of the operation execution request.";
+      }
+   }
+  }
+
+
+  rpc tpcm-upgrade{
+    description
+      "Upgrade the existing TPC container";
+    input {
+     leaf docker-name{
+        type string;
+        description
+          "docker name for the TPC image to be upgraded";
+      }
+      leaf image-source{
+        type string;
+        description
+          "image download source: url, image, pull, file, scp, sftp";
+      }
+      leaf image-name{
+        type string;
+        description
+          "image name for the TPC container to be upgraded";
+      }
+      leaf remote-server {
+        type string;
+        description
+          "the remote server name for scp and sftp";
+      }
+      leaf username{
+        type string;
+        description
+          "the remote server login username";
+      }
+      leaf password{
+        type string;
+        description
+          "the remote server login password";
+      }
+      leaf skip-data-migration {
+        type string;
+        description
+          "skip the TPC data migration: yes or no";
+      }
+      leaf args {
+        type string;
+        description
+          "additional startup args to the container";
+      }
+
+    }
+    output {
+      leaf status {
+        type int32;
+        description
+          "The status of the operation execution request.";
+      }
+      leaf-list status-detail {
+            type string;
+            description
+               "The detailed status of the operation execution request.";
+      }
+
+   }
+ }
+    rpc show-sys-log {
+        description
+            "show system log";
+        input {
+            leaf num-lines{
+                type uint16{
+                    range "1..65535" {
+                        error-message "NUM Lines out of range 1..65535";
+                    }
+                }
+               description
+                    "output the last NUM lines of system log";
+            }
+        }
+
+        output {
+            leaf-list status-detail{
+               type string;
+               description
+                    "The detailed status of the operation execution request.";
+           }
+        }
+    }
+
+    rpc clear-sys-log {
+        description
+            "clear logging";
+        output {
+            leaf result{
+               type string;
+               description
+                    "The detailed status of the operation execution request.";
+           }
+        }
+    }
+
+    rpc reboot-ops{
+        description
+            "Switch boot operations:
+                - reboot: reboot operation
+                - warm-reboot : warm reboot  operation
+                - fast-reboot : fast reboot operation
+            The result of the requested command is sent as a string.";
+        input {
+            leaf param {
+                type string {
+                    pattern "reboot warm-reboot fast-reboot";
+                }
+               description
+                    "reboot options";
+            }
+        }
+        output {
+            leaf result {
+                type string;
+                description
+                    "String showing the result of the last requested command (reboot, warm-reboot or fast-reboot).";
+            }
+        }
+    }
+
+}

@@ -1,0 +1,793 @@
+module openconfig-vxlan {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/vxlan/extension";
+
+  prefix "oc-vxlan"; 
+
+  import openconfig-network-instance { prefix oc-ni; }
+  //import openconfig-network-instance-l2 { prefix oc-ni-l2; }
+  import openconfig-interfaces { prefix oc-if; }
+  import openconfig-inet-types { prefix oc-inet; }
+  import openconfig-if-types-ext { prefix oc-if-types-ext; }
+  // import openconfig-yang-types { prefix oc-yang; }
+  import openconfig-extensions { prefix oc-ext; }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:regexp-posix;
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+  // meta
+  organization
+    "OCP SONiC Subproject";
+
+  contact
+    "OCP SONiC Subproject Working Group
+     https://github.com/Azure/SONiC";
+
+  description
+    "This module defines configuration and operational state
+    data for overlay tunnels.";
+
+  oc-ext:openconfig-version "0.1.0";
+
+  revision "2019-12-03" {
+    description
+      "Initial revision";
+    reference "0.1.0";
+  }
+
+  typedef vni-mode {
+    type enumeration {
+      enum "LOCAL" {
+        description
+          "Local mode";
+      }
+      enum "GLOBAL" {
+        description
+          "Global mode";
+      }
+    }
+    description
+      "Vni mode";
+  }
+
+  typedef vni-status-type {
+    type enumeration {
+      enum "UP" {
+        description
+          "Vni status up.";
+      }
+      enum "DOWN" {
+        description
+          "Vni status down.";
+      }
+    }
+    description
+      "Vni status";
+  }
+
+  typedef vni-type {
+    type enumeration {
+      enum "L2" {
+        description
+          "layer 2 mode";
+      }
+      enum "L3" {
+        description
+          "layer 3 mode";
+      }
+    }
+    description
+      "vni type";
+  }
+
+  typedef peer-type {
+    type enumeration {
+      enum "STATIC" {
+        description
+          "Static.";
+      }
+      enum "DYNAMIC" {
+        description
+          "Dynamic.";
+      }
+    }
+    description
+      "Peer type";
+  }
+
+  typedef tunnel-status {
+    type enumeration {
+      enum "UP" {
+        description
+          "The tunnel is up.";
+      }      
+      enum "DOWN" {
+        description
+          "The tunnel is down.";
+      }
+    }
+    description
+      "Tunnel status";
+  }
+
+  typedef tunnel-type {
+    type enumeration {
+      enum "DYNAMIC" {
+        description
+          "The tunnel is dynamic.";
+      }
+      enum "STATIC" {
+        description
+          "The tunnel is static.";
+      }
+      enum "INVALID" {
+        description
+          "The tunnel is invalid.";
+      }
+    }
+    description
+      "Tunnel type";
+  }
+
+  typedef direction-type {
+    type enumeration {
+      enum "INBOUND" {
+        description
+          "Inbound.";
+      }
+      enum "OUTBOUND" {
+        description
+          "Outbound.";
+      }
+      enum "BIDIRECTION" {
+        description
+          "Bidirection.";
+      }      
+    }
+    description
+      "Bound direction";
+  }
+
+  typedef vni-bind-type {
+    type enumeration {
+      enum "HUBMODE" {
+        description
+          "Hub mode.";
+      }
+      enum "SPOKEMODE" {
+        description
+          "Spoke mode.";
+      }
+    }
+    description
+      "bdBindVniType";
+  }  
+
+  grouping vxlan-vni-static-ipv4-peer-config {
+    description
+      "The remote NVE address table in a same VNI.";
+    leaf peer-ip {
+      type oc-inet:ipv4-address;
+      description
+        "The address of the NVE.";
+    }
+    leaf out-vni-id {
+      type uint32 {
+        range "1..16777215";
+      }
+      description
+        "The ID of the out VNI. Do not support separate deletion.";                
+    }
+  }
+
+  grouping vxlan-vni-static-ipv4-peers-top {
+    description
+      "The remote NVE address table in a same VNI.";
+    container static-ipv4-peers {
+      description
+        "The remote NVE address table in a same VNI.";
+      list static-peer {
+        key "peer-ip";
+        description
+          "The remote NVE address in a same VNI.";
+        leaf peer-ip {
+          type leafref {
+            path "../config/peer-ip";
+          }
+          description
+            "The address of the NVE.";
+        }
+        container config {
+          description
+            "The remote NVE address table in a same VNI.";
+          uses vxlan-vni-static-ipv4-peer-config;
+        }
+        container state {
+          config false;
+          description
+            "The remote NVE address table in a same VNI.";
+          uses vxlan-vni-static-ipv4-peer-config;
+        }
+      }
+    }
+  }
+
+  grouping vxlan-vni-flood-proxy-config {
+    description
+      "The flood proxys for this VNI";
+    leaf peer-ip {
+      type oc-inet:ipv4-address;
+      description
+        "peer ip address"; 
+    }
+  }
+
+  grouping vxlan-vni-flood-proxy-top {
+    description
+      "The flood proxys for this VNI";
+    container flood-proxys {
+      description
+        "The flood proxys for this VNI";
+      list flood-proxy {
+        key "peer-ip";
+        description
+          "List of the flood proxys";
+        leaf peer-ip {
+          type leafref {
+            path "../config/peer-ip";
+          }
+          description
+            "peer ip address"; 
+        }
+        container config {
+          description
+            "The flood proxys for this VNI";
+          uses vxlan-vni-flood-proxy-config;
+        }
+        container state {
+          config false;
+          description
+            "The flood proxys for this VNI";
+          uses vxlan-vni-flood-proxy-config;
+        }
+      }
+    }
+  }
+  
+  grouping vxlan-vni-mcast-group-config {
+    description
+      "The mcast address table.";
+    leaf mcast-ip {
+      type oc-inet:ipv4-address;
+      description
+        "The mcast address of NVO3.";
+    }
+  }
+
+  grouping vxlan-vni-mcast-groups-top {
+    description
+      "The mcast address table.";
+    container mcast-groups {
+      description
+        "The mcast address table.";
+      list mcast-group {
+        key "mcast-ip";
+        description
+          "The mcast address.";
+        leaf mcast-ip {
+          type leafref {
+            path "../config/mcast-ip";
+          }
+          description
+            "The mcast address of NVO3.";
+        }
+        container config {
+          description
+            "The mcast address of NVO3.";
+          uses vxlan-vni-mcast-group-config;
+        }
+        container state {
+          config false;
+          description
+            "The mcast address of NVO3.";
+          uses vxlan-vni-mcast-group-config;
+        }
+      }
+    }
+  }
+
+  grouping vxlan-vni-instance-config {
+    description
+      "The configuration and information table of the VNI.";
+    leaf vni-id {
+      type uint32 {
+        range "1..16777215";
+      }
+      description
+        "The id of VNI.";
+    }
+    leaf source-nve {
+      type oc-if:base-interface-ref;          
+      mandatory true;
+      description
+        "The name of the nve interface .";
+    }
+    leaf vni-mode {
+      type vni-mode;
+      description
+        "The mode of the VNI instance.";
+    }
+    leaf status {
+      type vni-status-type;
+      config false;
+      description
+        "The status of the VNI.";
+    }
+  }
+
+  grouping vxlan-vni-instance-group-top {
+    description
+      "The configuration and information table of the VNI.";
+    container vxlan-vni-instances {
+      description
+        "The confiuration and information table of the VNI.";
+      list vni-instance {
+        key "vni-id source-nve";
+        description
+          "The confiuration and information of the VNI.";
+        leaf vni-id {
+          type leafref {
+            path "../config/vni-id";
+          }
+          must "/oc-if:interfaces/oc-if:interface[oc-if:name=./source-nve]/oc-if:config/oc-if:type = 'oc-if-types-ext:IF_NVE'";
+          description
+            "The id of VNI.";
+        }
+        leaf source-nve {
+          type leafref {
+            path "../config/source-nve";
+          }
+          description
+            "The name of the nve interface .";
+        }
+        container config {
+          description
+            "The confiuration and information table of the VNI.";
+          uses vxlan-vni-instance-config;
+        }
+        container state {
+          description
+            "The state information table of the VNI.";
+          uses vxlan-vni-instance-config;
+        }
+        uses vxlan-vni-static-ipv4-peers-top;
+        uses vxlan-vni-flood-proxy-top;
+        uses vxlan-vni-mcast-groups-top;
+      }
+    }
+  }
+
+  grouping vxlan-vni-peer-info-group-top {
+    description
+      "The information table of vni members.";
+    container vxlan-vni-peer-infos {
+      config false;
+      description
+        "VNI peer info container";
+      list vxlan-vni-peer-info {
+        key "vni-id source-ip peer-ip";
+        description
+          "The remote nve address list in a same VNI.";
+        leaf vni-id {
+          type leafref {
+            path "../state/vni-id";
+          }
+          description
+            "VxLAN tunnel info key";
+        }
+        leaf source-ip {
+          type leafref {
+            path "../state/source-ip";
+          }
+          description
+            "VxLAN tunnel info key";
+        }
+        leaf peer-ip {
+          type leafref {
+            path "../state/peer-ip";
+          }
+          description
+            "VxLAN tunnel info key";
+        }
+        container state {
+          config false;
+          description
+            "The remote nve address state container";
+          leaf vni-id {
+            type uint32 {
+              range "1..16777215";
+            }
+            config false;
+            description
+              "The ID of VNI.";
+          }
+          leaf source-ip {
+            type oc-inet:ipv4-address;
+            config false;
+            description
+              "The source address of the NVE interface.";
+          }
+          leaf peer-ip {
+            type oc-inet:ipv4-address;
+            config false;
+            description
+              "The remote NVE address.";
+          }
+          leaf tunnel-type {
+            type peer-type;
+            config false;
+            description
+              "Tunnel type.";
+          }
+          leaf out-vni-id {
+            type uint32 {
+              range "1..16777215";
+            }
+            config false;
+            description
+              "The ID of the out VNI.";
+          }        
+        }
+      }
+    }
+  }
+
+  grouping vxlan-tunnel-info-group-top {
+    description
+      "VxLAN tunnel information";
+    container vxlan-tunnel-infos {
+      config false;
+      description
+        "VxLAN tunnel info container";
+      list vxlan-tunnel-info {
+        key "peer-ip";
+        description
+          "VxLAN tunnel info list";
+        leaf peer-ip {
+          type leafref {
+            path "../state/peer-ip";
+          }
+          description
+            "VxLAN tunnel info key";
+        }
+        container state {
+          config false;
+          description
+            "VxLAN tunnel info state container";
+          leaf peer-ip {
+            type oc-inet:ipv4-address;
+            config false;
+            description
+              "Remote NVE interface address.";        
+          }
+          leaf source-ip {
+            type oc-inet:ipv4-address;
+            config false;
+            description
+              "Local NVE interface address.";        
+          }
+          leaf status {
+            type tunnel-status;
+            config false;
+            description
+              "Tunnel status.";
+          }
+          leaf type {
+            type tunnel-type;
+            config false;
+            description
+              "Tunnel type.";
+          }
+          leaf up-time {
+            type string {
+              length "1..10";
+            }
+            config false;
+            description
+              "Vxlan tunnel up time.";
+          }
+          leaf vrf-name {
+            type leafref {
+              path "/oc-ni:network-instances/oc-ni:network-instance/oc-ni:name";
+            }
+            default "_public_";
+            config false;
+            description
+              "The name of VPN instance.";
+          }
+          leaf tunnel-id {
+            type uint32 {
+              range "1..4294967295";
+            }
+            config false;
+            description
+              "The ID of Vxlan tunnel.";
+          }
+        }
+      }
+    }
+  }
+
+  grouping vxlan-interface-config {
+    description
+      "VxLAN interface config";
+    leaf source-vtep-ip {
+      type oc-inet:ipv4-address;
+      description
+        "The source address of the NVE interface.";        
+    }
+    leaf primary-ip {
+      type union {
+        type oc-inet:ipv4-address;
+        type string {
+            pattern "";
+        }
+       }
+      description
+        "The primary IP address of the NVE interface.";        
+    }
+    leaf qos-mode {
+      type enumeration {
+        enum UNIFORM {
+          description
+            "Uniform QoS mode";
+        }
+        enum PIPE {
+          description
+            "Pipe QoS mode";
+        }
+      }
+      description
+        "Uniform QoS mode copies payload DSCP to outer header DSCP 
+        on encapsulation and copies outer header DSCP to payload 
+        DSCP on termination.
+        Pipe QoS mode uses the user configured dscp value in 
+        outer header on encapsulation and doesn't modify payload 
+        DSCP on termination";
+    }
+    leaf dscp {
+      when "../qos-mode = 'pipe'";
+      type uint8 {
+        range "0..63" {
+          error-message "DSCP value out of range";
+        }
+      }
+      description
+        "DSCP value for Pipe QoS mode";
+    }
+  }
+
+  grouping vxlan-interface-state {
+    description
+      "VxLAN interface attributes";
+  }
+
+  grouping vxlan-network-instance-config {
+    description
+      "VxLAN network instance config";
+    leaf vni-id {
+      type uint32 {
+        range "1..16777215";
+      }
+      must "/oc-if:interfaces/oc-if:interface[oc-if:name=./source-nve]/oc-if:config/oc-if:type = 'oc-if-types-ext:IF_NVE'";
+      description
+        "The id of VNI.";
+    }       
+    leaf source-nve {
+      type oc-if:base-interface-ref;          
+      description
+        "The name of the nve interface .";
+    }
+  }
+
+  grouping vxlan-network-instance-state {
+    description
+      "VxLAN network instance state";
+  }
+
+  grouping vxlan-l2ni-mac-table-ext-state {
+    description
+      "Configuration data for MAC table entries";
+    leaf peer-ip {
+      type oc-inet:ipv4-address;
+      description
+        "The address of the NVE.";
+    }
+  }
+
+  grouping vxlan-l2ni-mac-table-ext-top {
+    description
+      "l2ni mac table extension top";
+    container peer {
+      description
+        "l2ni mac table extension";
+      container config {
+        description
+          "l2ni mac table extension config";
+      }
+      container state {
+        config false;
+        description
+          "l2ni mac table extension state";
+        uses vxlan-l2ni-mac-table-ext-state;
+      }
+    }
+  }
+
+  grouping vxlan-interface-top {
+    description
+      "VxLAN interface top grouping";
+    container vxlan-if {
+      description
+        "VxLAN interface top container";
+      container config {
+        description
+          "VxLAN interface config";
+        uses vxlan-interface-config;
+      }
+
+      container state {
+        config false;
+        description
+          "VxLAN interface state";
+        uses vxlan-interface-config;
+        uses vxlan-interface-state;
+      }
+    }
+  }
+
+  grouping vxlan-network-instance-top {
+    description
+      "VxLAN network instance top grouping";
+    container vxlan-vni-instances {
+      description
+        "VxLAN network instance container";
+	    list vni-instance {
+	      key "vni-id source-nve";
+	      max-elements 1;
+		    description
+	  	    "VxLAN network instance config entry";
+	       
+		    leaf vni-id {
+	        type leafref {
+	          path "../config/vni-id";
+	        } 
+		      description
+		        "The id of VNI.";
+		    }
+		           
+		    leaf source-nve {
+	        type leafref {
+	          path "../config/source-nve";
+	        } 
+		      description
+		        "The name of the nve interface .";
+		    }       
+	        
+	      container config {
+	        description
+	          "VxLAN network instance config";
+	        uses vxlan-network-instance-config;
+	      }
+	
+	      container state {
+	        config false;
+	        description
+	          "VxLAN network instance state";
+	        uses vxlan-network-instance-config;
+	        uses vxlan-network-instance-state;
+	      }
+	    }
+    }
+  }
+
+  grouping vxlan-top {
+    description
+      "VxLAN top grouping";
+    container vxlan {
+      description
+        "VxLAN top grouping";
+      container config {
+        description
+          "VxLAN top config ";
+      }
+      container state {
+        config false;
+        description
+          "VxLAN top state";
+      }
+      uses vxlan-vni-peer-info-group-top;
+      uses vxlan-tunnel-info-group-top;
+      uses vxlan-vni-instance-group-top;
+    }
+  }
+
+  augment /oc-if:interfaces/oc-if:interface {
+    description
+      "Augment the interface, NVE as an interface.";
+    uses vxlan-interface-top {
+      when "oc-if:config/oc-if:type = 'oc-if-types-ext:IF_NVE'";
+      description
+        "VxLAN interface config/state";
+    }
+  }
+
+  augment /oc-ni:network-instances/oc-ni:network-instance {
+    description
+      "Augment for network instance";
+    uses vxlan-network-instance-top {
+      description
+        "VxLAN Global config/state";
+    }
+  }
+
+  //augment /oc-ni:network-instances/oc-ni:network-instance/oc-ni-l2:fdb/oc-ni-l2:mac-table/oc-ni-l2:entries/oc-ni-l2:entry {
+  augment /oc-ni:network-instances/oc-ni:network-instance/oc-ni:fdb/oc-ni:mac-table/oc-ni:entries/oc-ni:entry {
+    description
+      "Augment for network instance mac table";
+    uses vxlan-l2ni-mac-table-ext-top {
+      description
+        "l2ni mac table extension config/state";
+    }
+  }
+
+  uses vxlan-top;
+
+  grouping vxlan-neighbour-suppress-config {
+    description
+      "Grouping for Neigbour Suppress configuration";
+
+    leaf arp-and-nd-suppress {
+      type enumeration {
+        enum ENABLE {
+          description
+            "Enable";
+        }
+      }
+      description
+        "Enable Arp and ND Suppression";
+    }
+  }
+
+  grouping vxlan-neighbour-suppress-top {
+    description
+      "Configuration data for neigh-suppress top ";
+    container neighbour-suppress {
+      description
+        "Configuration data for neigh-suppress container";
+      container config {
+        description
+          "Configuration data for neigh-suppress";
+        uses vxlan-neighbour-suppress-config;
+      }
+      container state {
+        config false;
+        description
+          "Operational state data ";
+        uses vxlan-neighbour-suppress-config;
+      }
+    }
+  }
+
+  augment "/oc-ni:network-instances/oc-ni:network-instance" {
+      description
+          "Adds neighbour suppress configuration for routed VLAN interfaces";
+
+      uses vxlan-neighbour-suppress-top;
+  }
+}

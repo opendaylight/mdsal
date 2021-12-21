@@ -1,0 +1,981 @@
+module openconfig-bgp-types {
+  yang-version "1";
+
+  namespace "http://openconfig.net/yang/bgp-types";
+
+  prefix "oc-bgp-types";
+
+  import openconfig-types { prefix "oc-types"; }
+  import openconfig-inet-types { prefix "oc-inet"; }
+  import openconfig-extensions { prefix "oc-ext"; }
+
+  // meta
+  organization
+    "OpenConfig working group";
+
+  contact
+    "OpenConfig working group
+    netopenconfig@googlegroups.com";
+
+  description
+    "This module contains general data definitions for use in BGP
+    policy. It can be imported by modules that make use of BGP
+    attributes";
+
+  oc-ext:openconfig-version "5.0.2";
+
+  revision "2018-11-21" {
+    description
+      "Add OpenConfig module metadata extensions.";
+    reference "5.0.2";
+  }
+
+  revision "2018-08-20" {
+    description
+      "Correct description of AFI-SAFI enabled leaf.";
+    reference "5.0.1";
+  }
+
+  revision "2018-04-11" {
+    description
+      "Correct naming of BGP maximum prefix warning percentage leaf.";
+    reference "5.0.0";
+  }
+
+  revision "2018-03-20" {
+    description
+      "Added SR-TE policy SAFI";
+    reference "4.1.0";
+  }
+
+  revision "2018-03-20" {
+    description
+      "Added color extended community";
+    reference "4.0.2";
+  }
+
+  revision "2017-07-30" {
+    description
+      "Clarification of add-paths send-max leaf";
+    reference "4.0.1";
+  }
+
+  revision "2017-07-10" {
+    description
+      "Add error notifications; moved add-paths config; add AS
+      prepend policy features; removed unneeded config leaves";
+    reference "4.0.0";
+  }
+
+  revision "2017-02-02" {
+    description
+      "Bugfix to remove remaining global-level policy data";
+    reference "3.0.1";
+  }
+
+  revision "2017-01-26" {
+    description
+      "Add dynamic neighbor support, migrate to OpenConfig types";
+    reference "3.0.0";
+  }
+
+  revision "2016-06-21" {
+    description
+      "OpenConfig BGP refactor";
+    reference "2.1.1";
+  }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:regexp-posix;
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+  identity BGP_CAPABILITY {
+    description "Base identity for a BGP capability";
+  }
+
+  identity MPBGP {
+    base BGP_CAPABILITY;
+    description
+      "Multi-protocol extensions to BGP";
+    reference "RFC2858";
+  }
+
+  identity ROUTE_REFRESH {
+    base BGP_CAPABILITY;
+    description
+      "The BGP route-refresh functionality";
+    reference "RFC2918";
+  }
+
+  identity ASN32 {
+    base BGP_CAPABILITY;
+    description
+      "4-byte (32-bit) AS number functionality";
+    reference "RFC6793";
+  }
+
+  identity GRACEFUL_RESTART {
+    base BGP_CAPABILITY;
+    description
+      "Graceful restart functionality";
+    reference "RFC4724";
+  }
+
+  identity ADD_PATHS {
+    base BGP_CAPABILITY;
+    description
+      "BGP add-paths";
+    reference "draft-ietf-idr-add-paths";
+  }
+
+  identity AFI_SAFI_TYPE {
+    description
+      "Base identity type for AFI,SAFI tuples for BGP-4";
+    reference "RFC4760 - multiprotocol extensions for BGP-4";
+  }
+
+  identity IPV4_UNICAST {
+    base AFI_SAFI_TYPE;
+    description
+      "IPv4 unicast (AFI,SAFI = 1,1)";
+    reference "RFC4760";
+  }
+
+  identity IPV6_UNICAST {
+    base AFI_SAFI_TYPE;
+    description
+      "IPv6 unicast (AFI,SAFI = 2,1)";
+    reference "RFC4760";
+  }
+
+  identity IPV4_LABELED_UNICAST {
+    base AFI_SAFI_TYPE;
+    description
+      "Labeled IPv4 unicast (AFI,SAFI = 1,4)";
+    reference "RFC3107";
+  }
+
+  identity IPV6_LABELED_UNICAST {
+    base AFI_SAFI_TYPE;
+    description
+      "Labeled IPv6 unicast (AFI,SAFI = 2,4)";
+    reference "RFC3107";
+  }
+
+  identity L3VPN_IPV4_UNICAST {
+    base AFI_SAFI_TYPE;
+    description
+      "Unicast IPv4 MPLS L3VPN (AFI,SAFI = 1,128)";
+    reference "RFC4364";
+  }
+
+  identity L3VPN_IPV6_UNICAST {
+    base AFI_SAFI_TYPE;
+    description
+      "Unicast IPv6 MPLS L3VPN (AFI,SAFI = 2,128)";
+    reference "RFC4659";
+  }
+
+  identity L3VPN_IPV4_MULTICAST {
+    base AFI_SAFI_TYPE;
+    description
+      "Multicast IPv4 MPLS L3VPN (AFI,SAFI = 1,129)";
+    reference "RFC6514";
+  }
+
+  identity L3VPN_IPV6_MULTICAST {
+    base AFI_SAFI_TYPE;
+    description
+      "Multicast IPv6 MPLS L3VPN (AFI,SAFI = 2,129)";
+    reference "RFC6514";
+  }
+
+  identity L2VPN_VPLS {
+    base AFI_SAFI_TYPE;
+    description
+      "BGP-signalled VPLS (AFI,SAFI = 25,65)";
+    reference "RFC4761";
+  }
+
+  identity L2VPN_EVPN {
+    base AFI_SAFI_TYPE;
+    description
+      "BGP MPLS Based Ethernet VPN (AFI,SAFI = 25,70)";
+  }
+
+  identity SRTE_POLICY_IPV4 {
+    base AFI_SAFI_TYPE;
+    description
+      "Segment Routing Traffic Engineering (SRTE) Policy
+      for IPv4 (AFI,SAFI = 1,73)";
+  }
+
+  identity SRTE_POLICY_IPV6 {
+    base AFI_SAFI_TYPE;
+    description
+      "Segment Routing Traffic Engineering (SRTE) Policy
+      for IPv6 (AFI,SAFI = 2,73)";
+  }
+
+  identity BGP_WELL_KNOWN_STD_COMMUNITY {
+    description
+      "Reserved communities within the standard community space
+      defined by RFC1997. These communities must fall within the
+      range 0x00000000 to 0xFFFFFFFF";
+    reference "RFC1997";
+  }
+
+  identity NO_EXPORT {
+    base BGP_WELL_KNOWN_STD_COMMUNITY;
+    description
+      "Do not export NLRI received carrying this community outside
+      the bounds of this autonomous system, or this confederation if
+      the local autonomous system is a confederation member AS. This
+      community has a value of 0xFFFFFF01.";
+    reference "RFC1997";
+  }
+
+  identity NO_ADVERTISE {
+    base BGP_WELL_KNOWN_STD_COMMUNITY;
+    description
+      "All NLRI received carrying this community must not be
+      advertised to other BGP peers. This community has a value of
+      0xFFFFFF02.";
+    reference "RFC1997";
+  }
+
+  identity NO_EXPORT_SUBCONFED {
+    base BGP_WELL_KNOWN_STD_COMMUNITY;
+    description
+      "All NLRI received carrying this community must not be
+      advertised to external BGP peers - including over confederation
+      sub-AS boundaries. This community has a value of 0xFFFFFF03.";
+    reference "RFC1997";
+  }
+
+  identity NOPEER {
+    base BGP_WELL_KNOWN_STD_COMMUNITY;
+    description
+      "An autonomous system receiving NLRI tagged with this community
+      is advised not to readvertise the NLRI to external bi-lateral
+      peer autonomous systems. An AS may also filter received NLRI
+      from bilateral peer sessions when they are tagged with this
+      community value";
+    reference "RFC3765";
+  }
+
+  typedef bgp-session-direction {
+    type enumeration {
+      enum INBOUND {
+        description
+          "Refers to all NLRI received from the BGP peer";
+      }
+      enum OUTBOUND {
+        description
+          "Refers to all NLRI advertised to the BGP peer";
+      }
+    }
+    description
+      "Type to describe the direction of NLRI transmission";
+  }
+
+  typedef bgp-well-known-community-type {
+    type identityref {
+      base BGP_WELL_KNOWN_STD_COMMUNITY;
+    }
+    description
+      "Type definition for well-known IETF community attribute
+      values";
+    reference
+      "IANA Border Gateway Protocol (BGP) Well Known Communities";
+  }
+
+
+  typedef bgp-std-community-type {
+    // TODO: further refine restrictions and allowed patterns
+    // 4-octet value:
+    //  <as number> 2 octets
+    //  <community value> 2 octets
+    type union {
+      type uint32 {
+      // per RFC 1997, 0x00000000 - 0x0000FFFF and 0xFFFF0000 -
+      // 0xFFFFFFFF are reserved
+      }
+      type string {
+        pattern '^(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}'      +
+                '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9]):'      +
+                '(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}'       +
+                '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9])$';
+      }
+    }
+    description
+      "Type definition for standard commmunity attributes represented as
+      a integer value, or a string of the form N:M where N and M are
+      integers between 0 and 65535.";
+    reference "RFC 1997 - BGP Communities Attribute";
+  }
+
+  typedef bgp-ext-community-type {
+    type union {
+      type string {
+        // Type 1: 2-octet global and 4-octet local
+        //         (AS number)        (Integer)
+        pattern '^(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}'      +
+                '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9]):'      +
+                '(429496729[0-5]|42949672[0-8][0-9]|4294967[0-1][0-9]{2}'    +
+                '|429496[0-6][0-9]{3}|42949[0-5][0-9]{4}|4294[0-8][0-9]{5}|' +
+                '429[0-3][0-9]{6}|4[0-1][0-9]{7}|[1-3][0-9]{9}|'             +
+                '[1-9][0-9]{1,8}|[0-9])$';
+      }
+      type string {
+        // Type 2: 4-octet global and 2-octet local
+        //         (ipv4-address)     (integer)
+        pattern '^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|'         +
+                '25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|'         +
+                '2[0-4][0-9]|25[0-5]):'                                +
+                '(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}' +
+                '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9])$';
+      }
+      type string {
+        // RFC5668: 4-octet global and 2-octet local
+        //            (AS number)        (integer)
+        pattern '^(429496729[0-5]|42949672[0-8][0-9]|4294967[0-1][0-9]{2}'   +
+                '|429496[0-6][0-9]{3}|42949[0-5][0-9]{4}|4294[0-8][0-9]{5}|' +
+                '429[0-3][0-9]{6}|4[0-1][0-9]{7}|[1-3][0-9]{9}|'             +
+                '[1-9][0-9]{1,8}|[0-9]):'                                    +
+                '(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}'       +
+                '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9])$';
+      }
+      type string {
+        // route-target with Type 1
+        // route-target:(ASN):(local-part)
+        pattern '^route\-target:'                                             +
+                '(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}'       +
+                '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9]):'      +
+                '(429496729[0-5]|42949672[0-8][0-9]|4294967[0-1][0-9]{2}'    +
+                '|429496[0-6][0-9]{3}|42949[0-5][0-9]{4}|4294[0-8][0-9]{5}|' +
+                '429[0-3][0-9]{6}|4[0-1][0-9]{7}|[1-3][0-9]{9}|'             +
+                '[1-9][0-9]{1,8}|[0-9])$';
+      }
+      type string {
+        // route-target with Type 2
+        // route-target:(IPv4):(local-part)
+        pattern '^route\-target:'                                      +
+                '(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|'          +
+                '25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|'         +
+                '2[0-4][0-9]|25[0-5]):'                                +
+                '(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}' +
+                '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9])$';
+      }
+      type string {
+        // 4-byte AS Type 1 route-target
+        pattern '^route\-target:'                                            +
+                '(429496729[0-5]|42949672[0-8][0-9]|4294967[0-1][0-9]{2}'    +
+                '|429496[0-6][0-9]{3}|42949[0-5][0-9]{4}|4294[0-8][0-9]{5}|' +
+                '429[0-3][0-9]{6}|4[0-1][0-9]{7}|[1-3][0-9]{9}|'             +
+                '[1-9][0-9]{1,8}|[0-9]):'                                    +
+                '(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}'       +
+                '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9])$';
+      }
+      type string {
+        // route-origin with Type 1
+        pattern '^route\-origin:'                                            +
+                '(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}'       +
+                '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9]):'      +
+                '(429496729[0-5]|42949672[0-8][0-9]|4294967[0-1][0-9]{2}'    +
+                '|429496[0-6][0-9]{3}|42949[0-5][0-9]{4}|4294[0-8][0-9]{5}|' +
+                '429[0-3][0-9]{6}|4[0-1][0-9]{7}|[1-3][0-9]{9}|'             +
+                '[1-9][0-9]{1,8}|[0-9])$';
+      }
+      type string {
+        // route-origin with Type 2
+        pattern '^route\-origin:'                                      +
+                '(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|'          +
+                '25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|'         +
+                '2[0-4][0-9]|25[0-5]):'                                +
+                '(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}' +
+                '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9])$';
+      }
+      type string {
+        // 4-byte AS Type 1 route-origin
+        pattern '^route\-origin:'                                            +
+                '(429496729[0-5]|42949672[0-8][0-9]|4294967[0-1][0-9]{2}'    +
+                '|429496[0-6][0-9]{3}|42949[0-5][0-9]{4}|4294[0-8][0-9]{5}|' +
+                '429[0-3][0-9]{6}|4[0-1][0-9]{7}|[1-3][0-9]{9}|'             +
+                '[1-9][0-9]{1,8}|[0-9]):'                                    +
+                '(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}'       +
+                '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9])$';
+      }
+      type string {
+        // Extended Color Community
+        pattern '^color:'                                                    +
+                '[0-1]{2}:'                                                  +
+                '(429496729[0-5]|42949672[0-8][0-9]|4294967[0-1][0-9]{2}'    +
+                '|429496[0-6][0-9]{3}|42949[0-5][0-9]{4}|4294[0-8][0-9]{5}|' +
+                '429[0-3][0-9]{6}|4[0-1][0-9]{7}|[1-3][0-9]{9}|'             +
+                '[1-9][0-9]{1,8}|[0-9])$';
+      }
+    }
+    description
+      "Type definition for extended community attributes. In the case that
+      common communities are utilised, they are represented as a string
+      of the form:
+        - <2b AS>:<4b value> per RFC4360 section 3.1
+        - <4b IPv4>:<2b value> per RFC4360 section 3.2
+        - <4b AS>:<2b value> per RFC5668 section 2.
+        - route-target:<2b AS>:<4b value> per RFC4360 section 4
+        - route-target:<4b IPv4>:<2b value> per RFC4360 section 4
+        - route-origin:<2b ASN>:<4b value> per RFC4360 section 5
+        - route-origin:<4b IPv4>:<2b value> per RFC4360 section 5
+        - color:<CO bits>:<4b value> per draft-ietf-idr-segment-routing-te-policy
+          section 3";
+    reference
+      "RFC 4360 - BGP Extended Communities Attribute
+       RFC 5668 - 4-Octet AS Specific BGP Extended Community
+       draft-ietf-idr-segment-routing-te-policy";
+  }
+
+  typedef bgp-ext-community-recv-type {
+    type union {
+      type bgp-ext-community-type;
+      type binary {
+        length 8;
+      }
+    }
+    description
+      "A type definition utilised to define the extended community
+      in a context where the system is receiving the extended
+      community from an external source, such that the value may be
+      unknown. In the case that the received extended community is
+      unknown it is defined to be a 8-octet quantity formatted
+      according to RFC4360:
+
+      Type Field: 1 or 2 octets.
+      Value Field: Remaining octets.
+
+      The high-order octet of the type field is encoded such that
+      bit 0 indicates whether the extended community type is IANA
+      assigned; and bit 1 indicates whether the extended community
+      is transitive.  The remaining bits of the high-order type
+      field must be interpreted to determine whether the low-order
+      type field should be parsed, or whether the entire remainder
+      of the extended community is a value.";
+    reference
+      "RFC 4360 - BGP Extended Communities Attribute
+       RFC 5668 - 4-Octet AS Specific BGP Extended Community";
+  }
+
+  typedef bgp-community-regexp-type {
+    // TODO: needs more work to decide what format these regexps can
+    // take.
+    type oc-types:std-regexp;
+    description
+      "Type definition for communities specified as regular
+      expression patterns";
+  }
+
+  typedef bgp-origin-attr-type {
+    type enumeration {
+      enum IGP {
+        description
+          "Origin of the NLRI is internal";
+      }
+      enum EGP {
+        description
+          "Origin of the NLRI is EGP";
+      }
+      enum INCOMPLETE {
+        description
+          "Origin of the NLRI is neither IGP or EGP";
+      }
+    }
+    description
+      "Type definition for standard BGP origin attribute";
+    reference "RFC 4271 - A Border Gateway Protocol 4 (BGP-4),
+      Sec 4.3";
+  }
+
+  typedef peer-type {
+    type enumeration {
+      enum INTERNAL {
+        description
+          "Internal (iBGP) peer";
+      }
+      enum EXTERNAL {
+        description
+          "External (eBGP) peer";
+      }
+    }
+    description
+      "Labels a peer or peer group as explicitly internal or
+      external";
+  }
+
+  identity REMOVE_PRIVATE_AS_OPTION {
+    description
+      "Base identity for options for removing private autonomous
+      system numbers from the AS_PATH attribute";
+  }
+
+  identity PRIVATE_AS_REMOVE_ALL {
+    base REMOVE_PRIVATE_AS_OPTION;
+    description
+      "Strip all private autonmous system numbers from the AS_PATH.
+      This action is performed regardless of the other content of the
+      AS_PATH attribute, and for all instances of private AS numbers
+      within that attribute.";
+  }
+
+  identity PRIVATE_AS_REPLACE_ALL {
+    base REMOVE_PRIVATE_AS_OPTION;
+    description
+      "Replace all instances of private autonomous system numbers in
+      the AS_PATH with the local BGP speaker's autonomous system
+      number. This action is performed regardless of the other
+      content of the AS_PATH attribute, and for all instances of
+      private AS number within that attribute.";
+  }
+
+  typedef remove-private-as-option {
+    type identityref {
+      base REMOVE_PRIVATE_AS_OPTION;
+    }
+    description
+      "Set of options for configuring how private AS path numbers
+      are removed from advertisements";
+  }
+
+  typedef rr-cluster-id-type {
+    type union {
+      type uint32;
+      type oc-inet:ipv4-address;
+    }
+    description
+      "Union type for route reflector cluster ids:
+      option 1: 4-byte number
+      option 2: IP address";
+  }
+
+  typedef community-type {
+    type enumeration {
+      enum STANDARD {
+        description "Send only standard communities";
+      }
+      enum EXTENDED {
+        description "Send only extended communities";
+      }
+      enum BOTH {
+        description "Send both standard and extended communities";
+      }
+      enum NONE {
+        description "Do not send any community attribute";
+      }
+    }
+    description
+      "type describing variations of community attributes:
+      STANDARD: standard BGP community [rfc1997]
+      EXTENDED: extended BGP community [rfc4360]
+      BOTH: both standard and extended community";
+  }
+
+
+  typedef as-path-segment-type {
+    type enumeration {
+      enum AS_SEQ {
+        description
+          "Ordered set of autonomous systems that a route in
+          the UPDATE message has traversed";
+      }
+      enum AS_SET {
+        description
+          "Unordered set of autonomous systems that a route in
+          the UPDATE message has traversed";
+      }
+      enum AS_CONFED_SEQUENCE {
+        description
+          "Ordered set of Member Autonomous
+          Systems in the local confederation that the UPDATE message
+          has traversed";
+      }
+      enum AS_CONFED_SET {
+        description
+          "Unordered set of Member Autonomous Systems
+          in the local confederation that the UPDATE message has
+          traversed";
+      }
+    }
+    description
+      "Defines the types of BGP AS path segments.";
+  }
+
+
+  // BGP errors submodule
+  identity BGP_ERROR_CODE {
+    description
+      "Indicates the error type in a BGP NOTIFICATION message";
+    reference
+      "RFC 4271 - A Border Gateway Protocol 4 (BGP-4)";
+  }
+
+  identity BGP_ERROR_SUBCODE {
+    description
+      "Provides more specific information about the nature of the
+      error reported in a NOTIFICATION message. Each Error
+      Code may have one or more Error Subcodes associated with it.";
+    reference
+      "RFC 4271 - A Border Gateway Protocol 4 (BGP-4)";
+  }
+
+
+  identity UNSPECIFIC {
+    base  BGP_ERROR_SUBCODE;
+    description
+      "The error subcode field is unspecific when the NOTIFICATION
+      message does not include any specific error subcode (i.e..,
+      value 0).";
+  }
+
+  identity MESSAGE_HEADER_ERROR {
+    base BGP_ERROR_CODE;
+    description
+      "Errors detected while processing the Message Header";
+  }
+
+  identity OPEN_MESSAGE_ERROR {
+    base BGP_ERROR_CODE;
+    description
+      "Errors detected while processing the OPEN message";
+  }
+
+  identity UPDATE_MESSAGE_ERROR {
+    base BGP_ERROR_CODE;
+    description
+      "Errors detected while processing the UPDATE message";
+  }
+
+  identity HOLD_TIMER_EXPIRED {
+    base BGP_ERROR_CODE;
+    description
+      "Indicates that the system did not receive successive
+      KEEPALIVE, UPDATE, and/or NOTIFICATION messages within the
+      period specified in the Hold Time field of the OPEN message";
+  }
+
+  identity FINITE_STATE_MACHINE_ERROR {
+    base BGP_ERROR_CODE;
+    description
+      "Error detected by the BGP Finite State Machine
+      (e.g., receipt of an unexpected event)";
+  }
+
+  identity CEASE {
+    base BGP_ERROR_CODE;
+    description
+      "Sent by a BGP peer to close its BGP connection in absence of
+      any fatal errors.  If the BGP speaker terminates its
+      connection with a neihbor because the number of prefixes
+      received exceeds the configured upper bound, the speaker must
+      send the neighbor a NOTIFICATION message with the Cease
+      error code.";
+  }
+
+  identity ROUTE_REFRESH_MESSAGE_ERROR {
+    base BGP_ERROR_CODE;
+    description
+      "The length, excluding the fixed-size message header, of the
+      received ROUTE-REFRESH message with Message Subtype 1 and 2 is
+      not 4.  Applicable only when a BGP speaker has received the
+      'Enhanced Route Refresh Capability' from a peer";
+    reference
+      "RFC 7313 - Enhanced Route Refresh Capability for BGP-4";
+  }
+
+  identity MESSAGE_HEADER_SUBCODE {
+    base BGP_ERROR_SUBCODE;
+    description
+      "Error subcode definitions for Message Header error
+      notifications";
+  }
+
+  identity CONNECTION_NOT_SYNCHRONIZED {
+    base MESSAGE_HEADER_SUBCODE;
+    description
+      "Marker field of the message header is not all ones as
+      expected";
+  }
+
+  identity BAD_MESSAGE_LENGTH {
+    base MESSAGE_HEADER_SUBCODE;
+    description
+      "Indicates the message has an erroneous length with one
+      or more of the following:
+
+      - the Length field of the message header is less than 19 or
+        greater than 4096
+
+      - the Length field of an OPEN message is less than the minimum
+        length of the OPEN message
+
+      - the Length field of an UPDATE message is less than the
+        minimum length of the UPDATE message
+
+      - the Length field of a KEEPALIVE message is not equal to 19
+
+      - the Length field of a NOTIFICATION message is less than the
+        minimum length of the NOTIFICATION message
+
+      The erroneous Length field must be reported in the
+      NOTIFICATION data.";
+  }
+
+  identity BAD_MESSAGE_TYPE {
+    base MESSAGE_HEADER_SUBCODE;
+    description
+      "Type field of the message header is not recognized.  The
+      erroneous type field must be reported in the NOTIFICATION
+      data";
+  }
+
+  identity OPEN_MESSAGE_SUBCODE {
+    base BGP_ERROR_SUBCODE;
+    description
+      "Error subcode definitions for OPEN message error
+      notifications";
+  }
+
+  identity UNSUPPORTED_VERSION_NUMBER {
+    base OPEN_MESSAGE_SUBCODE;
+    description
+      "Version number in the Version field of the received OPEN
+      message is not supported";
+  }
+
+  identity BAD_PEER_AS {
+    base  OPEN_MESSAGE_SUBCODE;
+    description
+      "Autonomous System field of the OPEN message is unacceptable";
+  }
+
+  identity BAD_BGP_IDENTIFIER {
+    base OPEN_MESSAGE_SUBCODE;
+    description
+      "BGP Identifier field of the OPEN message is syntactically
+      incorrect";
+  }
+
+  identity UNSUPPORTED_OPTIONAL_PARAMETER {
+    base OPEN_MESSAGE_SUBCODE;
+    description
+      "One of the Optional Parameters in the OPEN message is not
+      recognized";
+  }
+
+  identity UNACCEPTABLE_HOLD_TIME {
+    base OPEN_MESSAGE_SUBCODE;
+    description
+      "Hold Time field of the OPEN message is unacceptable";
+  }
+
+  identity UNSUPPORTED_CAPABILITY {
+    base OPEN_MESSAGE_SUBCODE;
+    description
+      "Inidicates that the peer does not support capabilities
+      advertisement -- the peer may send this subcode in response to
+      an OPEN message that carries the Capabilities Optional
+      Parameter";
+    reference
+      "RFC 5492 - Capabilities Advertisement with BGP-4";
+  }
+
+  identity UPDATE_MESSAGE_SUBCODE {
+    base BGP_ERROR_SUBCODE;
+    description
+      "Error subcode definitions for UPDATE message error
+      notifications";
+  }
+
+  identity MALFORMED_ATTRIBUTE_LIST {
+    base UPDATE_MESSAGE_SUBCODE;
+    description
+      "Inidicates Withdrawn Routes Length or Total Attribute Length
+      is too large, or
+
+      An attribute appears more than once in the UPDATE message";
+  }
+
+  identity UNRECOGNIZED_WELL_KNOWN_ATTRIBUTE {
+    base UPDATE_MESSAGE_SUBCODE;
+    description
+      "One or more of the well-known mandatory attributes are not
+      recognized";
+  }
+
+  identity MISSING_WELL_KNOWN_ATTRIBUTE {
+    base UPDATE_MESSAGE_SUBCODE;
+    description
+      "One or more of the well-known mandatory attributes are not
+      present";
+  }
+
+  identity ATTRIBUTE_FLAGS_ERROR {
+    base UPDATE_MESSAGE_SUBCODE;
+    description
+      "Attribute has Attribute Flags that conflict with the
+      Attribute Type Code";
+  }
+
+  identity ATTRIBUTE_LENGTH_ERROR {
+    base UPDATE_MESSAGE_SUBCODE;
+    description
+      "Attribute has an Attribute Length that conflicts with the
+      expected length (based on the attribute type code)";
+  }
+
+  identity INVALID_ORIGIN_ATTRIBUTE {
+    base UPDATE_MESSAGE_SUBCODE;
+    description
+      "ORIGIN attribute has an undefined value";
+  }
+
+  identity INVALID_NEXT_HOP_ATTRIBUTE {
+    base UPDATE_MESSAGE_SUBCODE;
+    description
+      "The NEXT_HOP attribute field is syntactically incorrect";
+  }
+
+  identity OPTIONAL_ATTRIBUTE_ERROR {
+    base UPDATE_MESSAGE_SUBCODE;
+    description
+      "An error is detected in the value of a recognized optional
+      attribute (such an attribute must be discarded)";
+  }
+
+  identity INVALID_NETWORK_FIELD {
+    base UPDATE_MESSAGE_SUBCODE;
+    description
+      "The NLRI field in the UPDATE message is syntactically
+      incorrect";
+  }
+
+  identity MALFORMED_AS_PATH {
+    base UPDATE_MESSAGE_SUBCODE;
+    description
+      "The AS_PATH attribute is syntactically incorrect";
+  }
+
+  identity FINITE_STATE_MACHINE_SUBCODE {
+    base BGP_ERROR_SUBCODE;
+    description
+      "Error subcode definitions for BGP finite state machine
+      errors.";
+    reference
+      "RFC 6608 - Subcodes for BGP Finite State Machine Error";
+  }
+
+  identity RECEIVE_UNEXPECTED_MESSAGE_OPENSENT {
+    base FINITE_STATE_MACHINE_SUBCODE;
+    description
+      "The peer BGP speaker received an unexpected message from
+      the local system while the peer speaker session was in the
+      OpenSent state";
+  }
+
+  identity RECEIVE_UNEXPECTED_MESSAGE_OPENCONFIRM {
+    base FINITE_STATE_MACHINE_SUBCODE;
+    description
+      "The peer BGP speaker received an unexpected message from
+      the local system while the peer speaker session was in the
+      OpenConfirm state";
+  }
+
+  identity RECEIVE_UNEXPECTED_MESSAGE_ESTABLISHED {
+    base FINITE_STATE_MACHINE_SUBCODE;
+    description
+      "The peer BGP speaker received an unexpected message from
+      the local system while the peer speaker session was in the
+      Established state";
+  }
+
+  identity CEASE_SUBCODE {
+    base BGP_ERROR_SUBCODE;
+    description
+      "Error subcode definitions for Cease notification messages";
+    reference
+      "RFC 4486 - Subcodes for BGP Cease Notification Message";
+  }
+
+  identity MAX_NUM_PREFIXES_REACHED {
+    base CEASE_SUBCODE;
+    description
+      "The peer BGP speaker terminated its peering with the local
+      system because the number of address prefixes received
+      exceeds a locally configured upper bound";
+  }
+
+  identity ADMINISTRATIVE_SHUTDOWN {
+    base CEASE_SUBCODE;
+    description
+      "The peer BGP speaker administratively shut down its peering
+      with the local system";
+  }
+
+  identity PEER_DE_CONFIGURED {
+    base CEASE_SUBCODE;
+    description
+      "The peer BGP speaker de-configure the peering with the local
+      system";
+  }
+
+  identity ADMINISTRATIVE_RESET {
+    base CEASE_SUBCODE;
+    description
+      "The peer BGP speaker administratively reset the peering with
+      the local system";
+  }
+
+  identity CONNECTION_REJECTED {
+    base CEASE_SUBCODE;
+    description
+      "The peer BGP speaker disallowed the BGP connection to the
+      local system after the peer speaker accepted a transport
+      protocol connection";
+  }
+
+  identity OTHER_CONFIG_CHANGE {
+    base CEASE_SUBCODE;
+    description
+      "The peer BGP speaker administratively reset the peering with
+      the local sytem due to a configuration change that is not
+      covered by another subcode.";
+  }
+
+  identity CONN_COLLISION_RESOLUTION {
+    base CEASE_SUBCODE;
+    description
+      "The peer BGP speaker sent a CEASE NOTIFICATION as a result of
+      the collision resolution procedure described in RFC 4271";
+  }
+
+  identity OUT_OF_RESOURCES {
+    base CEASE_SUBCODE;
+    description
+      "The peer BGP speaker ran out of resources (e.g., memory) and
+      reset the session with the local system";
+  }
+
+  identity ROUTE_REFRESH_SUBCODE {
+    base BGP_ERROR_SUBCODE;
+    description
+      "Error subcode definitions for the ROUTE-REFRESH message
+      error";
+  }
+
+  identity INVALID_MESSAGE_LENGTH {
+    base ROUTE_REFRESH_SUBCODE;
+    description
+      "The length, excluding the fixed-size message header, of the
+      received ROUTE-REFRESH message with Message Subtype 1 and 2
+      is not 4";
+  }
+}

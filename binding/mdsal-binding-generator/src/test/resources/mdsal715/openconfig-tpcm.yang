@@ -1,0 +1,55 @@
+module openconfig-tpcm {
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/system/tpcm/extension";
+
+    prefix "oc-tpcm";
+
+
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module contains a collection of YANG definitions for TPCM component";
+
+  revision "2020-06-01" {
+    description
+      "Initial draft revision.";
+     reference "0.1.0";
+  }
+
+
+
+  // grouping statements
+  grouping tpcm-top {
+    description
+      "Top level grouping for attributes for tpcm.";
+
+    container tpcm {
+      description
+        "Parameters related to tpcm configuration and status.";
+
+        container state {
+          config false;
+          description
+            "State parameters of tpcm";
+            uses tpcm-images-state;
+        }
+    }
+
+  }
+
+  grouping tpcm-images-state {
+      description
+          "list the existing TPC images stored on TPC storage folder";
+          leaf-list tpcm-image-list {
+              type string;
+              description
+                  "tpcm image list";
+      }
+  }
+
+}

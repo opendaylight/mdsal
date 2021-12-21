@@ -1,0 +1,51 @@
+module openconfig-if-types-ext {
+  yang-version "1";
+
+  namespace "http://openconfig.net/yang/openconfig-if-types-ext";
+
+  prefix "oc-if-ext";
+
+  // import statements
+  import openconfig-if-types { prefix oc-if-types; }
+  import openconfig-extensions { prefix oc-ext; }
+  import iana-if-type { prefix ianaift; }
+
+  // meta
+  organization
+    "Broadcom Inc";
+
+  contact
+    "Broadcom Inc";
+
+  description
+    "This module contains a set of interface type definitions that
+    are used across OpenConfig models. These are generally physical
+    or logical interfaces, distinct from hardware ports (which are
+    described by the OpenConfig platform model).";
+
+  // oc-ext:openconfig-version "0.2.1";
+
+  revision "2019-12-04" {
+    description
+      "Initial version";
+    reference "0.1.0";
+  }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:regexp-posix;
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+// this is not possible to use this way. cannot have two identities with the same name
+//  identity IF_NVE {
+//    base oc-if-types:INTERFACE_TYPE;
+//    description
+//      "Vxlan interfaces";
+//  }
+
+  identity IF_NVE {
+    base ianaift:iana-interface-type;
+    description
+      "Vxlan interfaces";
+  }
+}

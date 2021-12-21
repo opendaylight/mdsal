@@ -1,0 +1,307 @@
+module openconfig-if-ethernet-ext2 {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/ethernet-ext2/extension";
+
+  prefix "oc-eth-ext2";
+
+  // import some basic types
+  import openconfig-if-ethernet { prefix oc-eth; }
+  import openconfig-interfaces { prefix oc-if; }
+  import openconfig-extensions { prefix oc-ext; }
+  import openconfig-yang-types { prefix oc-yang; }
+  import openconfig-platform-types { prefix oc-platform-types; }
+
+  // meta
+  organization "OpenConfig working group";
+
+  contact
+    "OpenConfig working group
+    www.openconfig.net";
+
+  description
+    "This module adds extensions to the base ethernet configuration
+    and operational state model to support additional use cases.";
+
+  oc-ext:openconfig-version "0.1.1";
+
+  revision "2020-08-31" {
+    description
+      "Added port-unreliable-los extensions.";
+    reference "0.1.3";
+  }
+
+  revision "2020-08-04" {
+    description
+      "Added port-fec extension.";
+    reference "0.1.2";
+  }
+
+  revision "2020-05-04" {
+    description
+      "Add OpenConfig module metadata extensions.";
+    reference "0.1.1";
+  }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:regexp-posix;
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+  identity UNRELIABLE_LOS_MODE_TYPE {
+    description
+      "Base identity for unreliable LOS modes.";
+  }
+
+  identity UNRELIABLE_LOS_MODE_OFF {
+    base UNRELIABLE_LOS_MODE_TYPE;
+    description
+      "Force unreliable LOS mode to be disabled,
+       regardless of the transceiver support.";
+  }
+
+  identity UNRELIABLE_LOS_MODE_ON {
+    base UNRELIABLE_LOS_MODE_TYPE;
+    description
+      "Force  unreliable LOS mode to enabled,
+       regardless of the transceiver support.";
+  }
+
+  identity UNRELIABLE_LOS_MODE_AUTO {
+    base UNRELIABLE_LOS_MODE_TYPE;
+    description
+      "Configure unreliable LOS mode to match the transceiver
+       supported mode.";
+  }
+
+  grouping if-ethernet-ext2-frames-size-dist-state {
+    description
+      "Grouping for defining the size distribution of the frames
+      transmitted";
+
+    container eth-in-distribution {
+      description
+        "The size distribution of the received frames.";
+
+        leaf in-frames-64-octets {
+          type oc-yang:counter64;
+          description
+            "Number of packets (including bad packets) received that
+            were 64 bytes in length (excluding framing bits but
+            including FCS bytes).";
+        }
+
+        leaf in-frames-65-127-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 65 and 127 bytes in length (excluding framing bits
+            but including FCS bytes).";
+        }
+
+        leaf in-frames-128-255-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 128 and 255 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf in-frames-256-511-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 256 and 511 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf in-frames-512-1023-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 512 and 1023 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf in-frames-1024-1518-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 1024 and 1518 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf in-frames-1519-2047-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 1519 and 2047 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf in-frames-2048-4095-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 2048 and 4095 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf in-frames-4096-9216-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 4096 and 9216 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf in-frames-9217-16383-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 9217 and 16383 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+    }
+
+    container eth-out-distribution {
+      description
+        "The size distribution of the transmitted frames.";
+
+        leaf out-frames-64-octets {
+          type oc-yang:counter64;
+          description
+            "Number of packets (including bad packets) transmitted that
+            were 64 bytes in length (excluding framing bits but
+            including FCS bytes).";
+        }
+
+        leaf out-frames-65-127-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets transmitted that were
+            between 65 and 127 bytes in length (excluding framing bits
+            but including FCS bytes).";
+        }
+
+        leaf out-frames-128-255-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets transmitted that were
+            between 128 and 255 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf out-frames-256-511-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets transmitted that were
+            between 256 and 511 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf out-frames-512-1023-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets transmitted that were
+            between 512 and 1023 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf out-frames-1024-1518-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets transmitted that were
+            between 1024 and 1518 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf out-frames-1519-2047-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets transmitted that were
+            between 1519 and 2047 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf out-frames-2048-4095-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets transmitted that were
+            between 2048 and 4095 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf out-frames-4096-9216-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets transmitted that were
+            between 4096 and 9216 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf out-frames-9217-16383-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets transmitted that were
+            between 9217 and 16383 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+    }
+  }
+  // augment statements
+
+  augment "/oc-if:interfaces/oc-if:interface/oc-eth:ethernet/" +
+    "oc-eth:state/oc-eth:counters" {
+      description
+        "Adds size distribution to the ethernet counters.";
+
+      uses if-ethernet-ext2-frames-size-dist-state;
+  }
+
+  augment "/oc-if:interfaces/oc-if:interface/oc-eth:ethernet/" +
+    "oc-eth:state" {
+      description "Adds forward error correction state info on an interface";
+      leaf port-fec {
+        type identityref {
+          base oc-platform-types:FEC_MODE_TYPE;
+        }
+        description "FEC mode configured on the port.";
+      }
+  }
+  augment "/oc-if:interfaces/oc-if:interface/oc-eth:ethernet/" +
+    "oc-eth:config" {
+      description "Adds forward error correction config info on an interface";
+      leaf port-fec {
+        type identityref {
+          base oc-platform-types:FEC_MODE_TYPE;
+        }
+        description "FEC mode configured on the port.";
+      }
+  }
+
+  augment "/oc-if:interfaces/oc-if:interface/oc-eth:ethernet/" +
+    "oc-eth:state" {
+      description "Adds unreliable LOS mode state on a port.";
+      leaf port-unreliable-los {
+        type identityref {
+          base oc-eth-ext2:UNRELIABLE_LOS_MODE_TYPE;
+        }
+        description "Unreliable LOS mode on a port.";
+      }
+  }
+
+  augment "/oc-if:interfaces/oc-if:interface/oc-eth:ethernet/" +
+    "oc-eth:config" {
+      description "Adds unreliable LOS mode configuration on a port";
+      leaf port-unreliable-los {
+        type identityref {
+          base oc-eth-ext2:UNRELIABLE_LOS_MODE_TYPE;
+        }
+        description "Unreliable LOS mode on a port.";
+      }
+  }
+}

@@ -1,0 +1,197 @@
+module openconfig-kdump {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/system/kdump/extension";
+
+  prefix "oc-kdump";
+
+  // import some basic types
+  import openconfig-extensions { prefix oc-ext; }
+
+  // meta
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module contains a collection of YANG definitions for the
+    Linux Kernel crash dumping (Kdump) mechanism. The Kdump feature
+    is used to detect and record Linux kernel crash events.";
+
+  revision "2020-05-01" {
+    description
+      "Initial draft revision.";
+     reference "0.1.0";
+  }
+
+  oc-ext:openconfig-version "1.0.2";
+
+  // typedef statements
+
+  typedef kdump-current-state {
+    type enumeration {
+      enum KDUMP_DISABLED {
+        description
+          "The Kdump mechanism is disabled";
+      }
+      enum KDUMP_READY_AFTER_REBOOT {
+        description
+          "The Kdump mechanism will be operational after a system reboot";
+      }
+      enum KDUMP_READY {
+        description
+          "The Kdump mechanism is operational";
+      }
+    }
+    description
+      "The state of the Kdump mechanism";
+  }
+
+  // grouping statements
+
+  grouping kdump-top {
+    description
+      "Top level grouping for attributes for Kdump.";
+
+    container kdump {
+      description
+        "Parameters related to Kdump configuration and status.";
+
+        container config {
+          description
+            "Configuration parameters of Kdump";
+
+          uses kdump-config;
+        }
+
+        container state {
+          config false;
+          description
+            "State parameters of Kdump";
+
+          uses kdump-config;
+          uses kdump-state;
+        }
+
+        container kdump-records {
+          config false;
+          description
+          "Kdump crash records for all the kernel crash events that
+          have been detected and recorded";
+
+          list kdump-record {
+            key "id";
+            description
+            "Kdump crash records for all the kernel crash events that
+            have been detected and recorded";
+
+          leaf id {
+            type leafref {
+              path "../state/id";
+            }
+            description
+            "Unique string identifying the kernel kdump crash record";
+          }
+
+          container state {
+            description
+              "Information of a kernel crash record captured by the kdump mechanism";
+
+            leaf id {
+              type string;
+              description
+                "Unique string identifying the kernel kdump crash record";
+            }
+
+            leaf vmcore-diagnostic-message {
+              type string;
+              description
+                "A copy of the kernel diagnostic message log when the kernel crash
+                has occurred";
+            }
+
+            leaf vmcore-diagnostic-message-file {
+              type string;
+              description
+                "The file holding the kernel diagnostic message log when the kernel
+                crash occurred";
+            }
+
+            leaf vmcore {
+              type string;
+              description
+                "The exported Kernel memory image that can be analyzed for the purposes
+                of debugging and determining the cause of a kernel crash";
+            }
+          }
+        }
+      }
+    }
+  }
+
+  grouping kdump-config {
+    description
+      "Kdump configuration parameters";
+
+    leaf enable {
+      type boolean;
+      description
+        "Enable or Disable the Kdump mechanism";
+    }
+
+    leaf memory {
+      type string {
+        pattern "(((([0-9]+[MG])?(-([0-9]+[MG])?):)?[0-9]+[MG],?)+)";
+      }
+      description
+        "Memory reserved for loading the crash handler kernel. The amount
+        of reserved memory can be variable, depending on the total amount
+        of installed memory. The syntax for variable memory reservation is
+        <range1>:<size1>,<range2>:<size2>. For example, 512M-2G:64M,2G-:128M,
+        where a memory of 64MB is reserved for the crash kernel for systems
+        with installed memory between 512MB and 2GB, 128MB is reserved for
+        systems that have more than 2GB installed memory. An absolute memory
+        value can also be specified in the format <size>M or <size>G.
+        For example, 512M.";
+    }
+
+    leaf max-dumps {
+      type uint8 {
+        range "1 .. 9";
+      }
+      description
+        "Maximum number of Kernel Core files Stored";
+    }
+  }
+
+  grouping kdump-state {
+    description
+      "Kdump status parameters.";
+
+    leaf current-state {
+      type kdump-current-state;
+      description
+        "Indicates the readiness of the Kdump mechanism to detect
+        and record kernel crash events.";
+    }
+
+    leaf allocated-memory {
+      type uint64;
+      units bytes;
+      description
+        "The memory reserved and allocated for loading the kdump crash kernel";
+    }
+  }
+
+  // data definition statements
+
+  // augment statements
+
+  // rpc statements
+
+  // notification statements
+}

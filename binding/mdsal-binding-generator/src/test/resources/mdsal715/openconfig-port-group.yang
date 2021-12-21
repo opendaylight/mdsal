@@ -1,0 +1,113 @@
+module openconfig-port-group {
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/system/port-group/extension";
+
+    prefix "oc-port-group";
+
+  import openconfig-interfaces { prefix oc-if; }
+  import openconfig-if-ethernet { prefix oc-eth; }
+
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module contains a collection of YANG definitions for port-group component";
+
+  revision "2020-06-01" {
+    description
+      "Initial draft revision.";
+     reference "0.1.0";
+  }
+
+
+ grouping port-groups-top {
+    description
+      "Top-level grouping for port-group configuration and
+      operational state data";
+
+    container port-groups {
+      description
+        "Top level container for port-groups, including configuration
+        and state data.";
+
+
+        list port-group {
+            key "id";
+
+            description
+            "The list of named port-groups on the device.";
+
+            leaf id {
+                type leafref {
+                path "../config/id";
+                }
+                description
+                "Port group id";
+            }
+
+            container config {
+                description
+                "Port group configuration";
+                leaf id {
+                    type string;
+                    description
+                    "The port-group index";
+                }
+                leaf speed {
+                    type identityref {
+                        base oc-eth:ETHERNET_SPEED;
+                    }
+
+                    description
+                    "Speed for the port-group.
+                     This basically configures the speed for all the memebr ports of prot-group.
+                     The supported values are defined by ETHERNET_SPEED identities, though all
+                     the speeds in ETHERNET_SPEED will not be supported";
+                }
+            }
+            container state {
+                config false;
+                description
+                "The port-group along with the members and speed";
+                leaf id {
+                    type string;
+                    description
+                    "The port-group index";
+                }
+                leaf speed {
+                    type identityref {
+                    base oc-eth:ETHERNET_SPEED;
+                    }
+                    description
+                    "Speed for the port-group.
+                     This basically configures the speed for all the memebr ports of prot-group.
+                     The supported values are defined by ETHERNET_SPEED identities, though all
+                     the speeds in ETHERNET_SPEED will not be supported";
+                }
+                leaf-list valid-speeds {
+                    type identityref {
+                    base oc-eth:ETHERNET_SPEED;
+                    }
+                    description
+                    "Valid speeds for the port-group";
+                }
+                leaf member-if-start {
+                    type oc-if:base-interface-ref;
+                    description
+                    "Port group member interface starts with this";
+                }
+                leaf member-if-end {
+                    type oc-if:base-interface-ref;
+                    description
+                    "Port group member interface ends with this";
+                }
+            }
+        }
+    }
+  }
+  uses port-groups-top;
+}

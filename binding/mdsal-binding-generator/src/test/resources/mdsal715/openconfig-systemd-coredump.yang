@@ -1,0 +1,185 @@
+module openconfig-systemd-coredump {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/system/systemd-coredump/extension";
+
+  prefix "oc-systemd-coredump";
+
+  // import some basic types
+  import openconfig-types { prefix "oc-types"; }
+  import openconfig-extensions { prefix oc-ext; }
+
+  // meta
+  organization "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module contains a collection of YANG definitions for the
+    Linux systemd-coredump application core dump utility. The systemd-coredump
+    feature is used to detect and acquire information about application crash events
+    in the system.";
+
+  revision "2020-05-14" {
+    description
+      "Initial draft revision";
+     reference "0.1.0";
+  }
+
+  oc-ext:openconfig-version "1.0.2";
+
+  // grouping statements
+
+  grouping systemd-coredump-top {
+    description
+      "Top level grouping for attributes for systemd-coredump";
+
+    container systemd-coredump {
+      description
+        "Parameters related to systemd-coredump configuration and status";
+
+      container config {
+        description
+          "Configuration parameters of systemd-coredump";
+
+        uses systemd-coredump-config;
+      }
+
+      container state {
+        config false;
+        description
+          "State parameters of systemd-coredump";
+
+        uses systemd-coredump-config;
+      }
+
+      container core-file-records {
+        config false;
+        description
+          "List of systemd-coredump generated core file information";
+
+        list core-file-record {
+          key "timestamp";
+          description
+            "List core dumps captured in the systemd-journal";
+
+          leaf timestamp {
+            type leafref {
+              path "../state/timestamp";
+            }
+            description
+              "The time of the crash, as reported by the kernel.
+              It is expressed as the number of nanoseconds since the
+              Unix epoch";
+          }
+
+          container state {
+            description
+              "Information of a core file capture in the systemd-journal";
+
+            leaf timestamp {
+              type oc-types:timeticks64;
+              description
+                "The time of the crash, as reported by the kernel.
+                It is expressed as the number of nanoseconds since the
+                Unix epoch";
+            }
+
+            leaf executable {
+              type string;
+              description
+                "The full path to the application executable that has crashed";
+            }
+
+            leaf core-file {
+              type string;
+              description
+                "The application core dump of the executable that has crashed";
+            }
+
+            leaf pid {
+              type uint64;
+              description
+                "The identifier of the process that crashed";
+            }
+
+            leaf uid {
+              type uint32;
+              description
+                "The user identifier of the process that crashed";
+            }
+
+            leaf gid {
+              type uint32;
+              description
+                "The group identifier of the process that crashed";
+            }
+
+            leaf signal {
+              type uint32;
+              description
+                "The signal that caused the process to crash, when applicable. When
+                this information is not available, a value of 0 is set";
+            }
+
+            leaf command-line {
+              type string;
+              description
+                "The command line arguments of the process that crashed";
+            }
+
+            leaf boot-identifier {
+              type string;
+              description
+                "The unique identifier of the local system that is generated and
+                set on each system boot up event";
+            }
+
+            leaf machine-identifier {
+              type string;
+              description
+                "The unique machine identifier of the local system that is set
+                during installation";
+            }
+
+            leaf crash-message {
+              type string;
+              description
+                "A copy of the application stack trace information of the process
+                that crashed";
+            }
+
+            leaf core-file-present {
+              type boolean;
+              description
+                "Indicates whether the captured core file exists on local disk or
+                has been removed";
+            }
+          }
+        }
+      }
+    }
+  }
+
+  grouping systemd-coredump-config {
+    description
+      "systemd-coredump configuration parameters";
+
+    leaf enable {
+      type boolean;
+      description
+        "Enable or Disable the application systemd-coredump mechanism";
+    }
+  }
+
+  // data definition statements
+
+  // augment statements
+
+  // rpc statements
+
+  // notification statements
+}

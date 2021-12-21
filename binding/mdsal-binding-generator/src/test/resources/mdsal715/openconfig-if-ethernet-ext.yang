@@ -1,0 +1,195 @@
+module openconfig-if-ethernet-ext {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/ethernet-ext/extension";
+
+  prefix "oc-eth-ext";
+
+  // import some basic types
+  import openconfig-interfaces { prefix oc-if; }
+  import openconfig-if-ethernet { prefix oc-eth; }
+  import openconfig-yang-types { prefix oc-yang; }
+  import openconfig-extensions { prefix oc-ext; }
+
+
+  // meta
+  organization "OpenConfig working group";
+
+  contact
+    "OpenConfig working group
+    www.openconfig.net";
+
+  description
+    "This module adds extensions to the base ethernet configuration
+    and operational state model to support additional use cases.";
+
+  oc-ext:openconfig-version "0.1.1";
+
+  revision "2018-11-21" {
+    description
+      "Add OpenConfig module metadata extensions.";
+    reference "0.1.1";
+  }
+
+  revision "2018-07-10" {
+    description
+      "Initial version of Ethernet extensions module to add frame
+      size distribution stats";
+    reference "0.1.0";
+  }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:regexp-posix;
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+  grouping if-ethernet-ext-ethernet-in-frames-size-dist {
+    description
+      "Grouping for defining the size distribution of the frames
+      received";
+
+    container in-distribution {
+      description
+        "The size distribution of the received frames.";
+
+        leaf in-frames-64-octets {
+          type oc-yang:counter64;
+          description
+            "Number of packets (including bad packets) received that
+            were 64 bytes in length (excluding framing bits but
+            including FCS bytes).";
+        }
+
+        leaf in-frames-65-127-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 65 and 127 bytes in length (excluding framing bits
+            but including FCS bytes).";
+        }
+
+        leaf in-frames-128-255-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 128 and 255 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf in-frames-256-511-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 256 and 511 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf in-frames-512-1023-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 512 and 1023 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+
+        leaf in-frames-1024-1518-octets {
+          type oc-yang:counter64;
+          description
+            "Number of good and bad packets received that were
+            between 1024 and 1518 bytes in length inclusive
+            (excluding framing bits but including FCS bytes).";
+        }
+    }
+  }
+
+  grouping if-ethernet-ext-storm-control-config {
+      description
+          "Configurable items at the storm-control level";
+      leaf ifname {
+          type leafref {
+              path "/oc-if:interfaces/oc-if:interface/oc-if:config/oc-if:name";
+          }
+          description
+              "name of interface on which storm-control is enabled";
+      }
+      leaf storm-type {
+          type enumeration{
+              enum BROADCAST {
+                  description "Broadcast storm-control on interface";
+              }
+              enum UNKNOWN_UNICAST {
+                  description "Unknown unicast storm-control on interface";
+              }
+              enum UNKNOWN_MULTICAST {
+                  description "Unknown multicast storm-control on interface";
+              }
+          }
+          description
+              "Type of storm-control enabled on ethernet interface";
+      }
+      leaf kbps {
+          type uint32 {
+              range "0..100000000" {
+                  error-message "kbps value out of range";
+              }
+          }
+          description
+              "kbps value for storm-control on ethernet interface";
+      }
+  }
+
+  grouping if-ethernet-ext-storm-control-state {
+      description
+          "Operational state parameters for storm-control on interface";
+  }
+
+  grouping if-ethernet-ext-storm-control-top{
+      description
+          "Grouping for storm-control on ethernet interface";
+
+      container storm-control {
+          description
+              "Storm control per ethernet interface";
+          list storm-control-list {
+              key "storm-type";
+              description
+                  "List of storm-control enabled on ethernet interface";
+              leaf storm-type {
+                  type leafref {
+                      path "../config/storm-type";
+                  }
+                  description
+                      "Type of storm-control enabled on ethernet interface";
+              }
+              container config {
+                  description "Config parameters for storm-control instance";
+                  uses if-ethernet-ext-storm-control-config;
+              }
+              container state {
+                  config false;
+                  description "State parameters for storm-control instance";
+                  uses if-ethernet-ext-storm-control-config;
+                  uses if-ethernet-ext-storm-control-state;
+              }
+          }
+      }
+  }
+
+  // augment statements
+
+  augment "/oc-if:interfaces/oc-if:interface/oc-eth:ethernet/" +
+    "oc-eth:state/oc-eth:counters" {
+      description
+        "Adds size distribution to the ethernet counters";
+
+      uses if-ethernet-ext-ethernet-in-frames-size-dist;
+  }
+
+  augment "/oc-if:interfaces/oc-if:interface/oc-eth:ethernet" {
+          description
+              "Storm control support on ethernet interface";
+          uses if-ethernet-ext-storm-control-top;
+  }
+}

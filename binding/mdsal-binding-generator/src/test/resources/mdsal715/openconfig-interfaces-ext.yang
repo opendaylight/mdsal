@@ -1,0 +1,592 @@
+module openconfig-interfaces-ext {
+
+    yang-version "1";
+
+    // namespace
+    namespace "http://openconfig.net/yang/interfaces/extension";
+
+    prefix "oc-intf-ext";
+
+    import openconfig-interfaces { prefix oc-intf; }
+    import openconfig-vlan { prefix oc-vlan; }
+    import openconfig-if-ip {prefix oc-ip; }
+    import openconfig-if-ip-ext {prefix oc-ip-ext; }
+    import openconfig-if-ethernet {prefix oc-eth; }
+    import openconfig-inet-types { prefix oc-inet; }
+    import openconfig-lacp {prefix oc-lacp; }
+    import openconfig-if-poe {prefix oc-poe; }
+    import openconfig-if-tunnel {prefix oc-tun; }
+    import openconfig-if-aggregate {prefix oc-lag; }
+    import openconfig-yang-types { prefix oc-yang; }
+    import openconfig-types { prefix oc-types; }
+    import openconfig-extensions { prefix oc-ext; }
+    import ietf-yang-types { prefix yang; }
+    import ietf-inet-types { prefix "ietf-inet"; }
+    import openconfig-if-types-ext { prefix oc-if-types-ext; }
+
+    organization "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "This module contains collection of yang definitions for extensions to
+         openconfig-interfaces yang";
+
+    oc-ext:openconfig-version "1.0.0";
+
+    revision "2020-06-02" {
+        description
+            "Updating the YANG with respect to RFC compliance";
+        reference "1.0.0";
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-lag:aggregation/oc-lag:config" {
+        description "Additional fallback attribute for LAG configuration";
+        leaf fallback {
+            type boolean;
+            description "Indicating whether lacp fallback is enabled or not";
+        }
+    }
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-lag:aggregation/oc-lag:state" {
+        description "Additional fallback attribute for LAG state";
+        leaf fallback {
+            type boolean;
+            description "Fallback status on this interface";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-lag:aggregation/oc-lag:config" {
+        description "Additional fast-rate attribute for LAG configuration";
+        leaf fast-rate {
+            type boolean;
+            description "If true, send LACP packets every second; Else every 30 secs";
+        }
+    }
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-lag:aggregation/oc-lag:state" {
+        description "Additional fast-rate attribute for LAG state";
+        leaf fast-rate {
+            type boolean;
+            description "Fast Rate status on this PortChannel";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-lag:aggregation/oc-lag:config" {
+        description "Additional fallback attribute for LAG configuration";
+        leaf graceful-shutdown-mode {
+            type string;
+            description "Indicating whether LAG graceful shutdown is enabled or not";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-lag:aggregation/oc-lag:state" {
+        description "Additional fallback attribute for LAG configuration";
+        leaf graceful-shutdown-mode {
+            type string;
+            description "Indicating whether LAG graceful shutdown is enabled or not";
+        }
+    }
+
+    augment "/oc-lacp:lacp/oc-lacp:interfaces/oc-lacp:interface/oc-lacp:members/oc-lacp:member/oc-lacp:state" {
+        description "Additional selected attribute for LACP state";
+        leaf selected {
+            type boolean;
+            description "Selected status on this interface";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:config" {
+        description "Additional attributes for IPv4 address config container associated with an interface";
+        leaf gw-addr {
+            type oc-inet:ipv4-address;
+            description "IPv4 Gateway address";
+        }
+        leaf secondary  {
+            type boolean;
+            description "Indicates whether the IPv4 address is configured as primary or secondary";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:config" {
+        description "Additional attributes for IPv4 address config container associated with an interface";
+        leaf secondary  {
+            type boolean;
+            description "Indicates whether the IPv4 address is configured as primary or secondary";
+        }
+    }
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:state" {
+        description "Additional attributes for IPv4 address state container associated with an interface";
+        leaf gw-addr {
+            type oc-inet:ipv4-address;
+            description "IPv4 Gateway address";
+        }
+        leaf secondary {
+            type boolean;
+            description "Indicates whether IPv4 address configured is primary or secondary";
+        }
+    }
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:state" {
+        description "Additional attributes for IPv4 address state container associated with an interface";
+        leaf secondary {
+            type boolean;
+            description "Indicates whether IPv4 address configured is primary or secondary";
+        }
+    }
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:config" {
+        description "Additional attributes for IPv6 address config container associated with an interface";
+        leaf gw-addr {
+            type oc-inet:ipv6-address;
+            description "IPv6 Gateway address";
+        }
+    }
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:state" {
+        description "Additional attributes for IPv6 address state container associated with an interface";
+        leaf gw-addr {
+            type oc-inet:ipv6-address;
+            description "IPv6 Gateway address";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-eth:ethernet/oc-eth:state/oc-eth:counters" {
+        description "Additional out-oversize-frames attribute associated with counters container for physical interface";
+        leaf out-oversize-frames {
+            type oc-yang:counter64;
+            description
+                "The total number of frames transmitted that were
+                longer than 1518 octets (excluding framing bits,
+                but including FCS octets) and were otherwise
+                well formed.";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:state/oc-intf:counters" {
+        description "Interface counters and statistics extensions.";
+        leaf in-octets-per-second {
+            type decimal64 {
+                fraction-digits 2;
+            }
+            description
+                "The total number of octets received per second on the interface";
+        }
+        leaf in-pkts-per-second {
+            type decimal64 {
+                fraction-digits 2;
+            }
+            description
+                "The total number of packets received per second on the interface";
+        }
+        leaf in-bits-per-second {
+            type decimal64 {
+                fraction-digits 2;
+            }
+            description
+                "The total number of bits received per second on the interface";
+        }
+        leaf in-utilization {
+            type oc-types:percentage;
+            description
+                "RX utilization of the interface";
+        }
+        leaf out-octets-per-second {
+            type decimal64 {
+                fraction-digits 2;
+            }
+            description
+                "The total number of octets transmitted per second on the interface";
+        }
+        leaf out-pkts-per-second {
+            type decimal64 {
+                fraction-digits 2;
+            }
+            description
+                "The total number of packets transmitted per second on the interface";
+        }
+        leaf out-bits-per-second {
+            type decimal64 {
+                fraction-digits 2;
+            }
+            description
+                "The total number of bits transmitted per second on the interface";
+        }
+        leaf out-utilization {
+            type oc-types:percentage;
+            description
+                "TX utilization of the interface";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:state" {
+        description "Interface state object extension";
+        leaf rate-interval {
+            type uint16;
+            description "Rate interval of an interface";
+        }
+    }
+
+    grouping interfaces-ext-interface-nat-zone-config {
+        description "Config level grouping associated with nat-zone";
+
+        leaf nat-zone {
+            type uint8 {
+                range "0..3";
+            }
+            description
+                "NAT zone id.";
+        }
+    }
+    grouping interfaces-ext-interface-nat-zone-top {
+        description "Top level grouping associated with nat-zone";
+
+        container nat-zone {
+            description "Config and operational parameters associated with nat-zone";
+
+            container config {
+                description "Config parameters for nat-zone";
+
+                uses interfaces-ext-interface-nat-zone-config;
+            }
+            container state {
+                config false;
+                description "State parameters for nat-zone";
+
+                uses interfaces-ext-interface-nat-zone-config;
+            }
+        }
+    }
+
+      grouping interfaces-ext-interface-sag-ipv4-config {
+        description
+            "IPv4 static anycast gateway config";
+
+        leaf-list static-anycast-gateway {
+                  type ietf-inet:ipv4-prefix;
+            max-elements 16;
+
+            description
+                "IPv4 static anycast gateway addresses";
+        }
+    }
+
+    grouping interfaces-ext-interface-sag-ipv4-top {
+        description
+            "IPv4 static anycast gateway";
+
+        container sag-ipv4 {
+            description "Config and state parameters associated with sag-ipv4";
+
+            container config {
+                uses interfaces-ext-interface-sag-ipv4-config;
+
+                description
+                    "IPv4 static anycast gateway config";
+            }
+            container state {
+                config false;
+                uses interfaces-ext-interface-sag-ipv4-config;
+
+                description
+                    "IPv4 static anycast gateway state";
+            }
+
+        }
+    }
+
+    grouping interfaces-ext-interface-sag-ipv6-config {
+        description
+        "IPv6 static anycast gateway config";
+
+        leaf-list static-anycast-gateway {
+
+                  type ietf-inet:ipv6-prefix;
+                  max-elements 16;
+
+            description
+                "IPv6 static anycast gateway addresses";
+
+        }
+    }
+
+    grouping interfaces-ext-interface-sag-ipv6-top {
+    description
+        "IPv6 static anycast gateway";
+
+        container sag-ipv6 {
+            description "Config and state parameters associated with sag-ipv6";
+
+            container config {
+                uses interfaces-ext-interface-sag-ipv6-config;
+
+                description
+                    "IPv6 static anycast gateway config";
+            }
+            container state {
+                config false;
+                uses interfaces-ext-interface-sag-ipv6-config;
+
+                description
+                    "IPv6 static anycast gateway state";
+            }
+
+        }
+    }
+
+    grouping interfaces-ext-interface-vrrp-track-increment {
+
+        description
+            "List of track interfaces for VRRP";
+
+        container vrrp-track {
+            description
+                "Configuration and state parameters relating to VRRP track interface";
+
+        list vrrp-track-interface {
+            key "track-intf";
+            description
+                "List of track interface";
+
+            leaf track-intf {
+
+                type leafref {
+                            path "../config/track-intf";
+                }
+                description
+                    "Reference to the list of interfaces";
+            }
+
+            container config {
+                description
+                    "Configuration data for each track interface";
+
+                leaf track-intf {
+                            type string;
+                            description
+                                "Reference to the list of interfaces";
+                        }
+
+                leaf priority-increment {
+                    type uint8 {
+                        range "0..254";
+                    }
+                    description
+                        "priority increment upon interface up";
+                }
+            }
+
+            container state {
+                config false;
+                description
+                    "Operational data for each track interface";
+
+                leaf track-intf {
+                            type string;
+                            description
+                                "Reference to the list of interfaces";
+                        }
+
+                leaf priority-increment {
+                    type uint8 {
+                        range "0..254";
+                    }
+                    description
+                        "priority increment upon interface up";
+                }
+            }
+
+        }
+        }
+
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface" {
+        description
+            "NAT zone config and state data.";
+        uses interfaces-ext-interface-nat-zone-top;
+    }
+
+  augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv4" {
+        description
+            "SAG config and state data.";
+        uses interfaces-ext-interface-sag-ipv4-top;
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv6" {
+        description
+            "SAG config and state data.";
+        uses interfaces-ext-interface-sag-ipv6-top;
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group/oc-ip:config" {
+        description
+            "VRRP IPv4 config version";
+        leaf version {
+            type uint8 {
+                range "2..3";
+            }
+            description
+                "version";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group/oc-ip:state" {
+        description
+            "VRRP IPv4 state version";
+        leaf version {
+            type uint8 {
+                range "2..3";
+            }
+            description
+                "version";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group/oc-ip:state" {
+        description
+            "VRRP IPv4 MASTER state";
+        leaf state {
+            type uint8 {
+                range "0..2";
+            }
+            description
+                "state";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group/oc-ip:state" {
+        description
+            "VRRP IPv6 state version";
+        leaf version {
+            type uint8 {
+                range "2..3";
+            }
+            description
+                "version";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group/oc-ip:state" {
+        description
+            "VRRP IPv6 MASTER state";
+        leaf state {
+            type uint8 {
+                range "0..2";
+            }
+            description
+                "state";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group/oc-ip:config" {
+        description
+            "VRRP IPv4 config version";
+        leaf version {
+            type uint8 {
+                range "2..3";
+            }
+            description
+                "version";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group/oc-ip:state" {
+        description
+            "VRRP IPv4 state version";
+        leaf version {
+            type uint8 {
+                range "2..3";
+            }
+            description
+                "version";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group/oc-ip:state" {
+        description
+            "VRRP IPv4 MASTER state";
+        leaf state {
+            type uint8 {
+                range "0..2";
+            }
+            description
+                "state";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group/oc-ip:state" {
+        description
+            "VRRP IPv6 state version";
+        leaf version {
+            type uint8 {
+                range "2..3";
+            }
+            description
+                "version";
+        }
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group/oc-ip:state" {
+        description
+            "VRRP IPv6 MASTER state";
+        leaf state {
+            type uint8 {
+                range "0..2";
+            }
+            description
+                "state";
+        }
+    }
+
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group" {
+        description "Track interface priority for IPv4 VRRP instance";
+        uses interfaces-ext-interface-vrrp-track-increment;
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-vlan:routed-vlan/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group" {
+        description "Track interface priority for IPv6 VRRP instance";
+        uses interfaces-ext-interface-vrrp-track-increment;
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv4/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group" {
+        description "Track interface priority for IPv4 VRRP instance";
+        uses interfaces-ext-interface-vrrp-track-increment;
+    }
+
+    augment "/oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv6/oc-ip:addresses/oc-ip:address/oc-ip:vrrp/oc-ip:vrrp-group" {
+        description "Track interface priority for IPv6 VRRP instance";
+        uses interfaces-ext-interface-vrrp-track-increment;
+    }
+
+    deviation /oc-intf:interfaces/oc-intf:interface/oc-intf:subinterfaces/oc-intf:subinterface/oc-ip:ipv6/oc-ip:config/oc-ip:enabled {
+        deviate replace {
+            default false;
+        }
+    }
+
+    // rpc statements
+    rpc clear-counters {
+        description "RPC for clearing interface counters. Input can be :
+            1. Single interface name
+            2. All interfaces
+            3. All interfaces of a particular type";
+
+        input {
+            leaf interface-param {
+                type string;
+                description
+                    "parameter for clearing counters - all or interface type(Ethernet/PortChannel) or interface name";
+            }
+        }
+        output {
+            leaf status {
+                type int32;
+                description
+                    "The status of the operation execution request.";
+            }
+            leaf status-detail {
+                type string;
+                description
+                    "The detailed status of the operation execution request.";
+            }
+        }
+    }
+}

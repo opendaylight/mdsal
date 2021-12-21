@@ -1,0 +1,122 @@
+module openconfig-switch-resource {
+
+  yang-version "1";
+
+  // namespace
+  namespace "http://openconfig.net/yang/system/switch-resource/extension";
+
+  prefix "oc-swresource";
+
+  // import some basic types
+  import openconfig-extensions { prefix oc-ext; }
+
+  // meta
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module contains a collection of YANG definitions for the
+    Switch Resources Management for resource like Exact Match Entries. 
+    It has Global settings.";
+
+  revision "2020-07-27" {
+    description
+      "Initial draft revision.";
+    reference "0.1.0";
+  }
+
+  oc-ext:openconfig-version "1.0.2";
+
+  // typedef statements
+
+  typedef switch-resource-type {
+    type enumeration {
+      enum DROP_MONITOR {
+        description
+          "Drop Monitor Resource";
+      }
+    }
+    description
+      "The Different Resource Types of Switch Resource Management  ";
+
+  }
+
+  typedef flow-scale-limit {
+    type enumeration {
+      enum "NONE" {
+        description
+          "No flow scale configured.";
+      }
+      enum "MIN" {
+        description
+          "minumum flow scale configured.";
+      }
+    }
+    description
+      "Drop Monitor Flow Scale Options";
+
+  }
+
+  // grouping statements
+
+  grouping switch-resource-config {
+    description
+      "Switch Resources Configuration parameters";
+    leaf name {
+      type switch-resource-type;
+
+      description
+        "Resource name.";
+    }
+
+
+    leaf flows {
+      type flow-scale-limit;
+      description
+        "Drop Monitor Flow Scale  limit";
+    }
+
+  }
+
+  grouping switch-resource-top {
+    description
+      "Top level grouping for attributes for Switch Resources .";
+
+    container swresource {
+      description
+        "Parameters related to switch resource manager configuration and status.";
+
+      list resource {
+        key "name";
+        description
+          "Switch Resource Name.";
+
+
+        leaf name {
+          type leafref {
+            path "../config/name";
+          }
+          description
+            "Key name"; 
+        }
+
+        container config {
+          description
+            "Configuration parameters of Switch Resources"; 
+
+          uses switch-resource-config;
+        }
+
+        container state {
+          config false;
+          description
+            "State parameters of Switch Resources";
+          uses switch-resource-config;
+        }
+      }
+    }
+  }
+}

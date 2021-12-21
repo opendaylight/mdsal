@@ -1,0 +1,360 @@
+module openconfig-spanning-tree-ext {
+
+    yang-version "1";
+
+    // namespace
+    namespace "http://openconfig.net/yang/spanning-tree/extension";
+
+    prefix "oc-stp-ext";
+
+	import openconfig-spanning-tree { prefix oc-stp; }
+    import openconfig-spanning-tree-types { prefix oc-stp-types; }
+    import openconfig-yang-types { prefix oc-yang; }
+    import openconfig-extensions { prefix oc-ext; }
+
+    organization
+        "SONiC";
+
+    contact
+        "SONiC";
+
+    description
+        "This module defines extensions for configuration and operational state data
+        for the spanning tree protocol.";
+
+    oc-ext:openconfig-version "0.1.0";
+
+    revision "2020-06-01" {
+        description
+            "Initial revision";
+        reference "0.1.0";
+    }
+
+    identity PVST {
+        base oc-stp-types:STP_PROTOCOL;
+        description
+            "Per Vlan Spanning Tree Protocol";
+    }
+
+    identity DISCARDING {
+        base oc-stp-types:STP_PORT_STATE;
+        description
+            "Equivalent of BLOCKING state in RSTP";
+    }
+
+    identity BPDU_DIS {
+        base oc-stp-types:STP_PORT_STATE;
+        description
+            "Port state when port is shutdown due to BPDU guard action";
+    }
+
+    identity ROOT_INC {
+        base oc-stp-types:STP_PORT_STATE;
+        description
+            "Port state when port is in root inconsistent state due to guard root action";
+    }
+
+    identity DISABLED {
+        base oc-stp-types:STP_PORT_ROLE;
+        description
+            "A port is disabled if it is not in operational up state";
+    }
+
+    typedef stp-bridge-priority-type-ext {
+        type uint32 {
+            range 0..61440;
+        }
+        description
+            "The manageable component of the Bridge Identifier";
+        reference "IEEE 802.1D 17.13.7 Bridge Identifier Priority";
+    }
+
+    typedef stp-port-priority-type-ext {
+        type uint8 {
+            range 0..240;
+        }
+        description
+            "The manageable component of the Port Identifier,
+            also known as the Port Priority";
+        reference
+            "IEEE 802.1D 17.13.10 Port Identifier Priority";
+    }
+
+    grouping spanning-tree-ext-global-config {
+        description
+            "Grouping of extended STP global configuration";
+        leaf rootguard-timeout {
+            type uint16 {
+                range 5..600;
+            }
+            units "seconds";
+            default 30;
+            description
+                "Once superior BPDUs stop coming on the port, device will wait
+                for a period until root guard timeout before moving the port to
+                forwarding state";
+        }
+        uses oc-stp:stp-timer-config;
+        uses oc-stp:bridge-priority-config;
+    }
+
+    grouping spanning-tree-ext-enable-config {
+        description
+            "Grouping of extended STP enable configuration";
+        leaf spanning-tree-enable {
+            type boolean;
+            description
+                "Enable/Disable spanning tree protocol on an interface or Vlan";
+        }
+    }
+
+    grouping spanning-tree-ext-interface-common-config {
+        description
+            "Grouping of extended STP interface specific configuration";
+        leaf portfast {
+            type boolean;
+            description
+                "Enable/Disable portfast";
+        }
+
+        leaf uplink-fast {
+            type boolean;
+            description
+                "Enable/Disable uplink fast";
+        }
+
+        leaf bpdu-guard-port-shutdown {
+            type boolean;
+            description
+                "Port to be shutdown when it receives a BPDU";
+        }
+
+        leaf cost {
+            type uint32 {
+                range 1..200000000;
+            }
+            description
+                "The port's contribution, when it is the Root Port,
+                to the Root Path Cost for the Bridge";
+            reference
+                "IEEE 802.1D 17.13.11 PortPathCost";
+        }
+
+        leaf port-priority {
+            type stp-port-priority-type-ext;
+            description
+                "The manageable component of the Port Identifier,
+                also known as the Port Priority";
+            reference
+                "IEEE 802.1D 17.13.10 Port Identifier Priority";
+        }
+
+        uses spanning-tree-ext-enable-config;
+    }
+
+    grouping spanning-tree-ext-instance-state {
+        description
+            "Grouping of extended STP operational data for bridge";
+        leaf stp-instance {
+            type uint16;
+            description
+                "Instance identifier of STP";
+        }
+
+        leaf root-port-name {
+            type string;
+            description
+                "Name of root port";
+        }
+
+        leaf root-max-age {
+            type uint8;
+            description
+                "Maximum age at root bridge";
+        }
+
+        leaf root-hello-time {
+            type uint8;
+            description
+                "Hello time at root bridge";
+        }
+
+        leaf root-forward-delay {
+            type uint8;
+            description
+                "Forwarding delay at root bridge";
+        }
+
+        leaf designated-bridge-id {
+            type oc-yang:mac-address;
+            description
+                "Designated bridge id";
+        }
+    }
+
+    grouping spanning-tree-ext-vlan-interface-extra-state {
+        description
+            "Grouping of extended STP operational data for vlan";
+        leaf root-guard-timer {
+            type uint16;
+            description
+                "Root guard current timer value";
+        }
+    }
+
+    grouping spanning-tree-ext-vlan-interface-extra-counters-state {
+        description
+            "Grouping of extended STP counters data for vlan";
+        leaf tcn-sent {
+            type oc-yang:counter64;
+            description
+                "Tcn transmitted";
+        }
+
+        leaf tcn-received {
+            type oc-yang:counter64;
+            description
+                "Tcn received";
+        }
+    }
+
+    grouping spanning-tree-ext-rpvst-vlan-interface-extra-counters-state {
+        description
+            "Grouping of extended STP counters for rpvst";
+        leaf config-bpdu-sent {
+            type oc-yang:counter64;
+            description
+                "Config BPDU transmitted";
+        }
+
+        leaf config-bpdu-received {
+            type oc-yang:counter64;
+            description
+                "Config BPDU received";
+        }
+    }
+
+    grouping spanning-tree-ext-pvst-top {
+        description
+            "Top grouping for per vlan spanning tree configuration
+            and operation data";
+
+        list vlan {
+            key "vlan-id";
+            description
+                "List of the vlans";
+
+            leaf vlan-id {
+                type leafref {
+                    path "../config/vlan-id";
+                }
+                description
+                    "Reference to the list key";
+            }
+
+            container config {
+                description
+                    "Configuration data for each vlan";
+
+                uses oc-stp:stp-rapid-pvst-config;
+                uses oc-stp:stp-timer-config;
+                uses oc-stp:bridge-priority-config;
+                uses spanning-tree-ext-enable-config;
+            }
+
+            container state {
+                config false;
+                description
+                    "Operational data for each vlan";
+
+                uses oc-stp:stp-rapid-pvst-config;
+                uses oc-stp:stp-timer-config;
+                uses oc-stp:bridge-priority-config;
+                uses oc-stp:stp-common-state;
+                uses spanning-tree-ext-enable-config;
+                uses spanning-tree-ext-instance-state;
+            }
+
+            uses oc-stp:stp-interfaces-top;
+        }
+    }
+
+    augment /oc-stp:stp {
+        description
+            "Augment Per vlan Spanning-tree protocol configuration and operation data";
+        container pvst {
+            description
+                "Per vlan Spanning-tree protocol configuration and
+                operational data";
+
+            uses spanning-tree-ext-pvst-top;
+        }
+    }
+
+    augment /oc-stp:stp/oc-stp:global/oc-stp:config {
+        description
+            "Augment STP global configuration data";
+        uses spanning-tree-ext-global-config;
+    }
+
+    augment /oc-stp:stp/oc-stp:global/oc-stp:state {
+        description
+            "Augment STP global operational data";
+        uses spanning-tree-ext-global-config;
+    }
+
+    augment /oc-stp:stp/oc-stp:rapid-pvst/oc-stp:vlan/oc-stp:config {
+        description
+            "Augment Rapid-PVST configuration data";
+        uses spanning-tree-ext-enable-config;
+    }
+
+    augment /oc-stp:stp/oc-stp:rapid-pvst/oc-stp:vlan/oc-stp:state {
+        description
+            "Augment Rapid-PVST operational data";
+        uses spanning-tree-ext-enable-config;
+        uses spanning-tree-ext-instance-state;
+    }
+
+    augment /oc-stp:stp/oc-stp:rapid-pvst/oc-stp:vlan/oc-stp:interfaces/oc-stp:interface/oc-stp:state {
+        description
+            "Augment Rapid-PVST interface operational data";
+        uses spanning-tree-ext-vlan-interface-extra-state;
+    }
+
+    augment /oc-stp:stp/oc-stp:rapid-pvst/oc-stp:vlan/oc-stp:interfaces/oc-stp:interface/oc-stp:state/oc-stp:counters {
+        description
+            "Augment Rapid-PVST interface counters data";
+        uses spanning-tree-ext-vlan-interface-extra-counters-state;
+        uses spanning-tree-ext-rpvst-vlan-interface-extra-counters-state;
+    }
+
+    augment /oc-stp:stp/oc-stp-ext:pvst/oc-stp-ext:vlan/oc-stp-ext:interfaces/oc-stp-ext:interface/oc-stp-ext:state {
+        description
+            "Augment Per vlan Spanning-tree protocol interface operational data";
+        uses spanning-tree-ext-vlan-interface-extra-state;
+    }
+
+    augment /oc-stp:stp/oc-stp-ext:pvst/oc-stp-ext:vlan/oc-stp-ext:interfaces/oc-stp-ext:interface/oc-stp-ext:state/oc-stp-ext:counters {
+        description
+            "Augment Per vlan Spanning-tree protocol interface counters data";
+        uses spanning-tree-ext-vlan-interface-extra-counters-state;
+    }
+
+    augment /oc-stp:stp/oc-stp:interfaces/oc-stp:interface/oc-stp:config {
+        description
+            "Augment STP interface configuration data";
+        uses spanning-tree-ext-interface-common-config;
+    }
+
+    augment /oc-stp:stp/oc-stp:interfaces/oc-stp:interface/oc-stp:state {
+        description
+            "Augment STP interface operational data";
+        leaf bpdu-guard-shutdown {
+            type boolean;
+            description
+                "Port disabled due to bpdu-guard";
+        }
+        uses spanning-tree-ext-interface-common-config;
+    }
+}

@@ -1,0 +1,872 @@
+module openconfig-aft {
+
+  yang-version "1";
+
+  namespace "http://openconfig.net/yang/aft";
+
+  prefix "oc-aft";
+
+  import openconfig-extensions { prefix "oc-ext"; }
+  import openconfig-interfaces { prefix "oc-if"; }
+  import openconfig-yang-types { prefix "oc-yang"; }
+  import openconfig-inet-types { prefix "oc-inet"; }
+  import openconfig-mpls-types { prefix "oc-mpls-types"; }
+  import openconfig-policy-types { prefix "oc-pol-types"; }
+  import openconfig-aft-types { prefix "oc-aftt"; }
+  import openconfig-packet-match-types {
+    prefix "oc-pkt-match-types";
+  }
+
+  organization
+    "OpenConfig working group";
+
+  contact
+    "OpenConfig working group
+    www.openconfig.net";
+
+  description
+    "A model describing the forwarding entries installed on a network
+    element. It should be noted that this model is not expected to
+    align 1:1 with the underlying structure used directly by a
+    forwarding element (e.g., linecard), but rather provide an
+    abstraction that can be consumed by an NMS to observe, and in some
+    cases manipulate, the internal forwarding database in a simplified
+    manner. Since the underlying model of the forwarding table is not
+    expected to align with this model, the structure described herein
+    is referred to as an Abstract Forwarding Table (AFT), rather than
+    the FIB.";
+
+  oc-ext:openconfig-version "0.3.2";
+
+  revision "2018-11-21" {
+    description
+      "Add OpenConfig module metadata extensions.";
+    reference "0.3.2";
+  }
+
+  revision 2017-08-24 {
+    description
+      "Formatting fixes";
+    reference "0.3.1";
+  }
+
+  revision 2017-05-10 {
+    description
+      "Refactor to provide concretised per-AF schemas per AFT.";
+    reference "0.3.0";
+  }
+
+  // OpenConfig specific extensions for module metadata.
+  oc-ext:regexp-posix;
+  oc-ext:catalog-organization "openconfig";
+  oc-ext:origin "openconfig";
+
+  // config + state groupings
+
+  // structural groupings
+
+  grouping aft-top {
+    description
+      "Top-level grouping allowing per-protocol instantiation of the
+      AFT.";
+
+    container afts {
+      description
+        "The abstract forwarding tables (AFTs) that are associated
+        with the network instance. An AFT is instantiated per-protocol
+        running within the network-instance - such that one exists for
+        IPv4 Unicast, IPv6 Unicast, MPLS, L2 forwarding entries, etc.
+        A forwarding entry within the FIB has a set of next-hops,
+        which may be a reference to an entry within another table -
+        e.g., where a Layer 3 next-hop has an associated Layer 2
+        forwarding entry.";
+
+      container ipv4-unicast {
+        description
+          "The abstract forwarding table for IPv4 unicast. Entries
+          within this table are uniquely keyed on the IPv4 unicast
+          destination prefix which is matched by ingress packets.
+
+          The data set represented by the IPv4 Unicast AFT is the set
+          of entries from the IPv4 unicast RIB that have been selected
+          for installation into the FIB of the device exporting the
+          data structure.";
+
+        uses aft-ipv4-unicast-structural;
+      }
+
+      container ipv6-unicast {
+        description
+          "The abstract forwarding table for IPv6 unicast. Entries
+          within this table are uniquely keyed on the IPv6 unicast
+          destination prefix which is matched by ingress packets.
+
+          The data set represented by the IPv6 Unicast AFTis the set
+          of entries within the IPv6 RIB that ";
+
+        uses aft-ipv6-unicast-structural;
+
+      }
+
+      container policy-forwarding {
+        description
+          "The abstract forwarding table for policy-based forwarding
+          entries. Since multiple match criteria can be utilised
+          within a policy-based forwarding rule, this AFT provides a
+          flexible match criteria, and is indexed based on an
+          arbitrary 64-bit index. Entries within the AFT may match on
+          multiple field types (e.g., L4 header fields, as well as L2
+          fields).
+
+          Examples of entries within this table are:
+            - IPv4 policy-based routing based on DSCP.
+            - MPLS policy-based forwarding entries.";
+
+        uses aft-pf-structural;
+      }
+
+      container mpls {
+        description
+          "The abstract forwarding table for MPLS label based
+          forwarding entries. Entries within the table are keyed based
+          on the top-most MPLS label in the stack on the ingress
+          packet.";
+
+        uses aft-mpls-structural;
+      }
+
+      container ethernet {
+        description
+          "The abstract forwarding table for Ethernet based forwarding
+          entries. Entries within the table are keyed based on the
+          destination MAC address on the ingress packet.";
+
+        uses aft-ethernet-structural;
+      }
+
+      container next-hop-groups {
+        description
+          "Surrounding container for groups of next-hops.";
+
+        list next-hop-group {
+          key "id";
+
+          description
+            "An individual set of next-hops grouped into a common group.
+            Each entry within an abstract forwarding table points to a
+            next-hop-group. Entries in the next-hop-group are forwarded to
+            according to the weights specified for each next-hop group.
+
+            If an entry within the next-hop group becomes unusable, for
+            example due to an interface failure, the remaining entries
+            are used until all entries become unusable - at which point
+            the backup next-hop-group (if specified) is used.";
+
+          leaf id {
+            description
+              "A reference to a unique identifier for the next-hop-group.";
+
+            type leafref {
+              path "../config/id";
+            }
+          }
+
+          container config {
+            description
+              "Configuration parameters related to the next-hop-group.";
+            uses aft-nhg-config;
+          }
+
+          container state {
+            config false;
+            description
+              "Operational state parameters relating to next-hop-groups.";
+            uses aft-nhg-config;
+            uses aft-nhg-state;
+          }
+
+          container next-hops {
+            description
+              "Surrounding container for the list of next-hops within
+              the next-hop-group.";
+
+            list next-hop {
+              key "index";
+
+              description
+                "An individual next-hop within the next-hop-group. Each
+                next-hop is a reference to an entry within the next-hop
+                list.";
+
+              leaf index {
+                description
+                  "A reference to the index for the next-hop within the
+                  the next-hop-group.";
+                type leafref {
+                  path "../config/index";
+                }
+              }
+
+              container config {
+                description
+                  "Configuration parameters related to a next-hop within
+                  the next-hop-group.";
+                leaf index {
+                  type leafref {
+                    // We are at afts/next-hop-groups/next-hop-group/next-hops/next-hop/config/id
+                    path "../../../../../../next-hops/next-hop/config/index";
+                  }
+                  description
+                    "A reference to the identifier for the next-hop to which
+                    the entry in the next-hop group corresponds.";
+                }
+              }
+
+              container state {
+                config false;
+                description
+                  "Operational state parameters related to a next-hop
+                  within the next-hop-group.";
+                leaf index {
+                  type leafref {
+                    // We are at afts/next-hop-groups/next-hop-group/next-hops/next-hop/config/id
+                    path "../../../../../../next-hops/next-hop/config/index";
+                  }
+                  description
+                    "A reference to the identifier for the next-hop to which
+                    the entry in the next-hop group corresponds.";
+                }
+                uses aft-nhg-nh-state;
+              }
+            }
+          }
+        }
+      }
+      uses aft-nhop-structural;
+    }
+  }
+
+  // Common submodule
+  grouping aft-nhop-structural {
+    description
+      "Structural grouping describing a next-hop entry.";
+
+    container next-hops {
+      description
+        "The list of next-hops that are to be used for entry within
+        the AFT table. The structure of each next-hop is address
+        family independent, such that it is possible to resolve fully
+        how the next-hop is treated. For example:
+
+        - Where ingress IPv4 unicast packets are to be forwarded via
+          an MPLS LSP, the next-hop list should indicate the MPLS
+          label stack that is used to the next-hop.
+        - Where ingress MPLS labelled packets are to be forwarded to
+          an IPv6 nexthop (for example, a CE within a VPN, then the
+          popped label stack, and IPv6 next-hop address should be
+          indicated).";
+
+      list next-hop {
+        key "index";
+
+        description
+          "A next-hop associated with the forwarding instance.";
+
+        leaf index {
+          type leafref {
+            path "../config/index";
+          }
+          description
+            "A unique index identifying the next-hop entry for the
+            AFT entry";
+
+        }
+
+        container config {
+          description
+            "Configuration parameters relating to the AFT next-hop
+            entry";
+
+          uses aft-common-entry-nexthop-config;
+        }
+
+        container state {
+          config false;
+          description
+            "Operational state parameters relating to the AFT
+            next-hop entry";
+
+          uses aft-common-entry-nexthop-config;
+          uses aft-common-entry-nexthop-state;
+        }
+
+        uses oc-if:interface-ref;
+      }
+    }
+  }
+
+  grouping aft-common-entry-state {
+    description
+      "Operational state parameters relating to a forwarding entry";
+
+    leaf packets-forwarded {
+      type oc-yang:counter64;
+      description
+        "The number of packets which have matched, and been forwarded,
+         based on the AFT entry.";
+    }
+
+    leaf octets-forwarded {
+      type oc-yang:counter64;
+      description
+        "The number of octets which have matched, and been forwarded,
+         based on the AFT entry";
+    }
+
+    // We are at $afi/$entry/state/next-hop-group
+    leaf next-hop-group {
+      type leafref {
+        path "../../../../next-hop-groups/next-hop-group/state/id";
+      }
+      description
+        "A reference to the next-hop-group that is in use for the entry
+        within the AFT. Traffic is distributed across the set of next-hops
+        within the next-hop group according to the weight.";
+    }
+  }
+
+  grouping aft-common-entry-nexthop-config {
+    description
+      "Configuration parameters relating to a next-hop entry for a AFT
+      entry";
+
+    leaf index {
+      type uint64;
+      description
+        "A unique entry for the next-hop.";
+    }
+  }
+
+  grouping aft-common-entry-nexthop-state {
+    description
+      "Parameters relating to a next-hop.";
+
+    leaf ip-address {
+      type oc-inet:ip-address;
+      description
+        "The IP address of the next-hop system.";
+    }
+
+    leaf mac-address {
+      type oc-yang:mac-address;
+      description
+        "The MAC address of the next-hop if resolved by the local
+        network instance.";
+    }
+
+    leaf-list pushed-mpls-label-stack {
+      type oc-mpls-types:mpls-label;
+      ordered-by user;
+      description
+        "The MPLS label stack imposed when forwarding packets to the
+        next-hop
+        - the stack is encoded as a leaf list whereby the order of the
+          entries is such that the first entry in the list is the
+          label at the bottom of the stack to be pushed.
+
+        To this end, a packet which is to forwarded to a device using
+        a service label of 42, and a transport label of 8072 will be
+        represented with a label stack list of [42, 8072].
+
+        The MPLS label stack list is ordered by the user, such that no
+        system re-ordering of leaves is permitted by the system.
+
+        A swap operation is reflected by entries in the
+        popped-mpls-label-stack and pushed-mpls-label-stack nodes.";
+
+    }
+
+    leaf encapsulate-header {
+      type oc-aftt:encapsulation-header-type;
+      description
+        "When forwarding a packet to the specified next-hop the local
+        system performs an encapsulation of the packet - adding the
+        specified header type.";
+    }
+
+    leaf origin-protocol {
+      type identityref {
+        base "oc-pol-types:INSTALL_PROTOCOL_TYPE";
+      }
+      description
+        "The protocol from which the AFT entry was learned.";
+    }
+  }
+
+  grouping aft-common-ip-state {
+    description
+      "Common parameters across IP address families";
+
+    leaf decapsulate-header {
+      type oc-aftt:encapsulation-header-type;
+      description
+        "When forwarding a packet to the specified next-hop, the local
+        system performs a decapsulation of the packet - removing the
+        specified header type. In the case that no next-hop is
+        specified, the packet header is removed, and a subsequent
+        forwarding lookup is performed on the packet encapsulated
+        within the header, matched within the relevant AFT within the
+        specified network-instance.";
+    }
+  }
+
+  grouping aft-nhg-config {
+    description
+      "Configuration parameters related to a next-hop-group.";
+
+    leaf id {
+      type uint64;
+      description
+        "A unique identifier for the next-hop-group. This index
+        is not expected to be consistent across reboots, or
+        reprogramming of the next-hop-group. When updating
+        a next-hop-group, if the group is removed by the system
+        or assigned an alternate identifier, the system should
+        send telemetry notifications deleting the previous
+        identifier. If the identifier of the next-hop-group
+        is changed, all AFT entries that reference it must
+        also be updated.";
+    }
+  }
+
+  grouping aft-nhg-state {
+    description
+      "Operational state parameters related to a next-hop-group.";
+
+    leaf color {
+      type uint64;
+      description
+
+        "An arbitrary colour that is used as an identifier for the next-hop
+        group. Some next-hop resolutions may utilise the colour to select
+        the particular next-hop-group that a routing entry should be resolved
+        to. In this case, next-hop-group selection may be based on colour
+        matches rather than the protocol specified next-hop.
+
+        Regardless of whether the next-hop-group's specified colour is
+        used to select an AFT's active forwarding entry, the next-hop-group
+        referenced by an entry should be the currently active value.
+
+        Next-hop-groups that are installed on the system through a protocol
+        that allows injection of such entries (e.g., BGP using the SR-TE
+        Policy SAFI, or gRPC-based RIB programming) should have the colour
+        specified in the injecting protocol within this leaf.";
+    }
+
+    leaf backup-next-hop-group {
+      // We are at afts/next-hop-groups/next-hop-group/config/backup-next-hop-group
+      type leafref {
+        path "../../../next-hop-group/state/id";
+      }
+      description
+        "The backup next-hop-group for the current group. When all
+        entries within the next-hop group become unusable, the backup
+        next-hop group is used if specified.";
+    }
+  }
+
+  grouping aft-nhg-nh-state {
+    description
+      "Operational state parameters relating to an individual next-hop
+      within the next-hop-group.";
+
+    leaf weight {
+      type uint64;
+      description
+        "The weight applied to the next-hop within the group. Traffic
+        is balanced across the next-hops within the group in the
+        proportion of weight/(sum of weights of the next-hops within
+        the next-hop group).";
+    }
+  }
+
+  // IPV4 submodule
+  grouping aft-ipv4-unicast-structural {
+    description
+      "Structural grouping defining the schema for the IPv4 unicast
+      abstract forwarding table.";
+
+    list ipv4-entry {
+      key "prefix";
+
+      description
+        "List of the IPv4 unicast entries within the abstract
+        forwarding table. This list is keyed by the destination IPv4
+        prefix.";
+
+      leaf prefix {
+        type leafref {
+          path "../config/prefix";
+        }
+        description
+          "Reference to the IPv4 unicast destination prefix which
+          must be matched to utilise the AFT entry.";
+      }
+
+      container config {
+        description
+          "Configuration parameters for the IPv4 unicast AFT entry.";
+        uses aft-ipv4-unicast-entry-config;
+      }
+
+      container state {
+        config false;
+        description
+          "Operational state parameters for the IPv4 unicast AFT
+          entry.";
+        uses aft-ipv4-unicast-entry-config;
+        uses aft-ipv4-unicast-entry-state;
+      }
+    }
+  }
+
+  grouping aft-ipv4-unicast-entry-config {
+    description
+      "Configuration parameters for the IPv4 unicast entry.";
+
+    leaf prefix {
+        type oc-inet:ipv4-prefix;
+        description
+          "The IPv4 destination prefix that should be matched to
+          utilise the AFT entry.";
+    }
+  }
+
+  grouping aft-ipv4-unicast-entry-state {
+    description
+      "Operational state parameters for the IPv4 unicast entry.";
+    uses aft-common-entry-state;
+    uses aft-common-ip-state;
+  }
+
+  //IPV6 submodule
+  grouping aft-ipv6-unicast-structural {
+    description
+      "Structural grouping defining the schema for the IPv6 unicast
+      abstract forwarding table.";
+
+    list ipv6-entry {
+      key "prefix";
+
+      description
+        "List of the IPv6 unicast entries within the abstract
+        forwarding table. This list is keyed by the destination IPv6
+        prefix.";
+
+      leaf prefix {
+        type leafref {
+          path "../config/prefix";
+        }
+        description
+          "Reference to the IPv6 unicast destination prefix which
+          must be matched to utilise the AFT entry.";
+      }
+
+      container config {
+        description
+          "Configuration parameters for the IPv6 unicast AFT entry.";
+        uses aft-ipv6-unicast-entry-config;
+      }
+
+      container state {
+        config false;
+        description
+          "Operational state parameters for the IPv6 unicast AFT
+          entry.";
+        uses aft-ipv6-unicast-entry-config;
+        uses aft-ipv6-unicast-entry-state;
+      }
+    }
+  }
+
+  grouping aft-ipv6-unicast-entry-config {
+    description
+      "Configuration parameters for the IPv6 unicast entry.";
+
+    leaf prefix {
+        type oc-inet:ipv6-prefix;
+        description
+          "The IPv6 destination prefix that should be matched to
+          utilise the AFT entry.";
+    }
+  }
+
+  grouping aft-ipv6-unicast-entry-state {
+    description
+      "Operational state parameters for the IPv6 unicast entry.";
+    uses aft-common-entry-state;
+    uses aft-common-ip-state;
+  }
+
+  // Ethernet submodule
+  grouping aft-ethernet-structural {
+    description
+      "Structural grouping defining the schema for the Ethernet
+      abstract forwarding table.";
+
+    list mac-entry {
+      key "mac-address";
+
+      description
+        "List of the Ethernet entries within the abstract
+        forwarding table. This list is keyed by the outer MAC address
+        of the Ethernet frame.";
+
+      leaf mac-address {
+        type leafref {
+          path "../config/mac-address";
+        }
+        description
+          "Reference to the outer MAC address matched by the
+          entry.";
+      }
+
+      container config {
+        description
+          "Configuration parameters for the Ethernet AFT entry.";
+        uses aft-ethernet-entry-config;
+      }
+
+      container state {
+        config false;
+        description
+          "Operational state parameters for the Ethernet AFT
+          entry.";
+        uses aft-ethernet-entry-config;
+        uses aft-ethernet-entry-state;
+      }
+    }
+  }
+
+  grouping aft-ethernet-entry-config {
+    description
+      "Configuration parameters for the Ethernet AFT entry.";
+
+    leaf mac-address {
+        type oc-yang:mac-address;
+        description
+          "The outer MAC address of the Ethernet frame that must
+          be matched for the AFT entry to be utilised.";
+    }
+  }
+
+  grouping aft-ethernet-entry-state {
+    description
+      "Operational state parameters for the Ethernet AFT entry.";
+    uses aft-common-entry-state;
+  }
+
+  // Pf submodule
+  grouping aft-pf-structural {
+    description
+      "Structural grouping defining the schema for the policy
+      forwarding abstract forwarding table.";
+
+    list policy-forwarding-entry {
+      key "index";
+
+      description
+        "List of the policy forwarding entries within the abstract
+        forwarding table. Each entry is uniquely identified by an
+        index on the system, due to the arbitrary match conditions
+        that may be implemented within the policy forwarding AFT.
+        The index may change upon changes of the entry if, and only
+        if, the device exporting the AFT replaces the entire entry
+        by removing the previous entry and replacing it with a
+        subsequent updated version.";
+
+      leaf index {
+        type leafref {
+          path "../config/index";
+        }
+        description
+          "Reference to the arbitary index for the policy forwarding
+          AFT entry.";
+      }
+
+      container config {
+        description
+          "Configuration parameters for the Policy forwarding
+          AFT entry.";
+        uses aft-pf-entry-config;
+      }
+
+      container state {
+        config false;
+        description
+          "Operational state parameters for the Policy Forwarding
+          AFT entry.";
+        uses aft-pf-entry-config;
+        uses aft-pf-entry-state;
+      }
+    }
+  }
+
+  grouping aft-pf-entry-config {
+    description
+      "Configuration parameters for the Policy Forwarding
+      AFT entry.";
+
+    leaf index {
+      type uint64;
+      description
+        "An arbitrary 64-bit index identifying the policy forwarding
+        AFT entry.";
+    }
+
+    leaf ip-prefix {
+      type oc-inet:ip-prefix;
+      description
+        "The IP prefix that the forwarding entry matches.";
+    }
+
+    leaf mac-address {
+      type oc-yang:mac-address;
+      description
+         "The MAC address that the forwarding entry matches. Used for
+         Layer 2 forwarding entries, e.g., within a VSI instance.";
+    }
+
+    leaf mpls-label {
+      type oc-mpls-types:mpls-label;
+      description
+        "The MPLS label that the forwarding entry matches. Used for
+        MPLS forwarding entries, whereby the local device acts as an
+        LSR.";
+    }
+
+    leaf mpls-tc {
+      type oc-mpls-types:mpls-tc;
+      description
+        "The value of the MPLS Traffic Class bits (formerly known as
+        the MPLS experimental bits) that are to be matched by the AFT
+        entry.";
+      reference
+        "RFC5462: Multiprotocol Label Switching (MPLS) Label Stack
+        Entry: 'EXP' Field Renamed to 'Traffic Class' Field"; }
+
+    leaf ip-dscp {
+      type oc-inet:dscp;
+      description
+        "The value of the differentiated services code point (DSCP) to
+        be matched for the forwarding entry. The value is specified in
+        cases where specific class-based forwarding based on IP is
+        implemented by the device.";
+    }
+
+    leaf ip-protocol {
+      type oc-pkt-match-types:ip-protocol-type;
+      description
+        "The value of the IP protocol field of an IPv4 packet, or the
+        next-header field of an IPv6 packet which is to be matched by
+        the AFT entry. This field is utilised where forwarding is
+        performed based on L4 information.";
+    }
+
+    leaf l4-src-port {
+      type oc-inet:port-number;
+      description
+        "The value of the source port field of the transport header
+        that is to be matched by the AFT entry.";
+    }
+
+    leaf l4-dst-port {
+      type oc-inet:port-number;
+      description
+        "The value of the destination port field of the transport
+        header that is to be matched by the AFT entry.";
+    }
+  }
+
+  grouping aft-pf-entry-state {
+    description
+      "Operational state parameters for the Policy Forwarding
+      AFT entry.";
+    uses aft-common-entry-state;
+  }
+
+  //MPLS submodule
+  grouping aft-mpls-structural {
+    description
+      "Structural grouping defining the schema for the MPLS
+      abstract forwarding table.";
+
+    list label-entry {
+      key "label";
+
+      description
+        "List of the MPLS entries within the abstract
+        forwarding table. This list is keyed by the top-most MPLS
+        label.";
+
+      leaf label {
+        type leafref {
+          path "../config/label";
+        }
+        description
+          "Reference to the top-most MPLS label matched by the
+          entry.";
+      }
+
+      container config {
+        description
+          "Configuration parameters for the MPLS AFT entry.";
+        uses aft-mpls-entry-config;
+      }
+
+      container state {
+        config false;
+        description
+          "Operational state parameters for the MPLS AFT
+          entry.";
+        uses aft-mpls-entry-config;
+        uses aft-mpls-entry-state;
+      }
+    }
+  }
+
+  grouping aft-mpls-entry-config {
+    description
+      "Configuration parameters for the MPLS entry.";
+
+    leaf label {
+        type oc-mpls-types:mpls-label;
+        description
+          "The top-most MPLS label that should be matched to
+          utilise the AFT entry.";
+    }
+  }
+
+  grouping aft-mpls-entry-state {
+    description
+      "Operational state parameters for the MPLS entry.";
+    uses aft-common-entry-state;
+
+    leaf-list popped-mpls-label-stack {
+      type oc-mpls-types:mpls-label;
+      description
+        "The MPLS label stack to be popped from the packet when
+        switched by the system. The stack is encoded as a leaf-list
+        such that the first entry is the label that is outer-most (i.e.,
+        furthest from the bottom of the stack).
+
+        If the local system pops the outer-most label 400, then the
+        value of this list is [400,]. If the local system removes two
+        labels, the outer-most being 500, and the second of which is
+        400, then the value of the list is [500, 400].
+
+        A swap operation is reflected by entries in the
+        popped-mpls-label-stack and pushed-mpls-label-stack nodes.";
+    }
+  }
+}

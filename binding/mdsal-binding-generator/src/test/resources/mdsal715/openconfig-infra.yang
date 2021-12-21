@@ -1,0 +1,88 @@
+module openconfig-infra {
+    yang-version "1";
+
+    namespace "http://openconfig.net/yang/system/infra/extension";
+
+    prefix "oc-infra";
+
+  // import some basic types
+
+  // meta
+  organization
+    "SONiC";
+
+  contact
+    "SONiC";
+
+  description
+    "This module contains a collection of YANG definitions for infra component";
+
+  revision "2020-05-21" {
+    description
+      "Initial draft revision.";
+     reference "0.1.0";
+  }
+
+  // typedef statements
+
+
+  // grouping statements
+  grouping infra-top {
+    description
+      "Top level grouping for attributes for infra.";
+
+    container infra {
+      description
+        "Parameters related to infra configuration and status.";
+
+        container state {
+          config false;
+          description
+            "State parameters of infra ";
+          uses infra-sys-time-state;
+          uses infra-sys-reboot-cause-state;
+          uses infra-sys-show-users;
+        }
+    }
+  }
+
+  grouping infra-sys-time-state{
+          description
+               "Global clock/time for the system";
+          leaf clock {
+               type string;
+               description
+                     "show system date and time";
+           }
+
+           leaf uptime{
+               type string;
+               description
+                     "show system uptime";
+
+           }
+   }
+
+  grouping infra-sys-reboot-cause-state{
+          description
+               "Global reboot-cause for the system";
+          leaf reboot-cause {
+               type string;
+               description
+                     "Show cause of most recent reboot";
+           }
+
+   }
+
+  grouping infra-sys-show-users{
+          description
+               "show users";
+          leaf-list show-user-list {
+               type string;
+               description
+                     "Show users";
+           }
+
+   }
+
+}
