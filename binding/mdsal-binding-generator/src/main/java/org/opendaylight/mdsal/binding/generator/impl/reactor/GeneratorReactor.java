@@ -217,7 +217,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
     AbstractExplicitGenerator<?> resolveSchemaNode(final SchemaNodeIdentifier path) {
         verify(path instanceof SchemaNodeIdentifier.Absolute, "Unexpected path %s", path);
         return verifyNotNull(generators.get(path.firstNodeIdentifier().getModule()), "Cannot find module for %s", path)
-            .resolveSchemaNode(path, null);
+            .resolveSchemaNode(path);
     }
 
     @Override

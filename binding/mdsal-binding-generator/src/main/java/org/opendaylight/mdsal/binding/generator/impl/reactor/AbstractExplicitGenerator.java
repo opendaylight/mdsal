@@ -107,24 +107,23 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
         return null;
     }
 
-    final @NonNull AbstractExplicitGenerator<?> resolveSchemaNode(final @NonNull SchemaNodeIdentifier path,
-            final @Nullable QNameModule targetModule) {
+    final @NonNull AbstractExplicitGenerator<?> resolveSchemaNode(final @NonNull SchemaNodeIdentifier path) {
         AbstractExplicitGenerator<?> current = this;
-        QNameModule currentModule = targetModule;
-
         for (QName next : path.getNodeIdentifiers()) {
-            final QName qname = currentModule == null ? next : next.bindTo(currentModule);
+            current = verifyNotNull(current.findSchemaTreeGenerator(next),
+                "Failed to find %s in %s", next, current);
+        }
+        return current;
+    }
+
+    final @NonNull AbstractExplicitGenerator<?> resolveSchemaNode(final @NonNull SchemaNodeIdentifier path,
+            final @NonNull QNameModule targetModule) {
+        AbstractExplicitGenerator<?> current = this;
+        for (QName next : path.getNodeIdentifiers()) {
+            final QName qname = next.bindTo(targetModule);
             current = verifyNotNull(current.findSchemaTreeGenerator(qname),
                 "Failed to find %s as %s in %s", next, qname, current);
-
-            final QNameModule foundNamespace = current.getQName().getModule();
-            if (!foundNamespace.equals(qname.getModule())) {
-                // We have located a different QName than the one we were looking for. We need to make sure we adjust
-                // all subsequent QNames to this new namespace
-                currentModule = foundNamespace;
-            }
         }
-
         return current;
     }
 
