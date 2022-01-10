@@ -43,12 +43,6 @@
             <artifactId>junit</artifactId>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>ch.vorburger</groupId>
-            <artifactId>xtendbeans</artifactId>
-            <scope>compile</scope>
-            <version>1.3.2</version>
-        </dependency>
 
         <dependency>
             <groupId>io.github.java-diff-utils</groupId>
