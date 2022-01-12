@@ -32,6 +32,7 @@ import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
@@ -97,7 +98,8 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         final Class<D> bindingClass = getBindingClass();
 
         final ImmutableMap<Method, ValueNodeCodecContext> tmpLeaves = factory().getLeafNodes(bindingClass, getSchema());
-        final Map<Class<?>, Method> clsToMethod = BindingReflections.getChildrenClassToMethod(bindingClass);
+        final Map<Class<? extends DataContainer>, Method> clsToMethod =
+            BindingReflections.getChildrenClassToMethod(bindingClass);
 
         final Map<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYangBuilder = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byStreamClassBuilder = new HashMap<>();
@@ -114,7 +116,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
         this.leafChild = leafChildBuilder.build();
 
         final Map<Method, Class<?>> tmpDataObjects = new HashMap<>();
-        for (final Entry<Class<?>, Method> childDataObj : clsToMethod.entrySet()) {
+        for (final Entry<Class<? extends DataContainer>, Method> childDataObj : clsToMethod.entrySet()) {
             final Method method = childDataObj.getValue();
             verify(!method.isDefault(), "Unexpected default method %s in %s", method, bindingClass);
 
