@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Collection;
+import java.util.List;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
@@ -33,7 +33,7 @@ class BindingDOMDataTreeChangeListenerAdapter<T extends DataObject> implements D
     }
 
     @Override
-    public void onDataTreeChanged(final Collection<DataTreeCandidate> domChanges) {
+    public void onDataTreeChanged(final List<DataTreeCandidate> domChanges) {
         listener.onDataTreeChanged(LazyDataTreeModification.from(adapterContext.currentSerializer(), domChanges,
             store));
     }

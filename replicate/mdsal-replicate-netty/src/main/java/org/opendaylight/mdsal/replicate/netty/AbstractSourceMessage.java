@@ -11,7 +11,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.codec.binfmt.DataTreeCandidateInputOutput;
@@ -27,9 +26,9 @@ abstract class AbstractSourceMessage {
     }
 
     private static final class Deltas extends AbstractSourceMessage {
-        private final Collection<DataTreeCandidate> deltas;
+        private final List<DataTreeCandidate> deltas;
 
-        Deltas(final Collection<DataTreeCandidate> deltas) {
+        Deltas(final List<DataTreeCandidate> deltas) {
             this.deltas = requireNonNull(deltas);
         }
 
@@ -52,7 +51,7 @@ abstract class AbstractSourceMessage {
         return EMPTY;
     }
 
-    static AbstractSourceMessage of(final Collection<DataTreeCandidate> deltas) {
+    static AbstractSourceMessage of(final List<DataTreeCandidate> deltas) {
         return new Deltas(deltas);
     }
 

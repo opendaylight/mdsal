@@ -19,7 +19,6 @@ import com.google.common.util.concurrent.ForwardingExecutorService;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -136,10 +135,10 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         latch.await(5, TimeUnit.SECONDS);
 
         assertEquals(1, listener.getReceivedChanges().size());
-        final Collection<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        final List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        final DataTreeCandidate candidate = changes.iterator().next();
+        final DataTreeCandidate candidate = changes.get(0);
         assertNotNull(candidate);
         final DataTreeCandidateNode candidateRoot = candidate.getRootNode();
         checkChange(null, TEST_CONTAINER, ModificationType.WRITE, candidateRoot);
@@ -168,10 +167,10 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         latch.await(5, TimeUnit.SECONDS);
 
         assertEquals(2, listener.getReceivedChanges().size());
-        Collection<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        DataTreeCandidate candidate = changes.iterator().next();
+        DataTreeCandidate candidate = changes.get(0);
         assertNotNull(candidate);
         DataTreeCandidateNode candidateRoot = candidate.getRootNode();
         checkChange(null, TEST_CONTAINER, ModificationType.WRITE, candidateRoot);
@@ -179,7 +178,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         changes = listener.getReceivedChanges().get(1);
         assertEquals(1, changes.size());
 
-        candidate = changes.iterator().next();
+        candidate = changes.get(0);
         assertNotNull(candidate);
         candidateRoot = candidate.getRootNode();
         checkChange(TEST_CONTAINER, TEST_CONTAINER_2, ModificationType.WRITE, candidateRoot);
@@ -209,10 +208,10 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         latch.await(5, TimeUnit.SECONDS);
 
         assertEquals(2, listener.getReceivedChanges().size());
-        Collection<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        DataTreeCandidate candidate = changes.iterator().next();
+        DataTreeCandidate candidate = changes.get(0);
         assertNotNull(candidate);
         DataTreeCandidateNode candidateRoot = candidate.getRootNode();
         checkChange(null, TEST_CONTAINER, ModificationType.WRITE, candidateRoot);
@@ -220,7 +219,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         changes = listener.getReceivedChanges().get(1);
         assertEquals(1, changes.size());
 
-        candidate = changes.iterator().next();
+        candidate = changes.get(0);
         assertNotNull(candidate);
         candidateRoot = candidate.getRootNode();
         checkChange(TEST_CONTAINER, null, ModificationType.DELETE, candidateRoot);
@@ -250,10 +249,10 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         latch.await(5, TimeUnit.SECONDS);
 
         assertEquals(2, listener.getReceivedChanges().size());
-        Collection<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        DataTreeCandidate candidate = changes.iterator().next();
+        DataTreeCandidate candidate = changes.get(0);
         assertNotNull(candidate);
         DataTreeCandidateNode candidateRoot = candidate.getRootNode();
         checkChange(null, TEST_CONTAINER, ModificationType.WRITE, candidateRoot);
@@ -261,7 +260,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         changes = listener.getReceivedChanges().get(1);
         assertEquals(1, changes.size());
 
-        candidate = changes.iterator().next();
+        candidate = changes.get(0);
         assertNotNull(candidate);
         candidateRoot = candidate.getRootNode();
         checkChange(TEST_CONTAINER, TEST_CONTAINER_2, ModificationType.SUBTREE_MODIFIED, candidateRoot);
@@ -294,10 +293,10 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         latch.await(1, TimeUnit.SECONDS);
 
         assertEquals(2, listener.getReceivedChanges().size());
-        Collection<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        DataTreeCandidate candidate = changes.iterator().next();
+        DataTreeCandidate candidate = changes.get(0);
         assertNotNull(candidate);
         DataTreeCandidateNode candidateRoot = candidate.getRootNode();
         checkChange(null, OUTER_LIST, ModificationType.WRITE, candidateRoot);
@@ -305,7 +304,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         changes = listener.getReceivedChanges().get(1);
         assertEquals(1, changes.size());
 
-        candidate = changes.iterator().next();
+        candidate = changes.get(0);
         assertNotNull(candidate);
         candidateRoot = candidate.getRootNode();
         checkChange(OUTER_LIST, OUTER_LIST_2, ModificationType.WRITE, candidateRoot);
@@ -355,10 +354,10 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         latch.await(5, TimeUnit.SECONDS);
 
         assertEquals(2, listener.getReceivedChanges().size());
-        Collection<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
+        List<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        DataTreeCandidate candidate = changes.iterator().next();
+        DataTreeCandidate candidate = changes.get(0);
         assertNotNull(candidate);
         DataTreeCandidateNode candidateRoot = candidate.getRootNode();
         checkChange(null, OUTER_LIST, ModificationType.WRITE, candidateRoot);
@@ -366,7 +365,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         changes = listener.getReceivedChanges().get(1);
         assertEquals(1, changes.size());
 
-        candidate = changes.iterator().next();
+        candidate = changes.get(0);
         assertNotNull(candidate);
         candidateRoot = candidate.getRootNode();
         checkChange(OUTER_LIST, listAfter, ModificationType.SUBTREE_MODIFIED, candidateRoot);
@@ -417,7 +416,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
     }
 
     static class TestDataTreeListener implements DOMDataTreeChangeListener {
-        private final List<Collection<DataTreeCandidate>> receivedChanges = new ArrayList<>();
+        private final List<List<DataTreeCandidate>> receivedChanges = new ArrayList<>();
         private final CountDownLatch latch;
 
         TestDataTreeListener(final CountDownLatch latch) {
@@ -425,7 +424,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         }
 
         @Override
-        public void onDataTreeChanged(final Collection<DataTreeCandidate> changes) {
+        public void onDataTreeChanged(final List<DataTreeCandidate> changes) {
             receivedChanges.add(changes);
             latch.countDown();
         }
@@ -435,7 +434,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
             // noop
         }
 
-        List<Collection<DataTreeCandidate>> getReceivedChanges() {
+        List<List<DataTreeCandidate>> getReceivedChanges() {
             return receivedChanges;
         }
     }

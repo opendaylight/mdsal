@@ -16,7 +16,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.List;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.ClusteredDOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
@@ -95,7 +95,7 @@ final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
             }
 
             @Override
-            public void onDataTreeChanged(final Collection<DataTreeCandidate> changes) {
+            public void onDataTreeChanged(final List<DataTreeCandidate> changes) {
                 LOG.debug("Channel {} tree {} has {} changes", channel, dataTree, changes.size());
                 channel.writeAndFlush(AbstractSourceMessage.of(changes));
             }

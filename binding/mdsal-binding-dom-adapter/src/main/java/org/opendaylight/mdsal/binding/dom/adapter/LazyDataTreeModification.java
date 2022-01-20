@@ -11,7 +11,6 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
@@ -60,9 +59,8 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
             LazyDataObjectModification.create(codec, candidate.getRootNode()));
     }
 
-    static <T extends DataObject> @NonNull Collection<DataTreeModification<T>> from(
-            final CurrentAdapterSerializer codec, final Collection<DataTreeCandidate> domChanges,
-            final LogicalDatastoreType datastoreType) {
+    static <T extends DataObject> @NonNull List<DataTreeModification<T>> from(final CurrentAdapterSerializer codec,
+            final List<DataTreeCandidate> domChanges, final LogicalDatastoreType datastoreType) {
         final List<DataTreeModification<T>> result = new ArrayList<>(domChanges.size());
         for (final DataTreeCandidate domChange : domChanges) {
             result.add(LazyDataTreeModification.create(codec, domChange, datastoreType));

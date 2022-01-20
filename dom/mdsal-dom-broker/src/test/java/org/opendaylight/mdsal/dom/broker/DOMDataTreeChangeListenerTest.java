@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
     @Test
     public void receiveOnDataInitialEventForNonExistingData() throws InterruptedException, ExecutionException {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
-        final ArgumentCaptor<Collection> candidateCapture = ArgumentCaptor.forClass(Collection.class);
+        final ArgumentCaptor<List> candidateCapture = ArgumentCaptor.forClass(List.class);
         doNothing().when(listener).onInitialData();
         doNothing().when(listener).onDataTreeChanged(any());
 
@@ -79,7 +79,7 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
     @Test
     public void receiveOnDataTreeChangedEventForPreExistingEmptyData() throws InterruptedException, ExecutionException {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
-        final ArgumentCaptor<Collection> candidateCapture = ArgumentCaptor.forClass(Collection.class);
+        final ArgumentCaptor<List> candidateCapture = ArgumentCaptor.forClass(List.class);
         doNothing().when(listener).onDataTreeChanged(any());
 
         final NormalizedNode testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
@@ -101,7 +101,7 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
     @Test
     public void receiveOnDataTreeChangeEventForPreExistingData() throws InterruptedException, ExecutionException {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
-        final ArgumentCaptor<Collection> candidateCapture = ArgumentCaptor.forClass(Collection.class);
+        final ArgumentCaptor<List> candidateCapture = ArgumentCaptor.forClass(List.class);
         doNothing().when(listener).onDataTreeChanged(any());
 
         final ContainerNode testNode = ImmutableContainerNodeBuilder.create()
