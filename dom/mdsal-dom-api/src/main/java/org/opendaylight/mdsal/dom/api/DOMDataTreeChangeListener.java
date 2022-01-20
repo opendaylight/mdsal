@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import java.util.Collection;
 import java.util.EventListener;
+import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 
@@ -35,15 +35,15 @@ public interface DOMDataTreeChangeListener extends EventListener {
      * a {@link org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType} other than UNMODIFIED, while
      * the before- and after- data items compare as equal.
      *
-     * @param changes Collection of change events, may not be null or empty.
+     * @param changes List of change events, may not be null or empty.
      * @throws NullPointerException if {@code changes} is null
      */
-    void onDataTreeChanged(@NonNull Collection<DataTreeCandidate> changes);
+    void onDataTreeChanged(@NonNull List<DataTreeCandidate> changes);
 
     /**
      * Invoked only once during registration of the listener if there was no data in the conceptual data tree
      * for the supplied path, which was used to register this listener, and after this
-     * {@link #onDataTreeChanged(Collection)} would always be invoked for data changes.
+     * {@link #onDataTreeChanged(List)} would always be invoked for data changes.
      */
     void onInitialData();
 }
