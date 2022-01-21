@@ -126,13 +126,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
 
         // Step 1b: ... and also link augments and their targets in a separate pass, as we need groupings fully resolved
         //          before we attempt augmentation lookups ...
-        for (ModuleGenerator module : children) {
-            for (Generator child : module) {
-                if (child instanceof ModuleAugmentGenerator) {
-                    ((ModuleAugmentGenerator) child).linkAugmentationTarget(this);
-                }
-            }
-        }
+        linkAugmentationTargets(children);
 
         // Step 1c: ... finally establish linkage along the reverse uses/augment axis. This is needed to route generated
         //          type manifestations (isAddedByUses/isAugmenting) to their type generation sites.
@@ -328,6 +322,17 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
                 composite.linkUsesDependencies(this);
                 linkUsesDependencies(composite);
                 stack.pop();
+            }
+        }
+    }
+
+    private void linkAugmentationTargets(final Iterable<? extends Generator> parent) {
+        for (Generator child : parent) {
+            if (child instanceof AbstractCompositeGenerator) {
+                linkAugmentationTargets(child);
+                if (child instanceof AbstractAugmentGenerator) {
+                    ((AbstractAugmentGenerator) child).linkAugmentationTarget(this);
+                }
             }
         }
     }

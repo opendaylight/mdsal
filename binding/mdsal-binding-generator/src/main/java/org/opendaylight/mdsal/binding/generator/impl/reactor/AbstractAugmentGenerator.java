@@ -143,21 +143,18 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
         // Augments are never added as getters, as they are handled via Augmentable mechanics
     }
 
-    final void setTargetGenerator(final AbstractExplicitGenerator<?> target) {
+    final @NonNull AbstractCompositeGenerator<?> targetGenerator() {
+        return verifyNotNull(targetGen, "No target for %s", this).getOriginal();
+    }
+
+    final void linkAugmentationTarget(final GeneratorContext context) {
+        verify(targetGen == null, "Attempted to relink %s, already have target %s", this, targetGen);
+
+        final var target = getLookupBase(context).resolveSchemaNode(statement().argument());
         verify(target instanceof AbstractCompositeGenerator, "Unexpected target %s", target);
         targetGen = (AbstractCompositeGenerator<?>) target;
         targetGen.addAugment(this);
     }
 
-    final @NonNull AbstractCompositeGenerator<?> targetGenerator() {
-        final AbstractCompositeGenerator<?> existing = targetGen;
-        if (existing != null) {
-            return existing.getOriginal();
-        }
-
-        loadTargetGenerator();
-        return verifyNotNull(targetGen, "No target for %s", this).getOriginal();
-    }
-
-    abstract void loadTargetGenerator();
+    abstract @NonNull AbstractCompositeGenerator<?> getLookupBase(GeneratorContext context);
 }
