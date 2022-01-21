@@ -1,0 +1,8 @@
+module foo {
+  namespace foo;
+  prefix foo;
+
+  grouping foo {
+    container foo;
+  }
+}

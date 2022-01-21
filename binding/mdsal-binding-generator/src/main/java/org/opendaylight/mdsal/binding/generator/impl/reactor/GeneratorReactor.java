@@ -126,6 +126,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
 
         // Step 1b: ... and also link augments and their targets in a separate pass, as we need groupings fully resolved
         //          before we attempt augmentation lookups ...
+        linkUsesAugmentationTargets(children);
         for (ModuleGenerator module : children) {
             for (Generator child : module) {
                 if (child instanceof ModuleAugmentGenerator) {
@@ -328,6 +329,17 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
                 composite.linkUsesDependencies(this);
                 linkUsesDependencies(composite);
                 stack.pop();
+            }
+        }
+    }
+
+    private static void linkUsesAugmentationTargets(final Iterable<? extends Generator> parent) {
+        for (Generator child : parent) {
+            if (child instanceof UsesAugmentGenerator) {
+                ((UsesAugmentGenerator) child).linkAugmentationTarget();
+            }
+            if (child instanceof AbstractCompositeGenerator) {
+                linkUsesAugmentationTargets(child);
             }
         }
     }
