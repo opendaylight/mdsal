@@ -122,16 +122,17 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         // Start measuring time...
         final Stopwatch sw = Stopwatch.createStarted();
 
-        // Step 1a: walk all composite generators and resolve 'uses' statements to the corresponding grouping node,
-        //          establishing implied inheritance ...
+        // Step 1a: Walk all composite generators and resolve 'uses' statements to the corresponding grouping generator,
+        //          establishing implied inheritance. During this walk we maintain 'stack' to aid this process.
         linkUsesDependencies(children);
 
-        // Step 1b: ... and also link augments and their targets in a separate pass, as we need groupings fully resolved
-        //          before we attempt augmentation lookups ...
+        // Step 1b: Walk all composite generators and start Augmentable->Augmentation resolution by linking the first
+        //          step of each 'augment' statement to its corresponding instantiated site.
         for (ModuleGenerator module : children) {
-            for (Generator child : module) {
-                if (child instanceof ModuleAugmentGenerator) {
-                    ((ModuleAugmentGenerator) child).linkAugmentationTarget(this);
+            module.startAugmentLinkage();
+            for (Generator gen : module) {
+                if (gen instanceof ModuleAugmentGenerator) {
+                    ((ModuleAugmentGenerator) gen).startLinkage(this);
                 }
             }
         }
