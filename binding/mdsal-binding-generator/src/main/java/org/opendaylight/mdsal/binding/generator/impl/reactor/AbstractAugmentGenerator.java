@@ -21,6 +21,7 @@ import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.yangtools.odlext.model.api.AugmentIdentifierEffectiveStatement;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
@@ -143,21 +144,18 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
         // Augments are never added as getters, as they are handled via Augmentable mechanics
     }
 
-    final void setTargetGenerator(final AbstractExplicitGenerator<?> target) {
-        verify(target instanceof AbstractCompositeGenerator, "Unexpected target %s", target);
-        targetGen = (AbstractCompositeGenerator<?>) target;
-        targetGen.addAugment(this);
+    final void startLinkage(final AbstractCompositeGenerator<?> base, final QNameModule localNamespace) {
+        verify(targetGen == null, "Attempted to start linkage of %s, already have target %s", this, targetGen);
+
+        base.requireOriginalDescendant(statement().argument().getNodeIdentifiers().iterator(), localNamespace,
+            target -> {
+                verify(targetGen == null, "Attempted to relink %s, already have target %s", this, targetGen);
+                targetGen = target;
+                targetGen.addAugment(this);
+            });
     }
 
     final @NonNull AbstractCompositeGenerator<?> targetGenerator() {
-        final AbstractCompositeGenerator<?> existing = targetGen;
-        if (existing != null) {
-            return existing.getOriginal();
-        }
-
-        loadTargetGenerator();
-        return verifyNotNull(targetGen, "No target for %s", this).getOriginal();
+        return verifyNotNull(targetGen, "No target for %s", this);
     }
-
-    abstract void loadTargetGenerator();
 }
