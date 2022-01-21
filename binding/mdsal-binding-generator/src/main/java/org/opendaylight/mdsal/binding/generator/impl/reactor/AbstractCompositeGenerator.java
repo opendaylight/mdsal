@@ -23,7 +23,6 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
 import org.opendaylight.yangtools.yang.model.api.CopyableNode;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
@@ -43,7 +42,6 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ListEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.UsesEffectiveStatement;
@@ -59,24 +57,85 @@ import org.slf4j.LoggerFactory;
 abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> extends AbstractExplicitGenerator<T> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractCompositeGenerator.class);
 
+    // FIXME: we want to allocate this lazily to lower memory footprint
     private final @NonNull CollisionDomain domain = new CollisionDomain(this);
     private final List<Generator> children;
 
+    // Linkage of 'grouping' statements this generator references and 'augment' statements targeting this generator
     private List<AbstractAugmentGenerator> augments = List.of();
     private List<GroupingGenerator> groupings;
 
-    // Performance optimization: if this is true, we have ascertained our original definition as well that of all our
-    // children
-    private boolean originalsResolved;
+    /*
+     * State tracking for resolution of children to their original declaration, i.e. back along the 'uses' and 'augment'
+     * axis. This is quite convoluted because we are traversing the generator tree recursively in the iteration order
+     * of children, but actual dependencies may require resolution in a different order, for example in the case of:
+     *
+     *   container foo {
+     *     uses bar {             // A
+     *       augment bar {        // B
+     *         container xyzzy;   // C
+     *       }
+     *     }
+     *
+     *     grouping bar {
+     *       container bar {      // D
+     *         uses baz;          // E
+     *       }
+     *     }
+     *
+     *     grouping baz {
+     *       leaf baz {           // F
+     *         type string;
+     *       }
+     *     }
+     *   }
+     *
+     *   augment /foo/bar/xyzzy { // G
+     *     leaf xyzzy {           // H
+     *       type string;
+     *     }
+     *   }
+     *
+     * In this case we have three manifestations of 'leaf baz' -- marked A, E and F in the child iteration order. In
+     * order to perform a resolution, we first have to determine that F is the original definition, then establish that
+     * E is using the definition made by F and finally establish that A is using the definition made by F.
+     *
+     * Dealing with augmentations is harder still, because we need to attach them to the original definition, hence we
+     * for the /foo/bar container at A, we need to understand that its original definition is at D and we need to attach
+     * the augment at B to D. Futhermore we also need to establish that the augmentation at G attaches to container
+     * defined in C, so that the 'leaf xyzzy' existing as /foo/bar/xyzzy/xyzzy under C has its original definition at H.
+     *
+     * Finally realize that the augment at G can actually exist in a different module and is shown in this example only
+     * the simplified form. That also means we could encounter G well before 'container foo' as well as we can have
+     * multiple such augments sprinkled across multiple modules having the same dependency rules as between C and G --
+     * but they still have to form a directed acyclic graph and we partially deal with those complexities by having
+     * modules sorted by their dependencies.
+     *
+     *
+     * FIXME: describe fields and general outline of what we are trying to achieve
+     */
+    private List<AugmentRequirement> requiredChildren = List.of();
+
+    // FIXME: these two lists should really be combined and should use encapsulation. That list should also be
+    //        initialized when we first start resolving it. We therefore will need something like:
+    //
+    //          List<LinkageState> unlinkedChildren;
+    //
+    //        The state should capture the different lifecycles for original/addedByUses/augmenting.
+
+    // List of children which have not had their original linked. Set to null once all children are linked.
+    private List<Generator> unlinkedChildren;
 
     AbstractCompositeGenerator(final T statement) {
         super(statement);
         children = createChildren(statement);
+        unlinkedChildren = children;
     }
 
     AbstractCompositeGenerator(final T statement, final AbstractCompositeGenerator<?> parent) {
         super(statement, parent);
         children = createChildren(statement);
+        unlinkedChildren = children;
     }
 
     @Override
@@ -87,6 +146,36 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
     @Override
     final boolean isEmpty() {
         return children.isEmpty();
+    }
+
+    final void resolveAugmentTarget(final AbstractAugmentGenerator augment) {
+        // This is not quite straightforward. 'path' works on top of schema tree, which is instantiated view. Since we
+        // do not generate duplicate instantiations along 'uses' path, findSchemaTreeGenerator() would satisfy our
+        // request by returning a child of the source 'grouping'.
+        //
+        // When that happens, our subsequent lookups need to adjust the namespace being looked up to the grouping's
+        // namespace... except for the case when the step is actually an augmentation, in which case we must not make
+        // that adjustment.
+        //
+        // Hence we deal with this lookup recursively, dropping namespace hints when we cross into groupings. Note we
+        // take an initial hint -- which UsesAugmentGenerator provides, but ModuleAugmentGenerator does not -- and that
+        // accounts for the difference.
+        final var path = augment.statement().argument().getNodeIdentifiers().iterator();
+        addRequirement(this instanceof GroupingGenerator
+            ? new AugmentRequirement(augment, path, (GroupingGenerator) this)
+                : new AugmentRequirement(augment, path));
+    }
+
+    void addRequirement(final AugmentRequirement req) {
+        if (requiredChildren != null) {
+            if (requiredChildren.isEmpty()) {
+                requiredChildren = new ArrayList<>(2);
+            }
+            requiredChildren.add(req);
+        } else {
+            // Late-coming after we have established all linkage. Deal with it now.
+            verify(resolveChildRequirement(req), "Requirement %s failed to resolve in %s", req.qname(), this);
+        }
     }
 
     final @Nullable AbstractExplicitGenerator<?> findGenerator(final List<EffectiveStatement<?, ?>> stmtPath) {
@@ -146,17 +235,46 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
     }
 
     final void linkUsesDependencies(final GeneratorContext context) {
-        // We are resolving 'uses' statements to their corresponding 'grouping' definitions
+        // We are establishing two linkages here:
+        // - we are resolving 'uses' statements to their corresponding 'grouping' definitions
+        // - we propagate those groupings as anchors to any augment statements, which takes out some amount of guesswork
+        //   from augment+uses resolution case, as groupings know about their immediate augments as soon as uses linkage
+        //   is resolved
         final List<GroupingGenerator> tmp = new ArrayList<>();
         for (EffectiveStatement<?, ?> stmt : statement().effectiveSubstatements()) {
             if (stmt instanceof UsesEffectiveStatement) {
-                tmp.add(context.resolveTreeScoped(GroupingGenerator.class, ((UsesEffectiveStatement) stmt).argument()));
+                final UsesEffectiveStatement uses = (UsesEffectiveStatement) stmt;
+                final GroupingGenerator grouping = context.resolveTreeScoped(GroupingGenerator.class, uses.argument());
+                tmp.add(grouping);
+
+                // Trigger resolution of uses/augment statements. This looks like guesswork, but there may be multiple
+                // 'augment' statements in a 'uses' statement and keeping a ListMultimap here seems wasteful.
+                for (Generator gen : this) {
+                    if (gen instanceof UsesAugmentGenerator) {
+                        ((UsesAugmentGenerator) gen).resolveGrouping(uses, grouping);
+                    }
+                }
             }
         }
         groupings = List.copyOf(tmp);
     }
 
     final void addAugment(final AbstractAugmentGenerator augment) {
+        final var original = tryOriginal();
+        if (original != null) {
+            if (original != this) {
+                // Forward to original and we are done
+                original.addAugment(augment);
+                return;
+            }
+            // Resolution is done
+            augment.setTargetGenerator(this);
+        }
+        // We need to keep track of this augment and potentially forward it
+        appendAugment(augment);
+    }
+
+    private void appendAugment(final AbstractAugmentGenerator augment) {
         if (augments.isEmpty()) {
             augments = new ArrayList<>(2);
         }
@@ -164,28 +282,118 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
     }
 
     @Override
-    long linkOriginalGenerator() {
-        if (originalsResolved) {
-            return 0;
-        }
-
-        long remaining = super.linkOriginalGenerator();
-        if (remaining == 0) {
-            for (Generator child : children) {
-                if (child instanceof AbstractExplicitGenerator) {
-                    remaining += ((AbstractExplicitGenerator<?>) child).linkOriginalGenerator();
+    final boolean linkOriginalGenerator() {
+        final var ret = super.linkOriginalGenerator();
+        if (ret) {
+            if (!augments.isEmpty()) {
+                // Have original linkage, if we are are not the original forward any augments towards it
+                final var original = getOriginal();
+                if (original != this) {
+                    augments.forEach(original::addAugment);
+                    augments = List.of();
+                } else {
+                    augments.forEach(augment -> augment.setTargetGenerator(this));
                 }
             }
-            if (remaining == 0) {
-                originalsResolved = true;
+        }
+        return ret;
+    }
+
+    /**
+     * Attempt to link the generator corresponding to the original definition for this generator's statements as well as
+     * to all child generators.
+     *
+     * @return Number of generators that were linked, or {@code -1} when linkage has been completed
+     */
+    final void linkOriginalGeneratorRecursive(final LinkageProgress progress) {
+        if (!unlinkedChildren.isEmpty()) {
+            // Attempt to make progress on child linkage
+            final var nextUnlinked = new ArrayList<Generator>();
+            for (Generator child : unlinkedChildren) {
+                if (child instanceof AbstractExplicitGenerator) {
+                    if (((AbstractExplicitGenerator<?>) child).linkOriginalGenerator()) {
+                        progress.linkedOriginal();
+                    } else {
+                        nextUnlinked.add(child);
+                    }
+                }
+            }
+
+            if (nextUnlinked.isEmpty()) {
+                // Nothing left to do, make sure any previously-allocated list can be scavenged
+                unlinkedChildren = List.of();
+            } else {
+                // We have some unlinked children, report progress and wait for the next iteration
+                unlinkedChildren = nextUnlinked;
+                progress.setRetry();
             }
         }
-        return remaining;
+
+        // Deal with any augment target resolution
+        if (requiredChildren != null) {
+            final var it = requiredChildren.iterator();
+            while (it.hasNext()) {
+                if (resolveChildRequirement(it.next())) {
+                    progress.resolvedAugment();
+                    it.remove();
+                }
+            }
+            if (requiredChildren.isEmpty()) {
+                requiredChildren = null;
+            } else {
+                progress.setRetry();
+            }
+        }
+
+        // Determine which composites to process
+        for (var child : children) {
+            if (child instanceof AbstractCompositeGenerator) {
+                ((AbstractCompositeGenerator<?>) child).linkOriginalGeneratorRecursive(progress);
+            }
+        }
+    }
+
+    private boolean resolveChildRequirement(final AugmentRequirement req) {
+        final var qname = req.qname();
+
+        // First try local augments, as those are guaranteed to match namespace exactly
+        for (var augment : augments) {
+            final var gen = augment.findSchemaTreeGenerator(qname);
+            if (gen != null) {
+                req.inAugment(gen);
+                return true;
+            }
+        }
+
+        // Second try local groupings, as those perform their own adjustment
+        for (var grouping : groupings) {
+            final var ns = grouping.statement().argument().getModule();
+            final var gen = grouping.findSchemaTreeGenerator(qname.bindTo(ns));
+            if (gen != null) {
+                req.inGrouping(grouping, gen);
+                return true;
+            }
+        }
+
+        // Lastly try local statements adjusted with namespace, if applicable
+        final var adjusted = req.adjustedQName();
+        final var gen = super.findSchemaTreeGenerator(adjusted);
+        if (gen != null) {
+            req.inLocal(gen);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
     final AbstractCompositeGenerator<?> getOriginal() {
         return (AbstractCompositeGenerator<?>) super.getOriginal();
+    }
+
+    @Override
+    final AbstractCompositeGenerator<?> tryOriginal() {
+        return (AbstractCompositeGenerator<?>) super.tryOriginal();
     }
 
     final @NonNull OriginalLink getOriginalChild(final QName childQName) {
@@ -227,56 +435,6 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
             }
         }
         return null;
-    }
-
-    final @NonNull AbstractExplicitGenerator<?> resolveSchemaNode(final SchemaNodeIdentifier path) {
-        // This is not quite straightforward. 'path' works on top of schema tree, which is instantiated view. Since we
-        // do not generate duplicate instantiations along 'uses' path, findSchemaTreeGenerator() would satisfy our
-        // request by returning a child of the source 'grouping'.
-        //
-        // When that happens, our subsequent lookups need to adjust the namespace being looked up to the grouping's
-        // namespace... except for the case when the step is actually an augmentation, in which case we must not make
-        // that adjustment.
-        //
-        // Hence we deal with this lookup recursively, dropping namespace hints when we cross into groupings.
-        return resolveSchemaNode(path.getNodeIdentifiers().iterator(), null);
-    }
-
-    private @NonNull AbstractExplicitGenerator<?> resolveSchemaNode(final Iterator<QName> qnames,
-            final @Nullable QNameModule localNamespace) {
-        final QName qname = qnames.next();
-
-        // First try local augments, as those are guaranteed to match namespace exactly
-        for (AbstractAugmentGenerator augment : augments) {
-            final AbstractExplicitGenerator<?> gen = augment.findSchemaTreeGenerator(qname);
-            if (gen != null) {
-                return resolveNext(gen, qnames, null);
-            }
-        }
-
-        // Second try local groupings, as those perform their own adjustment
-        for (GroupingGenerator grouping : groupings) {
-            final QNameModule ns = grouping.statement().argument().getModule();
-            final AbstractExplicitGenerator<?> gen = grouping.findSchemaTreeGenerator(qname.bindTo(ns));
-            if (gen != null) {
-                return resolveNext(gen, qnames, ns);
-            }
-        }
-
-        // Lastly try local statements adjusted with namespace, if applicable
-        final QName lookup = localNamespace == null ? qname : qname.bindTo(localNamespace);
-        final AbstractExplicitGenerator<?> gen = verifyNotNull(super.findSchemaTreeGenerator(lookup),
-            "Failed to find %s as %s in %s", qname, lookup, this);
-        return resolveNext(gen, qnames, localNamespace);
-    }
-
-    private static @NonNull AbstractExplicitGenerator<?> resolveNext(final @NonNull AbstractExplicitGenerator<?> gen,
-            final Iterator<QName> qnames, final QNameModule localNamespace) {
-        if (qnames.hasNext()) {
-            verify(gen instanceof AbstractCompositeGenerator, "Unexpected generator %s", gen);
-            return ((AbstractCompositeGenerator<?>) gen).resolveSchemaNode(qnames, localNamespace);
-        }
-        return gen;
     }
 
     /**
@@ -404,7 +562,7 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
                 final UsesEffectiveStatement uses = (UsesEffectiveStatement) stmt;
                 for (EffectiveStatement<?, ?> usesSub : uses.effectiveSubstatements()) {
                     if (usesSub instanceof AugmentEffectiveStatement) {
-                        tmpAug.add(new UsesAugmentGenerator((AugmentEffectiveStatement) usesSub, this));
+                        tmpAug.add(new UsesAugmentGenerator((AugmentEffectiveStatement) usesSub, uses, this));
                     }
                 }
             } else {
@@ -414,7 +572,9 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
         }
 
         // Sort augments and add them last. This ensures child iteration order always reflects potential
-        // interdependencies, hence we do not need to worry about them.
+        // interdependencies, hence we do not need to worry about them. This is extremely important, as there are a
+        // number of places where we would have to either move the logic to parent statement and explicitly filter/sort
+        // substatements to establish this order.
         tmpAug.sort(AbstractAugmentGenerator.COMPARATOR);
         tmp.addAll(tmpAug);
 

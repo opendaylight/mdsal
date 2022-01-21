@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
+import static java.util.Objects.requireNonNull;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -143,21 +144,20 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
         // Augments are never added as getters, as they are handled via Augmentable mechanics
     }
 
-    final void setTargetGenerator(final AbstractExplicitGenerator<?> target) {
-        verify(target instanceof AbstractCompositeGenerator, "Unexpected target %s", target);
-        targetGen = (AbstractCompositeGenerator<?>) target;
-        targetGen.addAugment(this);
+    final void startLinkage(final AbstractCompositeGenerator<?> base) {
+        verify(targetGen == null, "Attempted to start linkage of %s, already have target %s", this, targetGen);
+        base.resolveAugmentTarget(this);
+    }
+
+    final void setTargetGenerator(final AbstractCompositeGenerator<?> targetGenerator) {
+        if (targetGen != null) {
+            verify(targetGen == targetGenerator, "Attempted to relink %s, already have target %s", this, targetGen);
+        } else {
+            targetGen = requireNonNull(targetGenerator);
+        }
     }
 
     final @NonNull AbstractCompositeGenerator<?> targetGenerator() {
-        final AbstractCompositeGenerator<?> existing = targetGen;
-        if (existing != null) {
-            return existing.getOriginal();
-        }
-
-        loadTargetGenerator();
-        return verifyNotNull(targetGen, "No target for %s", this).getOriginal();
+        return verifyNotNull(targetGen, "No target for %s", this);
     }
-
-    abstract void loadTargetGenerator();
 }
