@@ -122,16 +122,17 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         // Start measuring time...
         final Stopwatch sw = Stopwatch.createStarted();
 
-        // Step 1a: walk all composite generators and resolve 'uses' statements to the corresponding grouping node,
-        //          establishing implied inheritance ...
+        // Step 1a: Walk all composite generators and resolve 'uses' statements to the corresponding grouping generator,
+        //          establishing implied inheritance. During this walk we maintain 'stack' to aid this process.
         linkUsesDependencies(children);
 
-        // Step 1b: ... and also link augments and their targets in a separate pass, as we need groupings fully resolved
-        //          before we attempt augmentation lookups ...
+        // Step 1b: Walk all composite generators and start Augmentable->Augmentation resolution by linking the first
+        //          step of each 'augment' statement to its corresponding instantiated site.
         for (ModuleGenerator module : children) {
-            for (Generator child : module) {
-                if (child instanceof ModuleAugmentGenerator) {
-                    ((ModuleAugmentGenerator) child).linkAugmentationTarget(this);
+            module.startAugmentLinkage();
+            for (Generator gen : module) {
+                if (gen instanceof ModuleAugmentGenerator) {
+                    ((ModuleAugmentGenerator) gen).startLinkage(this);
                 }
             }
         }
@@ -139,16 +140,29 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         // Step 1c: ... finally establish linkage along the reverse uses/augment axis. This is needed to route generated
         //          type manifestations (isAddedByUses/isAugmenting) to their type generation sites. Since generator
         //          tree iteration order does not match dependencies, we may need to perform multiple passes.
-        long unlinkedOriginals = Long.MAX_VALUE;
-        do {
-            long remaining = 0;
-            for (ModuleGenerator module : children) {
-                remaining += module.linkOriginalGenerator();
+        for (ModuleGenerator module : children) {
+            verify(module.linkOriginalGenerator(), "Module %s failed to link", module);
+        }
+
+        final var unlinkedModules = new ArrayList<>(children);
+        while (true) {
+            long progress = 0;
+
+            final var it = unlinkedModules.iterator();
+            while (it.hasNext()) {
+                final long linked = it.next().linkOriginalGeneratorRecursive();
+                if (linked >= 0) {
+                    progress += linked;
+                } else {
+                    it.remove();
+                }
             }
-            verify(remaining < unlinkedOriginals, "Failed to make progress on linking of remaining %s originals",
-                remaining);
-            unlinkedOriginals = remaining;
-        } while (unlinkedOriginals != 0);
+
+            if (unlinkedModules.isEmpty()) {
+                break;
+            }
+            verify(progress != 0, "Failed to make progress on linking of original generators");
+        }
 
         /*
          * Step 2: link typedef statements, so that typedef's 'type' axis is fully established
