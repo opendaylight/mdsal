@@ -414,7 +414,9 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
         }
 
         // Sort augments and add them last. This ensures child iteration order always reflects potential
-        // interdependencies, hence we do not need to worry about them.
+        // interdependencies, hence we do not need to worry about them. This is extremely important, as there are a
+        // number of places where we would have to either move the logic to parent statement and explicitly filter/sort
+        // substatements to establish this order.
         tmpAug.sort(AbstractAugmentGenerator.COMPARATOR);
         tmp.addAll(tmpAug);
 
