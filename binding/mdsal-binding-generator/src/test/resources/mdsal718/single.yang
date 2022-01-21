@@ -1,0 +1,20 @@
+module single {
+  namespace single;
+  prefix single;
+
+  grouping foo {
+    container foo {
+      container bar;
+    }
+  }
+
+  uses foo {
+    augment foo/bar {
+      container baz;
+    }
+  }
+
+  augment /foo/bar/baz {
+    container xyzzy;
+  }
+}
