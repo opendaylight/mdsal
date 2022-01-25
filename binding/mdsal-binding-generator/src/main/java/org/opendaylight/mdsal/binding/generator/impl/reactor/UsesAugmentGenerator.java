@@ -17,6 +17,13 @@ final class UsesAugmentGenerator extends AbstractAugmentGenerator {
         super(statement, parent);
     }
 
+    @Override
+    int startAugmentLinkage() {
+        startLinkage(getParent());
+        return super.startAugmentLinkage();
+    }
+
+    // FIXME: remove this method
     void linkAugmentationTarget() {
         // Here we are going in the opposite direction of RFC7950, section 7.13:
         //

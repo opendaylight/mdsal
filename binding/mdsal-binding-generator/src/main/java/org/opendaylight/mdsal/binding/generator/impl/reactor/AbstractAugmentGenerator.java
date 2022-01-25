@@ -143,6 +143,15 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
         // Augments are never added as getters, as they are handled via Augmentable mechanics
     }
 
+    final void startLinkage(final AbstractCompositeGenerator<?> base) {
+        verify(targetGen == null, "Attempted to relink %s, already have target %s", this, targetGen);
+
+        // FIXME: implement this
+
+
+    }
+
+    // FIXME: eliminate this method
     final void setTargetGenerator(final AbstractCompositeGenerator<?> base) {
         verify(targetGen == null, "Attempted to relink %s, already have target %s", this, targetGen);
 

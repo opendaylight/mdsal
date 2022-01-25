@@ -85,6 +85,33 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
         return children.isEmpty();
     }
 
+    int startAugmentLinkage() {
+        int ret = 1;
+        for (Generator child : children) {
+            if (child instanceof AbstractCompositeGenerator) {
+                ret += ((AbstractCompositeGenerator<?>) child).startAugmentLinkage();
+            }
+        }
+        return ret;
+    }
+
+    final int continueAugmentLinkage() {
+        int ret = 0;
+
+        // FIXME: consider outstanding augments, etc.
+
+        for (Generator child : children) {
+            if (child instanceof AbstractExplicitGenerator) {
+                ((AbstractExplicitGenerator<?>) child).linkOriginalGenerator();
+            }
+            if (child instanceof AbstractCompositeGenerator) {
+                ret += ((AbstractCompositeGenerator<?>) child).continueAugmentLinkage();
+            }
+        }
+
+        return ret;
+    }
+
     final @Nullable AbstractExplicitGenerator<?> findGenerator(final List<EffectiveStatement<?, ?>> stmtPath) {
         return findGenerator(MatchStrategy.identity(), stmtPath, 0);
     }
