@@ -143,16 +143,17 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
         // Augments are never added as getters, as they are handled via Augmentable mechanics
     }
 
-    final void setTargetGenerator(final AbstractCompositeGenerator<?> base) {
-        verify(targetGen == null, "Attempted to relink %s, already have target %s", this, targetGen);
+    final void startLinkage(final AbstractCompositeGenerator<?> base) {
+        verify(targetGen == null, "Attempted to start linkage of %s, already have target %s", this, targetGen);
 
-        final var target = base.resolveSchemaNode(statement().argument());
-        verify(target instanceof AbstractCompositeGenerator, "Unexpected target %s", target);
-        targetGen = (AbstractCompositeGenerator<?>) target;
-        targetGen.addAugment(this);
+        base.requireOriginalDescendant(statement().argument().getNodeIdentifiers().iterator(), target -> {
+            verify(targetGen == null, "Attempted to relink %s, already have target %s", this, targetGen);
+            targetGen = target;
+            targetGen.addAugment(this);
+        });
     }
 
     final @NonNull AbstractCompositeGenerator<?> targetGenerator() {
-        return verifyNotNull(targetGen, "No target for %s", this).getOriginal();
+        return verifyNotNull(targetGen, "No target for %s", this);
     }
 }

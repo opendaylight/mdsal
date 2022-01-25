@@ -17,7 +17,7 @@ final class ModuleAugmentGenerator extends AbstractAugmentGenerator {
         super(statement, parent);
     }
 
-    void linkAugmentationTarget(final GeneratorContext context) {
-        setTargetGenerator(context.resolveModule(statement().argument().firstNodeIdentifier().getModule()));
+    void startLinkage(final GeneratorContext context) {
+        startLinkage(context.resolveModule(statement().argument().firstNodeIdentifier().getModule()));
     }
 }
