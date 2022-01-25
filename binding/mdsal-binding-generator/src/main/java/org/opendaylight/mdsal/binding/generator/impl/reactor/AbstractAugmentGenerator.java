@@ -143,16 +143,30 @@ abstract class AbstractAugmentGenerator extends AbstractCompositeGenerator<Augme
         // Augments are never added as getters, as they are handled via Augmentable mechanics
     }
 
-    final void setTargetGenerator(final AbstractCompositeGenerator<?> base) {
-        verify(targetGen == null, "Attempted to relink %s, already have target %s", this, targetGen);
+    final void startLinkage(final AbstractCompositeGenerator<?> base) {
+        verify(targetGen == null, "Attempted to start linkage of %s, already have target %s", this, targetGen);
 
-        final var target = base.resolveSchemaNode(statement().argument());
-        verify(target instanceof AbstractCompositeGenerator, "Unexpected target %s", target);
-        targetGen = (AbstractCompositeGenerator<?>) target;
-        targetGen.addAugment(this);
+        final var it = statement().argument().getNodeIdentifiers().iterator();
+        hookResolve(base, it.next(), it);
+    }
+
+    private void hookResolve(final AbstractCompositeGenerator<?> parent, final QName qname,
+            final Iterator<QName> remaining) {
+        parent.requireOriginalChild(qname, child -> {
+            verify(child instanceof AbstractCompositeGenerator, "Unexpected original %s for %s", child, qname);
+            final var original = (AbstractCompositeGenerator<?>) child;
+
+            if (!remaining.hasNext()) {
+                verify(targetGen == null, "Attempted to relink %s, already have target %s", this, targetGen);
+                targetGen = original;
+                targetGen.addAugment(this);
+            } else {
+                hookResolve(original, remaining.next(), remaining);
+            }
+        });
     }
 
     final @NonNull AbstractCompositeGenerator<?> targetGenerator() {
-        return verifyNotNull(targetGen, "No target for %s", this).getOriginal();
+        return verifyNotNull(targetGen, "No target for %s", this);
     }
 }

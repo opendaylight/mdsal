@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -83,6 +84,37 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
     @Override
     final boolean isEmpty() {
         return children.isEmpty();
+    }
+
+    int startAugmentLinkage() {
+        int ret = 1;
+        for (Generator child : children) {
+            if (child instanceof AbstractCompositeGenerator) {
+                ret += ((AbstractCompositeGenerator<?>) child).startAugmentLinkage();
+            }
+        }
+        return ret;
+    }
+
+    final int continueAugmentLinkage() {
+        int ret = 0;
+
+        // FIXME: consider outstanding augments, etc.
+
+        for (Generator child : children) {
+            if (child instanceof AbstractExplicitGenerator) {
+                ((AbstractExplicitGenerator<?>) child).linkOriginalGenerator();
+            }
+            if (child instanceof AbstractCompositeGenerator) {
+                ret += ((AbstractCompositeGenerator<?>) child).continueAugmentLinkage();
+            }
+        }
+
+        return ret;
+    }
+
+    final void requireOriginalChild(final QName child, final Consumer<AbstractExplicitGenerator<?>> callback) {
+        // FIXME: implement this
     }
 
     final @Nullable AbstractExplicitGenerator<?> findGenerator(final List<EffectiveStatement<?, ?>> stmtPath) {
