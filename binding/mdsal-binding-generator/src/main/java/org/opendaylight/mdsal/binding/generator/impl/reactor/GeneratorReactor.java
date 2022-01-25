@@ -122,21 +122,23 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         // Start measuring time...
         final Stopwatch sw = Stopwatch.createStarted();
 
-        // Step 1a: walk all composite generators and resolve 'uses' statements to the corresponding grouping node,
-        //          establishing implied inheritance ...
+        // Step 1a: Walk all composite generators and resolve 'uses' statements to the corresponding grouping generator,
+        //          establishing implied inheritance. During this walk we maintain 'stack' to aid this process.
         linkUsesDependencies(children);
 
-        // Step 1b: ... and also link augments and their targets in a separate pass, as we need groupings fully resolved
-        //          before we attempt augmentation lookups ...
-        linkUsesAugmentationTargets(children);
+        // Step 1b: Walk all composite generators and start Augmentable->Augmentation resolution by linking the first
+        //          step of each 'augment' statement to its corresponding instantiated site.
+        int toLink = 0;
         for (ModuleGenerator module : children) {
-            for (Generator child : module) {
-                if (child instanceof ModuleAugmentGenerator) {
-                    ((ModuleAugmentGenerator) child).linkAugmentationTarget(this);
+            toLink += module.startAugmentLinkage();
+            for (Generator gen : module) {
+                if (gen instanceof ModuleAugmentGenerator) {
+                    ((ModuleAugmentGenerator) gen).startLinkage(this);
                 }
             }
         }
 
+<<<<<<< HEAD
         // Step 1c: ... finally establish linkage along the reverse uses/augment axis. This is needed to route generated
         //          type manifestations (isAddedByUses/isAugmenting) to their type generation sites. Since generator
         //          tree iteration order does not match dependencies, we may need to perform multiple passes.
@@ -150,6 +152,21 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
                 remaining);
             unlinkedOriginals = remaining;
         } while (unlinkedOriginals != 0);
+=======
+        // Step 1c: Attempt to establish original statement linkage along the reverse uses/augment axis. Since we are
+        //          are reusing classes from groupings and therefore need to link augmentations to original definitions,
+        //          this is a recursively iterative process.
+        int linked = 0;
+        while (linked < toLink) {
+            int progress = 0;
+            for (ModuleGenerator module : children) {
+                progress += module.continueAugmentLinkage();
+            }
+            verify(progress != 0, "Failed to make forward progress with %s/%s generators linked", linked, toLink);
+            linked += progress;
+        }
+        verify(linked == toLink, "Expected %s generators, linked %s", toLink, linked);
+>>>>>>> d6e10460e (WIP: Another try)
 
         /*
          * Step 2: link typedef statements, so that typedef's 'type' axis is fully established
