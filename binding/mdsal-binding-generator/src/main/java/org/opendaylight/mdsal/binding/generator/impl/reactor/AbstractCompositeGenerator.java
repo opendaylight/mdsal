@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -43,7 +44,6 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ListEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.UsesEffectiveStatement;
@@ -57,11 +57,27 @@ import org.slf4j.LoggerFactory;
  * name assigned.
  */
 abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> extends AbstractExplicitGenerator<T> {
+    private static final class ChildRequirement {
+        final @NonNull Consumer<AbstractCompositeGenerator<?>> callback;
+        final @Nullable QNameModule localNamespace;
+        final @NonNull Iterator<QName> remaining;
+        final @NonNull QName qname;
+
+        ChildRequirement(final Consumer<AbstractCompositeGenerator<?>> callback, final Iterator<QName> remaining,
+                final QName qname, final QNameModule localNamespace) {
+            this.callback = requireNonNull(callback);
+            this.remaining = requireNonNull(remaining);
+            this.qname = requireNonNull(qname);
+            this.localNamespace = localNamespace;
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(AbstractCompositeGenerator.class);
 
     private final @NonNull CollisionDomain domain = new CollisionDomain(this);
     private final List<Generator> children;
 
+    private List<ChildRequirement> requiredChildren = List.of();
     private List<AbstractAugmentGenerator> augments = List.of();
     private List<GroupingGenerator> groupings;
 
@@ -83,6 +99,67 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
     @Override
     final boolean isEmpty() {
         return children.isEmpty();
+    }
+
+    int startAugmentLinkage() {
+        int ret = 1;
+        for (Generator child : children) {
+            if (child instanceof AbstractCompositeGenerator) {
+                ret += ((AbstractCompositeGenerator<?>) child).startAugmentLinkage();
+            }
+        }
+        return ret;
+    }
+
+    final int continueAugmentLinkage() {
+        int ret = 0;
+
+        if (requiredChildren != null) {
+            // FIXME: process contents to the best of our abilities
+
+            if (requiredChildren.isEmpty()) {
+                requiredChildren = null;
+                ret = 1;
+            } else {
+                LOG.debug("");
+            }
+        }
+
+        // FIXME: consider outstanding augments, etc.
+
+        for (Generator child : children) {
+            if (child instanceof AbstractExplicitGenerator) {
+                ((AbstractExplicitGenerator<?>) child).linkOriginalGenerator();
+            }
+            if (child instanceof AbstractCompositeGenerator) {
+                ret += ((AbstractCompositeGenerator<?>) child).continueAugmentLinkage();
+            }
+        }
+
+        return ret;
+    }
+
+    final void requireOriginalDescendant(final Iterator<QName> path,
+            final Consumer<AbstractCompositeGenerator<?>> callback) {
+        // This is not quite straightforward. 'path' works on top of schema tree, which is instantiated view. Since we
+        // do not generate duplicate instantiations along 'uses' path, findSchemaTreeGenerator() would satisfy our
+        // request by returning a child of the source 'grouping'.
+        //
+        // When that happens, our subsequent lookups need to adjust the namespace being looked up to the grouping's
+        // namespace... except for the case when the step is actually an augmentation, in which case we must not make
+        // that adjustment.
+        //
+        // Hence we deal with this lookup recursively, dropping namespace hints when we cross into groupings.
+        addRequirement(new ChildRequirement(callback, path, path.next(), null));
+    }
+
+    private void addRequirement(final ChildRequirement requirement) {
+        verifyNotNull(requiredChildren, "Attepted to add a requirement after all requirements have been resolved");
+        if (requiredChildren.isEmpty()) {
+            requiredChildren = new ArrayList<>(2);
+        }
+
+        requiredChildren.add(requirement);
     }
 
     final @Nullable AbstractExplicitGenerator<?> findGenerator(final List<EffectiveStatement<?, ?>> stmtPath) {
@@ -203,19 +280,6 @@ abstract class AbstractCompositeGenerator<T extends EffectiveStatement<?, ?>> ex
             }
         }
         return null;
-    }
-
-    final @NonNull AbstractExplicitGenerator<?> resolveSchemaNode(final SchemaNodeIdentifier path) {
-        // This is not quite straightforward. 'path' works on top of schema tree, which is instantiated view. Since we
-        // do not generate duplicate instantiations along 'uses' path, findSchemaTreeGenerator() would satisfy our
-        // request by returning a child of the source 'grouping'.
-        //
-        // When that happens, our subsequent lookups need to adjust the namespace being looked up to the grouping's
-        // namespace... except for the case when the step is actually an augmentation, in which case we must not make
-        // that adjustment.
-        //
-        // Hence we deal with this lookup recursively, dropping namespace hints when we cross into groupings.
-        return resolveSchemaNode(path.getNodeIdentifiers().iterator(), null);
     }
 
     private @NonNull AbstractExplicitGenerator<?> resolveSchemaNode(final Iterator<QName> qnames,
