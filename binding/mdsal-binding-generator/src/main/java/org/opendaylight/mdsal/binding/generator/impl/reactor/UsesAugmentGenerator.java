@@ -17,7 +17,8 @@ final class UsesAugmentGenerator extends AbstractAugmentGenerator {
         super(statement, parent);
     }
 
-    void linkAugmentationTarget() {
+    @Override
+    void startAugmentLinkage() {
         // Here we are going in the opposite direction of RFC7950, section 7.13:
         //
         //    The effect of a "uses" reference to a grouping is that the nodes
@@ -26,6 +27,7 @@ final class UsesAugmentGenerator extends AbstractAugmentGenerator {
         //
         // Our parent here is *not* the 'uses' statement, but rather the statement which contains it -- and its
         // resolveSchemaNode() is well equipped to deal with the namespace hopping needed to perform the lookups.
-        setTargetGenerator(getParent());
+        startLinkage(getParent());
+        super.startAugmentLinkage();
     }
 }
