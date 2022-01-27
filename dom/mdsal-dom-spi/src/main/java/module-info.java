@@ -14,6 +14,7 @@ module org.opendaylight.mdsal.dom.spi {
     requires transitive org.opendaylight.yangtools.yang.model.api;
     requires transitive org.opendaylight.yangtools.yang.repo.api;
     requires transitive org.opendaylight.yangtools.yang.repo.spi;
+    requires com.google.common;
     requires org.opendaylight.yangtools.odlext.model.api;
     requires org.opendaylight.yangtools.util;
     requires org.opendaylight.yangtools.yang.data.api;

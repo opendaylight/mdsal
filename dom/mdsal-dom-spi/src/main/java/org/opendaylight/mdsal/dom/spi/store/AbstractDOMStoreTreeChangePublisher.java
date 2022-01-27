@@ -8,19 +8,18 @@
 package org.opendaylight.mdsal.dom.spi.store;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.mdsal.dom.spi.AbstractRegistrationTree;
 import org.opendaylight.mdsal.dom.spi.RegistrationTreeNode;
-import org.opendaylight.mdsal.dom.spi.RegistrationTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
@@ -45,7 +44,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher
      * @param changes the list of DataTreeCandidate changes
      */
     protected abstract void notifyListener(@NonNull AbstractDOMDataTreeChangeListenerRegistration<?> registration,
-            @NonNull Collection<DataTreeCandidate> changes);
+            @NonNull List<DataTreeCandidate> changes);
 
     /**
      * Callback notifying the subclass that the specified registration is being
@@ -74,15 +73,13 @@ public abstract class AbstractDOMStoreTreeChangePublisher
             return false;
         }
 
-        try (RegistrationTreeSnapshot<AbstractDOMDataTreeChangeListenerRegistration<?>> snapshot
-                = takeSnapshot()) {
+        try (var snapshot = takeSnapshot()) {
             final List<PathArgument> toLookup = ImmutableList.copyOf(candidate.getRootPath().getPathArguments());
-            final Multimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges =
+            final ListMultimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges =
                     Multimaps.newListMultimap(new IdentityHashMap<>(), ArrayList::new);
             lookupAndNotify(toLookup, 0, snapshot.getRootNode(), candidate, listenerChanges);
 
-            for (Map.Entry<AbstractDOMDataTreeChangeListenerRegistration<?>, Collection<DataTreeCandidate>> entry:
-                    listenerChanges.asMap().entrySet()) {
+            for (var entry : Multimaps.asMap(listenerChanges).entrySet()) {
                 notifyListener(entry.getKey(), entry.getValue());
             }
 
