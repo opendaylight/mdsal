@@ -13,7 +13,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableList;
-import java.util.Collection;
+import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
@@ -63,7 +63,7 @@ public class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTre
 
     @Override
     protected void notifyListener(final AbstractDOMDataTreeChangeListenerRegistration<?> registration,
-            final Collection<DataTreeCandidate> changes) {
+            final List<DataTreeCandidate> changes) {
         notifyInvoked = true;
     }
 

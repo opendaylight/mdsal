@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import org.eclipse.jdt.annotation.NonNull;
@@ -56,7 +56,7 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
 
     @Override
     protected void notifyListener(final AbstractDOMDataTreeChangeListenerRegistration<?> registration,
-            final Collection<DataTreeCandidate> changes) {
+            final List<DataTreeCandidate> changes) {
         LOG.debug("Enqueueing candidates {} for registration {}", changes, registration);
         notificationManager.submitNotifications(registration, changes);
     }
@@ -85,7 +85,7 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
                 // If we are listening on root of data tree we still get empty normalized node, root is always present,
                 // we should filter this out separately and notify it by 'onInitialData()' once.
                 // Otherwise, it is just a valid data node with empty value which also should be notified by
-                // "onDataTreeChanged(Collection<DataTreeCandidate>)".
+                // "onDataTreeChanged(List<DataTreeCandidate>)".
                 listener.onInitialData();
                 return reg;
             }
