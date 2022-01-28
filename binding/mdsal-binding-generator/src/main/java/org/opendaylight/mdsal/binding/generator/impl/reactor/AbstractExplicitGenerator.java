@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import static com.google.common.base.Verify.verify;
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -37,15 +38,20 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, ?>> extends Generator
         implements CopyableNode {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractExplicitGenerator.class);
+    private static final Object ORIGINAL = new Object();
 
     private final @NonNull T statement;
 
-    // FIXME: this, along with AbstractTypeObjectGenerator's (and TypedefGenerator's) fields should be better-controlled
-    //        with explicit sequencing guards. It it currently stands, we are expending two (or more) additional fields
-    //        to express downstream linking. If we had the concept of resolution step (an enum), we could just get by
-    //        with a simple queue of Step/Callback pairs, which would trigger as needed. For an example see how
-    //        AbstractTypeObjectGenerator manages baseGen/inferred fields.
-    private AbstractExplicitGenerator<?> prev;
+    /**
+     * Field tracking previous incarnation (along reverse of 'uses' and 'augment' axis) of this statement. This field
+     * can either be one of:
+     * <ul>
+     *   <li>{@code null} when not resolved, i.e. access is not legal, or</li>
+     *   <li>the {@link #ORIGINAL} object if this is the original definition, or</li>
+     *   <li>an {@link AbstractExplicitGenerator} object pointing to previous incarnation, or</li>
+     * </ul>
+     */
+    private Object prev;
 
     AbstractExplicitGenerator(final T statement) {
         this.statement = requireNonNull(statement);
@@ -80,15 +86,27 @@ public abstract class AbstractExplicitGenerator<T extends EffectiveStatement<?, 
             LOG.trace("Linking {}", this);
             prev = getParent().getOriginalChild(getQName());
             LOG.trace("Linked {} to {}", this, prev);
+        } else {
+            prev = ORIGINAL;
         }
     }
 
     final @Nullable AbstractExplicitGenerator<?> previous() {
-        return prev;
+        final var local = prev();
+        return local instanceof AbstractExplicitGenerator ? (AbstractExplicitGenerator<?>) local : null;
     }
 
     @NonNull AbstractExplicitGenerator<?> getOriginal() {
-        return prev == null ? this : prev.getOriginal();
+        final var local = prev();
+        if (local == ORIGINAL) {
+            return this;
+        }
+        verify(local instanceof AbstractExplicitGenerator, "Unexpected previous %s", local);
+        return ((AbstractExplicitGenerator<?>) local).getOriginal();
+    }
+
+    private @NonNull Object prev() {
+        return verifyNotNull(prev, "Generator %s does not have linkage to previous instance resolved", this);
     }
 
     @Nullable AbstractExplicitGenerator<?> findSchemaTreeGenerator(final QName qname) {
