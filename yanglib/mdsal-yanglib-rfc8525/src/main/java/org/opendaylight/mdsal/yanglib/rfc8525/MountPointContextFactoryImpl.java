@@ -15,7 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,13 +32,10 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.CommonLeafs;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.CommonLeafsRevisionBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.Module.ConformanceType;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.set.parameters.ImportOnlyModule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.set.parameters.ImportOnlyModuleRevisionBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.set.parameters.Module;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.Datastore;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.DatastoreKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.ModuleSet;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.Schema;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.SchemaKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangIdentifier;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
@@ -51,7 +47,6 @@ import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +65,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
             final EffectiveModelContext yangLibContext,
             final BindingIdentityCodec identityCodec,
             final BindingDataObjectCodecTreeNode<YangLibrary> codec,
+            @SuppressWarnings("deprecation")
             final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec) {
         super(mountId);
         this.resolver = requireNonNull(resolver);
@@ -111,13 +107,13 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     }
 
     private @NonNull EffectiveModelContext bindLibrary(final @NonNull YangLibrary yangLib) throws YangParserException {
-        final Map<DatastoreKey, Datastore> datastores = yangLib.nonnullDatastore();
+        final var datastores = yangLib.nonnullDatastore();
         checkArgument(!datastores.isEmpty(), "No datastore defined");
 
-        final List<SourceReference> requiredSources = new ArrayList<>();
-        final List<SourceReference> librarySources = new ArrayList<>();
-        final HashSet<String> moduleSet = findModuleSet(yangLib, findSchemaName(datastores, Operational.QNAME));
-        for (ModuleSet modSet : yangLib.nonnullModuleSet().values()) {
+        final var requiredSources = new ArrayList<SourceReference>();
+        final var librarySources = new ArrayList<SourceReference>();
+        final var moduleSet = findModuleSet(yangLib, findSchemaName(datastores, Operational.QNAME));
+        for (var modSet : yangLib.nonnullModuleSet().values()) {
             if (moduleSet.remove(modSet.getName())) {
                 fillModules(librarySources, requiredSources, modSet);
             }
@@ -130,12 +126,11 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     @SuppressWarnings("deprecation")
     private @NonNull EffectiveModelContext bindLibrary(final @NonNull ModulesState modState)
             throws YangParserException {
-        final List<SourceReference> requiredSources = new ArrayList<>();
-        final List<SourceReference> librarySources = new ArrayList<>();
+        final var requiredSources = new ArrayList<SourceReference>();
+        final var librarySources = new ArrayList<SourceReference>();
 
-        for (org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list
-                .Module module : modState.nonnullModule().values()) {
-            final SourceReference modRef = sourceRefFor(module, module.getSchema());
+        for (var module : modState.nonnullModule().values()) {
+            final var modRef = sourceRefFor(module, module.getSchema());
 
             // TODO: take deviations/features into account
 
@@ -145,8 +140,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
                 requiredSources.add(modRef);
             }
 
-            for (org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list
-                    .module.Submodule submodule : module.nonnullSubmodule().values()) {
+            for (var submodule : module.nonnullSubmodule().values()) {
                 // Submodules go to library, as they are pulled in as needed
                 librarySources.add(sourceRefFor(submodule, submodule.getSchema()));
             }
@@ -156,8 +150,8 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     }
 
     private String findSchemaName(final Map<DatastoreKey, Datastore> datastores, final QName qname) {
-        final Iterator<Datastore> it = datastores.values().iterator();
-        final Datastore ds = it.next();
+        final var it = datastores.values().iterator();
+        final var ds = it.next();
 
         // FIXME: This is ugly, but it is the most compatible thing we can do without knowing the exact requested
         //        datastore
@@ -175,7 +169,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
 
     @SuppressWarnings("deprecation")
     private static SourceReference sourceRefFor(final CommonLeafs obj, final Uri uri) {
-        final SourceIdentifier sourceId = RevisionSourceIdentifier.create(obj.getName().getValue(),
+        final var sourceId = RevisionSourceIdentifier.create(obj.getName().getValue(),
             CommonLeafsRevisionBuilder.toYangCommon(obj.getRevision()));
         if (uri != null) {
             try {
@@ -189,7 +183,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     }
 
     private static HashSet<String> findModuleSet(final YangLibrary yangLib, final String schemaName) {
-        final Schema schema = yangLib.nonnullSchema().get(new SchemaKey(schemaName));
+        final var schema = yangLib.nonnullSchema().get(new SchemaKey(schemaName));
         if (schema == null) {
             throw new IllegalArgumentException("Failed to find moduleSet for " + schemaName);
         }
@@ -200,14 +194,14 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
             final List<SourceReference> requiredSources, final ModuleSet modSet) {
         // TODO: take deviations/features into account
 
-        for (ImportOnlyModule mod : modSet.nonnullImportOnlyModule().values()) {
+        for (var mod : modSet.nonnullImportOnlyModule().values()) {
             fillSource(librarySources, mod.getName(), ImportOnlyModuleRevisionBuilder.toYangCommon(mod.getRevision()),
                 mod.getLocation());
             mod.nonnullSubmodule().values().forEach(sub -> {
                 fillSource(librarySources, sub.getName(), toYangCommon(sub.getRevision()), sub.getLocation());
             });
         }
-        for (Module mod : modSet.nonnullModule().values()) {
+        for (var mod : modSet.nonnullModule().values()) {
             fillSource(requiredSources, mod.getName(), toYangCommon(mod.getRevision()), mod.getLocation());
             mod.nonnullSubmodule().values().forEach(sub -> {
                 fillSource(librarySources, sub.getName(), toYangCommon(sub.getRevision()), sub.getLocation());
@@ -217,10 +211,10 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
 
     private static void fillSource(final List<SourceReference> sources, final YangIdentifier sourceName,
             final Optional<Revision> revision, final List<Uri> uris) {
-        final SourceIdentifier sourceId = RevisionSourceIdentifier.create(sourceName.getValue(), revision);
+        final var sourceId = RevisionSourceIdentifier.create(sourceName.getValue(), revision);
         final SourceReference sourceRef;
         if (uris != null && uris.isEmpty()) {
-            final List<URL> locations = new ArrayList<>();
+            final var locations = new ArrayList<URL>();
             for (Uri uri : uris) {
                 try {
                     locations.add(new URL(uri.getValue()));
@@ -239,5 +233,4 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     private static Optional<Revision> toYangCommon(final @Nullable RevisionIdentifier revisionIdentifier) {
         return revisionIdentifier == null ? Optional.empty() : Optional.of(Revision.of(revisionIdentifier.getValue()));
     }
-
 }
