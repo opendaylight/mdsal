@@ -31,11 +31,7 @@
         <module>rfc6991-ietf-yang-types</module>
         <module>ietf-type-util</module>
 
-        <!-- RFC7895 YANG Module Library -->
-        <!-- FIXME: superseded by RFC8525 -->
-        <module>rfc7895</module>
-
-        <!-- RFC7895 YANG Metadata -->
+        <!-- RFC7952 YANG Metadata -->
         <module>rfc7952</module>
 
         <!-- RFC8294 Common YANG Data Types for the Routing Area -->
