@@ -14,8 +14,10 @@ import static java.util.Objects.requireNonNull;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
@@ -31,6 +33,8 @@ import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
 import org.opendaylight.yangtools.rfc8528.data.api.YangLibraryConstants.ContainerName;
 import org.opendaylight.yangtools.rfc8528.data.util.AbstractMountPointContextFactory;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
@@ -52,7 +56,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
         super(mountId);
         this.resolver = requireNonNull(resolver);
         this.yangLibContext = requireNonNull(yangLibContext);
-        this.codec = requireNonNull(moduleStateCodec);
+        codec = requireNonNull(moduleStateCodec);
     }
 
     @Override
@@ -86,11 +90,16 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
             throws YangParserException {
         final List<SourceReference> requiredSources = new ArrayList<>();
         final List<SourceReference> librarySources = new ArrayList<>();
+        final Set<QName> supportedFeatures = new HashSet<>();
 
         for (Module module : modState.nonnullModule().values()) {
             final SourceReference modRef = sourceRefFor(module, module.getSchema());
+            final var namespace = XMLNamespace.of(module.requireNamespace().getValue());
+            for (var feature : module.requireFeature()) {
+                supportedFeatures.add(QName.create(namespace, feature.getValue()).intern());
+            }
 
-            // TODO: take deviations/features into account
+            // TODO: take deviations into account
 
             if (ConformanceType.Import == module.getConformanceType()) {
                 librarySources.add(modRef);
@@ -104,7 +113,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
             }
         }
 
-        return resolver.resolveSchemaContext(librarySources, requiredSources);
+        return resolver.resolveSchemaContext(librarySources, requiredSources, supportedFeatures);
     }
 
     private static SourceReference sourceRefFor(final CommonLeafs obj, final Uri uri) {
