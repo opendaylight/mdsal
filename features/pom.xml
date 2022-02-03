@@ -58,7 +58,6 @@
 
         <!-- YANG (Module) Library -->
         <module>odl-mdsal-exp-yanglib-api</module>
-        <module>odl-mdsal-exp-yanglib-rfc7895</module>
         <module>odl-mdsal-exp-yanglib-rfc8525</module>
 
         <!-- Netty/Routing Types integration -->
@@ -72,7 +71,6 @@
         <!-- Standards -->
         <module>odl-mdsal-model-rfc6991</module>
         <module>odl-mdsal-model-rfc7224</module>
-        <module>odl-mdsal-model-rfc7895</module>
         <module>odl-mdsal-model-rfc7952</module>
         <module>odl-mdsal-model-rfc8294</module>
         <module>odl-mdsal-model-rfc8342</module>
