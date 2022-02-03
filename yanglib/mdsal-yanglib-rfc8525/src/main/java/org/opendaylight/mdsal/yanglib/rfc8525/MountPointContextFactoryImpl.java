@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
@@ -44,6 +45,7 @@ import org.opendaylight.yangtools.rfc8528.data.api.YangLibraryConstants.Containe
 import org.opendaylight.yangtools.rfc8528.data.util.AbstractMountPointContextFactory;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
@@ -112,15 +114,16 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
 
         final var requiredSources = new ArrayList<SourceReference>();
         final var librarySources = new ArrayList<SourceReference>();
+        final var supportedFeatures = new HashSet<QName>();
         final var moduleSet = findModuleSet(yangLib, findSchemaName(datastores, Operational.QNAME));
         for (var modSet : yangLib.nonnullModuleSet().values()) {
             if (moduleSet.remove(modSet.getName())) {
-                fillModules(librarySources, requiredSources, modSet);
+                fillModules(librarySources, requiredSources, supportedFeatures, modSet);
             }
         }
         checkArgument(moduleSet.isEmpty(), "Failed to resolve module sets %s", moduleSet);
 
-        return resolver.resolveSchemaContext(librarySources, requiredSources);
+        return resolver.resolveSchemaContext(librarySources, requiredSources, supportedFeatures);
     }
 
     @SuppressWarnings("deprecation")
@@ -128,11 +131,17 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
             throws YangParserException {
         final var requiredSources = new ArrayList<SourceReference>();
         final var librarySources = new ArrayList<SourceReference>();
+        final var supportedFeatures = new HashSet<QName>();
 
         for (var module : modState.nonnullModule().values()) {
             final var modRef = sourceRefFor(module, module.getSchema());
 
-            // TODO: take deviations/features into account
+            final var namespace = XMLNamespace.of(module.requireNamespace().getValue());
+            for (var feature : module.requireFeature()) {
+                supportedFeatures.add(QName.create(namespace, feature.getValue()).intern());
+            }
+
+            // TODO: take deviations into account
 
             if (ConformanceType.Import == module.getConformanceType()) {
                 librarySources.add(modRef);
@@ -146,7 +155,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
             }
         }
 
-        return resolver.resolveSchemaContext(librarySources, requiredSources);
+        return resolver.resolveSchemaContext(librarySources, requiredSources, supportedFeatures);
     }
 
     private String findSchemaName(final Map<DatastoreKey, Datastore> datastores, final QName qname) {
@@ -191,7 +200,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     }
 
     private static void fillModules(final List<SourceReference> librarySources,
-            final List<SourceReference> requiredSources, final ModuleSet modSet) {
+            final List<SourceReference> requiredSources, final Set<QName> supportedFeatures, final ModuleSet modSet) {
         // TODO: take deviations/features into account
 
         for (var mod : modSet.nonnullImportOnlyModule().values()) {
@@ -203,6 +212,8 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
         }
         for (var mod : modSet.nonnullModule().values()) {
             fillSource(requiredSources, mod.getName(), toYangCommon(mod.getRevision()), mod.getLocation());
+            final var namespace = XMLNamespace.of(mod.requireNamespace().getValue());
+            mod.requireFeature().forEach(feature -> supportedFeatures.add(QName.create(namespace, feature.getValue())));
             mod.nonnullSubmodule().values().forEach(sub -> {
                 fillSource(librarySources, sub.getName(), toYangCommon(sub.getRevision()), sub.getLocation());
             });
