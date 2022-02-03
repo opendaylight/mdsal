@@ -44,6 +44,7 @@ import org.opendaylight.yangtools.rfc8528.data.api.YangLibraryConstants.Containe
 import org.opendaylight.yangtools.rfc8528.data.util.AbstractMountPointContextFactory;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
@@ -128,11 +129,17 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
             throws YangParserException {
         final var requiredSources = new ArrayList<SourceReference>();
         final var librarySources = new ArrayList<SourceReference>();
+        final var supportedFeatures = new HashSet<QName>();
 
         for (var module : modState.nonnullModule().values()) {
             final var modRef = sourceRefFor(module, module.getSchema());
 
-            // TODO: take deviations/features into account
+            final var namespace = XMLNamespace.of(module.requireNamespace().getValue());
+            for (var feature : module.requireFeature()) {
+                supportedFeatures.add(QName.create(namespace, feature.getValue()).intern());
+            }
+
+            // TODO: take deviations into account
 
             if (ConformanceType.Import == module.getConformanceType()) {
                 librarySources.add(modRef);
@@ -146,7 +153,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
             }
         }
 
-        return resolver.resolveSchemaContext(librarySources, requiredSources);
+        return resolver.resolveSchemaContext(librarySources, requiredSources, supportedFeatures);
     }
 
     private String findSchemaName(final Map<DatastoreKey, Datastore> datastores, final QName qname) {
