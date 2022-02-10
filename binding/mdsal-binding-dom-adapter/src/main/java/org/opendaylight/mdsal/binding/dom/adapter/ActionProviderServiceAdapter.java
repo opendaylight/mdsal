@@ -7,12 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -27,17 +28,22 @@ import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @NonNullByDefault
 public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<DOMActionProviderService>
@@ -58,6 +64,8 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
             return ImmutableSet.of(DOMActionProviderService.class);
         }
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(ActionProviderServiceAdapter.class);
 
     static final Factory<ActionProviderService> BUILDER_FACTORY = Builder::new;
 
@@ -94,6 +102,7 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
     private static final class Impl implements DOMActionImplementation {
         private final Class<? extends Action<?, ?, ?>> actionInterface;
         private final AdapterContext adapterContext;
+        @SuppressWarnings("rawtypes")
         private final Action implementation;
         private final NodeIdentifier outputName;
 
@@ -111,9 +120,21 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
         public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
                 final DOMDataTreeIdentifier path, final ContainerNode input) {
             final CurrentAdapterSerializer codec = adapterContext.currentSerializer();
+            final InstanceIdentifier<DataObject> instance = codec.fromYangInstanceIdentifier(path.getRootIdentifier());
+            if (instance == null) {
+                // Not representable: return an error
+                LOG.debug("Path {} is not representable in binding, rejecting invocation", path);
+                return Futures.immediateFuture(new SimpleDOMActionResult(List.of(RpcResultBuilder.newError(
+                    ErrorType.APPLICATION, "invalid-value", "Supplied path cannot be represented"))));
+            }
+            if (instance.isWildcarded()) {
+                // A wildcard path: return an error
+                LOG.debug("Path {} maps to a wildcard {}, rejecting invocation", path, instance);
+                return Futures.immediateFuture(new SimpleDOMActionResult(List.of(RpcResultBuilder.newError(
+                    ErrorType.APPLICATION, "invalid-value", "Supplied path does not identify a concrete instance"))));
+            }
 
-            final ListenableFuture<RpcResult<?>> userFuture = implementation.invoke(
-                verifyNotNull(codec.fromYangInstanceIdentifier(path.getRootIdentifier())),
+            final ListenableFuture<RpcResult<?>> userFuture = implementation.invoke(instance,
                 codec.fromNormalizedNodeActionInput(actionInterface, input));
             if (userFuture instanceof BindingOperationFluentFuture) {
                 // If we are looping back through our future we can skip wrapping. This can happen if application
