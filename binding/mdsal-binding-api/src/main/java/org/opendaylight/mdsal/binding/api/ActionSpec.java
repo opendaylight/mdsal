@@ -38,7 +38,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdenti
  * @param <P> Action parent type
  */
 @Beta
-public final class ActionSpec<A extends Action<InstanceIdentifier<P>, ?, ?>, P extends DataObject>
+public final class ActionSpec<A extends Action<? extends InstanceIdentifier<P>, ?, ?>, P extends DataObject>
         implements Immutable {
     private final @NonNull InstanceIdentifier<P> path;
     private final @NonNull Class<A> type;
@@ -112,7 +112,8 @@ public final class ActionSpec<A extends Action<InstanceIdentifier<P>, ?, ?>, P e
             return castThis();
         }
 
-        public <A extends Action<InstanceIdentifier<P>, ?, ?>> @NonNull ActionSpec<A, P> build(final Class<A> type) {
+        public <A extends Action<? extends InstanceIdentifier<P>, ?, ?>> @NonNull ActionSpec<A, P> build(
+                final Class<A> type) {
             return new ActionSpec<>(type, pathBuilder.build());
         }
 
