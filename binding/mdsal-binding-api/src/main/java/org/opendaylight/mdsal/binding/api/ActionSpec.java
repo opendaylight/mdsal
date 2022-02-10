@@ -26,7 +26,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdenti
 
 /**
  * A combination of an {@link Action} class and its corresponding instantiation wildcard, expressed as
- * an {@link InstanceIdentifier}. This glue is required because action interfaces are generated at the place of their
+ * an {@link InstanceIdentifier}. This means that {@code list}s are treated exactly as @{code container}s are, e.g.
+ * without a key value specification.
+ *
+ * <p>
+ * This glue is required because action interfaces are generated at the place of their
  * definition, most importantly in {@code grouping} and we actually need to bind to a particular instantiation (e.g. a
  * place where {@code uses} references that grouping).
  *
