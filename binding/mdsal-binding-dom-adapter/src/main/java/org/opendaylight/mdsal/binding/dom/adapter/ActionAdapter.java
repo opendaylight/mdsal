@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 import static org.opendaylight.yangtools.yang.common.YangConstants.operationInputQName;
@@ -60,6 +61,8 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
             case "invoke":
                 if (args.length == 2) {
                     final InstanceIdentifier<?> path = (InstanceIdentifier<?>) requireNonNull(args[0]);
+                    checkArgument(!path.isWildcarded(), "Cannot invoke action on wildcard path %s", path);
+
                     final RpcInput input = (RpcInput) requireNonNull(args[1]);
                     final CurrentAdapterSerializer serializer = currentSerializer();
                     final ListenableFuture<? extends DOMActionResult> future = getDelegate().invokeAction(actionPath,
