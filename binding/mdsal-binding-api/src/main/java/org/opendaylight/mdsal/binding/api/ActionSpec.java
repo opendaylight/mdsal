@@ -21,6 +21,8 @@ import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
+import org.opendaylight.yangtools.yang.binding.Identifiable;
+import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 
@@ -48,9 +50,20 @@ public final class ActionSpec<A extends Action<InstanceIdentifier<P>, ?, ?>, P e
         return new Builder<>(InstanceIdentifier.builder(container));
     }
 
+    public static <P extends Identifiable<K> & ChildOf<? extends DataRoot>, K extends Identifier<P>>
+            @NonNull Builder<P> builder(final Class<P> list, final K key) {
+        return new Builder<>(InstanceIdentifier.builder(list, key));
+    }
+
     public static <C extends ChoiceIn<? extends DataRoot> & DataObject, P extends ChildOf<? super C>>
             @NonNull Builder<P> builder(final Class<C> caze, final Class<P> container) {
         return new Builder<>(InstanceIdentifier.builder(caze, container));
+    }
+
+    public static <C extends ChoiceIn<? extends DataRoot> & DataObject,
+        P extends Identifiable<K> & ChildOf<? super C>, K extends Identifier<P>>
+            @NonNull Builder<P> builder(final Class<C> caze, final Class<P> list, final K key) {
+        return new Builder<>(InstanceIdentifier.builder(caze, list, key));
     }
 
     public @NonNull InstanceIdentifier<P> path() {
@@ -96,9 +109,22 @@ public final class ActionSpec<A extends Action<InstanceIdentifier<P>, ?, ?>, P e
             return castThis();
         }
 
+        public <N extends Identifiable<K> & ChildOf<? super P>, K extends Identifier<N>>
+                @NonNull Builder<N> withPathChild(final Class<N> list, final K key) {
+            pathBuilder.child(list, key);
+            return castThis();
+        }
+
         public <C extends ChoiceIn<? super P> & DataObject, N extends ChildOf<? super C>>
                 @NonNull Builder<N> withPathChild(final Class<C> caze, final Class<N> container) {
             pathBuilder.child(caze, container);
+            return castThis();
+        }
+
+        public <C extends ChoiceIn<? super P> & DataObject, K extends Identifier<N>,
+            N extends Identifiable<K> & ChildOf<? super C>> @NonNull Builder<N> withPathChild(final Class<C> caze,
+                final Class<N> list, final K key) {
+            pathBuilder.child(caze, list, key);
             return castThis();
         }
 
