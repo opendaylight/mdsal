@@ -489,6 +489,14 @@
             <version>5.8.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Used by ByteBuddy -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
