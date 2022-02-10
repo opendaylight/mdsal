@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Verify.verifyNotNull;
 import static net.bytebuddy.implementation.bytecode.member.MethodVariableAccess.loadThis;
 import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.getField;
 import static org.opendaylight.mdsal.binding.dom.codec.impl.ByteBuddyUtils.putField;
@@ -144,8 +145,8 @@ final class NotificationCodecContext<D extends DataObject & Notification>
         @Override
         public ByteCodeAppender appender(final Target implementationTarget) {
             final TypeDescription instrumentedType = implementationTarget.getInstrumentedType();
-            final InGenericShape superCtor = instrumentedType.getSuperClass().getDeclaredMethods()
-                    .filter(ElementMatchers.isConstructor()).getOnly();
+            final InGenericShape superCtor = verifyNotNull(instrumentedType.getSuperClass()).getDeclaredMethods()
+                .filter(ElementMatchers.isConstructor()).getOnly();
 
             return new ByteCodeAppender.Simple(
                 loadThis(),
