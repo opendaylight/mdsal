@@ -15,10 +15,13 @@ import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Grpcont;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Grplst;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Lstio;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Nestedcont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Othercont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.grpcont.Bar;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.Fooio;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.nested.Baz;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
@@ -38,5 +41,10 @@ public class ActionLookupTest {
         assertEquals(Absolute.of(Nestedcont.QNAME, Baz.QNAME, Bar.QNAME), codec.getActionPath(
             ActionSpec.builder(Nestedcont.class).withPathChild(Baz.class).build(
                 org.opendaylight.yang.gen.v1.urn.odl.actions.norev.nested.baz.Bar.class)));
+        assertEquals(Absolute.of(Lstio.QNAME, Fooio.QNAME), codec.getActionPath(
+            ActionSpec.builder(Lstio.class).build(Fooio.class)));
+        assertEquals(Absolute.of(Grplst.QNAME, Bar.QNAME), codec.getActionPath(
+            ActionSpec.builder(Grplst.class).build(
+                org.opendaylight.yang.gen.v1.urn.odl.actions.norev.grplst.Bar.class)));
     }
 }
