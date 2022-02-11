@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
@@ -25,16 +24,16 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.CommonLeafs;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.Module;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.ModuleBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.module.Submodule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.module.SubmoduleBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.util.BindingMap;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.data.api.DatastoreIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
-class LegacyContentBuilder implements YangLibraryContentBuilderWithLegacy {
+final class LegacyContentBuilder implements YangLibraryContentBuilderWithLegacy {
     private static final CommonLeafs.Revision EMPTY_REV = new CommonLeafs.Revision("");
 
     private final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec;
@@ -42,7 +41,7 @@ class LegacyContentBuilder implements YangLibraryContentBuilderWithLegacy {
 
     LegacyContentBuilder(final YangLibraryContentBuilderImpl delegate, final BindingCodecTree codecTree) {
         this.delegate = requireNonNull(delegate);
-        this.legacyCodec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
+        legacyCodec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
     }
 
     @Override
@@ -75,24 +74,25 @@ class LegacyContentBuilder implements YangLibraryContentBuilderWithLegacy {
     @VisibleForTesting
     ContainerNode formatModulesState(final EffectiveModelContext context) {
         // Two-step process: we first build the content and then use hashCode() to generate module-set-id
-        final ModulesStateBuilder builder = new ModulesStateBuilder().setModuleSetId("")
-                .setModule(context.getModules().stream()
-                        .map(module -> new ModuleBuilder()
-                                .setName(new YangIdentifier(module.getName()))
-                                .setNamespace(new Uri(module.getNamespace().toString()))
-                                .setRevision(convertRevision(module.getRevision()))
-                                .setSubmodule(module.getSubmodules().stream()
-                                        .map(submodule -> new SubmoduleBuilder()
-                                                .setName(new YangIdentifier(submodule.getName()))
-                                                .setRevision(convertRevision(submodule.getRevision()))
-                                                .build())
-                                        .collect(Collectors.toUnmodifiableMap(Submodule::key, Function.identity())))
-                                .setFeature(module.getFeatures().stream()
-                                        .map(feat -> new YangIdentifier(feat.getQName().getLocalName()))
-                                        .collect(Collectors.toUnmodifiableList()))
-                                .setConformanceType(Module.ConformanceType.Implement)
-                                .build())
-                        .collect(Collectors.toUnmodifiableMap(Module::key, Function.identity())));
+        final ModulesStateBuilder builder = new ModulesStateBuilder()
+            .setModuleSetId("")
+            .setModule(context.getModules().stream()
+                .map(module -> new ModuleBuilder()
+                    .setName(new YangIdentifier(module.getName()))
+                    .setNamespace(new Uri(module.getNamespace().toString()))
+                    .setRevision(convertRevision(module.getRevision()))
+                    .setSubmodule(module.getSubmodules().stream()
+                        .map(submodule -> new SubmoduleBuilder()
+                            .setName(new YangIdentifier(submodule.getName()))
+                            .setRevision(convertRevision(submodule.getRevision()))
+                            .build())
+                        .collect(BindingMap.toMap()))
+                    .setFeature(module.getFeatures().stream()
+                        .map(feat -> new YangIdentifier(feat.getQName().getLocalName()))
+                        .collect(Collectors.toUnmodifiableSet()))
+                    .setConformanceType(Module.ConformanceType.Implement)
+                    .build())
+                .collect(BindingMap.toMap()));
 
         return (ContainerNode) legacyCodec.serialize(builder.setModuleSetId(String.valueOf(builder.build().hashCode()))
             .build());
