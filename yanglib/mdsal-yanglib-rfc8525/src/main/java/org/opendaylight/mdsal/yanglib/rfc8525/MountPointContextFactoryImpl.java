@@ -221,7 +221,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     }
 
     private static void fillSource(final List<SourceReference> sources, final YangIdentifier sourceName,
-            final Optional<Revision> revision, final List<Uri> uris) {
+            final Optional<Revision> revision, final Set<Uri> uris) {
         final var sourceId = RevisionSourceIdentifier.create(sourceName.getValue(), revision);
         final SourceReference sourceRef;
         if (uris != null && uris.isEmpty()) {
