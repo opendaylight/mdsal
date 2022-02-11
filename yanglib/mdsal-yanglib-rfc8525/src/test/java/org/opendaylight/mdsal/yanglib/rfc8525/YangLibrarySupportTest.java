@@ -9,18 +9,10 @@ package org.opendaylight.mdsal.yanglib.rfc8525;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
+import java.util.Set;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.impl.DefaultBindingCodecTreeFactory;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
-import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
-import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
-import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.RevisionIdentifier;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.YangLibrary;
@@ -31,28 +23,10 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.ModuleSetKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.util.BindingMap;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 
-public class YangLibrarySupportTest {
-
-    private static final BindingRuntimeGenerator BINDING_RUNTIME_GENERATOR = new DefaultBindingRuntimeGenerator();
-
-    private static final YangParserFactory YANG_PARSER_FACTORY = new DefaultYangParserFactory();
-
-    private YangLibrarySupport yangLib;
-    private BindingRuntimeContext runtimeContext;
-    private BindingCodecTree codecTree;
-
-    @Before
-    public void setUp() throws Exception {
-        runtimeContext = BindingRuntimeHelpers.createRuntimeContext();
-        final DefaultBindingCodecTreeFactory codecFactory = new DefaultBindingCodecTreeFactory();
-        yangLib = new YangLibrarySupport(YANG_PARSER_FACTORY, BINDING_RUNTIME_GENERATOR, codecFactory);
-        codecTree = codecFactory.create(runtimeContext);
-    }
-
+public class YangLibrarySupportTest extends AbstractYangLibraryTest {
     @Test
     public void testFormatSchema() {
         final BindingDataObjectCodecTreeNode<YangLibrary> codec =
@@ -68,25 +42,21 @@ public class YangLibrarySupportTest {
         assertEquals(moduleSet.getModule(), createControlModules());
     }
 
-    private Map<ModuleKey, Module> createControlModules() {
-        final Map<ModuleKey, Module> modules = new HashMap<>();
-        modules.put(new ModuleKey(new YangIdentifier("ietf-yang-library")),
-                createModule("ietf-yang-library", "urn:ietf:params:xml:ns:yang:ietf-yang-library", "2019-01-04"));
-        modules.put(new ModuleKey(new YangIdentifier("ietf-inet-types")),
-                createModule("ietf-inet-types", "urn:ietf:params:xml:ns:yang:ietf-inet-types", "2013-07-15"));
-        modules.put(new ModuleKey(new YangIdentifier("ietf-datastores")),
-                createModule("ietf-datastores", "urn:ietf:params:xml:ns:yang:ietf-datastores", "2018-02-14"));
-        modules.put(new ModuleKey(new YangIdentifier("ietf-yang-types")),
-                createModule("ietf-yang-types", "urn:ietf:params:xml:ns:yang:ietf-yang-types", "2013-07-15"));
-        return modules;
+    private static Map<ModuleKey, Module> createControlModules() {
+        return BindingMap.of(
+            createModule("ietf-yang-library", "urn:ietf:params:xml:ns:yang:ietf-yang-library", "2019-01-04"),
+            createModule("ietf-inet-types", "urn:ietf:params:xml:ns:yang:ietf-inet-types", "2013-07-15"),
+            createModule("ietf-datastores", "urn:ietf:params:xml:ns:yang:ietf-datastores", "2018-02-14"),
+            createModule("ietf-yang-types", "urn:ietf:params:xml:ns:yang:ietf-yang-types", "2013-07-15"));
     }
 
-    private Module createModule(final String name, final String namespace, final String revision) {
-        return new ModuleBuilder().setName(new YangIdentifier(name))
+    private static Module createModule(final String name, final String namespace, final String revision) {
+        return new ModuleBuilder()
+            .setName(new YangIdentifier(name))
                 .setNamespace(new Uri(namespace))
                 .setRevision(new RevisionIdentifier(revision))
-                .setFeature(Collections.emptyList())
-                .setSubmodule(Collections.emptyMap())
+                .setFeature(Set.of())
+                .setSubmodule(Map.of())
                 .build();
     }
 }

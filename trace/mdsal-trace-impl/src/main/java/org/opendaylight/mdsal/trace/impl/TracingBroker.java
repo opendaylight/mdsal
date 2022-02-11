@@ -177,7 +177,7 @@ public class TracingBroker implements TracingDOMDataBroker {
 
     private void configure(final Config config) {
         registrationWatches.clear();
-        List<String> paths = config.getRegistrationWatches();
+        Set<String> paths = config.getRegistrationWatches();
         if (paths != null) {
             for (String path : paths) {
                 watchRegistrations(path, null);
