@@ -37,6 +37,9 @@
         <!-- RFC8040 RESTCONF -->
         <module>rfc8040</module>
 
+        <!-- RFC8072 YANG Patch -->
+        <module>rfc8072</module>
+
         <!-- RFC8294 Common YANG Data Types for the Routing Area -->
         <module>rfc8294</module>
         <module>rfc8294-ietf-routing-types</module>

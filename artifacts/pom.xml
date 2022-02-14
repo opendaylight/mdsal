@@ -494,6 +494,13 @@
                 <version>9.0.0-SNAPSHOT</version>
             </dependency>
 
+            <!-- RFC8072 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8072</artifactId>
+                <version>9.0.0-SNAPSHOT</version>
+            </dependency>
+
             <!-- RFC8294 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
@@ -780,6 +787,13 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8040</artifactId>
+                <version>9.0.0-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc8072</artifactId>
                 <version>9.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
