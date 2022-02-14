@@ -72,6 +72,7 @@
         <module>odl-mdsal-model-rfc6991</module>
         <module>odl-mdsal-model-rfc7224</module>
         <module>odl-mdsal-model-rfc7952</module>
+        <module>odl-mdsal-model-rfc8040</module>
         <module>odl-mdsal-model-rfc8294</module>
         <module>odl-mdsal-model-rfc8342</module>
         <module>odl-mdsal-model-rfc8343</module>
