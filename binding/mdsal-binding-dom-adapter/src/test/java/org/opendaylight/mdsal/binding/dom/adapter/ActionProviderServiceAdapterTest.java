@@ -24,15 +24,21 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Grplst;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.grp.bar.OutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.grplst.Bar;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest {
     private static final @NonNull Foo FOO = (path, input) -> RpcResultBuilder.success(BINDING_FOO_OUTPUT).buildFuture();
+    private static final @NonNull Bar BAR =
+        (path, input) -> RpcResultBuilder.success(new OutputBuilder().build()).buildFuture();
 
     @Mock
     private DOMActionProviderService actionProvider;
@@ -60,5 +66,12 @@ public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest 
         adapter.registerImplementation(ActionSpec.builder(Cont.class).build(Foo.class), FOO);
         verify(actionProvider).registerActionImplementation(any(), eq(DOMActionInstance.of(FOO_PATH,
             LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty())));
+    }
+
+    @Test
+    public void testKeyedListRegistration() {
+        adapter.registerImplementation(ActionSpec.builder(Grplst.class).build(Bar.class), BAR);
+        verify(actionProvider).registerActionImplementation(any(), eq(DOMActionInstance.of(
+            Absolute.of(Grplst.QNAME, Bar.QNAME), LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty())));
     }
 }

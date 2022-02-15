@@ -40,17 +40,17 @@ public interface ActionProviderService extends BindingService {
      * @throws IllegalArgumentException if any of the {@code validNodes} does not match {@code datastore}
      * @throws UnsupportedOperationException if this service cannot handle requested datastore
      */
-    <P extends DataObject, A extends Action<InstanceIdentifier<P>, ?, ?>, S extends A>
+    <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>, S extends A>
         @NonNull ObjectRegistration<S> registerImplementation(@NonNull ActionSpec<A, P> spec, @NonNull S implementation,
             @NonNull LogicalDatastoreType datastore, @NonNull Set<InstanceIdentifier<P>> validNodes);
 
-    default <P extends DataObject, T extends Action<InstanceIdentifier<P>, ?, ?>, S extends T>
+    default <P extends DataObject, T extends Action<? extends InstanceIdentifier<P>, ?, ?>, S extends T>
         @NonNull ObjectRegistration<S> registerImplementation(final @NonNull ActionSpec<T, P> spec,
             final @NonNull S implementation, final @NonNull LogicalDatastoreType datastore) {
         return registerImplementation(spec, implementation, datastore, ImmutableSet.of());
     }
 
-    default <P extends DataObject, T extends Action<InstanceIdentifier<P>, ?, ?>, S extends T>
+    default <P extends DataObject, T extends Action<? extends InstanceIdentifier<P>, ?, ?>, S extends T>
         @NonNull ObjectRegistration<S> registerImplementation(final @NonNull ActionSpec<T, P> spec,
             final @NonNull S implementation) {
         return registerImplementation(spec, implementation, LogicalDatastoreType.OPERATIONAL);
