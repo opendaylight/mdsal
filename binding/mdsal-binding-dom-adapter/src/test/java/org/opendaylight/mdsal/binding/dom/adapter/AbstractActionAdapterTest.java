@@ -13,11 +13,13 @@ import static org.opendaylight.yangtools.yang.data.impl.schema.Builders.containe
 import static org.opendaylight.yangtools.yang.data.impl.schema.Builders.leafBuilder;
 
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Lstio;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.Input;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.InputBuilder;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.Output;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.OutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.Fooio;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -25,6 +27,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 
 public abstract class AbstractActionAdapterTest extends AbstractAdapterTest  {
     protected static final Absolute FOO_PATH = Absolute.of(Cont.QNAME, Foo.QNAME);
+    protected static final Absolute FOOIO_PATH = Absolute.of(Lstio.QNAME, Fooio.QNAME);
     protected static final NodeIdentifier FOO_INPUT = new NodeIdentifier(operationInputQName(Foo.QNAME.getModule()));
     protected static final NodeIdentifier FOO_OUTPUT = new NodeIdentifier(operationOutputQName(Foo.QNAME.getModule()));
     protected static final NodeIdentifier FOO_XYZZY = new NodeIdentifier(QName.create(Foo.QNAME, "xyzzy"));
