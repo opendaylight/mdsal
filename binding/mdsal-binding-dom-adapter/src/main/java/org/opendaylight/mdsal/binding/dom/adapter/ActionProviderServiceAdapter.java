@@ -74,9 +74,9 @@ public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<D
     }
 
     @Override
-    public <P extends DataObject, A extends Action<InstanceIdentifier<P>, ?, ?>, S extends A>
+    public <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>, S extends A>
             ObjectRegistration<S> registerImplementation(final ActionSpec<A, P> spec, final S implementation,
-                final LogicalDatastoreType datastore, final Set<InstanceIdentifier<P>> validNodes) {
+                final LogicalDatastoreType datastore, final Set<? extends InstanceIdentifier<P>> validNodes) {
         final CurrentAdapterSerializer serializer = currentSerializer();
         final Absolute actionPath = serializer.getActionPath(spec);
         final Impl impl = new Impl(adapterContext(), actionPath, spec.type(), implementation);

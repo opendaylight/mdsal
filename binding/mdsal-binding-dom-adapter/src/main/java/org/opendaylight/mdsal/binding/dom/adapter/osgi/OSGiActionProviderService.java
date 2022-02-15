@@ -33,9 +33,9 @@ public final class OSGiActionProviderService extends AbstractAdaptedService<Acti
     }
 
     @Override
-    public <P extends DataObject, A extends Action<InstanceIdentifier<P>, ?, ?>, S extends A>
+    public <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>, S extends A>
         ObjectRegistration<S> registerImplementation(final ActionSpec<A, P> spec, final S implementation,
-            final LogicalDatastoreType datastore, final Set<InstanceIdentifier<P>> validNodes) {
+            final LogicalDatastoreType datastore, final Set<? extends InstanceIdentifier<P>> validNodes) {
         return delegate().registerImplementation(spec, implementation, datastore, validNodes);
     }
 
