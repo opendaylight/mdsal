@@ -145,9 +145,9 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         }
         LOG.trace("Processing linkage of {} augment generators", augments.size());
 
-        // Step 1c: ... finally establish linkage along the reverse uses/augment axis. This is needed to route generated
-        //          type manifestations (isAddedByUses/isAugmenting) to their type generation sites. Since generator
-        //          tree iteration order does not match dependencies, we may need to perform multiple passes.
+        // Step 1c: Establish linkage along the reverse uses/augment axis. This is needed to route generated type
+        //          manifestations (isAddedByUses/isAugmenting) to their type generation sites. Since generator tree
+        //          iteration order does not match dependencies, we may need to perform multiple passes.
         for (ModuleGenerator module : children) {
             verify(module.linkOriginalGenerator(), "Module %s failed to link", module);
         }
@@ -164,6 +164,11 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
             }
 
             verify(progress, "Failed to make progress on linking of original generators");
+        }
+
+        // Step 1d: Walk all composite generators and ensure all SchemaTreePlaceholders are resolved.
+        for (ModuleGenerator module : children) {
+            module.linkSchemaTreePlaceholders();
         }
 
         /*
@@ -310,7 +315,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         }
     }
 
-    private @NonNull AbstractTypeAwareGenerator<?> strictResolvePath(final @NonNull PathExpression path) {
+    private @NonNull AbstractTypeAwareGenerator<?, ?> strictResolvePath(final @NonNull PathExpression path) {
         try {
             inferenceStack.resolvePathExpression(path);
         } catch (IllegalArgumentException e) {
@@ -319,7 +324,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         return mapToGenerator();
     }
 
-    private @Nullable AbstractTypeAwareGenerator<?> lenientResolveLeafref(final @NonNull PathExpression path) {
+    private @Nullable AbstractTypeAwareGenerator<?, ?> lenientResolveLeafref(final @NonNull PathExpression path) {
         try {
             inferenceStack.resolvePathExpression(path);
         } catch (IllegalArgumentException e) {
@@ -330,7 +335,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
     }
 
     // Map a statement to the corresponding generator
-    private @NonNull AbstractTypeAwareGenerator<?> mapToGenerator() {
+    private @NonNull AbstractTypeAwareGenerator<?, ?> mapToGenerator() {
         // Some preliminaries first: we need to be in the correct module to walk the path
         final ModuleEffectiveStatement module = inferenceStack.currentModule();
         final ModuleGenerator gen = verifyNotNull(generators.get(module.localQNameModule()),
@@ -340,7 +345,7 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
         final List<EffectiveStatement<?, ?>> stmtPath = inferenceStack.toInference().statementPath();
         final AbstractExplicitGenerator<?> found = gen.findGenerator(stmtPath);
         if (found instanceof AbstractTypeAwareGenerator) {
-            return (AbstractTypeAwareGenerator<?>) found;
+            return (AbstractTypeAwareGenerator<?, ?>) found;
         }
         throw new VerifyException("Statements " + stmtPath + " resulted in unexpected " + found);
     }
