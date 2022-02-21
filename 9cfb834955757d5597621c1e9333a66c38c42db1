@@ -34,6 +34,24 @@
       "parentUuid": "dace0b55_38abc17d",
       "revId": "9cfb834955757d5597621c1e9333a66c38c42db1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0305bff_d5165e1c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 17
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-02-21T10:05:06Z",
+      "side": 1,
+      "message": "Add a unit test in the codec to create a Foo from NormalizedNode, invoke a nonnullBar() on that.",
+      "parentUuid": "b8f2d325_0a7f61a1",
+      "revId": "9cfb834955757d5597621c1e9333a66c38c42db1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
