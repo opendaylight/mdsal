@@ -32,6 +32,7 @@ package org.opendaylight.yangtools.yang.binding;
  * @param <P> Parent container
  * @author Robert Varga
  */
-public interface ChoiceIn<P> extends DataContainer {
-
+public interface ChoiceIn<P extends DataContainer, T extends ChoiceIn<P, T> & DataObject> extends DataContainer {
+    @Override
+    Class<T> implementedInterface();
 }
