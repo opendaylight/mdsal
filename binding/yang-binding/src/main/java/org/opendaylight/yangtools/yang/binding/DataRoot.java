@@ -10,6 +10,7 @@ package org.opendaylight.yangtools.yang.binding;
 /**
  * Data Root of YANG module.
  */
-public interface DataRoot {
-
+public interface DataRoot<T extends DataRoot<T>> extends DataContainer {
+    @Override
+    Class<T> implementedInterface();
 }
