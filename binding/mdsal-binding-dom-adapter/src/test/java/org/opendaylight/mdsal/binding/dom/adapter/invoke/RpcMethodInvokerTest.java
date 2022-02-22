@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -17,34 +18,33 @@ import org.junit.Test;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
-public class RpcMethodInvokerWithInputTest {
-
+public class RpcMethodInvokerTest {
     private static final TestImplClassWithInput TEST_IMPL_CLASS = new TestImplClassWithInput();
 
     @Test
     public void invokeOnTest() throws Exception {
         final MethodHandle methodHandle = MethodHandles.lookup().unreflect(
                 TestImplClassWithInput.class.getDeclaredMethod("testMethod", RpcService.class, DataObject.class));
-        final RpcMethodInvokerWithInput rpcMethodInvokerWithInput = new RpcMethodInvokerWithInput(methodHandle);
+        final RpcMethodInvoker rpcMethodInvokerWithInput = new RpcMethodInvoker(methodHandle);
         assertNotNull(rpcMethodInvokerWithInput.invokeOn(TEST_IMPL_CLASS, null));
     }
 
-    @Test(expected = InternalError.class)
+    @Test
     public void invokeOnWithException() throws Exception {
         final MethodHandle methodHandle = MethodHandles.lookup().unreflect(TestImplClassWithInput.class
                 .getDeclaredMethod("testMethodWithException", RpcService.class, DataObject.class));
-        final RpcMethodInvokerWithInput rpcMethodInvokerWithInput = new RpcMethodInvokerWithInput(methodHandle);
-        rpcMethodInvokerWithInput.invokeOn(TEST_IMPL_CLASS, null);
+        final RpcMethodInvoker rpcMethodInvokerWithInput = new RpcMethodInvoker(methodHandle);
+
+        assertThrows(InternalError.class, () -> rpcMethodInvokerWithInput.invokeOn(TEST_IMPL_CLASS, null));
     }
 
-    private static final class TestImplClassWithInput implements RpcService {
+    static final class TestImplClassWithInput implements RpcService {
 
         static ListenableFuture<?> testMethod(final RpcService testArg, final DataObject data) {
             return Futures.immediateFuture(null);
         }
 
-        static ListenableFuture<?> testMethodWithException(final RpcService testArg, final DataObject data)
-                throws Exception {
+        static ListenableFuture<?> testMethodWithException(final RpcService testArg, final DataObject data) {
             throw new InternalError();
         }
     }
