@@ -44,12 +44,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class BindingDOMRpcIntegrationTest {
     private static final InstanceIdentifier<TopLevelList> BA_NODE_ID = InstanceIdentifier.create(Top.class)
@@ -106,8 +106,8 @@ public class BindingDOMRpcIntegrationTest {
         KnockKnockOutput baKnockKnockOutput = new KnockKnockOutputBuilder().setAnswer("open").build();
 
         biRpcProviderService.registerRpcImplementation((rpc, input) ->
-            FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec()
-                    .currentSerializer().toNormalizedNodeRpcData(baKnockKnockOutput))),
+            Futures.immediateFuture(new DefaultDOMRpcResult(testContext.getCodec().currentSerializer()
+                .toNormalizedNodeRpcData(Absolute.of(KNOCK_KNOCK_QNAME, KnockKnockOutput.QNAME), baKnockKnockOutput))),
             DOMRpcIdentifier.create(KNOCK_KNOCK_QNAME, testContext.getCodec().currentSerializer()
                 .toYangInstanceIdentifier(BA_NODE_ID)));
 
@@ -146,13 +146,12 @@ public class BindingDOMRpcIntegrationTest {
     }
 
     private static KnockKnockInputBuilder knockKnock(final InstanceIdentifier<TopLevelList> listId) {
-        KnockKnockInputBuilder builder = new KnockKnockInputBuilder();
-        builder.setKnockerId(listId);
-        return builder;
+        return new KnockKnockInputBuilder().setKnockerId(listId);
     }
 
     private ContainerNode toDOMKnockKnockInput(final KnockKnockInput from) {
-        return testContext.getCodec().currentSerializer().toNormalizedNodeRpcData(from);
+        return testContext.getCodec().currentSerializer().toNormalizedNodeRpcData(
+            Absolute.of(QName.create(KnockKnockInput.QNAME, "knock-knock"), KnockKnockInput.QNAME), from);
     }
 
     private static class OpendaylightKnockKnockRpcServiceImpl implements OpendaylightKnockKnockRpcService {
@@ -162,7 +161,7 @@ public class BindingDOMRpcIntegrationTest {
 
         OpendaylightKnockKnockRpcServiceImpl setKnockKnockResult(
                 final ListenableFuture<RpcResult<KnockKnockOutput>> kkOutput) {
-            this.knockKnockResult = kkOutput;
+            knockKnockResult = kkOutput;
             return this;
         }
 

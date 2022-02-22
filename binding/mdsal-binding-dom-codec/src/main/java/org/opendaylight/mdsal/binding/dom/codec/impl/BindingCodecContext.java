@@ -554,8 +554,8 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     @Override
-    public DataObject fromNormalizedNodeRpcData(final Absolute containerPath, final ContainerNode data) {
-        return getRpcInputCodec(containerPath).deserialize(data);
+    public DataObject fromNormalizedNodeRpcData(final Absolute path, final ContainerNode data) {
+        return getRpcInputCodec(path).deserialize(data);
     }
 
     @Override
@@ -581,7 +581,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST")
-    public ContainerNode toNormalizedNodeRpcData(final DataContainer data) {
+    public ContainerNode toNormalizedNodeRpcData(final Absolute path, final DataContainer data) {
         // FIXME: Should the cast to DataObject be necessary?
         return serializeDataObject((DataObject) data, BindingNormalizedNodeWriterFactory::newRpcWriter);
     }

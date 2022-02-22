@@ -47,7 +47,7 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     <T extends RpcService> BindingDOMRpcImplementationAdapter(final AdapterContext adapterContext,
             final Class<T> type, final Map<QName, Method> localNameToMethod, final T delegate) {
         try {
-            this.invoker = SERVICE_INVOKERS.get(type, () -> RpcServiceInvoker.from(localNameToMethod));
+            invoker = SERVICE_INVOKERS.get(type, () -> RpcServiceInvoker.from(localNameToMethod));
         } catch (ExecutionException e) {
             throw new IllegalArgumentException("Failed to create invokers for type " + type, e);
         }
@@ -62,8 +62,7 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
         final QName rpcType = rpc.getType();
         final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
         final DataObject bindingInput = input != null ? deserialize(serializer, rpcType, input) : null;
-        final ListenableFuture<RpcResult<?>> bindingResult = invoke(rpcType, bindingInput);
-        return LazyDOMRpcResultFuture.create(serializer, bindingResult);
+        return new LazyDOMRpcResultFuture(serializer, rpcType, invoke(rpcType, bindingInput));
     }
 
     @Override

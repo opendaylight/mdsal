@@ -30,7 +30,8 @@ public class Mdsal552Test extends AbstractBindingCodecTest {
             .withNodeIdentifier(new NodeIdentifier(RefTestOutput.QNAME))
             .withChild(ImmutableNodes.leafNode(OUTPUTREF, OutputA.DownTest.getName()))
             .build(),
-            codecContext.toNormalizedNodeRpcData(new RefTestOutputBuilder().setOutputref(OutputA.DownTest).build()));
+            codecContext.toNormalizedNodeRpcData(OUTPUT_PATH,
+                new RefTestOutputBuilder().setOutputref(OutputA.DownTest).build()));
     }
 
     @Test

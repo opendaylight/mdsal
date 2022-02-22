@@ -20,10 +20,9 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * Without this interface we could end up with megamorphic invocation, as the two implementations cannot share class
  * hierarchy.
  *
- * @author Robert Varga
- *
  * @param <T> Binding representation of data
  */
+// FIXME: rename to RpcContainerCodec
 interface RpcInputCodec<D extends DataObject> extends BindingNormalizedNodeCodec<D> {
 
 }

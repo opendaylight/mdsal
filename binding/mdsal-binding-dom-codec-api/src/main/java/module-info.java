@@ -10,6 +10,7 @@ module org.opendaylight.mdsal.binding.dom.codec.api {
 
     requires transitive org.opendaylight.mdsal.binding.runtime.api;
     requires org.opendaylight.mdsal.binding.spec.util;
+    requires org.opendaylight.yangtools.yang.common;
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;

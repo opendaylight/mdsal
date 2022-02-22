@@ -9,13 +9,13 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.AbstractFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -23,8 +23,11 @@ import org.opendaylight.mdsal.dom.api.DefaultDOMRpcException;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implements BindingRpcFutureAware {
     private static final ExceptionMapper<DOMRpcException> DOM_RPC_EX_MAPPER = new ExceptionMapper<>("rpc",
@@ -38,17 +41,16 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
 
     private final ListenableFuture<RpcResult<?>> bindingFuture;
     private final BindingNormalizedNodeSerializer codec;
-    private volatile DOMRpcResult result;
+    private final QName rpcName;
 
-    private LazyDOMRpcResultFuture(final ListenableFuture<RpcResult<?>> delegate,
-            final BindingNormalizedNodeSerializer codec) {
-        this.bindingFuture = requireNonNull(delegate, "delegate");
-        this.codec = requireNonNull(codec, "codec");
-    }
+    @VisibleForTesting
+    volatile DOMRpcResult result;
 
-    static @NonNull LazyDOMRpcResultFuture create(final BindingNormalizedNodeSerializer codec,
-            final ListenableFuture<RpcResult<?>> bindingResult) {
-        return new LazyDOMRpcResultFuture(bindingResult, codec);
+    LazyDOMRpcResultFuture(final BindingNormalizedNodeSerializer codec, final QName rpcName,
+            final ListenableFuture<RpcResult<?>> bindingFuture) {
+        this.bindingFuture = requireNonNull(bindingFuture);
+        this.rpcName = requireNonNull(rpcName);
+        this.codec = requireNonNull(codec);
     }
 
     @Override
@@ -114,7 +116,9 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
         if (input.isSuccessful()) {
             final Object inputData = input.getResult();
             if (inputData instanceof DataContainer) {
-                return new DefaultDOMRpcResult(codec.toNormalizedNodeRpcData((DataContainer) inputData));
+                return new DefaultDOMRpcResult(codec.toNormalizedNodeRpcData(
+                    Absolute.of(rpcName, YangConstants.operationOutputQName(rpcName.getModule())),
+                    (DataContainer) inputData));
             }
 
             return new DefaultDOMRpcResult((NormalizedNode) null);

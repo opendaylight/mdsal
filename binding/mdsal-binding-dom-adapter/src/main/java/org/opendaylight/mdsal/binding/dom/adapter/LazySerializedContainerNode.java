@@ -9,18 +9,19 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingLazyContainerNode;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /*
- * FIXME: This is a bit of functionality which should really live in binding-dom-codec, but for to happen we need
+ * FIXME: This is a bit of functionality which should really live in binding-dom-codec, but for that to happen we need
  *        to extend BindingNormalizedNodeSerializer with the concept of a routing context -- which would be deprecated,
  *        as we want to move to actions in the long term.
  *
@@ -29,25 +30,27 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
  */
 class LazySerializedContainerNode
         extends AbstractBindingLazyContainerNode<DataObject, BindingNormalizedNodeSerializer> {
+    private final @NonNull Absolute path;
 
-    private LazySerializedContainerNode(final QName identifier, final DataObject binding,
+    private LazySerializedContainerNode(final Absolute path, final DataObject binding,
             final BindingNormalizedNodeSerializer codec) {
-        super(NodeIdentifier.create(identifier), binding, requireNonNull(codec));
+        super(NodeIdentifier.create(path.lastNodeIdentifier()), binding, requireNonNull(codec));
+        this.path = path;
     }
 
-    static ContainerNode create(final QName rpcName, final DataObject data,
+    static LazySerializedContainerNode create(final Absolute path, final DataObject data,
             final BindingNormalizedNodeSerializer codec) {
-        return data == null ? null : new LazySerializedContainerNode(rpcName, data, codec);
+        return data == null ? null : new LazySerializedContainerNode(path, data, codec);
     }
 
-    static ContainerNode withContextRef(final QName rpcName, final DataObject data,
+    static LazySerializedContainerNode withContextRef(final Absolute path, final DataObject data,
             final LeafNode<?> contextRef, final BindingNormalizedNodeSerializer serializer) {
-        return new WithContextRef(rpcName, data, contextRef, serializer);
+        return new WithContextRef(path, data, contextRef, serializer);
     }
 
     @Override
     protected final ContainerNode computeContainerNode(final BindingNormalizedNodeSerializer context) {
-        return context.toNormalizedNodeRpcData(getDataObject());
+        return context.toNormalizedNodeRpcData(path, getDataObject());
     }
 
     /**
@@ -56,9 +59,9 @@ class LazySerializedContainerNode
     private static final class WithContextRef extends LazySerializedContainerNode {
         private final LeafNode<?> contextRef;
 
-        protected WithContextRef(final QName identifier, final DataObject binding, final LeafNode<?> contextRef,
+        WithContextRef(final Absolute path, final DataObject binding, final LeafNode<?> contextRef,
                 final BindingNormalizedNodeSerializer codec) {
-            super(identifier, binding, codec);
+            super(path, binding, codec);
             this.contextRef = requireNonNull(contextRef);
         }
 

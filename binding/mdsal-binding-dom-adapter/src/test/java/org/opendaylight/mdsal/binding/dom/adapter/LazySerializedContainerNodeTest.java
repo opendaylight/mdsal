@@ -30,6 +30,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class LazySerializedContainerNodeTest {
     @Test
@@ -37,7 +38,7 @@ public class LazySerializedContainerNodeTest {
         final DataObject dataObject = mock(DataObject.class);
         final BindingNormalizedNodeSerializer codec = mock(BindingNormalizedNodeSerializer.class);
         final ContainerNode containerNode = mock(ContainerNode.class);
-        doReturn(containerNode).when(codec).toNormalizedNodeRpcData(any());
+        doReturn(containerNode).when(codec).toNormalizedNodeRpcData(any(), any());
         doReturn(null).when(containerNode).childByArg(any());
 
         final BindingBrokerTestFactory bindingBrokerTestFactory = new BindingBrokerTestFactory();
@@ -47,20 +48,20 @@ public class LazySerializedContainerNodeTest {
 
         final ImmutableBiMap<?, ?> biMap = bindingTestContext.getCodec().currentSerializer()
                 .getRpcMethodToSchema(OpendaylightTestRpcServiceService.class);
-        final QName rpcName = ((RpcDefinition) biMap.values().iterator().next()).getQName();
+        final RpcDefinition rpc = (RpcDefinition) biMap.values().iterator().next();
+        final Absolute inputPath = Absolute.of(rpc.getQName(), rpc.getInput().getQName());
         final LeafNode<?> leafNode = ImmutableLeafNodeBuilder.create().withNodeIdentifier(NodeIdentifier
                 .create(QName.create("", "test"))).withValue("").build();
-        final ContainerNode normalizedNode = LazySerializedContainerNode.create(rpcName, dataObject, codec);
+        final ContainerNode normalizedNode = LazySerializedContainerNode.create(inputPath, dataObject, codec);
         assertNotNull(normalizedNode);
-        final LazySerializedContainerNode lazySerializedContainerNode =
-                (LazySerializedContainerNode) LazySerializedContainerNode.withContextRef(rpcName, dataObject, leafNode,
-                        codec);
+        final LazySerializedContainerNode lazySerializedContainerNode = LazySerializedContainerNode.withContextRef(
+            inputPath, dataObject, leafNode,codec);
         assertNotNull(lazySerializedContainerNode);
         assertEquals(leafNode, lazySerializedContainerNode.childByArg(leafNode.getIdentifier()));
         assertNull(lazySerializedContainerNode.childByArg(mock(PathArgument.class)));
 
         assertTrue(lazySerializedContainerNode.body().isEmpty());
-        assertEquals(rpcName, lazySerializedContainerNode.getIdentifier().getNodeType());
+        assertEquals(rpc.getInput().getQName(), lazySerializedContainerNode.getIdentifier().getNodeType());
         assertEquals(dataObject, lazySerializedContainerNode.getDataObject());
     }
 }
