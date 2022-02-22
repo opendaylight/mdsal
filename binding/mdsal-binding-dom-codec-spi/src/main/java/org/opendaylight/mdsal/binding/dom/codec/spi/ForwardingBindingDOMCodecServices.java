@@ -72,8 +72,8 @@ public abstract class ForwardingBindingDOMCodecServices extends ForwardingObject
     }
 
     @Override
-    public ContainerNode toNormalizedNodeRpcData(final DataContainer data) {
-        return delegate().toNormalizedNodeRpcData(data);
+    public ContainerNode toNormalizedNodeRpcData(final Absolute path, final DataContainer data) {
+        return delegate().toNormalizedNodeRpcData(path, data);
     }
 
     @Override
@@ -106,8 +106,8 @@ public abstract class ForwardingBindingDOMCodecServices extends ForwardingObject
     }
 
     @Override
-    public DataObject fromNormalizedNodeRpcData(final Absolute containerPath, final ContainerNode data) {
-        return delegate().fromNormalizedNodeRpcData(containerPath, data);
+    public DataObject fromNormalizedNodeRpcData(final Absolute path, final ContainerNode data) {
+        return delegate().fromNormalizedNodeRpcData(path, data);
     }
 
     @Override
@@ -155,7 +155,7 @@ public abstract class ForwardingBindingDOMCodecServices extends ForwardingObject
     @Override
     public BindingStreamEventWriter newRpcWriter(final Class<? extends DataContainer> rpcInputOrOutput,
             final NormalizedNodeStreamWriter streamWriter) {
-        return delegate().newRpcWriter(rpcInputOrOutput,streamWriter);
+        return delegate().newRpcWriter(rpcInputOrOutput, streamWriter);
     }
 
     @Override

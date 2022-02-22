@@ -98,11 +98,12 @@ public interface BindingNormalizedNodeSerializer {
     /**
      * Translates supplied NormalizedNode RPC input or output into Binding data.
      *
-     * @param containerPath Container path (RPC type + input/output)
+     * @param path Container path (RPC type + input/output)
      * @param data NormalizedNode representing data
      * @return Binding representation of RPC data
      */
-    @Nullable DataObject fromNormalizedNodeRpcData(@NonNull Absolute containerPath, @NonNull ContainerNode data);
+    // FIXME: split into input/output methods taking RPC class once we have that
+    @NonNull DataObject fromNormalizedNodeRpcData(@NonNull Absolute path, @NonNull ContainerNode data);
 
     /**
      * Translates supplied ContainerNode action input.
@@ -134,15 +135,18 @@ public interface BindingNormalizedNodeSerializer {
      * @param data NormalizedNode representing notification data
      * @return NormalizedNode representation of notification
      */
+    // FIXME: update to take Absolute path
     @NonNull ContainerNode toNormalizedNodeNotification(@NonNull Notification<?> data);
 
     /**
      * Translates supplied Binding RPC input or output into NormalizedNode data.
      *
+     * @param path Container path (RPC type + input/output)
      * @param data NormalizedNode representing rpc data
      * @return NormalizedNode representation of rpc data
      */
-    @NonNull ContainerNode toNormalizedNodeRpcData(@NonNull DataContainer data);
+    // FIXME: split into input/output methods taking RPC class once we have that
+    @NonNull ContainerNode toNormalizedNodeRpcData(@NonNull Absolute path, @NonNull DataContainer data);
 
     /**
      * Lazily translates supplied Binding action input into NormalizedNode data.

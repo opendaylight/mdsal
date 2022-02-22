@@ -36,7 +36,7 @@ public class RpcDataSerializationTest extends AbstractBindingCodecTest {
         final PutTopInput bindingOriginal = new PutTopInputBuilder()
                 .setTopLevelList(ImmutableMap.of(LIST_KEY, new TopLevelListBuilder().withKey(LIST_KEY).build()))
                 .build();
-        final ContainerNode dom = codecContext.toNormalizedNodeRpcData(bindingOriginal);
+        final ContainerNode dom = codecContext.toNormalizedNodeRpcData(PUT_TOP_INPUT, bindingOriginal);
         assertNotNull(dom);
         assertEquals(PutTopInput.QNAME, dom.getIdentifier().getNodeType());
 
@@ -49,7 +49,7 @@ public class RpcDataSerializationTest extends AbstractBindingCodecTest {
         final GetTopOutput bindingOriginal = new GetTopOutputBuilder()
                 .setTopLevelList(ImmutableMap.of(LIST_KEY, new TopLevelListBuilder().withKey(LIST_KEY).build()))
                 .build();
-        final ContainerNode dom = codecContext.toNormalizedNodeRpcData(bindingOriginal);
+        final ContainerNode dom = codecContext.toNormalizedNodeRpcData(GET_TOP_OUTPUT, bindingOriginal);
         assertNotNull(dom);
         assertEquals(GetTopOutput.QNAME, dom.getIdentifier().getNodeType());
 

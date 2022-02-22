@@ -41,11 +41,11 @@ import org.opendaylight.yang.gen.v1.rpc.norev.SwitchInputBuilder;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchOutput;
 import org.opendaylight.yang.gen.v1.rpc.norev.SwitchOutputBuilder;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class Mdsal500Test {
     private static final String FOO = "foo";
@@ -98,8 +98,8 @@ public class Mdsal500Test {
         SwitchOutput baSwitchOutput = new SwitchOutputBuilder().build();
 
         biRpcProviderService.registerRpcImplementation((rpc, input) ->
-            FluentFutures.immediateFluentFuture(new DefaultDOMRpcResult(testContext.getCodec().currentSerializer()
-                    .toNormalizedNodeRpcData(baSwitchOutput))),
+            Futures.immediateFuture(new DefaultDOMRpcResult(testContext.getCodec().currentSerializer()
+                    .toNormalizedNodeRpcData(Absolute.of(SWITCH_QNAME, SwitchOutput.QNAME), baSwitchOutput))),
             DOMRpcIdentifier.create(SWITCH_QNAME));
 
         final Mdsal500Service baSwitchService =
@@ -138,7 +138,8 @@ public class Mdsal500Test {
     }
 
     private ContainerNode toDOMSwitchInput(final SwitchInput from) {
-        return testContext.getCodec().currentSerializer().toNormalizedNodeRpcData(from);
+        return testContext.getCodec().currentSerializer().toNormalizedNodeRpcData(
+            Absolute.of(SWITCH_QNAME, SwitchInput.QNAME), from);
     }
 
     private static class Mdsal500ServiceImpl implements Mdsal500Service {
@@ -146,7 +147,7 @@ public class Mdsal500Test {
         private final Multimap<String, SwitchInput> receivedSwitch = HashMultimap.create();
 
         Mdsal500ServiceImpl setSwitchResult(final ListenableFuture<RpcResult<SwitchOutput>> switchOutput) {
-            this.switchResult = switchOutput;
+            switchResult = switchOutput;
             return this;
         }
 
