@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
@@ -21,7 +22,7 @@ import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
 @VisibleForTesting
-public class BindingDOMRpcServiceAdapter
+public final class BindingDOMRpcServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMRpcService, Class<? extends RpcService>, RpcServiceAdapter>
         implements RpcConsumerRegistry {
     static final Factory<RpcConsumerRegistry> BUILDER_FACTORY = Builder::new;
@@ -30,11 +31,9 @@ public class BindingDOMRpcServiceAdapter
         super(adapterContext, domService);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T extends RpcService> T getRpcService(final Class<T> rpcService) {
-        checkArgument(rpcService != null, "Rpc Service needs to be specied.");
-        return (T) getAdapter(rpcService).getProxy();
+        return rpcService.cast(getAdapter(requireNonNull(rpcService)).getProxy());
     }
 
     @Override
