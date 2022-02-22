@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -26,32 +25,20 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 
 public class AbstractMappedRpcInvokerTest {
-
     @Test
     public void invokeRpcTest() throws Exception {
-        final Method methodWithoutInput =
-                TestRpcService.class.getDeclaredMethod("methodWithoutInput", RpcService.class);
         final Method methodWithInput =
                 TestRpcService.class.getDeclaredMethod("methodWithInput", RpcService.class, DataObject.class);
 
         methodWithInput.setAccessible(true);
-        methodWithoutInput.setAccessible(true);
 
         final RpcService rpcService = new TestRpcService();
 
         final TestRpcInvokerImpl testRpcInvoker =
                 new TestRpcInvokerImpl(ImmutableMap.of(
-                        "(test)tstWithoutInput", methodWithoutInput,
                         "(test)tstWithInput", methodWithInput));
 
-        assertTrue(testRpcInvoker.map.get("(test)tstWithInput") instanceof RpcMethodInvokerWithInput);
-        assertTrue(testRpcInvoker.map.get("(test)tstWithoutInput") instanceof RpcMethodInvokerWithoutInput);
-
-        final Crate crateWithoutInput =
-                (Crate) testRpcInvoker.invokeRpc(rpcService, QName.create("test", "tstWithoutInput"), null).get();
-        assertEquals(TestRpcService.methodWithoutInput(rpcService).get().getRpcService(),
-                crateWithoutInput.getRpcService());
-        assertFalse(crateWithoutInput.getDataObject().isPresent());
+        assertTrue(testRpcInvoker.map.get("(test)tstWithInput") instanceof RpcMethodInvoker);
 
         final DataObject dataObject = mock(DataObject.class);
         final Crate crateWithInput =
@@ -62,8 +49,7 @@ public class AbstractMappedRpcInvokerTest {
         assertEquals(dataObject, crateWithInput.getDataObject().get());
     }
 
-    private class TestRpcInvokerImpl extends AbstractMappedRpcInvoker<String> {
-
+    private static class TestRpcInvokerImpl extends AbstractMappedRpcInvoker<String> {
         TestRpcInvokerImpl(final Map<String, Method> map) {
             super(map);
         }
@@ -85,19 +71,15 @@ public class AbstractMappedRpcInvokerTest {
         }
 
         RpcService getRpcService() {
-            return this.rpcService;
+            return rpcService;
         }
 
         Optional<DataObject> getDataObject() {
-            return this.dataObject.get();
+            return dataObject.get();
         }
     }
 
     static class TestRpcService implements RpcService {
-        static ListenableFuture<Crate> methodWithoutInput(final RpcService testArgument) {
-            return Futures.immediateFuture(new Crate(testArgument, null));
-        }
-
         static ListenableFuture<Crate> methodWithInput(final RpcService testArgument, final DataObject testArgument2) {
             return Futures.immediateFuture(new Crate(testArgument, testArgument2));
         }

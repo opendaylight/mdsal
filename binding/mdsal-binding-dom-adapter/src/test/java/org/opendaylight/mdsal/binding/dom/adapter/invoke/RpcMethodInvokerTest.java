@@ -17,15 +17,14 @@ import org.junit.Test;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
-public class RpcMethodInvokerWithInputTest {
-
+public class RpcMethodInvokerTest {
     private static final TestImplClassWithInput TEST_IMPL_CLASS = new TestImplClassWithInput();
 
     @Test
     public void invokeOnTest() throws Exception {
         final MethodHandle methodHandle = MethodHandles.lookup().unreflect(
                 TestImplClassWithInput.class.getDeclaredMethod("testMethod", RpcService.class, DataObject.class));
-        final RpcMethodInvokerWithInput rpcMethodInvokerWithInput = new RpcMethodInvokerWithInput(methodHandle);
+        final RpcMethodInvoker rpcMethodInvokerWithInput = new RpcMethodInvoker(methodHandle);
         assertNotNull(rpcMethodInvokerWithInput.invokeOn(TEST_IMPL_CLASS, null));
     }
 
@@ -33,7 +32,7 @@ public class RpcMethodInvokerWithInputTest {
     public void invokeOnWithException() throws Exception {
         final MethodHandle methodHandle = MethodHandles.lookup().unreflect(TestImplClassWithInput.class
                 .getDeclaredMethod("testMethodWithException", RpcService.class, DataObject.class));
-        final RpcMethodInvokerWithInput rpcMethodInvokerWithInput = new RpcMethodInvokerWithInput(methodHandle);
+        final RpcMethodInvoker rpcMethodInvokerWithInput = new RpcMethodInvoker(methodHandle);
         rpcMethodInvokerWithInput.invokeOn(TEST_IMPL_CLASS, null);
     }
 

@@ -7,36 +7,50 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import java.util.Optional;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
-import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
-abstract class RpcMethodInvoker {
+final class RpcMethodInvoker {
+    private static final MethodType INVOCATION_SIGNATURE = MethodType.methodType(ListenableFuture.class,
+        RpcService.class, DataObject.class);
 
-    private static final Lookup LOOKUP = MethodHandles.publicLookup();
+    private final MethodHandle handle;
 
-    abstract ListenableFuture<RpcResult<?>> invokeOn(RpcService impl, DataObject input);
+    @VisibleForTesting
+    RpcMethodInvoker(final MethodHandle handle) {
+        this.handle = handle.asType(INVOCATION_SIGNATURE);
+    }
 
-    protected static RpcMethodInvoker from(final Method method) {
+    static RpcMethodInvoker from(final Method method) {
+        BindingReflections.resolveRpcInputClass(method)
+            .orElseThrow(() -> new IllegalArgumentException("Method " + method + " does not have an input argument"));
+
         final MethodHandle methodHandle;
         try {
-            methodHandle = LOOKUP.unreflect(method);
+            methodHandle = MethodHandles.publicLookup().unreflect(method);
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Lookup on public method failed.",e);
+            throw new IllegalStateException("Lookup on public method failed.", e);
         }
 
-        final Optional<Class<? extends DataContainer>> input = BindingReflections.resolveRpcInputClass(method);
-        if (input.isPresent()) {
-            return new RpcMethodInvokerWithInput(methodHandle);
+        return new RpcMethodInvoker(methodHandle);
+    }
+
+    @SuppressWarnings("checkstyle:illegalCatch")
+    ListenableFuture<RpcResult<?>> invokeOn(final RpcService impl, final DataObject input) {
+        try {
+            return (ListenableFuture<RpcResult<?>>) handle.invokeExact(impl,input);
+        } catch (Throwable e) {
+            Throwables.throwIfUnchecked(e);
+            throw new IllegalStateException(e);
         }
-        return new RpcMethodInvokerWithoutInput(methodHandle);
     }
 }
