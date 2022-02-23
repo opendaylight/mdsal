@@ -13,6 +13,7 @@ import java.lang.invoke.VarHandle;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode.ChildAddressabilitySummary;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
+import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
@@ -34,12 +35,72 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class DataContainerCodecPrototype<T extends WithStatus> implements NodeContextSupplier {
+abstract class DataContainerCodecPrototype<T extends WithStatus> implements NodeContextSupplier {
+    static final class Augment extends DataContainerCodecPrototype<AugmentationSchemaNode> {
+        Augment(final Class<?> augClass, final AugmentationIdentifier arg, final AugmentationSchemaNode schema,
+                final CodecContextFactory factory) {
+            super(augClass, arg, schema, factory);
+        }
+
+        @Override
+        DataContainerCodecContext<?, AugmentationSchemaNode> createInstance() {
+          return new AugmentationNodeContext<>(this);
+        }
+    }
+
+    static final class Case extends DataContainerCodecPrototype<CaseSchemaNode> {
+        Case(final Class<?> caseClass, final CaseSchemaNode schema, final CodecContextFactory factory) {
+            super(caseClass, NodeIdentifier.create(schema.getQName()), schema, factory);
+        }
+
+        @Override
+        DataContainerCodecContext<?, CaseSchemaNode> createInstance() {
+            return new CaseNodeCodecContext<>(this);
+        }
+    }
+
+    static final class Choice extends DataContainerCodecPrototype<ChoiceSchemaNode> {
+        Choice(final Class<? extends ChoiceIn<?>> choiceClass, final ChoiceSchemaNode schema,
+                final CodecContextFactory factory) {
+            super(choiceClass, NodeIdentifier.create(schema.getQName()), schema, factory);
+        }
+
+        @Override
+        DataContainerCodecContext<?, ChoiceSchemaNode> createInstance() {
+            return new ChoiceNodeCodecContext<>(this);
+        }
+    }
+
+    static class Container<T extends ContainerLike> extends DataContainerCodecPrototype<T> {
+        Container(final Class<?> cls, final T nodeSchema, final CodecContextFactory factory) {
+            super(cls, NodeIdentifier.create(nodeSchema.getQName()), nodeSchema, factory);
+        }
+
+        @Override
+        final DataContainerCodecContext<?, T> createInstance() {
+            return new ContainerNodeCodecContext<>(this);
+        }
+    }
+
+    static final class List extends DataContainerCodecPrototype<ListSchemaNode> {
+
+        @Override
+        DataContainerCodecContext<?, ListSchemaNode> createInstance() {
+            return Identifiable.class.isAssignableFrom(getBindingClass()) ? KeyedListNodeCodecContext.create(this)
+                    : new ListNodeCodecContext<>(this);
+        }
+    }
+
+    static final class Root extends Container<EffectiveModelContext> {
+        Root(final CodecContextFactory factory) {
+            super(DataRoot.class, factory.getRuntimeContext().getEffectiveModelContext(), factory);
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(DataContainerCodecPrototype.class);
 
     private static final VarHandle INSTANCE;
@@ -160,12 +221,6 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
         return ChildAddressabilitySummary.UNADDRESSABLE;
     }
 
-    static DataContainerCodecPrototype<EffectiveModelContext> rootPrototype(final CodecContextFactory factory) {
-        final EffectiveModelContext schema = factory.getRuntimeContext().getEffectiveModelContext();
-        final NodeIdentifier arg = NodeIdentifier.create(SchemaContext.NAME);
-        return new DataContainerCodecPrototype<>(DataRoot.class, arg, schema, factory);
-    }
-
     static <T extends DataSchemaNode> DataContainerCodecPrototype<T> from(final Class<?> cls, final T schema,
             final CodecContextFactory factory) {
         return new DataContainerCodecPrototype<>(cls, NodeIdentifier.create(schema.getQName()), schema, factory);
@@ -174,11 +229,6 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
     static <T extends DataSchemaNode> DataContainerCodecPrototype<T> from(final Item<?> bindingArg, final T schema,
             final CodecContextFactory factory) {
         return new DataContainerCodecPrototype<>(bindingArg, NodeIdentifier.create(schema.getQName()), schema, factory);
-    }
-
-    static DataContainerCodecPrototype<AugmentationSchemaNode> from(final Class<?> augClass,
-            final AugmentationIdentifier arg, final AugmentationSchemaNode schema, final CodecContextFactory factory) {
-        return new DataContainerCodecPrototype<>(augClass, arg, schema, factory);
     }
 
     static DataContainerCodecPrototype<NotificationDefinition> from(final Class<?> augClass,
@@ -227,28 +277,6 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
         return witness == null ? tmp : witness;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     // This method must allow concurrent loading, i.e. nothing in it may have effects outside of the loaded object
-    private @NonNull DataContainerCodecContext<?, T> createInstance() {
-        // FIXME: make protected abstract
-        if (schema instanceof ContainerLike) {
-            return new ContainerNodeCodecContext(this);
-        } else if (schema instanceof ListSchemaNode) {
-            return Identifiable.class.isAssignableFrom(getBindingClass())
-                    ? KeyedListNodeCodecContext.create((DataContainerCodecPrototype<ListSchemaNode>) this)
-                            : new ListNodeCodecContext(this);
-        } else if (schema instanceof ChoiceSchemaNode) {
-            return new ChoiceNodeCodecContext(this);
-        } else if (schema instanceof AugmentationSchemaNode) {
-            return new AugmentationNodeContext(this);
-        } else if (schema instanceof CaseSchemaNode) {
-            return new CaseNodeCodecContext(this);
-        }
-        throw new IllegalArgumentException("Unsupported type " + getBindingClass() + " " + schema);
-    }
-
-    // FIXME: eliminate with above createInstance() item
-    boolean isChoice() {
-        return schema instanceof ChoiceSchemaNode;
-    }
+    abstract @NonNull DataContainerCodecContext<?, T> createInstance();
 }

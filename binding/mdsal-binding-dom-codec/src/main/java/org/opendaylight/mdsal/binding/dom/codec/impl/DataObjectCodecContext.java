@@ -133,7 +133,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
 
             // FIXME: It really feels like we should be specializing DataContainerCodecPrototype so as to ditch
             //        createInstance() and then we could do an instanceof check instead.
-            if (childProto.isChoice()) {
+            if (childProto instanceof DataContainerCodecPrototype.Choice) {
                 final ChoiceNodeCodecContext<?> choice = (ChoiceNodeCodecContext<?>) childProto.get();
                 for (final Class<?> cazeChild : choice.getCaseChildrenClasses()) {
                     byBindingArgClassBuilder.put(cazeChild, childProto);
@@ -379,7 +379,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Dat
 
         final Entry<AugmentationIdentifier, AugmentationSchemaNode> augSchema =
                 ctx.getResolvedAugmentationSchema(getSchema(), augClass);
-        return DataContainerCodecPrototype.from(augClass, augSchema.getKey(), augSchema.getValue(), factory());
+        return new DataContainerCodecPrototype.Augment(augClass, augSchema.getKey(), augSchema.getValue(), factory());
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")

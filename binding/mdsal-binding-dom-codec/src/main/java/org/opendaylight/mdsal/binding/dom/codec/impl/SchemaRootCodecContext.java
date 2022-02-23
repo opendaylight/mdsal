@@ -13,7 +13,6 @@ import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Throwables;
-import com.google.common.base.Verify;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -93,10 +92,10 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
             }
         });
 
-    private final LoadingCache<Class<?>, ContainerNodeCodecContext<?>> rpcDataByClass = CacheBuilder.newBuilder()
-        .build(new CacheLoader<Class<?>, ContainerNodeCodecContext<?>>() {
+    private final LoadingCache<Class<?>, ContainerNodeCodecContext<?, ?>> rpcDataByClass = CacheBuilder.newBuilder()
+        .build(new CacheLoader<Class<?>, ContainerNodeCodecContext<?, ?>>() {
             @Override
-            public ContainerNodeCodecContext<?> load(final Class<?> key) {
+            public ContainerNodeCodecContext<?, ?> load(final Class<?> key) {
                 final QName qname = BindingReflections.findQName(key);
                 final QNameModule qnameModule = qname.getModule();
                 final Module module = getSchema().findModule(qnameModule).orElseThrow(
@@ -115,7 +114,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
                     if (key.getSimpleName().equals(BindingMapping.getClassName(potentialQName) + className)) {
                         final ContainerLike schema = getRpcDataSchema(potential, qname);
                         checkArgument(schema != null, "Schema for %s does not define input / output.", potentialQName);
-                        return (ContainerNodeCodecContext<?>) DataContainerCodecPrototype.from(key, schema, factory())
+                        return (ContainerNodeCodecContext<?, ?>) DataContainerCodecPrototype.from(key, schema, factory())
                             .get();
                     }
                 }
@@ -168,19 +167,8 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
             }
         });
 
-    private SchemaRootCodecContext(final DataContainerCodecPrototype<EffectiveModelContext> dataPrototype) {
-        super(dataPrototype);
-    }
-
-    /**
-     * Creates RootNode from supplied CodecContextFactory.
-     *
-     * @param factory
-     *            CodecContextFactory
-     * @return A new root node
-     */
-    static SchemaRootCodecContext<?> create(final CodecContextFactory factory) {
-        return new SchemaRootCodecContext<>(DataContainerCodecPrototype.rootPrototype(factory));
+    SchemaRootCodecContext(final CodecContextFactory factory) {
+        super(new DataContainerCodecPrototype.Root(factory));
     }
 
     @SuppressWarnings("unchecked")
@@ -217,7 +205,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         return getOrRethrow(notificationsByPath, notification);
     }
 
-    ContainerNodeCodecContext<?> getRpc(final Class<? extends DataContainer> rpcInputOrOutput) {
+    ContainerNodeCodecContext<?, ?> getRpc(final Class<? extends DataContainer> rpcInputOrOutput) {
         return getOrRethrow(rpcDataByClass, rpcInputOrOutput);
     }
 
@@ -251,10 +239,10 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         checkArgument(args.length == expectedArgsLength, "Unexpected (%s) Action generatic arguments", args.length);
         final ActionDefinition schema = factory().getRuntimeContext().getActionDefinition(action);
         return new ActionCodecContext(
-                DataContainerCodecPrototype.from(asClass(args[inputOffset], RpcInput.class), schema.getInput(),
-                        factory()).get(),
-                DataContainerCodecPrototype.from(asClass(args[outputOffset], RpcOutput.class), schema.getOutput(),
-                        factory()).get());
+            new DataContainerCodecPrototype.Container<>(asClass(args[inputOffset], RpcInput.class),
+                schema.getInput(), factory()).get(),
+            new DataContainerCodecPrototype.Container<>(asClass(args[outputOffset], RpcOutput.class),
+                schema.getOutput(), factory()).get());
     }
 
     private static <T extends DataObject> Class<? extends T> asClass(final Type type, final Class<T> target) {
@@ -310,14 +298,14 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     }
 
     ChoiceNodeCodecContext<?> createChoiceDataContext(final Class<? extends DataObject> caseType) {
-        final Class<?> choiceClass = findCaseChoice(caseType);
+        final Class<? extends ChoiceIn<?>> choiceClass = findCaseChoice(caseType);
         checkArgument(choiceClass != null, "Class %s is not a valid case representation", caseType);
         final DataSchemaNode schema = factory().getRuntimeContext().getSchemaDefinition(choiceClass);
         checkArgument(schema instanceof ChoiceSchemaNode, "Class %s does not refer to a choice", caseType);
 
-        final DataContainerCodecContext<?, ChoiceSchemaNode> choice = DataContainerCodecPrototype.from(choiceClass,
-            (ChoiceSchemaNode)schema, factory()).get();
-        Verify.verify(choice instanceof ChoiceNodeCodecContext);
+        final DataContainerCodecContext<?, ChoiceSchemaNode> choice =
+            new DataContainerCodecPrototype.Choice(choiceClass, (ChoiceSchemaNode)schema, factory()).get();
+        verify(choice instanceof ChoiceNodeCodecContext);
         return (ChoiceNodeCodecContext<?>) choice;
     }
 
@@ -354,12 +342,13 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         return super.bindingPathArgumentChild(arg, builder);
     }
 
-    private static Class<?> findCaseChoice(final Class<? extends DataObject> caseClass) {
+    @SuppressWarnings("unchecked")
+    private static Class<? extends ChoiceIn<?>> findCaseChoice(final Class<? extends DataObject> caseClass) {
         for (Type type : caseClass.getGenericInterfaces()) {
             if (type instanceof Class) {
                 final Class<?> typeClass = (Class<?>) type;
                 if (ChoiceIn.class.isAssignableFrom(typeClass)) {
-                    return typeClass.asSubclass(ChoiceIn.class);
+                    return (Class<? extends ChoiceIn<?>>) typeClass.asSubclass(ChoiceIn.class);
                 }
             }
         }

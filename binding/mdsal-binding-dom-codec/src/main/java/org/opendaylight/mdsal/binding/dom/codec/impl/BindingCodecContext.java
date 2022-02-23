@@ -156,7 +156,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     @Inject
     public BindingCodecContext(final BindingRuntimeContext context) {
         this.context = requireNonNull(context, "Binding Runtime Context is required.");
-        root = SchemaRootCodecContext.create(this);
+        root = new SchemaRootCodecContext<>(this);
         identityCodec = new IdentityCodec(context);
         instanceIdentifierCodec = new InstanceIdentifierCodec(this);
     }
