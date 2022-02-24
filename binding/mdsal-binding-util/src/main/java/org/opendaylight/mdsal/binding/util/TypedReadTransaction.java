@@ -53,6 +53,7 @@ public interface TypedReadTransaction<D extends Datastore> extends Transaction {
      * Executes a {@link QueryExpression}.
      *
      * @param query Query to execute
+     * @param <T> The type of the expected object
      * @return a FluentFuture containing the result of the query. The Future blocks until the operation is complete.
      *         Once complete:
      *         <ul>
