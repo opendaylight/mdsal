@@ -38,6 +38,9 @@ public interface ManagedTransactionFactory {
      * <p>The provided transaction is specific to the given logical datastore type and cannot be used for any
      * other.
      *
+     * @param <D> datastore type
+     * @param <E> thrown exception type
+     * @param <R> result type
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txFunction the {@link InterruptibleCheckedFunction} that needs a new read transaction
      * @return the result of the function.
@@ -59,6 +62,9 @@ public interface ManagedTransactionFactory {
      * <p>The provided transaction is specific to the given logical datastore type and cannot be used for any
      * other.
      *
+     * @param <D> datastore type
+     * @param <E> thrown exception type
+     * @param <R> result type
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txFunction the {@link InterruptibleCheckedFunction} that needs a new read transaction
      * @return the result of the function.
@@ -88,6 +94,9 @@ public interface ManagedTransactionFactory {
      * {@link CompletionStage}
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
+     * @param <D> datastore type
+     * @param <E> thrown exception type
+     * @param <R> result type
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txFunction the {@link InterruptibleCheckedFunction} that needs a new read-write transaction
      * @return the {@link FluentFuture} returned by {@link ReadWriteTransaction#commit()}, or a failed future with an
@@ -109,6 +118,8 @@ public interface ManagedTransactionFactory {
      * <p>The provided transaction is specific to the given logical datastore type and cannot be used for any
      * other.
      *
+     * @param <D> datastore type
+     * @param <E> thrown exception type
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedFunction} that needs a new read transaction
      * @throws E if an error occurs.
@@ -129,6 +140,8 @@ public interface ManagedTransactionFactory {
      * <p>The provided transaction is specific to the given logical datastore type and cannot be used for any
      * other.
      *
+     * @param <D> datastore type
+     * @param <E> thrown exception type
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedFunction} that needs a new read transaction
      * @throws E if an error occurs.
@@ -157,6 +170,8 @@ public interface ManagedTransactionFactory {
      * {@link CompletionStage}
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
+     * @param <D> datastore type
+     * @param <E> thrown exception type
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedConsumer} that needs a new read-write transaction
      * @return the {@link FluentFuture} returned by {@link ReadWriteTransaction#commit()}, or a failed future with an
@@ -188,6 +203,8 @@ public interface ManagedTransactionFactory {
      * {@link CompletionStage}
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
+     * @param <D> datastore type
+     * @param <E> thrown exception type
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedConsumer} that needs a new write only transaction
      * @return the {@link FluentFuture} returned by {@link WriteTransaction#commit()}, or a failed future with an
