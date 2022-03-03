@@ -34,7 +34,7 @@ public final class OSGiActionService extends AbstractAdaptedService<ActionServic
     }
 
     @Override
-    public <P extends DataObject, A extends Action<InstanceIdentifier<P>, ?, ?>> A getActionHandle(
+    public <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>> A getActionHandle(
             final ActionSpec<A, P> spec, final Set<@NonNull DataTreeIdentifier<P>> validNodes) {
         return delegate().getActionHandle(spec, validNodes);
     }

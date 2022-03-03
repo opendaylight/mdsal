@@ -29,9 +29,13 @@ import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Lstio;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.LstioKey;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.Output;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.Fooio;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
@@ -66,5 +70,21 @@ public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
 
         assertEquals(List.of(), bindingResult.getErrors());
         assertEquals(BINDING_FOO_OUTPUT, bindingResult.getResult());
+    }
+
+    @Test
+    public void testKeyedInvocation() throws ExecutionException {
+        final var handle = service.getActionHandle(ActionSpec.builder(Lstio.class).build(Fooio.class));
+        final var future = handle.invoke((KeyedInstanceIdentifier<Lstio, LstioKey>)
+                InstanceIdentifier.builder(Lstio.class, new LstioKey("test")).build(),
+                BINDING_LSTIO_INPUT);
+        assertNotNull(future);
+        assertFalse(future.isDone());
+
+        domResult.set(new SimpleDOMActionResult(DOM_FOO_OUTPUT, List.of()));
+        final var bindingResult = Futures.getDone(future);
+
+        assertEquals(List.of(), bindingResult.getErrors());
+        assertEquals(BINDING_LSTIO_OUTPUT, bindingResult.getResult());
     }
 }

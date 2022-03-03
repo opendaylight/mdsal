@@ -52,7 +52,7 @@ final class ActionServiceAdapter
     }
 
     @Override
-    public <P extends DataObject, A extends Action<InstanceIdentifier<P>, ?, ?>> A getActionHandle(
+    public <P extends DataObject, A extends Action<? extends InstanceIdentifier<P>, ?, ?>> A getActionHandle(
             final ActionSpec<A, P> spec, final Set<DataTreeIdentifier<P>> nodes) {
         final var type = spec.type();
         final var adapter = getAdapter(spec);
