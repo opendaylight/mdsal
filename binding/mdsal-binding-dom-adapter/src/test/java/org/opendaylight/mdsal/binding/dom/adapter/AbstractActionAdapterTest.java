@@ -38,4 +38,8 @@ public abstract class AbstractActionAdapterTest extends AbstractAdapterTest  {
     protected static final Input BINDING_FOO_INPUT = new InputBuilder().setXyzzy("xyzzy").build();
     protected static final Output BINDING_FOO_OUTPUT = new OutputBuilder().build();
 
+    protected static final org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.fooio.Input BINDING_LSTIO_INPUT =
+        new org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.fooio.InputBuilder().build();
+    protected static final org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.fooio.Output BINDING_LSTIO_OUTPUT =
+        new org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.fooio.OutputBuilder().build();
 }
