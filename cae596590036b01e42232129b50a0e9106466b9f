@@ -16,6 +16,23 @@
       "message": "multipatch-build-fast:controller\u003d91/99991/1",
       "revId": "cae596590036b01e42232129b50a0e9106466b9f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "04827c54_c4a1953e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9022
+      },
+      "writtenOn": "2022-03-07T10:03:32Z",
+      "side": 1,
+      "message": "multipatch-build-fast:mdsal\u003d91/99991/1",
+      "revId": "cae596590036b01e42232129b50a0e9106466b9f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
