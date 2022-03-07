@@ -31,8 +31,12 @@ import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
+    private static final Logger LOG = LoggerFactory.getLogger(BindingDOMRpcImplementationAdapter.class);
+
     private static final Cache<Class<?>, RpcServiceInvoker> SERVICE_INVOKERS = CacheBuilder.newBuilder().weakKeys()
             .build();
 
@@ -76,6 +80,9 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
         if (ENABLE_CODEC_SHORTCUT && input instanceof BindingLazyContainerNode) {
             return ((BindingLazyContainerNode<?>) input).getDataObject();
         }
+
+        LOG.debug("inputQname: {}", inputQname);
+        LOG.debug("NormalizedNode method input: {}", input.getIdentifier().getNodeType());
 
         final ContainerNode container = (ContainerNode) input;
         checkArgument(inputQname.equals(container.getIdentifier().getNodeType()), "Unexpected RPC %s input %s", rpcType,
