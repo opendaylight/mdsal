@@ -50,6 +50,23 @@
       "message": "multipatch-build:mdsal\u003d91/99991/1",
       "revId": "cae596590036b01e42232129b50a0e9106466b9f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b45a7541_2054e6ef",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9022
+      },
+      "writtenOn": "2022-03-07T11:43:56Z",
+      "side": 1,
+      "message": "multipatch-build-fast:mdsal\u003d91/99991/1,controller",
+      "revId": "cae596590036b01e42232129b50a0e9106466b9f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
