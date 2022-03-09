@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
 
@@ -26,8 +27,8 @@ final class ChainedTransactionCommitImpl extends InMemoryDOMStoreThreePhaseCommi
     }
 
     @Override
-    public ListenableFuture<Void> commit() {
-        ListenableFuture<Void> ret = super.commit();
+    public ListenableFuture<CommitInfo> commit() {
+        ListenableFuture<CommitInfo> ret = super.commit();
         txChain.transactionCommited(getTransaction());
         return ret;
     }

@@ -10,10 +10,12 @@ package org.opendaylight.mdsal.dom.spi.store;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
- * Abstract base class for {@link DOMStoreThreePhaseCommitCohort} implementations,
- * which forward most of their functionality to a backend {@link #delegate()}.
+ * Abstract base class for {@link DOMStoreThreePhaseCommitCohort} implementations, which forward most of their
+ * functionality to a backend {@link #delegate()}.
  */
 @Beta
 public abstract class ForwardingDOMStoreThreePhaseCommitCohort
@@ -28,17 +30,17 @@ public abstract class ForwardingDOMStoreThreePhaseCommitCohort
     }
 
     @Override
-    public ListenableFuture<Void> preCommit() {
+    public ListenableFuture<Empty> preCommit() {
         return delegate().preCommit();
     }
 
     @Override
-    public ListenableFuture<Void> abort() {
+    public ListenableFuture<Empty> abort() {
         return delegate().abort();
     }
 
     @Override
-    public ListenableFuture<Void> commit() {
+    public ListenableFuture<? extends CommitInfo> commit() {
         return delegate().commit();
     }
 }

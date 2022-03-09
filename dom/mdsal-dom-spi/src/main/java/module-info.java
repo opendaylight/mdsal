@@ -10,7 +10,9 @@ module org.opendaylight.mdsal.dom.spi {
     exports org.opendaylight.mdsal.dom.spi.query;
     exports org.opendaylight.mdsal.dom.spi.store;
 
+    requires transitive org.opendaylight.mdsal.common.api;
     requires transitive org.opendaylight.mdsal.dom.api;
+    requires transitive org.opendaylight.yangtools.yang.common;
     requires transitive org.opendaylight.yangtools.yang.data.tree.api;
     requires transitive org.opendaylight.yangtools.yang.model.api;
     requires transitive org.opendaylight.yangtools.yang.repo.api;

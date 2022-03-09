@@ -8,6 +8,8 @@
 package org.opendaylight.mdsal.dom.spi.store;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * Interface implemented by the {@link DOMStore} and exposed for each
@@ -42,7 +44,7 @@ public interface DOMStoreThreePhaseCommitCohort {
      * @return ListenableFuture representing acknowledgment for participant
      *        that pre-commit message was received and processed.
      */
-    ListenableFuture<Void> preCommit();
+    ListenableFuture<Empty> preCommit();
 
     /**
      * Initiates a abort phase of associated transaction on data store.
@@ -50,7 +52,7 @@ public interface DOMStoreThreePhaseCommitCohort {
      * @return ListenableFuture representing acknowledgment for participant
      *        that abort message was received.
      */
-    ListenableFuture<Void> abort();
+    ListenableFuture<Empty> abort();
 
     /**
      * Initiates a commit phase on of associated transaction on data store.
@@ -59,5 +61,5 @@ public interface DOMStoreThreePhaseCommitCohort {
      *        that commit message was received and commit of transaction was
      *        processed.
      */
-    ListenableFuture<Void> commit();
+    ListenableFuture<? extends CommitInfo> commit();
 }

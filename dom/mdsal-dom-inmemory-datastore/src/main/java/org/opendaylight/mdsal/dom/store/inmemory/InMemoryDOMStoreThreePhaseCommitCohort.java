@@ -14,11 +14,13 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.spi.store.AbstractDOMStoreTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.data.tree.api.ConflictingModificationAppliedException;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeModification;
@@ -28,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommitCohort {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMStoreThreePhaseCommitCohort.class);
-    private static final ListenableFuture<Void> SUCCESSFUL_FUTURE = Futures.immediateFuture(null);
+    private static final ListenableFuture<Empty> SUCCESSFUL_FUTURE = Futures.immediateFuture(Empty.value());
     private static final ListenableFuture<Boolean> CAN_COMMIT_FUTURE = Futures.immediateFuture(Boolean.TRUE);
 
     private final SnapshotBackedWriteTransaction<String> transaction;
@@ -91,7 +93,7 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public final ListenableFuture<Void> preCommit() {
+    public final ListenableFuture<Empty> preCommit() {
         try {
             candidate = store.prepare(modification);
             return SUCCESSFUL_FUTURE;
@@ -102,7 +104,7 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
     }
 
     @Override
-    public final ListenableFuture<Void> abort() {
+    public final ListenableFuture<Empty> abort() {
         candidate = null;
         return SUCCESSFUL_FUTURE;
     }
@@ -112,15 +114,12 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
     }
 
     @Override
-    public ListenableFuture<Void> commit() {
+    public ListenableFuture<CommitInfo> commit() {
         checkState(candidate != null, "Proposed subtree must be computed");
 
-        /*
-         * The commit has to occur atomically with regard to listener
-         * registrations.
-         */
+        // The commit has to occur atomically with regard to listener registrations.
         store.commit(candidate);
-        return SUCCESSFUL_FUTURE;
+        return CommitInfo.emptyFluentFuture();
     }
 }
 
