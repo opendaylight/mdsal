@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d0451efd_5ca26421",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/CodecDataObjectGenerator.java",
+        "patchSetId": 40
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-03-10T15:49:06Z",
+      "side": 1,
+      "message": "this would mean these methods are defined for all getters, even if they are unused",
+      "range": {
+        "startLine": 216,
+        "startChar": 16,
+        "endLine": 216,
+        "endChar": 85
+      },
+      "revId": "c5e3117bb3a41c597139075e2bc5a462aab48100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c8327ab_b4b4afe9",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/CodecDataObjectGenerator.java",
+        "patchSetId": 40
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-03-10T15:49:06Z",
+      "side": 1,
+      "message": "this is not right: we should do something like:\n\nreturn (FooType) nonnullMember(getFoo(), FooType.class);\n\ne.g. check the getter return a common constant for FooType, not cached in an instance field.",
+      "range": {
+        "startLine": 489,
+        "startChar": 20,
+        "endLine": 489,
+        "endChar": 79
+      },
+      "revId": "c5e3117bb3a41c597139075e2bc5a462aab48100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
