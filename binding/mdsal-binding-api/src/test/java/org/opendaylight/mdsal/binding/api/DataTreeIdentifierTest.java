@@ -14,7 +14,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class DataTreeIdentifierTest {
@@ -56,17 +58,17 @@ public class DataTreeIdentifierTest {
         assertFalse("Different object", TEST_IDENTIFIER1.equals(new Object()));
     }
 
-    private static class TestDataObject1 implements DataObject {
+    private interface TestDataObject1 extends ChildOf<DataRoot> {
         @Override
-        public Class<? extends DataObject> implementedInterface() {
-            return DataObject.class;
+        default Class<? extends DataObject> implementedInterface() {
+            return TestDataObject1.class;
         }
     }
 
-    private static class TestDataObject2 implements DataObject {
+    private interface TestDataObject2 extends ChildOf<DataRoot> {
         @Override
-        public Class<? extends DataObject> implementedInterface() {
-            return DataObject.class;
+        default Class<? extends DataObject> implementedInterface() {
+            return TestDataObject2.class;
         }
     }
 }
