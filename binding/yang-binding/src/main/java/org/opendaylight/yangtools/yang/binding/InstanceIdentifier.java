@@ -563,8 +563,22 @@ public class InstanceIdentifier<T extends DataObject>
      * @return InstanceIdentifier instance
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DataObject> @NonNull InstanceIdentifier<T> create(final Class<@NonNull T> type) {
-        return (InstanceIdentifier<T>) create(ImmutableList.of(Item.of(type)));
+    public static <T extends ChildOf<? extends DataRoot>> @NonNull InstanceIdentifier<T> create(
+            final Class<@NonNull T> type) {
+        return (InstanceIdentifier<T>) internalCreate(ImmutableList.of(Item.of(type)));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <C extends ChoiceIn<? extends DataRoot> & DataObject, T extends ChildOf<? super C>>
+            @NonNull InstanceIdentifier<T> create(final Class<C> caze, final Class<T> container) {
+        return (InstanceIdentifier<T>) internalCreate(ImmutableList.of(Item.of(caze, container)));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <R extends DataRoot & DataObject, T extends ChildOf<? super R>>
+            @NonNull InstanceIdentifier<T> ofRootChild(final Class<R> root, final Class<T> type) {
+        // FIXME: we are losing root identity, hence namespaces may not work correctly
+        return (InstanceIdentifier<T>) internalCreate(ImmutableList.of(Item.of(type)));
     }
 
     /**

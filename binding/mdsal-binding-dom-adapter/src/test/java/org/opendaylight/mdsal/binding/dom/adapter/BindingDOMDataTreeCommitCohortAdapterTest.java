@@ -15,8 +15,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -28,7 +28,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
@@ -49,7 +49,7 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
         final DOMDataTreeCandidate domDataTreeCandidate = mock(DOMDataTreeCandidate.class);
         final DOMDataTreeIdentifier domDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
-        doReturn(InstanceIdentifier.create(DataObject.class)).when(registry).fromYangInstanceIdentifier(any());
+        doReturn(InstanceIdentifier.create(BooleanContainer.class)).when(registry).fromYangInstanceIdentifier(any());
         final BindingDataObjectCodecTreeNode<?> bindingCodecTreeNode = mock(BindingDataObjectCodecTreeNode.class);
         doReturn(bindingCodecTreeNode).when(registry).getSubtreeCodec(any(InstanceIdentifier.class));
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
@@ -59,7 +59,7 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
         final Object txId = new Object();
 
         doReturn(PostCanCommitStep.NOOP_SUCCESSFUL_FUTURE).when(cohort).canCommit(any(), any());
-        adapter.canCommit(txId, null, Arrays.asList(domDataTreeCandidate, domDataTreeCandidate));
+        adapter.canCommit(txId, null, List.of(domDataTreeCandidate, domDataTreeCandidate));
         ArgumentCaptor<Collection> modifications = ArgumentCaptor.forClass(Collection.class);
         verify(cohort).canCommit(eq(txId), modifications.capture());
         assertEquals(2, modifications.getValue().size());

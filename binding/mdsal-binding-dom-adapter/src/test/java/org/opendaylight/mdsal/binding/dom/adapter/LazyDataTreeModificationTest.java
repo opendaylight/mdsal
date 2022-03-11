@@ -18,7 +18,7 @@ import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
@@ -31,7 +31,7 @@ public class LazyDataTreeModificationTest {
         final DOMDataTreeCandidate domDataTreeCandidate = mock(DOMDataTreeCandidate.class);
         final DOMDataTreeIdentifier domDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
-        doReturn(InstanceIdentifier.create(DataObject.class)).when(registry).fromYangInstanceIdentifier(any());
+        doReturn(InstanceIdentifier.create(BooleanContainer.class)).when(registry).fromYangInstanceIdentifier(any());
         final BindingDataObjectCodecTreeNode<?> bindingCodecTreeNode = mock(BindingDataObjectCodecTreeNode.class);
         doReturn(bindingCodecTreeNode).when(registry).getSubtreeCodec(any(InstanceIdentifier.class));
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
