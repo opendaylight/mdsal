@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3616e80_e1ee8d40",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9022
+      },
+      "writtenOn": "2022-03-11T12:12:24Z",
+      "side": 1,
+      "message": "multipatch-build-fast:mdsal\u003d91/99991/3",
+      "revId": "e0ecf9e2cd9a7f74f2d00285d6e0db0fabd31fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
