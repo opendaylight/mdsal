@@ -13,7 +13,9 @@ import static org.junit.Assert.assertNotNull;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
+import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -24,8 +26,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public class EntityTest {
 
-    static String ENTITY_TYPE1 = "type1";
-    static String ENTITY_TYPE2 = "type2";
+    static final String ENTITY_TYPE1 = "type1";
+    static final String ENTITY_TYPE2 = "type2";
     static final InstanceIdentifier<TestDataObject1> ID1 = InstanceIdentifier.create(TestDataObject1.class);
     static final InstanceIdentifier<TestDataObject2> ID2 = InstanceIdentifier.create(TestDataObject2.class);
 
@@ -70,17 +72,17 @@ public class EntityTest {
         assertNotNull("List key not found", keyID);
     }
 
-    static class TestDataObject1 implements DataObject {
+    interface TestDataObject1 extends ChildOf<DataRoot> {
         @Override
-        public Class<? extends DataObject> implementedInterface() {
-            return DataObject.class;
+        default Class<? extends DataObject> implementedInterface() {
+            return TestDataObject1.class;
         }
     }
 
-    static class TestDataObject2 implements DataObject {
+    interface TestDataObject2 extends ChildOf<DataRoot> {
         @Override
-        public Class<? extends DataObject> implementedInterface() {
-            return DataObject.class;
+        default Class<? extends DataObject> implementedInterface() {
+            return TestDataObject2.class;
         }
     }
 }
