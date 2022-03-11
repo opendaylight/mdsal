@@ -15,10 +15,9 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 
-import com.google.common.collect.ImmutableList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -48,7 +47,8 @@ import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.con
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.with.choice.Foo;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.with.choice.foo.addressable._case.Addressable;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.with.choice.foo.addressable._case.AddressableBuilder;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.ChildOf;
+import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -119,7 +119,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
 
         final Container containerAfter = changedContainer.getDataAfter();
         assertEquals(new ContainerBuilder()
-            .setKeyed(ImmutableList.of(
+            .setKeyed(List.of(
                 new KeyedBuilder().setFoo("foo").withKey(new KeyedKey("foo")).build(),
                 new KeyedBuilder().setFoo("bar").withKey(new KeyedKey("bar")).build()))
             .build(), containerAfter);
@@ -130,13 +130,13 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final Iterator<? extends DataObjectModification<?>> it = changedChildren.iterator();
         final DataObjectModification<?> changedChild1 = it.next();
         assertEquals(ModificationType.WRITE, changedChild1.getModificationType());
-        assertEquals(Collections.emptyList(), changedChild1.getModifiedChildren());
+        assertEquals(List.of(), changedChild1.getModifiedChildren());
         final Keyed child1After = (Keyed) changedChild1.getDataAfter();
         assertEquals("foo", child1After.getFoo());
 
         final DataObjectModification<?> changedChild2 = it.next();
         assertEquals(ModificationType.WRITE, changedChild2.getModificationType());
-        assertEquals(Collections.emptyList(), changedChild2.getModifiedChildren());
+        assertEquals(List.of(), changedChild2.getModifiedChildren());
         final Keyed child2After = (Keyed) changedChild2.getDataAfter();
         assertEquals("bar", child2After.getFoo());
     }
@@ -174,7 +174,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
 
         final Container containerAfter = changedContainer.getDataAfter();
         assertEquals(new ContainerBuilder()
-                .setUnkeyed(ImmutableList.of(
+                .setUnkeyed(List.of(
                     new UnkeyedBuilder().setFoo("foo").build(),
                     new UnkeyedBuilder().setFoo("bar").build()))
                 .build(), containerAfter);
@@ -309,7 +309,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(0, choiceChildren.size());
     }
 
-    private <T extends DataObject> DataTreeChangeListener<T> assertWrittenContainer(final QName qname,
+    private <T extends ChildOf<? extends DataRoot>> DataTreeChangeListener<T> assertWrittenContainer(final QName qname,
             final Class<T> bindingClass, final T expected)
             throws InterruptedException, ExecutionException {
         final DataTreeChangeListener<T> listener = mock(DataTreeChangeListener.class);
@@ -339,7 +339,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(expected, containerAfter);
 
         // No further modifications should occur
-        assertEquals(Collections.emptyList(), changedContainer.getModifiedChildren());
+        assertEquals(List.of(), changedContainer.getModifiedChildren());
 
         reset(listener);
         doNothing().when(listener).onDataTreeChanged(any(Collection.class));
@@ -375,7 +375,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(new WithChoiceBuilder().build(), containerAfter);
 
         // No further modifications should occur
-        assertEquals(Collections.emptyList(), changedContainer.getModifiedChildren());
+        assertEquals(List.of(), changedContainer.getModifiedChildren());
 
         reset(listener);
         doNothing().when(listener).onDataTreeChanged(any(Collection.class));
