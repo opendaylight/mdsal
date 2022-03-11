@@ -259,11 +259,17 @@ class BuilderTemplate extends AbstractBuilderTemplate {
             }
             if (Types.isSetType(ownGetterType)) {
                 return '''
-                this._«propertyName» = «CODEHELPERS.importedName».checkSetFieldCast(«itemType.importedName».class, "«propertyName»", «retrieveProperty»)'''
+                    this._«propertyName» = «CODEHELPERS.importedName».checkSetFieldCast(«itemType.importedName».class, "«propertyName»", «retrieveProperty»)'''
             }
+            if (Types.CLASS == ownGetterType.rawType) {
+                // Note: we import the identifier to hide WildcardType
+                return '''
+                    this._«propertyName» = «CODEHELPERS.importedName».checkFieldCast(«itemType.identifier.importedName».class, "«propertyName»", «retrieveProperty»)'''
+            }
+            throw new IllegalStateException("Unhandled type " + ownGetterType)
         }
         return '''
-            this._«propertyName» = «CODEHELPERS.importedName».checkFieldCast(«ownGetter.returnType.importedName».class, "«propertyName»", «retrieveProperty»)'''
+            this._«propertyName» = «CODEHELPERS.importedName».checkFieldCast(«ownGetterType.importedName».class, "«propertyName»", «retrieveProperty»)'''
     }
 
     private def List<Type> getBaseIfcs(GeneratedType type) {
