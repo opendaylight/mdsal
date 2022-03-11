@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "117acc9a_addf08be",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/GeneratorUtilTest.java",
+        "patchSetId": 41
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-03-11T07:25:43Z",
+      "side": 1,
+      "message": "right... so now you are hard-coding a constant which is an implementation detail three layers below this component. this is would be utterly unmaintainable.",
+      "range": {
+        "startLine": 184,
+        "startChar": 18,
+        "endLine": 184,
+        "endChar": 41
+      },
+      "revId": "bd61d6af3705ff706a3956cc2be9e9914230ecc8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c6f69bb_e1c64c9e",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/GeneratorUtilTest.java",
+        "patchSetId": 41
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-03-11T07:25:43Z",
+      "side": 1,
+      "message": "so how about creating a very small test model and using the parser to give you exactly what you need?",
+      "range": {
+        "startLine": 187,
+        "startChar": 8,
+        "endLine": 187,
+        "endChar": 88
+      },
+      "revId": "bd61d6af3705ff706a3956cc2be9e9914230ecc8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
