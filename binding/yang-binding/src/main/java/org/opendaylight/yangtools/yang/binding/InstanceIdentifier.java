@@ -9,6 +9,7 @@ package org.opendaylight.yangtools.yang.binding;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
@@ -499,24 +500,26 @@ public class InstanceIdentifier<T extends DataObject>
      * @throws NullPointerException if {@code pathArguments} is null
      */
     private static @NonNull InstanceIdentifier<?> internalCreate(final Iterable<PathArgument> pathArguments) {
-        final Iterator<? extends PathArgument> it = requireNonNull(pathArguments, "pathArguments may not be null")
-                .iterator();
+        final var it = requireNonNull(pathArguments, "pathArguments may not be null").iterator();
+        checkArgument(it.hasNext(), "pathArguments may not be empty");
+
         final HashCodeBuilder<PathArgument> hashBuilder = new HashCodeBuilder<>();
         boolean wildcard = false;
-        PathArgument arg = null;
+        PathArgument arg;
 
-        while (it.hasNext()) {
+        do {
             arg = it.next();
-            checkArgument(arg != null, "pathArguments may not contain null elements");
+            // Non-null is implied by our callers
+            final var type = verifyNotNull(arg).getType();
+            checkArgument(ChildOf.class.isAssignableFrom(type) || Augmentation.class.isAssignableFrom(type),
+                "%s is not a valid path argument", type);
 
-            // TODO: sanity check ChildOf<>;
             hashBuilder.addArgument(arg);
 
-            if (Identifiable.class.isAssignableFrom(arg.getType()) && !(arg instanceof IdentifiableItem<?, ?>)) {
+            if (Identifiable.class.isAssignableFrom(type) && !(arg instanceof IdentifiableItem)) {
                 wildcard = true;
             }
-        }
-        checkArgument(arg != null, "pathArguments may not be empty");
+        } while (it.hasNext());
 
         return trustedCreate(arg, pathArguments, hashBuilder.build(), wildcard);
     }
