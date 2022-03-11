@@ -60,9 +60,9 @@ public final class SimpleQueryExecutor implements QueryExecutor {
         }
 
         public <T extends ChildOf<? extends DataRoot>> @NonNull Builder add(final @NonNull T data) {
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings({"rawtypes", "unchecked"})
             final BindingDataObjectCodecTreeNode<T> dataCodec = (BindingDataObjectCodecTreeNode<T>)
-                codec.getSubtreeCodec(InstanceIdentifier.create(data.implementedInterface()));
+                codec.getSubtreeCodec(InstanceIdentifier.create((Class) data.implementedInterface()));
             rootBuilder.withChild((DataContainerChild) verifyNotNull(dataCodec).serialize(data));
             return this;
         }

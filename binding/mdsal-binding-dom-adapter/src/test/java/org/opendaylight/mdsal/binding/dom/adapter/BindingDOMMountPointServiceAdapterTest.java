@@ -20,7 +20,7 @@ import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yang.gen.v1.urn.yang.foo.rev160101.BooleanContainer;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
@@ -36,12 +36,12 @@ public class BindingDOMMountPointServiceAdapterTest {
                 new BindingDOMMountPointServiceAdapter(codec, mountPointService);
 
         doReturn(Optional.empty()).when(mountPointService).getMountPoint(any());
-        assertFalse(adapter.getMountPoint(InstanceIdentifier.create(DataObject.class)).isPresent());
+        assertFalse(adapter.getMountPoint(InstanceIdentifier.create(BooleanContainer.class)).isPresent());
 
         doReturn(Optional.of(mock(DOMMountPoint.class))).when(mountPointService).getMountPoint(any());
-        assertTrue(adapter.getMountPoint(InstanceIdentifier.create(DataObject.class)).isPresent());
+        assertTrue(adapter.getMountPoint(InstanceIdentifier.create(BooleanContainer.class)).isPresent());
 
-        assertNotNull(adapter.registerListener(InstanceIdentifier.create(DataObject.class),
-                mock(MountPointListener.class)));
+        assertNotNull(adapter.registerListener(InstanceIdentifier.create(BooleanContainer.class),
+            mock(MountPointListener.class)));
     }
 }
