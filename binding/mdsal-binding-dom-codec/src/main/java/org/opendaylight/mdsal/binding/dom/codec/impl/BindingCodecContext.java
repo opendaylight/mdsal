@@ -492,6 +492,11 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     @Override
+    public <E extends DataObject> BindingDataObjectCodecTreeNode<E> streamChild(final Class<E> childClass) {
+        return root.streamChild(childClass);
+    }
+
+    @Override
     public BindingCodecTreeNode getSubtreeCodec(final YangInstanceIdentifier path) {
         return getCodecContextNode(path, null);
     }
