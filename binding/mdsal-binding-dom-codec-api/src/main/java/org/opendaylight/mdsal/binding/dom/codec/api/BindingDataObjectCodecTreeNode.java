@@ -20,8 +20,8 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 
 @Beta
-public interface BindingDataObjectCodecTreeNode<T extends DataObject> extends BindingObjectCodecTreeNode<T>,
-        BindingNormalizedNodeCodec<T> {
+public interface BindingDataObjectCodecTreeNode<T extends DataObject>
+        extends BindingDataObjectCodecTreeParent, BindingObjectCodecTreeNode<T>, BindingNormalizedNodeCodec<T> {
 
     /**
      * Returns binding class of interface which represents API of current schema node. The result is same as invoking
@@ -31,17 +31,6 @@ public interface BindingDataObjectCodecTreeNode<T extends DataObject> extends Bi
      */
     @Override
     @NonNull Class<T> getBindingClass();
-
-    /**
-     * Returns child context as if it was walked by {@link BindingStreamEventWriter}. This means that to enter case,
-     * one must issue getChild(ChoiceClass).getChild(CaseClass).
-     *
-     * @param childClass Child class by Binding Stream navigation
-     * @return Context of child
-     * @throws IllegalArgumentException
-     *             If supplied child class is not valid in specified context.
-     */
-    <E extends DataObject> @NonNull BindingDataObjectCodecTreeNode<E> streamChild(@NonNull Class<E> childClass);
 
     /**
      * Returns child context as if it was walked by {@link BindingStreamEventWriter}. This means that to enter case,
