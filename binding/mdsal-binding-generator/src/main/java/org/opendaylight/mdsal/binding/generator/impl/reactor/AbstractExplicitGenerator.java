@@ -86,16 +86,31 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
     public final Optional<R> runtimeType() {
         if (!runtimeTypeInitialized) {
             runtimeType = createRuntimeType();
+            LOG.info("Create {} hash {}", statement, System.identityHashCode(statement));
             runtimeTypeInitialized = true;
         }
         return Optional.ofNullable(runtimeType);
     }
 
     final Optional<R> runtimeTypeOf(final @NonNull S stmt) {
-        return recursiveRuntimeType().map(childType -> rebaseRuntimeType(childType, stmt));
+        if (statement.equals(stmt)) {
+            return runtimeType();
+        }
+
+        return recursiveRuntimeType().map(childType -> {
+            final var orig = childType.statement();
+            if (stmt.equals(orig)) {
+//                LOG.info("Reuse got a hit");
+                return childType;
+            }
+            LOG.info("Class {}", childType.javaType().getIdentifier());
+            LOG.info("Source {} hash {}", orig, System.identityHashCode(orig));
+            LOG.info("Target {} hash {}", stmt, System.identityHashCode(stmt));
+            return rebaseRuntimeType(childType, stmt);
+        });
     }
 
-    public final Optional<R> recursiveRuntimeType() {
+    private final Optional<R> recursiveRuntimeType() {
         AbstractExplicitGenerator<S, R> gen = this;
         do {
             final var ret = gen.runtimeType();
