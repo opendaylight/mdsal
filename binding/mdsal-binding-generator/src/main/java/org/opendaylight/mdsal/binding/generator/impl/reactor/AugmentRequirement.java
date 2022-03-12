@@ -75,6 +75,8 @@ final class AugmentRequirement implements Mutable {
             .add("augment", augment)
             .add("target", target)
             .add("qname", qname)
+            .add("squash", squashNamespaces)
+            .add("local", localNamespace)
             .toString();
     }
 
@@ -102,17 +104,20 @@ final class AugmentRequirement implements Mutable {
             return moveTo(aug);
         }
 
+        // Adjust to local namespace if applicable
+        final var toFind = squashNamespaces.contains(qname.getModule())
+            ? qname.bindTo(verifyNotNull(localNamespace)) : qname;
+
         // Third try local groupings, as those perform their own adjustment
-        final var grp = target.findGroupingForGenerator(qname);
+        final var grp = target.findGroupingForGenerator(toFind);
         if (grp != null) {
             squashNamespaces.add(qname.getModule());
             localNamespace = grp.getQName().getModule();
             return moveTo(grp);
         }
 
-        // Lastly try local statements adjusted with namespace, if applicable
-        gen = target.findLocalSchemaTreeGenerator(squashNamespaces.contains(qname.getModule())
-            ? qname.bindTo(verifyNotNull(localNamespace)) : qname);
+        // Lastly try local statements
+        gen = target.findLocalSchemaTreeGenerator(toFind);
         if (gen != null) {
             return progressTo(gen);
         }

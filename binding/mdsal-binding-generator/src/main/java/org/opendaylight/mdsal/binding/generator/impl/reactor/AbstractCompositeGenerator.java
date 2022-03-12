@@ -47,6 +47,8 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ListEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeAwareEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeAwareEffectiveStatement.SchemaTreeNamespace;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.UsesEffectiveStatement;
@@ -456,23 +458,31 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
     }
 
     final @Nullable GroupingGenerator findGroupingForGenerator(final QName qname) {
-        for (GroupingGenerator grouping : groupings) {
-            final var gen = grouping.findSchemaTreeGenerator(qname.bindTo(grouping.statement().argument().getModule()));
-            if (gen != null) {
-                return grouping;
+        if (haveSchemaTreeSubstatement(qname)) {
+            for (GroupingGenerator grouping : groupings) {
+                final var gen = grouping.findSchemaTreeGenerator(
+                    qname.bindTo(grouping.statement().argument().getModule()));
+                if (gen != null) {
+                    return grouping;
+                }
             }
         }
         return null;
     }
 
     private @Nullable AbstractExplicitGenerator<?, ?> findInferredGenerator(final QName qname) {
-        // First search our local groupings ...
-        for (var grouping : groupings) {
-            final var gen = grouping.findSchemaTreeGenerator(qname.bindTo(grouping.statement().argument().getModule()));
-            if (gen != null) {
-                return gen;
+        // First search our local groupings. Careful though, as we are potentially losing namespace information, so the
+        // must have a substatement with the right QName
+        if (haveSchemaTreeSubstatement(qname)) {
+            for (var grouping : groupings) {
+                final var gen = grouping.findSchemaTreeGenerator(
+                    qname.bindTo(grouping.statement().argument().getModule()));
+                if (gen != null) {
+                    return gen;
+                }
             }
         }
+
         // ... next try local augments, which may have groupings themselves
         for (var augment : augments) {
             final var gen = augment.findSchemaTreeGenerator(qname);
@@ -481,6 +491,12 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
             }
         }
         return null;
+    }
+
+    private boolean haveSchemaTreeSubstatement(final QName qname) {
+        final var stmt = statement();
+        verify(stmt instanceof SchemaTreeAwareEffectiveStatement, "Unexpected statement %s", stmt);
+        return ((SchemaTreeAwareEffectiveStatement<?, ?>) stmt).get(SchemaTreeNamespace.class, qname).isPresent();
     }
 
     /**
