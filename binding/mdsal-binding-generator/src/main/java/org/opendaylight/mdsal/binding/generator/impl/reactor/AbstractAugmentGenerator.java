@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultAugmentRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -85,8 +86,9 @@ abstract class AbstractAugmentGenerator
         return otherIt.hasNext() ? -1 : 0;
     };
 
-    private AugmentEffectiveStatement effectiveStatement;
+    private SchemaTreeAwareEffectiveStatement<?, ?> targetStatement;
     private AbstractCompositeGenerator<?, ?> targetGen;
+    private AugmentRuntimeType internalRuntimeType;
 
     AbstractAugmentGenerator(final AugmentEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
@@ -147,17 +149,38 @@ abstract class AbstractAugmentGenerator
         return builder.build();
     }
 
-    @Override
-    final AugmentEffectiveStatement effectiveStatement() {
-        return verifyNotNull(effectiveStatement, "Effective statement not set in %s", this);
+    final @Nullable AugmentRuntimeType runtimeTypeIn(final @NonNull EffectiveStatement<?, ?> stmt) {
+        final var target = verifyNotNull(targetStatement);
+        if (!stmt.equals(target)) {
+            // Mismatch, we should not generate a runtime type
+            return null;
+        }
+
+        verify(internalRuntimeType == null, "Target in %s already set for %s", stmt, this);
+        final var result = verifyNotNull(createInternalRuntimeType(ChildLookup.empty(),
+            new TargetAugmentEffectiveStatement(statement(), target)));
+        internalRuntimeType = result;
+        return result;
+    }
+
+    final @NonNull AugmentRuntimeType getInternalRuntimeType() {
+        return verifyNotNull(internalRuntimeType, "Internal runtime not resolved in %s", this);
     }
 
     @Override
-    final AugmentRuntimeType createRuntimeType(final GeneratedType type, final AugmentEffectiveStatement statement,
-            final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        verify(statement instanceof TargetAugmentEffectiveStatement, "Unexpected statement %s", statement);
-        return new DefaultAugmentRuntimeType(type, ((TargetAugmentEffectiveStatement) statement).delegate(), children,
-            augments);
+    final AugmentRuntimeType createExternalRuntimeType(final GeneratedType type,  final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        // 'augment' cannot be targeted by augment
+        verify(referencingAugments.isEmpty(), "Unexpected referencing augments %s", referencingAugments);
+        return createInternalRuntimeType(statement(), type, children, augments);
+    }
+
+    @Override
+    final AugmentRuntimeType createInternalRuntimeType(final AugmentEffectiveStatement statement,
+            final GeneratedType type, final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
+        // 'augment' cannot be targeted by augment
+        verify(augments.isEmpty(), "Unexpected augments %s", augments);
+        return new DefaultAugmentRuntimeType(type, statement(), children);
     }
 
     @Override
@@ -177,7 +200,6 @@ abstract class AbstractAugmentGenerator
     final void setTargetStatement(final EffectiveStatement<?, ?> targetStatement) {
         verify(targetStatement instanceof SchemaTreeAwareEffectiveStatement, "Unexpected target statement %s",
             targetStatement);
-        effectiveStatement = new TargetAugmentEffectiveStatement(statement(),
-            (SchemaTreeAwareEffectiveStatement<?, ?>) targetStatement);
+        this.targetStatement = (SchemaTreeAwareEffectiveStatement<?, ?>) targetStatement;
     }
 }

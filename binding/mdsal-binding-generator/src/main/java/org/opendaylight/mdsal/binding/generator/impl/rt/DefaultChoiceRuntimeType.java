@@ -7,9 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.rt;
 
+import com.google.common.annotations.Beta;
 import com.google.common.collect.Collections2;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
@@ -18,11 +20,25 @@ import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
 
-abstract class AbstractChoiceRuntimeType extends AbstractCompositeRuntimeType<ChoiceEffectiveStatement>
+@Beta
+public class DefaultChoiceRuntimeType extends AbstractAugmentableRuntimeType<ChoiceEffectiveStatement>
         implements ChoiceRuntimeType {
-    AbstractChoiceRuntimeType(final GeneratedType bindingType, final ChoiceEffectiveStatement statement,
+    DefaultChoiceRuntimeType(final GeneratedType bindingType, final ChoiceEffectiveStatement statement,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
         super(bindingType, statement, children, augments);
+    }
+
+    public static @NonNull ChoiceRuntimeType of(final GeneratedType bindingType,
+            final ChoiceEffectiveStatement statement, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments) {
+        return new DefaultChoiceRuntimeType(bindingType, statement, children, augments);
+    }
+
+    public static @NonNull ChoiceRuntimeType of(final GeneratedType bindingType,
+            final ChoiceEffectiveStatement statement, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        return referencingAugments.isEmpty() ? of(bindingType, statement, children, augments)
+            : new ReferencedChoiceRuntimeType(bindingType, statement, children, augments, referencingAugments);
     }
 
     @Override

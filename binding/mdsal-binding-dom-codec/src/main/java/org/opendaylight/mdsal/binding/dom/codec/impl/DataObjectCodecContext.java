@@ -33,11 +33,11 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.AugmentableRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
-import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -158,10 +158,13 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
         this.byBindingArgClass = byStreamClassBuilder.equals(byBindingArgClassBuilder) ? this.byStreamClass
                 : ImmutableMap.copyOf(byBindingArgClassBuilder);
 
+        final var type = getType();
         final Iterable<AugmentRuntimeType> possibleAugmentations;
-        if (Augmentable.class.isAssignableFrom(bindingClass)) {
-            final var type = getType();
-            possibleAugmentations = Iterables.concat(type.augments(), type.mismatchedAugments());
+        if (type instanceof AugmentableRuntimeType) {
+            final var augType = (AugmentableRuntimeType) type;
+            // FIXME: discover also mismatched augments
+
+            possibleAugmentations = Iterables.concat(augType.augments(), type.mismatchedAugments());
             generatedClass = CodecDataObjectGenerator.generateAugmentable(prototype.getFactory().getLoader(),
                 bindingClass, tmpLeaves, tmpDataObjects, keyMethod);
         } else {

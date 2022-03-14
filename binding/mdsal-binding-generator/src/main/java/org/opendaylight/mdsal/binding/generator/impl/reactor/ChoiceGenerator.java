@@ -7,17 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
-import com.google.common.collect.Iterables;
-import java.util.ArrayList;
 import java.util.List;
-import org.opendaylight.mdsal.binding.generator.impl.rt.DerivedChoiceRuntimeType;
-import org.opendaylight.mdsal.binding.generator.impl.rt.OriginalChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultChoiceRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
@@ -53,38 +49,14 @@ final class ChoiceGenerator extends CompositeSchemaTreeGenerator<ChoiceEffective
     }
 
     @Override
-    ChoiceRuntimeType createRuntimeType(final GeneratedType type, final ChoiceEffectiveStatement statement,
+    ChoiceRuntimeType createExternalRuntimeType(final GeneratedType type, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments,  final List<AugmentRuntimeType> referencingAugments) {
+        return DefaultChoiceRuntimeType.of(type, statement(), children, augments, referencingAugments);
+    }
+
+    @Override
+    ChoiceRuntimeType createInternalRuntimeType(final ChoiceEffectiveStatement statement, final GeneratedType type,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        final var original = getOriginal();
-        if (!statement.equals(original.statement())) {
-            return new DerivedChoiceRuntimeType(type, statement, children, augments,
-                original.runtimeType().orElseThrow());
-        }
-
-        // Pick up any case statements added by augments which are not reflected in our children. This can happen when
-        // a choice is added via uses into two different places and then augmented. Since groupings are reused, validity
-        // of such use is not guarded by compile-time checks.
-        //
-        // Furthermore such case statements can be freely propagated via copy builders and thus can occur in unexpected
-        // places. If that happens, though, the two case statements can be equivalent, e.g. by having the exact same
-        // shape -- in which case Binding -> DOM translation needs to correct this mishap and play pretend the correct
-        // case was used.
-        final var augmentedCases = new ArrayList<CaseRuntimeType>();
-        for (var augment : original.augments()) {
-            for (var gen : augment) {
-                if (gen instanceof CaseGenerator) {
-                    ((CaseGenerator) gen).runtimeType().ifPresent(augmented -> {
-                        for (var child : Iterables.concat(children, augmentedCases)) {
-                            if (child instanceof CaseRuntimeType && child.javaType().equals(augmented.javaType())) {
-                                return;
-                            }
-                        }
-                        augmentedCases.add(augmented);
-                    });
-                }
-            }
-        }
-
-        return new OriginalChoiceRuntimeType(type, statement, children, augments, augmentedCases);
+        return DefaultChoiceRuntimeType.of(type, statement, children, augments);
     }
 }
