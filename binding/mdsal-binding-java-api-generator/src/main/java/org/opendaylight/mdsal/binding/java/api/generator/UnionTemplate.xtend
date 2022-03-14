@@ -7,19 +7,23 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
-import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.BINARY_TYPE;
-import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.BOOLEAN_TYPE;
-import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.EMPTY_TYPE;
-import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.STRING_TYPE;
-import static org.opendaylight.mdsal.binding.model.ri.Types.STRING;
-import static org.opendaylight.mdsal.binding.model.ri.Types.getOuterClassName;
+import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.BINARY_TYPE
+import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.BOOLEAN_TYPE
+import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.EMPTY_TYPE
+import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.STRING_TYPE
+import static org.opendaylight.mdsal.binding.model.ri.Types.STRING
+import static org.opendaylight.mdsal.binding.model.ri.Types.getOuterClassName
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_CONTRACT_IMPLEMENTED_INTERFACE_NAME
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BUILDER_SUFFIX
+import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.VALUE_STATIC_FIELD_NAME
 
 import java.util.Base64;
 import org.gaul.modernizer_maven_annotations.SuppressModernizer
-import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
 import org.opendaylight.mdsal.binding.model.api.Enumeration
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
+import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.Type
+import org.opendaylight.yangtools.yang.binding.BaseIdentity
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition
 
 /**
@@ -140,6 +144,9 @@ class UnionTemplate extends ClassTemplate {
                 «ELSEIF propRet.isBitsType»
                     ««« generated bits typedef
                 return «JU_ARRAYS.importedName».toString(«field».getValue());
+                «ELSEIF propRet.isIdentityType»
+                    ««« generated identity
+                return «field».«BINDING_CONTRACT_IMPLEMENTED_INTERFACE_NAME»().toString();
                 «ELSE»
                     ««« generated type
                 return «field».getValue().toString();
@@ -153,6 +160,17 @@ class UnionTemplate extends ClassTemplate {
     private static def isBitsType(Type type) {
         if (type instanceof GeneratedTransferObject) {
             return type.typedef && type.baseType instanceof BitsTypeDefinition
+        }
+        return false
+    }
+
+    private static def boolean isIdentityType(Type type) {
+        if (type instanceof GeneratedType) {
+            for (constant : type.constantDefinitions) {
+                if (VALUE_STATIC_FIELD_NAME.equals(constant.name) && BaseIdentity.equals(constant.value)) {
+                    return true
+                }
+            }
         }
         return false
     }
@@ -192,5 +210,4 @@ class UnionTemplate extends ClassTemplate {
             «ENDFOR»
         }
     '''
-
 }
