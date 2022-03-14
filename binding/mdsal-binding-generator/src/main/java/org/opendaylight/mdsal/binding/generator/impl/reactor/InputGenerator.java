@@ -25,8 +25,14 @@ class InputGenerator extends OperationContainerGenerator<InputEffectiveStatement
     }
 
     @Override
-    final InputRuntimeType createRuntimeType(final GeneratedType type, final InputEffectiveStatement statement,
+    final InputRuntimeType createExternalRuntimeType(final GeneratedType type, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        return DefaultInputRuntimeType.of(type, statement(), children, augments, referencingAugments);
+    }
+
+    @Override
+    InputRuntimeType createInternalRuntimeType(final InputEffectiveStatement statement, final GeneratedType type,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        return new DefaultInputRuntimeType(type, statement, children, augments);
+        return DefaultInputRuntimeType.of(type, statement, children, augments);
     }
 }
