@@ -33,7 +33,6 @@ import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.AugmentStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeAwareEffectiveStatement;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathExpression.QualifiedBound;
 
 final class TargetAugmentEffectiveStatement implements AugmentEffectiveStatement, AugmentationSchemaNode {
@@ -42,23 +41,12 @@ final class TargetAugmentEffectiveStatement implements AugmentEffectiveStatement
     private final @NonNull AugmentationSchemaNode schemaDelegate;
 
     TargetAugmentEffectiveStatement(final AugmentEffectiveStatement augment,
-            final SchemaTreeAwareEffectiveStatement<?, ?> target) {
+            final SchemaTreeAwareEffectiveStatement<?, ?> target,
+            final ImmutableList<EffectiveStatement<?, ?>> substatements) {
         delegate = requireNonNull(augment);
         verify(augment instanceof AugmentationSchemaNode, "Unsupported augment implementation %s", augment);
         schemaDelegate = (AugmentationSchemaNode) augment;
-
-        final var stmts = augment.effectiveSubstatements();
-        final var builder = ImmutableList.<EffectiveStatement<?, ?>>builderWithExpectedSize(stmts.size());
-        for (var stmt : stmts) {
-            if (stmt instanceof SchemaTreeEffectiveStatement) {
-                final var qname = ((SchemaTreeEffectiveStatement<?>) stmt).getIdentifier();
-                target.get(SchemaTreeNamespace.class, qname).ifPresent(builder::add);
-            } else {
-                builder.add(stmt);
-            }
-        }
-
-        substatements = builder.build();
+        this.substatements = requireNonNull(substatements);
     }
 
     @NonNull AugmentEffectiveStatement delegate() {

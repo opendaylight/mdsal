@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultInputRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -25,8 +26,21 @@ class InputGenerator extends OperationContainerGenerator<InputEffectiveStatement
     }
 
     @Override
-    final InputRuntimeType createRuntimeType(final GeneratedType type, final InputEffectiveStatement statement,
-            final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        return new DefaultInputRuntimeType(type, statement, children, augments);
+    final CompositeRuntimeTypeBuilder<InputEffectiveStatement, InputRuntimeType> createBuilder(
+            final InputEffectiveStatement statement) {
+        return new CompositeRuntimeTypeBuilder<>(statement) {
+            @Override
+            InputRuntimeType build(final GeneratedType type, final InputEffectiveStatement statement,
+                    final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
+                return DefaultInputRuntimeType.of(type, statement, children, augments);
+            }
+
+            @Override
+            InputRuntimeType build(final GeneratedType type, final InputEffectiveStatement statement,
+                    final List<RuntimeType> children, final List<AugmentRuntimeType> augments,
+                    final ImmutableList<AugmentRuntimeType> referencingAugments) {
+                return DefaultInputRuntimeType.of(type, statement, children, augments, referencingAugments);
+            }
+        };
     }
 }

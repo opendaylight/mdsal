@@ -7,30 +7,28 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.rt;
 
-import static java.util.Objects.requireNonNull;
-
-import com.google.common.annotations.Beta;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
-import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.ReferencedAugmentableRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
-import org.opendaylight.yangtools.yang.model.api.stmt.CaseEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
 
-@Beta
-public final class DerivedCaseRuntimeType extends AbstractCaseRuntimeType {
-    private final @NonNull CaseRuntimeType originalType;
+final class ReferencedNotificationRuntimeType extends DefaultNotificationRuntimeType
+        implements ReferencedAugmentableRuntimeType {
+    private final @NonNull List<AugmentRuntimeType> referencingAugments;
 
-    public DerivedCaseRuntimeType(final GeneratedType bindingType, final CaseEffectiveStatement statement,
+    ReferencedNotificationRuntimeType(final GeneratedType bindingType, final NotificationEffectiveStatement statement,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments,
-            final CaseRuntimeType originalType) {
+            final List<AugmentRuntimeType> referencingAugments) {
         super(bindingType, statement, children, augments);
-        this.originalType = requireNonNull(originalType);
+        this.referencingAugments = ImmutableList.copyOf(referencingAugments);
     }
 
     @Override
-    public @NonNull CaseRuntimeType originalType() {
-        return originalType;
+    public List<AugmentRuntimeType> referencingAugments() {
+        return referencingAugments;
     }
 }

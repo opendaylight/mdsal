@@ -30,7 +30,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
@@ -202,8 +201,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
     private List<Class<?>> loadCaseClasses() {
         final var context = factory().getRuntimeContext();
         final var type = getType();
-
-        return Stream.concat(type.validCaseChildren().stream(), type.additionalCaseChildren().stream())
+        return type.validCaseChildren().stream()
             .map(caseChild -> {
                 final var caseName = caseChild.getIdentifier();
                 try {

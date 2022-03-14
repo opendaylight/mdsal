@@ -55,4 +55,10 @@ public class Mdsal600Test {
         assertSame(barSchema, barType.statement());
         assertSame(bazSchema, bazType.statement());
     }
+
+    @Test
+    public void testLookup() {
+        new DefaultBindingRuntimeGenerator().generateTypeMapping(
+            YangParserTestUtils.parseYangResourceDirectory("/mdsal696"));
+    }
 }

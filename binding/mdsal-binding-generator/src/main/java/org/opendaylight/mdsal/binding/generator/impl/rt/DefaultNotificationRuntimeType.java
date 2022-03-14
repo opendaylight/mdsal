@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.impl.rt;
 
 import com.google.common.annotations.Beta;
 import java.util.List;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
@@ -16,11 +17,24 @@ import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
 
 @Beta
-public final class DefaultNotificationRuntimeType extends AbstractCompositeRuntimeType<NotificationEffectiveStatement>
+public class DefaultNotificationRuntimeType extends AbstractAugmentableRuntimeType<NotificationEffectiveStatement>
         implements NotificationRuntimeType {
-    public DefaultNotificationRuntimeType(final GeneratedType bindingType,
+    DefaultNotificationRuntimeType(final GeneratedType bindingType,
             final NotificationEffectiveStatement statement, final List<RuntimeType> children,
             final List<AugmentRuntimeType> augments) {
         super(bindingType, statement, children, augments);
+    }
+
+    public static @NonNull NotificationRuntimeType of(final GeneratedType bindingType,
+            final NotificationEffectiveStatement statement, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments) {
+        return new DefaultNotificationRuntimeType(bindingType, statement, children, augments);
+    }
+
+    public static @NonNull NotificationRuntimeType of(final GeneratedType bindingType,
+            final NotificationEffectiveStatement statement, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        return referencingAugments.isEmpty() ? of(bindingType, statement, children, augments)
+            : new ReferencedNotificationRuntimeType(bindingType, statement, children, augments, referencingAugments);
     }
 }
