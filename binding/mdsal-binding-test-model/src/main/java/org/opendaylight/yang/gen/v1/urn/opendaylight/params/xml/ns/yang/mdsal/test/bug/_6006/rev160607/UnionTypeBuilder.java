@@ -13,12 +13,12 @@ import org.opendaylight.yangtools.yang.common.Uint8;
  */
 public class UnionTypeBuilder {
 
-    public static UnionType getDefaultInstance(final java.lang.String defaultValue) {
+    public static UnionType getDefaultInstance(final String defaultValue) {
         if (defaultValue.equals("IdentOne")) {
-            return new UnionType(IdentOne.class);
+            return new UnionType(IdentOne.VALUE);
         }
         if (defaultValue.equals("IdentTwo")) {
-            return new UnionType(IdentTwo.class);
+            return new UnionType(IdentTwo.VALUE);
         }
 
         try {
