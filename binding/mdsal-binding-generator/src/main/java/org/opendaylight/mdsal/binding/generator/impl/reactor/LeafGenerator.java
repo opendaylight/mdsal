@@ -21,12 +21,12 @@ final class LeafGenerator extends AbstractTypeAwareGenerator<LeafEffectiveStatem
     }
 
     @Override
-    LeafRuntimeType createRuntimeType(final Type type) {
+    LeafRuntimeType createExternalRuntimeType(final Type type) {
         return new DefaultLeafRuntimeType(type, statement());
     }
 
     @Override
-    LeafRuntimeType rebaseRuntimeType(final LeafRuntimeType type, final LeafEffectiveStatement statement) {
-        return new DefaultLeafRuntimeType(type.javaType(), statement);
+    LeafRuntimeType createInternalRuntimeType(final LeafEffectiveStatement statement, final Type type) {
+        return new DefaultLeafRuntimeType(type, statement);
     }
 }

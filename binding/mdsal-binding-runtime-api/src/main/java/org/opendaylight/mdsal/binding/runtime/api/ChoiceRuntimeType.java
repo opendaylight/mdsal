@@ -18,7 +18,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
  * A {@link RuntimeType} associated with a {@code choice} statement.
  */
 @Beta
-public interface ChoiceRuntimeType extends CompositeRuntimeType, DataRuntimeType {
+public interface ChoiceRuntimeType extends AugmentableRuntimeType, DataRuntimeType {
     @Override
     ChoiceEffectiveStatement statement();
 

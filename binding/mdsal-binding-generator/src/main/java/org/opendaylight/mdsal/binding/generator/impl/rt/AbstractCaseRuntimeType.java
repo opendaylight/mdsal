@@ -14,7 +14,7 @@ import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.CaseEffectiveStatement;
 
-abstract class AbstractCaseRuntimeType extends AbstractCompositeRuntimeType<CaseEffectiveStatement>
+abstract class AbstractCaseRuntimeType extends AbstractAugmentableRuntimeType<CaseEffectiveStatement>
         implements CaseRuntimeType {
     AbstractCaseRuntimeType(final GeneratedType bindingType, final CaseEffectiveStatement statement,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {

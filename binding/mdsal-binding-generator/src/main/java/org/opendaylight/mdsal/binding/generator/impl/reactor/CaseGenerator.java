@@ -81,4 +81,18 @@ final class CaseGenerator extends CompositeSchemaTreeGenerator<CaseEffectiveStat
             ? new OriginalCaseRuntimeType(type, statement, children, augments)
                 : new DerivedCaseRuntimeType(type, statement, children, augments, original.runtimeType().orElseThrow());
     }
+
+    @Override
+    CaseRuntimeType createExternalRuntimeType(final GeneratedType type, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        // FIXME: implement this
+        throw new UnsupportedOperationException("FIXME: implement me");
+    }
+
+    @Override
+    CaseRuntimeType createInternalRuntimeType(final CaseEffectiveStatement statement,  final GeneratedType type,
+            final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
+        // FIXME: implement this
+        throw new UnsupportedOperationException("FIXME: implement me");
+    }
 }

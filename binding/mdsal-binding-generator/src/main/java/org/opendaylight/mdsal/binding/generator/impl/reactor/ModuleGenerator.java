@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 
 import java.util.List;
@@ -100,9 +101,18 @@ public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffe
     }
 
     @Override
-    ModuleRuntimeType createRuntimeType(final GeneratedType type, final ModuleEffectiveStatement statement,
+    ModuleRuntimeType createExternalRuntimeType(final GeneratedType type, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        verify(augments.isEmpty(), "Unexpected augments %s", augments);
+        verify(referencingAugments.isEmpty(), "Unexpected referencing augments %s", referencingAugments);
+        return new DefaultModuleRuntimeType(type, statement(), children);
+    }
+
+    @Override
+    ModuleRuntimeType createInternalRuntimeType(final ModuleEffectiveStatement statement, final GeneratedType type,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        return new DefaultModuleRuntimeType(type, statement, children, augments);
+        // 'module' is a top-level statement, there is just no way it can be internally-referenced
+        throw new UnsupportedOperationException();
     }
 
     @NonNull Member getPrefixMember() {

@@ -15,7 +15,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.CaseEffectiveStatement;
  * A {@link RuntimeType} associated with a {@code case} statement.
  */
 @Beta
-public interface CaseRuntimeType extends CompositeRuntimeType, DataRuntimeType {
+public interface CaseRuntimeType extends AugmentableRuntimeType, DataRuntimeType {
     @Override
     CaseEffectiveStatement statement();
 
