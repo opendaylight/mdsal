@@ -9,9 +9,9 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import static com.google.common.base.Verify.verify;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
-import org.opendaylight.mdsal.binding.generator.impl.rt.DerivedCaseRuntimeType;
-import org.opendaylight.mdsal.binding.generator.impl.rt.OriginalCaseRuntimeType;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultCaseRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
@@ -74,11 +74,22 @@ final class CaseGenerator extends CompositeSchemaTreeGenerator<CaseEffectiveStat
     }
 
     @Override
-    CaseRuntimeType createRuntimeType(final GeneratedType type, final CaseEffectiveStatement statement,
-            final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        final var original = getOriginal();
-        return statement.equals(original.statement())
-            ? new OriginalCaseRuntimeType(type, statement, children, augments)
-                : new DerivedCaseRuntimeType(type, statement, children, augments, original.runtimeType().orElseThrow());
+    CompositeRuntimeTypeBuilder<CaseEffectiveStatement, CaseRuntimeType> createBuilder(
+            final CaseEffectiveStatement statement) {
+        return new CompositeRuntimeTypeBuilder<>(statement) {
+            @Override
+            CaseRuntimeType build(final GeneratedType generatedType, final CaseEffectiveStatement statement,
+                    final List<RuntimeType> childTypes, final List<AugmentRuntimeType> augmentTypes,
+                    final ImmutableList<AugmentRuntimeType> referencingAugments) {
+                return DefaultCaseRuntimeType.of(generatedType, statement, childTypes, augmentTypes,
+                    referencingAugments);
+            }
+
+            @Override
+            CaseRuntimeType build(final GeneratedType generatedType, final CaseEffectiveStatement statement,
+                    final List<RuntimeType> childTypes, final List<AugmentRuntimeType> augmentTypes) {
+                return DefaultCaseRuntimeType.of(generatedType, statement, childTypes, augmentTypes);
+            }
+        };
     }
 }

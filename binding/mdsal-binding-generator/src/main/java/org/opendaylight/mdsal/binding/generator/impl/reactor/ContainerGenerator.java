@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultContainerRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -52,8 +53,21 @@ final class ContainerGenerator extends CompositeSchemaTreeGenerator<ContainerEff
     }
 
     @Override
-    ContainerRuntimeType createRuntimeType(final GeneratedType type, final ContainerEffectiveStatement statement,
-            final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        return new DefaultContainerRuntimeType(type, statement, children, augments);
+    CompositeRuntimeTypeBuilder<ContainerEffectiveStatement, ContainerRuntimeType> createBuilder(
+            final ContainerEffectiveStatement statement) {
+        return new CompositeRuntimeTypeBuilder<>(statement) {
+            @Override
+            ContainerRuntimeType build(final GeneratedType type, final ContainerEffectiveStatement statement,
+                    final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
+                return DefaultContainerRuntimeType.of(type, statement, children, augments);
+            }
+
+            @Override
+            ContainerRuntimeType build(final GeneratedType type, final ContainerEffectiveStatement statement,
+                    final List<RuntimeType> children, final List<AugmentRuntimeType> augments,
+                    final ImmutableList<AugmentRuntimeType> referencingAugments) {
+                return DefaultContainerRuntimeType.of(type, statement, children, augments, referencingAugments);
+            }
+        };
     }
 }

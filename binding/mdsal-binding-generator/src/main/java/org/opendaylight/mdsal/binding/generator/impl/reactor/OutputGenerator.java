@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultOutputRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -25,8 +26,21 @@ class OutputGenerator extends OperationContainerGenerator<OutputEffectiveStateme
     }
 
     @Override
-    final OutputRuntimeType createRuntimeType(final GeneratedType type, final OutputEffectiveStatement statement,
-            final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        return new DefaultOutputRuntimeType(type, statement, children, augments);
+    final CompositeRuntimeTypeBuilder<OutputEffectiveStatement, OutputRuntimeType> createBuilder(
+            final OutputEffectiveStatement statement) {
+        return new CompositeRuntimeTypeBuilder<>(statement) {
+            @Override
+            OutputRuntimeType build(final GeneratedType type, final OutputEffectiveStatement statement,
+                    final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
+                return DefaultOutputRuntimeType.of(type, statement, children, augments);
+            }
+
+            @Override
+            OutputRuntimeType build(final GeneratedType type, final OutputEffectiveStatement statement,
+                    final List<RuntimeType> children, final List<AugmentRuntimeType> augments,
+                    final ImmutableList<AugmentRuntimeType> referencingAugments) {
+                return DefaultOutputRuntimeType.of(type, statement, children, augments, referencingAugments);
+            }
+        };
     }
 }

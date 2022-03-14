@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultNotificationRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -58,14 +59,27 @@ final class NotificationGenerator
     }
 
     @Override
-    NotificationRuntimeType createRuntimeType(final GeneratedType type, final NotificationEffectiveStatement statement,
-            final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        return new DefaultNotificationRuntimeType(type, statement, children, augments);
+    void addAsGetterMethod(final GeneratedTypeBuilderBase<?> builder, final TypeBuilderFactory builderFactory) {
+        // Notifications are a distinct concept
     }
 
     @Override
-    void addAsGetterMethod(final GeneratedTypeBuilderBase<?> builder, final TypeBuilderFactory builderFactory) {
-        // Notifications are a distinct concept
+    CompositeRuntimeTypeBuilder<NotificationEffectiveStatement, NotificationRuntimeType> createBuilder(
+            final NotificationEffectiveStatement statement) {
+        return new CompositeRuntimeTypeBuilder<>(statement) {
+            @Override
+            NotificationRuntimeType build(final GeneratedType type, final NotificationEffectiveStatement statement,
+                    final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
+                return DefaultNotificationRuntimeType.of(type, statement, children, augments);
+            }
+
+            @Override
+            NotificationRuntimeType build(final GeneratedType type, final NotificationEffectiveStatement statement,
+                    final List<RuntimeType> children, final List<AugmentRuntimeType> augments,
+                    final ImmutableList<AugmentRuntimeType> referencingAugments) {
+                return DefaultNotificationRuntimeType.of(type, statement, children, augments, referencingAugments);
+            }
+        };
     }
 
     private Type notificationType(final GeneratedTypeBuilder builder, final TypeBuilderFactory builderFactory) {

@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Verify.verify;
 
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
@@ -30,11 +31,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.ReferencedAugmentableRuntimeType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
@@ -202,10 +203,25 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
     private List<Class<?>> loadCaseClasses() {
         final var context = factory().getRuntimeContext();
         final var type = getType();
+        final var publicType = context.getTypes().findSchema(type.getIdentifier())
+            .map(found -> {
+                verify(found instanceof ChoiceRuntimeType, "Unexpected public type %s for %s", found, type);
+                return (ChoiceRuntimeType) found;
+            })
+            .orElseThrow(() -> new IllegalStateException("Cannot find public type for " + type));
 
-        return Stream.concat(type.validCaseChildren().stream(), type.additionalCaseChildren().stream())
-            .map(caseChild -> {
-                final var caseName = caseChild.getIdentifier();
+        final var caseNames = new HashSet<JavaTypeName>();
+        for (var directCase : publicType.validCaseChildren()) {
+            caseNames.add(directCase.getIdentifier());
+        }
+        if (publicType instanceof ReferencedAugmentableRuntimeType) {
+            for (var augment : ((ReferencedAugmentableRuntimeType) publicType).referencingAugments()) {
+                // FIXME: we need to stream all schema children here
+            }
+        }
+
+        return caseNames.stream()
+            .map(caseName -> {
                 try {
                     return context.loadClass(caseName);
                 } catch (ClassNotFoundException e) {
