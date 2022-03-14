@@ -297,6 +297,11 @@ abstract class BaseTemplate extends JavaFileTemplate {
         «IF BindingMapping.QNAME_STATIC_FIELD_NAME.equals(c.name)»
             «val entry = c.value as Entry<JavaTypeName, String>»
             public static final «c.type.importedNonNull» «c.name» = «entry.key.importedName».«BindingMapping.MODULE_INFO_QNAMEOF_METHOD_NAME»("«entry.value»");
+        «ELSEIF BindingMapping.VALUE_STATIC_FIELD_NAME.equals(c.name)»
+            public static final «c.type.importedNonNull» «c.name» = «CODEHELPERS.importedName».identityValue(() -> {
+                final class singleton extends «ABSTRACT_IDENTITY.importedName» implements «c.type.importedName» { }
+                return new singleton();
+            });
         «ELSE»
             public static final «c.type.importedName» «c.name» = «c.value»;
         «ENDIF»

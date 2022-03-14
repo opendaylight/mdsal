@@ -48,10 +48,9 @@ import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition.Multiple;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition.Single;
 import org.opendaylight.mdsal.binding.model.ri.Types;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
+import org.opendaylight.yangtools.yang.binding.AbstractIdentity;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.CodeHelpers;
-//import org.opendaylight.yangtools.yang.common.QName;
-//import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
@@ -141,6 +140,10 @@ class JavaFileTemplate {
      */
     static final @NonNull JavaTypeName CODEHELPERS = JavaTypeName.create(CodeHelpers.class);
 
+    /**
+     * {@code org.opendaylight.yangtools.yang.binding.AbstractIdentity} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName ABSTRACT_IDENTITY = JavaTypeName.create(AbstractIdentity.class);
 
     private static final Comparator<MethodSignature> METHOD_COMPARATOR = new AlphabeticallyTypeMemberComparator<>();
     private static final CharMatcher AMP_MATCHER = CharMatcher.is('&');
