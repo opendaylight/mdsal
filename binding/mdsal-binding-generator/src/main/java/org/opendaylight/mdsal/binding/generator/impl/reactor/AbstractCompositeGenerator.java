@@ -11,11 +11,9 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -167,73 +165,95 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
     }
 
     @Override
-    public final R createRuntimeType() {
-        return generatedType()
-            .map(type -> {
-                final var stmt = effectiveStatement();
-                return createRuntimeType(type, stmt, indexChildren(stmt), augmentRuntimeTypes());
-            })
-            .orElse(null);
-    }
+    final R runtimeTypeOf(final S stmt, final GeneratedType generatedType) {
+        // FIXME: cache requests: if we visited this statement, we obviously know what it entails.
+        // FIXME: but that should live in AbstractExplicitGenerator
 
-    abstract @NonNull R createRuntimeType(@NonNull GeneratedType type, @NonNull S statement,
-        @NonNull List<RuntimeType> children, @NonNull List<AugmentRuntimeType> augments);
+        // FIXME: this method performs a part of the job we need to have done for global runtime type, hence we may need
+        //        a refactor which fills the two lists and then call that from the two distinct call sites
+        // FIXME: perf note: the above cache should be affective when all augments end up being local to our statement
 
-    @Override
-    final R rebaseRuntimeType(final R type, final S statement) {
-        return createRuntimeType(type.javaType(), statement, indexChildren(statement), augmentRuntimeTypes());
-    }
-
-    private @NonNull List<RuntimeType> indexChildren(final @NonNull S statement) {
-        final var childMap = new ArrayList<RuntimeType>();
-
-        for (var stmt : statement.effectiveSubstatements()) {
-            if (stmt instanceof SchemaTreeEffectiveStatement) {
-                final var child = (SchemaTreeEffectiveStatement<?>) stmt;
-                final var qname = child.getIdentifier();
-
-                // Note: getOriginal() is needed for augments of cases
-                @SuppressWarnings("rawtypes")
-                final AbstractExplicitGenerator childGen = getOriginal().resolveRuntimeChild(statement.argument(),
-                    qname);
-                @SuppressWarnings("unchecked")
-                final Optional<RuntimeType> rt = childGen.runtimeTypeOf(child);
-                rt.ifPresent(childMap::add);
+        // First things first: figure out which augments are valid in target statement and record their RuntimeTypes.
+        // We will pass the latter to create method. We will use the former to perform replacement lookups instead
+        // of 'this.augments'. That is necessary because 'this.augments' holds all augments targeting the GeneratedType,
+        // hence equivalent augmentations from differing places would match our lookup and the reverse search would be
+        // lead astray.
+        final var augmentRuntimeTypes = new ArrayList<AugmentRuntimeType>();
+        for (var augment : augments) {
+            final var augmentRuntimeType = augment.runtimeTypeIn(stmt);
+            if (augmentRuntimeType != null) {
+                augmentRuntimeTypes.add(augmentRuntimeType);
             }
         }
 
-        return childMap;
-    }
+        // Now construct RuntimeTypes for each schema tree child of stmt
+        final var childRuntimeTypes = new ArrayList<RuntimeType>();
+        for (var stmtChild : stmt.effectiveSubstatements()) {
+            if (stmtChild instanceof SchemaTreeEffectiveStatement) {
+                @SuppressWarnings("rawtypes")
+                final var schemaChild = (SchemaTreeEffectiveStatement) stmtChild;
+                final var qname = schemaChild.getIdentifier();
 
-    private @NonNull AbstractExplicitGenerator<?, ?> resolveRuntimeChild(final Object parentArg, final QName qname) {
-        final var exact = findSchemaTreeGenerator(qname);
-        if (exact != null) {
-            return exact;
+                // Try valid augments first: they should be empty most of the time and filter all the cases where we
+                // would not find the streamChild among our local and grouping statements. Note that unlike all others,
+                // such matches are not considered to be children in Binding DataObject tree, they are only considered
+                // such in the schema tree.
+                if (isAugmentedChild(augmentRuntimeTypes, qname)) {
+                    continue;
+                }
+
+                // FIXME: well, sort of: we want to check if we know this QName locally in our statement and if we do,
+                //        only then we want to find it.
+                //
+                //        I think that will not play nicely with following groupings -- we probably will need similar
+                //        resolution state as we keep for AugmentRequirement and be explicit about what we are doing.
+                //        On that idea, though: we are not making a linear search, hence we need to do a COW thing when
+                //        we modify the state.
+                @SuppressWarnings("rawtypes")
+                final AbstractExplicitGenerator childGen = verifyNotNull(findSchemaTreeGenerator(qname),
+                    "Failed to resolve %s from %s in %s", stmtChild, stmt, this);
+                final var childRuntimeType = childGen.runtimeTypeOf(schemaChild);
+                if (childRuntimeType != null) {
+                    childRuntimeTypes.add(childRuntimeType);
+                }
+            }
         }
 
-        // TODO: this is quite hacky: what we are trying to do is rebase the lookup QName to parent QName, as the only
-        //       way we should be arriving here is through uses -> grouping squash
-        verify(parentArg instanceof QName, "Cannot deal with parent argument %s", parentArg);
-        final var namespace = ((QName) parentArg).getModule();
-
-        verify(namespace.equals(qname.getModule()), "Cannot deal with %s in namespace %s", qname, namespace);
-        final var local = qname.bindTo(getQName().getModule());
-        return verifyNotNull(findSchemaTreeGenerator(local), "Failed to find %s as %s in %s", qname, local, this);
+        return runtimeTypeOf(stmt, generatedType, childRuntimeTypes, augmentRuntimeTypes);
     }
 
+    private static boolean isAugmentedChild(final List<AugmentRuntimeType> augments, final QName qname) {
+        for (var augment : augments) {
+            if (augment.schemaTreeChild(qname) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    abstract @NonNull R runtimeTypeOf(@NonNull S stmt, @NonNull GeneratedType generatedType, @NonNull
+            List<RuntimeType> childRuntimeTypes, List<AugmentRuntimeType> augmentRuntimeTypes);
+
+    // FIXME: this is a separate construct: here we really want to pass down two sets of augments:
+    //        - augments valid at the statement
+    //        - augments collected via all references, i.e. those that runtimeTypeIn() recorded
+    abstract @NonNull R createRuntimeType(@NonNull GeneratedType type, @NonNull S statement,
+        @NonNull List<RuntimeType> children, @NonNull List<AugmentRuntimeType> augments);
+
+    // FIXME: this should not be needed
     final @NonNull List<AbstractAugmentGenerator> augments() {
         return augments;
     }
 
-    private @NonNull List<AugmentRuntimeType> augmentRuntimeTypes() {
-        // Augments are attached to original instance: at least CaseGenerator is instantiated in non-original place
-        // and thus we need to go back to original
-        return getOriginal().augments.stream()
-            .map(AbstractAugmentGenerator::runtimeType)
-            .filter(Optional::isPresent)
-            .map(Optional::orElseThrow)
-            .collect(ImmutableList.toImmutableList());
-    }
+//    private @NonNull List<AugmentRuntimeType> augmentRuntimeTypes() {
+//        // Augments are attached to original instance: at least CaseGenerator is instantiated in non-original place
+//        // and thus we need to go back to original
+//        return getOriginal().augments.stream()
+//            .map(AbstractAugmentGenerator::runtimeType)
+//            .filter(Optional::isPresent)
+//            .map(Optional::orElseThrow)
+//            .collect(ImmutableList.toImmutableList());
+//    }
 
     @Override
     final boolean isEmpty() {

@@ -88,6 +88,13 @@ final class ListGenerator extends CompositeSchemaTreeGenerator<ListEffectiveStat
     }
 
     @Override
+    ListRuntimeType runtimeTypeOf(final ListEffectiveStatement stmt, final GeneratedType generatedType,
+            final List<RuntimeType> childRuntimeTypes, final List<AugmentRuntimeType> augmentRuntimeTypes) {
+        return new DefaultListRuntimeType(generatedType, stmt, childRuntimeTypes, augmentRuntimeTypes,
+            keyGen != null ? keyGen.runtimeType().orElseThrow() : null);
+    }
+
+    @Override
     Type methodReturnType(final TypeBuilderFactory builderFactory) {
         final Type generatedType = super.methodReturnType(builderFactory);
         // We are wrapping the generated type in either a List or a Map based on presence of the key

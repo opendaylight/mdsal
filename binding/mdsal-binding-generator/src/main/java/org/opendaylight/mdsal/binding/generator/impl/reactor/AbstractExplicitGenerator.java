@@ -17,6 +17,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.generator.impl.tree.StatementRepresentation;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeMemberComment;
@@ -85,29 +86,32 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
      */
     public final Optional<R> runtimeType() {
         if (!runtimeTypeInitialized) {
-            runtimeType = createRuntimeType();
+            runtimeType = runtimeTypeOf(statement);
             runtimeTypeInitialized = true;
         }
         return Optional.ofNullable(runtimeType);
     }
 
-    final Optional<R> runtimeTypeOf(final @NonNull S stmt) {
+    final @Nullable R runtimeTypeOf(final @NonNull S stmt) {
         var gen = this;
         do {
-            final var ret = gen.runtimeType();
+            // FIXME: this really should check runtime type availability, because we may have 'leaf foo { type string }'
+            final var ret = gen.generatedType();
             if (ret.isPresent()) {
-                return Optional.of(rebaseRuntimeType(ret.orElseThrow(), stmt));
+                return runtimeTypeOf(stmt, ret.orElseThrow());
             }
 
             gen = gen.previous();
         } while (gen != null);
 
-        return Optional.empty();
+        return null;
     }
 
-    abstract @Nullable R createRuntimeType();
+    abstract @NonNull R runtimeTypeOf(@NonNull S stmt, @NonNull GeneratedType generatedType);
 
-    abstract @NonNull R rebaseRuntimeType(@NonNull R type, @NonNull S statement);
+//    abstract @Nullable R createRuntimeType();
+//
+//    abstract @NonNull R rebaseRuntimeType(@NonNull R type, @NonNull S statement);
 
     @Override
     public final boolean isAddedByUses() {

@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import static com.google.common.base.Verify.verify;
+
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultActionRuntimeType;
@@ -64,6 +66,13 @@ final class ActionGenerator extends CompositeSchemaTreeGenerator<ActionEffective
     ActionRuntimeType createRuntimeType(final GeneratedType type, final ActionEffectiveStatement statement,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
         return new DefaultActionRuntimeType(type, statement, children, augments);
+    }
+
+    @Override
+    ActionRuntimeType runtimeTypeOf(final ActionEffectiveStatement stmt, final GeneratedType generatedType,
+            final List<RuntimeType> childRuntimeTypes, final List<AugmentRuntimeType> augmentRuntimeTypes) {
+        verify(augmentRuntimeTypes.isEmpty(), "Unexpected augments %s", augmentRuntimeTypes);
+        return new DefaultActionRuntimeType(generatedType, stmt, childRuntimeTypes, List.of());
     }
 
     private @NonNull Type implementedType(final TypeBuilderFactory builderFactory) {

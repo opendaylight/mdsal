@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultAugmentRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -85,7 +86,7 @@ abstract class AbstractAugmentGenerator
         return otherIt.hasNext() ? -1 : 0;
     };
 
-    private AugmentEffectiveStatement effectiveStatement;
+    private SchemaTreeAwareEffectiveStatement<?, ?> targetStatement;
     private AbstractCompositeGenerator<?, ?> targetGen;
 
     AbstractAugmentGenerator(final AugmentEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
@@ -149,15 +150,31 @@ abstract class AbstractAugmentGenerator
 
     @Override
     final AugmentEffectiveStatement effectiveStatement() {
-        return verifyNotNull(effectiveStatement, "Effective statement not set in %s", this);
+        // FIXME: this method should not be needed at all
+        throw new UnsupportedOperationException();
+    }
+
+    final @Nullable AugmentRuntimeType runtimeTypeIn(final @NonNull EffectiveStatement<?, ?> stmt) {
+        // FIXME: is 'stmt' enough information to work out the children of targetGenerator()?
+        if (stmt.equals(verifyNotNull(targetStatement))) {
+            // FIXME: implement this
+            throw new UnsupportedOperationException();
+        }
+        return null;
+    }
+
+    @Override
+    final AugmentRuntimeType runtimeTypeOf(final AugmentEffectiveStatement stmt,  final GeneratedType generatedType,
+            final List<RuntimeType> childRuntimeTypes, final List<AugmentRuntimeType> augmentRuntimeTypes) {
+        // The child indexing machinery which would have called us knows to use runtimeTypeIn() and therefore we should
+        // never reach here.
+        throw new UnsupportedOperationException("This method should never be invoked");
     }
 
     @Override
     final AugmentRuntimeType createRuntimeType(final GeneratedType type, final AugmentEffectiveStatement statement,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        verify(statement instanceof TargetAugmentEffectiveStatement, "Unexpected statement %s", statement);
-        return new DefaultAugmentRuntimeType(type, ((TargetAugmentEffectiveStatement) statement).delegate(), children,
-            augments);
+        return new DefaultAugmentRuntimeType(type, statement, children, augments);
     }
 
     @Override
@@ -177,7 +194,6 @@ abstract class AbstractAugmentGenerator
     final void setTargetStatement(final EffectiveStatement<?, ?> targetStatement) {
         verify(targetStatement instanceof SchemaTreeAwareEffectiveStatement, "Unexpected target statement %s",
             targetStatement);
-        effectiveStatement = new TargetAugmentEffectiveStatement(statement(),
-            (SchemaTreeAwareEffectiveStatement<?, ?>) targetStatement);
+        this.targetStatement = (SchemaTreeAwareEffectiveStatement<?, ?>) targetStatement;
     }
 }

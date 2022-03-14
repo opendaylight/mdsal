@@ -24,6 +24,7 @@ public final class DefaultActionRuntimeType extends AbstractCompositeRuntimeType
     private final @NonNull InputRuntimeType input;
     private final @NonNull OutputRuntimeType output;
 
+    // FIXME: adjust construct to not take augments
     public DefaultActionRuntimeType(final GeneratedType bindingType, final ActionEffectiveStatement statement,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
         super(bindingType, statement, children, augments);
