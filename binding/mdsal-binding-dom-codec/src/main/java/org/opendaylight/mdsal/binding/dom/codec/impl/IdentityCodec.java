@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.concepts.AbstractIllegalArgumentCodec;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.common.QName;
 
-final class IdentityCodec extends AbstractIllegalArgumentCodec<QName, Class<?>> implements BindingIdentityCodec {
+final class IdentityCodec extends AbstractIllegalArgumentCodec<QName, BaseIdentity> implements BindingIdentityCodec {
     private final BindingRuntimeContext context;
 
     IdentityCodec(final BindingRuntimeContext context) {
@@ -25,25 +25,24 @@ final class IdentityCodec extends AbstractIllegalArgumentCodec<QName, Class<?>> 
     }
 
     @Override
-    protected Class<?> deserializeImpl(final QName input) {
-        return context.getIdentityClass(input);
+    protected BaseIdentity deserializeImpl(final QName input) {
+        return toBinding(input);
     }
 
     @Override
-    protected QName serializeImpl(final Class<?> input) {
-        checkArgument(BaseIdentity.class.isAssignableFrom(input), "%s is not an identity", input);
-        return BindingReflections.findQName(input);
+    protected QName serializeImpl(final BaseIdentity input) {
+        return fromBinding(input);
     }
 
     @Override
-    public Class<? extends BaseIdentity> toBinding(final QName qname) {
+    public <T extends BaseIdentity> T toBinding(final QName qname) {
         final Class<?> identity = context.getIdentityClass(requireNonNull(qname));
         checkArgument(BaseIdentity.class.isAssignableFrom(identity), "%s resolves to non-identity %s", qname, identity);
-        return identity.asSubclass(BaseIdentity.class);
+        return (T) BindingReflections.getValue(identity.asSubclass(BaseIdentity.class));
     }
 
     @Override
-    public QName fromBinding(final Class<? extends BaseIdentity> bindingClass) {
-        return BindingReflections.getQName(bindingClass);
+    public QName fromBinding(final BaseIdentity bindingValue) {
+        return BindingReflections.getQName(bindingValue.implementedInterface());
     }
 }

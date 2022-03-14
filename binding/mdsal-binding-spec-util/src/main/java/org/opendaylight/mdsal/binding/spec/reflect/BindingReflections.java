@@ -72,6 +72,16 @@ public final class BindingReflections {
             .expireAfterAccess(EXPIRATION_TIME, TimeUnit.SECONDS)
             .build(new ClassToQNameLoader());
 
+    private static final LoadingCache<Class<? extends BaseIdentity>, BaseIdentity> CLASS_TO_VALUE =
+        CacheBuilder.newBuilder()
+            .weakKeys()
+            .build(new CacheLoader<Class<? extends BaseIdentity>, BaseIdentity>() {
+                @Override
+                public BaseIdentity load(final Class<? extends BaseIdentity> key) throws ReflectiveOperationException {
+                    return key.cast(key.getField(BindingMapping.VALUE_STATIC_FIELD_NAME).get(null));
+                }
+            });
+
     private static final LoadingCache<ClassLoader, ImmutableSet<YangModuleInfo>> MODULE_INFO_CACHE =
             CacheBuilder.newBuilder().weakKeys().weakValues().build(
                 new CacheLoader<ClassLoader, ImmutableSet<YangModuleInfo>>() {
@@ -197,6 +207,15 @@ public final class BindingReflections {
         final Optional<QName> qname = CLASS_TO_QNAME.getUnchecked(requireNonNull(bindingClass));
         checkState(qname.isPresent(), "Failed to resolve QName of %s", bindingClass);
         return qname.get();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends BaseIdentity> @NonNull T getValue(final Class<T> bindingClass) {
+        // Defeat raw types and direct 'BaseIdentity' attempts
+        checkArgument(BaseIdentity.class.isAssignableFrom(bindingClass), "%s does not represent an identity",
+            bindingClass);
+        checkArgument(BaseIdentity.class != bindingClass, "Must provide a class derived from BaseIdentity");
+        return (T) CLASS_TO_VALUE.getUnchecked(bindingClass);
     }
 
     /**
