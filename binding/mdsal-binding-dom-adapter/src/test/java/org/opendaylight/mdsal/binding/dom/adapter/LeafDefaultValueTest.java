@@ -5,12 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -21,6 +21,7 @@ import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test._2.rev160111.MyDerivedImportedIdentity;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.BigIntContainer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.BigIntContainerBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.BigUintContainer;
@@ -37,6 +38,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.valu
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.EnumContainerBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.IdentityrefContainer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.IdentityrefContainerBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.MyDerivedIdentity;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.MyDerivedIdentity2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.NormalIntContainer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.NormalIntContainerBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.norev.NormalUintContainer;
@@ -390,11 +393,11 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         IdentityrefContainer idrefCont = identityrefContainerNode.get();
         assertNull(idrefCont.getIdentityrefLeaf());
-        assertEquals("MyDerivedIdentity", idrefCont.getIdentityrefLeaf2().getSimpleName());
-        assertEquals("MyDerivedIdentity", idrefCont.getIdentityrefLeaf3().getSimpleName());
-        assertEquals("MyDerivedIdentity2", idrefCont.getIdentityrefLeaf4().getSimpleName());
-        assertEquals("MyDerivedImportedIdentity", idrefCont.getIdentityrefLeaf5().getSimpleName());
-        assertEquals("MyDerivedIdentity", idrefCont.getIdentityrefLeaf6().getSimpleName());
+        assertSame(MyDerivedIdentity.VALUE, idrefCont.getIdentityrefLeaf2());
+        assertSame(MyDerivedIdentity.VALUE, idrefCont.getIdentityrefLeaf3());
+        assertSame(MyDerivedIdentity2.VALUE, idrefCont.getIdentityrefLeaf4());
+        assertSame(MyDerivedImportedIdentity.VALUE, idrefCont.getIdentityrefLeaf5());
+        assertSame(MyDerivedIdentity.VALUE, idrefCont.getIdentityrefLeaf6());
         assertNull(idrefCont.getIdentityrefLeaf7());
     }
 }
