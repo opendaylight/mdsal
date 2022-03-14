@@ -10,8 +10,7 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 import static com.google.common.base.Verify.verify;
 
 import java.util.List;
-import org.opendaylight.mdsal.binding.generator.impl.rt.DerivedCaseRuntimeType;
-import org.opendaylight.mdsal.binding.generator.impl.rt.OriginalCaseRuntimeType;
+import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultCaseRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
@@ -74,11 +73,14 @@ final class CaseGenerator extends CompositeSchemaTreeGenerator<CaseEffectiveStat
     }
 
     @Override
-    CaseRuntimeType createRuntimeType(final GeneratedType type, final CaseEffectiveStatement statement,
+    CaseRuntimeType createExternalRuntimeType(final GeneratedType type, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        return DefaultCaseRuntimeType.of(type, statement(), children, augments, referencingAugments);
+    }
+
+    @Override
+    CaseRuntimeType createInternalRuntimeType(final CaseEffectiveStatement statement,  final GeneratedType type,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        final var original = getOriginal();
-        return statement.equals(original.statement())
-            ? new OriginalCaseRuntimeType(type, statement, children, augments)
-                : new DerivedCaseRuntimeType(type, statement, children, augments, original.runtimeType().orElseThrow());
+        return DefaultCaseRuntimeType.of(type, statement, children, augments);
     }
 }
