@@ -95,18 +95,21 @@ final class TypedefGenerator extends AbstractTypeObjectGenerator<TypedefEffectiv
     }
 
     @Override
-    TypedefRuntimeType createRuntimeType(final Type type) {
+    TypedefRuntimeType createExternalRuntimeType(final Type type) {
         verify(type instanceof GeneratedType, "Unexpected type %s", type);
         return new DefaultTypedefRuntimeType((GeneratedType) type, statement());
     }
 
     @Override
-    TypedefRuntimeType rebaseRuntimeType(final TypedefRuntimeType type, final TypedefEffectiveStatement statement) {
-        return new DefaultTypedefRuntimeType(type.javaType(), statement);
+    TypedefRuntimeType createInternalRuntimeType(final ChildLookup lookup, final TypedefEffectiveStatement statement,
+            final Type type) {
+        // 'typedef' statements are not schema tree statements, they should not have internal references
+        throw new UnsupportedOperationException("Should never be called");
     }
 
     @Override
     void addAsGetterMethod(final GeneratedTypeBuilderBase<?> builder, final TypeBuilderFactory builderFactory) {
         // typedefs are a separate concept
     }
+
 }
