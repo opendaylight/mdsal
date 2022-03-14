@@ -11,14 +11,16 @@ import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.BINARY_TYPE;
 import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.BOOLEAN_TYPE;
 import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.EMPTY_TYPE;
 import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.STRING_TYPE;
+import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.BASE_IDENTITY;
 import static org.opendaylight.mdsal.binding.model.ri.Types.STRING;
 import static org.opendaylight.mdsal.binding.model.ri.Types.getOuterClassName;
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BUILDER_SUFFIX
 
 import java.util.Base64;
 import org.gaul.modernizer_maven_annotations.SuppressModernizer
-import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
 import org.opendaylight.mdsal.binding.model.api.Enumeration
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
+import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition
 
@@ -140,6 +142,9 @@ class UnionTemplate extends ClassTemplate {
                 «ELSEIF propRet.isBitsType»
                     ««« generated bits typedef
                 return «JU_ARRAYS.importedName».toString(«field».getValue());
+                «ELSEIF propRet.isIdentityType»
+                    ««« generated identity
+                return «field».implementedInterface().toString();
                 «ELSE»
                     ««« generated type
                 return «field».getValue().toString();
@@ -153,6 +158,20 @@ class UnionTemplate extends ClassTemplate {
     private static def isBitsType(Type type) {
         if (type instanceof GeneratedTransferObject) {
             return type.typedef && type.baseType instanceof BitsTypeDefinition
+        }
+        return false
+    }
+    
+    private static def boolean isIdentityType(Type type) {
+        if (BASE_IDENTITY.equals(type)) {
+            return true
+        }
+        if (type instanceof GeneratedType) {
+            for (impl : type.implements) {
+                if (impl.isIdentityType) {
+                    return true
+                }
+            }
         }
         return false
     }
