@@ -58,8 +58,15 @@ final class NotificationGenerator
     }
 
     @Override
-    NotificationRuntimeType createRuntimeType(final GeneratedType type, final NotificationEffectiveStatement statement,
-            final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
+    NotificationRuntimeType createExternalRuntimeType(final GeneratedType type, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        // FIXME: propagate referencing augments
+        return new DefaultNotificationRuntimeType(type, statement(), children, augments);
+    }
+
+    @Override
+    NotificationRuntimeType createInternalRuntimeType(final NotificationEffectiveStatement statement,
+            final GeneratedType type, final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
         return new DefaultNotificationRuntimeType(type, statement, children, augments);
     }
 

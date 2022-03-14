@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.ri.Types;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.KeyRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
@@ -81,10 +82,21 @@ final class ListGenerator extends CompositeSchemaTreeGenerator<ListEffectiveStat
     }
 
     @Override
-    ListRuntimeType createRuntimeType(final GeneratedType type, final ListEffectiveStatement statement,
+    ListRuntimeType createExternalRuntimeType(final GeneratedType type, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        // FIXME: pass down referencingAugments
+        return new DefaultListRuntimeType(type, statement(), children, augments, keyRuntimeType());
+    }
+
+    @Override
+    ListRuntimeType createInternalRuntimeType(final ListEffectiveStatement statement, final GeneratedType type,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        return new DefaultListRuntimeType(type, statement, children, augments,
-            keyGen != null ? keyGen.runtimeType().orElseThrow() : null);
+        return new DefaultListRuntimeType(type, statement, children, augments, keyRuntimeType());
+    }
+
+    private @Nullable KeyRuntimeType keyRuntimeType() {
+        final var gen = keyGen;
+        return gen != null ? gen.runtimeType().orElseThrow() : null;
     }
 
     @Override

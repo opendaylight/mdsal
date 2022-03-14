@@ -87,4 +87,18 @@ final class ChoiceGenerator extends CompositeSchemaTreeGenerator<ChoiceEffective
 
         return new OriginalChoiceRuntimeType(type, statement, children, augments, augmentedCases);
     }
+
+    @Override
+    ChoiceRuntimeType createExternalRuntimeType(final GeneratedType type, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments,  final List<AugmentRuntimeType> referencingAugments) {
+        // FIXME: implement this
+        throw new UnsupportedOperationException("FIXME: implement me");
+    }
+
+    @Override
+    ChoiceRuntimeType createInternalRuntimeType(final ChoiceEffectiveStatement statement, final GeneratedType type,
+            final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
+        // FIXME: implement this
+        throw new UnsupportedOperationException("FIXME: implement me");
+    }
 }
