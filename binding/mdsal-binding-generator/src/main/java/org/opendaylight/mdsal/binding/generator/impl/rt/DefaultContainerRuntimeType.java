@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.impl.rt;
 
 import com.google.common.annotations.Beta;
 import java.util.List;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ContainerRuntimeType;
@@ -16,10 +17,23 @@ import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.ContainerEffectiveStatement;
 
 @Beta
-public final class DefaultContainerRuntimeType extends AbstractCompositeRuntimeType<ContainerEffectiveStatement>
+public class DefaultContainerRuntimeType extends AbstractAugmentableRuntimeType<ContainerEffectiveStatement>
         implements ContainerRuntimeType {
-    public DefaultContainerRuntimeType(final GeneratedType bindingType, final ContainerEffectiveStatement statement,
+    DefaultContainerRuntimeType(final GeneratedType bindingType, final ContainerEffectiveStatement statement,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
         super(bindingType, statement, children, augments);
+    }
+
+    public static @NonNull ContainerRuntimeType of(final GeneratedType bindingType,
+            final ContainerEffectiveStatement statement, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments) {
+        return new DefaultContainerRuntimeType(bindingType, statement, children, augments);
+    }
+
+    public static @NonNull ContainerRuntimeType of(final GeneratedType bindingType,
+            final ContainerEffectiveStatement statement, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        return referencingAugments.isEmpty() ? of(bindingType, statement, children, augments)
+            : new ReferencedContainerRuntimeType(bindingType, statement, children, augments, referencingAugments);
     }
 }

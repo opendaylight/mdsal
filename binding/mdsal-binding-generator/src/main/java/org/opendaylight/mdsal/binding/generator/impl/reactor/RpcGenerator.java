@@ -42,9 +42,17 @@ public final class RpcGenerator extends CompositeSchemaTreeGenerator<RpcEffectiv
     }
 
     @Override
-    RpcRuntimeType createRuntimeType(final GeneratedType type, final RpcEffectiveStatement statement,
+    RpcRuntimeType createExternalRuntimeType(final GeneratedType type, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        // RPCs do not have a dedicated interface
+        throw new UnsupportedOperationException("Should never be called");
+    }
+
+    @Override
+    RpcRuntimeType createInternalRuntimeType(final RpcEffectiveStatement statement, final GeneratedType type,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
-        throw new UnsupportedOperationException();
+        // RPCs do not have a dedicated interface
+        throw new UnsupportedOperationException("Should never be called");
     }
 
     @Override

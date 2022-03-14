@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.impl.rt;
 
 import com.google.common.annotations.Beta;
 import java.util.List;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.OutputRuntimeType;
@@ -16,10 +17,23 @@ import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
 
 @Beta
-public final class DefaultOutputRuntimeType extends AbstractCompositeRuntimeType<OutputEffectiveStatement>
+public class DefaultOutputRuntimeType extends AbstractAugmentableRuntimeType<OutputEffectiveStatement>
         implements OutputRuntimeType {
-    public DefaultOutputRuntimeType(final GeneratedType bindingType, final OutputEffectiveStatement statement,
+    DefaultOutputRuntimeType(final GeneratedType bindingType, final OutputEffectiveStatement statement,
             final List<RuntimeType> children, final List<AugmentRuntimeType> augments) {
         super(bindingType, statement, children, augments);
+    }
+
+    public static @NonNull OutputRuntimeType of(final GeneratedType bindingType,
+            final OutputEffectiveStatement statement, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments) {
+        return new DefaultOutputRuntimeType(bindingType, statement, children, augments);
+    }
+
+    public static @NonNull OutputRuntimeType of(final GeneratedType bindingType,
+            final OutputEffectiveStatement statement, final List<RuntimeType> children,
+            final List<AugmentRuntimeType> augments, final List<AugmentRuntimeType> referencingAugments) {
+        return referencingAugments.isEmpty() ? of(bindingType, statement, children, augments)
+            : new ReferencedOutputRuntimeType(bindingType, statement, children, augments, referencingAugments);
     }
 }
