@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map.Entry;
@@ -50,7 +51,7 @@ public class UnionTypeWithIdentityrefTest extends AbstractBindingCodecTest {
         DataObject unionNodeObj = createValueNode(IDENT_ONE_STRING);
         UnionType unionTypeObj = ((UnionNode) unionNodeObj).getValue();
         assertEquals(null, unionTypeObj.getUint8());
-        assertEquals(IdentOne.class, unionTypeObj.getIdentityref());
+        assertSame(IdentOne.VALUE, unionTypeObj.getIdentityref());
     }
 
     @Test
