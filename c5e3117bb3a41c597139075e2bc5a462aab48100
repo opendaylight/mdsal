@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "116d0744_c28fdf1a",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/CodecDataObjectGenerator.java",
+        "patchSetId": 40
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-03-25T15:18:43Z",
+      "side": 1,
+      "message": "Intercepted only for classes which inherits nonnull method and do not contain default implementation.",
+      "parentUuid": "d0451efd_5ca26421",
+      "range": {
+        "startLine": 216,
+        "startChar": 16,
+        "endLine": 216,
+        "endChar": 85
+      },
+      "revId": "c5e3117bb3a41c597139075e2bc5a462aab48100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7c8327ab_b4b4afe9",
         "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/CodecDataObjectGenerator.java",
         "patchSetId": 40
@@ -37,6 +61,30 @@
       "writtenOn": "2022-03-10T15:49:06Z",
       "side": 1,
       "message": "this is not right: we should do something like:\n\nreturn (FooType) nonnullMember(getFoo(), FooType.class);\n\ne.g. check the getter return a common constant for FooType, not cached in an instance field.",
+      "range": {
+        "startLine": 489,
+        "startChar": 20,
+        "endLine": 489,
+        "endChar": 79
+      },
+      "revId": "c5e3117bb3a41c597139075e2bc5a462aab48100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2849ce23_1d485665",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/CodecDataObjectGenerator.java",
+        "patchSetId": 40
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-03-25T15:18:43Z",
+      "side": 1,
+      "message": "Changed to:\n```\n    public Bar nonnullBar() {\n        return (Bar)this.nonnullMember(getBar$$$V, BarBuilder.empty(), Bar.class);\n    }\n```",
+      "parentUuid": "7c8327ab_b4b4afe9",
       "range": {
         "startLine": 489,
         "startChar": 20,
