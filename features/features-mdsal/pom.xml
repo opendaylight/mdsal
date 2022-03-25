@@ -323,6 +323,18 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-model-rfc8819</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-model-rfc8819-non-nmda</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
 
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
