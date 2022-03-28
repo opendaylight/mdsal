@@ -54,7 +54,7 @@ public abstract class AbstractBindingLazyContainerNode<T extends DataObject, C> 
     }
 
     @Override
-    public final @NonNull NodeIdentifier getIdentifier() {
+    public @NonNull NodeIdentifier getIdentifier() {
         return identifier;
     }
 

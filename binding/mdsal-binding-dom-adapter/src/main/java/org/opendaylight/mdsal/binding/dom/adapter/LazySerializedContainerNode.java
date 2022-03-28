@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingLazyContainerNode;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -66,6 +67,11 @@ class LazySerializedContainerNode
         public DataContainerChild childByArg(final PathArgument child) {
             // Use pre-cached value of routing field and do not run full serialization if we are accessing it.
             return contextRef.getIdentifier().equals(child) ? contextRef : super.childByArg(child);
+        }
+
+        @Override
+        public @NonNull NodeIdentifier getIdentifier() {
+            return getDelegate().getIdentifier();
         }
     }
 }
