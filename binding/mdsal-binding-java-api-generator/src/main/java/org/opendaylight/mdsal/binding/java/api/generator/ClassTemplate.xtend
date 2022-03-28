@@ -603,7 +603,7 @@ class ClassTemplate extends BaseTemplate {
             public «STRING.importedName» toString() {
                 final «MoreObjects.importedName».ToStringHelper helper = «MoreObjects.importedName».toStringHelper(«type.importedName».class);
                 «FOR property : properties»
-                    «CODEHELPERS.importedName».appendValue(helper, "«property.fieldName»", «property.fieldName»);
+                    «CODEHELPERS.importedName».appendValue(helper, "«property.fieldName.replaceFirst("_", "")»", «property.fieldName»);
                 «ENDFOR»
                 return helper.toString();
             }

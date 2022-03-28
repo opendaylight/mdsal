@@ -349,7 +349,7 @@ class InterfaceTemplate extends BaseTemplate {
         static «STRING.importedName» «BINDING_TO_STRING_NAME»(final «type.fullyQualifiedNonNull» obj) {
             final «MoreObjects.importedName».ToStringHelper helper = «MoreObjects.importedName».toStringHelper("«type.name»");
             «FOR property : typeAnalysis.value»
-                «CODEHELPERS.importedName».appendValue(helper, "«property.name»", obj.«property.getterName»());
+                «CODEHELPERS.importedName».appendValue(helper, "«property.name.replaceFirst("_", "")»", obj.«property.getterName»());
             «ENDFOR»
             «IF augmentable»
                 «CODEHELPERS.importedName».appendAugmentations(helper, "«AUGMENTATION_FIELD»", obj);
