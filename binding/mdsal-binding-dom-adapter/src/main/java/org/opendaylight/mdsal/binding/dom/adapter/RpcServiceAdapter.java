@@ -115,10 +115,12 @@ class RpcServiceAdapter implements InvocationHandler {
 
     private abstract class RpcInvocationStrategy {
         private final @NonNull Absolute outputPath;
+        private final @NonNull QName inputName;
 
         RpcInvocationStrategy(final QName rpcName) {
             this.outputPath = Absolute.of(rpcName, YangConstants.operationOutputQName(rpcName.getModule()).intern())
                     .intern();
+            this.inputName = YangConstants.operationInputQName(rpcName.getModule().intern());
         }
 
         final ListenableFuture<RpcResult<?>> invoke(final DataObject input) {
@@ -129,6 +131,10 @@ class RpcServiceAdapter implements InvocationHandler {
 
         final QName getRpcName() {
             return outputPath.firstNodeIdentifier();
+        }
+
+        final QName getRpcInputName() {
+            return inputName;
         }
 
         ListenableFuture<RpcResult<?>> invoke0(final ContainerNode input) {
@@ -164,7 +170,7 @@ class RpcServiceAdapter implements InvocationHandler {
 
         @Override
         ContainerNode serialize(final DataObject input) {
-            return LazySerializedContainerNode.create(getRpcName(), input, adapterContext.currentSerializer());
+            return LazySerializedContainerNode.create(getRpcInputName(), input, adapterContext.currentSerializer());
         }
     }
 
@@ -190,9 +196,9 @@ class RpcServiceAdapter implements InvocationHandler {
             if (bindingII != null) {
                 final YangInstanceIdentifier yangII = serializer.toCachedYangInstanceIdentifier(bindingII);
                 final LeafNode<?> contextRef = ImmutableNodes.leafNode(contextName, yangII);
-                return LazySerializedContainerNode.withContextRef(getRpcName(), input, contextRef, serializer);
+                return LazySerializedContainerNode.withContextRef(getRpcInputName(), input, contextRef, serializer);
             }
-            return LazySerializedContainerNode.create(getRpcName(), input, serializer);
+            return LazySerializedContainerNode.create(getRpcInputName(), input, serializer);
         }
 
     }
