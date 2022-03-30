@@ -115,10 +115,12 @@ class RpcServiceAdapter implements InvocationHandler {
 
     private abstract class RpcInvocationStrategy {
         private final @NonNull Absolute outputPath;
+        private final @NonNull QName inputQName;
 
         RpcInvocationStrategy(final QName rpcName) {
             this.outputPath = Absolute.of(rpcName, YangConstants.operationOutputQName(rpcName.getModule()).intern())
                     .intern();
+            this.inputQName = YangConstants.operationInputQName(rpcName.getModule().intern());
         }
 
         final ListenableFuture<RpcResult<?>> invoke(final DataObject input) {
@@ -129,6 +131,10 @@ class RpcServiceAdapter implements InvocationHandler {
 
         final QName getRpcName() {
             return outputPath.firstNodeIdentifier();
+        }
+
+        final QName getInputQName() {
+            return inputQName;
         }
 
         ListenableFuture<RpcResult<?>> invoke0(final ContainerNode input) {
@@ -190,7 +196,7 @@ class RpcServiceAdapter implements InvocationHandler {
             if (bindingII != null) {
                 final YangInstanceIdentifier yangII = serializer.toCachedYangInstanceIdentifier(bindingII);
                 final LeafNode<?> contextRef = ImmutableNodes.leafNode(contextName, yangII);
-                return LazySerializedContainerNode.withContextRef(getRpcName(), input, contextRef, serializer);
+                return LazySerializedContainerNode.withContextRef(getInputQName(), input, contextRef, serializer);
             }
             return LazySerializedContainerNode.create(getRpcName(), input, serializer);
         }
