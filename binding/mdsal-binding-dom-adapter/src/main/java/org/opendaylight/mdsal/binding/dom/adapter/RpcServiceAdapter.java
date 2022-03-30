@@ -55,7 +55,7 @@ class RpcServiceAdapter implements InvocationHandler {
             final DOMRpcService domService) {
         this.type = requireNonNull(type);
         this.adapterContext = requireNonNull(adapterContext);
-        this.delegate = requireNonNull(domService);
+        delegate = requireNonNull(domService);
 
         final ImmutableBiMap<Method, RpcDefinition> methods = adapterContext.currentSerializer()
                 .getRpcMethodToSchema(type);
@@ -114,11 +114,13 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private abstract class RpcInvocationStrategy {
+        private final @NonNull NodeIdentifier inputIdentifier;
         private final @NonNull Absolute outputPath;
 
         RpcInvocationStrategy(final QName rpcName) {
-            this.outputPath = Absolute.of(rpcName, YangConstants.operationOutputQName(rpcName.getModule()).intern())
-                    .intern();
+            final var namespace = rpcName.getModule();
+            outputPath = Absolute.of(rpcName, YangConstants.operationOutputQName(namespace).intern()).intern();
+            inputIdentifier = NodeIdentifier.create(YangConstants.operationInputQName(namespace.intern()));
         }
 
         final ListenableFuture<RpcResult<?>> invoke(final DataObject input) {
@@ -127,11 +129,11 @@ class RpcServiceAdapter implements InvocationHandler {
 
         abstract ContainerNode serialize(DataObject input);
 
-        final QName getRpcName() {
-            return outputPath.firstNodeIdentifier();
+        final @NonNull NodeIdentifier inputIdentifier() {
+            return inputIdentifier;
         }
 
-        ListenableFuture<RpcResult<?>> invoke0(final ContainerNode input) {
+        private ListenableFuture<RpcResult<?>> invoke0(final ContainerNode input) {
             final ListenableFuture<? extends DOMRpcResult> result =
                     delegate.invokeRpc(outputPath.firstNodeIdentifier(), input);
             if (ENABLE_CODEC_SHORTCUT && result instanceof BindingRpcFutureAware) {
@@ -164,7 +166,7 @@ class RpcServiceAdapter implements InvocationHandler {
 
         @Override
         ContainerNode serialize(final DataObject input) {
-            return LazySerializedContainerNode.create(getRpcName(), input, adapterContext.currentSerializer());
+            return LazySerializedContainerNode.create(inputIdentifier(), input, adapterContext.currentSerializer());
         }
     }
 
@@ -179,7 +181,7 @@ class RpcServiceAdapter implements InvocationHandler {
             checkState(maybeInputType.isPresent(), "RPC method %s has no input", rpcMethod.getName());
             final Class<? extends DataContainer> inputType = maybeInputType.get();
             refExtractor = ContextReferenceExtractor.from(inputType);
-            this.contextName = new NodeIdentifier(leafName);
+            contextName = new NodeIdentifier(leafName);
         }
 
         @Override
@@ -190,9 +192,9 @@ class RpcServiceAdapter implements InvocationHandler {
             if (bindingII != null) {
                 final YangInstanceIdentifier yangII = serializer.toCachedYangInstanceIdentifier(bindingII);
                 final LeafNode<?> contextRef = ImmutableNodes.leafNode(contextName, yangII);
-                return LazySerializedContainerNode.withContextRef(getRpcName(), input, contextRef, serializer);
+                return LazySerializedContainerNode.withContextRef(inputIdentifier(), input, contextRef, serializer);
             }
-            return LazySerializedContainerNode.create(getRpcName(), input, serializer);
+            return LazySerializedContainerNode.create(inputIdentifier(), input, serializer);
         }
 
     }

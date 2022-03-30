@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -47,20 +48,21 @@ public class LazySerializedContainerNodeTest {
 
         final ImmutableBiMap<?, ?> biMap = bindingTestContext.getCodec().currentSerializer()
                 .getRpcMethodToSchema(OpendaylightTestRpcServiceService.class);
-        final QName rpcName = ((RpcDefinition) biMap.values().iterator().next()).getQName();
+        final NodeIdentifier name = new NodeIdentifier(((RpcDefinition) biMap.values().iterator().next()).getInput()
+            .getQName());
         final LeafNode<?> leafNode = ImmutableLeafNodeBuilder.create().withNodeIdentifier(NodeIdentifier
                 .create(QName.create("", "test"))).withValue("").build();
-        final ContainerNode normalizedNode = LazySerializedContainerNode.create(rpcName, dataObject, codec);
+        final ContainerNode normalizedNode = LazySerializedContainerNode.create(name, dataObject, codec);
         assertNotNull(normalizedNode);
         final LazySerializedContainerNode lazySerializedContainerNode =
-                (LazySerializedContainerNode) LazySerializedContainerNode.withContextRef(rpcName, dataObject, leafNode,
+                (LazySerializedContainerNode) LazySerializedContainerNode.withContextRef(name, dataObject, leafNode,
                         codec);
         assertNotNull(lazySerializedContainerNode);
         assertEquals(leafNode, lazySerializedContainerNode.childByArg(leafNode.getIdentifier()));
         assertNull(lazySerializedContainerNode.childByArg(mock(PathArgument.class)));
 
         assertTrue(lazySerializedContainerNode.body().isEmpty());
-        assertEquals(rpcName, lazySerializedContainerNode.getIdentifier().getNodeType());
+        assertSame(name, lazySerializedContainerNode.getIdentifier());
         assertEquals(dataObject, lazySerializedContainerNode.getDataObject());
     }
 }

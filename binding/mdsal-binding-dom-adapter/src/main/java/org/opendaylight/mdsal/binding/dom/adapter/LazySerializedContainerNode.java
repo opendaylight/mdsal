@@ -9,10 +9,10 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingLazyContainerNode;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -30,19 +30,19 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 class LazySerializedContainerNode
         extends AbstractBindingLazyContainerNode<DataObject, BindingNormalizedNodeSerializer> {
 
-    private LazySerializedContainerNode(final QName identifier, final DataObject binding,
+    private LazySerializedContainerNode(final @NonNull NodeIdentifier identifier, final DataObject binding,
             final BindingNormalizedNodeSerializer codec) {
-        super(NodeIdentifier.create(identifier), binding, requireNonNull(codec));
+        super(identifier, binding, requireNonNull(codec));
     }
 
-    static ContainerNode create(final QName rpcName, final DataObject data,
+    static ContainerNode create(final @NonNull NodeIdentifier identifier, final DataObject data,
             final BindingNormalizedNodeSerializer codec) {
-        return data == null ? null : new LazySerializedContainerNode(rpcName, data, codec);
+        return data == null ? null : new LazySerializedContainerNode(identifier, data, codec);
     }
 
-    static ContainerNode withContextRef(final QName rpcName, final DataObject data,
+    static ContainerNode withContextRef(final @NonNull NodeIdentifier identifier, final DataObject data,
             final LeafNode<?> contextRef, final BindingNormalizedNodeSerializer serializer) {
-        return new WithContextRef(rpcName, data, contextRef, serializer);
+        return new WithContextRef(identifier, data, contextRef, serializer);
     }
 
     @Override
@@ -56,8 +56,8 @@ class LazySerializedContainerNode
     private static final class WithContextRef extends LazySerializedContainerNode {
         private final LeafNode<?> contextRef;
 
-        protected WithContextRef(final QName identifier, final DataObject binding, final LeafNode<?> contextRef,
-                final BindingNormalizedNodeSerializer codec) {
+        protected WithContextRef(final @NonNull NodeIdentifier identifier, final DataObject binding,
+                final LeafNode<?> contextRef, final BindingNormalizedNodeSerializer codec) {
             super(identifier, binding, codec);
             this.contextRef = requireNonNull(contextRef);
         }
