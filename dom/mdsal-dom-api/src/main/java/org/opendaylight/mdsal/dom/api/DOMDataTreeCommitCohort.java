@@ -55,7 +55,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  * Implementation may opt-out from receiving {@code preCommit()}, {@code commit()}, {@code abort()}
  * callbacks by returning {@link PostCanCommitStep#NOOP}.
  *
- * <p>
  * @author Tony Tkacik
  */
 // TODO: Provide example and describe more usage patterns
