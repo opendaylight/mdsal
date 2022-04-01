@@ -37,6 +37,7 @@ public interface DOMActionAvailabilityExtension extends DOMActionServiceExtensio
      * <p>
      * Implementations are encouraged to take reasonable precautions to prevent this scenario from occurring.
      *
+     * @param <T> Listener type
      * @param listener {@link AvailabilityListener} instance to register
      * @return A {@link ListenerRegistration} representing this registration. Performing a
      *         {@link ListenerRegistration#close()} will cancel it.
