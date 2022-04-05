@@ -137,7 +137,7 @@ public interface NotificationService extends BindingService {
      * interface which extends {@link Notification}. Each listener instance can listen to only a single notification
      * type.
      *
-     * @param N Notification type
+     * @param <N> Notification type
      */
     @FunctionalInterface
     interface Listener<N extends Notification<N> & DataObject> extends EventListener {
