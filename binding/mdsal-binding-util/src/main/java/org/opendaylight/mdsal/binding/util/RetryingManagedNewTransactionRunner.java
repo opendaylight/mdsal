@@ -18,7 +18,7 @@ import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 /**
  * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries.
  *
- * <h3>Details about the threading model used by this class</h3>
+ * <h2>Details about the threading model used by this class</h2>
  *
  * <p>This class runs the first attempt to call the delegated {@link ManagedNewTransactionRunner},
  * which typically is a {@link ManagedNewTransactionRunnerImpl} which safely invokes {@link WriteTransaction#commit()},
