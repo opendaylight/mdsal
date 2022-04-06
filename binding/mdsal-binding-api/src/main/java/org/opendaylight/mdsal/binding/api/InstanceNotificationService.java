@@ -16,7 +16,9 @@ import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceNotification;
+import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyedListNotification;
 
 /**
@@ -26,23 +28,22 @@ import org.opendaylight.yangtools.yang.binding.KeyedListNotification;
 @Beta
 public interface InstanceNotificationService extends BindingService {
 
-    <P extends DataObject, N extends InstanceNotification<N, P>, T extends Listener<P, N>>
-        @NonNull Registration registerListener(InstanceNotificationSpec<N, P> spec, DataTreeIdentifier<P> path,
-            T listener, Executor executor);
+    <P extends DataObject, N extends InstanceNotification<N, P>> @NonNull Registration registerListener(
+        InstanceNotificationSpec<N, P> spec, InstanceIdentifier<P> path, Listener<P, N> listener, Executor executor);
 
-    default <P extends DataObject, N extends InstanceNotification<N, P>, T extends Listener<P, N>>
-        @NonNull Registration registerListener(final InstanceNotificationSpec<N, P> spec,
-            final DataTreeIdentifier<P> path, final T listener) {
+    default <P extends DataObject, N extends InstanceNotification<N, P>> @NonNull Registration registerListener(
+            final InstanceNotificationSpec<N, P> spec, final InstanceIdentifier<P> path,
+            final Listener<P, N> listener) {
         return registerListener(spec, path, listener, MoreExecutors.directExecutor());
     }
 
-    <P extends DataObject & Identifiable<K>, N extends KeyedListNotification<N, P, K>, K extends Identifier<P>,
-        T extends KeyedListListener<P, N, K>> @NonNull Registration registerListener(
-            InstanceNotificationSpec<N, P> spec, DataTreeIdentifier<P> path, T listener, Executor executor);
+    <P extends DataObject & Identifiable<K>, N extends KeyedListNotification<N, P, K>, K extends Identifier<P>>
+        @NonNull Registration registerListener(InstanceNotificationSpec<N, P> spec, InstanceIdentifier<P> path,
+            KeyedListListener<P, N, K> listener, Executor executor);
 
-    default <P extends DataObject & Identifiable<K>, N extends KeyedListNotification<N, P, K>, K extends Identifier<P>,
-        T extends KeyedListListener<P, N, K>> @NonNull Registration registerListener(
-            final InstanceNotificationSpec<N, P> spec, final DataTreeIdentifier<P> path, final T listener) {
+    default <P extends DataObject & Identifiable<K>, N extends KeyedListNotification<N, P, K>, K extends Identifier<P>>
+            @NonNull Registration registerListener(final InstanceNotificationSpec<N, P> spec,
+                final KeyedInstanceIdentifier<P, K> path, final KeyedListListener<P, N, K> listener) {
         return registerListener(spec, path, listener, MoreExecutors.directExecutor());
     }
 
@@ -57,7 +58,7 @@ public interface InstanceNotificationService extends BindingService {
          * @param path Instance path
          * @param notification Notification body
          */
-        void onNotification(@NonNull DataTreeIdentifier<P> path, @NonNull N notification);
+        void onNotification(@NonNull InstanceIdentifier<P> path, @NonNull N notification);
     }
 
     /**
@@ -72,7 +73,6 @@ public interface InstanceNotificationService extends BindingService {
          * @param path Instance path
          * @param notification Notification body
          */
-        // FIXME: DataTreeIdentifier does not have a Keyed flavor
-        void onNotification(@NonNull DataTreeIdentifier<P> path, @NonNull N notification);
+        void onNotification(@NonNull KeyedInstanceIdentifier<P, K> path, @NonNull N notification);
     }
 }

@@ -16,6 +16,8 @@ import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.InstanceNotificationPublishService;
+import org.opendaylight.mdsal.binding.api.InstanceNotificationService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
@@ -31,6 +33,9 @@ public abstract class BindingDOMAdapterLoader extends AdapterLoader<BindingServi
             .put(RpcConsumerRegistry.class, BindingDOMRpcServiceAdapter.BUILDER_FACTORY)
             .put(ActionService.class, ActionServiceAdapter.BUILDER_FACTORY)
             .put(ActionProviderService.class, ActionProviderServiceAdapter.BUILDER_FACTORY)
+            .put(InstanceNotificationService.class, InstanceNotificationServiceAdapter.BUILDER_FACTORY)
+            .put(InstanceNotificationPublishService.class,
+                InstanceNotificationPublishServiceAdapter.BUILDER_FACTORY)
             .build();
 
     private final AdapterContext codec;
