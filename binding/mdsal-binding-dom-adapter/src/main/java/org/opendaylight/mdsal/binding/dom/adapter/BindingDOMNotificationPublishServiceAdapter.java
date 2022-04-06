@@ -11,7 +11,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.time.Instant;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
@@ -20,7 +19,6 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Facto
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMService;
-import org.opendaylight.yangtools.yang.binding.EventInstantAware;
 import org.opendaylight.yangtools.yang.binding.Notification;
 
 @VisibleForTesting
@@ -57,9 +55,7 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
     }
 
     private @NonNull DOMNotification toDomNotification(final Notification<?> notification) {
-        final Instant instant = notification instanceof EventInstantAware
-                ? ((EventInstantAware) notification).eventInstant() : Instant.now();
-        return LazySerializedDOMNotification.create(currentSerializer(), notification, instant);
+        return new LazySerializedNotification(currentSerializer(), notification);
     }
 
     private static @NonNull ListenableFuture<? extends Object> toBindingResult(
