@@ -19,10 +19,13 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableBiMap;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.api.InstanceNotificationSpec;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
@@ -41,6 +44,7 @@ import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ListEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.slf4j.Logger;
@@ -87,9 +91,26 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     }
 
     @NonNull Absolute getActionPath(final @NonNull ActionSpec<?, ?> spec) {
+        final var entry = resolvePath(spec.path());
+        final var stack = entry.getKey();
+        final var stmt = stack.enterSchemaTree(BindingReflections.findQName(spec.type()).bindTo(entry.getValue()));
+        verify(stmt instanceof ActionEffectiveStatement, "Action %s resolved to unexpected statement %s", spec, stmt);
+        return stack.toSchemaNodeIdentifier();
+    }
+
+    @NonNull Absolute getNotificationPath(final @NonNull InstanceNotificationSpec<?, ?> spec) {
+        final var entry = resolvePath(spec.path());
+        final var stack = entry.getKey();
+        final var stmt = stack.enterSchemaTree(BindingReflections.findQName(spec.type()).bindTo(entry.getValue()));
+        verify(stmt instanceof NotificationEffectiveStatement, "Notification %s resolved to unexpected statement %s",
+            spec, stmt);
+        return stack.toSchemaNodeIdentifier();
+    }
+
+    private @NonNull Entry<SchemaInferenceStack, QNameModule> resolvePath(final @NonNull InstanceIdentifier<?> path) {
         final var stack = SchemaInferenceStack.of(getRuntimeContext().getEffectiveModelContext());
-        final var it = toYangInstanceIdentifier(spec.path()).getPathArguments().iterator();
-        verify(it.hasNext(), "Unexpected empty instance identifier for %s", spec);
+        final var it = toYangInstanceIdentifier(path).getPathArguments().iterator();
+        verify(it.hasNext(), "Unexpected empty instance identifier for %s", path);
 
         QNameModule lastNamespace;
         do {
@@ -106,18 +127,16 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
             lastNamespace = qname.getModule();
             if (stmt instanceof ListEffectiveStatement) {
                 // Lists have two steps
-                verify(it.hasNext(), "Unexpected list termination at %s in %s", stmt, spec);
+                verify(it.hasNext(), "Unexpected list termination at %s in %s", stmt, path);
                 // Verify just to make sure we are doing the right thing
                 final var skipped = it.next();
-                verify(skipped instanceof NodeIdentifier, "Unexpected skipped list entry item %s in %s", skipped, spec);
+                verify(skipped instanceof NodeIdentifier, "Unexpected skipped list entry item %s in %s", skipped, path);
                 verify(stmt.argument().equals(skipped.getNodeType()), "Mismatched list entry item %s in %s", skipped,
-                    spec);
+                    path);
             }
         } while (it.hasNext());
 
-        final var stmt = stack.enterSchemaTree(BindingReflections.findQName(spec.type()).bindTo(lastNamespace));
-        verify(stmt instanceof ActionEffectiveStatement, "Action %s resolved to unexpected statement %s", spec, stmt);
-        return stack.toSchemaNodeIdentifier();
+        return Map.entry(stack, lastNamespace);
     }
 
     // FIXME: This should be probably part of Binding Runtime context
