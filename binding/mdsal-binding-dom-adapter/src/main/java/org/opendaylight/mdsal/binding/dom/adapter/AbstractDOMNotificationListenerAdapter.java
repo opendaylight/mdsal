@@ -36,10 +36,10 @@ abstract class AbstractDOMNotificationListenerAdapter implements DOMNotification
     abstract Set<Absolute> getSupportedNotifications();
 
     private Notification<?> deserialize(final DOMNotification notification) {
-        if (notification instanceof LazySerializedDOMNotification) {
+        if (notification instanceof LazySerializedNotification) {
             // TODO: This is a routed-back notification, for which we may end up losing event time here, but that is
             //       okay, for now at least.
-            return ((LazySerializedDOMNotification) notification).getBindingData();
+            return ((LazySerializedNotification) notification).getBindingData();
         }
 
         final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
