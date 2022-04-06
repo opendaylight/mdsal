@@ -24,6 +24,7 @@ import org.opendaylight.yangtools.yang.binding.EventInstantAware;
 import org.opendaylight.yangtools.yang.binding.Notification;
 
 @VisibleForTesting
+// FIXME: 10.0.0: make this class final
 public class BindingDOMNotificationPublishServiceAdapter extends AbstractBindingAdapter<DOMNotificationPublishService>
         implements NotificationPublishService {
 
@@ -34,6 +35,7 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
         super(adapterContext, domPublishService);
     }
 
+    @Deprecated(forRemoval = true, since = "9.0.2")
     public DOMNotificationPublishService getDomPublishService() {
         return getDelegate();
     }
@@ -45,20 +47,13 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
 
     @Override
     public ListenableFuture<? extends Object> offerNotification(final Notification<?> notification) {
-        ListenableFuture<?> offerResult = getDelegate().offerNotification(toDomNotification(notification));
-        return DOMNotificationPublishService.REJECTED.equals(offerResult)
-                ? NotificationPublishService.REJECTED
-                : offerResult;
+        return toBindingResult(getDelegate().offerNotification(toDomNotification(notification)));
     }
 
     @Override
     public ListenableFuture<? extends Object> offerNotification(final Notification<?> notification, final int timeout,
             final TimeUnit unit) throws InterruptedException {
-        ListenableFuture<?> offerResult = getDelegate().offerNotification(toDomNotification(notification), timeout,
-            unit);
-        return DOMNotificationPublishService.REJECTED.equals(offerResult)
-                ? NotificationPublishService.REJECTED
-                : offerResult;
+        return toBindingResult(getDelegate().offerNotification(toDomNotification(notification), timeout, unit));
     }
 
     private @NonNull DOMNotification toDomNotification(final Notification<?> notification) {
@@ -67,6 +62,13 @@ public class BindingDOMNotificationPublishServiceAdapter extends AbstractBinding
         return LazySerializedDOMNotification.create(currentSerializer(), notification, instant);
     }
 
+    private static @NonNull ListenableFuture<? extends Object> toBindingResult(
+            final @NonNull ListenableFuture<? extends Object> domResult) {
+        return DOMNotificationPublishService.REJECTED.equals(domResult) ? NotificationPublishService.REJECTED
+            : domResult;
+    }
+
+    // FIXME: 10.0.0: hide this class and make it final
     protected static class Builder extends BindingDOMAdapterBuilder<NotificationPublishService> {
         Builder(final AdapterContext adapterContext) {
             super(adapterContext);

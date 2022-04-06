@@ -26,6 +26,7 @@ import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
 @VisibleForTesting
+// FIXME: 10.0.0: make this class final
 public class BindingDOMNotificationServiceAdapter implements NotificationService {
     public static final Factory<NotificationService> BUILDER_FACTORY = Builder::new;
 
