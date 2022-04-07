@@ -733,6 +733,8 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
                     builder.addEnclosingTransferObject(subBits);
                     generatedType = subBits;
                 } else if (TypeDefinitions.IDENTITYREF.equals(subName)) {
+                    final var name = stmt.effectiveSubstatements().get(0);
+                    propSource = ((QName) name.argument()).getLocalName();
                     generatedType = verifyNotNull(dependencies.identityTypes.get(stmt),
                         "Cannot resolve identityref %s in %s", stmt, definingStatement)
                         .methodReturnType(builderFactory);

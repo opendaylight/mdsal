@@ -50,7 +50,7 @@ public class UnionTypeWithIdentityrefTest extends AbstractBindingCodecTest {
         DataObject unionNodeObj = createValueNode(IDENT_ONE_STRING);
         UnionType unionTypeObj = ((UnionNode) unionNodeObj).getValue();
         assertEquals(null, unionTypeObj.getUint8());
-        assertEquals(IdentOne.class, unionTypeObj.getIdentityref());
+        assertEquals(IdentOne.class, unionTypeObj.getIdentBase());
     }
 
     @Test
@@ -58,6 +58,6 @@ public class UnionTypeWithIdentityrefTest extends AbstractBindingCodecTest {
         DataObject unionNodeObj = createValueNode("1");
         UnionType unionTypeObj = ((UnionNode) unionNodeObj).getValue();
         assertEquals(Uint8.valueOf(1), unionTypeObj.getUint8());
-        assertEquals(null, unionTypeObj.getIdentityref());
+        assertEquals(null, unionTypeObj.getIdentBase());
     }
 }

@@ -49,7 +49,7 @@ public class UnionWithIdentityrefTest extends BaseCompilationTest {
         Object actualUint8 = getUint8.invoke(unionType);
         assertNull(actualUint8);
 
-        Method getIdentityref = unionTypeClass.getDeclaredMethod("getIdentityref");
+        Method getIdentityref = unionTypeClass.getDeclaredMethod("getIdentBase");
         Object actualIdentityref = getIdentityref.invoke(unionType);
         assertEquals(identOneClass, actualIdentityref);
 

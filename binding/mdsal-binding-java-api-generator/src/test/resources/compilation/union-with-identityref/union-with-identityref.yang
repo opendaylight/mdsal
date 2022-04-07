@@ -21,10 +21,15 @@ module union-with-identityref {
     identity ident-two {
         base ident-base;
     }
+    identity test-one {
+      description
+        "base identity for client phy code.";
+    }
 
     typedef union-type {
         type union {
             type uint8;
+            type identityref { base test-one; }
             type identityref {
                 base ident-base;
             }
