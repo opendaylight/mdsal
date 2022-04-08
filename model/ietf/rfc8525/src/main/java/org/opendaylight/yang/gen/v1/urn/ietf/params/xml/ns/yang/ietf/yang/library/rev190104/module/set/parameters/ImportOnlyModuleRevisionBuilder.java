@@ -9,7 +9,7 @@ public final class ImportOnlyModuleRevisionBuilder {
     private static final Revision EMPTY_REVISION = new Revision("");
 
     private ImportOnlyModuleRevisionBuilder() {
-
+        // Hidden on purpose
     }
 
     /**
