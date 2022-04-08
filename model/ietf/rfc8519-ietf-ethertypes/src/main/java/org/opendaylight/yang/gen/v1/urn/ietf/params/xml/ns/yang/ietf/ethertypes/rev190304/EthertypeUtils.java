@@ -20,7 +20,10 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.ethertypes.rev190304.Ethertype.Enumeration;
 
-public final class EthertypeBuilder {
+/**
+ * Utility methods for dealing with {@link Ethertype}.
+ */
+public final class EthertypeUtils {
     private static final CharMatcher DIGITS = CharMatcher.inRange('0', '9');
     private static final EnumMap<Enumeration, Ethertype> ENUM_ETHERTYPES;
 
@@ -32,7 +35,7 @@ public final class EthertypeBuilder {
         ENUM_ETHERTYPES = map;
     }
 
-    private EthertypeBuilder() {
+    private EthertypeUtils() {
         //Exists only to defeat instantiation.
     }
 
