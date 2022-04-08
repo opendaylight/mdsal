@@ -8,22 +8,13 @@
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 
-import java.lang.reflect.Constructor;
 import org.junit.Test;
 
 public class HostBuilderTest {
-
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor<HostBuilder> constructor = HostBuilder.class.getDeclaredConstructor();
-        assertFalse(constructor.isAccessible());
-        constructor.setAccessible(true);
-        final HostBuilder newInstance = constructor.newInstance();
-        assertNotNull(newInstance);
-
         testIpv4("1.1.1.1");
         testIpv4("192.168.155.100");
         testIpv4("1.192.1.221");
@@ -44,9 +35,9 @@ public class HostBuilderTest {
         testDomain("test");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIllegalArgumentException1() {
-        HostBuilder.getDefaultInstance("2001:0DB8::CD3/60");
+        assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.hostFor("2001:0DB8::CD3/60"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -55,17 +46,17 @@ public class HostBuilderTest {
     }
 
     private static void testIpv4(final String ip) {
-        final Host defaultInstance = HostBuilder.getDefaultInstance(ip);
+        final Host defaultInstance = IetfInetUtil.hostFor(ip);
         assertEquals(new Host(new IpAddress(new Ipv4Address(ip))), defaultInstance);
     }
 
     private static void testIpv6(final String ip) {
-        final Host defaultInstance = HostBuilder.getDefaultInstance(ip);
+        final Host defaultInstance = IetfInetUtil.hostFor(ip);
         assertEquals(new Host(new IpAddress(new Ipv6Address(ip))), defaultInstance);
     }
 
     private static void testDomain(final String ip) {
-        final Host defaultInstance = HostBuilder.getDefaultInstance(ip);
+        final Host defaultInstance = IetfInetUtil.hostFor(ip);
         assertEquals(new Host(new DomainName(ip)), defaultInstance);
     }
 }

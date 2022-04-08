@@ -8,38 +8,27 @@
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 
-import java.lang.reflect.Constructor;
 import org.junit.Test;
 
 public class IpPrefixBuilderTest {
-
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor<IpPrefixBuilder> constructor = IpPrefixBuilder.class.getDeclaredConstructor();
-        assertFalse(constructor.isAccessible());
-        constructor.setAccessible(true);
-        final IpPrefixBuilder newInstance = constructor.newInstance();
-        assertNotNull(newInstance);
-
         testIpv6("ff00::/8");
         testIpv4("192.0.2.1/24");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIllegalArgumentException1() {
-        IpPrefixBuilder.getDefaultInstance("badIp");
+        assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.ipPrefixFor("badIp"));
     }
 
     private static void testIpv4(final String ip) {
-        final IpPrefix defaultInstance = IpPrefixBuilder.getDefaultInstance(ip);
-        assertEquals(new IpPrefix(new Ipv4Prefix(ip)), defaultInstance);
+        assertEquals(new IpPrefix(new Ipv4Prefix(ip)), IetfInetUtil.ipPrefixFor(ip));
     }
 
     private static void testIpv6(final String ip) {
-        final IpPrefix defaultInstance = IpPrefixBuilder.getDefaultInstance(ip);
-        assertEquals(new IpPrefix(new Ipv6Prefix(ip)), defaultInstance);
+        assertEquals(new IpPrefix(new Ipv6Prefix(ip)), IetfInetUtil.ipPrefixFor(ip));
     }
 }

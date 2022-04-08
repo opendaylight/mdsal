@@ -8,22 +8,13 @@
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 
-import java.lang.reflect.Constructor;
 import org.junit.Test;
 
 public class IpAddressNoZoneBuilderTest {
-
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor<IpAddressNoZoneBuilder> constructor = IpAddressNoZoneBuilder.class.getDeclaredConstructor();
-        assertFalse(constructor.isAccessible());
-        constructor.setAccessible(true);
-        final IpAddressNoZoneBuilder newInstance = constructor.newInstance();
-        assertNotNull(newInstance);
-
         testIpv4("1.1.1.1");
         testIpv4("192.168.155.100");
         testIpv4("1.192.1.221");
@@ -41,18 +32,16 @@ public class IpAddressNoZoneBuilderTest {
         testIpv6("::");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIllegalArgumentException() {
-        IpAddressNoZoneBuilder.getDefaultInstance("2001:0DB8::CD3/60");
+        assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.ipAddressNoZoneFor("2001:0DB8::CD3/60"));
     }
 
     private static void testIpv4(final String ip) {
-        final IpAddressNoZone defaultInstance = IpAddressNoZoneBuilder.getDefaultInstance(ip);
-        assertEquals(new IpAddressNoZone(new Ipv4AddressNoZone(ip)), defaultInstance);
+        assertEquals(new IpAddressNoZone(new Ipv4AddressNoZone(ip)), IetfInetUtil.ipAddressNoZoneFor(ip));
     }
 
     private static void testIpv6(final String ip) {
-        final IpAddressNoZone defaultInstance = IpAddressNoZoneBuilder.getDefaultInstance(ip);
-        assertEquals(new IpAddressNoZone(new Ipv6AddressNoZone(ip)), defaultInstance);
+        assertEquals(new IpAddressNoZone(new Ipv6AddressNoZone(ip)), IetfInetUtil.ipAddressNoZoneFor(ip));
     }
 }

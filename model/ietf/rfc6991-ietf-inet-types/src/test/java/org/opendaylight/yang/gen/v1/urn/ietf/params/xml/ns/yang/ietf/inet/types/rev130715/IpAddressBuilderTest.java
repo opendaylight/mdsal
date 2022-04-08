@@ -8,22 +8,13 @@
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 
-import java.lang.reflect.Constructor;
 import org.junit.Test;
 
 public class IpAddressBuilderTest {
-
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor<IpAddressBuilder> constructor = IpAddressBuilder.class.getDeclaredConstructor();
-        assertFalse(constructor.isAccessible());
-        constructor.setAccessible(true);
-        final IpAddressBuilder newInstance = constructor.newInstance();
-        assertNotNull(newInstance);
-
         testIpv4("1.1.1.1");
         testIpv4("192.168.155.100");
         testIpv4("1.192.1.221");
@@ -41,23 +32,23 @@ public class IpAddressBuilderTest {
         testIpv6("::");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIllegalArgumentException1() {
-        IpAddressBuilder.getDefaultInstance("badIp");
+        assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.ipAddressFor("badIp"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIllegalArgumentException2() {
-        IpAddressBuilder.getDefaultInstance("2001:0DB8::CD3/60");
+        assertThrows(IllegalArgumentException.class, () -> IetfInetUtil.ipAddressFor("2001:0DB8::CD3/60"));
     }
 
     private static void testIpv4(final String ip) {
-        final IpAddress defaultInstance = IpAddressBuilder.getDefaultInstance(ip);
+        final IpAddress defaultInstance = IetfInetUtil.ipAddressFor(ip);
         assertEquals(new IpAddress(new Ipv4Address(ip)), defaultInstance);
     }
 
     private static void testIpv6(final String ip) {
-        final IpAddress defaultInstance = IpAddressBuilder.getDefaultInstance(ip);
+        final IpAddress defaultInstance = IetfInetUtil.ipAddressFor(ip);
         assertEquals(new IpAddress(new Ipv6Address(ip)), defaultInstance);
     }
 }
