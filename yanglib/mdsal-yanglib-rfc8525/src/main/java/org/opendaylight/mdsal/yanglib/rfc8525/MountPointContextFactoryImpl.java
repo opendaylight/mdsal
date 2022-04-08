@@ -27,13 +27,13 @@ import org.opendaylight.mdsal.yanglib.api.SchemaContextResolver;
 import org.opendaylight.mdsal.yanglib.api.SourceReference;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Operational;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.LegacyRevisionUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.ModulesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.RevisionIdentifier;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.RevisionUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.YangLibrary;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.CommonLeafs;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.CommonLeafsRevisionBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.list.Module.ConformanceType;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.module.set.parameters.ImportOnlyModuleRevisionBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.Datastore;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.DatastoreKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.ModuleSet;
@@ -179,7 +179,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     @SuppressWarnings("deprecation")
     private static SourceReference sourceRefFor(final CommonLeafs obj, final Uri uri) {
         final var sourceId = RevisionSourceIdentifier.create(obj.getName().getValue(),
-            CommonLeafsRevisionBuilder.toYangCommon(obj.getRevision()));
+            LegacyRevisionUtils.toYangCommon(obj.getRevision()));
         if (uri != null) {
             try {
                 return SourceReference.of(sourceId, new URL(uri.getValue()));
@@ -204,7 +204,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
         // TODO: take deviations/features into account
 
         for (var mod : modSet.nonnullImportOnlyModule().values()) {
-            fillSource(librarySources, mod.getName(), ImportOnlyModuleRevisionBuilder.toYangCommon(mod.getRevision()),
+            fillSource(librarySources, mod.getName(), RevisionUtils.toYangCommon(mod.getRevision()),
                 mod.getLocation());
             mod.nonnullSubmodule().values().forEach(sub -> {
                 fillSource(librarySources, sub.getName(), toYangCommon(sub.getRevision()), sub.getLocation());
