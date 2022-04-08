@@ -17,7 +17,7 @@ public final class CommonLeafsRevisionBuilder {
     private static final Revision EMPTY_REVISION = new Revision("");
 
     private CommonLeafsRevisionBuilder() {
-
+        // Hidden on purpose
     }
 
     /**
