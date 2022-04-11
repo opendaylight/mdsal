@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f28c0824_86efdcb2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 61
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-04-11T12:03:07Z",
+      "side": 1,
+      "message": "I will rebase/review this once we have the next major version open -- ETA next week, perhaps sooner.",
+      "revId": "199198bf332ffa55c0c83e2cd49855186240ea9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
