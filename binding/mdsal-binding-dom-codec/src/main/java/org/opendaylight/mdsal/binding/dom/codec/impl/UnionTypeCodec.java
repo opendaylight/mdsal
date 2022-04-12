@@ -20,11 +20,12 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeGeneratedUnion;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
+import org.opendaylight.yangtools.concepts.AbstractIllegalArgumentCodec;
 import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 
-final class UnionTypeCodec extends ValueTypeCodec {
+final class UnionTypeCodec extends AbstractIllegalArgumentCodec<Object, Object> {
     private final ImmutableSet<UnionValueOptionContext> typeCodecs;
     private final Class<?> unionClass;
 
@@ -69,7 +70,7 @@ final class UnionTypeCodec extends ValueTypeCodec {
     }
 
     @Override
-    public Object deserialize(final Object input) {
+    protected Object deserializeImpl(final Object input) {
         for (final UnionValueOptionContext member : typeCodecs) {
             final Object ret = member.deserializeUnion(input);
             if (ret != null) {
@@ -82,7 +83,7 @@ final class UnionTypeCodec extends ValueTypeCodec {
     }
 
     @Override
-    public Object serialize(final Object input) {
+    protected Object serializeImpl(final Object input) {
         for (final UnionValueOptionContext valCtx : typeCodecs) {
             final Object domValue = valCtx.serialize(input);
             if (domValue != null) {
