@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e93b085d_10e45fb6",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/CodecDataObjectGenerator.java",
+        "patchSetId": 63
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-04-14T19:21:44Z",
+      "side": 1,
+      "message": "err, no, this implementation should not depend on the implementation provided builders -- we are perfectly capable of creating our own empty objects, aren\u0027t we?\n\nEven if it could, those magic strings would have to be captured in proper API contract constants.",
+      "range": {
+        "startLine": 499,
+        "startChar": 20,
+        "endLine": 499,
+        "endChar": 86
+      },
+      "revId": "1357957e48ccc6f09719c861b72d65f3988bc901",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
