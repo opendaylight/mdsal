@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import org.opendaylight.yangtools.concepts.IllegalArgumentCodec;
 
 final class CompositeValueCodec extends ValueTypeCodec {
@@ -15,10 +17,14 @@ final class CompositeValueCodec extends ValueTypeCodec {
     // FIXME: this is probably not right w.r.t. null
     private final IllegalArgumentCodec bindingToDom;
 
-    CompositeValueCodec(final SchemaUnawareCodec extractor,
-            @SuppressWarnings("rawtypes") final IllegalArgumentCodec delegate) {
-        this.bindingToSimpleType = extractor;
-        this.bindingToDom = delegate;
+    CompositeValueCodec(final Class<?> valueType, final IdentityCodec codec) {
+        bindingToSimpleType = EncapsulatedValueCodec.ofUnchecked(valueType);
+        bindingToDom = requireNonNull(codec);
+    }
+
+    CompositeValueCodec(final Class<?> valueType, final InstanceIdentifierCodec codec) {
+        bindingToSimpleType = EncapsulatedValueCodec.ofUnchecked(valueType);
+        bindingToDom = requireNonNull(codec);
     }
 
     @SuppressWarnings("unchecked")
