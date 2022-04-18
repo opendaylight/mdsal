@@ -33,7 +33,7 @@
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-artifacts</artifactId>
+                <artifactId>dom-parent</artifactId>
                 <version>10.0.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
