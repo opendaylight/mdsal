@@ -469,14 +469,6 @@
             <version>5.8.0</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Used by ByteBuddy -->
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>3.0.2</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -603,9 +595,6 @@
                 </executions>
                 <!-- FIXME: remove this section once we can activate javadoc-links profile -->
                 <configuration combine.children="append">
-                    <!-- byte-buddy's sources fail with JDK17 -->
-                    <doclint>-html</doclint>
-
                     <links>
                         <link>https://junit.org/junit4/javadoc/4.13/</link>
                         <link>http://hamcrest.org/JavaHamcrest/javadoc/2.2/</link>
