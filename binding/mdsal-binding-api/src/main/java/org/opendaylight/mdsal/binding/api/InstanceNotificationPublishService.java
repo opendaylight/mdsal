@@ -40,11 +40,12 @@ public interface InstanceNotificationPublishService extends BindingService {
      * Interface for publishing {@link InstanceNotification} of a particular type bound to an instantiation. There are
      * three methods of submission, following the patters from {@link java.util.concurrent.BlockingQueue}:
      * <ul>
-     *   <li>{@link #putNotification(InstanceNotification)}, which may block indefinitely if the implementation cannot
-     *       allocate resources to accept the notification,</li>
-     *   <li>{@link #offerNotification(InstanceNotification)}, which does not block if face of resource starvation,</li>
-     *   <li>{@link #offerNotification(InstanceNotification, int, TimeUnit)}, which may block for specified time if
-     *       resources are thin.</li>
+     *   <li>{@link #putNotification(InstanceIdentifier, InstanceNotification)}, which may block indefinitely if the
+     *       implementation cannot allocate resources to accept the notification,</li>
+     *   <li>{@link #offerNotification(InstanceIdentifier, InstanceNotification)}, which does not block if face of
+     *       resource starvation,</li>
+     *   <li>{@link #offerNotification(InstanceIdentifier, InstanceNotification, int, TimeUnit)}, which may block for
+     *       specified time if resources are thin.</li>
      * </ul>
      *
      * <p>
