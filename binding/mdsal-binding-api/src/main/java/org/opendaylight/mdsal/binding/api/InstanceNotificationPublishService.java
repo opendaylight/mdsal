@@ -44,7 +44,7 @@ public interface InstanceNotificationPublishService extends BindingService {
      *       implementation cannot allocate resources to accept the notification,</li>
      *   <li>{@link #offerNotification(InstanceIdentifier, InstanceNotification)}, which does not block if face of
      *       resource starvation,</li>
-     *   <li>{@link #offerNotification(InstanceIdentifier, InstanceNotification, int, TimeUnit)}, which may block for
+     *   <li>{@link #offerNotification(InstanceIdentifier, InstanceNotification, long, TimeUnit)}, which may block for
      *       specified time if resources are thin.</li>
      * </ul>
      *
