@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 
 import java.util.Arrays;
+import java.util.HexFormat;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
@@ -112,8 +113,7 @@ final class Ipv6Utils {
              * the regexp has already verified that we are not being fed
              * anything bigger than 0xffff between the separators.
              */
-            final int chval = AbstractIetfYangUtil.hexValue(ch);
-            val = val << 4 | chval;
+            val = (val << 4) + HexFormat.fromHexDigit(ch);
             haveVal = true;
         }
 

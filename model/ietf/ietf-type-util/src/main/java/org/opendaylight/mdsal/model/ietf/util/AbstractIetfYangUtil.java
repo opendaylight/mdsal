@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.annotations.Beta;
-import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.UUID;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
@@ -25,26 +25,8 @@ import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
 @Beta
 public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
     private static final int MAC_BYTE_LENGTH = 6;
-    private static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
+    private static final HexFormat COLON_HEXFORMAT = HexFormat.ofDelimiter(":");
     private static final byte @NonNull[] EMPTY_BYTES = new byte[0];
-    private static final byte @NonNull[] HEX_VALUES;
-
-    static {
-        final byte[] b = new byte['f' + 1];
-        Arrays.fill(b, (byte)-1);
-
-        for (char c = '0'; c <= '9'; ++c) {
-            b[c] = (byte)(c - '0');
-        }
-        for (char c = 'A'; c <= 'F'; ++c) {
-            b[c] = (byte)(c - 'A' + 10);
-        }
-        for (char c = 'a'; c <= 'f'; ++c) {
-            b[c] = (byte)(c - 'a' + 10);
-        }
-
-        HEX_VALUES = b;
-    }
 
     private final StringValueObjectFactory<M> macFactory;
     private final StringValueObjectFactory<P> physFactory;
@@ -82,9 +64,8 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
      * @throws IllegalArgumentException if length of input is not 6 bytes
      */
     public final @NonNull M macAddressFor(final byte @NonNull[] bytes) {
-        checkArgument(bytes.length == MAC_BYTE_LENGTH, "MAC address should have 6 bytes, not %s",
-                bytes.length);
-        return macFactory.newInstance(bytesToString(bytes, 17));
+        checkArgument(bytes.length == MAC_BYTE_LENGTH, "MAC address should have 6 bytes, not %s", bytes.length);
+        return macFactory.newInstance(COLON_HEXFORMAT.formatHex(bytes));
     }
 
     public final byte @NonNull[] macAddressBytes(final @NonNull M macAddress) {
@@ -113,7 +94,7 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
      */
     public final @NonNull P physAddressFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length > 0, "Physical address should have at least one byte");
-        return physFactory.newInstance(bytesToString(bytes, bytes.length * 3 - 1));
+        return physFactory.newInstance(COLON_HEXFORMAT.formatHex(bytes));
     }
 
     public final byte @NonNull[] physAddressBytes(final @NonNull P physAddress) {
@@ -123,7 +104,7 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
 
     public final @NonNull H hexStringFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length > 0, "Hex string should have at least one byte");
-        return hexFactory.newInstance(bytesToString(bytes, bytes.length * 3 - 1));
+        return hexFactory.newInstance(COLON_HEXFORMAT.formatHex(bytes));
     }
 
     public final byte @NonNull[] hexStringBytes(final @NonNull H hexString) {
@@ -162,24 +143,6 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
 
     protected abstract String getQuadValue(Q dottedQuad);
 
-    // FIXME: Replace with HexFormat.fromHexDigit(ch) when we have JDK17+
-    static byte hexValue(final char ch) {
-        byte value;
-        try {
-            // Performance optimization: access the array and rely on the VM for catching
-            // illegal access (which boils down to illegal character, which should never happen.
-            value = HEX_VALUES[ch];
-        } catch (IndexOutOfBoundsException e) {
-            value = -1;
-        }
-
-        if (value < 0) {
-            throw new IllegalArgumentException("Invalid character '" + ch + "' encountered");
-        }
-
-        return value;
-    }
-
     /**
      * Make sure an array of characters does not include capital letters. This method assumes input conforms to
      * MAC address format, e.g. it is composed of 6 groups of hexadecimal digits separated by colons. Behavior is
@@ -204,37 +167,11 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
         return ret;
     }
 
-    /**
-     * Convert an array of 6 bytes into canonical MAC address representation, that is 6 groups of two hexadecimal
-     * lower-case digits each, separated by colons.
-     *
-     * @param bytes Input bytes, may not be null
-     * @param charHint Hint at how many characters are needed
-     * @return Canonical MAC address string
-     * @throws NullPointerException if input is null
-     * @throws IllegalArgumentException if length of input is not 6 bytes
-     */
-    // TODO: HexFormat.ofDelimiter(":").withUpperCase().formatHex(bytes) when we have JDK17+? Compare performance
-    private static @NonNull String bytesToString(final byte @NonNull[] bytes, final int charHint) {
-        final StringBuilder sb = new StringBuilder(charHint);
-        appendHexByte(sb, bytes[0]);
-        for (int i = 1; i < bytes.length; ++i) {
-            appendHexByte(sb.append(':'), bytes[i]);
-        }
-
-        return sb.toString();
-    }
-
-    // FIXME: Replace with HexFormat.toHexDigits(sb, byteVal) when we have JDK17+, but note we prefer capital letters
-    private static void appendHexByte(final StringBuilder sb, final byte byteVal) {
-        final int intVal = Byte.toUnsignedInt(byteVal);
-        sb.append(HEX_CHARS[intVal >>> 4]).append(HEX_CHARS[intVal & 15]);
-    }
-
     private static byte @NonNull[] stringToBytes(final String str, final int length) {
         final byte[] ret = new byte[length];
         for (int i = 0, base = 0; i < length; ++i, base += 3) {
-            ret[i] = (byte) (hexValue(str.charAt(base)) << 4 | hexValue(str.charAt(base + 1)));
+            ret[i] = (byte) ((HexFormat.fromHexDigit(str.charAt(base)) << 4)
+                + HexFormat.fromHexDigit(str.charAt(base + 1)));
         }
         return ret;
     }

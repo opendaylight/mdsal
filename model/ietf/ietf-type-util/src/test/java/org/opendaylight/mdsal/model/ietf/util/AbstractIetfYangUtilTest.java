@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 
 import java.util.UUID;
 import org.junit.Test;
@@ -93,12 +92,5 @@ public class AbstractIetfYangUtilTest {
     @Test
     public void canonizeMACTest() {
         assertEquals(CANON, UTIL.canonizeMacAddress(new MacClass("01:02:1E:5A:FB:88")).getValue());
-    }
-
-    @Test
-    public void hexValueWithExceptionTest() {
-        final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-            () -> AbstractIetfYangUtil.hexValue(Character.highSurrogate(1000)));
-        assertEquals("Invalid character 'ퟀ' encountered", ex.getMessage());
     }
 }
