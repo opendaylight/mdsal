@@ -7,8 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableMap;
@@ -23,32 +26,31 @@ import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.opendaylight.yangtools.yang.common.QName;
 
 public class NotificationListenerInvokerTest {
-
     @Test
     public void fromTest() throws Exception {
         assertNotNull(NotificationListenerInvoker.from(TestInterface.class));
     }
 
-    @Test(expected = IllegalStateException.class)
-    @SuppressWarnings({ "checkstyle:illegalThrows", "checkstyle:avoidHidingCauseException" })
-    public void fromWithExceptionTest() throws Throwable {
-        try {
-            NotificationListenerInvoker.from(TestPrivateInterface.class);
-            fail("Expected IllegalAccessException");
-        } catch (UncheckedExecutionException e) {
-            throw e.getCause();
-        }
+    @Test
+    public void fromWithExceptionTest() {
+        final var cause = assertThrows(UncheckedExecutionException.class,
+            () -> NotificationListenerInvoker.from(TestPrivateInterface.class))
+            .getCause();
+        assertThat(cause, instanceOf(IllegalStateException.class));
+        assertThat(cause.getCause(), instanceOf(IllegalAccessException.class));
     }
 
-    @Test(expected = WrongMethodTypeException.class)
-    public void invokeNotification() throws Exception {
+    @Test
+    public void invokeNotification() {
         final NotificationListener notificationListener = mock(NotificationListener.class);
         final MethodHandle methodHandle = mock(MethodHandle.class);
         final NotificationListenerInvoker notificationListenerInvoker =
                 new NotificationListenerInvoker(ImmutableMap.of(QName.create("test", "test"), methodHandle));
 
-        notificationListenerInvoker.invokeNotification(notificationListener, QName.create("test", "test"), null);
-        fail("Expected WrongMethodTypeException, no method to invoke is supplied");
+        final var ex = assertThrows(WrongMethodTypeException.class,
+            () -> notificationListenerInvoker.invokeNotification(notificationListener, QName.create("test", "test"),
+                null));
+        assertEquals("expected null but found (NotificationListener,DataContainer)void", ex.getMessage());
     }
 
     public interface TestInterface extends NotificationListener, Augmentation {
