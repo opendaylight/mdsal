@@ -202,7 +202,7 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
      * @param <C> Child type
      */
     @FunctionalInterface
-    public interface LeafReference<P, C> extends Serializable {
+    interface LeafReference<P, C> extends Serializable {
         /**
          * Dummy method to express the method signature of a typical getter. Due to this match we can match any Java
          * method reference which takes in {@code parent} and results in {@code child} -- expose the feature of using
@@ -218,72 +218,72 @@ public interface MatchBuilderPath<O extends DataObject, T extends DataObject> ex
     }
 
     @FunctionalInterface
-    public interface BooleanLeafReference<P> extends LeafReference<P, Boolean> {
+    interface BooleanLeafReference<P> extends LeafReference<P, Boolean> {
 
     }
 
     @FunctionalInterface
-    public interface Decimal64LeafReference<P> extends LeafReference<P, Decimal64> {
+    interface Decimal64LeafReference<P> extends LeafReference<P, Decimal64> {
 
     }
 
     @FunctionalInterface
-    public interface EmptyLeafReference<P> extends LeafReference<P, Empty> {
+    interface EmptyLeafReference<P> extends LeafReference<P, Empty> {
 
     }
 
     @FunctionalInterface
-    public interface StringLeafReference<P> extends LeafReference<P, String> {
+    interface StringLeafReference<P> extends LeafReference<P, String> {
 
     }
 
     @FunctionalInterface
-    public interface Int8LeafReference<P> extends LeafReference<P, Byte> {
+    interface Int8LeafReference<P> extends LeafReference<P, Byte> {
 
     }
 
     @FunctionalInterface
-    public interface Int16LeafReference<P> extends LeafReference<P, Short> {
+    interface Int16LeafReference<P> extends LeafReference<P, Short> {
 
     }
 
     @FunctionalInterface
-    public interface Int32LeafReference<P> extends LeafReference<P, Integer> {
+    interface Int32LeafReference<P> extends LeafReference<P, Integer> {
 
     }
 
     @FunctionalInterface
-    public interface Int64LeafReference<P> extends LeafReference<P, Long> {
+    interface Int64LeafReference<P> extends LeafReference<P, Long> {
 
     }
 
     @FunctionalInterface
-    public interface Uint8LeafReference<P> extends LeafReference<P, Uint8> {
+    interface Uint8LeafReference<P> extends LeafReference<P, Uint8> {
 
     }
 
     @FunctionalInterface
-    public interface Uint16LeafReference<P> extends LeafReference<P, Uint16> {
+    interface Uint16LeafReference<P> extends LeafReference<P, Uint16> {
 
     }
 
     @FunctionalInterface
-    public interface Uint32LeafReference<P> extends LeafReference<P, Uint32> {
+    interface Uint32LeafReference<P> extends LeafReference<P, Uint32> {
 
     }
 
     @FunctionalInterface
-    public interface Uint64LeafReference<P> extends LeafReference<P, Uint64> {
+    interface Uint64LeafReference<P> extends LeafReference<P, Uint64> {
 
     }
 
     @FunctionalInterface
-    public interface IdentityLeafReference<P, T extends BaseIdentity> extends LeafReference<P, T> {
+    interface IdentityLeafReference<P, T extends BaseIdentity> extends LeafReference<P, T> {
 
     }
 
     @FunctionalInterface
-    public interface TypeObjectLeafReference<P, T extends TypeObject> extends LeafReference<P, T> {
+    interface TypeObjectLeafReference<P, T extends TypeObject> extends LeafReference<P, T> {
 
     }
 }

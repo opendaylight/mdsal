@@ -18,13 +18,10 @@ public interface MountPointService extends BindingService {
 
     <T extends MountPointListener> ListenerRegistration<T> registerListener(InstanceIdentifier<?> path, T listener);
 
-
-    public interface MountPointListener extends EventListener {
+    interface MountPointListener extends EventListener {
 
         void onMountPointCreated(InstanceIdentifier<?> path);
 
         void onMountPointRemoved(InstanceIdentifier<?> path);
-
     }
-
 }
