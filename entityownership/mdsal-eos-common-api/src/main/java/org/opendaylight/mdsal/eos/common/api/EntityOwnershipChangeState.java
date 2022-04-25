@@ -51,9 +51,9 @@ public enum EntityOwnershipChangeState {
     REMOTE_OWNERSHIP_LOST_NO_OWNER(false, false, false);
 
     private static final Map<Key, EntityOwnershipChangeState> BY_KEY;
+
     static {
-        final Builder<Key, EntityOwnershipChangeState> builder
-                    = ImmutableMap.builder();
+        final Builder<Key, EntityOwnershipChangeState> builder = ImmutableMap.builder();
         for (final EntityOwnershipChangeState e: values()) {
             builder.put(new Key(e.wasOwner, e.isOwner, e.hasOwner), e);
         }
