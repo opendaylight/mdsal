@@ -13,13 +13,13 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>odlparent</artifactId>
-        <version>10.0.0</version>
+        <version>11.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>mdsal-binding-test-utils</artifactId>
-    <version>10.0.0-SNAPSHOT</version>
+    <version>11.0.0-SNAPSHOT-SNAPSHOT</version>
 
     <dependencyManagement>
         <dependencies>
