@@ -52,11 +52,13 @@ public class NotificationListenerInvokerTest {
 
     public interface TestInterface extends NotificationListener, Augmentation {
         QName QNAME = QName.create("test", "test");
+
         void onTestNotificationInterface(TestNotificationInterface notif);
     }
 
     private interface TestPrivateInterface extends NotificationListener, Augmentation {
         QName QNAME = QName.create("test", "test");
+
         void onTestNotificationInterface(TestNotificationInterface notif);
     }
 
