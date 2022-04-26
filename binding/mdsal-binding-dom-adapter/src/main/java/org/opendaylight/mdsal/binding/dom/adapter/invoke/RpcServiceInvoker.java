@@ -33,18 +33,6 @@ public abstract class RpcServiceInvoker {
     private static final Logger LOG = LoggerFactory.getLogger(RpcServiceInvoker.class);
 
     /**
-     * Creates RPCServiceInvoker for specified RpcService type.
-     *
-     * @param type RpcService interface, which was generated from model.
-     * @return Cached instance of {@link RpcServiceInvoker} for supplied RPC type.
-     * @deprecated This method is not used by the adapter and is scheduled for removal.
-     */
-    @Deprecated(forRemoval = true, since = "9.0.3")
-    public static RpcServiceInvoker from(final Class<? extends RpcService> type) {
-        return ClassBasedRpcServiceInvoker.instanceFor(type);
-    }
-
-    /**
      * Creates an RPCServiceInvoker for specified QName-&lt;Method mapping.
      *
      * @param qnameToMethod translation mapping, must not be null nor empty.

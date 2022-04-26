@@ -8,35 +8,25 @@
 package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
-import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Method;
+import java.util.Map;
 import org.junit.Test;
-import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 
 public class RpcServiceInvokerTest {
-
     @Test
     public void fromTest() throws Exception {
         final Method method = this.getClass().getDeclaredMethod("testMethod");
         method.setAccessible(true);
-        assertNotNull(RpcServiceInvoker.from(ImmutableMap.of(
+        assertNotNull(RpcServiceInvoker.from(Map.of(
             QName.create(QNameModule.create(XMLNamespace.of("testURI"), Revision.of("2017-10-26")),"test"), method,
             QName.create(QNameModule.create(XMLNamespace.of("testURI2"), Revision.of("2017-10-26")),"test"), method)));
-        assertNotNull(RpcServiceInvoker.from(ImmutableMap.of(
+        assertNotNull(RpcServiceInvoker.from(Map.of(
             QName.create(QNameModule.create(XMLNamespace.of("testURI"), Revision.of("2017-10-26")), "test"), method)));
-    }
-
-    @Deprecated(forRemoval = true)
-    @Test(expected = IllegalArgumentException.class)
-    public void fromWithExceptionTest() {
-        RpcServiceInvoker.from(RpcService.class);
-        fail("Expected IllegalArgumentException");
     }
 
     private void testMethod() {
