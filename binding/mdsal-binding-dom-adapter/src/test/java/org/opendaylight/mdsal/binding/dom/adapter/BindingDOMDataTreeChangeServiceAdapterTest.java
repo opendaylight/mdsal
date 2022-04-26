@@ -45,6 +45,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMDataTreeChangeServiceAdapterTest {
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
+    private static final YangInstanceIdentifier TOP_YIID = YangInstanceIdentifier.of(Top.QNAME);
 
     @Mock
     private DOMDataTreeChangeService mockDOMService;
@@ -52,16 +53,13 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
     @Mock
     private BindingDOMCodecServices services;
 
-    @Mock
-    private YangInstanceIdentifier mockYangID;
-
     @SuppressWarnings("rawtypes")
     @Mock
     private ListenerRegistration mockDOMReg;
 
     @Before
     public void setUp() {
-        doReturn(mockYangID).when(services).toYangInstanceIdentifier(TOP_PATH);
+        doReturn(TOP_YIID).when(services).toYangInstanceIdentifier(TOP_PATH);
     }
 
     @Test
@@ -71,22 +69,22 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
         final DataTreeChangeService service = new BindingDOMDataTreeChangeServiceAdapter(codec, mockDOMService);
 
         doReturn(mockDOMReg).when(mockDOMService).registerDataTreeChangeListener(
-                domDataTreeIdentifier(mockYangID),
+                domDataTreeIdentifier(TOP_YIID),
                 any(DOMDataTreeChangeListener.class));
         final DataTreeIdentifier<Top> treeId = DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION, TOP_PATH);
         final TestClusteredDataTreeChangeListener mockClusteredListener = new TestClusteredDataTreeChangeListener();
         service.registerDataTreeChangeListener(treeId , mockClusteredListener);
 
-        verify(mockDOMService).registerDataTreeChangeListener(domDataTreeIdentifier(this.mockYangID),
+        verify(mockDOMService).registerDataTreeChangeListener(domDataTreeIdentifier(TOP_YIID),
                 isA(ClusteredDOMDataTreeChangeListener.class));
 
         reset(mockDOMService);
         doReturn(mockDOMReg).when(mockDOMService).registerDataTreeChangeListener(
-                domDataTreeIdentifier(mockYangID), any(DOMDataTreeChangeListener.class));
+                domDataTreeIdentifier(TOP_YIID), any(DOMDataTreeChangeListener.class));
         final TestDataTreeChangeListener mockNonClusteredListener = new TestDataTreeChangeListener();
         service.registerDataTreeChangeListener(treeId , mockNonClusteredListener);
 
-        verify(this.mockDOMService).registerDataTreeChangeListener(domDataTreeIdentifier(this.mockYangID),
+        verify(mockDOMService).registerDataTreeChangeListener(domDataTreeIdentifier(TOP_YIID),
                 not(isA(ClusteredDOMDataTreeChangeListener.class)));
     }
 
