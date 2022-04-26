@@ -63,9 +63,9 @@ public final class IetfRoutingUtils {
     }
 
     public static Ipv4MulticastSourceAddress ipv4MulticastSourceAddressFor(final String str) {
-        return Ipv4MulticastSourceAddress.Enumeration.forName(str)
-            .map(ENUMERATED_IPV4_MCAST_SRC::get)
-            .orElse(new Ipv4MulticastSourceAddress(new Ipv4Address(str)));
+        final var enumeration = Ipv4MulticastSourceAddress.Enumeration.forName(str);
+        return enumeration != null ? ipv4MulticastSourceAddressFor(enumeration)
+            : new Ipv4MulticastSourceAddress(new Ipv4Address(str));
     }
 
     public static Ipv4MulticastSourceAddress ipv4MulticastSourceAddressFor(
@@ -74,9 +74,9 @@ public final class IetfRoutingUtils {
     }
 
     public static Ipv6MulticastSourceAddress ipv6MulticastSourceAddressFor(final String str) {
-        return Ipv6MulticastSourceAddress.Enumeration.forName(str)
-            .map(ENUMERATED_IPV6_MCAST_SRC::get)
-            .orElse(new Ipv6MulticastSourceAddress(new Ipv6Address(str)));
+        final var enumeration = Ipv6MulticastSourceAddress.Enumeration.forName(str);
+        return enumeration != null ? ipv6MulticastSourceAddressFor(enumeration)
+            : new Ipv6MulticastSourceAddress(new Ipv6Address(str));
     }
 
     public static Ipv6MulticastSourceAddress ipv6MulticastSourceAddressFor(
@@ -85,9 +85,9 @@ public final class IetfRoutingUtils {
     }
 
     public static TimerValueMilliseconds timerValueMillisecondsFor(final String str) {
-        return TimerValueMilliseconds.Enumeration.forName(str)
-            .map(ENUMERATED_TIMERVAR_MS::get)
-            .orElse(new TimerValueMilliseconds(Uint32.valueOf(str)));
+        final var enumeration = TimerValueMilliseconds.Enumeration.forName(str);
+        return enumeration != null ? timerValueMillisecondsFor(enumeration)
+            : new TimerValueMilliseconds(Uint32.valueOf(str));
     }
 
     public static TimerValueMilliseconds timerValueMillisecondsFor(
@@ -95,10 +95,9 @@ public final class IetfRoutingUtils {
         return verifyNotNull(ENUMERATED_TIMERVAR_MS.get(requireNonNull(enumeration)));
     }
 
-
     public static TimerValueSeconds16 timerValueSeconds16For(final String str) {
-        return TimerValueSeconds16.Enumeration.forName(str).map(ENUMERATED_TIMERVAL_16::get)
-                .orElse(new TimerValueSeconds16(Uint16.valueOf(str)));
+        final var enumeration = TimerValueSeconds16.Enumeration.forName(str);
+        return enumeration != null ? timerValueSeconds16For(enumeration) : new TimerValueSeconds16(Uint16.valueOf(str));
     }
 
     public static TimerValueSeconds16 timerValueSeconds16For(
@@ -106,10 +105,9 @@ public final class IetfRoutingUtils {
         return verifyNotNull(ENUMERATED_TIMERVAL_16.get(requireNonNull(enumeration)));
     }
 
-    public static TimerValueSeconds32 timerValueSeconds32For(final String defaultValue) {
-        return TimerValueSeconds32.Enumeration.forName(defaultValue)
-            .map(ENUMERATED_TIMERVAL_32::get)
-            .orElse(new TimerValueSeconds32(Uint32.valueOf(defaultValue)));
+    public static TimerValueSeconds32 timerValueSeconds32For(final String str) {
+        final var enumeration = TimerValueSeconds32.Enumeration.forName(str);
+        return enumeration != null ? timerValueSeconds32For(enumeration) : new TimerValueSeconds32(Uint32.valueOf(str));
     }
 
     public static TimerValueSeconds32 timerValueSeconds32For(final TimerValueSeconds32.Enumeration enumeration) {
