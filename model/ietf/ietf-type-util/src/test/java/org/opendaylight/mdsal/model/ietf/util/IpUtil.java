@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import java.util.regex.Pattern;
 import org.checkerframework.checker.regex.qual.Regex;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.AbstractIetfInetUtil;
 
 final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpClass, IpClass, IpClass, IpClass, IpClass,
         IpClass> {

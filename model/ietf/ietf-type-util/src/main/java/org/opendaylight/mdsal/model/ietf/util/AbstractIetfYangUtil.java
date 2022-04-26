@@ -14,6 +14,7 @@ import java.util.HexFormat;
 import java.util.UUID;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.AbstractIetfInetUtil;
 
 /**
  * Abstract utility class for dealing with MAC addresses as defined in the ietf-yang-types model. This class is
