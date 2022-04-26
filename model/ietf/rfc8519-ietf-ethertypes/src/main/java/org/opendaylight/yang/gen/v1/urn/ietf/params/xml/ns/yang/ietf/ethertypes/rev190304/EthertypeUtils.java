@@ -15,7 +15,6 @@ import com.google.common.base.CharMatcher;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Objects;
-import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.ethertypes.rev190304.Ethertype.Enumeration;
@@ -52,9 +51,9 @@ public final class EthertypeUtils {
             // Fall through and interpret as a string
         }
 
-        final Optional<Enumeration> known = Enumeration.forName(defaultValue);
-        checkArgument(known.isPresent(), "Unknown ethertype %s", defaultValue);
-        return verifyNotNull(ENUM_ETHERTYPES.get(known.get()));
+        final var known = Enumeration.forName(defaultValue);
+        checkArgument(known != null, "Unknown ethertype %s", defaultValue);
+        return verifyNotNull(ENUM_ETHERTYPES.get(known));
     }
 
     /**
