@@ -32,6 +32,7 @@ public class RpcServiceInvokerTest {
             QName.create(QNameModule.create(XMLNamespace.of("testURI"), Revision.of("2017-10-26")), "test"), method)));
     }
 
+    @Deprecated(forRemoval = true)
     @Test(expected = IllegalArgumentException.class)
     public void fromWithExceptionTest() {
         RpcServiceInvoker.from(RpcService.class);

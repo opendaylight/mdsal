@@ -37,7 +37,9 @@ public abstract class RpcServiceInvoker {
      *
      * @param type RpcService interface, which was generated from model.
      * @return Cached instance of {@link RpcServiceInvoker} for supplied RPC type.
+     * @deprecated This method is not used by the adapter and is scheduled for removal.
      */
+    @Deprecated(forRemoval = true, since = "9.0.6")
     public static RpcServiceInvoker from(final Class<? extends RpcService> type) {
         return ClassBasedRpcServiceInvoker.instanceFor(type);
     }

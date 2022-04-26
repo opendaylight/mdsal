@@ -16,8 +16,8 @@ import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 
+@Deprecated(forRemoval = true, since = "9.0.6")
 public class ClassBasedRpcServiceInvokerTest {
-
     @Test
     public void qnameToKeyTest() throws Exception {
         final ClassBasedRpcServiceInvoker classBasedRpcServiceInvoker =
