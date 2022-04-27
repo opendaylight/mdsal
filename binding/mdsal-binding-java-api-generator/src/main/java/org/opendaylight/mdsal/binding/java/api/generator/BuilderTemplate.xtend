@@ -359,7 +359,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «ENDFOR»
     '''
 
-    def private generateSetter(GeneratedProperty field) {
+    def private generateSetter(BuilderGeneratedProperty field) {
         val returnType = field.returnType
         if (returnType instanceof ParameterizedType) {
             if (Types.isListType(returnType) || Types.isSetType(returnType)) {
@@ -375,11 +375,19 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         return generateSimpleSetter(field, returnType)
     }
 
-    def private generateListSetter(GeneratedProperty field, Type actualType) '''
+    def private generateListSetter(BuilderGeneratedProperty field, Type actualType) '''
         «val restrictions = restrictionsForSetter(actualType)»
         «IF restrictions !== null»
             «generateCheckers(field, restrictions, actualType)»
         «ENDIF»
+
+        /**
+         * Set the property corresponding to {@link «targetType.importedName»#«field.getterName»()} to the specified
+         * value.
+         *
+         * @param values desired value
+         * @return this builder
+         */
         public «type.getName» set«field.getName.toFirstUpper»(final «field.returnType.importedName» values) {
         «IF restrictions !== null»
             if (values != null) {
@@ -394,11 +402,19 @@ class BuilderTemplate extends AbstractBuilderTemplate {
 
     '''
 
-    def private generateMapSetter(GeneratedProperty field, Type actualType) '''
+    def private generateMapSetter(BuilderGeneratedProperty field, Type actualType) '''
         «val restrictions = restrictionsForSetter(actualType)»
         «IF restrictions !== null»
             «generateCheckers(field, restrictions, actualType)»
         «ENDIF»
+
+        /**
+         * Set the property corresponding to {@link «targetType.importedName»#«field.getterName»()} to the specified
+         * value.
+         *
+         * @param values desired value
+         * @return this builder
+         */
         public «type.getName» set«field.name.toFirstUpper»(final «field.returnType.importedName» values) {
         «IF restrictions !== null»
             if (values != null) {
@@ -412,13 +428,20 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         }
     '''
 
-    def private generateSimpleSetter(GeneratedProperty field, Type actualType) '''
+    def private generateSimpleSetter(BuilderGeneratedProperty field, Type actualType) '''
         «val restrictions = restrictionsForSetter(actualType)»
         «IF restrictions !== null»
 
             «generateCheckers(field, restrictions, actualType)»
         «ENDIF»
 
+        /**
+         * Set the property corresponding to {@link «targetType.importedName»#«field.getterName»()} to the specified
+         * value.
+         *
+         * @param value desired value
+         * @return this builder
+         */
         «val setterName = "set" + field.getName.toFirstUpper»
         public «type.getName» «setterName»(final «field.returnType.importedName» value) {
             «IF restrictions !== null»
