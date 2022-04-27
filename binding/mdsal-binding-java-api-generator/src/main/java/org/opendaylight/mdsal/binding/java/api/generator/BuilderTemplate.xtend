@@ -73,6 +73,13 @@ class BuilderTemplate extends AbstractBuilderTemplate {
                 «generateAugmentField()»
             «ENDIF»
 
+            /**
+             * Construct an empty builder.
+             */
+            public «type.name»() {
+                // No-op
+            }
+
             «generateConstructorsFromIfcs()»
 
             public «generateCopyConstructor(targetType, type.enclosedTypes.get(0))»
@@ -112,9 +119,6 @@ class BuilderTemplate extends AbstractBuilderTemplate {
      * Generate default constructor and constructor for every implemented interface from uses statements.
      */
     def private generateConstructorsFromIfcs() '''
-        public «type.name»() {
-        }
-
         «IF (!(targetType instanceof GeneratedTransferObject))»
             «FOR impl : targetType.implements SEPARATOR "\n"»
                 «generateConstructorFromIfc(impl)»
@@ -128,9 +132,16 @@ class BuilderTemplate extends AbstractBuilderTemplate {
     def private Object generateConstructorFromIfc(Type impl) '''
         «IF (impl instanceof GeneratedType)»
             «IF impl.hasNonDefaultMethods»
-                public «type.name»(«impl.importedName» arg) {
+                «val typeName = impl.importedName»
+                /**
+                 * Construct a new builder initialized from specified {@link «typeName»}.
+                 *
+                 * @param arg «typeName» from which the builder should be initialized
+                 */
+                public «type.name»(«typeName» arg) {
                     «printConstructorPropertySetter(impl)»
                 }
+
             «ENDIF»
             «FOR implTypeImplement : impl.implements»
                 «generateConstructorFromIfc(implTypeImplement)»
