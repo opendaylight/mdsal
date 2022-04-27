@@ -296,6 +296,9 @@ abstract class BaseTemplate extends JavaFileTemplate {
     def protected emitConstant(Constant c) '''
         «IF BindingMapping.QNAME_STATIC_FIELD_NAME.equals(c.name)»
             «val entry = c.value as Entry<JavaTypeName, String>»
+            /**
+             * YANG identifier of the statement represented by this class.
+             */
             public static final «c.type.importedNonNull» «c.name» = «entry.key.importedName».«BindingMapping.MODULE_INFO_QNAMEOF_METHOD_NAME»("«entry.value»");
         «ELSE»
             public static final «c.type.importedName» «c.name» = «c.value»;
