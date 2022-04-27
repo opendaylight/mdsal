@@ -110,7 +110,7 @@ class EnumTemplate extends BaseTemplate {
              *
              * @param name YANG assigned name
              * @return corresponding «enums.name» item, if present
-             * @throws NullPointerException if name is null
+             * @throws «NPE.importedName» if {@code name} is null
              */
             public static «Optional.importedName»<«enums.name»> forName(«STRING.importedName» name) {
                 return «Optional.importedName».ofNullable(NAME_MAP.get(«JU_OBJECTS.importedName».requireNonNull(name)));
