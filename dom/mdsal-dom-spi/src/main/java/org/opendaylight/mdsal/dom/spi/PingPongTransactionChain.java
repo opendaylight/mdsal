@@ -342,9 +342,9 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
      *
      * @param tx Backend shared transaction
      * @param frontendTx transaction
-     * @param isOpen indicator whether the transaction was already closed
+     * @return {@code true} if the transaction was cancelled successfully
      */
-    synchronized void cancelTransaction(final PingPongTransaction tx,
+    synchronized boolean cancelTransaction(final PingPongTransaction tx,
             final DOMDataTreeReadWriteTransaction frontendTx) {
         // Attempt to unlock the operation.
         final Object witness = LOCKED_TX.compareAndExchange(this, tx, null);
@@ -356,20 +356,30 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
         if (failed) {
             // The transaction has failed, this is probably the user just clearing up the transaction they had. We have
             // already cancelled the transaction anyway,
-            return;
-        } else if (!backendCancelled) {
-            LOG.warn("Backend transaction cannot be cancelled during cancellation of {}, attempting to continue", tx);
+            return true;
         }
 
-        // We have dealt with canceling the backend transaction and have unlocked the transaction. Since we are still
+        // We have dealt with cancelling the backend transaction and have unlocked the transaction. Since we are still
         // inside the synchronized block, any allocations are blocking on the slow path. Now we have to decide the fate
         // of this transaction chain.
         //
         // If there are no other frontend transactions in this batch we are aligned with backend state and we can
         // continue processing.
         if (frontendTx.equals(tx.getFrontendTransaction())) {
-            LOG.debug("Cancelled transaction {} was head of the batch, resuming processing", tx);
-            return;
+            if (backendCancelled) {
+                LOG.debug("Cancelled transaction {} was head of the batch, resuming processing", tx);
+                return true;
+            }
+
+            // Backend refused to cancel the transaction. Reinstate it to locked state.
+            final Object reinstateWitness = LOCKED_TX.compareAndExchange(this, null, tx);
+            verify(reinstateWitness == null, "Reinstating transaction %s collided with locked transaction %s", tx,
+                reinstateWitness);
+            return false;
+        }
+
+        if (!backendCancelled) {
+            LOG.warn("Backend transaction cannot be cancelled during cancellation of {}, attempting to continue", tx);
         }
 
         // There are multiple frontend transactions in this batch. We have to report them as failed, which dooms this
@@ -378,6 +388,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
         // and mark the fact that we should be turning its completion into a failure.
         deadTx = Map.entry(tx, new CancellationException("Transaction " + frontendTx + " canceled").fillInStackTrace());
         delegate.close();
+        return true;
     }
 
     @Override
@@ -481,12 +492,10 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
 
         @Override
         public boolean cancel() {
-            if (isOpen) {
-                cancelTransaction(tx, this);
+            if (isOpen && cancelTransaction(tx, this)) {
                 isOpen = false;
                 return true;
             }
-
             return false;
         }
 
