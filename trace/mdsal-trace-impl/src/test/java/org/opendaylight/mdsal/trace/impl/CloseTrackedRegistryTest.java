@@ -7,9 +7,14 @@
  */
 package org.opendaylight.mdsal.trace.impl;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.junit.Test;
@@ -41,15 +46,15 @@ public class CloseTrackedRegistryTest {
         SomethingClosable forgotToCloseOnce = new SomethingClosable(registry);
 
         Set<CloseTrackedRegistryReportEntry<SomethingClosable>> uniqueNonClosed = registry.getAllUnique();
-        assertThat(uniqueNonClosed).hasSize(2);
-        assertThatIterableContains(uniqueNonClosed, entry ->
+        assertThat(uniqueNonClosed, hasSize(2));
+        assertContains(uniqueNonClosed, entry ->
             entry.getNumberAddedNotRemoved() == 100 || entry.getNumberAddedNotRemoved() == 1);
         uniqueNonClosed.forEach(entry -> {
             if (entry.getNumberAddedNotRemoved() == 100) {
-                assertThatIterableContains(entry.getStackTraceElements(),
+                assertContains(entry.getStackTraceElements(),
                     element -> element.getMethodName().equals("someOtherMethodWhichDoesNotClose"));
             } else if (entry.getNumberAddedNotRemoved() == 1) {
-                assertThatIterableContains(entry.getStackTraceElements(),
+                assertContains(entry.getStackTraceElements(),
                     element -> element.getMethodName().equals("testDuplicateAllocationContexts"));
             } else {
                 fail("Unexpected number of added, not removed: " + entry.getNumberAddedNotRemoved());
@@ -57,14 +62,9 @@ public class CloseTrackedRegistryTest {
         });
     }
 
-    // Something like this really should be in Google Truth...
-    private static <T> void assertThatIterableContains(final Iterable<T> iterable, final Predicate<T> predicate) {
-        for (T element : iterable) {
-            if (predicate.test(element)) {
-                return;
-            }
-        }
-        fail("Iterable did not contain any element matching predicate");
+    // FIXME: use a Matcher
+    private static <T> void assertContains(final Collection<T> collection, final Predicate<T> predicate) {
+        assertTrue("Iterable did not contain any element matching predicate", collection.stream().anyMatch(predicate));
     }
 
     @SuppressWarnings({ "resource", "unused" })
@@ -82,11 +82,11 @@ public class CloseTrackedRegistryTest {
 
         Set<CloseTrackedRegistryReportEntry<SomethingClosable>>
             closeRegistryReport = debugContextDisabledRegistry.getAllUnique();
-        assertThat(closeRegistryReport).hasSize(1);
+        assertThat(closeRegistryReport, hasSize(1));
 
         CloseTrackedRegistryReportEntry<SomethingClosable>
             closeRegistryReportEntry1 = closeRegistryReport.iterator().next();
-        assertThat(closeRegistryReportEntry1.getNumberAddedNotRemoved()).isEqualTo(1);
-        assertThat(closeRegistryReportEntry1.getStackTraceElements()).isEmpty();
+        assertEquals(1, closeRegistryReportEntry1.getNumberAddedNotRemoved());
+        assertEquals(List.of(), closeRegistryReportEntry1.getStackTraceElements());
     }
 }

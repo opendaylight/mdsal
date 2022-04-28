@@ -7,8 +7,11 @@
  */
 package org.opendaylight.mdsal.trace.test;
 
-import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
@@ -30,7 +33,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsaltra
  * @author Michael Vorburger.ch
  */
 public class TracingBrokerTest {
-
     @Test
     @SuppressWarnings({ "resource", "unused" }) // Finding resource leaks is the point of this test
     public void testPrintOpenTransactions() {
@@ -52,26 +54,25 @@ public class TracingBrokerTest {
         boolean printReturnValue = tracingBroker.printOpenTransactions(ps, 1);
         String output = new String(baos.toByteArray(), UTF_8);
 
-        assertThat(printReturnValue).isTrue();
+        assertTrue(printReturnValue);
         // Assert expectations about stack trace
-        assertThat(output).contains("testPrintOpenTransactions(TracingBrokerTest.java");
-        assertThat(output).doesNotContain(TracingBroker.class.getName());
+        assertThat(output, containsString("testPrintOpenTransactions(TracingBrokerTest.java"));
+        assertThat(output, not(containsString(TracingBroker.class.getName())));
 
         String previousLine = "";
         for (String line : output.split("\n")) {
             if (line.contains("(...")) {
-                assertThat(previousLine.contains("(...)")).isFalse();
+                assertThat(previousLine, not(containsString("(...)")));
             }
             previousLine = line;
         }
 
         // assert that the sorting works - the x3 is shown before the x1
-        assertThat(output).contains("  DataBroker : newReadWriteTransaction()\n    3x");
+        assertThat(output, containsString("  DataBroker : newReadWriteTransaction()\n    3x"));
 
         // We don't do any verify/times on the mocks,
         // because the main point of the test is just to verify that
         // printOpenTransactions runs through without any exceptions
         // (e.g. it used to have a ClassCastException).
     }
-
 }
