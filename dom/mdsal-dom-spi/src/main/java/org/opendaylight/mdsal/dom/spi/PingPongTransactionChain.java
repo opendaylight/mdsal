@@ -267,12 +267,15 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
         checkState(success, "Completed transaction %s while %s was submitted", tx, inflightTx);
 
         final PingPongTransaction nextTx = READY_UPDATER.getAndSet(this, null);
-        if (nextTx != null) {
+        if (nextTx == null) {
+            final PingPongTransaction local = shutdownTx;
+            if (local != null) {
+                processTransaction(local);
+                delegate.close();
+                shutdownTx = null;
+            }
+        } else {
             processTransaction(nextTx);
-        } else if (shutdownTx != null) {
-            processTransaction(shutdownTx);
-            delegate.close();
-            shutdownTx = null;
         }
     }
 
