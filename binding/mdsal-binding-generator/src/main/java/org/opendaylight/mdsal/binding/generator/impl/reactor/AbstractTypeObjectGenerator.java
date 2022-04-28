@@ -732,6 +732,11 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
                     builder.addEnclosingTransferObject(subBits);
                     generatedType = subBits;
                 } else if (TypeDefinitions.IDENTITYREF.equals(subName)) {
+                    final Optional<BaseEffectiveStatement> baseSubStmt =
+                        stmt.findFirstEffectiveSubstatement(BaseEffectiveStatement.class);
+                    verify(baseSubStmt.isPresent(),
+                        "Invalid identityref definition %s in %s, missing BASE statement", stmt, definingStatement);
+                    propSource = baseSubStmt.get().argument().getLocalName();
                     generatedType = verifyNotNull(dependencies.identityTypes.get(stmt),
                         "Cannot resolve identityref %s in %s", stmt, definingStatement)
                         .methodReturnType(builderFactory);
