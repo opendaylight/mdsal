@@ -16,7 +16,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
-import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
@@ -376,8 +376,7 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
         // transaction chain, too. Since we just came off of a locked transaction, we do not have a ready transaction
         // at the moment, but there may be some transaction in-flight. So we proceed to shutdown the backend chain
         // and mark the fact that we should be turning its completion into a failure.
-        deadTx = new SimpleImmutableEntry<>(tx, new CancellationException("Transaction " + frontendTx + " canceled")
-                .fillInStackTrace());
+        deadTx = Map.entry(tx, new CancellationException("Transaction " + frontendTx + " canceled").fillInStackTrace());
         delegate.close();
     }
 
