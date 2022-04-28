@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
@@ -199,15 +198,9 @@ public class PingPongTransactionChainTest {
     private void assertSimpleCancel(final boolean result) {
         final var tx = pingPong.newWriteOnlyTransaction();
 
-        doNothing().when(chain).close();
         doReturn(result).when(rwTx).cancel();
-        doReturn("mock").when(rwTx).toString();
-
-        // FIXME: it seems we are doing the wrong, we should see 'result' returned here
-        assertTrue(tx.cancel());
-
+        assertEquals(result, tx.cancel());
         verify(rwTx).cancel();
-        verify(chain).close();
     }
 
     private static <T> T assertDone(final FluentFuture<T> future) {
