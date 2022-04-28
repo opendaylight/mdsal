@@ -8,9 +8,9 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.VerifyException;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -263,8 +263,9 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
      * correctness.
      */
     private synchronized void processNextTransaction(final PingPongTransaction tx) {
-        final boolean success = INFLIGHT_UPDATER.compareAndSet(this, tx, null);
-        checkState(success, "Completed transaction %s while %s was submitted", tx, inflightTx);
+        if (!INFLIGHT_UPDATER.compareAndSet(this, tx, null)) {
+            throw new IllegalStateException("Completed transaction " + tx + " while " + inflightTx + " was submitted");
+        }
 
         final PingPongTransaction nextTx = READY_UPDATER.getAndSet(this, null);
         if (nextTx == null) {
@@ -295,16 +296,18 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
 
     void readyTransaction(final @NonNull PingPongTransaction tx) {
         // First mark the transaction as not locked.
-        final boolean lockedMatch = LOCKED_UPDATER.compareAndSet(this, tx, null);
-        checkState(lockedMatch, "Attempted to submit transaction %s while we have %s", tx, lockedTx);
+        if (!LOCKED_UPDATER.compareAndSet(this, tx, null)) {
+            throw new IllegalStateException("Attempted to submit transaction " + tx + " while we have " + lockedTx);
+        }
         LOG.debug("Transaction {} unlocked", tx);
 
         /*
          * The transaction is ready. It will then be picked up by either next allocation,
          * or a background transaction completion callback.
          */
-        final boolean success = READY_UPDATER.compareAndSet(this, null, tx);
-        checkState(success, "Transaction %s collided on ready state", tx, readyTx);
+        if (!READY_UPDATER.compareAndSet(this, null, tx)) {
+            throw new IllegalStateException("Transaction " + tx + " collided on ready state with " + readyTx);
+        }
         LOG.debug("Transaction {} readied", tx);
 
         /*
@@ -332,8 +335,9 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
     synchronized void cancelTransaction(final PingPongTransaction tx,
             final DOMDataTreeReadWriteTransaction frontendTx) {
         // Attempt to unlock the operation.
-        final boolean lockedMatch = LOCKED_UPDATER.compareAndSet(this, tx, null);
-        verify(lockedMatch, "Cancelling transaction %s collided with locked transaction %s", tx, lockedTx);
+        if (!LOCKED_UPDATER.compareAndSet(this, tx, null)) {
+            throw new VerifyException("Cancelling transaction " + tx + " collided with locked transaction " + lockedTx);
+        }
 
         // Cancel the backend transaction, so we do not end up leaking it.
         final boolean backendCancelled = tx.getTransaction().cancel();
