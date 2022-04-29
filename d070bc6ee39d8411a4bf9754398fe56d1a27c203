@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "684c4e93_97d0d3b1",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/UnionWithMultipleIdentityrefsTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2022-04-29T11:17:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c67cc094_58d811d6",
+      "revId": "d070bc6ee39d8411a4bf9754398fe56d1a27c203",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "84e35a18_09f710d9",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-04-28T19:38:50Z",
       "side": 1,
       "message": "static imports always come first, please fix your IDE",
+      "range": {
+        "startLine": 13,
+        "startChar": 7,
+        "endLine": 13,
+        "endChar": 13
+      },
+      "revId": "d070bc6ee39d8411a4bf9754398fe56d1a27c203",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b56f2ab_cf95a47f",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/UnionWithMultipleIdentityrefsTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2022-04-29T11:17:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "84e35a18_09f710d9",
       "range": {
         "startLine": 13,
         "startChar": 7,
@@ -58,6 +100,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed0fa8b6_5dc9c1ec",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/UnionWithMultipleIdentityrefsTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2022-04-29T11:17:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c011406e_0c0d4afc",
+      "revId": "d070bc6ee39d8411a4bf9754398fe56d1a27c203",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "32137684_dcb49cb7",
@@ -71,6 +131,30 @@
       "writtenOn": "2022-04-28T19:39:22Z",
       "side": 1,
       "message": "err, no?",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 39
+      },
+      "revId": "d070bc6ee39d8411a4bf9754398fe56d1a27c203",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2366d663_629ba350",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/union-with-multiple-identityrefs/union-with-multiple-identityrefs.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2022-04-29T11:17:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "32137684_dcb49cb7",
       "range": {
         "startLine": 2,
         "startChar": 17,
