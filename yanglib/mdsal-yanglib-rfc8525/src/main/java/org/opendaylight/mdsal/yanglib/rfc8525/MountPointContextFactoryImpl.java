@@ -45,10 +45,11 @@ import org.opendaylight.yangtools.rfc8528.data.api.YangLibraryConstants.Containe
 import org.opendaylight.yangtools.rfc8528.data.util.AbstractMountPointContextFactory;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.UnresolvedQName.Unqualified;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
+import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,8 +179,8 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
 
     @SuppressWarnings("deprecation")
     private static SourceReference sourceRefFor(final CommonLeafs obj, final Uri uri) {
-        final var sourceId = RevisionSourceIdentifier.create(obj.getName().getValue(),
-            LegacyRevisionUtils.toYangCommon(obj.getRevision()));
+        final var sourceId = new SourceIdentifier(Unqualified.of(obj.getName().getValue()),
+            LegacyRevisionUtils.toYangCommon(obj.getRevision()).orElse(null));
         if (uri != null) {
             try {
                 return SourceReference.of(sourceId, new URL(uri.getValue()));
@@ -222,7 +223,7 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
 
     private static void fillSource(final List<SourceReference> sources, final YangIdentifier sourceName,
             final Optional<Revision> revision, final Set<Uri> uris) {
-        final var sourceId = RevisionSourceIdentifier.create(sourceName.getValue(), revision);
+        final var sourceId = new SourceIdentifier(Unqualified.of(sourceName.getValue()), revision.orElse(null));
         final SourceReference sourceRef;
         if (uris != null && uris.isEmpty()) {
             final var locations = new ArrayList<URL>();
