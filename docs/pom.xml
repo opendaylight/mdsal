@@ -623,6 +623,8 @@
                 </executions>
                 <!-- FIXME: remove this section once we can activate javadoc-links profile -->
                 <configuration combine.children="append">
+                    <doclint>-reference</doclint>
+
                     <links>
                         <link>https://junit.org/junit4/javadoc/4.13/</link>
                         <link>http://hamcrest.org/JavaHamcrest/javadoc/2.2/</link>
@@ -632,8 +634,8 @@
                         <link>https://commons.apache.org/proper/commons-lang/javadocs/api-3.10/</link>
                         <link>https://commons.apache.org/proper/commons-codec/apidocs/</link>
 
-                        <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/9.0.13/</link>
-                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/7.0.15/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/9.0.14/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/7.0.16/</link>
                     </links>
                     <groups>
                         <group>

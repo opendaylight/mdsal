@@ -22,9 +22,9 @@ public class BigDecimalRangeGeneratorTest {
         BigDecimalRangeGenerator generator = new BigDecimalRangeGenerator();
         assertEquals(BigDecimal.valueOf(1L), generator.convert(1L));
         assertEquals(BigDecimal.valueOf(1), generator.convert(new BigInteger("1")));
-        assertEquals(BigDecimal.valueOf(1), generator.convert(new Byte("1")));
-        assertEquals(BigDecimal.valueOf(1), generator.convert(new Short("1")));
-        assertEquals(BigDecimal.valueOf(1), generator.convert(new Integer("1")));
+        assertEquals(BigDecimal.valueOf(1), generator.convert(Byte.valueOf("1")));
+        assertEquals(BigDecimal.valueOf(1), generator.convert(Short.valueOf("1")));
+        assertEquals(BigDecimal.valueOf(1), generator.convert(Integer.valueOf("1")));
         assertNotNull(generator.format(BigDecimal.TEN));
     }
 }
