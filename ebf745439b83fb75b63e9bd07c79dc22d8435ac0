@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e03b303e_250e3cea",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/mdsal/binding/dom/codec/impl/UnionTypeWithMultipleIdentityrefsTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-05-23T11:27:28Z",
+      "side": 1,
+      "message": "Use Builders.containerBuilder() instead",
+      "range": {
+        "startLine": 70,
+        "startChar": 34,
+        "endLine": 71,
+        "endChar": 19
+      },
+      "revId": "ebf745439b83fb75b63e9bd07c79dc22d8435ac0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "225c8b8c_3ebf74fb",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/mdsal/binding/dom/codec/impl/UnionTypeWithMultipleIdentityrefsTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-05-23T11:27:28Z",
+      "side": 1,
+      "message": "always import assertions",
+      "range": {
+        "startLine": 76,
+        "startChar": 8,
+        "endLine": 76,
+        "endChar": 28
+      },
+      "revId": "ebf745439b83fb75b63e9bd07c79dc22d8435ac0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e0ba2f0_af9f4627",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/mdsal/binding/dom/codec/impl/UnionTypeWithMultipleIdentityrefsTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-05-23T11:27:28Z",
+      "side": 1,
+      "message": "assertEquals(new TopBuilder() ..., translated.getValue());",
+      "range": {
+        "startLine": 77,
+        "startChar": 7,
+        "endLine": 77,
+        "endChar": 52
+      },
+      "revId": "ebf745439b83fb75b63e9bd07c79dc22d8435ac0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
