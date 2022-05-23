@@ -167,6 +167,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "82bbf280_bd333ffd",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/AbstractTypeObjectGenerator.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2022-05-23T15:09:58Z",
+      "side": 1,
+      "message": "For a name of identityref. It used later in generation of identityrefs variable name.",
+      "parentUuid": "dcc1d495_56113b4e",
+      "range": {
+        "startLine": 735,
+        "startChar": 37,
+        "endLine": 735,
+        "endChar": 74
+      },
+      "revId": "ebf745439b83fb75b63e9bd07c79dc22d8435ac0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ae00d55e_4f1bc132",
         "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/UnionWithIdentityrefTest.java",
         "patchSetId": 9
@@ -178,6 +202,30 @@
       "writtenOn": "2022-05-23T11:32:40Z",
       "side": 1,
       "message": "so this is incompatible even when there is no conflict?",
+      "range": {
+        "startLine": 55,
+        "startChar": 47,
+        "endLine": 55,
+        "endChar": 81
+      },
+      "revId": "ebf745439b83fb75b63e9bd07c79dc22d8435ac0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "923e8cab_38d2d18e",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/UnionWithIdentityrefTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2022-05-23T15:09:58Z",
+      "side": 1,
+      "message": "I don\u0027t understand what do you mean by that. Can you explain a bit more?\nHere I just changed name of getter in test - now for identityrefs name of getter generated based on their name. For example if in yang file we have:\n typedef union-type {\n        type union {\n            type uint8;\n            type identityref {\n                base ident-base;\n            }\n        }\n    }\n\nThan in generated union class name of getter method will be getIdentBase().",
+      "parentUuid": "ae00d55e_4f1bc132",
       "range": {
         "startLine": 55,
         "startChar": 47,
