@@ -7,6 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -210,6 +214,17 @@ public class PingPongTransactionChainTest {
         doReturn(true).when(rwTx).cancel();
         pingPong.newWriteOnlyTransaction().cancel();
         assertNotNull(pingPong.newWriteOnlyTransaction());
+    }
+
+    @Test
+    public void testNewAfterNew() {
+        assertNotNull(pingPong.newWriteOnlyTransaction());
+        doReturn(true).when(rwTx).cancel();
+        doReturn("mock").when(rwTx).toString();
+        final var ex = assertThrows(IllegalStateException.class, () -> pingPong.newWriteOnlyTransaction());
+        assertThat(ex.getMessage(), allOf(
+            startsWith("New transaction PingPongTransaction"),
+            containsString(" raced with transaction PingPongTransaction")));
     }
 
     private static <T> T assertDone(final FluentFuture<T> future) {
