@@ -7,14 +7,18 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
+import com.google.common.util.concurrent.Futures;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
@@ -35,7 +39,7 @@ public class SnapshotBackedReadWriteTransactionTest {
     private SnapshotBackedReadWriteTransaction<Object> snapshotBackedReadWriteTransaction;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         doReturn(DATA_TREE_MODIFICATION).when(DATA_TREE_SNAPSHOT).newModification();
         snapshotBackedReadWriteTransaction = new SnapshotBackedReadWriteTransaction<>(new Object(), false,
                 DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE);
@@ -51,39 +55,37 @@ public class SnapshotBackedReadWriteTransactionTest {
         assertEquals(optional, snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.empty()).get());
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
-    @Test(expected = ReadFailedException.class)
-    public void readTestWithNullException() throws Throwable {
+    @Test
+    public void readTestWithNullException() {
         doReturn(null).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.empty());
-        try {
-            snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.empty()).get();
-            fail("Expected ReadFailedException");
-        } catch (ExecutionException e) {
-            throw e.getCause();
-        }
+
+        final var future = snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.empty());
+        final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
+        assertThat(cause, instanceOf(ReadFailedException.class));
+        assertEquals("Transaction is closed", cause.getMessage());
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException"})
-    @Test(expected = ReadFailedException.class)
-    public void readNodeTestWithException() throws Throwable {
-        doThrow(new NullPointerException("no Node")).when(DATA_TREE_MODIFICATION).readNode(any());
-        try {
-            snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.empty()).get();
-            fail("Expected ReadFailedException");
-        } catch (ExecutionException e) {
-            throw e.getCause();
-        }
+    @Test
+    public void readNodeTestWithException() {
+        final var thrown = new NullPointerException("no Node");
+        doThrow(thrown).when(DATA_TREE_MODIFICATION).readNode(any());
+
+        final var future = snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.empty());
+        final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
+        assertThat(cause, instanceOf(ReadFailedException.class));
+        assertEquals("Read failed", cause.getMessage());
+        assertSame(thrown, cause.getCause());
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException"})
-    @Test(expected = ReadFailedException.class)
-    public void existsTestWithException() throws Throwable {
-        doThrow(new NullPointerException("no Node")).when(DATA_TREE_MODIFICATION).readNode(any());
-        try {
-            snapshotBackedReadWriteTransaction.exists(YangInstanceIdentifier.empty()).get();
-            fail("Expected ReadFailedException");
-        } catch (ExecutionException e) {
-            throw e.getCause();
-        }
+    @Test
+    public void existsTestWithException() {
+        final var thrown = new NullPointerException("no Node");
+        doThrow(thrown).when(DATA_TREE_MODIFICATION).readNode(any());
+
+        final var future = snapshotBackedReadWriteTransaction.exists(YangInstanceIdentifier.empty());
+        final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
+        assertThat(cause, instanceOf(ReadFailedException.class));
+        assertEquals("Read failed", cause.getMessage());
+        assertSame(thrown, cause.getCause());
     }
 }
