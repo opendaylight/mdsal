@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.dom.spi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -84,6 +85,7 @@ public class PingPongTransactionChainTest {
     public void testIdleFailure() {
         final var cause = new Throwable();
         doNothing().when(listener).onTransactionChainFailed(pingPong, null, cause);
+        doReturn("mock").when(chain).toString();
         pingPongListener.onTransactionChainFailed(chain, rwTx, cause);
         verify(listener).onTransactionChainFailed(pingPong, null, cause);
     }
@@ -201,6 +203,13 @@ public class PingPongTransactionChainTest {
         doReturn(result).when(rwTx).cancel();
         assertEquals(result, tx.cancel());
         verify(rwTx).cancel();
+    }
+
+    @Test
+    public void testNewAfterSuccessfulCancel() {
+        doReturn(true).when(rwTx).cancel();
+        pingPong.newWriteOnlyTransaction().cancel();
+        assertNotNull(pingPong.newWriteOnlyTransaction());
     }
 
     private static <T> T assertDone(final FluentFuture<T> future) {
