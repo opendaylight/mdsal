@@ -191,6 +191,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "006e8822_36ccbbd0",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/AbstractTypeObjectGenerator.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-05-25T15:00:22Z",
+      "side": 1,
+      "message": "I mean what statement exactly (and know it\u0027s argument is a QName, which is blindly casted) and how do you know it is always present and it is always the first statement?",
+      "parentUuid": "82bbf280_bd333ffd",
+      "range": {
+        "startLine": 735,
+        "startChar": 37,
+        "endLine": 735,
+        "endChar": 74
+      },
+      "revId": "ebf745439b83fb75b63e9bd07c79dc22d8435ac0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ae00d55e_4f1bc132",
         "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/UnionWithIdentityrefTest.java",
         "patchSetId": 9
@@ -226,6 +250,30 @@
       "side": 1,
       "message": "I don\u0027t understand what do you mean by that. Can you explain a bit more?\nHere I just changed name of getter in test - now for identityrefs name of getter generated based on their name. For example if in yang file we have:\n typedef union-type {\n        type union {\n            type uint8;\n            type identityref {\n                base ident-base;\n            }\n        }\n    }\n\nThan in generated union class name of getter method will be getIdentBase().",
       "parentUuid": "ae00d55e_4f1bc132",
+      "range": {
+        "startLine": 55,
+        "startChar": 47,
+        "endLine": 55,
+        "endChar": 81
+      },
+      "revId": "ebf745439b83fb75b63e9bd07c79dc22d8435ac0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b70f66a1_debc4937",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/UnionWithIdentityrefTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-05-25T15:00:22Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "923e8cab_38d2d18e",
       "range": {
         "startLine": 55,
         "startChar": 47,
