@@ -108,14 +108,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <Automatic-Module-Name>org.opendaylight.mdsal.binding.dom.adapter</Automatic-Module-Name>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
                     <execution>
