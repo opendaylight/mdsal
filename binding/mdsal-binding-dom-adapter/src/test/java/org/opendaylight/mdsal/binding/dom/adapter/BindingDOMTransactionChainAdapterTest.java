@@ -42,7 +42,7 @@ import org.opendaylight.mdsal.dom.spi.PingPongMergingDOMDataBroker;
 
 @RunWith(Parameterized.class)
 public class BindingDOMTransactionChainAdapterTest {
-    enum TransactionChainType implements BiFunction<DataBroker, TransactionChainListener, TransactionChain> {
+    public enum TransactionChainType implements BiFunction<DataBroker, TransactionChainListener, TransactionChain> {
         NORMAL {
             @Override
             public TransactionChain apply(final DataBroker broker, final TransactionChainListener listener) {
