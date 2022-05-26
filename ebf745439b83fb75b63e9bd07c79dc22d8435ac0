@@ -261,6 +261,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f2609da3_463028b9",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/AbstractTypeObjectGenerator.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 8324
+      },
+      "writtenOn": "2022-05-26T15:10:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8e51e841_8ef83691",
+      "range": {
+        "startLine": 735,
+        "startChar": 37,
+        "endLine": 735,
+        "endChar": 74
+      },
+      "revId": "ebf745439b83fb75b63e9bd07c79dc22d8435ac0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ae00d55e_4f1bc132",
