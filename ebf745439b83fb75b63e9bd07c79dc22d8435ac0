@@ -215,6 +215,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4f708877_45a843ed",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/AbstractTypeObjectGenerator.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2022-05-26T08:48:23Z",
+      "side": 1,
+      "message": "You right - this is a bad way to get it. I just used debug on test to find where I can get name of identityref. I\u0027ll try to find better way. If you already know one - pls suggest it.",
+      "parentUuid": "006e8822_36ccbbd0",
+      "range": {
+        "startLine": 735,
+        "startChar": 37,
+        "endLine": 735,
+        "endChar": 74
+      },
+      "revId": "ebf745439b83fb75b63e9bd07c79dc22d8435ac0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ae00d55e_4f1bc132",
         "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/UnionWithIdentityrefTest.java",
         "patchSetId": 9
