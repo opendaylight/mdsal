@@ -59,13 +59,11 @@ final class SourceRequestHandler extends SimpleChannelInboundHandler<ByteBuf> {
         final Channel channel = ctx.channel();
         LOG.trace("Channel {} received message type {}", channel, msgType);
         switch (msgType) {
-            case Constants.MSG_SUBSCRIBE_REQ:
-                subscribe(channel, msg);
-                break;
-            case Constants.MSG_PONG:
-                break;
-            default:
-                throw new IllegalStateException("Unexpected message type " + msgType);
+            case Constants.MSG_SUBSCRIBE_REQ -> subscribe(channel, msg);
+            case Constants.MSG_PONG -> {
+                // No-op
+            }
+            default -> throw new IllegalStateException("Unexpected message type " + msgType);
         }
     }
 
