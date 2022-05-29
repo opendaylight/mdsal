@@ -364,23 +364,17 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
     @Holding("this")
     private void cleanupCandidateOwnershipChanged(final EntityOwnershipChangeState state, final boolean jeopardy) {
         if (jeopardy) {
-            switch (state) {
-                case LOCAL_OWNERSHIP_GRANTED:
-                case LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE:
+            cleanupEntityState = switch (state) {
+                case LOCAL_OWNERSHIP_GRANTED, LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE -> {
                     LOG.warn("Service group {} cleanup entity owned without certainty", identifier);
-                    cleanupEntityState = EntityState.OWNED_JEOPARDY;
-                    break;
-                case LOCAL_OWNERSHIP_LOST_NEW_OWNER:
-                case LOCAL_OWNERSHIP_LOST_NO_OWNER:
-                case REMOTE_OWNERSHIP_CHANGED:
-                case REMOTE_OWNERSHIP_LOST_NO_OWNER:
+                    yield EntityState.OWNED_JEOPARDY;
+                }
+                case LOCAL_OWNERSHIP_LOST_NEW_OWNER, LOCAL_OWNERSHIP_LOST_NO_OWNER, REMOTE_OWNERSHIP_CHANGED,
+                     REMOTE_OWNERSHIP_LOST_NO_OWNER -> {
                     LOG.info("Service group {} cleanup entity ownership uncertain", identifier);
-                    cleanupEntityState = EntityState.UNOWNED;
-                    break;
-                default:
-                    throw new IllegalStateException("Unhandled cleanup entity jeopardy change " + state);
-            }
-
+                    yield EntityState.UNOWNED;
+                }
+            };
             return;
         }
 
@@ -389,41 +383,22 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
             LOG.info("Service group {} cleanup entity ownership ascertained", identifier);
         }
 
-        switch (state) {
-            case LOCAL_OWNERSHIP_GRANTED:
-            case LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE:
-                cleanupEntityState = EntityState.OWNED;
-                break;
-            case LOCAL_OWNERSHIP_LOST_NEW_OWNER:
-            case LOCAL_OWNERSHIP_LOST_NO_OWNER:
-            case REMOTE_OWNERSHIP_LOST_NO_OWNER:
-            case REMOTE_OWNERSHIP_CHANGED:
-                cleanupEntityState = EntityState.UNOWNED;
-                break;
-            default:
-                LOG.warn("Service group {} ignoring unhandled cleanup entity change {}", identifier, state);
-                break;
-        }
+        cleanupEntityState = switch (state) {
+            case LOCAL_OWNERSHIP_GRANTED, LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE -> EntityState.OWNED;
+            case LOCAL_OWNERSHIP_LOST_NEW_OWNER, LOCAL_OWNERSHIP_LOST_NO_OWNER, REMOTE_OWNERSHIP_LOST_NO_OWNER,
+                 REMOTE_OWNERSHIP_CHANGED -> EntityState.UNOWNED;
+        };
     }
 
     @Holding("this")
     private void serviceOwnershipChanged(final EntityOwnershipChangeState state, final boolean jeopardy) {
         if (jeopardy) {
             LOG.info("Service group {} service entity ownership uncertain", identifier);
-            switch (state) {
-                case LOCAL_OWNERSHIP_GRANTED:
-                case LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE:
-                    serviceEntityState = EntityState.OWNED_JEOPARDY;
-                    break;
-                case LOCAL_OWNERSHIP_LOST_NEW_OWNER:
-                case LOCAL_OWNERSHIP_LOST_NO_OWNER:
-                case REMOTE_OWNERSHIP_CHANGED:
-                case REMOTE_OWNERSHIP_LOST_NO_OWNER:
-                    serviceEntityState = EntityState.UNOWNED;
-                    break;
-                default:
-                    throw new IllegalStateException("Unhandled cleanup entity jeopardy change " + state);
-            }
+            serviceEntityState = switch (state) {
+                case LOCAL_OWNERSHIP_GRANTED, LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE -> EntityState.OWNED_JEOPARDY;
+                case LOCAL_OWNERSHIP_LOST_NEW_OWNER, LOCAL_OWNERSHIP_LOST_NO_OWNER, REMOTE_OWNERSHIP_CHANGED,
+                     REMOTE_OWNERSHIP_LOST_NO_OWNER -> EntityState.UNOWNED;
+            };
             return;
         }
 
@@ -505,19 +480,10 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
         final boolean haveService;
         synchronized (this) {
             if (serviceEntityReg != null) {
-                switch (serviceEntityState) {
-                    case OWNED:
-                    case OWNED_JEOPARDY:
-                        haveService = true;
-                        break;
-                    case REGISTERED:
-                    case UNOWNED:
-                    case UNREGISTERED:
-                        haveService = false;
-                        break;
-                    default:
-                        throw new IllegalStateException("Unhandled service entity state " + serviceEntityState);
-                }
+                haveService = switch (serviceEntityState) {
+                    case OWNED, OWNED_JEOPARDY -> true;
+                    case REGISTERED, UNOWNED, UNREGISTERED -> false;
+                };
             } else {
                 haveService = false;
             }
@@ -540,19 +506,10 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
             }
 
             if (cleanupEntityReg != null) {
-                switch (cleanupEntityState) {
-                    case OWNED:
-                        haveCleanup = true;
-                        break;
-                    case OWNED_JEOPARDY:
-                    case REGISTERED:
-                    case UNOWNED:
-                    case UNREGISTERED:
-                        haveCleanup = false;
-                        break;
-                    default:
-                        throw new IllegalStateException("Unhandled service entity state " + serviceEntityState);
-                }
+                haveCleanup = switch (cleanupEntityState) {
+                    case OWNED -> true;
+                    case OWNED_JEOPARDY, REGISTERED, UNOWNED, UNREGISTERED -> false;
+                };
             } else {
                 haveCleanup = false;
             }
@@ -577,22 +534,10 @@ final class ClusterSingletonServiceGroupImpl<P extends HierarchicalIdentifier<P>
                     cleanupEntityReg = null;
                 }
 
-                switch (cleanupEntityState) {
-                    case OWNED:
-                    case OWNED_JEOPARDY:
-                    case REGISTERED:
-                        // When we are registered we need to wait for registration to resolve, otherwise
-                        // the notification could be routed to the next incarnation of this group -- which could be
-                        // confused by the fact it is not registered, but receives, for example, OWNED notification.
-                        canFinishClose = false;
-                        break;
-                    case UNOWNED:
-                    case UNREGISTERED:
-                        canFinishClose = true;
-                        break;
-                    default:
-                        throw new IllegalStateException("Unhandled cleanup entity state " + cleanupEntityState);
-                }
+                canFinishClose = switch (cleanupEntityState) {
+                    case OWNED, OWNED_JEOPARDY, REGISTERED -> false;
+                    case UNOWNED, UNREGISTERED -> true;
+                };
             }
 
             if (canFinishClose) {
