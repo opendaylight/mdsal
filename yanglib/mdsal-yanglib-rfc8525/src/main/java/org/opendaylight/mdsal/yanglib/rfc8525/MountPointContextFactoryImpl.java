@@ -86,27 +86,18 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
 
     @Override
     protected Optional<EffectiveModelContext> findSchemaForLibrary(final ContainerName containerName) {
-        switch (containerName) {
-            case RFC7895:
-            case RFC8525:
-                return Optional.of(yangLibContext);
-            default:
-                LOG.debug("Unhandled YANG library container {}", containerName);
-                return Optional.empty();
-        }
+        return switch (containerName) {
+            case RFC7895, RFC8525 -> Optional.of(yangLibContext);
+        };
     }
 
     @Override
     protected EffectiveModelContext bindLibrary(final ContainerName containerName, final ContainerNode libData)
             throws YangParserException {
-        switch (containerName) {
-            case RFC7895:
-                return bindLibrary(verifyNotNull(legacyCodec.deserialize(libData)));
-            case RFC8525:
-                return bindLibrary(verifyNotNull(codec.deserialize(libData)));
-            default:
-                throw new IllegalStateException("Unhandled container type " + containerName);
-        }
+        return switch (containerName) {
+            case RFC7895 -> bindLibrary(verifyNotNull(legacyCodec.deserialize(libData)));
+            case RFC8525 -> bindLibrary(verifyNotNull(codec.deserialize(libData)));
+        };
     }
 
     private @NonNull EffectiveModelContext bindLibrary(final @NonNull YangLibrary yangLib) throws YangParserException {
