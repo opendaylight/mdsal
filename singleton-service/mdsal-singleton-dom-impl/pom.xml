@@ -21,16 +21,37 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>concepts</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-data-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-eos-common-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-eos-dom-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-singleton-common-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-data-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kohsuke.metainf-services</groupId>
