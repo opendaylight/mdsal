@@ -64,13 +64,10 @@ public enum LogicalDatastoreType implements WritableObject {
 
     public static @NonNull LogicalDatastoreType readFrom(final DataInput in) throws IOException {
         final byte serialized = in.readByte();
-        switch (serialized) {
-            case 1:
-                return OPERATIONAL;
-            case 2:
-                return CONFIGURATION;
-            default:
-                throw new IOException("Unknown type " + serialized);
-        }
+        return switch (serialized) {
+            case 1 -> OPERATIONAL;
+            case 2 -> CONFIGURATION;
+            default -> throw new IOException("Unknown type " + serialized);
+        };
     }
 }
