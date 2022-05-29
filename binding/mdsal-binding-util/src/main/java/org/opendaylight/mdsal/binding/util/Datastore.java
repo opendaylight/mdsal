@@ -15,7 +15,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
  */
 @Beta
 // FIXME Base this on ietf-datastores.yang (RFC 8342)
-public abstract class Datastore {
+public abstract sealed class Datastore {
 
     /** Class representing the configuration datastore. */
     public static final Class<Configuration> CONFIGURATION = Configuration.class;
@@ -31,6 +31,10 @@ public abstract class Datastore {
 
     }
 
+    private Datastore() {
+        // Hidden on purpose
+    }
+
     /**
      * Returns the logical datastore type corresponding to the given datastore class.
      *
@@ -38,7 +42,7 @@ public abstract class Datastore {
      * @return The corresponding logical datastore type.
      * @throws IllegalArgumentException if the provided datastore class isn’t handled.
      */
-    public static LogicalDatastoreType toType(Class<? extends Datastore> datastoreClass) {
+    public static LogicalDatastoreType toType(final Class<? extends Datastore> datastoreClass) {
         if (datastoreClass.equals(Configuration.class)) {
             return LogicalDatastoreType.CONFIGURATION;
         } else if (Operational.class.equals(datastoreClass)) {
@@ -54,18 +58,10 @@ public abstract class Datastore {
      * @return The corresponding datastore class.
      * @throws IllegalArgumentException if the provided logical datastore type isn’t handled.
      */
-    public static Class<? extends Datastore> toClass(LogicalDatastoreType datastoreType) {
-        switch (datastoreType) {
-            case CONFIGURATION:
-                return CONFIGURATION;
-            case OPERATIONAL:
-                return OPERATIONAL;
-            default:
-                throw new IllegalArgumentException("Unknown datastore type " + datastoreType);
-        }
-    }
-
-    private Datastore() {
-
+    public static Class<? extends Datastore> toClass(final LogicalDatastoreType datastoreType) {
+        return switch (datastoreType) {
+            case CONFIGURATION -> CONFIGURATION;
+            case OPERATIONAL -> OPERATIONAL;
+        };
     }
 }
