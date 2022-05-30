@@ -191,13 +191,9 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     }
 
     private static DataTreeConfiguration defaultConfig(final LogicalDatastoreType type) {
-        switch (type) {
-            case CONFIGURATION:
-                return DataTreeConfiguration.DEFAULT_CONFIGURATION;
-            case OPERATIONAL:
-                return DataTreeConfiguration.DEFAULT_OPERATIONAL;
-            default:
-                throw new IllegalArgumentException("Unhandled datastore type " + type);
-        }
+        return switch (type) {
+            case CONFIGURATION -> DataTreeConfiguration.DEFAULT_CONFIGURATION;
+            case OPERATIONAL -> DataTreeConfiguration.DEFAULT_OPERATIONAL;
+        };
     }
 }
