@@ -71,8 +71,8 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                         serializer.toLazyNormalizedNodeActionInput(spec.type(), inputName, input));
 
                     // Invocation returned a future we know about -- return that future instead
-                    if (ENABLE_CODEC_SHORTCUT && future instanceof BindingRpcFutureAware) {
-                        return ((BindingRpcFutureAware) future).getBindingFuture();
+                    if (ENABLE_CODEC_SHORTCUT && future instanceof BindingRpcFutureAware bindingAware) {
+                        return bindingAware.getBindingFuture();
                     }
 
                     return Futures.transform(future,
