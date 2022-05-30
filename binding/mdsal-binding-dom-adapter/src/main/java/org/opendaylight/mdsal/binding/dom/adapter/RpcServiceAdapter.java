@@ -136,8 +136,8 @@ class RpcServiceAdapter implements InvocationHandler {
         private ListenableFuture<RpcResult<?>> invoke0(final ContainerNode input) {
             final ListenableFuture<? extends DOMRpcResult> result =
                     delegate.invokeRpc(outputPath.firstNodeIdentifier(), input);
-            if (ENABLE_CODEC_SHORTCUT && result instanceof BindingRpcFutureAware) {
-                return ((BindingRpcFutureAware) result).getBindingFuture();
+            if (ENABLE_CODEC_SHORTCUT && result instanceof BindingRpcFutureAware bindingAware) {
+                return bindingAware.getBindingFuture();
             }
 
             return transformFuture(result, adapterContext.currentSerializer());
