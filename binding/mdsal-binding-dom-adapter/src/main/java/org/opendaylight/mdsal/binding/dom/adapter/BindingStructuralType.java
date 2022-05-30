@@ -108,31 +108,23 @@ public enum BindingStructuralType {
 
     public static BindingStructuralType recursiveFrom(final DataTreeCandidateNode node) {
         final BindingStructuralType type = BindingStructuralType.from(node);
-        switch (type) {
-            case INVISIBLE_CONTAINER:
-            case INVISIBLE_LIST:
+        return switch (type) {
+            case INVISIBLE_CONTAINER, INVISIBLE_LIST -> {
                 // This node is invisible, try to resolve using a child node
                 for (final DataTreeCandidateNode child : node.getChildNodes()) {
                     final BindingStructuralType childType = recursiveFrom(child);
-                    switch (childType) {
-                        case INVISIBLE_CONTAINER:
-                        case INVISIBLE_LIST:
+                    yield switch (childType) {
+                        case INVISIBLE_CONTAINER, INVISIBLE_LIST ->
                             // Invisible nodes are not addressable
-                            return BindingStructuralType.NOT_ADDRESSABLE;
-                        case NOT_ADDRESSABLE:
-                        case UNKNOWN:
-                        case VISIBLE_CONTAINER:
-                            return childType;
-                        default:
-                            throw new IllegalStateException("Unhandled child type " + childType + " for child "
-                                    + child);
-                    }
+                            BindingStructuralType.NOT_ADDRESSABLE;
+                        case NOT_ADDRESSABLE, UNKNOWN, VISIBLE_CONTAINER -> childType;
+                    };
                 }
 
-                return BindingStructuralType.NOT_ADDRESSABLE;
-            default:
-                return type;
-        }
+                yield BindingStructuralType.NOT_ADDRESSABLE;
+            }
+            default -> type;
+        };
     }
 
     private static boolean isVisibleContainer(final NormalizedNode data) {
