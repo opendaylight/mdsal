@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
@@ -48,7 +49,6 @@ import org.slf4j.LoggerFactory;
  * @param <T> Type of Binding Data Object
  */
 final class LazyDataObjectModification<T extends DataObject> implements DataObjectModification<T> {
-
     private static final Logger LOG = LoggerFactory.getLogger(LazyDataObjectModification.class);
 
     private final BindingDataObjectCodecTreeNode<T> codec;
@@ -163,36 +163,27 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
             return localType;
         }
 
-        switch (domData.getModificationType()) {
-            case APPEARED:
-            case WRITE:
-                localType = ModificationType.WRITE;
-                break;
-            case DISAPPEARED:
-            case DELETE:
-                localType = ModificationType.DELETE;
-                break;
-            case SUBTREE_MODIFIED:
-                localType = resolveSubtreeModificationType();
-                break;
-            default:
+        localType = switch (domData.getModificationType()) {
+            case APPEARED, WRITE -> ModificationType.WRITE;
+            case DISAPPEARED, DELETE -> ModificationType.DELETE;
+            case SUBTREE_MODIFIED -> resolveSubtreeModificationType();
+            case UNMODIFIED ->
                 // TODO: Should we lie about modification type instead of exception?
                 throw new IllegalStateException("Unsupported DOM Modification type " + domData.getModificationType());
-        }
-
+        };
         modificationType = localType;
         return localType;
     }
 
-    private ModificationType resolveSubtreeModificationType() {
-        switch (codec.getChildAddressabilitySummary()) {
-            case ADDRESSABLE:
+    private @NonNull ModificationType resolveSubtreeModificationType() {
+        return switch (codec.getChildAddressabilitySummary()) {
+            case ADDRESSABLE ->
                 // All children are addressable, it is safe to report SUBTREE_MODIFIED
-                return ModificationType.SUBTREE_MODIFIED;
-            case UNADDRESSABLE:
+                ModificationType.SUBTREE_MODIFIED;
+            case UNADDRESSABLE ->
                 // All children are non-addressable, report WRITE
-                return ModificationType.WRITE;
-            case MIXED:
+                ModificationType.WRITE;
+            case MIXED -> {
                 // This case is not completely trivial, as we may have NOT_ADDRESSABLE nodes underneath us. If that
                 // is the case, we need to turn this modification into a WRITE operation, so that the user is able
                 // to observe those nodes being introduced. This is not efficient, but unfortunately unavoidable,
@@ -200,16 +191,14 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
                 for (DataTreeCandidateNode child : domData.getChildNodes()) {
                     if (BindingStructuralType.recursiveFrom(child) == BindingStructuralType.NOT_ADDRESSABLE) {
                         // We have a non-addressable child, turn this modification into a write
-                        return ModificationType.WRITE;
+                        yield ModificationType.WRITE;
                     }
                 }
 
                 // No unaddressable children found, proceed in addressed mode
-                return ModificationType.SUBTREE_MODIFIED;
-            default:
-                throw new IllegalStateException("Unsupported child addressability summary "
-                        + codec.getChildAddressabilitySummary());
-        }
+                yield ModificationType.SUBTREE_MODIFIED;
+            }
+        };
     }
 
     @Override
