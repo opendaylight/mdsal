@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
 import java.util.Map;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
 
@@ -23,15 +24,11 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
  * functionality as retrieval of subtransaction, close method and retrieval of
  * identifier.
  *
- * @param <K>
- *            Subtransaction distinguisher
- * @param <T>
- *            Subtransaction type
+ * @param <T> Subtransaction type
  */
-abstract class AbstractDOMForwardedCompositeTransaction<K, T extends DOMStoreTransaction> implements
-        DOMDataTreeTransaction {
-
-    private final Map<K, T> backingTxs;
+abstract class AbstractDOMForwardedCompositeTransaction<T extends DOMStoreTransaction>
+        implements DOMDataTreeTransaction {
+    private final Map<LogicalDatastoreType, T> backingTxs;
     private final Object identifier;
 
     /**
@@ -42,7 +39,8 @@ abstract class AbstractDOMForwardedCompositeTransaction<K, T extends DOMStoreTra
      * @param backingTxs
      *            Key,value map of backing transactions.
      */
-    protected AbstractDOMForwardedCompositeTransaction(final Object identifier, final Map<K, T> backingTxs) {
+    protected AbstractDOMForwardedCompositeTransaction(final Object identifier,
+            final Map<LogicalDatastoreType, T> backingTxs) {
         this.identifier = requireNonNull(identifier, "Identifier should not be null");
         this.backingTxs = requireNonNull(backingTxs, "Backing transactions should not be null");
     }
@@ -57,7 +55,7 @@ abstract class AbstractDOMForwardedCompositeTransaction<K, T extends DOMStoreTra
      * @throws IllegalArgumentException
      *             if no subtransaction is associated with key.
      */
-    protected final T getSubtransaction(final K key) {
+    protected final T getSubtransaction(final LogicalDatastoreType key) {
         requireNonNull(key, "key must not be null.");
 
         final T ret = backingTxs.get(key);

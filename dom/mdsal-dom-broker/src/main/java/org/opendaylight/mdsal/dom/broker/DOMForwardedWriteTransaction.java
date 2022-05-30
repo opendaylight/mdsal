@@ -46,8 +46,8 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> Subtype of {@link DOMStoreWriteTransaction} which is used as subtransaction.
  */
-class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction> extends
-        AbstractDOMForwardedCompositeTransaction<LogicalDatastoreType, T> implements DOMDataTreeWriteTransaction {
+class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction>
+        extends AbstractDOMForwardedCompositeTransaction<T> implements DOMDataTreeWriteTransaction {
     @SuppressWarnings("rawtypes")
     private static final AtomicReferenceFieldUpdater<DOMForwardedWriteTransaction,
         AbstractDOMForwardedTransactionFactory> IMPL_UPDATER = AtomicReferenceFieldUpdater.newUpdater(

@@ -7,36 +7,46 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AbstractDOMForwardedCompositeTransactionTest {
+    @Mock
+    public DOMStoreTransaction failTx1;
+    @Mock
+    public DOMStoreTransaction failTx2;
 
-    private static final DOMStoreTransaction FAIL_TX1 = mock(DOMStoreTransaction.class);
-    private static final DOMStoreTransaction FAIL_TX2 = mock(DOMStoreTransaction.class);
-
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void closeSubtransactionsTest() throws Exception {
-        doThrow(UnsupportedOperationException.class).when(FAIL_TX1).close();
-        doThrow(UnsupportedOperationException.class).when(FAIL_TX2).close();
+        doThrow(UnsupportedOperationException.class).when(failTx1).close();
+        doThrow(UnsupportedOperationException.class).when(failTx2).close();
 
-        final AbstractDOMForwardedCompositeTransaction<?, ?> domForwardedCompositeTransaction =
-                new DOMForwardedCompositeTransactionTestImpl("testIdent",
-                        ImmutableMap.of("testKey1", FAIL_TX1, "testKey2", FAIL_TX2));
+        final var domForwardedCompositeTransaction = new DOMForwardedCompositeTransactionTestImpl("testIdent",
+            ImmutableMap.of(LogicalDatastoreType.CONFIGURATION, failTx1, LogicalDatastoreType.OPERATIONAL, failTx2));
 
-        domForwardedCompositeTransaction.closeSubtransactions();
+        final var ex = assertThrows(IllegalStateException.class,
+            domForwardedCompositeTransaction::closeSubtransactions);
+        assertEquals("Uncaught exception occured during closing transaction", ex.getMessage());
+        assertThat(ex.getCause(), instanceOf(UnsupportedOperationException.class));
     }
 
     private static final class DOMForwardedCompositeTransactionTestImpl
-            extends AbstractDOMForwardedCompositeTransaction<String, DOMStoreTransaction> {
-
+            extends AbstractDOMForwardedCompositeTransaction<DOMStoreTransaction> {
         DOMForwardedCompositeTransactionTestImpl(final Object identifier,
-                                                 final Map<String, DOMStoreTransaction> backingTxs) {
+                                                 final Map<LogicalDatastoreType, DOMStoreTransaction> backingTxs) {
             super(identifier, backingTxs);
         }
     }
