@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.api;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
-import java.util.Iterator;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -71,14 +70,8 @@ public final class DOMDataTreeIdentifier implements HierarchicalIdentifier<DOMDa
 
     @Override
     public boolean equals(final @Nullable Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof DOMDataTreeIdentifier)) {
-            return false;
-        }
-        DOMDataTreeIdentifier other = (DOMDataTreeIdentifier) obj;
-        return datastoreType == other.datastoreType && rootIdentifier.equals(other.rootIdentifier);
+        return this == obj || obj instanceof DOMDataTreeIdentifier other && datastoreType == other.datastoreType
+            && rootIdentifier.equals(other.rootIdentifier);
     }
 
     @Override
@@ -88,8 +81,8 @@ public final class DOMDataTreeIdentifier implements HierarchicalIdentifier<DOMDa
             return cmp;
         }
 
-        final Iterator<PathArgument> myIter = rootIdentifier.getPathArguments().iterator();
-        final Iterator<PathArgument> otherIter = domDataTreeIdentifier.rootIdentifier.getPathArguments().iterator();
+        final var myIter = rootIdentifier.getPathArguments().iterator();
+        final var otherIter = domDataTreeIdentifier.rootIdentifier.getPathArguments().iterator();
 
         while (myIter.hasNext()) {
             if (!otherIter.hasNext()) {

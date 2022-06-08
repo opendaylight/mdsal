@@ -12,9 +12,8 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -33,18 +32,19 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Interfaces do not specify Serializable")
     private final @Nullable NormalizedNode result;
+    // FIXME: a plain Collection is bad for equality
     private final Collection<? extends RpcError> errors;
 
     public DefaultDOMRpcResult(final NormalizedNode result, final RpcError... errors) {
-        this(result, asCollection(errors));
+        this(result, List.of(errors));
     }
 
     public DefaultDOMRpcResult(final RpcError... errors) {
-        this(null, asCollection(errors));
+        this(null, List.of(errors));
     }
 
     public DefaultDOMRpcResult(final @Nullable NormalizedNode result) {
-        this(result, Collections.emptyList());
+        this(result, List.of());
     }
 
     public DefaultDOMRpcResult(final @Nullable NormalizedNode result,
@@ -55,10 +55,6 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
 
     public DefaultDOMRpcResult(final Collection<RpcError> errors) {
         this(null, errors);
-    }
-
-    private static Collection<RpcError> asCollection(final RpcError... errors) {
-        return errors.length == 0 ? Collections.emptyList() : Arrays.asList(errors);
     }
 
     @Override
@@ -82,13 +78,7 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
 
     @Override
     public boolean equals(final @Nullable Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof DefaultDOMRpcResult)) {
-            return false;
-        }
-        final DefaultDOMRpcResult other = (DefaultDOMRpcResult) obj;
-        return errors.equals(other.errors) && Objects.equals(result, other.result);
+        return this == obj || obj instanceof DefaultDOMRpcResult other && errors.equals(other.errors)
+            && Objects.equals(result, other.result);
     }
 }

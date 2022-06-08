@@ -34,7 +34,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 
 @NonNullByDefault
 final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifier, NormalizedNode>> {
-    private static class Frame {
+    private static sealed class Frame {
         final NormalizedNode data;
         final @Nullable PathArgument select;
 
@@ -45,9 +45,9 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
             select = null;
         }
 
-        Frame(final NormalizedNode data, final PathArgument selectArg) {
+        Frame(final NormalizedNode data, final PathArgument select) {
             this.data = requireNonNull(data);
-            this.select = requireNonNull(selectArg);
+            this.select = requireNonNull(select);
         }
 
         // Bimorphic invocation here, MapFrame checks with its iterator.
@@ -68,8 +68,8 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
     private static final class MapFrame extends Frame {
         final Iterator<MapEntryNode> iter;
 
-        MapFrame(final NormalizedNode data, final PathArgument selectArg, final Iterator<MapEntryNode> iter) {
-            super(data, selectArg);
+        MapFrame(final NormalizedNode data, final PathArgument select, final Iterator<MapEntryNode> iter) {
+            super(data, select);
             this.iter = requireNonNull(iter);
         }
 
@@ -107,7 +107,6 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
         return next != null ? next : endOfData();
     }
 
-    @SuppressFBWarnings(value = "NP_NONNULL_RETURN_VIOLATION", justification = "Ungrokked @Nullable")
     // TODO: this is a huge method which could be restructured with hard tailcalls, alas we do not have those (yet?)
     //       Any such refactor better have some benchmarks to show non-regression.
     private @Nullable Entry<YangInstanceIdentifier, NormalizedNode> findNext() {
@@ -146,8 +145,8 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
 
             // 1. we are iterating a map. We are matching the next child against 'next', which can have a number of
             //    outcomes in and of itself.
-            if (current instanceof MapFrame) {
-                final Iterator<MapEntryNode> iter = ((MapFrame) current).iter;
+            if (current instanceof MapFrame mapFrame) {
+                final Iterator<MapEntryNode> iter = mapFrame.iter;
                 if (remainingSelect.isEmpty()) {
                     // ... so all of 1) and this is the last-step map. In this case we want to find the next matching
                     //     child without going to stack. We want to push next back, though, as we either need to resume
@@ -204,11 +203,10 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
 
             // Now decide what sort of entry to push. For maps we want to start an iterator already, so it gets
             // picked up as a continuation.
-            if (child instanceof MapNode) {
-                final MapNode map = (MapNode) child;
+            if (child instanceof MapNode map) {
                 final PathArgument target = remainingSelect.peek();
-                if (target instanceof NodeIdentifierWithPredicates) {
-                    final MapEntryNode entry = map.childByArg((NodeIdentifierWithPredicates) target);
+                if (target instanceof NodeIdentifierWithPredicates nip) {
+                    final MapEntryNode entry = map.childByArg(nip);
                     if (entry != null) {
                         if (remainingSelect.size() != 1) {
                             // We need to perform further selection push this frame, an empty frame for the map and
@@ -313,7 +311,6 @@ final class DOMQueryIterator extends AbstractIterator<Entry<YangInstanceIdentifi
      * @param next Next path argument to lookup (after this frame)
      * @return Next frame to process, null if there is no other work
      */
-    @SuppressFBWarnings(value = "NP_NONNULL_RETURN_VIOLATION", justification = "Ungrokked @Nullable")
     private @Nullable Frame unwind(final @Nullable PathArgument selectArg) {
         @Nullable PathArgument select = selectArg;
         while (true) {

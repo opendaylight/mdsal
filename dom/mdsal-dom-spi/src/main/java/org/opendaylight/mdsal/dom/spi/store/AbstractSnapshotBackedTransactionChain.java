@@ -22,21 +22,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract implementation of the {@link DOMStoreTransactionChain}
- * interface relying on {@link DataTreeSnapshot} supplier
- * and backend commit coordinator.
+ * Abstract implementation of the {@link DOMStoreTransactionChain} interface relying on {@link DataTreeSnapshot}
+ * supplier and backend commit coordinator.
+ *
  * @param <T> transaction identifier type
  */
 @Beta
 public abstract class AbstractSnapshotBackedTransactionChain<T>
         extends TransactionReadyPrototype<T> implements DOMStoreTransactionChain, TransactionClosePrototype<T> {
-    private abstract static class State {
+    private abstract static sealed class State {
         /**
          * Allocate a new snapshot.
          *
          * @return A new snapshot
          */
-        protected abstract DataTreeSnapshot getSnapshot();
+        abstract DataTreeSnapshot getSnapshot();
     }
 
     private static final class Idle extends State {
@@ -47,7 +47,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
         }
 
         @Override
-        protected DataTreeSnapshot getSnapshot() {
+        DataTreeSnapshot getSnapshot() {
             return chain.takeSnapshot();
         }
     }
@@ -65,12 +65,12 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
             this.transaction = requireNonNull(transaction);
         }
 
-        public DOMStoreWriteTransaction getTransaction() {
+        DOMStoreWriteTransaction getTransaction() {
             return transaction;
         }
 
         @Override
-        protected DataTreeSnapshot getSnapshot() {
+        DataTreeSnapshot getSnapshot() {
             final DataTreeSnapshot ret = snapshot;
             checkState(ret != null, "Previous transaction %s is not ready yet", transaction.getIdentifier());
             return ret;
@@ -93,7 +93,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
         }
 
         @Override
-        protected DataTreeSnapshot getSnapshot() {
+        DataTreeSnapshot getSnapshot() {
             throw new IllegalStateException(message);
         }
     }
@@ -106,12 +106,12 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
     private static final Logger LOG = LoggerFactory.getLogger(AbstractSnapshotBackedTransactionChain.class);
     private static final Shutdown CLOSED = new Shutdown("Transaction chain is closed");
     private static final Shutdown FAILED = new Shutdown("Transaction chain has failed");
+
     private final Idle idleState;
     private volatile State state;
 
     protected AbstractSnapshotBackedTransactionChain() {
-        idleState = new Idle(this);
-        state = idleState;
+        state = idleState = new Idle(this);
     }
 
     private Entry<State, DataTreeSnapshot> getSnapshot() {
@@ -169,8 +169,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
         do {
             entry = getSnapshot();
-            ret = new SnapshotBackedWriteTransaction<>(transactionId,
-                    getDebugTransactions(), entry.getValue(), this);
+            ret = new SnapshotBackedWriteTransaction<>(transactionId, getDebugTransactions(), entry.getValue(), this);
         } while (!recordTransaction(entry.getKey(), ret));
 
         return ret;
@@ -179,8 +178,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
     @Override
     protected final void transactionAborted(final SnapshotBackedWriteTransaction<T> tx) {
         final State localState = state;
-        if (localState instanceof Allocated) {
-            final Allocated allocated = (Allocated)localState;
+        if (localState instanceof Allocated allocated) {
             if (allocated.getTransaction().equals(tx)) {
                 final boolean success = STATE_UPDATER.compareAndSet(this, localState, idleState);
                 if (!success) {
@@ -192,14 +190,12 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
     }
 
     @Override
-    protected final DOMStoreThreePhaseCommitCohort transactionReady(
-            final SnapshotBackedWriteTransaction<T> tx,
+    protected final DOMStoreThreePhaseCommitCohort transactionReady(final SnapshotBackedWriteTransaction<T> tx,
             final DataTreeModification tree,
             final Exception readyError) {
         final State localState = state;
 
-        if (localState instanceof Allocated) {
-            final Allocated allocated = (Allocated)localState;
+        if (localState instanceof Allocated allocated) {
             final DOMStoreWriteTransaction transaction = allocated.getTransaction();
             checkState(tx.equals(transaction), "Mis-ordered ready transaction %s last allocated was %s", tx,
                 transaction);
@@ -235,14 +231,13 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
         // allocated refers to the data tree directly.
         final State localState = state;
 
-        if (!(localState instanceof Allocated)) {
+        if (!(localState instanceof Allocated allocated)) {
             // This can legally happen if the chain is shut down before the transaction was committed
             // by the backend.
             LOG.debug("Ignoring successful transaction {} in state {}", transaction, localState);
             return;
         }
 
-        final Allocated allocated = (Allocated)localState;
         final DOMStoreWriteTransaction tx = allocated.getTransaction();
         if (!tx.equals(transaction)) {
             LOG.debug("Ignoring non-latest successful transaction {} in state {}", transaction, allocated);
