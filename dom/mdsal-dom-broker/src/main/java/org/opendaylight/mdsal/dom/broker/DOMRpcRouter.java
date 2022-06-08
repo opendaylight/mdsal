@@ -570,10 +570,10 @@ public final class DOMRpcRouter extends AbstractRegistration
             if (entry instanceof UnknownDOMRpcRoutingTableEntry) {
                 return Futures.immediateFailedFuture(
                     new DOMRpcImplementationNotAvailableException("%s is not resolved to an RPC", entry.getType()));
-            } else if (entry instanceof RoutedDOMRpcRoutingTableEntry) {
-                return invokeRoutedRpc((RoutedDOMRpcRoutingTableEntry) entry, input);
-            } else if (entry instanceof GlobalDOMRpcRoutingTableEntry) {
-                return invokeGlobalRpc((GlobalDOMRpcRoutingTableEntry) entry, input);
+            } else if (entry instanceof RoutedDOMRpcRoutingTableEntry routed) {
+                return invokeRoutedRpc(routed, input);
+            } else if (entry instanceof GlobalDOMRpcRoutingTableEntry global) {
+                return invokeGlobalRpc(global, input);
             }
 
             return Futures.immediateFailedFuture(
@@ -589,9 +589,7 @@ public final class DOMRpcRouter extends AbstractRegistration
             if (maybeKey.isPresent()) {
                 final NormalizedNode key = maybeKey.get();
                 final Object value = key.body();
-                if (value instanceof YangInstanceIdentifier) {
-                    final YangInstanceIdentifier iid = (YangInstanceIdentifier) value;
-
+                if (value instanceof YangInstanceIdentifier iid) {
                     // Find a DOMRpcImplementation for a specific iid
                     final List<DOMRpcImplementation> specificImpls = entry.getImplementations(iid);
                     if (specificImpls != null) {
