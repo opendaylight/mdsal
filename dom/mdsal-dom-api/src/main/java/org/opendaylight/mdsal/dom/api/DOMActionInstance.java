@@ -74,14 +74,8 @@ public final class DOMActionInstance implements Immutable {
 
     @Override
     public boolean equals(final @Nullable Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof DOMActionInstance)) {
-            return false;
-        }
-        final DOMActionInstance other = (DOMActionInstance) obj;
-        return getType().equals(other.type) && dataTrees.equals(other.dataTrees);
+        return this == obj || obj instanceof DOMActionInstance other && getType().equals(other.type)
+            && dataTrees.equals(other.dataTrees);
     }
 
     @Override
