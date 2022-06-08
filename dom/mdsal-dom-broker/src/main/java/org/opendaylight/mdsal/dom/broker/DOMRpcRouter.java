@@ -67,6 +67,7 @@ import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -99,7 +100,7 @@ public final class DOMRpcRouter extends AbstractRegistration
     private final @NonNull DOMRpcService rpcService = new RpcServiceFacade();
 
     @GuardedBy("this")
-    private ImmutableList<Registration<?>> listeners = ImmutableList.of();
+    private ImmutableList<RegImpl<?>> listeners = ImmutableList.of();
 
     @GuardedBy("this")
     private ImmutableList<ActionRegistration<?>> actionListeners = ImmutableList.of();
@@ -108,7 +109,7 @@ public final class DOMRpcRouter extends AbstractRegistration
 
     private volatile DOMActionRoutingTable actionRoutingTable = DOMActionRoutingTable.EMPTY;
 
-    private ListenerRegistration<?> listenerRegistration;
+    private Registration listenerRegistration;
 
     @Deprecated
     @VisibleForTesting
@@ -190,14 +191,14 @@ public final class DOMRpcRouter extends AbstractRegistration
     }
 
     private synchronized void notifyAdded(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
-        for (Registration<?> l : listeners) {
+        for (RegImpl<?> l : listeners) {
             l.addRpc(newTable, impl);
         }
     }
 
     private synchronized void notifyAdded(final DOMRpcRoutingTable newTable,
             final Collection<? extends DOMRpcImplementation> impls) {
-        for (Registration<?> l : listeners) {
+        for (RegImpl<?> l : listeners) {
             for (DOMRpcImplementation impl : impls) {
                 l.addRpc(newTable, impl);
             }
@@ -205,14 +206,14 @@ public final class DOMRpcRouter extends AbstractRegistration
     }
 
     private synchronized void notifyRemoved(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
-        for (Registration<?> l : listeners) {
+        for (RegImpl<?> l : listeners) {
             l.removeRpc(newTable, impl);
         }
     }
 
     private synchronized void notifyRemoved(final DOMRpcRoutingTable newTable,
             final Collection<? extends DOMRpcImplementation> impls) {
-        for (Registration<?> l : listeners) {
+        for (RegImpl<?> l : listeners) {
             for (DOMRpcImplementation impl : impls) {
                 l.removeRpc(newTable, impl);
             }
@@ -263,13 +264,11 @@ public final class DOMRpcRouter extends AbstractRegistration
         return routingTable;
     }
 
-    private static final class Registration<T extends DOMRpcAvailabilityListener>
-        extends AbstractListenerRegistration<T> {
-
+    private static final class RegImpl<T extends DOMRpcAvailabilityListener> extends AbstractListenerRegistration<T> {
         private Map<QName, Set<YangInstanceIdentifier>> prevRpcs;
         private DOMRpcRouter router;
 
-        Registration(final DOMRpcRouter router, final T listener, final Map<QName, Set<YangInstanceIdentifier>> rpcs) {
+        RegImpl(final DOMRpcRouter router, final T listener, final Map<QName, Set<YangInstanceIdentifier>> rpcs) {
             super(listener);
             this.router = requireNonNull(router);
             this.prevRpcs = requireNonNull(rpcs);
@@ -487,9 +486,8 @@ public final class DOMRpcRouter extends AbstractRegistration
         @Override
         public <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(final T listener) {
             synchronized (DOMRpcRouter.this) {
-                final Registration<T> ret = new Registration<>(DOMRpcRouter.this, listener,
-                    routingTable.getOperations(listener));
-                listeners = ImmutableList.<Registration<?>>builder().addAll(listeners).add(ret).build();
+                final RegImpl<T> ret = new RegImpl<>(DOMRpcRouter.this, listener, routingTable.getOperations(listener));
+                listeners = ImmutableList.<RegImpl<?>>builder().addAll(listeners).add(ret).build();
 
                 listenerNotifier.execute(ret::initialTable);
                 return ret;
