@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 
@@ -24,7 +25,7 @@ public interface DOMSchemaService extends DOMExtensibleService<DOMSchemaService,
      *
      * @param listener Listener which should be registered
      * @return Listener registration handle
+     * @throws NullPointerException if {@code listener} is {@code null}
      */
-    ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener(
-            EffectiveModelContextListener listener);
+    @NonNull Registration registerSchemaContextListener(EffectiveModelContextListener listener);
 }

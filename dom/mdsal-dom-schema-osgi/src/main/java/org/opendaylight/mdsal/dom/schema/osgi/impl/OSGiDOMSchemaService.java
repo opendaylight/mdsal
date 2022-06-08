@@ -18,13 +18,13 @@ import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.schema.osgi.OSGiModuleInfoSnapshot;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMSchemaService;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.AbstractRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.osgi.service.component.ComponentFactory;
-import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -56,8 +56,7 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
     }
 
     @Override
-    public ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener(
-            final EffectiveModelContextListener listener) {
+    public Registration registerSchemaContextListener(final EffectiveModelContextListener listener) {
         return registerListener(requireNonNull(listener));
     }
 
@@ -109,18 +108,11 @@ public final class OSGiDOMSchemaService extends AbstractDOMSchemaService.WithYan
         deactivated = true;
     }
 
-    private @NonNull ListenerRegistration<EffectiveModelContextListener> registerListener(
-            final @NonNull EffectiveModelContextListener listener) {
-        final ComponentInstance<EffectiveModelContextImpl> reg =
-            listenerFactory.newInstance(EffectiveModelContextImpl.props(listener));
-        return new ListenerRegistration<>() {
+    private @NonNull Registration registerListener(final @NonNull EffectiveModelContextListener listener) {
+        final var reg = listenerFactory.newInstance(EffectiveModelContextImpl.props(listener));
+        return new AbstractRegistration() {
             @Override
-            public EffectiveModelContextListener getInstance() {
-                return listener;
-            }
-
-            @Override
-            public void close() {
+            protected void removeRegistration() {
                 reg.dispose();
             }
         };

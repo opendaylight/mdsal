@@ -17,8 +17,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.NoOpListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
@@ -81,8 +81,7 @@ public class FixedDOMSchemaService extends AbstractDOMSchemaService {
     }
 
     @Override
-    public final @NonNull ListenerRegistration<EffectiveModelContextListener> registerSchemaContextListener(
-            final EffectiveModelContextListener listener) {
+    public final Registration registerSchemaContextListener(final EffectiveModelContextListener listener) {
         listener.onModelContextUpdated(getGlobalContext());
         return NoOpListenerRegistration.of(listener);
     }
