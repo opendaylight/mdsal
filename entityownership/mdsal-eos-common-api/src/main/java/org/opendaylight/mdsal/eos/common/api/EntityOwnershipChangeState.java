@@ -7,10 +7,9 @@
  */
 package org.opendaylight.mdsal.eos.common.api;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-import java.util.Map;
 
 /**
  * Enumerates the ownership change states for an entity.
@@ -50,14 +49,13 @@ public enum EntityOwnershipChangeState {
      */
     REMOTE_OWNERSHIP_LOST_NO_OWNER(false, false, false);
 
-    private static final Map<Key, EntityOwnershipChangeState> BY_KEY;
+    private static final ImmutableMap<Key, EntityOwnershipChangeState> BY_KEY;
 
     static {
-        final Builder<Key, EntityOwnershipChangeState> builder = ImmutableMap.builder();
-        for (final EntityOwnershipChangeState e: values()) {
+        final var builder = ImmutableMap.<Key, EntityOwnershipChangeState>builder();
+        for (final EntityOwnershipChangeState e : values()) {
             builder.put(new Key(e.wasOwner, e.isOwner, e.hasOwner), e);
         }
-
         BY_KEY = builder.build();
     }
 
@@ -104,7 +102,7 @@ public enum EntityOwnershipChangeState {
     public static EntityOwnershipChangeState from(
             final boolean wasOwner, final boolean isOwner, final boolean hasOwner) {
         final EntityOwnershipChangeState state = BY_KEY.get(new Key(wasOwner, isOwner, hasOwner));
-        Preconditions.checkArgument(state != null, "Invalid combination of wasOwner: %s, isOwner: %s, hasOwner: %s",
+        checkArgument(state != null, "Invalid combination of wasOwner: %s, isOwner: %s, hasOwner: %s",
                 wasOwner, isOwner, hasOwner);
         return state;
     }
@@ -124,22 +122,16 @@ public enum EntityOwnershipChangeState {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + (hasOwner ? 1231 : 1237);
-            result = prime * result + (isOwner ? 1231 : 1237);
-            result = prime * result + (wasOwner ? 1231 : 1237);
+            result = prime * result + Boolean.hashCode(hasOwner);
+            result = prime * result + Boolean.hashCode(isOwner);
+            result = prime * result + Boolean.hashCode(wasOwner);
             return result;
         }
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof Key)) {
-                return false;
-            }
-            final Key other = (Key) obj;
-            return hasOwner == other.hasOwner && isOwner == other.isOwner && wasOwner == other.wasOwner;
+            return obj == this || obj instanceof Key other
+                && hasOwner == other.hasOwner && isOwner == other.isOwner && wasOwner == other.wasOwner;
         }
     }
 }
