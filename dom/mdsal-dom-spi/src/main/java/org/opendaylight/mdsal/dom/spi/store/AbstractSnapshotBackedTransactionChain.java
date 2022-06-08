@@ -216,7 +216,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
         final State localState = state;
 
         do {
-            checkState(!CLOSED.equals(localState), "Transaction chain {} has been closed", this);
+            checkState(!CLOSED.equals(localState), "Transaction chain %s has been closed", this);
 
             if (FAILED.equals(localState)) {
                 LOG.debug("Ignoring user close in failed state");
@@ -250,8 +250,8 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
         }
 
         if (!STATE_UPDATER.compareAndSet(this, localState, idleState)) {
-            LOG.debug("Transaction chain {} has already transitioned from "
-                    + "{} to {}, not making it idle", this, localState, state);
+            LOG.debug("Transaction chain {} has already transitioned from {} to {}, not making it idle", this,
+                localState, state);
         }
     }
 
