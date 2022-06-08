@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.spi;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.odlext.model.api.ContextReferenceEffectiveStatement;
@@ -56,12 +55,11 @@ public abstract class RpcRoutingStrategy implements Identifiable<QName> {
     public static RpcRoutingStrategy from(final RpcDefinition rpc) {
         // FIXME: deprecate context-reference
         for (EffectiveStatement<?, ?> stmt : rpc.getInput().asEffectiveStatement().effectiveSubstatements()) {
-            if (stmt instanceof SchemaTreeEffectiveStatement) {
-                final Optional<QName> context =
+            if (stmt instanceof SchemaTreeEffectiveStatement<?> schemaStmt) {
+                final var context =
                     stmt.findFirstEffectiveSubstatementArgument(ContextReferenceEffectiveStatement.class);
                 if (context.isPresent()) {
-                    return new RoutedRpcStrategy(rpc.getQName(), context.orElseThrow(),
-                        ((SchemaTreeEffectiveStatement<?>) stmt).argument());
+                    return new RoutedRpcStrategy(rpc.getQName(), context.orElseThrow(), schemaStmt.argument());
                 }
             }
         }
@@ -74,7 +72,7 @@ public abstract class RpcRoutingStrategy implements Identifiable<QName> {
 
         private RoutedRpcStrategy(final QName identifier, final QName ctx, final QName leaf) {
             super(identifier);
-            this.context = requireNonNull(ctx);
+            context = requireNonNull(ctx);
             this.leaf = requireNonNull(leaf);
         }
 
