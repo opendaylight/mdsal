@@ -80,8 +80,8 @@ final class DOMQueryMatcher {
         }
 
         // We may be dealing with a wildcard here. NodeIdentifier is a final class, hence this is as fast as it gets.
-        if (pathArg instanceof NodeIdentifier && data instanceof MapNode) {
-            for (MapEntryNode child : ((MapNode) data).body()) {
+        if (pathArg instanceof NodeIdentifier && data instanceof MapNode map) {
+            for (MapEntryNode child : map.body()) {
                 if (matchesAny(match, child, pathArgs)) {
                     pathArgs.push(pathArg);
                     return true;
@@ -101,8 +101,8 @@ final class DOMQueryMatcher {
         }
 
         // We may be dealing with a wildcard here. NodeIdentifier is a final class, hence this is as fast as it gets.
-        if (pathArg instanceof NodeIdentifier && data instanceof MapNode) {
-            for (MapEntryNode child : ((MapNode) data).body()) {
+        if (pathArg instanceof NodeIdentifier && data instanceof MapNode map) {
+            for (MapEntryNode child : map.body()) {
                 if (match.test(child)) {
                     return true;
                 }

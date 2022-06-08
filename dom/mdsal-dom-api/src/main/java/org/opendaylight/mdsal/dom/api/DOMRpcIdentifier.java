@@ -100,28 +100,21 @@ public abstract class DOMRpcIdentifier {
         final int prime = 31;
         int result = 1;
         result = prime * result + type.hashCode();
-        result = prime * result + (getContextReference() == null ? 0 : getContextReference().hashCode());
+        result = prime * result + Objects.hashCode(getContextReference());
         return result;
     }
 
     @Override
     public final boolean equals(final @Nullable Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof DOMRpcIdentifier)) {
-            return false;
-        }
-        DOMRpcIdentifier other = (DOMRpcIdentifier) obj;
-        if (!type.equals(other.type)) {
-            return false;
-        }
-        return Objects.equals(getContextReference(), other.getContextReference());
+        return this == obj || obj instanceof DOMRpcIdentifier other && type.equals(other.type) &&
+            Objects.equals(getContextReference(), other.getContextReference());
     }
 
     @Override
     public final String toString() {
-        return MoreObjects.toStringHelper(this).omitNullValues().add("type", type).add("contextReference",
-                getContextReference()).toString();
+        return MoreObjects.toStringHelper(this).omitNullValues()
+            .add("type", type)
+            .add("contextReference", getContextReference())
+            .toString();
     }
 }
