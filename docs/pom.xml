@@ -409,6 +409,11 @@
             <artifactId>javax.inject</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.karaf.shell</groupId>
             <artifactId>org.apache.karaf.shell.core</artifactId>
             <scope>provided</scope>
