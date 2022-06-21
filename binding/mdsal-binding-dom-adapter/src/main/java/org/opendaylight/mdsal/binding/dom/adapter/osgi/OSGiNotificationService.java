@@ -33,6 +33,7 @@ public final class OSGiNotificationService extends AbstractAdaptedService<Notifi
     }
 
     @Override
+    @Deprecated(since = "10.0.0", forRemoval = true)
     public <T extends NotificationListener> ListenerRegistration<T> registerNotificationListener(final T listener) {
         return delegate().registerNotificationListener(listener);
     }

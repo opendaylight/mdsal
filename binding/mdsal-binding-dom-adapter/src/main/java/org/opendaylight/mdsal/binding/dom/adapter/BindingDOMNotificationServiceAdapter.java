@@ -40,12 +40,11 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
     }
 
     @Override
+    @Deprecated(since = "10.0.0", forRemoval = true)
     public <T extends NotificationListener> ListenerRegistration<T> registerNotificationListener(final T listener) {
-        final BindingDOMNotificationListenerAdapter domListener
-                = new BindingDOMNotificationListenerAdapter(adapterContext, listener);
-        final ListenerRegistration<BindingDOMNotificationListenerAdapter> domRegistration =
-                domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications());
-        return new ListenerRegistrationImpl<>(listener, domRegistration);
+        final var domListener = new BindingDOMNotificationListenerAdapter(adapterContext, listener);
+        return new ListenerRegistrationImpl<>(listener,
+            domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications()));
     }
 
     @Override
@@ -59,7 +58,8 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
         return domNotifService;
     }
 
-    private static class ListenerRegistrationImpl<T extends NotificationListener>
+    @Deprecated(since = "10.0.0", forRemoval = true)
+    private static final class ListenerRegistrationImpl<T extends NotificationListener>
             extends AbstractListenerRegistration<T> {
         private final ListenerRegistration<?> listenerRegistration;
 
