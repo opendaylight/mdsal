@@ -31,7 +31,7 @@ public interface DOMNotificationService extends DOMService {
      *         null or a schema node identifier which does not represent a valid {@link DOMNotification} type.
      * @throws NullPointerException if either of the arguments is null
      */
-    <T extends DOMNotificationListener> ListenerRegistration<T>
+    <T extends DOMNotificationListener> @NonNull ListenerRegistration<T>
             registerNotificationListener(@NonNull T listener, @NonNull Collection<Absolute> types);
 
     /**
@@ -48,7 +48,7 @@ public interface DOMNotificationService extends DOMService {
      *         null or a schema node identifier which does not represent a valid {@link DOMNotification} type.
      * @throws NullPointerException if listener is null
      */
-    default <T extends DOMNotificationListener> ListenerRegistration<T>
+    default <T extends DOMNotificationListener> @NonNull ListenerRegistration<T>
             registerNotificationListener(@NonNull final T listener, final Absolute... types) {
         return registerNotificationListener(listener, Arrays.asList(types));
     }
