@@ -9,8 +9,10 @@ package org.opendaylight.mdsal.dom.api;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
@@ -19,7 +21,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 public interface DOMNotificationService extends DOMService {
     /**
      * Register a {@link DOMNotificationListener} to receive a set of notifications. As with other
-     * ListenerRegistration-based interfaces, registering an instance multiple times results in
+     * {@link ListenerRegistration}-based interfaces, registering an instance multiple times results in
      * notifications being delivered for each registration.
      *
      * @param listener Notification instance to register
@@ -36,7 +38,7 @@ public interface DOMNotificationService extends DOMService {
 
     /**
      * Register a {@link DOMNotificationListener} to receive a set of notifications. As with other
-     * ListenerRegistration-based interfaces, registering an instance multiple times results in
+     * {@link ListenerRegistration}-based interfaces, registering an instance multiple times results in
      * notifications being delivered for each registration.
      *
      * @param listener Notification instance to register
@@ -52,4 +54,14 @@ public interface DOMNotificationService extends DOMService {
             registerNotificationListener(@NonNull final T listener, final Absolute... types) {
         return registerNotificationListener(listener, Arrays.asList(types));
     }
+
+    /**
+     * Register a number of {@link DOMNotificationListener}s to receive some notification notifications. As with other
+     * {@link Registration}-based interfaces, registering an instance multiple times results in
+     * notifications being delivered for each registration.
+     *
+     * @param typeToListener Specification of which types to listen to with which listeners
+     * @throws NullPointerException if {@code typeToListener} is {@code null}
+     */
+    @NonNull Registration registerNotificationListeners(@NonNull Map<Absolute, DOMNotificationListener> typeToListener);
 }

@@ -18,7 +18,9 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +37,9 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
+import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.util.concurrent.EqualityQueuedNotificationManager;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
@@ -73,14 +77,31 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     }
 
     @VisibleForTesting
-    final class Reg<T extends DOMNotificationListener> extends AbstractListenerRegistration<T> {
-        private Reg(final @NonNull T listener) {
+    abstract static sealed class Reg<T extends DOMNotificationListener> extends AbstractListenerRegistration<T> {
+        Reg(final @NonNull T listener) {
+            super(listener);
+        }
+    }
+
+    private final class SingleReg<T extends DOMNotificationListener> extends Reg<T> {
+        SingleReg(final @NonNull T listener) {
             super(listener);
         }
 
         @Override
         protected void removeRegistration() {
             DOMNotificationRouter.this.removeRegistration(this);
+        }
+    }
+
+    private static final class ComponentReg extends Reg<DOMNotificationListener> {
+        ComponentReg(final @NonNull DOMNotificationListener listener) {
+            super(listener);
+        }
+
+        @Override
+        protected void removeRegistration() {
+            // No-op
         }
     }
 
@@ -124,13 +145,13 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
     @Override
     public synchronized <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(
             final T listener, final Collection<Absolute> types) {
-        final var reg = new Reg<>(listener);
+        final var reg = new SingleReg<>(listener);
 
         if (!types.isEmpty()) {
             final var b = ImmutableMultimap.<Absolute, Reg<?>>builder();
             b.putAll(listeners);
 
-            for (final Absolute t : types) {
+            for (var t : types) {
                 b.put(t, reg);
             }
 
@@ -140,8 +161,33 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         return reg;
     }
 
-    private synchronized void removeRegistration(final Reg<?> reg) {
+    @Override
+    public synchronized Registration registerNotificationListeners(
+            final Map<Absolute, DOMNotificationListener> typeToListener) {
+        final var b = ImmutableMultimap.<Absolute, Reg<?>>builder();
+        b.putAll(listeners);
+
+        final var tmp = new HashMap<DOMNotificationListener, ComponentReg>();
+        for (var e : typeToListener.entrySet()) {
+            b.put(e.getKey(), tmp.computeIfAbsent(e.getValue(), ComponentReg::new));
+        }
+
+        final var regs = List.copyOf(tmp.values());
+        return new AbstractRegistration() {
+            @Override
+            protected void removeRegistration() {
+                regs.forEach(ComponentReg::close);
+                removeRegistrations(regs);
+            }
+        };
+    }
+
+    private synchronized void removeRegistration(final SingleReg<?> reg) {
         replaceListeners(ImmutableMultimap.copyOf(Multimaps.filterValues(listeners, input -> input != reg)));
+    }
+
+    private synchronized void removeRegistrations(final List<ComponentReg> regs) {
+        replaceListeners(ImmutableMultimap.copyOf(Multimaps.filterValues(listeners, input -> !regs.contains(input))));
     }
 
     /**
