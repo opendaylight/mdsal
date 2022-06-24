@@ -9,9 +9,11 @@ package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.collect.ForwardingObject;
 import java.util.Collection;
+import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
@@ -32,5 +34,10 @@ public abstract class ForwardingDOMNotificationService extends ForwardingObject 
     public <T extends DOMNotificationListener> ListenerRegistration<T> registerNotificationListener(final T listener,
             final Absolute... types) {
         return delegate().registerNotificationListener(listener, types);
+    }
+
+    @Override
+    public Registration registerNotificationListeners(final Map<Absolute, DOMNotificationListener> typeToListener) {
+        return delegate().registerNotificationListeners(typeToListener);
     }
 }

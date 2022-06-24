@@ -9,6 +9,7 @@ module org.opendaylight.mdsal.dom.api {
     exports org.opendaylight.mdsal.dom.api;
     exports org.opendaylight.mdsal.dom.api.query;
 
+    requires transitive com.google.common;
     requires transitive org.opendaylight.yangtools.yang.common;
     requires transitive org.opendaylight.yangtools.yang.data.api;
     requires transitive org.opendaylight.yangtools.yang.data.tree.api;

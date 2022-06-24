@@ -19,6 +19,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,6 +37,7 @@ import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.util.concurrent.EqualityQueuedNotificationManager;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
@@ -138,6 +140,13 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         }
 
         return reg;
+    }
+
+    @Override
+    public synchronized Registration registerNotificationListeners(
+            final Map<Absolute, DOMNotificationListener> typeToListener) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private synchronized void removeRegistration(final Reg<?> reg) {
