@@ -441,6 +441,13 @@ class BuilderTemplate extends AbstractBuilderTemplate {
      */
     def private generateSetters() '''
         «IF keyType !== null»
+            /**
+             * Set the property corresponding to {@link «targetType.importedName»#key()} to the specified
+             * value.
+             *
+             * @param key desired value
+             * @return this builder
+             */
             public «type.getName» withKey(final «keyType.importedName» key) {
                 this.key = key;
                 return this;
