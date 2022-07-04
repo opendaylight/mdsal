@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "809cf40b_8f34cd7f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-07-04T07:16:44Z",
+      "side": 1,
+      "message": "Can you shortly describe what was wrong and how it has been solved?",
+      "revId": "1e1c74c02a10bb9c904342eb34b9f9c8f53509b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "586b18b2_6177708a",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-07-04T07:16:44Z",
+      "side": 1,
+      "message": "`Set the key value...` - we know this property is a key.",
+      "revId": "1e1c74c02a10bb9c904342eb34b9f9c8f53509b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
