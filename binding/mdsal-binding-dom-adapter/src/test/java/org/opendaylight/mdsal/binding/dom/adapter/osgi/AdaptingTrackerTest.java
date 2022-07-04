@@ -15,7 +15,6 @@ import static org.mockito.Mockito.doReturn;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -24,47 +23,28 @@ import org.opendaylight.mdsal.binding.api.BindingService;
 import org.osgi.framework.ServiceReference;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class DictTest {
+public class AdaptingTrackerTest {
     @Mock
     private ServiceReference<?> ref;
     @Mock
     private BindingService service;
 
-    private Dict dict;
-
-    @Before
-    public void before() {
+    @Test
+    public void testReferenceProperties() {
         doReturn(new String[] { "foo", "bar", ServiceProperties.PREFIX + "xyzzy" }).when(ref).getPropertyKeys();
         doReturn("foo").when(ref).getProperty("foo");
         doReturn("bar").when(ref).getProperty("bar");
 
-        dict = Dict.fromReference(ref, service);
-    }
-
-    @Test
-    public void testSize() {
+        final var dict = AdaptingTracker.referenceProperties(ref, service);
         assertEquals(3, dict.size());
-    }
-
-    @Test
-    public void testIsEmpty() {
         assertFalse(dict.isEmpty());
-    }
 
-    @Test
-    public void testKeys() {
         assertEquals(Set.of("foo", "bar", AbstractAdaptedService.DELEGATE),
             ImmutableSet.copyOf(dict.keys().asIterator()));
-    }
 
-    @Test
-    public void testElements() {
         assertEquals(Set.of("foo", "bar", service),
             ImmutableSet.copyOf(dict.elements().asIterator()));
-    }
 
-    @Test
-    public void testGet() {
         assertNull(dict.get("xyzzy"));
         assertEquals("foo", dict.get("foo"));
         assertEquals("bar", dict.get("bar"));

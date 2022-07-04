@@ -9,11 +9,15 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.collect.Maps;
+import java.util.Dictionary;
+import java.util.Map;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -79,14 +83,14 @@ final class AdaptingTracker<D extends DOMService, B extends BindingService>
         }
 
         final B binding = bindingFactory.apply(dom);
-        return new ComponentHolder<>(binding, componentFactory.newInstance(Dict.fromReference(reference, binding)));
+        return new ComponentHolder<>(binding, componentFactory.newInstance(referenceProperties(reference, binding)));
     }
 
     @Override
     public void modifiedService(final ServiceReference<D> reference, final ComponentHolder<B> service) {
         if (service != null && reference != null) {
             service.component.dispose();
-            service.component = componentFactory.newInstance(Dict.fromReference(reference, service.binding));
+            service.component = componentFactory.newInstance(referenceProperties(reference, service.binding));
         }
     }
 
@@ -97,5 +101,36 @@ final class AdaptingTracker<D extends DOMService, B extends BindingService>
             service.component.dispose();
             LOG.debug("Unregistered service {}", service);
         }
+    }
+
+    static Dictionary<String, Object> referenceProperties(final ServiceReference<?> ref, final BindingService service) {
+        final String[] keys = ref.getPropertyKeys();
+        final Map<String, Object> props = Maps.newHashMapWithExpectedSize(keys.length + 1);
+        for (String key : keys) {
+            // Ignore properties with our prefix: we are not exporting those
+            if (!key.startsWith(ServiceProperties.PREFIX)) {
+                final Object value = ref.getProperty(key);
+                if (value != null) {
+                    props.put(key, value);
+                }
+            }
+        }
+
+        // Second phase: apply any our properties
+        for (String key : keys) {
+            if (key.startsWith(ServiceProperties.OVERRIDE_PREFIX)) {
+                final Object value = ref.getProperty(key);
+                if (value != null) {
+                    final String newKey = key.substring(ServiceProperties.OVERRIDE_PREFIX.length());
+                    if (!newKey.isEmpty()) {
+                        LOG.debug("Overriding property {}", newKey);
+                        props.put(newKey, value);
+                    }
+                }
+            }
+        }
+
+        props.put(AbstractAdaptedService.DELEGATE, service);
+        return FrameworkUtil.asDictionary(props);
     }
 }
