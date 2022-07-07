@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "82dbafd2_6922067c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2022-07-07T09:12:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "809cf40b_8f34cd7f",
+      "revId": "1e1c74c02a10bb9c904342eb34b9f9c8f53509b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "586b18b2_6177708a",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-07-04T07:16:44Z",
       "side": 1,
       "message": "`Set the key value...` - we know this property is a key.",
+      "revId": "1e1c74c02a10bb9c904342eb34b9f9c8f53509b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2abd8ad_b63cb038",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2022-07-07T09:12:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "586b18b2_6177708a",
       "revId": "1e1c74c02a10bb9c904342eb34b9f9c8f53509b1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
