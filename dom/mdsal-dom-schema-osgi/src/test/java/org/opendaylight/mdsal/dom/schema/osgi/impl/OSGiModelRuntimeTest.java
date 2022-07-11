@@ -29,7 +29,7 @@ public class OSGiModelRuntimeTest {
     @Mock
     private YangParserFactory parserFactory;
     @Mock
-    private ComponentFactory contextFactory;
+    private ComponentFactory<OSGiModuleInfoSnapshotImpl> contextFactory;
     @Mock
     private BundleContext bundleContext;
 
