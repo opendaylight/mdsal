@@ -8,15 +8,13 @@
 package org.opendaylight.mdsal.dom.schema.osgi.impl;
 
 import static com.google.common.base.Verify.verifyNotNull;
-import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.Map;
-import org.gaul.modernizer_maven_annotations.SuppressModernizer;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextListener;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -49,10 +47,7 @@ public final class EffectiveModelContextImpl implements EffectiveModelContextLis
         delegate = null;
     }
 
-    @SuppressModernizer
     static Dictionary<String, ?> props(final EffectiveModelContextListener delegate) {
-        final Dictionary<String, Object> ret = new Hashtable<>(2);
-        ret.put(DELEGATE, requireNonNull(delegate));
-        return ret;
+        return FrameworkUtil.asDictionary(Map.of(DELEGATE, delegate));
     }
 }
