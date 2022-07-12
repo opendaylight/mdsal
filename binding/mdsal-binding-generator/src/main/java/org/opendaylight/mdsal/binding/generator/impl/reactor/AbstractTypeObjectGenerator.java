@@ -609,7 +609,7 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
             final boolean isTypedef) {
         final GeneratedTOBuilder builder = builderFactory.newGeneratedTOBuilder(typeName);
         builder.setTypedef(isTypedef);
-        builder.addImplementsType(BindingTypes.TYPE_OBJECT);
+        builder.addImplementsType(BindingTypes.BITS_TYPE_OBJECT);
         builder.setBaseType(typedef);
 
         for (Bit bit : ((BitsTypeDefinition) typedef).getBits()) {

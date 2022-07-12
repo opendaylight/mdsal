@@ -23,6 +23,7 @@ import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.UINT32_TYPE
 import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.UINT64_TYPE
 import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.UINT8_TYPE
 import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.SCALAR_TYPE_OBJECT
+import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.BITS_TYPE_OBJECT
 import static org.opendaylight.mdsal.binding.model.ri.Types.BOOLEAN
 import static org.opendaylight.mdsal.binding.model.ri.Types.STRING;
 import static extension org.apache.commons.text.StringEscapeUtils.escapeJava
@@ -180,6 +181,10 @@ class ClassTemplate extends BaseTemplate {
                 «generateGetValueForBitsTypeDef»
             «ENDIF»
 
+            «IF isBitsTypeObject»
+                «generateValidValuesForBitsTypeObject»
+            «ENDIF»
+
             «generateHashCode»
 
             «generateEquals»
@@ -199,6 +204,15 @@ class ClassTemplate extends BaseTemplate {
     def private isScalarTypeObject() {
         for (impl : genTO.implements) {
             if (SCALAR_TYPE_OBJECT.identifier.equals(impl.identifier)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    def private isBitsTypeObject() {
+        for (impl : genTO.implements) {
+            if (BITS_TYPE_OBJECT.identifier.equals(impl.identifier)) {
                 return true
             }
         }
@@ -235,6 +249,13 @@ class ClassTemplate extends BaseTemplate {
                  «property.fieldName»
             «ENDFOR»
             };
+        }
+    '''
+
+    def protected generateValidValuesForBitsTypeObject() '''
+        @Override
+        public «IMMUTABLESET.importedName»<String> validValues() {
+            return «TypeConstants.VALID_BITS_NAME»;
         }
     '''
 
@@ -501,6 +522,9 @@ class ClassTemplate extends BaseTemplate {
      * @return string with constants in JAVA format
      */
     def protected constantsDeclarations() '''
+        «IF isBitsTypeObject»
+            public static final «IMMUTABLESET.importedName»<«STRING.importedName»> «TypeConstants.VALID_BITS_NAME» = «IMMUTABLESET.importedName».of(«finalProperties.propsAsArgs»);
+        «ENDIF»
         «IF !consts.empty»
             «FOR c : consts»
                 «IF c.name == TypeConstants.PATTERN_CONSTANT_NAME»
