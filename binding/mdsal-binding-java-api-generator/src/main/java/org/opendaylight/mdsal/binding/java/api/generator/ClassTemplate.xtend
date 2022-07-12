@@ -23,12 +23,14 @@ import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.UINT32_TYPE
 import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.UINT64_TYPE
 import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.UINT8_TYPE
 import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.SCALAR_TYPE_OBJECT
+import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.BITS_TYPE_OBJECT
 import static org.opendaylight.mdsal.binding.model.ri.Types.STRING;
 import static extension org.apache.commons.text.StringEscapeUtils.escapeJava
-import static extension org.opendaylight.mdsal.binding.model.ri.BindingTypes.isBitsType
+import static extension org.apache.commons.lang3.StringUtils.capitalize;
 
 import com.google.common.base.Preconditions
 import com.google.common.collect.ImmutableList
+import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Lists
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import java.util.ArrayList
@@ -51,6 +53,8 @@ import org.opendaylight.mdsal.binding.model.ri.TypeConstants
 import org.opendaylight.mdsal.binding.model.ri.Types
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping
 import org.opendaylight.yangtools.yang.common.Empty
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition
 
 /**
  * Template for generating JAVA class.
@@ -72,6 +76,11 @@ class ClassTemplate extends BaseTemplate {
      * {@code java.lang.Boolean} as a JavaTypeName.
      */
     static val BOOLEAN = JavaTypeName.create(Boolean)
+
+    /**
+     * {@code com.google.common.collect.ImmutableSet} as a JavaTypeName.
+     */
+    static val IMMUTABLE_SET = JavaTypeName.create(ImmutableSet)
 
     protected val List<GeneratedProperty> properties
     protected val List<GeneratedProperty> finalProperties
@@ -179,8 +188,8 @@ class ClassTemplate extends BaseTemplate {
 
             «propertyMethods»
 
-            «IF genTO.isBitsType»
-                «generateGetValueForBitsTypeDef»
+            «IF isBitsTypeObject»
+                «validNamesAndValues»
             «ENDIF»
 
             «generateHashCode»
@@ -208,6 +217,19 @@ class ClassTemplate extends BaseTemplate {
         return false
     }
 
+    def private isBitsTypeObject() {
+        for (impl : genTO.implements) {
+            if (BITS_TYPE_OBJECT.identifier.equals(impl.identifier)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    def private isInheritedClass() {
+        return genTO.superType !== null ? true : false
+    }
+
     def private defaultProperties() '''
         «FOR field : properties SEPARATOR "\n"»
             «field.getterMethod»
@@ -224,20 +246,52 @@ class ClassTemplate extends BaseTemplate {
         }
     '''
 
+    def private validNamesAndValues() {
+        for (c : consts) {
+            if (TypeConstants.VALID_NAMES_NAME.equals(c.name)) {
+                return validNamesAndValues(c.value as BitsTypeDefinition)
+            }
+        }
+        return ""
+    }
+
+    def private validNamesAndValues(BitsTypeDefinition typedef) '''
+
+        @«OVERRIDE.importedName»
+        public «IMMUTABLE_SET.importedName»<«STRING.importedName»> validNames() {
+            return «TypeConstants.VALID_NAMES_NAME»;
+        }
+
+        @«OVERRIDE.importedName»
+        public boolean[] values() {
+            return new boolean[] {
+                    «FOR bit : typedef.bits SEPARATOR ','»
+                        «BindingMapping.getPropertyName(bit.name).fieldName»
+                    «ENDFOR»
+                };
+        }
+    '''
+
     /**
      * Template method which generates the method <code>getValue()</code> for typedef,
      * which base type is BitsDefinition.
      *
      * @return string with the <code>getValue()</code> method definition in JAVA format
      */
-    def protected generateGetValueForBitsTypeDef() '''
-
-        public boolean[] getValue() {
-            return new boolean[]{
-            «FOR property: genTO.properties SEPARATOR ','»
-                 «property.fieldName»
-            «ENDFOR»
-            };
+    def protected generateGetValueForBitsTypeObject() '''
+                «IF !isInheritedClass»
+                    «FOR property: genTO.properties SEPARATOR ','»
+                        «property.fieldName»
+                    «ENDFOR»
+                «ELSEIF !consts.empty»
+                    «FOR c : consts»
+                        «val cValue = c.value as Map<Uint32, String>»
+                        «FOR v : cValue.values SEPARATOR ", "»
+                            super.get«v.capitalize»()
+                        «ENDFOR»
+                    «ENDFOR»
+                «ENDIF»
+                };
         }
     '''
 
@@ -519,6 +573,11 @@ class ClassTemplate extends BaseTemplate {
                         private static final String[] «Constants.MEMBER_REGEX_LIST» = { «
                         FOR v : cValue.values SEPARATOR ", "»"«v.escapeJava»"«ENDFOR» };
                     «ENDIF»
+                «ELSEIF TypeConstants.VALID_NAMES_NAME.equals(c.name)»
+                    «val cValue = c.value as BitsTypeDefinition»
+                    «val immutableSet = IMMUTABLE_SET.importedName»
+                    protected static final «immutableSet»<«STRING.importedName»> «TypeConstants.VALID_NAMES_NAME» = «immutableSet».of(«
+                    FOR bit : cValue.bits SEPARATOR ", "»"«bit.name»"«ENDFOR»);
                 «ELSE»
                     «emitConstant(c)»
                 «ENDIF»

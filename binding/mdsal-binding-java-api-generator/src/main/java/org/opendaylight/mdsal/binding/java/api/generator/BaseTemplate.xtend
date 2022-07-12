@@ -63,7 +63,11 @@ abstract class BaseTemplate extends JavaFileTemplate {
 
     // Helper patterns
     final protected def fieldName(GeneratedProperty property) {
-        "_" + property.name
+        property.name.fieldName
+    }
+
+    final protected def fieldName(String propName) {
+        "_" + propName
     }
 
     /**
