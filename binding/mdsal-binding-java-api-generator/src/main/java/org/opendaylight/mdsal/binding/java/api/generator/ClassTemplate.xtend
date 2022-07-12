@@ -23,6 +23,7 @@ import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.UINT32_TYPE
 import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.UINT64_TYPE
 import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.UINT8_TYPE
 import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.SCALAR_TYPE_OBJECT
+import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.BITS_TYPE_OBJECT
 import static org.opendaylight.mdsal.binding.model.ri.Types.BOOLEAN
 import static org.opendaylight.mdsal.binding.model.ri.Types.STRING;
 import static extension org.apache.commons.text.StringEscapeUtils.escapeJava
@@ -30,6 +31,7 @@ import static extension org.opendaylight.mdsal.binding.model.ri.BindingTypes.isB
 
 import com.google.common.base.Preconditions
 import com.google.common.collect.ImmutableList
+import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Lists
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import java.util.ArrayList
@@ -180,6 +182,10 @@ class ClassTemplate extends BaseTemplate {
                 «generateGetValueForBitsTypeDef»
             «ENDIF»
 
+            «IF isBitsTypeObject»
+                «generateValidValuesForBitsTypeObject»
+            «ENDIF»
+
             «generateHashCode»
 
             «generateEquals»
@@ -199,6 +205,15 @@ class ClassTemplate extends BaseTemplate {
     def private isScalarTypeObject() {
         for (impl : genTO.implements) {
             if (SCALAR_TYPE_OBJECT.identifier.equals(impl.identifier)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    def private isBitsTypeObject() {
+        for (impl : genTO.implements) {
+            if (BITS_TYPE_OBJECT.identifier.equals(impl.identifier)) {
                 return true
             }
         }
@@ -235,6 +250,13 @@ class ClassTemplate extends BaseTemplate {
                  «property.fieldName»
             «ENDFOR»
             };
+        }
+    '''
+
+    def protected generateValidValuesForBitsTypeObject() '''
+        @Override
+        public «ImmutableSet.importedName»<String> validValues() {
+            return «TypeConstants.VALID_BITS_NAME»;
         }
     '''
 
@@ -516,6 +538,10 @@ class ClassTemplate extends BaseTemplate {
                         private static final String[] «Constants.MEMBER_REGEX_LIST» = { «
                         FOR v : cValue.values SEPARATOR ", "»"«v.escapeJava»"«ENDFOR» };
                     «ENDIF»
+                «ELSEIF c.name == TypeConstants.VALID_BITS_NAME»
+                    «val cValue = c.value as Set<String>»
+                    public static final «ImmutableSet.importedName»<String> «TypeConstants.VALID_BITS_NAME» = «ImmutableSet.importedName».of(«
+                    FOR v : cValue SEPARATOR ", "»"«v»"«ENDFOR»);
                 «ELSE»
                     «emitConstant(c)»
                 «ENDIF»

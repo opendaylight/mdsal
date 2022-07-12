@@ -13,12 +13,15 @@ import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.base.VerifyException;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -609,7 +612,6 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
             final boolean isTypedef) {
         final GeneratedTOBuilder builder = builderFactory.newGeneratedTOBuilder(typeName);
         builder.setTypedef(isTypedef);
-        builder.addImplementsType(BindingTypes.TYPE_OBJECT);
         builder.setBaseType(typedef);
 
         for (Bit bit : ((BitsTypeDefinition) typedef).getBits()) {
@@ -627,6 +629,7 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
         builder.setModuleName(module.statement().argument().getLocalName());
         builderFactory.addCodegenInformation(typedef, builder);
         annotateDeprecatedIfNecessary(typedef, builder);
+        addValidBitsAsConstant(builder, resolveValidBits(typedef));
         makeSerializable(builder);
         return builder.build();
     }
@@ -842,6 +845,14 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
         }
     }
 
+    static void addValidBitsAsConstant(final GeneratedTOBuilder genTOBuilder, final Set<String> validBits) {
+        if (!validBits.isEmpty()) {
+            genTOBuilder.addImplementsType(BindingTypes.BITS_TYPE_OBJECT)
+                        .addConstant(Types.immutableSetTypeFor(BaseYangTypes.STRING_TYPE),
+                                TypeConstants.VALID_BITS_NAME, ImmutableSet.copyOf(validBits));
+        }
+    }
+
     /**
      * Converts the pattern constraints from {@code typedef} to the list of the strings which represents these
      * constraints.
@@ -855,6 +866,19 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
             // TODO: run diff against base ?
             ? resolveRegExpressions(stringTypedef.getPatternConstraints())
                 : ImmutableMap.of();
+    }
+
+    static Set<String> resolveValidBits(final TypeDefinition<?> typedef) {
+        return typedef instanceof BitsTypeDefinition bitsTypedef
+                ? resolveValidBits(bitsTypedef.getBits())
+                : ImmutableSet.of();
+    }
+
+    private static Set<String> resolveValidBits(Collection<? extends BitsTypeDefinition.Bit> bits) {
+        if (bits.isEmpty()) {
+            return ImmutableSet.of();
+        }
+        return bits.stream().map(BitsTypeDefinition.Bit::getName).collect(Collectors.toSet());
     }
 
     /**
