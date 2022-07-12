@@ -90,6 +90,7 @@ final class TypedefGenerator extends AbstractTypeObjectGenerator<TypedefEffectiv
         final TypeDefinition<?> typedef = statement().getTypeDefinition();
         annotateDeprecatedIfNecessary(typedef, builder);
         addStringRegExAsConstant(builder, resolveRegExpressions(typedef));
+        addValidBitsAsConstant(builder, resolveValidBits(typedef));
         addUnits(builder, typedef);
 
         makeSerializable(builder);
