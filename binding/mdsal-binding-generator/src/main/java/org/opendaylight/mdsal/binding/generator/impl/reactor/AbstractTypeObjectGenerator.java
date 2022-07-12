@@ -15,7 +15,9 @@ import com.google.common.base.VerifyException;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,6 +51,7 @@ import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.binding.RegexPatterns;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
@@ -589,8 +592,8 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
         final boolean isTypedef = this instanceof TypedefGenerator;
         final QName arg = type.argument();
         if (TypeDefinitions.BITS.equals(arg)) {
-            return createBits(builderFactory, statement(), typeName(), currentModule(), extractTypeDefinition(),
-                    isTypedef);
+            return createBits(builderFactory, statement(), typeName(), currentModule(),
+                (BitsTypeDefinition) extractTypeDefinition(), isTypedef);
         } else if (TypeDefinitions.ENUMERATION.equals(arg)) {
             return createEnumeration(builderFactory, statement(), typeName(), currentModule(),
                 (EnumTypeDefinition) extractTypeDefinition());
@@ -608,14 +611,14 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
 
     private static @NonNull GeneratedTransferObject createBits(final TypeBuilderFactory builderFactory,
             final EffectiveStatement<?, ?> definingStatement, final JavaTypeName typeName, final ModuleGenerator module,
-            final TypeDefinition<?> typedef, final boolean isTypedef) {
+            final BitsTypeDefinition typedef, final boolean isTypedef) {
         final GeneratedTOBuilder builder = builderFactory.newGeneratedTOBuilder(typeName);
         builder.setTypedef(isTypedef);
-        builder.addImplementsType(BindingTypes.TYPE_OBJECT);
+        builder.addImplementsType(BindingTypes.BITS_TYPE_OBJECT);
         builder.setBaseType(typedef);
         YangSourceDefinition.of(module.statement(), definingStatement).ifPresent(builder::setYangSourceDefinition);
 
-        for (Bit bit : ((BitsTypeDefinition) typedef).getBits()) {
+        for (Bit bit : typedef.getBits()) {
             final String name = bit.getName();
             GeneratedPropertyBuilder genPropertyBuilder = builder.addProperty(BindingMapping.getPropertyName(name));
             genPropertyBuilder.setReadOnly(true);
@@ -625,6 +628,7 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
             builder.addHashIdentity(genPropertyBuilder);
             builder.addToStringProperty(genPropertyBuilder);
         }
+        builder.addConstant(Types.immutableSetTypeFor(Types.STRING), TypeConstants.VALID_NAMES_NAME, typedef);
 
         // builder.setSchemaPath(typedef.getPath());
         builder.setModuleName(module.statement().argument().getLocalName());
@@ -733,7 +737,7 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
                 } else if (TypeDefinitions.BITS.equals(subName)) {
                     final GeneratedTransferObject subBits = createBits(builderFactory, definingStatement,
                         typeName.createEnclosed(BindingMapping.getClassName(localName), "$"), module,
-                        subType.getTypeDefinition(), isTypedef);
+                        (BitsTypeDefinition) subType.getTypeDefinition(), isTypedef);
                     builder.addEnclosingTransferObject(subBits);
                     generatedType = subBits;
                 } else if (TypeDefinitions.IDENTITYREF.equals(subName)) {
@@ -889,6 +893,54 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
         }
 
         return regExps;
+    }
+
+    /**
+     * Adds to the {@code genTOBuilder} the constant which contains valid bits in the case of restricted bits type.
+     *
+     * @param genTOBuilder generated TO builder to which are {@code regular validBits} added
+     * @param validBits map of valid bits key represents a unique position in the bits type object,
+     *                  the value represents a name of the particular bit
+     */
+    static void addValidBitsAsConstant(final GeneratedTOBuilder genTOBuilder, final Map<Uint32, String> validBits) {
+        if (!validBits.isEmpty()) {
+            genTOBuilder.addImplementsType(BindingTypes.BITS_TYPE_OBJECT)
+                    .addConstant(Types.immutableSetTypeFor(Types.STRING), TypeConstants.VALID_NAMES_NAME,
+                        ImmutableMap.copyOf(validBits));
+        }
+    }
+
+    /**
+     * Converts the collection of bits objects from {@code typedef} to the map which represents
+     * position of a bit -> bit name.
+     *
+     * @param typedef extended type containing collection of valid bits
+     * @return map of bits
+     * @throws IllegalArgumentException if <code>typedef</code> equals null
+     */
+    static Map<Uint32, String> resolveValidBits(final TypeDefinition<?> typedef) {
+        return typedef instanceof BitsTypeDefinition bitsTypedef
+                ? resolveValidBits(bitsTypedef.getBits())
+                : ImmutableMap.of();
+    }
+
+    /**
+     * Converts collection of bit objects to map which is sorted based on the key (position). Updates bit names
+     * to represent correct property name.
+     *
+     * @param bits collection of bits
+     * @return map consisting from position (Uint32) -> bit name (String)
+     */
+    private static Map<Uint32, String> resolveValidBits(final Collection<? extends BitsTypeDefinition.Bit> bits) {
+        if (bits.isEmpty()) {
+            return ImmutableMap.of();
+        }
+        final var sortedBitsMap = bits.stream()
+                .collect(Collectors.toMap(BitsTypeDefinition.Bit::getPosition, BitsTypeDefinition.Bit::getName))
+                .entrySet().stream().sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        sortedBitsMap.replaceAll((k, v) -> BindingMapping.getPropertyName(v));
+        return sortedBitsMap;
     }
 
     /**
