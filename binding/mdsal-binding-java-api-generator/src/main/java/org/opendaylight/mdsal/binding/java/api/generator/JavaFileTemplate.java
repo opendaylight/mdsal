@@ -15,6 +15,7 @@ import static org.opendaylight.mdsal.binding.generator.BindingGeneratorUtil.repl
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import java.lang.reflect.Method;
 import java.util.AbstractMap;
@@ -148,6 +149,11 @@ class JavaFileTemplate {
      * {@code com.google.common.base.MoreObjects} as a JavaTypeName.
      */
     static final @NonNull JavaTypeName MOREOBJECTS = JavaTypeName.create(MoreObjects.class);
+
+    /**
+     * {@code com.google.common.collect.ImmutableSet} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName IMMUTABLESET = JavaTypeName.create(ImmutableSet.class);
 
     private static final Comparator<MethodSignature> METHOD_COMPARATOR = new AlphabeticallyTypeMemberComparator<>();
     private static final CharMatcher AMP_MATCHER = CharMatcher.is('&');
