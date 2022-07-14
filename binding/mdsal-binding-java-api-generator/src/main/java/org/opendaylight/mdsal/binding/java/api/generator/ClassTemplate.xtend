@@ -220,6 +220,13 @@ class ClassTemplate extends BaseTemplate {
         return false
     }
 
+    def private isInherited() {
+        if (genTO.superType !== null) {
+            return true
+        }
+        return false
+    }
+
     def private defaultProperties() '''
         «FOR field : properties SEPARATOR "\n"»
             «field.getterMethod»
@@ -278,6 +285,8 @@ class ClassTemplate extends BaseTemplate {
             «genUnionConstructor»
         «ELSEIF genTO.typedef && allProperties.size == 1 && allProperties.get(0).name.equals(TypeConstants.VALUE_PROP)»
             «typedefConstructor»
+        «ELSEIF isBitsTypeObject && !isInherited»
+            «bitsConstructor»
         «ELSE»
             «allValuesConstructor»
         «ENDIF»
@@ -289,6 +298,17 @@ class ClassTemplate extends BaseTemplate {
             «parentConstructor»
         «ENDIF»
     '''
+
+     def bitsConstructor() '''
+        public «type.name»(«finalProperties.asArgumentsDeclaration») {
+            «IF !parentProperties.empty»
+                super(«parentProperties.asArguments»);
+            «ENDIF»
+            «FOR p : properties»
+                this.«p.fieldName» = «p.fieldName»;
+            «ENDFOR»
+        }
+        '''
 
     def allValuesConstructor() '''
     public «type.name»(«allProperties.asArgumentsDeclaration») {
@@ -446,7 +466,7 @@ class ClassTemplate extends BaseTemplate {
 
     @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "FOR with SEPARATOR, not needing for value")
     def protected bitsArgs() '''
-        «JU_LIST.importedName»<«STRING.importedName»> properties = «Lists.importedName».newArrayList(«allProperties.propsAsArgs»);
+        «JU_LIST.importedName»<«STRING.importedName»> properties = «Lists.importedName».newArrayList(«finalProperties.propsAsArgs»);
         if (!properties.contains(defaultValue)) {
             throw new «IAE.importedName»("invalid default parameter");
         }
