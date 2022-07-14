@@ -354,8 +354,8 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
         assertTrue(bitsContainerNode.isPresent());
 
         BitsContainer bitsCont = bitsContainerNode.get();
-        assertFalse(bitsCont.getBitsLeaf().getBitZero());
-        assertTrue(bitsCont.getBitsLeaf().getBitOne());
+        assertTrue(bitsCont.getBitsLeaf().getBitZero());
+        assertFalse(bitsCont.getBitsLeaf().getBitOne());
         assertFalse(bitsCont.getBitsLeaf().getBitTwo());
         assertNull(bitsCont.getBitsLeaf2());
     }
