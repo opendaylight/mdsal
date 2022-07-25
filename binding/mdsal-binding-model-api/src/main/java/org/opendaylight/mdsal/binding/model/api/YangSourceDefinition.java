@@ -88,6 +88,11 @@ public abstract sealed class YangSourceDefinition {
         return hasDeclaredStatement(node) ? Optional.of(new Single(module, node)) : Optional.empty();
     }
 
+    public static Optional<YangSourceDefinition> of(final ModuleEffectiveStatement module,
+            final EffectiveStatement<?, ?> effective) {
+        return effective instanceof SchemaNode schema ? Optional.of(new Single(module, schema)) : Optional.empty();
+    }
+
     public static Optional<YangSourceDefinition> of(final Module module, final Collection<? extends SchemaNode> nodes) {
         checkArgument(!nodes.isEmpty());
 
