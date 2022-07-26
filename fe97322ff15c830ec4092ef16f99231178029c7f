@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8859d534_6fb4ef6a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-07-26T05:31:53Z",
+      "side": 1,
+      "message": "\"gatClassName\"? What does that even mean?\nAlso, rather than deconstructing the name, can we pass it in from binding-generator?",
+      "revId": "fe97322ff15c830ec4092ef16f99231178029c7f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
