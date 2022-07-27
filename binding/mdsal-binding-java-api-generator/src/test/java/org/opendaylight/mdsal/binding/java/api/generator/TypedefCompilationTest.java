@@ -87,15 +87,15 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         assertEquals(9, bitsExtClass.getDeclaredFields().length);
         CompilationTestUtils.assertContainsConstructor(bitsExtClass, bitsExtClass);
         assertEquals(2, bitsExtClass.getConstructors().length);
-        Method defInst = CompilationTestUtils.assertContainsMethod(bitsExtClass, bitsExtClass, "getDefaultInstance",
-            String.class);
+        Method defInst = CompilationTestUtils.assertContainsMethod(bitsExtClass, bitsExtClass, "valueOf",
+            List.class);
         CompilationTestUtils.assertContainsDefaultMethods(bitsExtClass);
-        assertEquals(13, bitsExtClass.getDeclaredMethods().length);
+        assertEquals(14, bitsExtClass.getDeclaredMethods().length);
 
         Constructor<?> expectedConstructor = CompilationTestUtils.assertContainsConstructor(bitsExtClass, boolean.class,
             boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class);
         Object obj = expectedConstructor.newInstance(false, false, false, false, false, true, false);
-        assertEquals(obj, defInst.invoke(true, "sfmof"));
+        assertEquals(obj, defInst.invoke(true, List.of("sfmof")));
 
         // typedef int32-ext1
         assertFalse(int32Ext1Class.isInterface());
