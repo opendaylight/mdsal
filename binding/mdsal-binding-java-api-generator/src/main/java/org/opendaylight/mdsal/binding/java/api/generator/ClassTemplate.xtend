@@ -183,8 +183,10 @@ class ClassTemplate extends BaseTemplate {
             «propertyMethods»
 
             «IF isBitsTypeObject»
-                «generateGetValueForBitsTypeObject»
-                «generateValidValuesForBitsTypeObject»
+                «generateStringValueBTO»
+                «generateValueOfBTO»
+                «generateGetValueBTO»
+                «generateValidValuesBTO»
             «ENDIF»
 
             «generateHashCode»
@@ -247,7 +249,8 @@ class ClassTemplate extends BaseTemplate {
      *
      * @return string with the <code>getValue()</code> method definition in JAVA format
      */
-    def protected generateGetValueForBitsTypeObject() '''
+    def protected generateGetValueBTO() '''
+
         @Override
         public boolean[] getValue() {
             return new boolean[]{
@@ -269,7 +272,7 @@ class ClassTemplate extends BaseTemplate {
         }
     '''
 
-    def protected generateValidValuesForBitsTypeObject() '''
+    def protected generateValidValuesBTO() '''
 
         @Override
         public «ImmutableSet.importedName»<String> validValues() {
@@ -452,14 +455,12 @@ class ClassTemplate extends BaseTemplate {
     '''
 
     def protected defaultInstance() '''
-        «IF genTO.typedef && !allProperties.empty && !genTO.unionType»
+        «IF genTO.typedef && !allProperties.empty && !genTO.unionType && !isBitsTypeObject»
             «val prop = allProperties.get(0)»
             «val propType = prop.returnType»
             «IF !(INSTANCE_IDENTIFIER.identifier.equals(propType.identifier))»
             public static «genTO.name» getDefaultInstance(final String defaultValue) {
-                «IF allProperties.size > 1»
-                    «bitsArgs»
-                «ELSEIF VALUEOF_TYPES.contains(propType)»
+                «IF VALUEOF_TYPES.contains(propType)»
                     return new «genTO.name»(«propType.importedName».valueOf(defaultValue));
                 «ELSEIF STRING_TYPE.equals(propType)»
                     return new «genTO.name»(defaultValue);
@@ -476,19 +477,40 @@ class ClassTemplate extends BaseTemplate {
         «ENDIF»
     '''
 
-    @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "FOR with SEPARATOR, not needing for value")
-    def protected bitsArgs() '''
-        «JU_LIST.importedName»<«STRING.importedName»> properties = «Lists.importedName».newArrayList(«finalProperties.propsAsArgs»);
-        if (!properties.contains(defaultValue)) {
-            throw new «IAE.importedName»("invalid default parameter");
-        }
-        int i = 0;
-        return new «genTO.name»(
-        «FOR prop : allProperties SEPARATOR ","»
-            properties.get(i++).equals(defaultValue) ? true : false
-        «ENDFOR»
-        );
-    '''
+     def protected generateStringValueBTO() '''
+         «IF genTO.typedef && !allProperties.empty && !genTO.unionType»
+              public static «JU_LIST.importedName»<«STRING.importedName»> stringValue() {
+                return List.of(«properties.propsAsArgs»);
+              }
+         «ENDIF»
+
+     '''
+     @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "FOR with SEPARATOR, not needing for value")
+     def protected generateValueOfBTO() '''
+         «IF genTO.typedef && !allProperties.empty && !genTO.unionType»
+              «val props = isInheritedClass ? this.parentProperties : finalProperties»
+              public static «genTO.name» valueOf(final «JU_LIST.importedName»<«STRING.importedName»> defaultValues) {
+                 «JU_LIST.importedName»<«STRING.importedName»> properties = «Lists.importedName».newArrayList(«props.propsAsArgs»);
+                 boolean[] bitValues = new boolean[properties.size()];
+                 for (var property : properties) {
+                     for (var value : defaultValues) {
+                         if (!properties.contains(value)) {
+                             throw new «IAE.importedName»("Invalid default parameter '" + value + "'");
+                         }
+                         if (property.equals(value)) {
+                             bitValues[properties.indexOf(property)] = true;
+                         }
+                     }
+                 }
+                 int i = 0;
+                 return new «genTO.name»(
+                     «FOR prop : allProperties SEPARATOR ","»
+                         bitValues[i++]
+                     «ENDFOR»
+                 );
+              }
+         «ENDIF»
+     '''
 
     def protected propsAsArgs(Iterable<GeneratedProperty> properties) '''
         «FOR prop : properties SEPARATOR ","»
