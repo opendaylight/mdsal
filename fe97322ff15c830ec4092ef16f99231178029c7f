@@ -16,6 +16,24 @@
       "message": "\"gatClassName\"? What does that even mean?\nAlso, rather than deconstructing the name, can we pass it in from binding-generator?",
       "revId": "fe97322ff15c830ec4092ef16f99231178029c7f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "59acd4c7_3bf5fea4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2022-08-01T10:28:11Z",
+      "side": 1,
+      "message": "I\u0027m not sure if this method of getting list name is better.\n\nIt should be possible to pass it in from binding-generator in more direct way\nbut none of GeneratedTransferObject attributes seem good for that, so I\u0027m not\nsure how to do that correctly.",
+      "parentUuid": "8859d534_6fb4ef6a",
+      "revId": "fe97322ff15c830ec4092ef16f99231178029c7f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
