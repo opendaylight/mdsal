@@ -23,7 +23,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesBitsTest {
     @Test
-    public void testGeneretedTypesBitsTest() {
+    public void testGeneratedTypesBitsTest() {
         final List<GeneratedType> genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
             "/simple-bits-demo.yang"));
         assertTrue(genTypes != null);
@@ -90,11 +90,11 @@ public class GeneratedTypesBitsTest {
 
         assertTrue(byteTypeFound);
 
-        assertEquals(8, classPropertiesNumb);
+        assertEquals(1, classPropertiesNumb);
 
-        assertEquals(8, toStringPropertiesNum);
-        assertEquals(8, equalPropertiesNum);
-        assertEquals(8, hashPropertiesNum);
+        assertEquals(1, toStringPropertiesNum);
+        assertEquals(1, equalPropertiesNum);
+        assertEquals(1, hashPropertiesNum);
         assertTrue(leafParentFound);
 
         assertNotNull(methodSignaturesList);
