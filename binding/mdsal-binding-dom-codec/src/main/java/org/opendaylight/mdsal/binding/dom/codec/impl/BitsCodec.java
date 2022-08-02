@@ -26,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
@@ -49,42 +48,54 @@ final class BitsCodec extends SchemaUnawareCodec {
      */
     private static final Cache<Class<?>, @NonNull BitsCodec> CACHE = CacheBuilder.newBuilder().weakKeys().softValues()
         .build();
-    private static final MethodType CONSTRUCTOR_INVOKE_TYPE = MethodType.methodType(Object.class, Boolean[].class);
+    private static final MethodType CONSTRUCTOR_INVOKE_TYPE = MethodType.methodType(Object.class, Object.class);
 
     // Ordered by position
     private final ImmutableMap<String, Method> getters;
-    // Ordered by lexical name
-    private final ImmutableSet<String> ctorArgs;
+    private final ImmutableMap<String, Method> setters;
     private final MethodHandle ctor;
 
-    private BitsCodec(final MethodHandle ctor, final Set<String> ctorArgs, final Map<String, Method> getters) {
+    private final Object builder;
+
+    private BitsCodec(final MethodHandle ctor, final Map<String, Method> getters, Map<String, Method> setters,
+                      Object builder) {
         this.ctor = requireNonNull(ctor);
-        this.ctorArgs = ImmutableSet.copyOf(ctorArgs);
         this.getters = ImmutableMap.copyOf(getters);
+        this.setters = ImmutableMap.copyOf(setters);
+        this.builder = builder;
     }
 
     static @NonNull BitsCodec of(final Class<?> returnType, final BitsTypeDefinition rootType)
             throws ExecutionException {
         return CACHE.get(returnType, () -> {
             final Map<String, Method> getters = new LinkedHashMap<>();
-            final Set<String> ctorArgs = new TreeSet<>();
+            final Map<String, Method> setters = new LinkedHashMap<>();
 
             for (Bit bit : rootType.getBits()) {
                 final Method valueGetter = returnType.getMethod(BindingMapping.GETTER_PREFIX
                     + BindingMapping.getClassName(bit.getName()));
-                ctorArgs.add(bit.getName());
                 getters.put(bit.getName(), valueGetter);
+                if (returnType.getClasses().length > 0) {
+                    final Method valueSetter = returnType.getClasses()[0].getMethod(BindingMapping.SETTER_PREFIX
+                            + BindingMapping.getClassName(bit.getName()), boolean.class);
+                    setters.put(bit.getName(), valueSetter);
+                }
             }
             Constructor<?> constructor = null;
             for (Constructor<?> cst : returnType.getConstructors()) {
-                if (!cst.getParameterTypes()[0].equals(returnType)) {
-                    constructor = cst;
+                Class<?>[] parameterTypes = cst.getParameterTypes();
+                // Checks the length in case of constructor with no parameters
+                if (parameterTypes.length > 0) {
+                    if (!parameterTypes[0].equals(returnType)) {
+                        constructor = cst;
+                    }
                 }
             }
+            Object builder = returnType.getMethod("builder").invoke(null);
 
             final MethodHandle ctor = MethodHandles.publicLookup().unreflectConstructor(constructor)
-                    .asSpreader(Boolean[].class, ctorArgs.size()).asType(CONSTRUCTOR_INVOKE_TYPE);
-            return new BitsCodec(ctor, ctorArgs, getters);
+                    .asType(CONSTRUCTOR_INVOKE_TYPE);
+            return new BitsCodec(ctor, getters, setters, builder);
         });
     }
 
@@ -101,14 +112,16 @@ final class BitsCodec extends SchemaUnawareCodec {
          *
          * This means we will construct correct array for construction of bits object.
          */
-        final Boolean[] args = new Boolean[ctorArgs.size()];
-        int currentArg = 0;
-        for (String value : ctorArgs) {
-            args[currentArg++] = casted.contains(value);
+        for (Entry<String, Method> valueSet : setters.entrySet()) {
+            try {
+                valueSet.getValue().invoke(builder, casted.contains(valueSet.getKey()));
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new IllegalArgumentException("Failed to set bit " + valueSet.getKey(), e);
+            }
         }
 
         try {
-            return ctor.invokeExact(args);
+            return ctor.invokeExact(builder);
         } catch (Throwable e) {
             throw new IllegalStateException("Failed to instantiate object for " + input, e);
         }
@@ -118,9 +131,9 @@ final class BitsCodec extends SchemaUnawareCodec {
     protected Set<String> serializeImpl(final Object input) {
         final Collection<String> result = new ArrayList<>(getters.size());
         for (Entry<String, Method> valueGet : getters.entrySet()) {
-            final Boolean value;
+            final boolean value;
             try {
-                value = (Boolean) valueGet.getValue().invoke(input);
+                value = (boolean) valueGet.getValue().invoke(input);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new IllegalArgumentException("Failed to get bit " + valueGet.getKey(), e);
             }

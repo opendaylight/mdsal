@@ -26,6 +26,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.TypeReference.ResolvedLeafref;
+import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
@@ -64,7 +65,6 @@ import org.opendaylight.yangtools.yang.model.api.stmt.RangeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ValueRange;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition.Bit;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.ModifierKind;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
@@ -613,20 +613,18 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
             final EffectiveStatement<?, ?> definingStatement, final JavaTypeName typeName, final ModuleGenerator module,
             final TypeDefinition<?> typedef, final boolean isTypedef) {
         final GeneratedTOBuilder builder = builderFactory.newGeneratedTOBuilder(typeName);
+        final int validBitsSize = ((BitsTypeDefinition) typedef).getBits().size();
         builder.setTypedef(isTypedef);
         builder.setBaseType(typedef);
         YangSourceDefinition.of(module.statement(), definingStatement).ifPresent(builder::setYangSourceDefinition);
 
-        for (Bit bit : ((BitsTypeDefinition) typedef).getBits()) {
-            final String name = bit.getName();
-            GeneratedPropertyBuilder genPropertyBuilder = builder.addProperty(BindingMapping.getPropertyName(name));
-            genPropertyBuilder.setReadOnly(true);
-            genPropertyBuilder.setReturnType(Types.primitiveBooleanType());
-
-            builder.addEqualsIdentity(genPropertyBuilder);
-            builder.addHashIdentity(genPropertyBuilder);
-            builder.addToStringProperty(genPropertyBuilder);
-        }
+        GeneratedPropertyBuilder genPropertyBuilder = builder.addProperty(TypeConstants.BITS_FIELD_NAME);
+        setBitsTypeObjectStorage(genPropertyBuilder, validBitsSize);
+        genPropertyBuilder.setReadOnly(true);
+        genPropertyBuilder.setAccessModifier(AccessModifier.PROTECTED);
+        builder.addEqualsIdentity(genPropertyBuilder);
+        builder.addHashIdentity(genPropertyBuilder);
+        builder.addToStringProperty(genPropertyBuilder);
 
         // builder.setSchemaPath(typedef.getPath());
         builder.setModuleName(module.statement().argument().getLocalName());
@@ -940,6 +938,23 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         sortedBitsMap.replaceAll((k, v) -> BindingMapping.getPropertyName(v));
         return sortedBitsMap;
+    }
+
+    /**
+     * Chooses correct data type for storing bits type object. There are three types:
+     * int - up to 32 bits, long - up to 64, int[] - more than 64 bits.
+     *
+     * @param genPropertyBuilder builder of generated property, where the data type is set
+     * @param size represents the number of bits in the bits type object, based on which correct data type is chosen
+     */
+    private static void setBitsTypeObjectStorage(final GeneratedPropertyBuilder genPropertyBuilder, final int size) {
+        if (size < 32) {
+            genPropertyBuilder.setReturnType(Types.primitiveIntType());
+        } else if (size < 64) {
+            genPropertyBuilder.setReturnType(Types.primitiveLongType());
+        } else {
+            genPropertyBuilder.setReturnType(Types.intArrayType());
+        }
     }
 
     /**
