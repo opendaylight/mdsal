@@ -77,8 +77,12 @@ final class BitsCodec extends SchemaUnawareCodec {
             }
             Constructor<?> constructor = null;
             for (Constructor<?> cst : returnType.getConstructors()) {
-                if (!cst.getParameterTypes()[0].equals(returnType)) {
-                    constructor = cst;
+                Class<?>[] parameterTypes = cst.getParameterTypes();
+                // Checks the length in case of constructor with no parameters
+                if (parameterTypes.length != 0) {
+                    if (!parameterTypes[0].equals(returnType)) {
+                        constructor = cst;
+                    }
                 }
             }
 
