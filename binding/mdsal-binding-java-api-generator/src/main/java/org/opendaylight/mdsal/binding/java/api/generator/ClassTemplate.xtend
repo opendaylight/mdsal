@@ -24,9 +24,13 @@ import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.UINT64_TYPE
 import static org.opendaylight.mdsal.binding.model.ri.BaseYangTypes.UINT8_TYPE
 import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.SCALAR_TYPE_OBJECT
 import static org.opendaylight.mdsal.binding.model.ri.BindingTypes.BITS_TYPE_OBJECT
+import static org.opendaylight.mdsal.binding.model.ri.Types.primitiveIntType;
+import static org.opendaylight.mdsal.binding.model.ri.Types.primitiveLongType;
+import static org.opendaylight.mdsal.binding.model.ri.Types.intArrayType;
 import static org.opendaylight.mdsal.binding.model.ri.Types.STRING;
 import static extension org.apache.commons.text.StringEscapeUtils.escapeJava
 import static extension org.apache.commons.lang3.StringUtils.capitalize;
+import static org.opendaylight.yangtools.yang.binding.BitsTypeObjectHelpers.wordSize;
 
 import com.google.common.base.Preconditions
 import com.google.common.collect.ImmutableList
@@ -176,21 +180,170 @@ class ClassTemplate extends BaseTemplate {
 
             «propertyMethods»
 
-            «IF isBitsTypeObject»
-                «generateStringValueBTO»
-                «generateValueOfBTO»
-                «generateGetValueBTO»
-                «generateValidValuesBTO»
-            «ENDIF»
-
             «generateHashCode»
 
             «generateEquals»
 
             «generateToString(genTO.toStringIdentifiers)»
-        }
 
+            «IF isBitsTypeObject»
+                «generateGettersBTO»
+
+                «generateGetValueBTO»
+
+                «generateValidValuesBTO»
+
+                «generateStringValueBTO»
+
+                «generateValueOfBTO»
+
+                «generateBuilderMethodBTO»
+
+                «generateBuilderClassBTO»
+            «ENDIF»
+        }
     '''
+
+    def protected generateBuilderClassBTO() '''
+        public «IF !isInheritedClass»abstract «ENDIF»static class Builder«IF !isInheritedClass»<T extends Builder<T>>«ELSE» extends «genTO.superType.importedName».Builder<Builder>«ENDIF» {
+            private «bitsField.returnType.identifier» «bitsField.fieldName»;
+
+            «generateEmptyBuilderConstructor»
+
+            «generateInstanceMethodBTO»
+
+            «generateSettersBTO»
+
+            public «genTO.name» build() {
+                return new «genTO.name»(this);
+            }
+        }
+    '''
+
+    def protected generateInstanceMethodBTO() '''
+        «IF !isInheritedClass»
+            protected abstract T instance();
+        «ELSE»
+            @Override
+            public Builder instance() {
+                return this;
+            }
+        «ENDIF»
+    '''
+
+    def protected generateBuilderMethodBTO() '''
+        public static Builder builder() {
+            return new Builder() {
+                @Override
+                public Builder instance() {
+                    return this;
+                }
+            };
+        }
+    '''
+
+    def protected generateGettersBTO() '''
+        «val bitList = validBitList»
+        «var i = 0»
+        «FOR bit : bitList SEPARATOR "\n"»
+            public boolean get«bit.capitalize»() {
+                return «BITS_TYPE_OBJECT_HELPERS.importedName».getBit(«bitsField.fieldName», «i++»);
+            }
+        «ENDFOR»
+    '''
+
+    def protected generateSettersBTO() '''
+        «val bitList = validBitList»
+        «var i = 0»
+        «FOR bit : bitList SEPARATOR "\n"»
+            public «IF isInheritedClass»Builder«ELSE»T«ENDIF» set«bit.capitalize»(boolean value) {
+                this.«bitsField.fieldName» = «BITS_TYPE_OBJECT_HELPERS.importedName».setBit(«bitsField.fieldName», value, «i++»);
+                return this.instance();
+            }
+        «ENDFOR»
+    '''
+
+    /**
+     * Template method which generates the method <code>getValue()</code> for typedef,
+     * which base type is BitsDefinition.
+     *
+     * @return string with the <code>getValue()</code> method definition in JAVA format
+     */
+     @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "FOR with SEPARATOR, not needing for value")
+     def protected generateGetValueBTO() '''
+        @Override
+        public boolean[] getValue() {
+            int i = 0;
+            return new boolean[]{
+                «val bitList = validBitList»
+                «FOR bit : bitList SEPARATOR ", "»
+                    «BITS_TYPE_OBJECT_HELPERS.importedName».getBit(this.«bitsField.fieldName», i++)
+                «ENDFOR»
+            };
+        }
+     '''
+
+     def protected generateStringValueBTO() '''
+         «IF genTO.typedef»
+             «val bitList = validBitList»
+             public static «JU_LIST.importedName»<«STRING.importedName»> stringValue() {
+               return List.of(«FOR bit : bitList SEPARATOR ", "»"«bit»"«ENDFOR»);
+             }
+         «ENDIF»
+     '''
+
+     @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "FOR with SEPARATOR, not needing for value")
+     def protected generateValueOfBTO() '''
+         «IF genTO.typedef»
+             «val bitList = validBitList»
+             public static «genTO.name» valueOf(final «JU_LIST.importedName»<«STRING.importedName»> defaultValues) {
+                 «JU_LIST.importedName»<«STRING.importedName»> properties = «Lists.importedName».newArrayList(«FOR bit : bitList SEPARATOR ", "»"«bit»"«ENDFOR»);
+                 boolean[] bitValues = new boolean[properties.size()];
+                 for (var property : properties) {
+                     for (var value : defaultValues) {
+                         if (!properties.contains(value)) {
+                             throw new «IAE.importedName»("Invalid default parameter '" + value + "'");
+                         } else if (property.equals(value)) {
+                             bitValues[properties.indexOf(property)] = true;
+                         }
+                     }
+                 }
+                 int i = 0;
+                 return «genTO.name».builder()
+                     «FOR bit : bitList SEPARATOR ""»
+                         .set«bit.capitalize»(bitValues[i++])
+                     «ENDFOR»
+                     .build();
+             }
+         «ENDIF»
+     '''
+
+    def private List<String> validBitList() {
+      val bitList = newArrayList();
+      if (!consts.empty) {
+        for (c : consts) {
+          if (TypeConstants.VALID_BITS_NAME.equals(c.name)) {
+            val bits =  c.value as Map<Uint32, String>;
+            for (bitVal : bits.values) {
+              bitList.add(bitVal);
+            }
+          }
+        }
+      }
+      return bitList;
+    }
+
+    def private GeneratedProperty bitsField() {
+        val props = isInheritedClass ? genTO.superType.properties : this.properties;
+        for (prop : props) {
+          if (prop.returnType.equals(primitiveIntType) ||
+              prop.returnType.equals(primitiveLongType) ||
+              prop.returnType.equals(intArrayType)) {
+            return prop;
+          }
+        }
+        return null;
+    }
 
     def private propertyMethods() {
         if (properties.empty) {
@@ -237,37 +390,11 @@ class ClassTemplate extends BaseTemplate {
         }
     '''
 
-    /**
-     * Template method which generates the method <code>getValue()</code> for typedef,
-     * which base type is BitsDefinition.
-     *
-     * @return string with the <code>getValue()</code> method definition in JAVA format
-     */
-    def protected generateGetValueBTO() '''
-
-        @Override
-        public boolean[] getValue() {
-            return new boolean[]{
-            «IF !isInheritedClass»
-                «FOR property: genTO.properties SEPARATOR ','»
-                     «property.fieldName»
-                «ENDFOR»
-            «ELSE»
-                «IF !consts.empty»
-                    «FOR c : consts»
-                        «val cValue = c.value as Map<Uint32, String>»
-                        «FOR v : cValue.values SEPARATOR ", "»
-                            super.get«v.capitalize»()
-                        «ENDFOR»
-                    «ENDFOR»
-                «ENDIF»
-            «ENDIF»
-            };
-        }
-    '''
+    def private calculateSize(int size) {
+        return size / wordSize + (size % wordSize == 0 ? 0 : 1);
+    }
 
     def protected generateValidValuesBTO() '''
-
         @Override
         public «ImmutableSet.importedName»<String> validValues() {
             return «TypeConstants.VALID_BITS_NAME»;
@@ -306,16 +433,23 @@ class ClassTemplate extends BaseTemplate {
         «ENDIF»
     '''
 
+     def generateEmptyBuilderConstructor() '''
+        «val prop = bitsField»
+        public Builder() {
+          «IF prop !== null»
+            «IF prop.returnType.equals(primitiveIntType) || prop.returnType.equals(primitiveLongType)»
+              this.«bitsField.fieldName» = 0;
+            «ELSEIF prop.returnType.equals(intArrayType)»
+              this.«bitsField.fieldName» = new int[«calculateSize(validBitList.size)»];
+            «ENDIF»
+          «ENDIF»
+        }
+     '''
+
      def bitsConstructor() '''
-        «IF !parentProperties.empty»
-            public «type.name»(«parentProperties.asArgumentsDeclaration») {
-                super(«parentProperties.asArguments»);
-        «ELSE»
-            public «type.name»(«finalProperties.asArgumentsDeclaration») {
-        «ENDIF»
-            «FOR p : properties»
-                this.«p.fieldName» = «p.fieldName»;
-            «ENDFOR»
+        public «type.name»(Builder«IF !isInheritedClass»<?>«ENDIF» builder) {
+            «IF isInheritedClass»super(builder);«ENDIF»
+            this._bits = builder._bits;
         }
      '''
 
@@ -471,41 +605,6 @@ class ClassTemplate extends BaseTemplate {
         «ENDIF»
     '''
 
-     def protected generateStringValueBTO() '''
-         «IF genTO.typedef && !allProperties.empty && !genTO.unionType»
-              public static «JU_LIST.importedName»<«STRING.importedName»> stringValue() {
-                return List.of(«properties.propsAsArgs»);
-              }
-         «ENDIF»
-
-     '''
-     @SuppressFBWarnings(value = "DLS_DEAD_LOCAL_STORE", justification = "FOR with SEPARATOR, not needing for value")
-     def protected generateValueOfBTO() '''
-         «IF genTO.typedef && !allProperties.empty && !genTO.unionType»
-              «val props = isInheritedClass ? this.parentProperties : finalProperties»
-              public static «genTO.name» valueOf(final «JU_LIST.importedName»<«STRING.importedName»> defaultValues) {
-                 «JU_LIST.importedName»<«STRING.importedName»> properties = «Lists.importedName».newArrayList(«props.propsAsArgs»);
-                 boolean[] bitValues = new boolean[properties.size()];
-                 for (var property : properties) {
-                     for (var value : defaultValues) {
-                         if (!properties.contains(value)) {
-                             throw new «IAE.importedName»("Invalid default parameter '" + value + "'");
-                         }
-                         if (property.equals(value)) {
-                             bitValues[properties.indexOf(property)] = true;
-                         }
-                     }
-                 }
-                 int i = 0;
-                 return new «genTO.name»(
-                     «FOR prop : allProperties SEPARATOR ","»
-                         bitValues[i++]
-                     «ENDFOR»
-                 );
-              }
-         «ENDIF»
-     '''
-
     def protected propsAsArgs(Iterable<GeneratedProperty> properties) '''
         «FOR prop : properties SEPARATOR ","»
             "«prop.name»"
@@ -586,7 +685,7 @@ class ClassTemplate extends BaseTemplate {
                         private static final String[] «Constants.MEMBER_REGEX_LIST» = { «
                         FOR v : cValue.values SEPARATOR ", "»"«v.escapeJava»"«ENDFOR» };
                     «ENDIF»
-                «ELSEIF c.name == TypeConstants.VALID_BITS_NAME»
+                «ELSEIF TypeConstants.VALID_BITS_NAME.equals(c.name)»
                     «val cValue = c.value as Map<Uint32, String>»
                     public static final «ImmutableSet.importedName»<String> «TypeConstants.VALID_BITS_NAME» = «ImmutableSet.importedName».of(«
                     FOR v : cValue.values SEPARATOR ", "»"«v»"«ENDFOR»);
@@ -605,7 +704,7 @@ class ClassTemplate extends BaseTemplate {
     def protected generateFields() '''
         «IF !properties.empty»
             «FOR f : properties»
-                private«IF isReadOnly(f)» final«ENDIF» «f.returnType.importedName» «f.fieldName»;
+                «IF isBitsTypeObject»protected«ELSE»private«ENDIF»«IF isReadOnly(f) && !isBitsTypeObject» final«ENDIF» «f.returnType.importedName» «f.fieldName»;
             «ENDFOR»
         «ENDIF»
     '''

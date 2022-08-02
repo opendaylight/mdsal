@@ -52,6 +52,7 @@ import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.model.ri.Types;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
+import org.opendaylight.yangtools.yang.binding.BitsTypeObjectHelpers;
 import org.opendaylight.yangtools.yang.binding.CodeHelpers;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
@@ -146,6 +147,11 @@ class JavaFileTemplate {
      * {@code org.opendaylight.yangtools.yang.binding.CodeHelpers} as a JavaTypeName.
      */
     static final @NonNull JavaTypeName CODEHELPERS = JavaTypeName.create(CodeHelpers.class);
+
+    /**
+     * {@code org.opendaylight.yangtools.yang.binding.BitsTypeObjectHelpers} as a JavaTypeName.
+     */
+    static final @NonNull JavaTypeName BITS_TYPE_OBJECT_HELPERS = JavaTypeName.create(BitsTypeObjectHelpers.class);
 
     /**
      * {@code com.google.common.base.MoreObjects} as a JavaTypeName.
