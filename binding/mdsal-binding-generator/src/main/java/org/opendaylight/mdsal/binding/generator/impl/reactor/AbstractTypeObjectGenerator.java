@@ -26,6 +26,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.generator.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.TypeReference.ResolvedLeafref;
+import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
@@ -63,7 +64,6 @@ import org.opendaylight.yangtools.yang.model.api.stmt.RangeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ValueRange;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition.Bit;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.ModifierKind;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
@@ -608,22 +608,26 @@ abstract class AbstractTypeObjectGenerator<S extends EffectiveStatement<?, ?>, R
     }
 
     private static @NonNull GeneratedTransferObject createBits(final TypeBuilderFactory builderFactory,
-            final JavaTypeName typeName, final ModuleGenerator module, final TypeDefinition<?> typedef,
-            final boolean isTypedef) {
+                                                               final JavaTypeName typeName, final ModuleGenerator module, final TypeDefinition<?> typedef,
+                                                               final boolean isTypedef) {
         final GeneratedTOBuilder builder = builderFactory.newGeneratedTOBuilder(typeName);
         builder.setTypedef(isTypedef);
         builder.setBaseType(typedef);
 
-        for (Bit bit : ((BitsTypeDefinition) typedef).getBits()) {
-            final String name = bit.getName();
-            GeneratedPropertyBuilder genPropertyBuilder = builder.addProperty(BindingMapping.getPropertyName(name));
-            genPropertyBuilder.setReadOnly(true);
-            genPropertyBuilder.setReturnType(Types.primitiveBooleanType());
-
-            builder.addEqualsIdentity(genPropertyBuilder);
-            builder.addHashIdentity(genPropertyBuilder);
-            builder.addToStringProperty(genPropertyBuilder);
+        final var validBits = ((BitsTypeDefinition) typedef).getBits();
+        GeneratedPropertyBuilder genPropertyBuilder = builder.addProperty(TypeConstants.BITS_FIELD_NAME);
+        genPropertyBuilder.setReadOnly(false);
+        genPropertyBuilder.setAccessModifier(AccessModifier.PROTECTED);
+        if (validBits.size() < 32) {
+            genPropertyBuilder.setReturnType(Types.primitiveIntType());
+        } else if (validBits.size() < 64) {
+            genPropertyBuilder.setReturnType(Types.primitiveLongType());
+        } else {
+            genPropertyBuilder.setReturnType(Types.intArrayType());
         }
+        builder.addEqualsIdentity(genPropertyBuilder);
+        builder.addHashIdentity(genPropertyBuilder);
+        builder.addToStringProperty(genPropertyBuilder);
 
         // builder.setSchemaPath(typedef.getPath());
         builder.setModuleName(module.statement().argument().getLocalName());

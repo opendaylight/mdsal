@@ -25,6 +25,7 @@ public final class TypeConstants {
     public static final @NonNull String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
 
     public static final @NonNull String VALID_BITS_NAME = "VALID_BITS";
+    public static final @NonNull String BITS_FIELD_NAME = "bits";
 
     /**
      * Name of the property holding the value encapsulated in a {@link ScalarTypeObject}.

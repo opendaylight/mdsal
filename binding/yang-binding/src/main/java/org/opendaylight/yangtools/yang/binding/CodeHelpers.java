@@ -480,4 +480,35 @@ public final class CodeHelpers {
             }
         }
     }
+
+    public static int setBits(boolean... bitValues) {
+        int bits = 0;
+        for (int i = 0; i < bitValues.length; i++) {
+            bits = setBit(bits, bitValues[i], i);
+        }
+        return bits;
+    }
+
+    public static int setBit(int bits, boolean value, int position) {
+        if (position < 0) {
+            throw new IndexOutOfBoundsException("Position < 0: " + position);
+        }
+        return value ? setBitInPosition(bits, position) : unsetBitInPosition(bits, position);
+    }
+
+    private static int setBitInPosition(int bits, int position) {
+        return bits | 1 << position;
+    }
+
+    private static int unsetBitInPosition(int bits, int position) {
+        return bits & ~(1 << position);
+    }
+
+    public static boolean getBit(int bits, int position) {
+        return intToBoolean((bits >> position) & 1);
+    }
+
+    private static boolean intToBoolean(int number) {
+        return number != 0;
+    }
 }
