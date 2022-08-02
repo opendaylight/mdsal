@@ -188,27 +188,16 @@ public class BitAndUnionTOEnclosingTest {
                 unionLeaf.getIdentifier().immediatelyEnclosingClass().get().toString());
 
         List<GeneratedProperty> propertiesBitLeaf = bitLeaf.getProperties();
-        GeneratedProperty firstBitProperty = null;
-        GeneratedProperty secondBitProperty = null;
-        GeneratedProperty thirdBitProperty = null;
+        GeneratedProperty bitsProperty = null;
 
         for (GeneratedProperty genProperty : propertiesBitLeaf) {
-            if (genProperty.getName().equals("firstBit")) {
-                firstBitProperty = genProperty;
-            } else if (genProperty.getName().equals("secondBit")) {
-                secondBitProperty = genProperty;
-            } else if (genProperty.getName().equals("thirdBit")) {
-                thirdBitProperty = genProperty;
+            if (genProperty.getName().equals("bits")) {
+                bitsProperty = genProperty;
             }
         }
 
-        assertNotNull("firstBit property wasn't found", firstBitProperty);
-        assertNotNull("secondBit property wasn't found", secondBitProperty);
-        assertNotNull("thirdBit property wasn't found", thirdBitProperty);
-
-        assertEquals("firstBit property has incorrect type", "boolean", firstBitProperty.getReturnType().getName());
-        assertEquals("secondBit property has incorrect type", "boolean", secondBitProperty.getReturnType().getName());
-        assertEquals("thirdBit property has incorrect type", "boolean", thirdBitProperty.getReturnType().getName());
+        assertNotNull("bits property wasn't found", bitsProperty);
+        assertEquals("bitsProperty property has incorrect type", "int", bitsProperty.getReturnType().getName());
 
         GeneratedProperty uint32Property = null;
         GeneratedProperty stringProperty = null;
