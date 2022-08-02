@@ -122,6 +122,11 @@ public final class BindingMapping {
     public static final @NonNull String GETTER_PREFIX = "get";
 
     /**
+     * Prefix for normal setter methods.
+     */
+    public static final @NonNull String SETTER_PREFIX = "set";
+
+    /**
      * Prefix for non-null default wrapper methods. These methods always wrap a corresponding normal getter.
      */
     public static final @NonNull String NONNULL_PREFIX = "nonnull";

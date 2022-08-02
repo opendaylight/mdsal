@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GenerateInnerClassForBitsAndUnionInLeavesTest {
     @Test
-    public void testInnerClassCreationForBitsAndUnionsInLeafes() {
+    public void testInnerClassCreationForBitsAndUnionsInLeaves() {
         final var genTypes = DefaultBindingGenerator.generateFor(YangParserTestUtils.parseYangResource(
             "/bit_and_union_in_leaf.yang"));
         assertEquals(4, genTypes.size());
@@ -46,26 +46,17 @@ public class GenerateInnerClassForBitsAndUnionInLeavesTest {
                                 bitLeafTOFound = true;
 
                                 List<GeneratedProperty> bitLeafProperties = gto.getProperties();
-                                assertEquals(3, bitLeafProperties.size());
+                                assertEquals(1, bitLeafProperties.size());
 
-                                boolean firstBitPropertyFound = false;
-                                boolean secondBitPropertyFound = false;
-                                boolean thirdBitPropertyFound = false;
+                                boolean bitsPropertyFound = false;
+
                                 for (GeneratedProperty bitLeafProperty : bitLeafProperties) {
-                                    if (bitLeafProperty.getName().equals("firstBit")) {
-                                        firstBitPropertyFound = true;
-                                        assertEquals(Types.primitiveBooleanType(), bitLeafProperty.getReturnType());
-                                    } else if (bitLeafProperty.getName().equals("secondBit")) {
-                                        secondBitPropertyFound = true;
-                                        assertEquals(Types.primitiveBooleanType(), bitLeafProperty.getReturnType());
-                                    } else if (bitLeafProperty.getName().equals("thirdBit")) {
-                                        thirdBitPropertyFound = true;
-                                        assertEquals(Types.primitiveBooleanType(), bitLeafProperty.getReturnType());
+                                    if (bitLeafProperty.getName().equals("bits")) {
+                                        bitsPropertyFound = true;
+                                        assertEquals(Types.primitiveIntType(), bitLeafProperty.getReturnType());
                                     }
                                 }
-                                assertTrue(firstBitPropertyFound);
-                                assertTrue(secondBitPropertyFound);
-                                assertTrue(thirdBitPropertyFound);
+                                assertTrue(bitsPropertyFound);
                             } else if (genType.getName().equals("UnionLeaf")) {
                                 assertFalse("Unexpected duplicate UnionLeaf", unionLeafTOFound);
                                 unionLeafTOFound = true;
