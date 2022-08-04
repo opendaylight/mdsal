@@ -60,6 +60,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.YangStmtMapping;
 import org.opendaylight.yangtools.yang.model.api.meta.DeclaredStatement;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.export.DeclaredStatementFormatter;
 
@@ -433,6 +434,14 @@ class JavaFileTemplate {
                                 sb.append("@see ").append(type.getName()).append(BindingMapping.KEY_SUFFIX);
                             }
                             sb.append('\n');
+                        }
+                    }
+                } else if (node instanceof AugmentEffectiveStatement) {
+                    if (!type.getImplements().isEmpty()
+                            && type.getImplements().get(0) instanceof ParameterizedType implementsTypes) {
+                        if (implementsTypes.getActualTypeArguments().length > 0) {
+                            sb.append("\n\n");
+                            sb.append("@see ").append(implementsTypes.getActualTypeArguments()[0].getName());
                         }
                     }
                 }
