@@ -15,5 +15,8 @@ module org.opendaylight.mdsal.binding.model.api {
     requires org.slf4j;
 
     // Annotations
+    requires static transitive com.github.spotbugs.annotations;
+    requires static transitive com.google.errorprone.annotations;
     requires static transitive org.eclipse.jdt.annotation;
+    requires static transitive org.immutables.value.annotations;
 }
