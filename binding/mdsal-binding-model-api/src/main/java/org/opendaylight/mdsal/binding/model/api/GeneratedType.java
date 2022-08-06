@@ -29,6 +29,8 @@ import java.util.Optional;
  * By the definition of the interface constant, enum, enclosed types and method definitions MUST be public, so there is
  * no need to specify the scope of visibility.
  */
+// FIXME: sealed permits GeneratedTransferObject, Archetype
+// FIXME: merge with Archetype
 public interface GeneratedType extends Type, DocumentedType {
     /**
      * Returns comment string associated with Generated Type.
