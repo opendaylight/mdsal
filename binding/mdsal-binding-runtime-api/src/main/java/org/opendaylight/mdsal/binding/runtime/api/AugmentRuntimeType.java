@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
+import org.opendaylight.mdsal.binding.model.api.AugmentationArchetype;
 import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
 
 /**
@@ -14,5 +15,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
  */
 public interface AugmentRuntimeType extends CompositeRuntimeType, DataRuntimeType {
     @Override
-    AugmentEffectiveStatement statement();
+    AugmentationArchetype javaType();
+
+    @Override
+    default AugmentEffectiveStatement statement() {
+        return javaType().statement();
+    }
 }

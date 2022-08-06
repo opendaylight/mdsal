@@ -8,12 +8,16 @@
 package org.opendaylight.mdsal.binding.runtime.api;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.yang.model.api.stmt.DataTreeAwareEffectiveStatement;
 
 /**
  * Common interface for run-time types associated with invokable operations, such as those defined by {@code action} and
  * {@code rpc} statements.
  */
 public interface InvokableRuntimeType extends CompositeRuntimeType {
+    @Override
+    DataTreeAwareEffectiveStatement<?, ?> statement();
+
     /**
      * Return the run-time type for this action's input.
      *

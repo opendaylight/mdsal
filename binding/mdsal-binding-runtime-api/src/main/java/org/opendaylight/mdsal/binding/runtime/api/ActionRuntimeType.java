@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
+import org.opendaylight.mdsal.binding.model.api.ActionArchetype;
 import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
 
 /**
@@ -14,5 +15,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
  */
 public interface ActionRuntimeType extends InvokableRuntimeType {
     @Override
-    ActionEffectiveStatement statement();
+    ActionArchetype javaType();
+
+    @Override
+    default ActionEffectiveStatement statement() {
+        return javaType().statement();
+    }
 }

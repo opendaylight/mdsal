@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
+import org.opendaylight.mdsal.binding.model.api.NotificationArchetype;
 import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
 
 /**
@@ -14,5 +15,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveState
  */
 public interface NotificationRuntimeType extends AugmentableRuntimeType {
     @Override
-    NotificationEffectiveStatement statement();
+    NotificationArchetype javaType();
+
+    @Override
+    default NotificationEffectiveStatement statement() {
+        return javaType().statement();
+    }
 }

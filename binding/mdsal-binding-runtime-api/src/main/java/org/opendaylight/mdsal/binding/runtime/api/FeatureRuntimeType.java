@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
+import org.opendaylight.mdsal.binding.model.api.FeatureArchetype;
 import org.opendaylight.yangtools.yang.model.api.stmt.FeatureEffectiveStatement;
 
 /**
@@ -14,5 +15,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.FeatureEffectiveStatement;
  */
 public interface FeatureRuntimeType extends GeneratedRuntimeType {
     @Override
-    FeatureEffectiveStatement statement();
+    FeatureArchetype javaType();
+
+    @Override
+    default FeatureEffectiveStatement statement() {
+        return javaType().statement();
+    }
 }

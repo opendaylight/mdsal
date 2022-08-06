@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.TypeObjectArchetype;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
 
 /**
@@ -15,8 +15,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.TypedefEffectiveStatement;
  */
 public interface TypedefRuntimeType extends GeneratedRuntimeType {
     @Override
-    TypedefEffectiveStatement statement();
+    TypeObjectArchetype javaType();
 
     @Override
-    GeneratedType javaType();
+    default TypedefEffectiveStatement statement() {
+        return javaType().statement();
+    }
 }
