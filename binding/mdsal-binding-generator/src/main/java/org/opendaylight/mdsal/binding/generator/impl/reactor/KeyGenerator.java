@@ -10,8 +10,10 @@ package org.opendaylight.mdsal.binding.generator.impl.reactor;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultKeyRuntimeType;
+import org.opendaylight.mdsal.binding.model.api.Archetype.Key;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
@@ -45,6 +47,28 @@ final class KeyGenerator extends AbstractExplicitGenerator<KeyEffectiveStatement
     @Override
     Member createMember(final CollisionDomain domain) {
         return domain.addSecondary(this, listGen.getMember(), Naming.KEY_SUFFIX);
+    }
+
+    Key createArchetype(final @NonNull TypeBuilderFactory builderFactory) {
+        final var builder = Key.builder()
+            .statement(statement())
+            .identifier(typeName())
+            .mapName(listGen.typeName());
+
+        final var leafNames = statement().argument();
+        for (var listChild : listGen) {
+            if (listChild instanceof LeafGenerator leafGen) {
+                final var qname = leafGen.statement().argument();
+                if (leafNames.contains(qname)) {
+                    builder.addLeave(new Key.Leaf(leafGen.statement(),
+                        // FIXME: property name conflicts?!
+                        Naming.getPropertyName(qname.getLocalName()),
+                        leafGen.methodReturnType(builderFactory)));
+                }
+            }
+        }
+
+        return builder.build();
     }
 
     @Override
