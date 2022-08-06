@@ -31,6 +31,7 @@ public interface Type extends Identifiable<JavaTypeName> {
      *
      * @return name of the interface.
      */
+    // FIXME: should be simpleName()
     default String getName() {
         return getIdentifier().simpleName();
     }
