@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
+import org.opendaylight.mdsal.binding.model.api.Archetype;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.yang.model.api.stmt.KeyEffectiveStatement;
 
@@ -19,4 +20,7 @@ public interface KeyRuntimeType extends GeneratedRuntimeType {
 
     @Override
     GeneratedTransferObject javaType();
+
+    @Override
+    Archetype.Key archetype();
 }
