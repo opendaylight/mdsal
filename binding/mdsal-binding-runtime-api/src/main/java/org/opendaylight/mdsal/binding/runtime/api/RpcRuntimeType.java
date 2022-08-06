@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
+import org.opendaylight.mdsal.binding.model.api.RpcArchetype;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 
 /**
@@ -14,5 +15,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
  */
 public interface RpcRuntimeType extends InvokableRuntimeType {
     @Override
-    RpcEffectiveStatement statement();
+    RpcArchetype javaType();
+
+    @Override
+    default RpcEffectiveStatement statement() {
+        return javaType().statement();
+    }
 }
