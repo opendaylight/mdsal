@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.runtime.api;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.model.api.Archetype;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
@@ -22,6 +23,8 @@ public interface RuntimeType extends Immutable {
      * @return Java Type
      */
     @NonNull Type javaType();
+
+    @NonNull Archetype archetype();
 
     /**
      * Return the {@link EffectiveStatement} associated with this run-time type.

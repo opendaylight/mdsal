@@ -24,4 +24,15 @@
  * </li>
  * </ul>
  */
+@Value.Style(
+    depluralize = true,
+    strictBuilder = true,
+    visibility = ImplementationVisibility.PRIVATE,
+    builderVisibility = BuilderVisibility.PACKAGE,
+    allowedClasspathAnnotations = { SuppressWarnings.class, Generated.class })
 package org.opendaylight.mdsal.binding.model.api;
+
+import org.immutables.value.Generated;
+import org.immutables.value.Value;
+import org.immutables.value.Value.Style.BuilderVisibility;
+import org.immutables.value.Value.Style.ImplementationVisibility;
