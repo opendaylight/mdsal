@@ -15,7 +15,7 @@ import org.opendaylight.yangtools.yang.common.QName;
  * them.
  */
 @NonNullByDefault
-public sealed interface QNameAware {
+public sealed interface QNameAware permits YangFeature {
     /**
      * Return the {@link QName} associated with this construct.
      *
