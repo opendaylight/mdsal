@@ -48,8 +48,8 @@ final class JavaFileGenerator implements FileGenerator {
     private static final String MODEL_BINDING_PROVIDER = BindingMapping.MODEL_BINDING_PROVIDER_CLASS_NAME + ".java";
     private static final GeneratedFilePath MODEL_BINDING_PROVIDER_SERVICE =
         GeneratedFilePath.ofPath("META-INF/services/" + YangModelBindingProvider.class.getName());
-    private static final List<CodeGenerator> GENERATORS = List.of(
-        new InterfaceGenerator(), new TOGenerator(), new EnumGenerator(), new BuilderGenerator());
+    private static final List<CodeGenerator> GENERATORS = List.of(new InterfaceGenerator(), new TOGenerator(),
+        new EnumGenerator(), new BuilderGenerator(), new FeatureGenerator());
 
     private final BindingGenerator bindingGenerator;
     private final boolean ignoreDuplicateFiles;
