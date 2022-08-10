@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.model.api;
 
+import com.google.common.annotations.Beta;
 import java.util.List;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -68,6 +69,9 @@ public interface GeneratedTransferObject extends GeneratedType {
      * @return true value if Generated Transfer Object was created from union YANG type.
      */
     boolean isUnionType();
+
+    @Beta
+    boolean isFeature();
 
     Restrictions getRestrictions();
 

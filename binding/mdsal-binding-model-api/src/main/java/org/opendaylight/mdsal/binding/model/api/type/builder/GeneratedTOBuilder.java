@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.model.api.type.builder;
 
+import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
@@ -90,4 +91,7 @@ public interface GeneratedTOBuilder extends GeneratedTypeBuilderBase<GeneratedTO
     void setIsUnion(boolean isUnion);
 
     void setSUID(GeneratedPropertyBuilder suid);
+
+    @Beta
+    void setFeature();
 }
