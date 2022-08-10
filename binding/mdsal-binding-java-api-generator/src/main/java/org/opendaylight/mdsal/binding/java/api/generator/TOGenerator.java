@@ -24,14 +24,13 @@ public final class TOGenerator implements CodeGenerator {
     public String generate(final Type type) {
         if (type instanceof GeneratedTransferObject genTO) {
             if (genTO.isUnionType()) {
-                final UnionTemplate template = new UnionTemplate(genTO);
-                return template.generate();
+                return new UnionTemplate(genTO).generate();
             } else if (genTO.isTypedef()) {
-                final ClassTemplate template = new ClassTemplate(genTO);
-                return template.generate();
+                return new ClassTemplate(genTO).generate();
+            } else if (genTO.isFeature()) {
+                return new FeatureTemplate(genTO).generate();
             } else {
-                final ListKeyTemplate template = new ListKeyTemplate(genTO);
-                return template.generate();
+                return new ListKeyTemplate(genTO).generate();
             }
         }
         return "";

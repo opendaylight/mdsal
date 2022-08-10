@@ -30,6 +30,7 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
     private List<GeneratedPropertyBuilder> hashProperties = Collections.emptyList();
     private List<GeneratedPropertyBuilder> toStringProperties = Collections.emptyList();
     private GeneratedTransferObject extendsType;
+    private boolean isFeature = false;
     private boolean isTypedef = false;
     private boolean isUnionType = false;
     private TypeDefinition<?> baseType = null;
@@ -114,6 +115,11 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
     }
 
     @Override
+    public final void setFeature() {
+        isFeature = true;
+    }
+
+    @Override
     public final boolean isUnion() {
         return isUnionType;
     }
@@ -125,8 +131,9 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
         private final List<GeneratedProperty> hashCodeProperties;
         private final List<GeneratedProperty> stringProperties;
         private final GeneratedTransferObject extendsType;
-        private final boolean isTypedef;
         private final TypeDefinition<?> baseType;
+        private final boolean isFeature;
+        private final boolean isTypedef;
         private final boolean isUnionType;
 
         AbstractGeneratedTransferObject(final AbstractGeneratedTOBuilder builder) {
@@ -139,9 +146,15 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
             hashCodeProperties = toUnmodifiableProperties(builder.hashProperties);
             stringProperties = toUnmodifiableProperties(builder.toStringProperties);
 
-            isTypedef = builder.isTypedef;
             baseType = builder.baseType;
+            isFeature = builder.isFeature;
+            isTypedef = builder.isTypedef;
             isUnionType = builder.isUnionType;
+        }
+
+        @Override
+        public final boolean isFeature() {
+            return isFeature;
         }
 
         @Override
@@ -198,11 +211,10 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
         }
 
         public static final String serializeTypedef(final Type type) {
-            if (!(type instanceof ParameterizedType)) {
+            if (!(type instanceof ParameterizedType parameterizedType)) {
                 return type.getFullyQualifiedName();
             }
 
-            final ParameterizedType parameterizedType = (ParameterizedType) type;
             final StringBuilder sb = new StringBuilder();
             sb.append(parameterizedType.getRawType().getFullyQualifiedName()).append('<');
             boolean first = true;
