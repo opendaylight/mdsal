@@ -160,11 +160,6 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
         return childGenerators.iterator();
     }
 
-    @Override
-    final GeneratedType runtimeJavaType() {
-        return generatedType().orElse(null);
-    }
-
     final @NonNull List<AbstractAugmentGenerator> augments() {
         return augments;
     }
@@ -199,10 +194,10 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
     final @Nullable AbstractExplicitGenerator<?, ?> findGenerator(final MatchStrategy childStrategy,
             // TODO: Wouldn't this method be nicer with Deque<EffectiveStatement<?, ?>> ?
             final List<EffectiveStatement<?, ?>> stmtPath, final int offset) {
-        final EffectiveStatement<?, ?> stmt = stmtPath.get(offset);
+        final var stmt = stmtPath.get(offset);
 
         // Try direct children first, which is simple
-        AbstractExplicitGenerator<?, ?> ret = childStrategy.findGenerator(stmt, childGenerators);
+        var ret = childStrategy.findGenerator(stmt, childGenerators);
         if (ret != null) {
             final int next = offset + 1;
             if (stmtPath.size() == next) {
@@ -254,7 +249,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
         // - we propagate those groupings as anchors to any augment statements, which takes out some amount of guesswork
         //   from augment+uses resolution case, as groupings know about their immediate augments as soon as uses linkage
         //   is resolved
-        final List<GroupingGenerator> tmp = new ArrayList<>();
+        final var tmp = new ArrayList<GroupingGenerator>();
         for (EffectiveStatement<?, ?> stmt : statement().effectiveSubstatements()) {
             if (stmt instanceof UsesEffectiveStatement) {
                 final UsesEffectiveStatement uses = (UsesEffectiveStatement) stmt;
@@ -393,7 +388,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
 
     @Override
     final AbstractExplicitGenerator<?, ?> findSchemaTreeGenerator(final QName qname) {
-        final AbstractExplicitGenerator<?, ?> found = super.findSchemaTreeGenerator(qname);
+        final var found = super.findSchemaTreeGenerator(qname);
         return found != null ? found : findInferredGenerator(qname);
     }
 
@@ -408,7 +403,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
     }
 
     final @Nullable GroupingGenerator findGroupingForGenerator(final QName qname) {
-        for (GroupingGenerator grouping : groupings) {
+        for (var grouping : groupings) {
             final var gen = grouping.findSchemaTreeGenerator(qname.bindTo(grouping.statement().argument().getModule()));
             if (gen != null) {
                 return grouping;
@@ -444,7 +439,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
      * @return The number of groupings this type uses.
      */
     final int addUsesInterfaces(final GeneratedTypeBuilder builder, final TypeBuilderFactory builderFactory) {
-        for (GroupingGenerator grp : groupings) {
+        for (var grp : groupings) {
             builder.addImplementsType(grp.getGeneratedType(builderFactory));
         }
         return groupings.size();
@@ -455,7 +450,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
     }
 
     final void addGetterMethods(final GeneratedTypeBuilder builder, final TypeBuilderFactory builderFactory) {
-        for (Generator child : this) {
+        for (var child : this) {
             // Only process explicit generators here
             if (child instanceof AbstractExplicitGenerator) {
                 ((AbstractExplicitGenerator<?, ?>) child).addAsGetterMethod(builder, builderFactory);
