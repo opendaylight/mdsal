@@ -46,6 +46,7 @@ import org.opendaylight.mdsal.binding.model.api.Constant
 import org.opendaylight.mdsal.binding.model.api.Enumeration
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness
 import org.opendaylight.mdsal.binding.model.api.Restrictions
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.ri.TypeConstants
@@ -452,7 +453,7 @@ class ClassTemplate extends BaseTemplate {
         public«
         IF (isInnerClass)»«
             " static final "»«
-        ELSEIF (type.abstract)»«
+        ELSEIF (type.classCompleteness == JavaClassCompleteness.ABSTRACT)»«
             " abstract "»«
         ELSE»«
             " "»«

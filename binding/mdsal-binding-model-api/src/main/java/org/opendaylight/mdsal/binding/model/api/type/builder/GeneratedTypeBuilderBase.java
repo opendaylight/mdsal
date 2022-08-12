@@ -13,6 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
@@ -43,14 +44,15 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      */
     T addComment(TypeComment comment);
 
-    boolean isAbstract();
+    @NonNull JavaClassCompleteness classCompleteness();
 
     /**
-     * Sets the <code>abstract</code> flag to define Generated Type as <i>abstract</i> type.
+     * Set the composite value of {@code abstract} and {@code final} keywords on the resulting type. Note that
+     * interfaces are known to be {@link JavaClassCompleteness#ABSTRACT}.
      *
-     * @param isAbstract abstract flag
+     * @param completeness new class completeness
      */
-    T setAbstract(boolean isAbstract);
+    T setClassCompleteness(JavaClassCompleteness completeness);
 
     List<Type> getImplementsTypes();
 
