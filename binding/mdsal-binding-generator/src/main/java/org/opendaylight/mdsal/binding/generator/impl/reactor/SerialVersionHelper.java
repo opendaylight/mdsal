@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
@@ -49,7 +50,7 @@ public final class SerialVersionHelper {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try (DataOutputStream dout = new DataOutputStream(bout)) {
             dout.writeUTF(to.getName());
-            dout.writeInt(to.isAbstract() ? 3 : 7);
+            dout.writeInt(to.classCompleteness() == JavaClassCompleteness.ABSTRACT ? 3 : 7);
 
             for (final Type ifc : sortedCollection(SUID_NAME_COMPARATOR, filteredImplementsTypes(to))) {
                 dout.writeUTF(ifc.getFullyQualifiedName());
