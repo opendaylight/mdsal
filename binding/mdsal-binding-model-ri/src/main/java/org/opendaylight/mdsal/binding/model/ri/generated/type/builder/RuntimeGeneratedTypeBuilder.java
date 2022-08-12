@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.model.ri.generated.type.builder;
 
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -18,7 +19,7 @@ public final class RuntimeGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
 
     public RuntimeGeneratedTypeBuilder(final JavaTypeName identifier) {
         super(identifier);
-        setAbstract(true);
+        setClassCompleteness(JavaClassCompleteness.ABSTRACT);
     }
 
     @Override

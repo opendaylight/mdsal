@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -54,7 +55,7 @@ abstract class AbstractGeneratedType extends AbstractType implements GeneratedTy
         methodSignatures = toUnmodifiableMethods(builder.getMethodDefinitions());
         enclosedTypes = List.copyOf(builder.getEnclosedTransferObjects());
         properties = toUnmodifiableProperties(builder.getProperties());
-        isAbstract = builder.isAbstract();
+        isAbstract = builder.classCompleteness() == JavaClassCompleteness.ABSTRACT;
         definition = builder.getYangSourceDefinition().orElse(null);
     }
 

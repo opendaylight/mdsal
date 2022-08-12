@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.model.ri.generated.type.builder;
 
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -23,7 +24,7 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
 
     public CodegenGeneratedTypeBuilder(final JavaTypeName identifier) {
         super(identifier);
-        setAbstract(true);
+        setClassCompleteness(JavaClassCompleteness.ABSTRACT);
     }
 
     @Override
@@ -66,30 +67,30 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         GeneratedTypeImpl(final CodegenGeneratedTypeBuilder builder) {
             super(builder);
 
-            this.description = builder.description;
-            this.reference = builder.reference;
-            this.moduleName = builder.moduleName;
-            this.schemaPath = builder.schemaPath;
+            description = builder.description;
+            reference = builder.reference;
+            moduleName = builder.moduleName;
+            schemaPath = builder.schemaPath;
         }
 
         @Override
         public String getDescription() {
-            return this.description;
+            return description;
         }
 
         @Override
         public String getReference() {
-            return this.reference;
+            return reference;
         }
 
         @Override
         public Iterable<QName> getSchemaPath() {
-            return this.schemaPath.getPathFromRoot();
+            return schemaPath.getPathFromRoot();
         }
 
         @Override
         public String getModuleName() {
-            return this.moduleName;
+            return moduleName;
         }
     }
 }

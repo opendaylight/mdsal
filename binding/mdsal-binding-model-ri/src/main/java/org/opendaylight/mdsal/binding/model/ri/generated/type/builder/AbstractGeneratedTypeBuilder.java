@@ -14,11 +14,13 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.AbstractType;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
@@ -39,8 +41,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     private List<MethodSignatureBuilder> methodDefinitions = Collections.emptyList();
     private List<GeneratedTransferObject> enclosedTransferObjects = Collections.emptyList();
     private List<GeneratedPropertyBuilder> properties = Collections.emptyList();
+    private @NonNull JavaClassCompleteness completeness = JavaClassCompleteness.DEFAULT;
     private TypeComment comment;
-    private boolean isAbstract;
     private YangSourceDefinition yangSourceDefinition;
 
     protected AbstractGeneratedTypeBuilder(final JavaTypeName identifier) {
@@ -56,8 +58,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     }
 
     @Override
-    public boolean isAbstract() {
-        return this.isAbstract;
+    public JavaClassCompleteness classCompleteness() {
+        return completeness;
     }
 
     @Override
@@ -109,8 +111,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     }
 
     @Override
-    public T setAbstract(final boolean newIsAbstract) {
-        this.isAbstract = newIsAbstract;
+    public T setClassCompleteness(final JavaClassCompleteness newCompleteness) {
+        this.completeness = requireNonNull(newCompleteness);
         return thisInstance();
     }
 
