@@ -45,6 +45,7 @@ import org.opendaylight.mdsal.binding.model.api.Constant
 import org.opendaylight.mdsal.binding.model.api.Enumeration
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness
 import org.opendaylight.mdsal.binding.model.api.Restrictions
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.ri.TypeConstants
@@ -448,17 +449,17 @@ class ClassTemplate extends BaseTemplate {
      */
     def protected generateClassDeclaration(boolean isInnerClass) '''
         public«
-        IF (isInnerClass)»«
+        IF isInnerClass»«
             " static final "»«
-        ELSEIF (type.abstract)»«
+        ELSEIF JavaClassCompleteness.ABSTRACT.equals(type.classCompleteness)»«
             " abstract "»«
         ELSE»«
             " "»«
         ENDIF»class «type.name»«
-        IF (genTO.superType !== null)»«
+        IF genTO.superType !== null»«
             " extends "»«genTO.superType.importedName»«
         ENDIF»
-        «IF (!type.implements.empty)»«
+        «IF !type.implements.empty»«
             " implements "»«
             FOR type : type.implements SEPARATOR ", "»«
                 type.importedName»«
