@@ -49,7 +49,7 @@ public interface GeneratedType extends Type, DocumentedType {
      *
      * @return <code>true</code> if The Generated Type is defined as abstract.
      */
-    boolean isAbstract();
+    JavaClassCompleteness classCompleteness();
 
     /**
      * Returns List of Types that Generated Type will implement.

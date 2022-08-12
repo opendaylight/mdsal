@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.model.ri.generated.type.builder;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -17,6 +16,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -106,7 +106,7 @@ public class EnumerationBuilderImplTest {
         assertNotNull(enumeration.getValues());
         assertNotNull(enumeration.getAnnotations());
 
-        assertFalse(enumeration.isAbstract());
+        assertEquals(JavaClassCompleteness.FINAL, enumeration.classCompleteness());
         assertNotEquals(enumeration, null);
         assertEquals(enumeration, enumeration);
         assertNotEquals(enumeration, "string");
