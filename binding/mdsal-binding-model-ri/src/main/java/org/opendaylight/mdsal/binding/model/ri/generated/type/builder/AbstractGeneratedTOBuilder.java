@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -36,7 +37,8 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
 
     AbstractGeneratedTOBuilder(final JavaTypeName identifier) {
         super(identifier);
-        setAbstract(false);
+        // FIXME: is this necessary?
+        setClassCompleteness(JavaClassCompleteness.DEFAULT);
     }
 
     @Override
@@ -198,11 +200,10 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
         }
 
         public static final String serializeTypedef(final Type type) {
-            if (!(type instanceof ParameterizedType)) {
+            if (!(type instanceof ParameterizedType parameterizedType)) {
                 return type.getFullyQualifiedName();
             }
 
-            final ParameterizedType parameterizedType = (ParameterizedType) type;
             final StringBuilder sb = new StringBuilder();
             sb.append(parameterizedType.getRawType().getFullyQualifiedName()).append('<');
             boolean first = true;

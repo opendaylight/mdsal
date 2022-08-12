@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -41,7 +42,7 @@ abstract class AbstractGeneratedType extends AbstractType implements GeneratedTy
     private final List<MethodSignature> methodSignatures;
     private final List<GeneratedType> enclosedTypes;
     private final List<GeneratedProperty> properties;
-    private final boolean isAbstract;
+    private final JavaClassCompleteness classCompleteness;
     private final YangSourceDefinition definition;
 
     AbstractGeneratedType(final AbstractGeneratedTypeBuilder<?> builder) {
@@ -54,12 +55,12 @@ abstract class AbstractGeneratedType extends AbstractType implements GeneratedTy
         methodSignatures = toUnmodifiableMethods(builder.getMethodDefinitions());
         enclosedTypes = List.copyOf(builder.getEnclosedTransferObjects());
         properties = toUnmodifiableProperties(builder.getProperties());
-        isAbstract = builder.isAbstract();
+        classCompleteness = builder.classCompleteness();
         definition = builder.getYangSourceDefinition().orElse(null);
     }
 
     AbstractGeneratedType(final JavaTypeName identifier, final TypeComment comment,
-            final List<AnnotationTypeBuilder> annotationBuilders, final boolean isAbstract,
+            final List<AnnotationTypeBuilder> annotationBuilders, final JavaClassCompleteness classCompleteness,
             final List<Type> implementsTypes, final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
             final List<GeneratedTOBuilder> enclosedGenTOBuilders, final List<EnumBuilder> enumBuilders,
             final List<Constant> constants, final List<MethodSignatureBuilder> methodBuilders,
@@ -73,7 +74,7 @@ abstract class AbstractGeneratedType extends AbstractType implements GeneratedTy
         methodSignatures = toUnmodifiableMethods(methodBuilders);
         enclosedTypes = toUnmodifiableEnclosedTypes(enclosedGenTypeBuilders, enclosedGenTOBuilders);
         properties = toUnmodifiableProperties(propertyBuilders);
-        this.isAbstract = isAbstract;
+        this.classCompleteness = classCompleteness;
         definition = null;
     }
 
@@ -166,8 +167,8 @@ abstract class AbstractGeneratedType extends AbstractType implements GeneratedTy
     }
 
     @Override
-    public final boolean isAbstract() {
-        return isAbstract;
+    public final JavaClassCompleteness classCompleteness() {
+        return classCompleteness;
     }
 
     @Override

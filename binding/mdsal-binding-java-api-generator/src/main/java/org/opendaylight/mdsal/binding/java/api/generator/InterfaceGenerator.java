@@ -11,14 +11,14 @@ import org.opendaylight.mdsal.binding.model.api.CodeGenerator;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaClassCompleteness;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
 public final class InterfaceGenerator implements CodeGenerator {
-
     @Override
     public boolean isAcceptable(final Type type) {
-        return type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)
-                && !(type instanceof Enumeration);
+        return type instanceof GeneratedType genType && genType.classCompleteness() == JavaClassCompleteness.ABSTRACT
+            && !(genType instanceof GeneratedTransferObject) && !(genType instanceof Enumeration);
     }
 
     /**
@@ -28,11 +28,7 @@ public final class InterfaceGenerator implements CodeGenerator {
      */
     @Override
     public String generate(final Type type) {
-        if (type instanceof GeneratedType genType && !(type instanceof GeneratedTransferObject)) {
-            final InterfaceTemplate interfaceTemplate = new InterfaceTemplate(genType);
-            return interfaceTemplate.generate();
-        }
-        return "";
+        return type instanceof GeneratedType genType ? new InterfaceTemplate(genType).generate() : "";
     }
 
     @Override
