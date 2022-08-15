@@ -27,7 +27,6 @@ import org.opendaylight.mdsal.binding.model.api.Type
 /**
  * Template for generating JAVA class.
  */
-@SuppressModernizer
 class UnionTemplate extends ClassTemplate {
     /**
      * Creates instance of this class with concrete <code>genType</code>.
@@ -60,6 +59,7 @@ class UnionTemplate extends ClassTemplate {
         «generateStringValue»
     '''
 
+    @SuppressModernizer
     private def unionConstructors() '''
         «FOR property : finalProperties SEPARATOR "\n"»
             «val actualType = property.returnType»
