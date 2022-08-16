@@ -7,11 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when an attempt is made to open a new transaction in a closed
  * chain.
  */
 public final class TransactionChainClosedException extends IllegalStateException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public TransactionChainClosedException(final String message) {

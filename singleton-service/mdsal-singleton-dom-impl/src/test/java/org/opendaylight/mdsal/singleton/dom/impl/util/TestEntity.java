@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.singleton.dom.impl.util;
 
+import java.io.Serial;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -15,6 +16,7 @@ import org.opendaylight.yangtools.yang.common.QName;
  * Test util class.
  */
 public class TestEntity extends GenericEntity<TestInstanceIdentifier> {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     static final QName ENTITY = QName

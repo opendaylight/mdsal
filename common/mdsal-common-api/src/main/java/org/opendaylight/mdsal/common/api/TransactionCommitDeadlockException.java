@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.common.api;
 
+import java.io.Serial;
 import java.util.function.Supplier;
 import org.opendaylight.yangtools.yang.common.ErrorTag;
 import org.opendaylight.yangtools.yang.common.ErrorType;
@@ -23,6 +24,7 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
  * @author Thomas Pantelis
  */
 public class TransactionCommitDeadlockException extends TransactionCommitFailedException {
+    @Serial
     private static final long serialVersionUID = 1L;
     private static final String DEADLOCK_MESSAGE = "An attempt to block on a ListenableFuture via a get method from a "
         + "write transaction submit was detected that would result in deadlock. The commit result must be obtained "
