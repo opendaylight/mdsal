@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.common.api;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.Serial;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.yang.common.ErrorTag;
 import org.opendaylight.yangtools.yang.common.ErrorType;
@@ -23,6 +24,7 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
  * by this transaction is invalid.
  */
 public class DataValidationFailedException extends TransactionCommitFailedException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final HierarchicalIdentifier<?> path;

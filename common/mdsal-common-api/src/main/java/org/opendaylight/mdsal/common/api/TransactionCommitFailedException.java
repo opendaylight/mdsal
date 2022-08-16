@@ -7,25 +7,22 @@
  */
 package org.opendaylight.mdsal.common.api;
 
+import java.io.Serial;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
 
 /**
- * Failed commit of asynchronous transaction.
- * This exception is raised and returned when transaction commit
- * failed.
- *
+ * Failed commit of asynchronous transaction. This exception is raised and returned when transaction commit failed.
  */
 public class TransactionCommitFailedException extends OperationFailedException {
-
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public TransactionCommitFailedException(final String message, final RpcError... errors) {
         this(message, null, errors);
     }
 
-    public TransactionCommitFailedException(final String message, final Throwable cause,
-                                            final RpcError... errors) {
+    public TransactionCommitFailedException(final String message, final Throwable cause, final RpcError... errors) {
         super(message, cause, errors);
     }
 }

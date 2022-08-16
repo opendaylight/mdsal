@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.Serial;
 import org.junit.Test;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 
@@ -35,6 +36,7 @@ public class GenericEntityTest {
     }
 
     private static final class TestClass implements HierarchicalIdentifier<TestClass> {
+        @Serial
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -44,6 +46,7 @@ public class GenericEntityTest {
     }
 
     private static final class TestClassDiff implements HierarchicalIdentifier<TestClassDiff> {
+        @Serial
         private static final long serialVersionUID = 1L;
 
         @Override

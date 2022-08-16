@@ -20,6 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.base.MoreObjects;
+import java.io.Serial;
 import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
@@ -122,6 +123,7 @@ public class SnapshotBackedWriteTransactionTest {
     }
 
     private static final class TestException extends Exception {
+        @Serial
         private static final long serialVersionUID = 1L;
     }
 }

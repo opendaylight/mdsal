@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.common.api;
 
+import java.io.Serial;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -15,6 +16,7 @@ import org.opendaylight.yangtools.yang.common.RpcError;
  * An exception for a failed read.
  */
 public class ReadFailedException extends OperationFailedException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public static final ExceptionMapper<ReadFailedException> MAPPER =

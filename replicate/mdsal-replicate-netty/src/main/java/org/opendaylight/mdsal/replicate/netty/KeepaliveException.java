@@ -7,7 +7,10 @@
  */
 package org.opendaylight.mdsal.replicate.netty;
 
+import java.io.Serial;
+
 final class KeepaliveException extends Exception {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     KeepaliveException(final int missedKeepalives) {

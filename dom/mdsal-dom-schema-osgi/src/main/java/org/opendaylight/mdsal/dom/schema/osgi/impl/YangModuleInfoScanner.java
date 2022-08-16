@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
 import java.io.IOException;
+import java.io.Serial;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -153,6 +154,7 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
 
     @NonNullByDefault
     private static final class ScanningException extends Exception {
+        @Serial
         private static final long serialVersionUID = 1L;
 
         ScanningException(final Exception cause, final String format, final Object... args) {
