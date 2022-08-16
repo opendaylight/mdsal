@@ -15,6 +15,7 @@ import org.apache.karaf.features.DeploymentListener;
 import org.apache.karaf.features.FeaturesService;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.binding.YangFeatureProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,13 +71,13 @@ final class KarafYangModuleInfoRegistry extends YangModuleInfoRegistry implement
         scannerEnabled = true;
         if (updatesEnabled) {
             delegate.enableScannerAndUpdate();
-
         }
     }
 
     @Override
-    Registration registerInfos(final List<YangModuleInfo> infos) {
-        return delegate.registerInfos(infos);
+    Registration registerBundle(final List<YangModuleInfo> moduleInfos,
+            final List<YangFeatureProvider<?>> featureProviders) {
+        return delegate.registerBundle(moduleInfos, featureProviders);
     }
 
     @Override
