@@ -9,16 +9,16 @@ package org.opendaylight.mdsal.dom.schema.osgi.impl;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
 import java.io.IOException;
 import java.io.Serial;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
@@ -39,9 +39,6 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
     // FIXME: this should be in a place shared with maven-sal-api-gen-plugin
     private static final String MODULE_INFO_PROVIDER_PATH_PREFIX = "META-INF/services/";
 
-    private static final String YANG_MODLE_BINDING_PROVIDER_SERVICE = MODULE_INFO_PROVIDER_PATH_PREFIX
-            + YangModelBindingProvider.class.getName();
-
     private final YangModuleInfoRegistry moduleInfoRegistry;
 
     YangModuleInfoScanner(final BundleContext context, final YangModuleInfoRegistry moduleInfoRegistry) {
@@ -54,44 +51,15 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
     public List<ObjectRegistration<YangModuleInfo>> addingBundle(final Bundle bundle, final BundleEvent event) {
         if (bundle.getBundleId() == Constants.SYSTEM_BUNDLE_ID) {
             LOG.debug("Ignoring system bundle {}", bundle);
-            return ImmutableList.of();
+            return List.of();
         }
 
-        final URL resource = bundle.getEntry(YANG_MODLE_BINDING_PROVIDER_SERVICE);
-        if (resource == null) {
-            LOG.debug("Bundle {} does not have an entry for {}", bundle, YANG_MODLE_BINDING_PROVIDER_SERVICE);
-            return ImmutableList.of();
-        }
+        // Load YangModuleInfos
+        final var moduleInfos = loadBundleServices(bundle, YangModelBindingProvider.class).stream()
+            .map(YangModelBindingProvider::getModuleInfo)
+            .collect(Collectors.toUnmodifiableList());
 
-        LOG.debug("Got addingBundle({}) with YangModelBindingProvider resource {}", bundle, resource);
-        final List<String> lines;
-        try {
-            lines = Resources.readLines(resource, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            LOG.error("Error while reading {} from bundle {}", resource, bundle, e);
-            return ImmutableList.of();
-        }
-
-        if (lines.isEmpty()) {
-            LOG.debug("Bundle {} has empty services for {}", bundle, YANG_MODLE_BINDING_PROVIDER_SERVICE);
-            return ImmutableList.of();
-        }
-
-        final List<YangModuleInfo> infos = new ArrayList<>(lines.size());
-        for (String moduleInfoName : lines) {
-            LOG.trace("Retrieve ModuleInfo({}, {})", moduleInfoName, bundle);
-            final YangModuleInfo moduleInfo;
-            try {
-                moduleInfo = retrieveModuleInfo(moduleInfoName, bundle);
-            } catch (ScanningException e) {
-                LOG.warn("Failed to acquire {} from bundle {}, ignoring it", moduleInfoName, bundle, e);
-                continue;
-            }
-
-            infos.add(moduleInfo);
-        }
-
-        final List<ObjectRegistration<YangModuleInfo>> registrations = moduleInfoRegistry.registerInfos(infos);
+        final List<ObjectRegistration<YangModuleInfo>> registrations = moduleInfoRegistry.registerInfos(moduleInfos);
         LOG.trace("Bundle {} resulted in registrations {}", bundle, registrations);
         moduleInfoRegistry.scannerUpdate();
         return registrations;
@@ -116,7 +84,46 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
         moduleInfoRegistry.scannerUpdate();
     }
 
-    private static YangModuleInfo retrieveModuleInfo(final String className, final Bundle bundle)
+    private static <T> List<T> loadBundleServices(final Bundle bundle, final Class<T> serviceClass) {
+        final var serviceName = serviceClass.getName();
+        final var serviceEntry = MODULE_INFO_PROVIDER_PATH_PREFIX + serviceName;
+        final var resource = bundle.getEntry(serviceEntry);
+        if (resource == null) {
+            LOG.debug("Bundle {} does not have an entry for {}", bundle, serviceEntry);
+            return List.of();
+        }
+
+        LOG.debug("Got addingBundle({}) with {} resource {}", bundle, serviceName, resource);
+        final List<String> lines;
+        try {
+            lines = Resources.readLines(resource, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            LOG.error("Error while reading {} from bundle {}", resource, bundle, e);
+            return List.of();
+        }
+
+        if (lines.isEmpty()) {
+            LOG.debug("Bundle {} has empty services for {}", bundle, serviceEntry);
+            return List.of();
+        }
+
+        final var services = new ArrayList<T>(lines.size());
+        for (var implName : lines) {
+            LOG.trace("Retrieve ModuleInfo({}, {})", implName, bundle);
+            final T service;
+            try {
+                service = loadImpl(serviceClass, bundle, implName);
+            } catch (ScanningException e) {
+                LOG.warn("Failed to acquire {} from bundle {}, ignoring it", implName, bundle, e);
+                continue;
+            }
+
+            services.add(service);
+        }
+        return services;
+    }
+
+    private static <T> @NonNull T loadImpl(final Class<T> type, final Bundle bundle, final String className)
             throws ScanningException {
         final Class<?> loadedClass;
         try {
@@ -125,14 +132,14 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
             throw new ScanningException(e, "Failed to load class %s", className);
         }
 
-        final Class<? extends YangModelBindingProvider> providerClass;
+        final Class<? extends T> providerClass;
         try {
-            providerClass = loadedClass.asSubclass(YangModelBindingProvider.class);
+            providerClass = loadedClass.asSubclass(type);
         } catch (ClassCastException e) {
             throw new ScanningException(e, "Failed to validate %s", loadedClass);
         }
 
-        final Constructor<? extends YangModelBindingProvider> ctor;
+        final Constructor<? extends T> ctor;
         try {
             ctor = providerClass.getDeclaredConstructor();
         } catch (NoSuchMethodException e) {
@@ -141,15 +148,12 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
             throw new ScanningException(e, "Failed to reflect on %s", providerClass);
         }
 
-        YangModelBindingProvider instance;
         try {
-            instance = ctor.newInstance();
+            return ctor.newInstance();
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             throw new ScanningException(e, "Failed to instantiate %s", providerClass);
         }
-
-        return instance.getModuleInfo();
     }
 
     @NonNullByDefault
