@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 @Beta
 @NonNullByDefault
 public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Interfaces do not specify Serializable")

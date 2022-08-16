@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.eos.common.api;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
@@ -42,6 +43,7 @@ import org.opendaylight.yangtools.concepts.Identifiable;
  * @param <T> the entity identifier type
  */
 public class GenericEntity<T extends HierarchicalIdentifier<T>> implements Serializable, Identifiable<T> {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final @NonNull String type;
@@ -77,7 +79,7 @@ public class GenericEntity<T extends HierarchicalIdentifier<T>> implements Seria
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final GenericEntity<?> entity = (GenericEntity<?>) obj;
+        final var entity = (GenericEntity<?>) obj;
         return id.equals(entity.id) && type.equals(entity.type);
     }
 

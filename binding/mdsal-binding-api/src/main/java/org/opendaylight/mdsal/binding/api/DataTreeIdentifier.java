@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.api;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
+import java.io.Serial;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
@@ -21,6 +22,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * data store type and the instance identifier of the root node.
  */
 public final class DataTreeIdentifier<T extends DataObject> implements HierarchicalIdentifier<DataTreeIdentifier<?>> {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final @NonNull InstanceIdentifier<T> rootIdentifier;
