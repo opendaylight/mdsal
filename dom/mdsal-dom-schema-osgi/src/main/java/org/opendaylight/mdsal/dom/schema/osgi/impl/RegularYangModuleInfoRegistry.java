@@ -18,6 +18,7 @@ import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotResolver;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.binding.YangFeatureProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.osgi.service.component.ComponentFactory;
@@ -80,12 +81,16 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
     }
 
     @Override
-    Registration registerInfos(final List<YangModuleInfo> infos) {
-        final var regs = resolver.registerModuleInfos(infos);
+    Registration registerBundle(final List<YangModuleInfo> moduleInfos,
+            final List<YangFeatureProvider<?>> featureProviders) {
+        final var infoRegs = resolver.registerModuleInfos(moduleInfos);
+
+        // FIXME: also register featureProviders
+
         return new AbstractRegistration() {
             @Override
             protected void removeRegistration() {
-                regs.forEach(ObjectRegistration::close);
+                infoRegs.forEach(ObjectRegistration::close);
             }
         };
     }
