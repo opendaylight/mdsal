@@ -21,16 +21,14 @@ import org.slf4j.LoggerFactory;
 public final class OSGiModelRuntime {
     private static final Logger LOG = LoggerFactory.getLogger(OSGiModelRuntime.class);
 
-    @Reference
-    YangParserFactory parserFactory = null;
-    @Reference(target = "(component.factory=" + OSGiModuleInfoSnapshotImpl.FACTORY_NAME + ")")
-    ComponentFactory<OSGiModuleInfoSnapshotImpl> contextFactory = null;
-
-    private YangModuleInfoScanner bundleTracker = null;
-    private YangModuleInfoRegistry moduleRegistry = null;
+    private final YangModuleInfoRegistry moduleRegistry;
+    private final YangModuleInfoScanner bundleTracker;
 
     @Activate
-    void activate(final BundleContext ctx) {
+    public OSGiModelRuntime(@Reference final YangParserFactory parserFactory,
+            @Reference(target = "(component.factory=" + OSGiModuleInfoSnapshotImpl.FACTORY_NAME + ")")
+            final ComponentFactory<OSGiModuleInfoSnapshotImpl> contextFactory,
+            final BundleContext ctx) {
         LOG.info("Model Runtime starting");
         moduleRegistry = YangModuleInfoRegistry.create(ctx, contextFactory, parserFactory);
         bundleTracker = new YangModuleInfoScanner(ctx, moduleRegistry);

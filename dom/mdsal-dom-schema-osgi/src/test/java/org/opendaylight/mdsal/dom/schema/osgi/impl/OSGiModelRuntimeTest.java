@@ -37,10 +37,10 @@ public class OSGiModelRuntimeTest {
 
     @Before
     public void before() {
-        target = new OSGiModelRuntime();
-        target.parserFactory = parserFactory;
-        target.contextFactory = contextFactory;
+        doReturn(new Bundle[0]).when(bundleContext).getBundles();
+        doNothing().when(bundleContext).addBundleListener(any());
         doReturn(null).when(bundleContext).getServiceReference(FeaturesService.class);
+        target = new OSGiModelRuntime(parserFactory, contextFactory, bundleContext);
     }
 
     @After
@@ -52,14 +52,11 @@ public class OSGiModelRuntimeTest {
 
     @Test
     public void testActivate() {
-        doReturn(new Bundle[0]).when(bundleContext).getBundles();
-        doNothing().when(bundleContext).addBundleListener(any());
-        target.activate(bundleContext);
+        // Before does all we need
     }
 
     @Test
     public void testDeactivate() {
-        testActivate();
         doNothing().when(bundleContext).removeBundleListener(any());
         target.deactivate();
     }
