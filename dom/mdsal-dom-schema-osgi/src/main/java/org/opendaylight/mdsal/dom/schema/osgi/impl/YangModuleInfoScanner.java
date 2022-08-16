@@ -19,6 +19,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
@@ -118,6 +119,11 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
 
     private static YangModuleInfo retrieveModuleInfo(final String className, final Bundle bundle)
             throws ScanningException {
+        return loadImpl(YangModelBindingProvider.class, bundle, className).getModuleInfo();
+    }
+
+    private static <T> @NonNull T loadImpl(final Class<T> type, final Bundle bundle, final String className)
+            throws ScanningException {
         final Class<?> loadedClass;
         try {
             loadedClass = bundle.loadClass(className);
@@ -125,14 +131,14 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
             throw new ScanningException(e, "Failed to load class %s", className);
         }
 
-        final Class<? extends YangModelBindingProvider> providerClass;
+        final Class<? extends T> providerClass;
         try {
-            providerClass = loadedClass.asSubclass(YangModelBindingProvider.class);
+            providerClass = loadedClass.asSubclass(type);
         } catch (ClassCastException e) {
             throw new ScanningException(e, "Failed to validate %s", loadedClass);
         }
 
-        final Constructor<? extends YangModelBindingProvider> ctor;
+        final Constructor<? extends T> ctor;
         try {
             ctor = providerClass.getDeclaredConstructor();
         } catch (NoSuchMethodException e) {
@@ -141,15 +147,12 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
             throw new ScanningException(e, "Failed to reflect on %s", providerClass);
         }
 
-        YangModelBindingProvider instance;
         try {
-            instance = ctor.newInstance();
+            return ctor.newInstance();
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             throw new ScanningException(e, "Failed to instantiate %s", providerClass);
         }
-
-        return instance.getModuleInfo();
     }
 
     @NonNullByDefault
