@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.schema.osgi.impl;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.binding.YangFeatureProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.osgi.framework.BundleContext;
@@ -33,5 +34,6 @@ abstract class YangModuleInfoRegistry {
 
     abstract void close();
 
-    abstract @NonNull Registration registerInfos(List<YangModuleInfo> infos);
+    abstract @NonNull Registration registerBundle(List<YangModuleInfo> moduleInfos,
+        List<YangFeatureProvider<?>> featureProviders);
 }
