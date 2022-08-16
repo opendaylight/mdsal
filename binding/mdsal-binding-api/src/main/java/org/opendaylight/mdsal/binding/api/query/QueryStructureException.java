@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.api.query;
 
 import com.google.common.annotations.Beta;
+import java.io.Serial;
 
 /**
  * Exception reported when the proposed query has a structural problem. This may be either a mismatch with underlying
@@ -15,6 +16,7 @@ import com.google.common.annotations.Beta;
  */
 @Beta
 public class QueryStructureException extends IllegalStateException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public QueryStructureException(final String message) {

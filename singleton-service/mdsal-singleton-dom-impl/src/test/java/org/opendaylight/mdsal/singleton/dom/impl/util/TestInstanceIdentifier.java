@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.singleton.dom.impl.util;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.io.Serial;
 import java.util.LinkedList;
 import java.util.List;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
@@ -17,6 +18,7 @@ import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
  * Test helper class. {@link HierarchicalIdentifier} for testing only.
  */
 public class TestInstanceIdentifier implements HierarchicalIdentifier<TestInstanceIdentifier> {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final ImmutableList<String> path;
@@ -38,5 +40,4 @@ public class TestInstanceIdentifier implements HierarchicalIdentifier<TestInstan
     public boolean contains(final TestInstanceIdentifier other) {
         throw new UnsupportedOperationException();
     }
-
 }

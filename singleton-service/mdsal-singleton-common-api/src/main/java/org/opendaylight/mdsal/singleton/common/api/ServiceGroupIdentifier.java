@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.singleton.common.api;
 
+import java.io.Serial;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.util.AbstractStringIdentifier;
 
@@ -14,6 +15,7 @@ import org.opendaylight.yangtools.util.AbstractStringIdentifier;
  * Identifier represents a service group competence. It's based on String.
  */
 public class ServiceGroupIdentifier extends AbstractStringIdentifier<ServiceGroupIdentifier> {
+    @Serial
     private static final long serialVersionUID = 6853612584804702662L;
 
     protected ServiceGroupIdentifier(final @NonNull String string) {

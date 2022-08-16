@@ -7,17 +7,17 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-/**
- * This exception occurs if the datastore is temporarily unavailable.
- * A retry of the transaction may succeed after a period of time
- */
+import java.io.Serial;
 
+/**
+ * This exception occurs if the datastore is temporarily unavailable. A retry of the transaction may succeed after
+ * a period of time.
+ */
 public class DataStoreUnavailableException extends Exception {
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    public DataStoreUnavailableException(String message, Throwable cause) {
+    public DataStoreUnavailableException(final String message, final Throwable cause) {
         super(message, cause);
     }
-
-
 }
