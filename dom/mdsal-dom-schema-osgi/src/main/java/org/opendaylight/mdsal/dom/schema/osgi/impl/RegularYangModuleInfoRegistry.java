@@ -9,15 +9,19 @@ package org.opendaylight.mdsal.dom.schema.osgi.impl;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.lock.qual.Holding;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotResolver;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.binding.DataRoot;
+import org.opendaylight.yangtools.yang.binding.YangFeatureProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.osgi.service.component.ComponentFactory;
@@ -80,12 +84,22 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
     }
 
     @Override
-    Registration registerInfos(final List<YangModuleInfo> infos) {
-        final var regs = resolver.registerModuleInfos(infos);
+    Registration registerBundle(final List<YangModuleInfo> moduleInfos,
+            final List<YangFeatureProvider<?>> featureProviders) {
+        final var infoRegs = resolver.registerModuleInfos(moduleInfos);
+        final var featureRegs = featureProviders.stream()
+            .map(provider -> {
+                @SuppressWarnings("unchecked")
+                final var raw = (YangFeatureProvider<@NonNull DataRoot>) provider;
+                return resolver.registerModuleFeatures(raw.boundModule(), raw.supportedFeatures());
+            })
+            .collect(ImmutableList.toImmutableList());
+
         return new AbstractRegistration() {
             @Override
             protected void removeRegistration() {
-                regs.forEach(ObjectRegistration::close);
+                featureRegs.forEach(Registration::close);
+                infoRegs.forEach(ObjectRegistration::close);
             }
         };
     }
@@ -103,7 +117,6 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
             LOG.debug("No update to snapshot");
             return;
         }
-
 
         final ComponentInstance<OSGiModuleInfoSnapshotImpl> newInstance = contextFactory.newInstance(
             OSGiModuleInfoSnapshotImpl.props(nextGeneration(), newSnapshot));
