@@ -10,7 +10,11 @@ package org.opendaylight.mdsal.binding.java.api.generator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.opendaylight.mdsal.binding.java.api.generator.CompilationTestUtils.BASE_PKG;
+import static org.opendaylight.mdsal.binding.java.api.generator.CompilationTestUtils.NS_FOO;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -18,9 +22,12 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 import org.junit.Test;
+import org.opendaylight.yangtools.yang.binding.BitsTypeObject;
 import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.Empty;
 
@@ -38,9 +45,11 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         final File compiledOutputDir = CompilationTestUtils.compilerOutput("typedef");
         generateTestSources("/compilation/typedef", sourcesOutputDir);
 
-        final File parent = new File(sourcesOutputDir, CompilationTestUtils.NS_FOO);
+        final File parent = new File(sourcesOutputDir, NS_FOO);
         assertTrue(new File(parent, "BitsExt.java").exists());
-        assertTrue(new File(parent, "Int32Ext0.java").exists());
+        assertTrue(new File(parent, "BitsExtRestricted.java").exists());
+        assertTrue(new File(parent, "ByteTypeLong.java").exists());
+        assertTrue(new File(parent, "ByteTypeIntArray.java").exists());
         assertTrue(new File(parent, "Int32Ext1.java").exists());
         assertTrue(new File(parent, "Int32Ext2.java").exists());
         assertTrue(new File(parent, "MyDecimalType.java").exists());
@@ -51,14 +60,17 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         assertTrue(new File(parent, "UnionExt2.java").exists());
         assertTrue(new File(parent, "UnionExt3.java").exists());
         assertTrue(new File(parent, "UnionExt4.java").exists());
-        CompilationTestUtils.assertFilesCount(parent, 31);
+        CompilationTestUtils.assertFilesCount(parent, 34);
 
         // Test if sources are compilable
         CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
 
-        String pkg = CompilationTestUtils.BASE_PKG + ".urn.opendaylight.foo.rev131008";
+        String pkg = BASE_PKG + ".urn.opendaylight.foo.rev131008";
         final ClassLoader loader = new URLClassLoader(new URL[] { compiledOutputDir.toURI().toURL() });
         final Class<?> bitsExtClass = Class.forName(pkg + ".BitsExt", true, loader);
+        final Class<?> bitsExtClassRestricted = Class.forName(pkg + ".BitsExtRestricted", true, loader);
+        final Class<?> byteTypeLongClass = Class.forName(pkg + ".ByteTypeLong", true, loader);
+        final Class<?> byteTypeIntArrayClass = Class.forName(pkg + ".ByteTypeIntArray", true, loader);
         final Class<?> int32Ext1Class = Class.forName(pkg + ".Int32Ext1", true, loader);
         final Class<?> int32Ext2Class = Class.forName(pkg + ".Int32Ext2", true, loader);
         final Class<?> myDecimalTypeClass = Class.forName(pkg + ".MyDecimalType", true, loader);
@@ -75,14 +87,135 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         assertFalse(bitsExtClass.isInterface());
         CompilationTestUtils.assertContainsField(bitsExtClass, "_bits", int.class);
         CompilationTestUtils.assertContainsFieldWithValue(bitsExtClass, "serialVersionUID", Long.TYPE,
-                4838737988022869910L, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class,
-            boolean.class, boolean.class);
-
-        assertEquals(3, bitsExtClass.getDeclaredFields().length);
+                4838737988022869910L);
+        CompilationTestUtils.assertContainsField(bitsExtClass, "_bits", int.class);
+        CompilationTestUtils.assertImplementsIfc(bitsExtClass, BitsTypeObject.class);
         CompilationTestUtils.assertContainsConstructor(bitsExtClass, bitsExtClass);
-        assertEquals(2, bitsExtClass.getConstructors().length);
         CompilationTestUtils.assertContainsDefaultMethods(bitsExtClass);
+        assertEquals(3, bitsExtClass.getDeclaredFields().length);
+        assertEquals(2, bitsExtClass.getConstructors().length);
         assertEquals(16, bitsExtClass.getDeclaredMethods().length);
+        Class<?> classBuilder = CompilationTestUtils.assertContainsBuilderClass(bitsExtClass, loader);
+        Method builder = CompilationTestUtils.assertContainsMethod(bitsExtClass, classBuilder, "builder");
+        Constructor<?> expectedConstructor = CompilationTestUtils.assertContainsConstructor(bitsExtClass,
+                classBuilder);
+        boolean[] expectedGetValueOutput = new boolean[]{false, false, false, false, false, true, false};
+        Object builderObj = builder.invoke(null);
+        assertEquals(9, classBuilder.getDeclaredMethods().length);
+        classBuilder.getMethod("setSfmof", boolean.class).invoke(builderObj, true);
+        Object obj = expectedConstructor.newInstance(builderObj);
+        Method getValue = CompilationTestUtils.assertContainsMethod(bitsExtClass, boolean[].class, "getValue");
+        assertEquals(Arrays.toString(expectedGetValueOutput), Arrays.toString((boolean[]) getValue.invoke(obj)));
+        Method stringValue = CompilationTestUtils.assertContainsMethod(bitsExtClass, List.class, "stringValue");
+        List<String> expectedBits = List.of("pc", "bpc", "dpc", "lbpc", "spc", "sfmof", "sfapc");
+        assertEquals(expectedBits, stringValue.invoke(obj));
+        Method validValues = CompilationTestUtils.assertContainsMethod(bitsExtClass, ImmutableSet.class,
+                "validValues");
+        assertEquals(ImmutableSet.copyOf(expectedBits), validValues.invoke(obj));
+        Method valueOf = CompilationTestUtils.assertContainsMethod(bitsExtClass, bitsExtClass, "valueOf", List.class);
+        assertEquals(obj, valueOf.invoke(obj, List.of("sfmof")));
+
+        // typedef bits-ext-restricted
+        expectedBits = Lists.newArrayList("pc", "bpc", "dpc");
+        expectedGetValueOutput = new boolean[]{false, true, false};
+        CompilationTestUtils.assertExtendsClass(bitsExtClassRestricted, bitsExtClass);
+        CompilationTestUtils.assertImplementsIfc(bitsExtClassRestricted, BitsTypeObject.class);
+        CompilationTestUtils.assertContainsFieldWithValue(bitsExtClassRestricted, "serialVersionUID", Long.TYPE,
+                6365564322513459519L);
+        CompilationTestUtils.assertContainsFieldWithValue(bitsExtClassRestricted, "VALID_BITS", ImmutableSet.class,
+                ImmutableSet.copyOf(expectedBits));
+        assertEquals(2, bitsExtClassRestricted.getDeclaredFields().length);
+        assertEquals(3, bitsExtClassRestricted.getConstructors().length);
+        assertEquals(8, bitsExtClassRestricted.getDeclaredMethods().length);
+        classBuilder = CompilationTestUtils.assertContainsBuilderClass(bitsExtClassRestricted, loader);
+        builder = CompilationTestUtils.assertContainsMethod(bitsExtClassRestricted, classBuilder, "builder");
+        builderObj = builder.invoke(null);
+        getValue = CompilationTestUtils.assertContainsMethod(bitsExtClassRestricted, boolean[].class, "getValue");
+        validValues = CompilationTestUtils.assertContainsMethod(bitsExtClassRestricted, ImmutableSet.class,
+                "validValues");
+        valueOf = CompilationTestUtils.assertContainsMethod(bitsExtClassRestricted, bitsExtClassRestricted,
+                "valueOf", List.class);
+        stringValue = CompilationTestUtils.assertContainsMethod(bitsExtClassRestricted, List.class, "stringValue");
+        expectedConstructor = CompilationTestUtils.assertContainsConstructor(bitsExtClassRestricted, classBuilder);
+        classBuilder.getMethod("setBpc", boolean.class).invoke(builderObj, true);
+        obj = expectedConstructor.newInstance(builderObj);
+        assertEquals(10, classBuilder.getDeclaredMethods().length);
+        assertEquals(Arrays.toString(expectedGetValueOutput), Arrays.toString((boolean[]) getValue.invoke(obj)));
+        assertEquals(ImmutableSet.copyOf(expectedBits), validValues.invoke(obj));
+        assertEquals(obj, valueOf.invoke(obj, List.of("bpc")));
+        assertEquals(expectedBits, stringValue.invoke(obj));
+
+        // typedef byte-type-long
+        int bitsSize = 40;
+        List<String> expectedValidBits = new ArrayList<>();
+        boolean[] expectedBooleans = new boolean[bitsSize];
+        expectedBooleans[37] = true;
+        IntStream.range(0, bitsSize).forEach(idx -> expectedValidBits.add("bit" + idx));
+
+        CompilationTestUtils.assertImplementsIfc(byteTypeLongClass, BitsTypeObject.class);
+        CompilationTestUtils.assertContainsField(byteTypeLongClass, "_bits", long.class);
+        CompilationTestUtils.assertContainsFieldWithValue(byteTypeLongClass, "serialVersionUID", Long.TYPE,
+                1108719943834914164L);
+        CompilationTestUtils.assertContainsFieldWithValue(byteTypeLongClass, "VALID_BITS", ImmutableSet.class,
+                ImmutableSet.copyOf(expectedValidBits));
+        CompilationTestUtils.assertContainsConstructor(byteTypeLongClass, byteTypeLongClass);
+        CompilationTestUtils.assertContainsDefaultMethods(byteTypeLongClass);
+        assertFalse(byteTypeLongClass.isInterface());
+        assertEquals(3, byteTypeLongClass.getDeclaredFields().length);
+        assertEquals(2, byteTypeLongClass.getConstructors().length);
+        assertEquals(49, byteTypeLongClass.getDeclaredMethods().length);
+        classBuilder = CompilationTestUtils.assertContainsBuilderClass(byteTypeLongClass, loader);
+        builder = CompilationTestUtils.assertContainsMethod(byteTypeLongClass, classBuilder, "builder");
+        builderObj = builder.invoke(null);
+        getValue = CompilationTestUtils.assertContainsMethod(byteTypeLongClass, boolean[].class, "getValue");
+        validValues = CompilationTestUtils.assertContainsMethod(byteTypeLongClass, ImmutableSet.class, "validValues");
+        valueOf = CompilationTestUtils.assertContainsMethod(byteTypeLongClass, byteTypeLongClass,"valueOf",
+                List.class);
+        stringValue = CompilationTestUtils.assertContainsMethod(byteTypeLongClass, List.class, "stringValue");
+        expectedConstructor = CompilationTestUtils.assertContainsConstructor(byteTypeLongClass, classBuilder);
+        assertEquals(42, classBuilder.getDeclaredMethods().length);
+        classBuilder.getMethod("setBit37", boolean.class).invoke(builderObj, true);
+        obj = expectedConstructor.newInstance(builderObj);
+        assertEquals(obj, valueOf.invoke(obj, List.of("bit37")));
+        assertEquals(ImmutableSet.copyOf(expectedValidBits), validValues.invoke(obj));
+        assertEquals(expectedValidBits, stringValue.invoke(obj));
+        assertEquals(Arrays.toString(expectedBooleans), Arrays.toString((boolean[]) getValue.invoke(obj)));
+
+        // typedef byte-type-int-array
+        bitsSize = 70;
+        expectedBooleans = new boolean[bitsSize];
+        expectedBooleans[69] = true;
+        expectedValidBits.clear();
+        IntStream.range(0, bitsSize).forEach(idx -> expectedValidBits.add("bit" + idx));
+        CompilationTestUtils.assertImplementsIfc(byteTypeIntArrayClass, BitsTypeObject.class);
+        CompilationTestUtils.assertContainsField(byteTypeIntArrayClass, "_bits", int[].class);
+        CompilationTestUtils.assertContainsFieldWithValue(byteTypeIntArrayClass, "serialVersionUID", Long.TYPE,
+                4048474356046169047L);
+        CompilationTestUtils.assertContainsFieldWithValue(byteTypeIntArrayClass, "VALID_BITS", ImmutableSet.class,
+                ImmutableSet.copyOf(expectedValidBits));
+        CompilationTestUtils.assertContainsConstructor(byteTypeIntArrayClass, byteTypeIntArrayClass);
+        CompilationTestUtils.assertContainsDefaultMethods(byteTypeIntArrayClass);
+        assertFalse(byteTypeIntArrayClass.isInterface());
+        assertEquals(3, byteTypeIntArrayClass.getDeclaredFields().length);
+        assertEquals(2, byteTypeIntArrayClass.getConstructors().length);
+        assertEquals(79, byteTypeIntArrayClass.getDeclaredMethods().length);
+        classBuilder = CompilationTestUtils.assertContainsBuilderClass(byteTypeIntArrayClass, loader);
+        builder = CompilationTestUtils.assertContainsMethod(byteTypeIntArrayClass, classBuilder, "builder");
+        builderObj = builder.invoke(null);
+        getValue = CompilationTestUtils.assertContainsMethod(byteTypeIntArrayClass, boolean[].class, "getValue");
+        validValues = CompilationTestUtils.assertContainsMethod(byteTypeIntArrayClass, ImmutableSet.class,
+                "validValues");
+        valueOf = CompilationTestUtils.assertContainsMethod(byteTypeIntArrayClass, byteTypeIntArrayClass,"valueOf",
+                List.class);
+        stringValue = CompilationTestUtils.assertContainsMethod(byteTypeIntArrayClass, List.class, "stringValue");
+        expectedConstructor = CompilationTestUtils.assertContainsConstructor(byteTypeIntArrayClass, classBuilder);
+        assertEquals(72, classBuilder.getDeclaredMethods().length);
+        classBuilder.getMethod("setBit69", boolean.class).invoke(builderObj, true);
+        obj = expectedConstructor.newInstance(builderObj);
+        assertEquals(obj, valueOf.invoke(obj, List.of("bit69")));
+        assertEquals(ImmutableSet.copyOf(expectedValidBits), validValues.invoke(obj));
+        assertEquals(expectedValidBits, stringValue.invoke(obj));
+        assertEquals(Arrays.toString(expectedBooleans), Arrays.toString((boolean[]) getValue.invoke(obj)));
 
         // typedef int32-ext1
         assertFalse(int32Ext1Class.isInterface());
@@ -91,6 +224,7 @@ public class TypedefCompilationTest extends BaseCompilationTest {
             5351634010010233292L, Integer.class);
         assertEquals(2, int32Ext1Class.getDeclaredFields().length);
 
+        expectedConstructor = CompilationTestUtils.assertContainsConstructor(int32Ext1Class, Integer.class);
         CompilationTestUtils.assertContainsConstructor(int32Ext1Class, int32Ext1Class);
         assertEquals(2, int32Ext1Class.getConstructors().length);
         CompilationTestUtils.assertContainsDefaultMethods(int32Ext1Class);
@@ -98,15 +232,13 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         assertEquals(7, int32Ext1Class.getDeclaredMethods().length);
 
         List<Range<Integer>> rangeConstraints = new ArrayList<>();
-        Method defInst = CompilationTestUtils.assertContainsMethod(int32Ext1Class, int32Ext1Class, "getDefaultInstance",
-                String.class);
         rangeConstraints.add(Range.closed(2, 2147483647));
-        Constructor<?> expectedConstructor = CompilationTestUtils.assertContainsConstructor(int32Ext1Class,
-                Integer.class);
         Object arg = 1;
         String expectedMsg = String.format("Invalid range: %s, expected: %s.", arg, rangeConstraints);
         CompilationTestUtils.assertContainsRestrictionCheck(expectedConstructor, expectedMsg, arg);
-        Object obj = expectedConstructor.newInstance(159);
+        Method defInst = CompilationTestUtils.assertContainsMethod(int32Ext1Class, int32Ext1Class, "getDefaultInstance",
+                String.class);
+        obj = expectedConstructor.newInstance(159);
         assertEquals(obj, defInst.invoke(null, "159"));
 
         // typedef int32-ext2
