@@ -259,6 +259,23 @@ public final class CompilationTestUtils {
     }
 
     /**
+     * Asserts that class contains builder class, then returns it.
+     *
+     * @param clazz class where the builder is sought
+     * @param loader responsible for loading used class
+     * @return the builder class, if it is present
+     * @throws AssertionError if builder is not contained in given class
+     */
+    static Class<?> assertContainsBuilderClass(final Class<?> clazz, final ClassLoader loader) {
+        final String name = clazz.getCanonicalName();
+        try {
+            return Class.forName(name + "$Builder", true, loader);
+        } catch (ClassNotFoundException e) {
+            throw new AssertionError("Builder class does not exist in the " + name, e);
+        }
+    }
+
+    /**
      * Asserts that class implements given interface.
      *
      * @param clazz source to test
@@ -268,6 +285,18 @@ public final class CompilationTestUtils {
         List<Class<?>> ifcsList = Arrays.asList(clazz.getInterfaces());
         if (!ifcsList.contains(ifc)) {
             throw new AssertionError(clazz + " should implement " + ifc);
+        }
+    }
+
+    /**
+     * Asserts that subclass extends given superclass.
+     *
+     * @param subClass subclass to be recognized as extended
+     * @param superClass expected super class
+     */
+    static void assertExtendsClass(final Class<?> subClass, final Class<?> superClass) {
+        if (!subClass.getSuperclass().equals(superClass)) {
+            throw new AssertionError(subClass + " should extend " + superClass);
         }
     }
 
