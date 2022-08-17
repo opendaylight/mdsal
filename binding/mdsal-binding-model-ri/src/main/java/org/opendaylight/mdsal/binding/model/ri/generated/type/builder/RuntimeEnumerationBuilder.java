@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.model.ri.generated.type.builder;
 
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
@@ -38,6 +39,11 @@ public final class RuntimeEnumerationBuilder extends AbstractEnumerationBuilder 
 
     @Override
     public void setDescription(final String description) {
+        // No-op
+    }
+
+    @Override
+    public void setYangSourceDefinition(final @NonNull YangSourceDefinition definition) {
         // No-op
     }
 

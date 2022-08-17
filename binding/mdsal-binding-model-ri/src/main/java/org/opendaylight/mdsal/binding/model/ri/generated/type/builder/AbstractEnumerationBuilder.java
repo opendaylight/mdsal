@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.AbstractType;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
@@ -27,6 +28,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
@@ -40,6 +42,7 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPai
 public abstract class AbstractEnumerationBuilder extends AbstractType implements EnumBuilder {
     private List<Enumeration.Pair> values = ImmutableList.of();
     private List<AnnotationTypeBuilder> annotationBuilders = ImmutableList.of();
+    private YangSourceDefinition yangSourceDefinition;
 
     AbstractEnumerationBuilder(final JavaTypeName identifier) {
         super(identifier);
@@ -67,6 +70,8 @@ public abstract class AbstractEnumerationBuilder extends AbstractType implements
     public abstract void setModuleName(String moduleName);
 
     public abstract void setSchemaPath(SchemaPath schemaPath);
+
+    public abstract void setYangSourceDefinition(@NonNull YangSourceDefinition definition);
 
     abstract AbstractPair createEnumPair(String name, String mappedName, int value, Status status, String description,
             String reference);
@@ -101,25 +106,25 @@ public abstract class AbstractEnumerationBuilder extends AbstractType implements
 
         @Override
         public final String getName() {
-            return this.name;
+            return name;
         }
 
         @Override
         public final String getMappedName() {
-            return this.mappedName;
+            return mappedName;
         }
 
         @Override
         public final int getValue() {
-            return this.value;
+            return value;
         }
 
         @Override
         public final int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + Objects.hashCode(this.name);
-            result = prime * result + Objects.hashCode(this.value);
+            result = prime * result + Objects.hashCode(name);
+            result = prime * result + Objects.hashCode(value);
             return result;
         }
 
@@ -128,22 +133,21 @@ public abstract class AbstractEnumerationBuilder extends AbstractType implements
             if (this == obj) {
                 return true;
             }
-            if (!(obj instanceof AbstractPair)) {
+            if (!(obj instanceof AbstractPair other)) {
                 return false;
             }
-            final AbstractPair other = (AbstractPair) obj;
-            return Objects.equals(this.name, other.name) && Objects.equals(this.value, other.value);
+            return Objects.equals(name, other.name) && Objects.equals(value, other.value);
         }
 
         @Override
         public final String toString() {
             final StringBuilder builder = new StringBuilder();
             builder.append("EnumPair [name=");
-            builder.append(this.name);
+            builder.append(name);
             builder.append(", mappedName=");
             builder.append(getMappedName());
             builder.append(", value=");
-            builder.append(this.value);
+            builder.append(value);
             builder.append("]");
             return builder.toString();
         }
@@ -152,26 +156,28 @@ public abstract class AbstractEnumerationBuilder extends AbstractType implements
     abstract static class AbstractEnumeration extends AbstractType implements Enumeration {
         private final List<AnnotationType> annotations;
         private final List<Pair> values;
+        private final YangSourceDefinition yangSourceDefinition;
 
         AbstractEnumeration(final AbstractEnumerationBuilder builder) {
             super(builder.getIdentifier());
-            this.values = ImmutableList.copyOf(builder.values);
+            values = ImmutableList.copyOf(builder.values);
+            yangSourceDefinition = builder.yangSourceDefinition;
 
             final ArrayList<AnnotationType> a = new ArrayList<>();
             for (final AnnotationTypeBuilder b : builder.annotationBuilders) {
                 a.add(b.build());
             }
-            this.annotations = ImmutableList.copyOf(a);
+            annotations = ImmutableList.copyOf(a);
         }
 
         @Override
         public final List<Pair> getValues() {
-            return this.values;
+            return values;
         }
 
         @Override
         public final List<AnnotationType> getAnnotations() {
-            return this.annotations;
+            return annotations;
         }
 
         @Override
@@ -184,13 +190,13 @@ public abstract class AbstractEnumerationBuilder extends AbstractType implements
             builder.append("\n");
 
             int offset = 0;
-            for (final Enumeration.Pair valPair : this.values) {
+            for (final Enumeration.Pair valPair : values) {
                 builder.append("\t ");
                 builder.append(valPair.getMappedName());
                 builder.append(" (");
                 builder.append(valPair.getValue());
 
-                if (offset == this.values.size() - 1) {
+                if (offset == values.size() - 1) {
                     builder.append(" );");
                 } else {
                     builder.append(" ),");
