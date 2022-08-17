@@ -1,0 +1,40 @@
+module simple-restricted-bits-demo {
+    yang-version 1.1;
+    namespace "urn:simple:restricted:bits:demo";
+    prefix "srbd";
+
+    organization "OPEN DAYLIGHT";
+    contact "http://www.opendaylight.org/";
+
+    revision 2022-07-20 {
+
+    }
+
+    typedef my-bits {
+        type bits {
+            bit bit-zero {
+                position 0;
+            }
+            bit bit-one {
+                position 1;
+            }
+            bit bit-two {
+                position 2;
+            }
+        }
+        default "bit-one";
+    }
+
+    typedef my-bits-restricted {
+       type my-bits {
+          // legal bit refinement
+          bit bit-zero {
+            position 0;
+          }
+          bit bit-one {
+            position 1;
+          }
+       }
+    }
+
+}
