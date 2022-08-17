@@ -6,14 +6,14 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 module foo {
-    yang-version 1;
+    yang-version 1.1;
     namespace "urn:opendaylight.foo";
     prefix "foo";
 
     revision "2013-10-08" {
     }
 
-
+    // up to 32 bits, uses int for storage
     typedef bits-ext {
         type bits {
             bit pc {
@@ -36,6 +36,362 @@ module foo {
             }
             bit sfapc {
                 position 6;
+            }
+        }
+    }
+
+    typedef bits-ext-restricted {
+        type bits-ext {
+            bit pc {
+                position 0;
+            }
+            bit bpc {
+                position 1;
+            }
+            bit dpc {
+                position 2;
+            }
+        }
+    }
+
+    // from 32 to 64 bits, uses long for storage
+    typedef byte-type-long {
+        type bits {
+            bit bit0 {
+                position 0;
+            }
+            bit bit1 {
+                position 1;
+            }
+            bit bit2 {
+                position 2;
+            }
+            bit bit3 {
+                position 3;
+            }
+            bit bit4 {
+                position 4;
+            }
+            bit bit5 {
+                position 5;
+            }
+            bit bit6 {
+                position 6;
+            }
+            bit bit7 {
+                position 7;
+            }
+            bit bit8 {
+                position 8;
+            }
+            bit bit9 {
+                position 9;
+            }
+            bit bit10 {
+                position 10;
+            }
+            bit bit11 {
+                position 11;
+            }
+            bit bit12 {
+                position 12;
+            }
+            bit bit13 {
+                position 13;
+            }
+            bit bit14 {
+                position 14;
+            }
+            bit bit15 {
+                position 15;
+            }
+            bit bit16 {
+                position 16;
+            }
+            bit bit17 {
+                position 17;
+            }
+            bit bit18 {
+                position 18;
+            }
+            bit bit19 {
+                position 19;
+            }
+            bit bit20 {
+                position 20;
+            }
+            bit bit21 {
+                position 21;
+            }
+            bit bit22 {
+                position 22;
+            }
+            bit bit23 {
+                position 23;
+            }
+            bit bit24 {
+                position 24;
+            }
+            bit bit25 {
+                position 25;
+            }
+            bit bit26 {
+                position 26;
+            }
+            bit bit27 {
+                position 27;
+            }
+            bit bit28 {
+                position 28;
+            }
+            bit bit29 {
+                position 29;
+            }
+            bit bit30 {
+                position 30;
+            }
+            bit bit31 {
+                position 31;
+            }
+            bit bit32 {
+                position 32;
+            }
+            bit bit33 {
+                position 33;
+            }
+            bit bit34 {
+                position 34;
+            }
+            bit bit35 {
+                position 35;
+            }
+            bit bit36 {
+                position 36;
+            }
+            bit bit37 {
+                position 37;
+            }
+            bit bit38 {
+                position 38;
+            }
+            bit bit39 {
+                position 39;
+            }
+        }
+    }
+
+    // more than 64 bits, uses int[] for storage
+    typedef byte-type-int-array {
+        type bits {
+            bit bit0 {
+                position 0;
+            }
+            bit bit1 {
+                position 1;
+            }
+            bit bit2 {
+                position 2;
+            }
+            bit bit3 {
+                position 3;
+            }
+            bit bit4 {
+                position 4;
+            }
+            bit bit5 {
+                position 5;
+            }
+            bit bit6 {
+                position 6;
+            }
+            bit bit7 {
+                position 7;
+            }
+            bit bit8 {
+                position 8;
+            }
+            bit bit9 {
+                position 9;
+            }
+            bit bit10 {
+                position 10;
+            }
+            bit bit11 {
+                position 11;
+            }
+            bit bit12 {
+                position 12;
+            }
+            bit bit13 {
+                position 13;
+            }
+            bit bit14 {
+                position 14;
+            }
+            bit bit15 {
+                position 15;
+            }
+            bit bit16 {
+                position 16;
+            }
+            bit bit17 {
+                position 17;
+            }
+            bit bit18 {
+                position 18;
+            }
+            bit bit19 {
+                position 19;
+            }
+            bit bit20 {
+                position 20;
+            }
+            bit bit21 {
+                position 21;
+            }
+            bit bit22 {
+                position 22;
+            }
+            bit bit23 {
+                position 23;
+            }
+            bit bit24 {
+                position 24;
+            }
+            bit bit25 {
+                position 25;
+            }
+            bit bit26 {
+                position 26;
+            }
+            bit bit27 {
+                position 27;
+            }
+            bit bit28 {
+                position 28;
+            }
+            bit bit29 {
+                position 29;
+            }
+            bit bit30 {
+                position 30;
+            }
+            bit bit31 {
+                position 31;
+            }
+            bit bit32 {
+                position 32;
+            }
+            bit bit33 {
+                position 33;
+            }
+            bit bit34 {
+                position 34;
+            }
+            bit bit35 {
+                position 35;
+            }
+            bit bit36 {
+                position 36;
+            }
+            bit bit37 {
+                position 37;
+            }
+            bit bit38 {
+                position 38;
+            }
+            bit bit39 {
+                position 39;
+            }
+            bit bit40 {
+                position 40;
+            }
+            bit bit41 {
+                position 41;
+            }
+            bit bit42 {
+                position 42;
+            }
+            bit bit43 {
+                position 43;
+            }
+            bit bit44 {
+                position 44;
+            }
+            bit bit45 {
+                position 45;
+            }
+            bit bit46 {
+                position 46;
+            }
+            bit bit47 {
+                position 47;
+            }
+            bit bit48 {
+                position 48;
+            }
+            bit bit49 {
+                position 49;
+            }
+            bit bit50 {
+                position 50;
+            }
+            bit bit51 {
+                position 51;
+            }
+            bit bit52 {
+                position 52;
+            }
+            bit bit53 {
+                position 53;
+            }
+            bit bit54 {
+                position 54;
+            }
+            bit bit55 {
+                position 55;
+            }
+            bit bit56 {
+                position 56;
+            }
+            bit bit57 {
+                position 57;
+            }
+            bit bit58 {
+                position 58;
+            }
+            bit bit59 {
+                position 59;
+            }
+            bit bit60 {
+                position 60;
+            }
+            bit bit61 {
+                position 61;
+            }
+            bit bit62 {
+                position 62;
+            }
+            bit bit63 {
+                position 63;
+            }
+            bit bit64 {
+                position 64;
+            }
+            bit bit65 {
+                position 65;
+            }
+            bit bit66 {
+                position 66;
+            }
+            bit bit67 {
+                position 67;
+            }
+            bit bit68 {
+                position 68;
+            }
+            bit bit69 {
+                position 69;
             }
         }
     }

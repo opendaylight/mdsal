@@ -1,4 +1,5 @@
 module opendaylight-default-value-test {
+
     namespace "urn:opendaylight:params:xml:ns:default:value:test";
     prefix "def-val-test";
 
