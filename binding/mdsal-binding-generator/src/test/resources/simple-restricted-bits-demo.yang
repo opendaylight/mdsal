@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) 2022 PANTHEON.tech, s.r.o. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+module simple-restricted-bits-demo {
+    yang-version 1.1;
+    namespace "urn:simple:restricted:bits:demo";
+    prefix "srbd";
+
+    organization "OPEN DAYLIGHT";
+    contact "http://www.opendaylight.org/";
+
+    revision 2022-07-20 {
+
+    }
+
+    typedef my-bits {
+        type bits {
+            bit bit-zero {
+                position 0;
+            }
+            bit bit-one {
+                position 1;
+            }
+            bit bit-two {
+                position 2;
+            }
+        }
+        default "bit-one";
+    }
+
+    typedef my-bits-restricted {
+       type my-bits {
+          // legal bit refinement
+          bit bit-zero {
+            position 0;
+          }
+          bit bit-one {
+            position 1;
+          }
+       }
+    }
+
+}
