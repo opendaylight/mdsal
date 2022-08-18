@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "971b0d3f_86ee66bb",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/AbstractTypeObjectGenerator.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 609,
+      "author": {
+        "id": 9048
+      },
+      "writtenOn": "2022-08-18T08:39:49Z",
+      "side": 1,
+      "message": "Just a little thing, correct me if I am wrong. I know this method is responsible for generating typedefs, which should be fixed according to the task description. But bits-type objects do not implement ScalarTypeObject interface. Thus, this is not a scalar type. This will be part of prepared BistTypeObject interface. Maybe just mention it in the commit message, that it was fixed additionally.",
+      "range": {
+        "startLine": 609,
+        "startChar": 4,
+        "endLine": 609,
+        "endChar": 103
+      },
+      "revId": "894e796a3bc07caf51af2525207caa812cafccef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
