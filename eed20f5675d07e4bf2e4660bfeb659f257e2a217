@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7faab408_eb47bf3d",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/simple-restricted-bits-demo.yang",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-08-18T14:22:55Z",
+      "side": 1,
+      "message": "Please add copyright.",
+      "revId": "eed20f5675d07e4bf2e4660bfeb659f257e2a217",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5151ac70_844b16ad",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/test-bits-type-object-storage.yang",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-08-18T14:22:55Z",
+      "side": 1,
+      "message": "Please add copyright.",
+      "revId": "eed20f5675d07e4bf2e4660bfeb659f257e2a217",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35637f09_c2e3f55c",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/CompilationTestUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-08-18T14:22:55Z",
+      "side": 1,
+      "message": "In the + name of the class? Don\u0027t you mean something else?",
+      "revId": "eed20f5675d07e4bf2e4660bfeb659f257e2a217",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88af587e_5f7cb8c5",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/CompilationTestUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-08-18T14:22:55Z",
+      "side": 1,
+      "message": "IMO: maybe using \u0027instanceof\u0027 would be better.",
+      "revId": "eed20f5675d07e4bf2e4660bfeb659f257e2a217",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
