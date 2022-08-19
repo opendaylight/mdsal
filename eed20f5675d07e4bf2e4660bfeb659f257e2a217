@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "483fb267_96a02232",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/simple-restricted-bits-demo.yang",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 9048
+      },
+      "writtenOn": "2022-08-19T05:41:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7faab408_eb47bf3d",
+      "revId": "eed20f5675d07e4bf2e4660bfeb659f257e2a217",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5151ac70_844b16ad",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-08-18T14:22:55Z",
       "side": 1,
       "message": "Please add copyright.",
+      "revId": "eed20f5675d07e4bf2e4660bfeb659f257e2a217",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ada65eb_820947b8",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/test-bits-type-object-storage.yang",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 9048
+      },
+      "writtenOn": "2022-08-19T05:41:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5151ac70_844b16ad",
       "revId": "eed20f5675d07e4bf2e4660bfeb659f257e2a217",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -54,6 +90,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cc3b7c77_fd254077",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/CompilationTestUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 9048
+      },
+      "writtenOn": "2022-08-19T05:41:01Z",
+      "side": 1,
+      "message": "Can you please explain your idea a bit more? Do you mean I should add something to the exception message?",
+      "parentUuid": "35637f09_c2e3f55c",
+      "revId": "eed20f5675d07e4bf2e4660bfeb659f257e2a217",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "88af587e_5f7cb8c5",
         "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/CompilationTestUtils.java",
         "patchSetId": 12
@@ -65,6 +119,24 @@
       "writtenOn": "2022-08-18T14:22:55Z",
       "side": 1,
       "message": "IMO: maybe using \u0027instanceof\u0027 would be better.",
+      "revId": "eed20f5675d07e4bf2e4660bfeb659f257e2a217",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a71fc80_2c49c3d2",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/CompilationTestUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 9048
+      },
+      "writtenOn": "2022-08-19T05:41:01Z",
+      "side": 1,
+      "message": "I have tried, but it looks like instanceof keyword cannot be used in this context. Class is not an instance of another class, only an object is the instance.",
+      "parentUuid": "88af587e_5f7cb8c5",
       "revId": "eed20f5675d07e4bf2e4660bfeb659f257e2a217",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
