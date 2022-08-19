@@ -106,6 +106,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b45b12c_5e2dfb0c",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/CompilationTestUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 9048
+      },
+      "writtenOn": "2022-08-19T05:51:33Z",
+      "side": 1,
+      "message": "Ok, I think I understand. Added new patch.",
+      "parentUuid": "cc3b7c77_fd254077",
+      "revId": "eed20f5675d07e4bf2e4660bfeb659f257e2a217",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "88af587e_5f7cb8c5",
