@@ -28,6 +28,9 @@
         <!-- RFC7224 and updates -->
         <module>iana-if-type</module>
 
+        <!-- RFC7317 and updates -->
+        <module>iana-crypt-hash</module>
+
         <!-- RFC8294 and updates -->
         <module>iana-routing-types</module>
 
