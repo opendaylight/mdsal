@@ -61,6 +61,8 @@ public final class IdentityGenerator
             builder.addImplementsType(BASE_IDENTITY);
         }
 
+        annotateDeprecatedIfNecessary(statement(), builder);
+
         final ModuleGenerator module = currentModule();
         module.addQNameConstant(builder, localName());
 
