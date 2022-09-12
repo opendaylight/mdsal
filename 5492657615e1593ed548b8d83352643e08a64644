@@ -16,6 +16,40 @@
       "message": "It is probably time to fix this FIXME",
       "revId": "5492657615e1593ed548b8d83352643e08a64644",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fddcf18b_42d107c6",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BitsCodec.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2022-09-12T07:11:02Z",
+      "side": 1,
+      "message": "setters and builder can be final",
+      "revId": "5492657615e1593ed548b8d83352643e08a64644",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e4c4c3b_4bd2c1d3",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BitsCodec.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2022-09-12T07:11:02Z",
+      "side": 1,
+      "message": "is this comment still relevant/correct?",
+      "revId": "5492657615e1593ed548b8d83352643e08a64644",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
