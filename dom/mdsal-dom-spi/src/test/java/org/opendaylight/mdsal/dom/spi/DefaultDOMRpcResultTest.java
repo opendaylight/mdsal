@@ -12,23 +12,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import java.util.Collections;
+import java.util.List;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.common.RpcError;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 public class DefaultDOMRpcResultTest {
-
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         RpcError rpcError = mock(RpcError.class);
-        NormalizedNode normalizedNode = mock(NormalizedNode.class);
+        ContainerNode normalizedNode = mock(ContainerNode.class);
         DefaultDOMRpcResult defaultDOMRpcResult = new DefaultDOMRpcResult(normalizedNode, rpcError);
-        assertEquals(normalizedNode, defaultDOMRpcResult.getResult());
-        assertTrue(defaultDOMRpcResult.getErrors().contains(rpcError));
-        assertTrue(new DefaultDOMRpcResult(normalizedNode).getErrors().isEmpty());
-        assertTrue(new DefaultDOMRpcResult().getErrors().isEmpty());
-        assertTrue(new DefaultDOMRpcResult(Collections.emptyList()).getErrors().isEmpty());
+        assertEquals(normalizedNode, defaultDOMRpcResult.value());
+        assertTrue(defaultDOMRpcResult.errors().contains(rpcError));
+        assertTrue(new DefaultDOMRpcResult(normalizedNode).errors().isEmpty());
+        assertTrue(new DefaultDOMRpcResult().errors().isEmpty());
+        assertTrue(new DefaultDOMRpcResult(List.of()).errors().isEmpty());
         assertEquals(defaultDOMRpcResult.hashCode(), new DefaultDOMRpcResult(normalizedNode, rpcError).hashCode());
         assertTrue(new DefaultDOMRpcResult(normalizedNode, rpcError).equals(defaultDOMRpcResult));
         assertTrue(defaultDOMRpcResult.equals(defaultDOMRpcResult));
