@@ -9,28 +9,26 @@ package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.collect.ForwardingObject;
 import java.util.Collection;
-import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.common.RpcError;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 /**
  * Utility class which implements {@link DOMRpcResult} by forwarding all methods
  * to a backing instance.
  */
-@NonNullByDefault
 public abstract class ForwardingDOMRpcResult extends ForwardingObject implements DOMRpcResult {
     @Override
-    protected abstract DOMRpcResult delegate();
+    protected abstract @NonNull DOMRpcResult delegate();
 
     @Override
-    public Collection<? extends RpcError> getErrors() {
-        return delegate().getErrors();
+    public Collection<? extends RpcError> errors() {
+        return delegate().errors();
     }
 
     @Override
-    public @Nullable NormalizedNode getResult() {
-        return delegate().getResult();
+    public ContainerNode value() {
+        return delegate().value();
     }
 }

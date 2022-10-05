@@ -11,7 +11,7 @@ import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.common.RpcError;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 /**
  * Interface defining a result of an RPC call.
@@ -19,19 +19,42 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 @NonNullByDefault
 public interface DOMRpcResult {
     /**
-     * Returns a set of errors and warnings which occurred during processing
-     * the call.
+     * Returns a set of errors and warnings which occurred during processing the call.
      *
-     * @return a Collection of {@link RpcError}, guaranteed to be non-null. In case
-     *         no errors are reported, an empty collection is returned.
+     * @return a Collection of {@link RpcError}, guaranteed to be non-null. In case no errors are reported, an empty
+     *         collection is returned.
+     * @deprecated Use {@link #errors()} instead.
      */
-    Collection<? extends RpcError> getErrors();
+    @Deprecated(since = "11.0.0", forRemoval = true)
+    default Collection<? extends RpcError> getErrors() {
+        return errors();
+    }
+
+    /**
+     * Returns a set of errors and warnings which occurred during processing the call.
+     *
+     * @return a Collection of {@link RpcError}, guaranteed to be non-null. In case no errors are reported, an empty
+     *         collection is returned.
+     */
+    Collection<? extends RpcError> errors();
 
     /**
      * Returns the value result of the call or null if no result is available.
      *
-     * @return Invocation result, null if the operation has not produced a result. This might
-     *         be the case if the operation does not produce a result, or if it failed.
+     * @return Invocation result, {@code null} if the operation has not produced a result. This might be the case if the
+     *         operation does not produce a result, or if it failed.
+     * @deprecated Use {@link #value()} instead.
      */
-    @Nullable NormalizedNode getResult();
+    @Deprecated(since = "11.0.0", forRemoval = true)
+    default @Nullable ContainerNode getResult() {
+        return value();
+    }
+
+    /**
+     * Returns the value result of the call or {code null} if no result is available.
+     *
+     * @return Invocation result, {@code null} if the operation has not produced a result. This might be the case if the
+     *         operation does not produce a result, or if it failed.
+     */
+    @Nullable ContainerNode value();
 }
