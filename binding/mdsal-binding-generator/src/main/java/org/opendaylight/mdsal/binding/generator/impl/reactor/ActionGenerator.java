@@ -15,7 +15,6 @@ import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultActionRuntimeType
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.ActionRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
@@ -23,19 +22,13 @@ import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.OutputEffectiveStatement;
-import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 /**
  * Generator corresponding to a {@code action} statement.
  */
-final class ActionGenerator extends CompositeSchemaTreeGenerator<ActionEffectiveStatement, ActionRuntimeType> {
+final class ActionGenerator extends AbstractInvokableGenerator<ActionEffectiveStatement, ActionRuntimeType> {
     ActionGenerator(final ActionEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
-    }
-
-    @Override
-    void pushToInference(final SchemaInferenceStack dataTree) {
-        dataTree.enterSchemaTree(statement().getIdentifier());
     }
 
     @Override
@@ -78,11 +71,6 @@ final class ActionGenerator extends CompositeSchemaTreeGenerator<ActionEffective
         }
 
         return BindingTypes.action(Type.of(parent.typeName()), input, output);
-    }
-
-    @Override
-    void addAsGetterMethod(final GeneratedTypeBuilderBase<?> builder, final TypeBuilderFactory builderFactory) {
-        // actions are a separate concept
     }
 
     @Override
