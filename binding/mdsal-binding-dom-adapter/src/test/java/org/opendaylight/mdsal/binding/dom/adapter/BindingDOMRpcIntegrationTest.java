@@ -94,7 +94,7 @@ public class BindingDOMRpcIntegrationTest {
         ContainerNode biKnockKnockInput = toDOMKnockKnockInput(baKnockKnockInput);
         DOMRpcResult domResult = biRpcService.invokeRpc(KNOCK_KNOCK_QNAME, biKnockKnockInput).get(5, TimeUnit.SECONDS);
         assertNotNull(domResult);
-        assertNotNull(domResult.getResult());
+        assertNotNull(domResult.value());
         assertTrue("Binding KnockKnock service was not invoked",
                 knockRpcImpl.getReceivedKnocks().containsKey(BA_NODE_ID));
         assertEquals(baKnockKnockInput, knockRpcImpl.getReceivedKnocks().get(BA_NODE_ID).iterator().next());
@@ -162,7 +162,7 @@ public class BindingDOMRpcIntegrationTest {
 
         OpendaylightKnockKnockRpcServiceImpl setKnockKnockResult(
                 final ListenableFuture<RpcResult<KnockKnockOutput>> kkOutput) {
-            this.knockKnockResult = kkOutput;
+            knockKnockResult = kkOutput;
             return this;
         }
 

@@ -86,7 +86,7 @@ public class Mdsal500Test {
         ContainerNode biSwitchInput = toDOMSwitchInput(baSwitchInput);
         DOMRpcResult domResult = biRpcService.invokeRpc(SWITCH_QNAME, biSwitchInput).get(5, TimeUnit.SECONDS);
         assertNotNull(domResult);
-        assertNotNull(domResult.getResult());
+        assertNotNull(domResult.value());
         assertTrue("Binding KnockKnock service was not invoked",
                 switchRpcImpl.getReceivedSwitch().containsKey(FOO));
         assertEquals(baSwitchInput, switchRpcImpl.getReceivedSwitch().get(FOO).iterator().next());
@@ -146,7 +146,7 @@ public class Mdsal500Test {
         private final Multimap<String, SwitchInput> receivedSwitch = HashMultimap.create();
 
         Mdsal500ServiceImpl setSwitchResult(final ListenableFuture<RpcResult<SwitchOutput>> switchOutput) {
-            this.switchResult = switchOutput;
+            switchResult = switchOutput;
             return this;
         }
 

@@ -146,7 +146,7 @@ class RpcServiceAdapter implements InvocationHandler {
         private ListenableFuture<RpcResult<?>> transformFuture(final ListenableFuture<? extends DOMRpcResult> domFuture,
                 final BindingNormalizedNodeSerializer resultCodec) {
             return Futures.transform(domFuture, input -> {
-                final NormalizedNode domData = input.getResult();
+                final NormalizedNode domData = input.value();
                 final DataObject bindingResult;
                 if (domData != null) {
                     bindingResult = resultCodec.fromNormalizedNodeRpcData(outputPath, (ContainerNode) domData);
@@ -154,7 +154,7 @@ class RpcServiceAdapter implements InvocationHandler {
                     bindingResult = null;
                 }
 
-                return RpcResultUtil.rpcResultFromDOM(input.getErrors(), bindingResult);
+                return RpcResultUtil.rpcResultFromDOM(input.errors(), bindingResult);
             }, MoreExecutors.directExecutor());
         }
     }

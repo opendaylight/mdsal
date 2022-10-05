@@ -19,21 +19,21 @@ import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ForwardingDOMRpcResultTest extends ForwardingDOMRpcResult {
     @Mock(name = "domRpcResult")
-    public DOMRpcResult domRpcResult;
+    public DOMRpcResult delegate;
 
     @Test
     public void basicTest() throws Exception {
-        doReturn(null).when(domRpcResult).getErrors();
-        this.getErrors();
-        verify(domRpcResult).getErrors();
+        doReturn(null).when(delegate).errors();
+        errors();
+        verify(delegate).errors();
 
-        doReturn(null).when(domRpcResult).getResult();
-        this.getResult();
-        verify(domRpcResult).getResult();
+        doReturn(null).when(delegate).value();
+        value();
+        verify(delegate).value();
     }
 
     @Override
     protected DOMRpcResult delegate() {
-        return domRpcResult;
+        return delegate;
     }
 }
