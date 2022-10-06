@@ -26,7 +26,7 @@ public class BindingDOMRpcImplementationAdapterTest {
         final BindingDOMCodecServices registry = mock(BindingDOMCodecServices.class);
         final Method testMethod = this.getClass().getDeclaredMethod("testMethod");
         final QName rpcType = QName.create(QNameModule.create(XMLNamespace.of("tst")), "test");
-        final BindingDOMRpcImplementationAdapter adapter = new BindingDOMRpcImplementationAdapter(
+        final LegacyDOMRpcImplementationAdapter adapter = new LegacyDOMRpcImplementationAdapter(
             new ConstantAdapterContext(registry), OpendaylightTestRpcServiceService.class,
             ImmutableMap.of(rpcType, testMethod), mock(OpendaylightTestRpcServiceService.class));
         assertNotNull(adapter);
