@@ -19,10 +19,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
@@ -35,6 +32,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.md.sal.knock.knock.rev180723.KnockKnock;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.md.sal.knock.knock.rev180723.KnockKnockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.md.sal.knock.knock.rev180723.KnockKnockInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.md.sal.knock.knock.rev180723.KnockKnockOutput;
@@ -81,8 +79,7 @@ public class BindingDOMRpcIntegrationTest {
     }
 
     @Test
-    public void testBindingRegistrationWithDOMInvocation()
-            throws InterruptedException, ExecutionException, TimeoutException {
+    public void testBindingRegistrationWithDOMInvocation() throws Exception {
         knockRpcImpl.registerTo(baRpcProviderService, BA_NODE_ID).setKnockKnockResult(knockResult(true, "open"));
 
         final OpendaylightKnockKnockRpcService baKnockService =
@@ -92,7 +89,7 @@ public class BindingDOMRpcIntegrationTest {
         KnockKnockInput baKnockKnockInput = knockKnock(BA_NODE_ID).setQuestion("who's there?").build();
 
         ContainerNode biKnockKnockInput = toDOMKnockKnockInput(baKnockKnockInput);
-        DOMRpcResult domResult = biRpcService.invokeRpc(KNOCK_KNOCK_QNAME, biKnockKnockInput).get(5, TimeUnit.SECONDS);
+        DOMRpcResult domResult = Futures.getDone(biRpcService.invokeRpc(KNOCK_KNOCK_QNAME, biKnockKnockInput));
         assertNotNull(domResult);
         assertNotNull(domResult.value());
         assertTrue("Binding KnockKnock service was not invoked",
@@ -101,8 +98,7 @@ public class BindingDOMRpcIntegrationTest {
     }
 
     @Test
-    public void testDOMRegistrationWithBindingInvocation()
-            throws InterruptedException, ExecutionException, TimeoutException {
+    public void testDOMRegistrationWithBindingInvocation() throws Exception {
         KnockKnockOutput baKnockKnockOutput = new KnockKnockOutputBuilder().setAnswer("open").build();
 
         biRpcProviderService.registerRpcImplementation((rpc, input) ->
@@ -116,11 +112,11 @@ public class BindingDOMRpcIntegrationTest {
         Future<RpcResult<KnockKnockOutput>> baResult = baKnockService.knockKnock(knockKnock(BA_NODE_ID)
             .setQuestion("Who's there?").build());
         assertNotNull(baResult);
-        assertEquals(baKnockKnockOutput, baResult.get(5, TimeUnit.SECONDS).getResult());
+        assertEquals(baKnockKnockOutput, Futures.getDone(baResult).getResult());
     }
 
     @Test
-    public void testBindingRpcShortcut() throws InterruptedException, ExecutionException, TimeoutException {
+    public void testBindingRpcShortcut() throws Exception {
         final ListenableFuture<RpcResult<KnockKnockOutput>> baKnockResult = knockResult(true, "open");
         knockRpcImpl.registerTo(baRpcProviderService, BA_NODE_ID).setKnockKnockResult(baKnockResult);
 
@@ -128,21 +124,31 @@ public class BindingDOMRpcIntegrationTest {
                 baRpcConsumerService.getRpcService(OpendaylightKnockKnockRpcService.class);
 
         KnockKnockInput baKnockKnockInput = knockKnock(BA_NODE_ID).setQuestion("who's there?").build();
-        ListenableFuture<RpcResult<KnockKnockOutput>> future = baKnockService.knockKnock(baKnockKnockInput);
 
-        final RpcResult<KnockKnockOutput> rpcResult = future.get(5, TimeUnit.SECONDS);
+        final RpcResult<KnockKnockOutput> rpcResult = Futures.getDone(baKnockService.knockKnock(baKnockKnockInput));
 
         assertEquals(baKnockResult.get().getResult().getClass(), rpcResult.getResult().getClass());
         assertSame(baKnockResult.get().getResult(), rpcResult.getResult());
         assertSame(baKnockKnockInput, knockRpcImpl.getReceivedKnocks().get(BA_NODE_ID).iterator().next());
     }
 
+    @Test
+    public void testSimpleRpc() throws Exception {
+        baRpcProviderService.registerRpcImplementation((KnockKnock) input -> knockResult(true, "open"));
+
+        final KnockKnock baKnockService = baRpcConsumerService.getRpc(KnockKnock.class);
+        final RpcResult<KnockKnockOutput> rpcResult = Futures.getDone(
+            baKnockService.invoke(knockKnock(BA_NODE_ID).setQuestion("who's there?").build()));
+
+        assertEquals(rpcResult.getResult().getClass(), rpcResult.getResult().getClass());
+        assertSame(rpcResult.getResult(), rpcResult.getResult());
+    }
+
     private static ListenableFuture<RpcResult<KnockKnockOutput>> knockResult(final boolean success,
             final String answer) {
-        KnockKnockOutput output = new KnockKnockOutputBuilder().setAnswer(answer).build();
-        RpcResult<KnockKnockOutput> result = RpcResultBuilder.<KnockKnockOutput>status(success).withResult(output)
-                .build();
-        return Futures.immediateFuture(result);
+        return RpcResultBuilder.<KnockKnockOutput>status(success)
+            .withResult(new KnockKnockOutputBuilder().setAnswer(answer).build())
+            .buildFuture();
     }
 
     private static KnockKnockInputBuilder knockKnock(final InstanceIdentifier<TopLevelList> listId) {
