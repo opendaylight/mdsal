@@ -41,7 +41,11 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object [] args) throws NoSuchMethodError {
+    public Object invoke(final Object proxy, final Method method, final Object [] args) throws Throwable {
+        if (method.isDefault()) {
+            return InvocationHandler.invokeDefault(proxy, method, args);
+        }
+
         switch (method.getName()) {
             case "equals":
                 if (args.length == 1) {
