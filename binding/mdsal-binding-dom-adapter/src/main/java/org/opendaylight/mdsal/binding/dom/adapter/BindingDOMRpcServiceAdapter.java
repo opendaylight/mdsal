@@ -19,11 +19,12 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Facto
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
 @VisibleForTesting
 public final class BindingDOMRpcServiceAdapter
-        extends AbstractBindingLoadingAdapter<DOMRpcService, Class<? extends RpcService>, RpcServiceAdapter>
+        extends AbstractBindingLoadingAdapter<DOMRpcService, Class<?>, AbstractRpcAdapter>
         implements RpcConsumerRegistry {
     static final Factory<RpcConsumerRegistry> BUILDER_FACTORY = Builder::new;
 
@@ -32,15 +33,26 @@ public final class BindingDOMRpcServiceAdapter
     }
 
     @Override
+    public <T extends Rpc<?, ?>> T getRpc(final Class<T> rpcInterface) {
+        return rpcInterface.cast(getAdapter(requireNonNull(rpcInterface)).facade());
+    }
+
+    @Override
     public <T extends RpcService> T getRpcService(final Class<T> rpcService) {
         return rpcService.cast(getAdapter(requireNonNull(rpcService)).facade());
     }
 
     @Override
-    RpcServiceAdapter loadAdapter(final Class<? extends RpcService> key) {
+    AbstractRpcAdapter loadAdapter(final Class<?> key) {
         checkArgument(BindingReflections.isBindingClass(key));
         checkArgument(key.isInterface(), "Supplied RPC service type must be interface.");
-        return new RpcServiceAdapter(key, adapterContext(), getDelegate());
+        if (RpcService.class.isAssignableFrom(key)) {
+            return new RpcServiceAdapter(key.asSubclass(RpcService.class), adapterContext(), getDelegate());
+        } else if (Rpc.class.isAssignableFrom(key)) {
+            return new RpcAdapter(adapterContext(), getDelegate(), key.asSubclass(Rpc.class));
+        } else {
+            throw new IllegalStateException("Unhandled key " + key);
+        }
     }
 
     private static final class Builder extends BindingDOMAdapterBuilder<RpcConsumerRegistry> {

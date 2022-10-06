@@ -34,6 +34,7 @@ import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
@@ -167,6 +168,19 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
             throw new IllegalStateException("Rpc defined in model does not have representation in generated class.", e);
         }
         return ret.build();
+    }
+
+    @NonNull Entry<Method, RpcDefinition> getRpcInvokeDescription(final Class<? extends Rpc<?, ?>> type) {
+        final var localContext = getRuntimeContext();
+        final var runtimeType = localContext.getRpcDefinition(type);
+        if (runtimeType == null) {
+            throw new IllegalStateException("Failed to find runtime type for " + type);
+        }
+
+
+
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private Module getModule(final Class<?> modeledClass) {

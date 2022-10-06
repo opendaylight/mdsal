@@ -34,7 +34,7 @@ sealed class RpcInvocationStrategy {
         private final ContextReferenceExtractor refExtractor;
         private final NodeIdentifier contextName;
 
-        ContentRouted(final RpcServiceAdapter adapter, final QName rpcName, final QName leafName,
+        ContentRouted(final AbstractRpcAdapter adapter, final QName rpcName, final QName leafName,
                 final ContextReferenceExtractor refExtractor) {
             super(adapter, rpcName);
             contextName = NodeIdentifier.create(leafName);
@@ -55,18 +55,18 @@ sealed class RpcInvocationStrategy {
         }
     }
 
-    private final @NonNull RpcServiceAdapter adapter;
+    private final @NonNull AbstractRpcAdapter adapter;
     private final @NonNull NodeIdentifier inputIdentifier;
     private final @NonNull Absolute outputPath;
 
-    private RpcInvocationStrategy(final RpcServiceAdapter adapter, final QName rpcName) {
+    private RpcInvocationStrategy(final AbstractRpcAdapter adapter, final QName rpcName) {
         this.adapter = requireNonNull(adapter);
         final var namespace = rpcName.getModule();
         outputPath = Absolute.of(rpcName, YangConstants.operationOutputQName(namespace).intern()).intern();
         inputIdentifier = NodeIdentifier.create(YangConstants.operationInputQName(namespace.intern()));
     }
 
-    static @NonNull RpcInvocationStrategy of(final RpcServiceAdapter adapter, final Method method,
+    static @NonNull RpcInvocationStrategy of(final AbstractRpcAdapter adapter, final Method method,
             final RpcEffectiveStatement schema) {
         final var contentContext = ContentRoutedRpcContext.forRpc(schema);
         if (contentContext == null) {
