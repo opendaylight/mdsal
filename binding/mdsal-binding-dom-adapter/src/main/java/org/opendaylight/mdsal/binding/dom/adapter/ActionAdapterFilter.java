@@ -27,7 +27,7 @@ final class ActionAdapterFilter implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws NoSuchMethodError {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         if (method.getName().equals("invoke") && args.length == 2) {
             final InstanceIdentifier<?> path = (InstanceIdentifier<?>) requireNonNull(args[0]);
             checkState(nodes.contains(DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, path)),
