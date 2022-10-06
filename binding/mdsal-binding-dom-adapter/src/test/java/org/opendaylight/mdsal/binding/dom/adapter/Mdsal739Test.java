@@ -66,7 +66,7 @@ public class Mdsal739Test {
         final var captor = ArgumentCaptor.forClass(ContainerNode.class);
         doReturn(Futures.immediateFailedFuture(new Throwable())).when(rpcService).invokeRpc(any(), captor.capture());
         final var adapter = (OpendaylightTestRpcServiceService) new RpcServiceAdapter(
-            OpendaylightTestRpcServiceService.class, adapterContext, rpcService).getProxy();
+            OpendaylightTestRpcServiceService.class, adapterContext, rpcService).facade();
 
         final var result = adapter.rockTheHouse(new RockTheHouseInputBuilder().setZipCode("12345").build());
         assertThrows(ExecutionException.class, () -> Futures.getDone(result));
