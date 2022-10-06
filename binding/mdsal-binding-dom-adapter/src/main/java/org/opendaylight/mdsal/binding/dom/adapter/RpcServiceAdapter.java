@@ -7,195 +7,41 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
-import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Map.Entry;
-import java.util.Optional;
-import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.mdsal.dom.spi.ContentRoutedRpcContext;
-import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcService;
-import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.RpcResult;
-import org.opendaylight.yangtools.yang.common.YangConstants;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
-class RpcServiceAdapter implements InvocationHandler {
+final class RpcServiceAdapter extends AbstractRpcAdapter {
     private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
-    private final Class<? extends RpcService> type;
-    private final AdapterContext adapterContext;
-    private final DOMRpcService delegate;
-    private final RpcService proxy;
 
     RpcServiceAdapter(final Class<? extends RpcService> type, final AdapterContext adapterContext,
-            final DOMRpcService domService) {
-        this.type = requireNonNull(type);
-        this.adapterContext = requireNonNull(adapterContext);
-        delegate = requireNonNull(domService);
+            final DOMRpcService delegate) {
+        super(adapterContext, delegate, type);
 
-        final ImmutableBiMap<Method, RpcDefinition> methods = adapterContext.currentSerializer()
-                .getRpcMethodToSchema(type);
-        final Builder<Method, RpcInvocationStrategy> rpcBuilder = ImmutableMap.builderWithExpectedSize(methods.size());
+        final var methods = currentSerializer().getRpcMethodToSchema(type);
+        final var rpcBuilder = ImmutableMap.<Method, RpcInvocationStrategy>builderWithExpectedSize(methods.size());
         for (final Entry<Method, RpcDefinition> rpc : methods.entrySet()) {
-            rpcBuilder.put(rpc.getKey(), createStrategy(rpc.getKey(), rpc.getValue()));
+            rpcBuilder.put(rpc.getKey(), RpcInvocationStrategy.of(this, rpc.getKey(), rpc.getValue()));
         }
         rpcNames = rpcBuilder.build();
-        proxy = (RpcService) Proxy.newProxyInstance(type.getClassLoader(), new Class[] {type}, this);
-    }
-
-    private RpcInvocationStrategy createStrategy(final Method method, final RpcDefinition schema) {
-        final var rpcName = schema.getQName();
-        final var contentContext = ContentRoutedRpcContext.forRpc(schema.asEffectiveStatement());
-        return contentContext == null ? new NonRoutedStrategy(rpcName)
-            : new RoutedStrategy(rpcName, method, contentContext.leaf());
-    }
-
-    RpcService getProxy() {
-        return proxy;
     }
 
     @Override
     @SuppressWarnings("checkstyle:hiddenField")
-    public Object invoke(final Object proxy, final Method method, final Object[] args) {
-        final RpcInvocationStrategy rpc = rpcNames.get(method);
-        if (rpc != null) {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+        final var strategy = rpcNames.get(method);
+        if (strategy != null) {
             if (args.length != 1) {
                 throw new IllegalArgumentException("Input must be provided.");
             }
-            return rpc.invoke((DataObject) requireNonNull(args[0]));
+            return strategy.invoke((DataObject) requireNonNull(args[0]));
         }
-
-        switch (method.getName()) {
-            case "toString":
-                if (method.getReturnType().equals(String.class) && method.getParameterCount() == 0) {
-                    return type.getName() + "$Adapter{delegate=" + delegate.toString() + "}";
-                }
-                break;
-            case "hashCode":
-                if (method.getReturnType().equals(int.class) && method.getParameterCount() == 0) {
-                    return System.identityHashCode(proxy);
-                }
-                break;
-            case "equals":
-                if (method.getReturnType().equals(boolean.class) && method.getParameterCount() == 1
-                        && method.getParameterTypes()[0] == Object.class) {
-                    return proxy == args[0];
-                }
-                break;
-            default:
-                break;
-        }
-
-        throw new UnsupportedOperationException("Method " + method.toString() + "is unsupported.");
-    }
-
-    private abstract class RpcInvocationStrategy {
-        private final @NonNull NodeIdentifier inputIdentifier;
-        private final @NonNull Absolute outputPath;
-
-        RpcInvocationStrategy(final QName rpcName) {
-            final var namespace = rpcName.getModule();
-            outputPath = Absolute.of(rpcName, YangConstants.operationOutputQName(namespace).intern()).intern();
-            inputIdentifier = NodeIdentifier.create(YangConstants.operationInputQName(namespace.intern()));
-        }
-
-        final ListenableFuture<RpcResult<?>> invoke(final DataObject input) {
-            return invoke0(serialize(input));
-        }
-
-        abstract ContainerNode serialize(DataObject input);
-
-        final @NonNull NodeIdentifier inputIdentifier() {
-            return inputIdentifier;
-        }
-
-        private ListenableFuture<RpcResult<?>> invoke0(final ContainerNode input) {
-            final ListenableFuture<? extends DOMRpcResult> result =
-                    delegate.invokeRpc(outputPath.firstNodeIdentifier(), input);
-            if (ENABLE_CODEC_SHORTCUT && result instanceof BindingRpcFutureAware bindingAware) {
-                return bindingAware.getBindingFuture();
-            }
-
-            return transformFuture(result, adapterContext.currentSerializer());
-        }
-
-        private ListenableFuture<RpcResult<?>> transformFuture(final ListenableFuture<? extends DOMRpcResult> domFuture,
-                final BindingNormalizedNodeSerializer resultCodec) {
-            return Futures.transform(domFuture, input -> {
-                final NormalizedNode domData = input.value();
-                final DataObject bindingResult;
-                if (domData != null) {
-                    bindingResult = resultCodec.fromNormalizedNodeRpcData(outputPath, (ContainerNode) domData);
-                } else {
-                    bindingResult = null;
-                }
-
-                return RpcResultUtil.rpcResultFromDOM(input.errors(), bindingResult);
-            }, MoreExecutors.directExecutor());
-        }
-    }
-
-    private final class NonRoutedStrategy extends RpcInvocationStrategy {
-        NonRoutedStrategy(final QName rpcName) {
-            super(rpcName);
-        }
-
-        @Override
-        ContainerNode serialize(final DataObject input) {
-            return LazySerializedContainerNode.create(inputIdentifier(), input, adapterContext.currentSerializer());
-        }
-    }
-
-    private final class RoutedStrategy extends RpcInvocationStrategy {
-        private final ContextReferenceExtractor refExtractor;
-        private final NodeIdentifier contextName;
-
-        RoutedStrategy(final QName rpcName, final Method rpcMethod, final QName leafName) {
-            super(rpcName);
-            final Optional<Class<? extends DataContainer>> maybeInputType =
-                    BindingReflections.resolveRpcInputClass(rpcMethod);
-            checkState(maybeInputType.isPresent(), "RPC method %s has no input", rpcMethod.getName());
-            final Class<? extends DataContainer> inputType = maybeInputType.get();
-            refExtractor = ContextReferenceExtractor.from(inputType);
-            contextName = new NodeIdentifier(leafName);
-        }
-
-        @Override
-        ContainerNode serialize(final DataObject input) {
-            final InstanceIdentifier<?> bindingII = refExtractor.extract(input);
-            final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
-
-            if (bindingII != null) {
-                final YangInstanceIdentifier yangII = serializer.toCachedYangInstanceIdentifier(bindingII);
-                final LeafNode<?> contextRef = ImmutableNodes.leafNode(contextName, yangII);
-                return LazySerializedContainerNode.withContextRef(inputIdentifier(), input, contextRef, serializer);
-            }
-            return LazySerializedContainerNode.create(inputIdentifier(), input, serializer);
-        }
-
+        return defaultInvoke(proxy, method, args);
     }
 }
