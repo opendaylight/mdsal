@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 
 import com.google.common.cache.Cache;
@@ -21,7 +20,6 @@ import org.opendaylight.mdsal.binding.dom.adapter.invoke.RpcServiceInvoker;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
@@ -31,43 +29,33 @@ import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
-final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
+final class LegacyDOMRpcImplementationAdapter<T extends RpcService> extends AbstractDOMRpcImplementationAdapter<T> {
     private static final Cache<Class<?>, RpcServiceInvoker> SERVICE_INVOKERS = CacheBuilder.newBuilder().weakKeys()
             .build();
 
-    // Default implementations are 0, we need to perform some translation, hence we have a slightly higher cost
-    private static final int COST = 1;
-
-    private final AdapterContext adapterContext;
     private final RpcServiceInvoker invoker;
-    private final RpcService delegate;
     private final QName inputQname;
 
-    <T extends RpcService> BindingDOMRpcImplementationAdapter(final AdapterContext adapterContext,
+    LegacyDOMRpcImplementationAdapter(final AdapterContext adapterContext,
             final Class<T> type, final Map<QName, Method> localNameToMethod, final T delegate) {
+        super(adapterContext, delegate);
+
         try {
             invoker = SERVICE_INVOKERS.get(type, () -> RpcServiceInvoker.from(localNameToMethod));
         } catch (ExecutionException e) {
             throw new IllegalArgumentException("Failed to create invokers for type " + type, e);
         }
 
-        this.adapterContext = requireNonNull(adapterContext);
-        this.delegate = requireNonNull(delegate);
         inputQname = YangConstants.operationInputQName(BindingReflections.getQNameModule(type)).intern();
     }
 
     @Override
     public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final ContainerNode input) {
         final QName rpcType = rpc.getType();
-        final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
+        final CurrentAdapterSerializer serializer = currentSerializer();
         final DataObject bindingInput = input != null ? deserialize(serializer, rpcType, input) : null;
         final ListenableFuture<RpcResult<?>> bindingResult = invoke(rpcType, bindingInput);
         return LazyDOMRpcResultFuture.create(serializer, bindingResult);
-    }
-
-    @Override
-    public long invocationCost() {
-        return COST;
     }
 
     private DataObject deserialize(final CurrentAdapterSerializer serializer, final QName rpcType,
@@ -82,6 +70,6 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     }
 
     private ListenableFuture<RpcResult<?>> invoke(final QName rpcType, final DataObject input) {
-        return invoker.invokeRpc(delegate, rpcType, input);
+        return invoker.invokeRpc(delegate(), rpcType, input);
     }
 }

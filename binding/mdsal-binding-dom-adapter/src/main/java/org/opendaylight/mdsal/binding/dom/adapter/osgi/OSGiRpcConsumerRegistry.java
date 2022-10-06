@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 import com.google.common.annotations.Beta;
 import java.util.Map;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -24,6 +25,11 @@ public final class OSGiRpcConsumerRegistry extends AbstractAdaptedService<RpcCon
 
     public OSGiRpcConsumerRegistry() {
         super(RpcConsumerRegistry.class);
+    }
+
+    @Override
+    public <T extends Rpc<?, ?>> T getRpc(final Class<T> rpcInterface) {
+        return delegate().getRpc(rpcInterface);
     }
 
     @Override
