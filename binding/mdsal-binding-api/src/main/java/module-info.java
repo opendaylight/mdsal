@@ -17,4 +17,5 @@ module org.opendaylight.mdsal.binding.api {
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
     requires static transitive com.github.spotbugs.annotations;
+    requires com.google.common;
 }
