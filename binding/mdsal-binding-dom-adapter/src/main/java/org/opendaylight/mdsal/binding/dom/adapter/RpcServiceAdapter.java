@@ -11,13 +11,12 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map.Entry;
@@ -44,22 +43,16 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
-class RpcServiceAdapter implements InvocationHandler {
+final class RpcServiceAdapter extends AbstractRpcAdapter {
     private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
-    private final Class<? extends RpcService> type;
-    private final AdapterContext adapterContext;
-    private final DOMRpcService delegate;
     private final RpcService proxy;
 
     RpcServiceAdapter(final Class<? extends RpcService> type, final AdapterContext adapterContext,
-            final DOMRpcService domService) {
-        this.type = requireNonNull(type);
-        this.adapterContext = requireNonNull(adapterContext);
-        delegate = requireNonNull(domService);
+            final DOMRpcService delegate) {
+        super(adapterContext, delegate, type);
 
-        final ImmutableBiMap<Method, RpcDefinition> methods = adapterContext.currentSerializer()
-                .getRpcMethodToSchema(type);
-        final Builder<Method, RpcInvocationStrategy> rpcBuilder = ImmutableMap.builderWithExpectedSize(methods.size());
+        final ImmutableBiMap<Method, RpcDefinition> methods = currentSerializer().getRpcMethodToSchema(type);
+        final var rpcBuilder = ImmutableMap.<Method, RpcInvocationStrategy>builderWithExpectedSize(methods.size());
         for (final Entry<Method, RpcDefinition> rpc : methods.entrySet()) {
             rpcBuilder.put(rpc.getKey(), createStrategy(rpc.getKey(), rpc.getValue()));
         }
@@ -74,13 +67,14 @@ class RpcServiceAdapter implements InvocationHandler {
                 : new NonRoutedStrategy(rpcType);
     }
 
+    @VisibleForTesting
     RpcService getProxy() {
         return proxy;
     }
 
     @Override
     @SuppressWarnings("checkstyle:hiddenField")
-    public Object invoke(final Object proxy, final Method method, final Object[] args) {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         final RpcInvocationStrategy rpc = rpcNames.get(method);
         if (rpc != null) {
             if (args.length != 1) {
@@ -88,29 +82,7 @@ class RpcServiceAdapter implements InvocationHandler {
             }
             return rpc.invoke((DataObject) requireNonNull(args[0]));
         }
-
-        switch (method.getName()) {
-            case "toString":
-                if (method.getReturnType().equals(String.class) && method.getParameterCount() == 0) {
-                    return type.getName() + "$Adapter{delegate=" + delegate.toString() + "}";
-                }
-                break;
-            case "hashCode":
-                if (method.getReturnType().equals(int.class) && method.getParameterCount() == 0) {
-                    return System.identityHashCode(proxy);
-                }
-                break;
-            case "equals":
-                if (method.getReturnType().equals(boolean.class) && method.getParameterCount() == 1
-                        && method.getParameterTypes()[0] == Object.class) {
-                    return proxy == args[0];
-                }
-                break;
-            default:
-                break;
-        }
-
-        throw new UnsupportedOperationException("Method " + method.toString() + "is unsupported.");
+        return defaultInvoke(proxy, method, args);
     }
 
     private abstract class RpcInvocationStrategy {
@@ -135,12 +107,12 @@ class RpcServiceAdapter implements InvocationHandler {
 
         private ListenableFuture<RpcResult<?>> invoke0(final ContainerNode input) {
             final ListenableFuture<? extends DOMRpcResult> result =
-                    delegate.invokeRpc(outputPath.firstNodeIdentifier(), input);
+                    delegate().invokeRpc(outputPath.firstNodeIdentifier(), input);
             if (ENABLE_CODEC_SHORTCUT && result instanceof BindingRpcFutureAware bindingAware) {
                 return bindingAware.getBindingFuture();
             }
 
-            return transformFuture(result, adapterContext.currentSerializer());
+            return transformFuture(result, currentSerializer());
         }
 
         private ListenableFuture<RpcResult<?>> transformFuture(final ListenableFuture<? extends DOMRpcResult> domFuture,
@@ -166,7 +138,7 @@ class RpcServiceAdapter implements InvocationHandler {
 
         @Override
         ContainerNode serialize(final DataObject input) {
-            return LazySerializedContainerNode.create(inputIdentifier(), input, adapterContext.currentSerializer());
+            return LazySerializedContainerNode.create(inputIdentifier(), input, currentSerializer());
         }
     }
 
@@ -187,7 +159,7 @@ class RpcServiceAdapter implements InvocationHandler {
         @Override
         ContainerNode serialize(final DataObject input) {
             final InstanceIdentifier<?> bindingII = refExtractor.extract(input);
-            final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
+            final CurrentAdapterSerializer serializer = currentSerializer();
 
             if (bindingII != null) {
                 final YangInstanceIdentifier yangII = serializer.toCachedYangInstanceIdentifier(bindingII);
@@ -196,6 +168,5 @@ class RpcServiceAdapter implements InvocationHandler {
             }
             return LazySerializedContainerNode.create(inputIdentifier(), input, serializer);
         }
-
     }
 }

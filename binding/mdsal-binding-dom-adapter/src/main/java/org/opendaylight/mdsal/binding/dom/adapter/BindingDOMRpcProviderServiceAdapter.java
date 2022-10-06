@@ -20,7 +20,9 @@ import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -45,6 +47,29 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     public <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(final Class<S> type,
             final T implementation, final Set<InstanceIdentifier<?>> paths) {
         return register(type, implementation, toYangInstanceIdentifiers(paths));
+    }
+
+    @Override
+    public Registration registerRpcImplementation(final Rpc<?, ?> implementation) {
+        return register(implementation, GLOBAL);
+    }
+
+    @Override
+    public Registration registerRpcImplementation(final Rpc<?, ?> implementation,
+            final Set<InstanceIdentifier<?>> paths) {
+        return register(implementation, toYangInstanceIdentifiers(paths));
+    }
+
+    private Registration register(final Rpc<?, ?> implementation,
+            final Collection<YangInstanceIdentifier> rpcContextPaths) {
+        final var type = implementation.implementedInterface();
+        final var def = currentSerializer().getRuntimeContext().getRpcDefinition(type);
+        if (def == null) {
+            throw new IllegalArgumentException("Cannot resolve YANG definition of " + type);
+        }
+
+        final var domRpcs = createDomRpcIdentifiers(Set.of(def.statement().argument()), rpcContextPaths);
+        return getDelegate().registerRpcImplementation(adapter, domRpcs);
     }
 
     private <S extends RpcService, T extends S> ObjectRegistration<T> register(final Class<S> type,
