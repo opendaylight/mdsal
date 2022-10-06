@@ -72,14 +72,8 @@ public final class ActionSpec<A extends Action<? extends InstanceIdentifier<P>, 
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof ActionSpec)) {
-            return false;
-        }
-        final var other = (ActionSpec<?, ?>) obj;
-        return type.equals(other.type) && path.equals(other.path);
+        return obj == this || obj instanceof ActionSpec<?, ?> other
+            && type.equals(other.type) && path.equals(other.path);
     }
 
     @Override
