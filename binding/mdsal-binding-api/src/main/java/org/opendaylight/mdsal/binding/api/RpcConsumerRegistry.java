@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
 /**
@@ -70,4 +71,6 @@ public interface RpcConsumerRegistry extends BindingService {
      * @return the proxy for the requested RPC service. This method never returns null.
      */
     <T extends RpcService> @NonNull T getRpcService(@NonNull Class<T> serviceInterface);
+
+    <R extends Rpc<?, ?>> @NonNull R getRpc(@NonNull Class<R> rpcInterface);
 }
