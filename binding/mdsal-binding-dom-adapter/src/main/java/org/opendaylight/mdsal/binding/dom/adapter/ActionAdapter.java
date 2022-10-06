@@ -41,7 +41,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object [] args) throws NoSuchMethodError {
+    public Object invoke(final Object proxy, final Method method, final Object [] args) throws Throwable {
         switch (method.getName()) {
             case "equals":
                 if (args.length == 1) {
@@ -86,6 +86,9 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                 break;
         }
 
+        if (method.isDefault()) {
+            return InvocationHandler.invokeDefault(proxy, method, args);
+        }
         throw new NoSuchMethodError("Method " + method.toString() + "is unsupported.");
     }
 }
