@@ -12,7 +12,9 @@ import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -39,6 +41,17 @@ public final class OSGiRpcProviderService extends AbstractAdaptedService<RpcProv
     public <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(final Class<S> type,
             final T implementation, final Set<InstanceIdentifier<?>> paths) {
         return delegate().registerRpcImplementation(type, implementation, paths);
+    }
+
+    @Override
+    public Registration registerRpcImplementation(final Rpc<?, ?> implementation) {
+        return delegate().registerRpcImplementation(implementation);
+    }
+
+    @Override
+    public Registration registerRpcImplementation(final Rpc<?, ?> implementation,
+            final Set<InstanceIdentifier<?>> paths) {
+        return delegate().registerRpcImplementation(implementation, paths);
     }
 
     @Activate

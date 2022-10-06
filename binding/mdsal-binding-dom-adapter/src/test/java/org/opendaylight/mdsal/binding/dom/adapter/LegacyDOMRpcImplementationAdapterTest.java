@@ -19,14 +19,13 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 
-public class BindingDOMRpcImplementationAdapterTest {
-
+public class LegacyDOMRpcImplementationAdapterTest {
     @Test
     public void basicTest() throws Exception {
         final BindingDOMCodecServices registry = mock(BindingDOMCodecServices.class);
-        final Method testMethod = this.getClass().getDeclaredMethod("testMethod");
+        final Method testMethod = getClass().getDeclaredMethod("testMethod");
         final QName rpcType = QName.create(QNameModule.create(XMLNamespace.of("tst")), "test");
-        final BindingDOMRpcImplementationAdapter adapter = new BindingDOMRpcImplementationAdapter(
+        final LegacyDOMRpcImplementationAdapter adapter = new LegacyDOMRpcImplementationAdapter(
             new ConstantAdapterContext(registry), OpendaylightTestRpcServiceService.class,
             ImmutableMap.of(rpcType, testMethod), mock(OpendaylightTestRpcServiceService.class));
         assertNotNull(adapter);
