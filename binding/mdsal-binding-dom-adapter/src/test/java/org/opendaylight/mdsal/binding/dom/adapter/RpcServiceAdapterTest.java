@@ -39,27 +39,27 @@ public class RpcServiceAdapterTest {
                 bindingTestContext.getCodec(), bindingTestContext.getDomRpcInvoker());
 
         Method method = TestRpcService.class.getMethod("equals", Object.class);
-        assertTrue((boolean) rpcServiceAdapter.invoke(rpcServiceAdapter.getProxy(), method,
-                new Object[]{ rpcServiceAdapter.getProxy() }));
-        assertFalse((boolean) rpcServiceAdapter.invoke(rpcServiceAdapter.getProxy(), method,
+        assertTrue((boolean) rpcServiceAdapter.invoke(rpcServiceAdapter.facade(), method,
+                new Object[]{ rpcServiceAdapter.facade() }));
+        assertFalse((boolean) rpcServiceAdapter.invoke(rpcServiceAdapter.facade(), method,
                 new Object[]{ new Object() }));
 
         method = TestRpcService.class.getMethod("hashCode");
-        assertEquals(rpcServiceAdapter.getProxy().hashCode(), rpcServiceAdapter.invoke(rpcServiceAdapter.getProxy(),
+        assertEquals(rpcServiceAdapter.facade().hashCode(), rpcServiceAdapter.invoke(rpcServiceAdapter.facade(),
                 method, new Object[]{ }));
 
         method = TestRpcService.class.getMethod("toString");
-        assertEquals(rpcServiceAdapter.getProxy().toString(), rpcServiceAdapter.invoke(rpcServiceAdapter.getProxy(),
+        assertEquals(rpcServiceAdapter.facade().toString(), rpcServiceAdapter.invoke(rpcServiceAdapter.facade(),
                 method, new Object[]{ }));
 
         method = OpendaylightTestRpcServiceService.class.getMethod("rockTheHouse", RockTheHouseInput.class);
-        assertNotNull(rpcServiceAdapter.invoke(rpcServiceAdapter.getProxy(), method,
+        assertNotNull(rpcServiceAdapter.invoke(rpcServiceAdapter.facade(), method,
             new Object[]{ new RockTheHouseInputBuilder().build() }));
 
         rpcServiceAdapter = new RpcServiceAdapter(OpendaylightTestRoutedRpcService.class,
                 bindingTestContext.getCodec(), bindingTestContext.getDomRpcInvoker());
         method = OpendaylightTestRoutedRpcService.class.getMethod("routedSimpleRoute", RoutedSimpleRouteInput.class);
-        assertNotNull(rpcServiceAdapter.invoke(rpcServiceAdapter.getProxy(), method,
+        assertNotNull(rpcServiceAdapter.invoke(rpcServiceAdapter.facade(), method,
                 new Object[]{ new RoutedSimpleRouteInputBuilder().build() }));
     }
 
