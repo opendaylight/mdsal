@@ -9,7 +9,9 @@ package org.opendaylight.mdsal.binding.api;
 
 import java.util.Set;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
 /**
@@ -43,4 +45,8 @@ public interface RpcProviderService extends BindingService {
      */
     <R extends RpcService, I extends R> ObjectRegistration<I> registerRpcImplementation(Class<R> type, I implementation,
         Set<InstanceIdentifier<?>> paths);
+
+    Registration registerRpcImplementation(Rpc<?, ?> implementation);
+
+    Registration registerRpcImplementation(Rpc<?, ?> implementation, Set<InstanceIdentifier<?>> paths);
 }
