@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 /**
  * Utility implementation which implements {@link DOMRpcImplementation} by forwarding it to
@@ -24,7 +24,7 @@ public abstract class ForwardingDOMRpcImplementation extends ForwardingObject im
     protected abstract @NonNull DOMRpcImplementation delegate();
 
     @Override
-    public ListenableFuture<? extends DOMRpcResult> invokeRpc(final DOMRpcIdentifier type, final NormalizedNode input) {
+    public ListenableFuture<? extends DOMRpcResult> invokeRpc(final DOMRpcIdentifier type, final ContainerNode input) {
         return delegate().invokeRpc(type, input);
     }
 }

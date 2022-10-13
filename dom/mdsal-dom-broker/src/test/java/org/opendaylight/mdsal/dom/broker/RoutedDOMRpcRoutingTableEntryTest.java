@@ -35,7 +35,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
@@ -146,7 +145,7 @@ public class RoutedDOMRpcRoutingTableEntryTest {
         entry = entry.newInstance(map);
     }
 
-    private void assertRpcAvailable(final NormalizedNode input) {
+    private void assertRpcAvailable(final ContainerNode input) {
         doReturn(Futures.immediateFuture(result)).when(impl).invokeRpc(any(), any());
 
         final var future = OperationInvocation.invoke(entry, input);
@@ -159,7 +158,7 @@ public class RoutedDOMRpcRoutingTableEntryTest {
         verify(impl).invokeRpc(any(), any());
     }
 
-    private void assertRpcUnavailable(final NormalizedNode input) {
+    private void assertRpcUnavailable(final ContainerNode input) {
         final var future = OperationInvocation.invoke(entry, input);
         final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
         assertThat(cause, instanceOf(DOMRpcImplementationNotAvailableException.class));

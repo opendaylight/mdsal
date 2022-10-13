@@ -29,7 +29,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
@@ -47,7 +46,7 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     <T extends RpcService> BindingDOMRpcImplementationAdapter(final AdapterContext adapterContext,
             final Class<T> type, final Map<QName, Method> localNameToMethod, final T delegate) {
         try {
-            this.invoker = SERVICE_INVOKERS.get(type, () -> RpcServiceInvoker.from(localNameToMethod));
+            invoker = SERVICE_INVOKERS.get(type, () -> RpcServiceInvoker.from(localNameToMethod));
         } catch (ExecutionException e) {
             throw new IllegalArgumentException("Failed to create invokers for type " + type, e);
         }
@@ -58,7 +57,7 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final NormalizedNode input) {
+    public ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final ContainerNode input) {
         final QName rpcType = rpc.getType();
         final CurrentAdapterSerializer serializer = adapterContext.currentSerializer();
         final DataObject bindingInput = input != null ? deserialize(serializer, rpcType, input) : null;
@@ -72,15 +71,14 @@ final class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation {
     }
 
     private DataObject deserialize(final CurrentAdapterSerializer serializer, final QName rpcType,
-            final NormalizedNode input) {
+            final ContainerNode input) {
         if (ENABLE_CODEC_SHORTCUT && input instanceof BindingLazyContainerNode) {
             return ((BindingLazyContainerNode<?>) input).getDataObject();
         }
 
-        final ContainerNode container = (ContainerNode) input;
-        checkArgument(inputQname.equals(container.getIdentifier().getNodeType()), "Unexpected RPC %s input %s", rpcType,
-            input);
-        return serializer.fromNormalizedNodeRpcData(Absolute.of(rpcType, inputQname), container);
+        checkArgument(inputQname.equals(input.getIdentifier().getNodeType()),
+            "Unexpected RPC %s input %s", rpcType, input);
+        return serializer.fromNormalizedNodeRpcData(Absolute.of(rpcType, inputQname), input);
     }
 
     private ListenableFuture<RpcResult<?>> invoke(final QName rpcType, final DataObject input) {

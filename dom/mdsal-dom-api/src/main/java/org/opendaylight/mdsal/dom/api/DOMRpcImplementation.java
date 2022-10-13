@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 /**
  * Interface implemented by an individual RPC implementation. This API allows for dispatch
@@ -28,7 +28,7 @@ public interface DOMRpcImplementation {
      * @throws NullPointerException if any argument is null
      */
     @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull DOMRpcIdentifier rpc,
-            @NonNull NormalizedNode input);
+            @NonNull ContainerNode input);
 
     /**
      * Return the relative invocation cost of this implementation. Default implementation return 0.

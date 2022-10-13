@@ -11,7 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 /**
  * A {@link DOMService} which allows clients to invoke RPCs. The conceptual model of this service is that of a dynamic
@@ -29,14 +29,14 @@ public interface DOMRpcService extends DOMService {
      * @return A {@link ListenableFuture} which will return either a result structure, or report a subclass
      *         of {@link DOMRpcException} reporting a transport error.
      */
-    @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull QName type, @NonNull NormalizedNode input);
+    @NonNull ListenableFuture<? extends DOMRpcResult> invokeRpc(@NonNull QName type, @NonNull ContainerNode input);
 
     /**
      * Register a {@link DOMRpcAvailabilityListener} with this service to receive notifications
      * about RPC implementations becoming (un)available. The listener will be invoked with the
      * current implementations reported and will be kept uptodate as implementations come and go.
      * Users should note that using a listener does not necessarily mean that
-     * {@link #invokeRpc(QName, NormalizedNode)} will not report a failure due to
+     * {@link #invokeRpc(QName, ContainerNode)} will not report a failure due to
      * {@link DOMRpcImplementationNotAvailableException} and need to be ready to handle it.
      * Implementations are encouraged to take reasonable precautions to prevent this scenario from
      * occurring.

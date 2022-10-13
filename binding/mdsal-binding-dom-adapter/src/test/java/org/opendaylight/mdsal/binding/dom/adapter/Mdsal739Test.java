@@ -35,7 +35,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controll
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,7 +63,7 @@ public class Mdsal739Test {
     public void testRpcInputName() {
         final var rpcService = mock(DOMRpcService.class);
 
-        final var captor = ArgumentCaptor.forClass(NormalizedNode.class);
+        final var captor = ArgumentCaptor.forClass(ContainerNode.class);
         doReturn(Futures.immediateFailedFuture(new Throwable())).when(rpcService).invokeRpc(any(), captor.capture());
         final var adapter = (OpendaylightTestRpcServiceService) new RpcServiceAdapter(
             OpendaylightTestRpcServiceService.class, adapterContext, rpcService).getProxy();
@@ -74,7 +73,7 @@ public class Mdsal739Test {
         final var input = captor.getValue();
         assertThat(input, instanceOf(ContainerNode.class));
         assertSame(NodeIdentifier.create(RockTheHouseInput.QNAME), input.getIdentifier());
-        final var body = ((ContainerNode) input).body();
+        final var body = input.body();
         assertEquals(1, body.size());
         assertEquals(ImmutableNodes.leafNode(QName.create(RockTheHouseInput.QNAME, "zip-code"), "12345"),
             body.iterator().next());
