@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.spec.reflect;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.cache.CacheBuilder;
@@ -193,8 +192,8 @@ public final class BindingReflections {
         return Optional.empty();
     }
 
-    public static @NonNull QName getQName(final Class<? extends BaseIdentity> bindingClass) {
-        return CLASS_TO_QNAME.getUnchecked(requireNonNull(bindingClass))
+    public static @NonNull QName getQName(final BaseIdentity bindingClass) {
+        return CLASS_TO_QNAME.getUnchecked(bindingClass.implementedInterface())
             .orElseThrow(() -> new IllegalStateException("Failed to resolve QName of " + bindingClass));
     }
 
