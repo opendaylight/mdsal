@@ -33,6 +33,7 @@ public final class OSGiRpcConsumerRegistry extends AbstractAdaptedService<RpcCon
     }
 
     @Override
+    @Deprecated
     public <T extends RpcService> T getRpcService(final Class<T> serviceInterface) {
         return delegate().getRpcService(serviceInterface);
     }

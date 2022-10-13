@@ -33,12 +33,14 @@ public final class OSGiRpcProviderService extends AbstractAdaptedService<RpcProv
     }
 
     @Override
+    @Deprecated
     public <R extends RpcService, I extends R> ObjectRegistration<I> registerRpcImplementation(final Class<R> type,
             final I implementation) {
         return delegate().registerRpcImplementation(type, implementation);
     }
 
     @Override
+    @Deprecated
     public <R extends RpcService, I extends R> ObjectRegistration<I> registerRpcImplementation(final Class<R> type,
             final I implementation, final Set<InstanceIdentifier<?>> paths) {
         return delegate().registerRpcImplementation(type, implementation, paths);

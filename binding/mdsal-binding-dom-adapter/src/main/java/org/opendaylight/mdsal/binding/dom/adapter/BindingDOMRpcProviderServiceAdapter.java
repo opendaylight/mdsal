@@ -39,12 +39,14 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     }
 
     @Override
+    @Deprecated
     public <R extends RpcService, I extends R> ObjectRegistration<I> registerRpcImplementation(final Class<R> type,
             final I implementation) {
         return register(currentSerializer(), type, implementation, GLOBAL);
     }
 
     @Override
+    @Deprecated
     public <R extends RpcService, I extends R> ObjectRegistration<I> registerRpcImplementation(final Class<R> type,
             final I implementation, final Set<InstanceIdentifier<?>> paths) {
         final var serializer = currentSerializer();
@@ -105,6 +107,7 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
         return getDelegate().registerRpcImplementations(builder.build());
     }
 
+    @Deprecated
     private <S extends RpcService, T extends S> ObjectRegistration<T> register(
             final CurrentAdapterSerializer serializer, final Class<S> type, final T implementation,
             final Collection<YangInstanceIdentifier> rpcContextPaths) {

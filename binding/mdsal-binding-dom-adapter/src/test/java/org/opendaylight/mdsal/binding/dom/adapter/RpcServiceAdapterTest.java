@@ -25,6 +25,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controll
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.RoutedSimpleRouteInputBuilder;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
+@Deprecated(since = "11.0.0", forRemoval = true)
 public class RpcServiceAdapterTest {
 
     @SuppressWarnings("checkstyle:IllegalThrows")
