@@ -70,6 +70,7 @@ public interface RpcConsumerRegistry extends BindingService {
      *        generated from a YANG model.
      * @return the proxy for the requested RPC service. This method never returns null.
      */
+    @Deprecated(since = "11.0.0", forRemoval = true)
     <T extends RpcService> @NonNull T getRpcService(@NonNull Class<T> serviceInterface);
 
     <R extends Rpc<?, ?>> @NonNull R getRpc(@NonNull Class<R> rpcInterface);
