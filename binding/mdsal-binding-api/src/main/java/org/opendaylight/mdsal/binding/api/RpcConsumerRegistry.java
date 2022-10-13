@@ -66,7 +66,9 @@ public interface RpcConsumerRegistry extends BindingService {
      * @param serviceInterface the interface of the RPC Service. Typically this is an interface
      *        generated from a YANG model.
      * @return the proxy for the requested RPC service. This method never returns null.
+     * @deprecated Use {@link #getRpc(Class)} instead.
      */
+    @Deprecated(since = "11.0.0", forRemoval = true)
     <S extends RpcService> @NonNull S getRpcService(@NonNull Class<S> serviceInterface);
 
     /**

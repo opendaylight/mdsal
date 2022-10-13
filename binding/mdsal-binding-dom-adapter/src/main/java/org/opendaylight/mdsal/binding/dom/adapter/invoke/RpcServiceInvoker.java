@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
  * RPC Service invoker provides common invocation interface for any subtype of {@link RpcService} via
  * {@link #invokeRpc(RpcService, QName, DataObject)} method.
  */
+@Deprecated(since = "11.0.0", forRemoval = true)
 public abstract class RpcServiceInvoker {
     private static final Logger LOG = LoggerFactory.getLogger(RpcServiceInvoker.class);
 

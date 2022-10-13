@@ -19,6 +19,7 @@ import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 
+@Deprecated(since = "11.0.0", forRemoval = true)
 public class LocalNameRpcServiceInvokerTest {
 
     private static RpcServiceInvoker rpcServiceInvoker;

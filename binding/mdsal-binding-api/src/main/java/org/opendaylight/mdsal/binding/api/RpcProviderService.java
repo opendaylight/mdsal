@@ -30,7 +30,10 @@ public interface RpcProviderService extends BindingService {
      * @param implementation implementation object
      * @return An {@link ObjectRegistration} controlling unregistration
      * @throws NullPointerException if any argument is {@code null}
+     * @deprecated Use {@link #registerRpcImplementation(Rpc)} or
+     *             {@link #registerRpcImplementations(ClassToInstanceMap)} instead.
      */
+    @Deprecated(since = "11.0.0", forRemoval = true)
     <R extends RpcService, I extends R> @NonNull ObjectRegistration<I> registerRpcImplementation(Class<R> type,
         I implementation);
 
@@ -44,7 +47,10 @@ public interface RpcProviderService extends BindingService {
      * @param paths Datastore paths to service
      * @return An {@link ObjectRegistration} controlling unregistration
      * @throws NullPointerException if any argument is {@code null}
+     * @deprecated Use {@link #registerRpcImplementation(Rpc, Set)} or
+     *             {@link #registerRpcImplementations(ClassToInstanceMap, Set)} instead.
      */
+    @Deprecated(since = "11.0.0", forRemoval = true)
     <R extends RpcService, I extends R> @NonNull ObjectRegistration<I> registerRpcImplementation(Class<R> type,
         I implementation, Set<InstanceIdentifier<?>> paths);
 

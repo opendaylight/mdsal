@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
+@Deprecated(since = "11.0.0", forRemoval = true)
 public class BindingRpcAdapterRegistrationTest {
     @Test
     public void removeRegistrationTest() throws Exception {
