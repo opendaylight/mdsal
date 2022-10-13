@@ -21,6 +21,7 @@ import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 
+@Deprecated
 final class RpcServiceAdapter extends AbstractRpcAdapter {
     private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
 

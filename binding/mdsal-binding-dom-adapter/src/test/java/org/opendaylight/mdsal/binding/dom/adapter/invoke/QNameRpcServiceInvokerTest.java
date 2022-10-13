@@ -16,8 +16,8 @@ import org.junit.Test;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 
+@Deprecated(since = "11.0.0", forRemoval = true)
 public class QNameRpcServiceInvokerTest {
-
     @Test
     public void instanceForTest() throws Exception {
         assertNotNull(QNameRpcServiceInvoker.instanceFor(ImmutableMap.of()));

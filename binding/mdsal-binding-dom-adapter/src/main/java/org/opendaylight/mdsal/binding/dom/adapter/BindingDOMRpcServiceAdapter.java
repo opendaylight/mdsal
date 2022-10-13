@@ -38,6 +38,7 @@ public final class BindingDOMRpcServiceAdapter
     }
 
     @Override
+    @Deprecated
     public <T extends RpcService> T getRpcService(final Class<T> rpcService) {
         return rpcService.cast(getAdapter(requireNonNull(rpcService)).facade());
     }

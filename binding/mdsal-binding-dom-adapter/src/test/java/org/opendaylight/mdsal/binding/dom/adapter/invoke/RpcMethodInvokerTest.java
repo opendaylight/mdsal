@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
+@Deprecated(since = "11.0.0", forRemoval = true)
 public class RpcMethodInvokerTest {
     private static final TestImplClassWithInput TEST_IMPL_CLASS = new TestImplClassWithInput();
 

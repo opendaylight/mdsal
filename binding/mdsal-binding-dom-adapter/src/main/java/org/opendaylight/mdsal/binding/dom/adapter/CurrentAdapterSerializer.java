@@ -171,6 +171,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         return Map.entry(stack, lastNamespace);
     }
 
+    @Deprecated(since = "11.0.0", forRemoval = true)
     // FIXME: This should be probably part of Binding Runtime context
     ImmutableBiMap<Method, QName> getRpcMethodToQName(final Class<? extends RpcService> key) {
         final Module module = getModule(key);
@@ -200,6 +201,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
                 + "full BindingRuntimeContext available in trace log", modeledClass, moduleName));
     }
 
+    @Deprecated(since = "11.0.0", forRemoval = true)
     private Method findRpcMethod(final Class<? extends RpcService> key, final RpcDefinition rpcDef)
             throws NoSuchMethodException {
         final var rpcName = rpcDef.getQName();

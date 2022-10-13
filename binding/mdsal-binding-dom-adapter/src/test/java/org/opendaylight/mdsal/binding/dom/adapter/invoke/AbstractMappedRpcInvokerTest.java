@@ -24,6 +24,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 
+@Deprecated(since = "11.0.0", forRemoval = true)
 public class AbstractMappedRpcInvokerTest {
     @Test
     public void invokeRpcTest() throws Exception {
