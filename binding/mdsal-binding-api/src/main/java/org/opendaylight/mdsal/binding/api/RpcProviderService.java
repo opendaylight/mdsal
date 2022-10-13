@@ -19,10 +19,11 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
  * models.
  */
 public interface RpcProviderService extends BindingService {
-
+    @Deprecated(since = "11.0.0", forRemoval = true)
     <R extends RpcService, T extends R> ObjectRegistration<T> registerRpcImplementation(Class<R> type,
         T implementation);
 
+    @Deprecated(since = "11.0.0", forRemoval = true)
     <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(Class<S> type,
         T implementation, Set<InstanceIdentifier<?>> paths);
 
