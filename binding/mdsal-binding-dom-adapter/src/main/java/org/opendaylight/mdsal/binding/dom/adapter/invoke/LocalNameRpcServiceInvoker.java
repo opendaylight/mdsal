@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 
+@Deprecated(since = "11.0.0", forRemoval = true)
 final class LocalNameRpcServiceInvoker extends AbstractMappedRpcInvoker<String> {
     private final QNameModule module;
 

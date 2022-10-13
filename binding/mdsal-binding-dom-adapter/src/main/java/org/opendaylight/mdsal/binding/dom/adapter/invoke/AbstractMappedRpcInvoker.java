@@ -25,6 +25,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated(since = "11.0.0", forRemoval = true)
 abstract class AbstractMappedRpcInvoker<T> extends RpcServiceInvoker {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractMappedRpcInvoker.class);
 

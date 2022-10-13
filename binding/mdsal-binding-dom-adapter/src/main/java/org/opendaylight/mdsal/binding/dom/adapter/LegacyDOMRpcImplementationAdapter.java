@@ -29,6 +29,7 @@ import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
+@Deprecated(since = "11.0.0", forRemoval = true)
 final class LegacyDOMRpcImplementationAdapter extends AbstractDOMRpcImplementationAdapter {
     private static final Cache<Class<?>, RpcServiceInvoker> SERVICE_INVOKERS = CacheBuilder.newBuilder().weakKeys()
             .build();
