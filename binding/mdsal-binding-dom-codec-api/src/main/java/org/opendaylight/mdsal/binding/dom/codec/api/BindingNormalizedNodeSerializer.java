@@ -12,7 +12,6 @@ import java.time.Instant;
 import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.BaseNotification;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
@@ -21,9 +20,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
-import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
@@ -164,22 +161,7 @@ public interface BindingNormalizedNodeSerializer {
      */
     @Beta
     @NonNull BindingLazyContainerNode<RpcInput> toLazyNormalizedNodeActionInput(
-            @NonNull Class<? extends Action<?, ?, ?>> action, @NonNull NodeIdentifier identifier,
-                    @NonNull RpcInput input);
-
-    /**
-     * Lazily translates supplied Binding action input into NormalizedNode data.
-     *
-     * @param action Binding action class
-     * @param input Binding action input
-     * @return NormalizedNode representation of action input
-     * @throws NullPointerException if any of the arguments is null
-     */
-    @Beta default @NonNull BindingLazyContainerNode<RpcInput> toLazyNormalizedNodeActionInput(
-            @NonNull final Class<? extends Action<?, ?, ?>> action, @NonNull final RpcInput input) {
-        return toLazyNormalizedNodeActionInput(action,
-            new NodeIdentifier(YangConstants.operationInputQName(BindingReflections.getQNameModule(action))), input);
-    }
+            @NonNull Class<? extends Action<?, ?, ?>> action, @NonNull RpcInput input);
 
     /**
      * Translates supplied Binding action input into NormalizedNode data.
@@ -189,12 +171,8 @@ public interface BindingNormalizedNodeSerializer {
      * @return NormalizedNode representation of action input
      * @throws NullPointerException if any of the arguments is null
      */
-    @Beta default @NonNull ContainerNode toNormalizedNodeActionInput(
-            @NonNull final Class<? extends Action<?, ?, ?>> action, @NonNull final RpcInput input) {
-        return toLazyNormalizedNodeActionInput(action,
-            new NodeIdentifier(YangConstants.operationInputQName(BindingReflections.getQNameModule(action))), input)
-                .getDelegate();
-    }
+    @NonNull ContainerNode toNormalizedNodeActionInput(@NonNull Class<? extends Action<?, ?, ?>> action,
+        @NonNull RpcInput input);
 
     /**
      * Lazily translates supplied Binding action output into NormalizedNode data.
@@ -205,32 +183,5 @@ public interface BindingNormalizedNodeSerializer {
      */
     @Beta
     @NonNull BindingLazyContainerNode<RpcOutput> toLazyNormalizedNodeActionOutput(
-            @NonNull Class<? extends Action<?, ?, ?>> action, @NonNull NodeIdentifier identifier,
-                    @NonNull RpcOutput output);
-
-    /**
-     * Lazily translates supplied Binding action output into NormalizedNode data.
-     *
-     * @param action Binding action class
-     * @param output Binding action output
-     * @return NormalizedNode representation of action output
-     */
-    @Beta default @NonNull BindingLazyContainerNode<RpcOutput> toLazyNormalizedNodeActionOutput(
-            @NonNull final Class<? extends Action<?, ?, ?>> action, @NonNull final RpcOutput output) {
-        return toLazyNormalizedNodeActionOutput(action,
-            new NodeIdentifier(YangConstants.operationInputQName(BindingReflections.getQNameModule(action))), output);
-    }
-
-    /**
-     * Translates supplied Binding action output into NormalizedNode data.
-     *
-     * @param output Binding action output
-     * @return NormalizedNode representation of action output
-     */
-    @Beta default @NonNull ContainerNode toNormalizedNodeActionOutput(
-            @NonNull final Class<? extends Action<?, ?, ?>> action, @NonNull final RpcOutput output) {
-        return toLazyNormalizedNodeActionOutput(action,
-            new NodeIdentifier(YangConstants.operationInputQName(BindingReflections.getQNameModule(action))), output)
-                .getDelegate();
-    }
+            @NonNull Class<? extends Action<?, ?, ?>> action, @NonNull RpcOutput output);
 }

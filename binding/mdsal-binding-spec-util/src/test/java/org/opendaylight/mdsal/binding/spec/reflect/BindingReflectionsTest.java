@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.spec.util.FooChild;
 import org.opendaylight.mdsal.binding.spec.util.GroupingFoo;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
-import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
@@ -55,16 +54,6 @@ public class BindingReflectionsTest {
                 TestImplementation.class.getDeclaredMethod("rpcMethodTest")).get());
         assertFalse(BindingReflections.resolveRpcOutputClass(
                 TestImplementation.class.getDeclaredMethod("rpcMethodTest2")).isPresent());
-
-        assertEquals(QName.create("test", "test"), BindingReflections.getQName(TestIdentity.VALUE));
-    }
-
-    interface TestIdentity extends BaseIdentity {
-        QName QNAME = QName.create("test", "test");
-        TestIdentity VALUE = () -> TestIdentity.class;
-
-        @Override
-        Class<? extends TestIdentity> implementedInterface();
     }
 
     static final class TestImplementation implements Augmentation<TestImplementation>, RpcService {

@@ -28,7 +28,6 @@ import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
@@ -41,14 +40,14 @@ public abstract class ForwardingBindingDOMCodecServices extends ForwardingObject
 
     @Override
     public BindingLazyContainerNode<RpcInput> toLazyNormalizedNodeActionInput(
-            final Class<? extends Action<?, ?, ?>> action, final NodeIdentifier identifier, final RpcInput input) {
-        return delegate().toLazyNormalizedNodeActionInput(action, identifier, input);
+            final Class<? extends Action<?, ?, ?>> action, final RpcInput input) {
+        return delegate().toLazyNormalizedNodeActionInput(action, input);
     }
 
     @Override
     public BindingLazyContainerNode<RpcOutput> toLazyNormalizedNodeActionOutput(
-            final Class<? extends Action<?, ?, ?>> action, final NodeIdentifier identifier, final RpcOutput output) {
-        return delegate().toLazyNormalizedNodeActionOutput(action, identifier, output);
+            final Class<? extends Action<?, ?, ?>> action, final RpcOutput output) {
+        return delegate().toLazyNormalizedNodeActionOutput(action, output);
     }
 
     @Override
@@ -80,18 +79,6 @@ public abstract class ForwardingBindingDOMCodecServices extends ForwardingObject
     @Override
     public ContainerNode toNormalizedNodeRpcData(final DataContainer data) {
         return delegate().toNormalizedNodeRpcData(data);
-    }
-
-    @Override
-    public ContainerNode toNormalizedNodeActionInput(final Class<? extends Action<?, ?, ?>> action,
-            final RpcInput input) {
-        return delegate().toNormalizedNodeActionInput(action, input);
-    }
-
-    @Override
-    public ContainerNode toNormalizedNodeActionOutput(final Class<? extends Action<?, ?, ?>> action,
-            final RpcOutput output) {
-        return delegate().toNormalizedNodeActionOutput(action, output);
     }
 
     @Override
