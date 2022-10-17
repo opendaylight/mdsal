@@ -32,28 +32,22 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
-import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
-import org.opendaylight.yangtools.yang.binding.BaseIdentity;
-import org.opendaylight.yangtools.yang.binding.BindingContract;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
-import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,11 +61,6 @@ public final class BindingReflections {
             "(org.opendaylight.yang.gen.v1.[a-z0-9_\\.]*\\.(?:rev[0-9][0-9][0-1][0-9][0-3][0-9]|norev))";
     private static final Pattern ROOT_PACKAGE_PATTERN = Pattern.compile(ROOT_PACKAGE_PATTERN_STRING);
     private static final Logger LOG = LoggerFactory.getLogger(BindingReflections.class);
-
-    private static final LoadingCache<Class<?>, Optional<QName>> CLASS_TO_QNAME = CacheBuilder.newBuilder()
-            .weakKeys()
-            .expireAfterAccess(EXPIRATION_TIME, TimeUnit.SECONDS)
-            .build(new ClassToQNameLoader());
 
     private static final LoadingCache<ClassLoader, ImmutableSet<YangModuleInfo>> MODULE_INFO_CACHE =
             CacheBuilder.newBuilder().weakKeys().weakValues().build(
@@ -130,18 +119,6 @@ public final class BindingReflections {
     }
 
     /**
-     * Returns a QName associated to supplied type.
-     *
-     * @param dataType Data type class
-     * @return QName associated to supplied dataType. If dataType is Augmentation method does not return canonical
-     *         QName, but QName with correct namespace revision, but virtual local name, since augmentations do not
-     *         have name. May return null if QName is not present.
-     */
-    public static QName findQName(final Class<?> dataType) {
-        return CLASS_TO_QNAME.getUnchecked(dataType).orElse(null);
-    }
-
-    /**
      * Checks if method is RPC invocation.
      *
      * @param possibleMethod
@@ -194,19 +171,6 @@ public final class BindingReflections {
         return Optional.empty();
     }
 
-    public static @NonNull QName getQName(final BaseIdentity identity) {
-        return getContractQName(identity);
-    }
-
-    public static @NonNull QName getQName(final Rpc<?, ?> rpc) {
-        return getContractQName(rpc);
-    }
-
-    private static @NonNull QName getContractQName(final BindingContract<?> contract) {
-        return CLASS_TO_QNAME.getUnchecked(contract.implementedInterface())
-            .orElseThrow(() -> new IllegalStateException("Failed to resolve QName of " + contract));
-    }
-
     /**
      * Checks if class is child of augmentation.
      */
@@ -253,15 +217,6 @@ public final class BindingReflections {
         checkArgument(match.find(), "Package name '%s' does not match required pattern '%s'", name,
                 ROOT_PACKAGE_PATTERN_STRING);
         return match.group(0);
-    }
-
-    public static QNameModule getQNameModule(final Class<?> clz) {
-        if (DataContainer.class.isAssignableFrom(clz) || BaseIdentity.class.isAssignableFrom(clz)
-                || Action.class.isAssignableFrom(clz)) {
-            return findQName(clz).getModule();
-        }
-
-        return getModuleInfo(clz).getName().getModule();
     }
 
     /**
