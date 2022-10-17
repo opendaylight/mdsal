@@ -8,12 +8,14 @@
 package org.opendaylight.mdsal.binding.util;
 
 import com.google.common.util.concurrent.FluentFuture;
+import org.opendaylight.mdsal.binding.api.Datastores;
 import org.opendaylight.mdsal.binding.api.QueryOperations;
 import org.opendaylight.mdsal.binding.api.Transaction;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.spi.ForwardingTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Datastore;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 abstract class TypedTransaction<D extends Datastore, X extends Transaction> extends ForwardingTransaction {
@@ -21,7 +23,7 @@ abstract class TypedTransaction<D extends Datastore, X extends Transaction> exte
     private final X delegate;
 
     TypedTransaction(final D datastore, final X delegate) {
-        this.datastoreType = datastore.type();
+        this.datastoreType = Datastores.verifyTypeOf(datastore);
         this.delegate = delegate;
     }
 

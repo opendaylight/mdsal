@@ -18,4 +18,5 @@ module org.opendaylight.mdsal.binding.util {
     requires static transitive org.eclipse.jdt.annotation;
     requires static transitive javax.inject;
     requires static com.github.spotbugs.annotations;
+    requires rfc8342.ietf.datastores;
 }

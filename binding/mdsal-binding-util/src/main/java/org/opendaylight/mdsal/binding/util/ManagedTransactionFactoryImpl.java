@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.TransactionFactory;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Datastore;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
