@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.util;
 
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Datastore;
 
 /**
  * Read-write transaction which is specific to a single logical datastore (configuration or operational). Designed
