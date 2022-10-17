@@ -8,13 +8,13 @@
 package org.opendaylight.mdsal.binding.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Operational;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 
 /**
@@ -36,7 +36,7 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
         // here we expect the x2 OptimisticLockFailedException to be retried, and then eventually succeed:
         testableDataBroker.failCommits(2, new OptimisticLockFailedException("bada boum bam!"));
         TopLevelList data = newTestDataObject();
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Operational.VALUE,
             writeTx -> writeTx.put(TEST_PATH, data)).get();
         assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
@@ -47,7 +47,7 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
         // here we expect the x2 OptimisticLockFailedException to be retried, and then eventually succeed:
         testableDataBroker.failCommits(2, new OptimisticLockFailedException("bada boum bam!"));
         TopLevelList data = newTestDataObject();
-        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             writeTx -> writeTx.put(TEST_PATH, data)).get();
         assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
@@ -58,8 +58,8 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
         // here we expect the x2 OptimisticLockFailedException to be retried, and then eventually succeed:
         testableDataBroker.failCommits(2, new OptimisticLockFailedException("bada boum bam!"));
         TopLevelList data = newTestDataObject();
-        assertEquals(1, (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
-            OPERATIONAL, writeTx -> {
+        assertEquals(1, (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
+            writeTx -> {
                 writeTx.put(TEST_PATH, data);
                 return 1;
             }).get());
@@ -70,7 +70,7 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
     public void testCallWithNewTypedReadWriteTransactionReadFailedException() throws Exception {
         testableDataBroker.failReads(2, new ReadFailedException("bada boum bam!"));
         TopLevelList data = newTestDataObject();
-        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             tx -> {
                 tx.put(TEST_PATH, data);
                 assertEquals(data, tx.read(TEST_PATH).get().get());
@@ -82,8 +82,7 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
     public void testApplyWithNewReadWriteTransactionReadFailedException() throws Exception {
         testableDataBroker.failReads(2, new ReadFailedException("bada boum bam!"));
         TopLevelList data = newTestDataObject();
-        assertEquals(data, managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
-            OPERATIONAL,
+        assertEquals(data, managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Operational.VALUE,
             tx -> {
                 tx.put(TEST_PATH, data);
                 return tx.read(TEST_PATH).get().get();

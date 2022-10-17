@@ -16,6 +16,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Function;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Datastore;
 
 /**
  * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries on transaction failure
