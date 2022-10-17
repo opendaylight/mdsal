@@ -7,17 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.util;
 
-import com.google.common.util.concurrent.FluentFuture;
-import java.util.Optional;
-import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.Transaction;
-import org.opendaylight.mdsal.binding.api.query.QueryExpression;
-import org.opendaylight.mdsal.binding.api.query.QueryResult;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.mdsal.binding.api.ds.ReadOperations;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Datastore;
 
 /**
  * Read transaction which is specific to a single logical datastore (configuration or operational). Designed for use
@@ -27,43 +20,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  *
  * @param <D> The logical datastore handled by the transaction.
  */
-public interface TypedReadTransaction<D extends Datastore> extends Transaction {
-    /**
-     * Reads an object from the given path.
-     *
-     * @see ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)
-     *
-     * @param path The path to read from.
-     * @param <T> The type of the expected object.
-     * @return A future providing access to the result of the read, when it’s available, or any error encountered.
-     */
-    <T extends DataObject> FluentFuture<Optional<T>> read(InstanceIdentifier<T> path);
+public interface TypedReadTransaction<D extends Datastore> extends Transaction, ReadOperations<D> {
 
-    /**
-     * Determines if an object exists at the given path.
-     *
-     * @see ReadTransaction#exists(LogicalDatastoreType, InstanceIdentifier)
-     *
-     * @param path The path to read from.
-     * @return A future providing access to the result of the check, when it’s available, or any error encountered.
-     */
-    FluentFuture<Boolean> exists(InstanceIdentifier<?> path);
-
-    /**
-     * Executes a {@link QueryExpression}.
-     *
-     * @param query Query to execute
-     * @param <T> The type of the expected object
-     * @return a FluentFuture containing the result of the query. The Future blocks until the operation is complete.
-     *         Once complete:
-     *         <ul>
-     *           <li>The Future returns the result of the query</li>
-     *           <li>If the query execution fails, the Future will fail with a {@link ReadFailedException} or
-     *               an exception derived from ReadFailedException.
-     *            </li>
-     *         </ul>
-     * @throws NullPointerException if any of the arguments is null
-     * @throws IllegalArgumentException if the query is not supported
-     */
-    <T extends @NonNull DataObject> FluentFuture<QueryResult<T>> execute(QueryExpression<T> query);
 }
