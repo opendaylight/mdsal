@@ -41,15 +41,14 @@ public interface ManagedTransactionFactory {
      * @param <D> datastore type
      * @param <E> thrown exception type
      * @param <R> result type
-     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param datastore the {@link Datastore} type that will be accessed
      * @param txFunction the {@link InterruptibleCheckedFunction} that needs a new read transaction
      * @return the result of the function.
      * @throws E if an error occurs.
      * @throws InterruptedException if the function is interrupted (this is passed through from the provided function).
      */
-    <D extends Datastore, E extends Exception, R> R applyInterruptiblyWithNewReadOnlyTransactionAndClose(
-        Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction)
-        throws E, InterruptedException;
+    <D extends Datastore, E extends Exception, R> R applyInterruptiblyWithNewReadOnlyTransactionAndClose(D datastore,
+        InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction) throws E, InterruptedException;
 
     /**
      * Invokes a function with a <b>NEW</b> {@link TypedReadTransaction}, and ensures that that transaction is closed.
@@ -65,12 +64,12 @@ public interface ManagedTransactionFactory {
      * @param <D> datastore type
      * @param <E> thrown exception type
      * @param <R> result type
-     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param datastore the {@link Datastore} type that will be accessed
      * @param txFunction the {@link InterruptibleCheckedFunction} that needs a new read transaction
      * @return the result of the function.
      * @throws E if an error occurs.
      */
-    <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(Class<D> datastoreType,
+    <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(D datastore,
         CheckedFunction<TypedReadTransaction<D>, R, E> txFunction) throws E;
 
     /**
@@ -97,15 +96,14 @@ public interface ManagedTransactionFactory {
      * @param <D> datastore type
      * @param <E> thrown exception type
      * @param <R> result type
-     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param datastore the {@link Datastore} type that will be accessed
      * @param txFunction the {@link InterruptibleCheckedFunction} that needs a new read-write transaction
      * @return the {@link FluentFuture} returned by {@link ReadWriteTransaction#commit()}, or a failed future with an
      *         application specific exception (not from submit())
      */
     @CheckReturnValue
-    <D extends Datastore, E extends Exception, R>
-        FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
-            InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction);
+    <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(D datastore,
+        InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction);
 
     /**
      * Invokes a function with a <b>NEW</b> {@link ReadTransaction}, and ensures that that transaction is closed.
@@ -120,14 +118,13 @@ public interface ManagedTransactionFactory {
      *
      * @param <D> datastore type
      * @param <E> thrown exception type
-     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param datastore the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedFunction} that needs a new read transaction
      * @throws E if an error occurs.
      * @throws InterruptedException if the function is interrupted (this is passed through from the provided function).
      */
-    <D extends Datastore, E extends Exception> void callInterruptiblyWithNewReadOnlyTransactionAndClose(
-        Class<D> datastoreType, InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer)
-        throws E, InterruptedException;
+    <D extends Datastore, E extends Exception> void callInterruptiblyWithNewReadOnlyTransactionAndClose(D datastore,
+        InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer) throws E, InterruptedException;
 
     /**
      * Invokes a function with a <b>NEW</b> {@link ReadTransaction}, and ensures that that transaction is closed.
@@ -142,11 +139,11 @@ public interface ManagedTransactionFactory {
      *
      * @param <D> datastore type
      * @param <E> thrown exception type
-     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param datastore the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedFunction} that needs a new read transaction
      * @throws E if an error occurs.
      */
-    <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(Class<D> datastoreType,
+    <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(D datastore,
         CheckedConsumer<TypedReadTransaction<D>, E> txConsumer) throws E;
 
     /**
@@ -172,15 +169,14 @@ public interface ManagedTransactionFactory {
      *
      * @param <D> datastore type
      * @param <E> thrown exception type
-     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param datastore the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedConsumer} that needs a new read-write transaction
      * @return the {@link FluentFuture} returned by {@link ReadWriteTransaction#commit()}, or a failed future with an
      *         application specific exception (not from submit())
      */
     @CheckReturnValue
-    <D extends Datastore, E extends Exception>
-        FluentFuture<? extends Object> callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
-            InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer);
+    <D extends Datastore, E extends Exception> FluentFuture<? extends Object> callWithNewReadWriteTransactionAndSubmit(
+        D datastore, InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer);
 
     /**
      * Invokes a consumer with a <b>NEW</b> {@link WriteTransaction}, and then submits that transaction and
@@ -192,8 +188,7 @@ public interface ManagedTransactionFactory {
      * {@link WriteTransaction#cancel()}, or
      * {@link WriteTransaction#commit()} (it will throw an {@link UnsupportedOperationException}).
      *
-     * <p>The provided transaction is specific to the given logical datastore type and cannot be used for any
-     * other.
+     * <p>The provided transaction is specific to the given logical datastore type and cannot be used for any other.
      *
      * <p>This is an asynchronous API, like {@link DataBroker}'s own;
      * when returning from this method, the operation of the Transaction may well still be ongoing in the background,
@@ -205,13 +200,12 @@ public interface ManagedTransactionFactory {
      *
      * @param <D> datastore type
      * @param <E> thrown exception type
-     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param datastore the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedConsumer} that needs a new write only transaction
      * @return the {@link FluentFuture} returned by {@link WriteTransaction#commit()}, or a failed future with an
      *         application specific exception (not from submit())
      */
     @CheckReturnValue
-    <D extends Datastore, E extends Exception>
-        FluentFuture<? extends Object> callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
-            InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer);
+    <D extends Datastore, E extends Exception> FluentFuture<? extends Object> callWithNewWriteOnlyTransactionAndSubmit(
+        D datastore, InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer);
 }

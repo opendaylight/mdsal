@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.util;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
@@ -16,50 +18,51 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 @Beta
 // FIXME Base this on ietf-datastores.yang (RFC 8342)
 public abstract sealed class Datastore {
-
-    /** Class representing the configuration datastore. */
-    public static final Class<Configuration> CONFIGURATION = Configuration.class;
-
-    /** Class representing the operational datastore. */
-    public static final Class<Operational> OPERATIONAL = Operational.class;
-
-    public static final class Configuration extends Datastore {
-
-    }
-
-    public static final class Operational extends Datastore {
-
-    }
-
-    private Datastore() {
-        // Hidden on purpose
-    }
-
     /**
-     * Returns the logical datastore type corresponding to the given datastore class.
-     *
-     * @param datastoreClass The datastore class to convert.
-     * @return The corresponding logical datastore type.
-     * @throws IllegalArgumentException if the provided datastore class isn’t handled.
+     * Class representing the configuration datastore.
      */
-    public static LogicalDatastoreType toType(final Class<? extends Datastore> datastoreClass) {
-        if (datastoreClass.equals(Configuration.class)) {
-            return LogicalDatastoreType.CONFIGURATION;
-        } else if (Operational.class.equals(datastoreClass)) {
-            return LogicalDatastoreType.OPERATIONAL;
-        } else {
-            throw new IllegalArgumentException("Unknown datastore class " + datastoreClass);
+    public static final class Configuration extends Datastore {
+        private Configuration() {
+            super(LogicalDatastoreType.CONFIGURATION);
         }
     }
 
     /**
-     * Returns the datastore class corresponding to the given logical datastore type.
-     * @param datastoreType The logical datastore type to convert.
-     * @return The corresponding datastore class.
-     * @throws IllegalArgumentException if the provided logical datastore type isn’t handled.
+     * Class representing the operational datastore.
      */
-    public static Class<? extends Datastore> toClass(final LogicalDatastoreType datastoreType) {
-        return switch (datastoreType) {
+    public static final class Operational extends Datastore {
+        private Operational() {
+            super(LogicalDatastoreType.OPERATIONAL);
+        }
+    }
+
+    public static final Operational OPERATIONAL = new Operational();
+    public static final Configuration CONFIGURATION = new Configuration();
+
+    private final LogicalDatastoreType type;
+
+    private Datastore(final LogicalDatastoreType type) {
+        this.type = requireNonNull(type);
+    }
+
+    /**
+     * Returns the logical datastore type corresponding to thisclass.
+     *
+     * @return The corresponding logical datastore type.
+     */
+    public LogicalDatastoreType type() {
+        return type;
+    }
+
+    /**
+     * Returns the Datastore corresponding to the given logical datastore type.
+     *
+     * @param type The logical datastore type to convert.
+     * @return The corresponding Datastore
+     * @throws NullPointerException if {@code type} is {@code null}
+     */
+    public static Datastore ofType(final LogicalDatastoreType type) {
+        return switch (type) {
             case CONFIGURATION -> CONFIGURATION;
             case OPERATIONAL -> OPERATIONAL;
         };
