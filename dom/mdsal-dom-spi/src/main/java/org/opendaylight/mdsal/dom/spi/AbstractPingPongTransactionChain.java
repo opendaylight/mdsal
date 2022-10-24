@@ -12,6 +12,7 @@ import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.dom.spi.PingPongTransactionChain.LOG;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -46,11 +47,13 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
     private final DOMTransactionChain delegate;
 
     @GuardedBy("this")
-    private boolean failed;
+    @VisibleForTesting
+    boolean failed;
     @GuardedBy("this")
     private PingPongTransaction shutdownTx;
     @GuardedBy("this")
-    private Entry<PingPongTransaction, Throwable> deadTx;
+    @VisibleForTesting
+    Entry<PingPongTransaction, Throwable> deadTx;
 
     //  This VarHandle is used to manipulate the "ready" transaction. We perform only atomic get-and-set on it.
     private static final VarHandle READY_TX;
@@ -70,7 +73,8 @@ abstract class AbstractPingPongTransactionChain implements DOMTransactionChain {
      * time. We perform only compare-and-swap on these.
      */
     private static final VarHandle INFLIGHT_TX;
-    private volatile PingPongTransaction inflightTx;
+    @VisibleForTesting
+    volatile PingPongTransaction inflightTx;
 
     static {
         final var lookup = MethodHandles.lookup();

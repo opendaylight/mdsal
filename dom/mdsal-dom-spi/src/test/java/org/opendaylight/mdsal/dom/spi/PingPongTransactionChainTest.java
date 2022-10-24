@@ -19,16 +19,20 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.SettableFuture;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import org.junit.Before;
@@ -51,6 +55,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class PingPongTransactionChainTest {
+
     @Mock
     public Function<DOMTransactionChainListener, DOMTransactionChain> delegateFactory;
     @Mock
@@ -92,12 +97,26 @@ public class PingPongTransactionChainTest {
     }
 
     @Test
+    public void testIdleCloseNonNullDeadTx() {
+        pingPong.deadTx =
+            Map.entry(new PingPongTransaction(rwTx), new CancellationException().fillInStackTrace());
+        doNothing().when(listener).onTransactionChainFailed(any(), any(), any());
+        pingPongListener.onTransactionChainSuccessful(chain);
+        verify(listener).onTransactionChainFailed(any(), any(), any());
+    }
+
+
+    @Test
     public void testIdleFailure() {
         final var cause = new Throwable();
+
         doNothing().when(listener).onTransactionChainFailed(pingPong, null, cause);
         doReturn("mock").when(chain).toString();
         pingPongListener.onTransactionChainFailed(chain, rwTx, cause);
-        verify(listener).onTransactionChainFailed(pingPong, null, cause);
+
+        pingPong.inflightTx = new PingPongTransaction(rwTx);
+        pingPongListener.onTransactionChainFailed(chain, rwTx, cause);
+        verify(listener, times(2)).onTransactionChainFailed(pingPong, null, cause);
     }
 
     @Test
@@ -123,6 +142,15 @@ public class PingPongTransactionChainTest {
         assertGetIdentifier(tx);
         assertWriteOperations(tx);
         assertCommit(tx::commit);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testReadOnlyNonNullDeadTx() {
+        pingPong.deadTx =
+            Map.entry(new PingPongTransaction(rwTx), new CancellationException().fillInStackTrace());
+        doCallRealMethod().when(rwTx).toString();
+        pingPong.newReadOnlyTransaction();
+        verify(chain).newReadOnlyTransaction();
     }
 
     private void assertGetIdentifier(final DOMDataTreeTransaction tx) {
@@ -168,7 +196,8 @@ public class PingPongTransactionChainTest {
 
     @Test
     public void testCommitFailure() {
-        assertCommitFailure(() -> { });
+        assertCommitFailure(() -> {
+        });
     }
 
     @Test
@@ -179,6 +208,35 @@ public class PingPongTransactionChainTest {
             verify(chain).close();
         });
     }
+
+    @Test
+    public void testProcessFailedTx() {
+        final var tx = pingPong.newReadWriteTransaction();
+        final var rwTxFuture = SettableFuture.<CommitInfo>create();
+        doNothing().when(chain).close();
+        doReturn(true).when(rwTx1).cancel();
+        doReturn(FluentFuture.from(rwTxFuture)).when(rwTx).commit();
+        tx.commit();
+
+        // Setup ready transaction
+        doReturn(rwTx1).when(chain).newReadWriteTransaction();
+        pingPong.newReadWriteTransaction().commit();
+
+        pingPong.inflightTx = null;
+        pingPong.failed = true;
+        pingPong.close();
+        verify(chain).close();
+    }
+
+    @Test
+    public void testCancelForFailed() {
+        doReturn(true).when(rwTx).cancel();
+        final var tx = pingPong.newReadWriteTransaction();
+        pingPong.failed = true;
+        tx.cancel();
+        verify(rwTx).cancel();
+    }
+
 
     private void assertCommitFailure(final Runnable asyncAction) {
         final var tx = pingPong.newWriteOnlyTransaction();
