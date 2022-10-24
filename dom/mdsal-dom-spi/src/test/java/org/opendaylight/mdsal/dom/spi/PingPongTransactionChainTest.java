@@ -28,7 +28,11 @@ import static org.mockito.Mockito.verify;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.SettableFuture;
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import org.junit.Before;
@@ -90,6 +94,20 @@ public class PingPongTransactionChainTest {
         pingPongListener.onTransactionChainSuccessful(chain);
         verify(listener).onTransactionChainSuccessful(pingPong);
     }
+
+    @Test
+    public void testIdleCloseWithNonNullCancelled() throws NoSuchFieldException, IllegalAccessException {
+        Field f1 = pingPong.getClass().getSuperclass().getDeclaredField("deadTx");
+        Entry<PingPongTransaction, Throwable> entry =
+                Map.entry(new PingPongTransaction(rwTx), new CancellationException().fillInStackTrace());
+        f1.setAccessible(true);
+        f1.set(pingPong, entry);
+
+        doNothing().when(listener).onTransactionChainFailed(any(), any(), any());
+        pingPongListener.onTransactionChainSuccessful(chain);
+        verify(listener).onTransactionChainFailed(any(), any(), any());
+    }
+
 
     @Test
     public void testIdleFailure() {
