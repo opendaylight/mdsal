@@ -19,8 +19,8 @@ final class WriteTrackingTypedReadWriteTransactionImpl<D extends Datastore> exte
     // but the cost here is tiny (one read penalty at the end of a transaction) so we play it safe
     private volatile boolean written;
 
-    WriteTrackingTypedReadWriteTransactionImpl(final Class<D> datastoreType, final ReadWriteTransaction realTx) {
-        super(datastoreType, realTx);
+    WriteTrackingTypedReadWriteTransactionImpl(final D datastore, final ReadWriteTransaction realTx) {
+        super(datastore, realTx);
     }
 
     @Override

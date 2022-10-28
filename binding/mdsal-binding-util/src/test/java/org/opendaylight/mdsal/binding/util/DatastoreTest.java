@@ -16,15 +16,14 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 public class DatastoreTest {
     @Test
     public void testDatastoreToType() {
-        assertEquals(LogicalDatastoreType.CONFIGURATION, Datastore.toType(Datastore.CONFIGURATION));
-        assertEquals(LogicalDatastoreType.OPERATIONAL, Datastore.toType(Datastore.OPERATIONAL));
-        assertThrows(NullPointerException.class, () -> Datastore.toType(null));
+        assertEquals(LogicalDatastoreType.CONFIGURATION, Datastore.CONFIGURATION.type());
+        assertEquals(LogicalDatastoreType.OPERATIONAL, Datastore.OPERATIONAL.type());
     }
 
     @Test
     public void testDatastoreToClass() {
-        assertEquals(Datastore.CONFIGURATION, Datastore.toClass(LogicalDatastoreType.CONFIGURATION));
-        assertEquals(Datastore.OPERATIONAL, Datastore.toClass(LogicalDatastoreType.OPERATIONAL));
-        assertThrows(NullPointerException.class, () -> Datastore.toClass(null));
+        assertEquals(Datastore.CONFIGURATION, Datastore.ofType(LogicalDatastoreType.CONFIGURATION));
+        assertEquals(Datastore.OPERATIONAL, Datastore.ofType(LogicalDatastoreType.OPERATIONAL));
+        assertThrows(NullPointerException.class, () -> Datastore.ofType(null));
     }
 }

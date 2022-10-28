@@ -19,8 +19,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction> extends TypedTransaction<D, X>
         implements TypedWriteTransaction<D> {
-    TypedWriteTransactionImpl(final Class<D> datastoreType, final X realTx) {
-        super(datastoreType, realTx);
+    TypedWriteTransactionImpl(final D datastore, final X realTx) {
+        super(datastore, realTx);
     }
 
     @Override
