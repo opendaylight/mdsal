@@ -40,15 +40,16 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
 
     private final Executor executor;
 
-    RetryingManagedNewTransactionRunnerImpl(ManagedNewTransactionRunner delegate) {
+    RetryingManagedNewTransactionRunnerImpl(final ManagedNewTransactionRunner delegate) {
         this(delegate, MoreExecutors.directExecutor(), DEFAULT_RETRIES);
     }
 
-    RetryingManagedNewTransactionRunnerImpl(ManagedNewTransactionRunner delegate, int maxRetries) {
+    RetryingManagedNewTransactionRunnerImpl(final ManagedNewTransactionRunner delegate, final int maxRetries) {
         this(delegate, MoreExecutors.directExecutor(), maxRetries);
     }
 
-    RetryingManagedNewTransactionRunnerImpl(ManagedNewTransactionRunner delegate, Executor executor, int maxRetries) {
+    RetryingManagedNewTransactionRunnerImpl(final ManagedNewTransactionRunner delegate, final Executor executor,
+            final int maxRetries) {
         this.delegate = requireNonNull(delegate, "delegate must not be null");
         this.executor = requireNonNull(executor, "executor must not be null");
         this.maxRetries = maxRetries;
@@ -56,20 +57,20 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
 
     @Override
     public <D extends Datastore, E extends Exception, R> R applyInterruptiblyWithNewReadOnlyTransactionAndClose(
-            Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction)
+            final D datastore, final InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction)
             throws E, InterruptedException {
-        return applyInterruptiblyWithNewReadOnlyTransactionAndClose(datastoreType, txFunction, maxRetries);
+        return applyInterruptiblyWithNewReadOnlyTransactionAndClose(datastore, txFunction, maxRetries);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     private <R, D extends Datastore, E extends Exception> R applyInterruptiblyWithNewReadOnlyTransactionAndClose(
-            Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction,
-            int tries) throws E, InterruptedException {
+            final D datastore, final InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction,
+            final int tries) throws E, InterruptedException {
         try {
-            return delegate.applyInterruptiblyWithNewReadOnlyTransactionAndClose(datastoreType, txFunction);
+            return delegate.applyInterruptiblyWithNewReadOnlyTransactionAndClose(datastore, txFunction);
         } catch (Exception e) {
             if (isRetriableException(e) && tries - 1 > 0) {
-                return applyInterruptiblyWithNewReadOnlyTransactionAndClose(datastoreType, txFunction, tries - 1);
+                return applyInterruptiblyWithNewReadOnlyTransactionAndClose(datastore, txFunction, tries - 1);
             } else {
                 throw e;
             }
@@ -77,19 +78,19 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     }
 
     @Override
-    public <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(
-            Class<D> datastoreType, CheckedFunction<TypedReadTransaction<D>, R, E> txFunction) throws E {
-        return applyWithNewReadOnlyTransactionAndClose(datastoreType, txFunction, maxRetries);
+    public <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(final D datastore,
+            final CheckedFunction<TypedReadTransaction<D>, R, E> txFunction) throws E {
+        return applyWithNewReadOnlyTransactionAndClose(datastore, txFunction, maxRetries);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    private <R, D extends Datastore, E extends Exception> R applyWithNewReadOnlyTransactionAndClose(
-        Class<D> datastoreType, CheckedFunction<TypedReadTransaction<D>, R, E> txFunction, int tries) throws E {
+    private <R, D extends Datastore, E extends Exception> R applyWithNewReadOnlyTransactionAndClose(final D datastore,
+            final CheckedFunction<TypedReadTransaction<D>, R, E> txFunction, final int tries) throws E {
         try {
-            return delegate.applyWithNewReadOnlyTransactionAndClose(datastoreType, txFunction);
+            return delegate.applyWithNewReadOnlyTransactionAndClose(datastore, txFunction);
         } catch (Exception e) {
             if (isRetriableException(e) && tries - 1 > 0) {
-                return applyWithNewReadOnlyTransactionAndClose(datastoreType, txFunction, tries - 1);
+                return applyWithNewReadOnlyTransactionAndClose(datastore, txFunction, tries - 1);
             } else {
                 throw e;
             }
@@ -98,19 +99,19 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
 
     @Override
     public <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
-            Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
-        return applyWithNewReadWriteTransactionAndSubmit(datastoreType, txFunction, maxRetries);
+            final D datastore, final InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
+        return applyWithNewReadWriteTransactionAndSubmit(datastore, txFunction, maxRetries);
     }
 
     private <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
-            Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txRunner,
-            int tries) {
+            final D datastore, final InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txRunner,
+            final int tries) {
         FluentFuture<R> future = requireNonNull(
-            delegate.applyWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner),
+            delegate.applyWithNewReadWriteTransactionAndSubmit(datastore, txRunner),
             "delegate.callWithNewReadWriteTransactionAndSubmit() == null");
         return future.catchingAsync(Exception.class, exception -> {
             if (isRetriableException(exception) && tries - 1 > 0) {
-                return applyWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, tries - 1);
+                return applyWithNewReadWriteTransactionAndSubmit(datastore, txRunner, tries - 1);
             } else {
                 throw exception;
             }
@@ -118,26 +119,26 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     }
 
     @Override
-    public <R> R applyWithNewTransactionChainAndClose(Function<ManagedTransactionChain, R> chainConsumer) {
+    public <R> R applyWithNewTransactionChainAndClose(final Function<ManagedTransactionChain, R> chainConsumer) {
         throw new UnsupportedOperationException("The retrying transaction manager doesn't support transaction chains");
     }
 
     @Override
     public <D extends Datastore, E extends Exception> void callInterruptiblyWithNewReadOnlyTransactionAndClose(
-            Class<D> datastoreType, InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer)
+            final D datastore, final InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer)
             throws E, InterruptedException {
-        callInterruptiblyWithNewReadOnlyTransactionAndClose(datastoreType, txConsumer, maxRetries);
+        callInterruptiblyWithNewReadOnlyTransactionAndClose(datastore, txConsumer, maxRetries);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     private <D extends Datastore, E extends Exception> void callInterruptiblyWithNewReadOnlyTransactionAndClose(
-            Class<D> datastoreType, InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer, int tries)
-            throws E, InterruptedException {
+            final D datastore, final InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer,
+            final int tries) throws E, InterruptedException {
         try {
-            delegate.callInterruptiblyWithNewReadOnlyTransactionAndClose(datastoreType, txConsumer);
+            delegate.callInterruptiblyWithNewReadOnlyTransactionAndClose(datastore, txConsumer);
         } catch (Exception e) {
             if (isRetriableException(e) && tries - 1 > 0) {
-                callInterruptiblyWithNewReadOnlyTransactionAndClose(datastoreType, txConsumer, tries - 1);
+                callInterruptiblyWithNewReadOnlyTransactionAndClose(datastore, txConsumer, tries - 1);
             } else {
                 throw e;
             }
@@ -145,19 +146,19 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     }
 
     @Override
-    public <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(
-            Class<D> datastoreType, CheckedConsumer<TypedReadTransaction<D>, E> txConsumer) throws E {
-        callWithNewReadOnlyTransactionAndClose(datastoreType, txConsumer, maxRetries);
+    public <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(final D datastore,
+            final CheckedConsumer<TypedReadTransaction<D>, E> txConsumer) throws E {
+        callWithNewReadOnlyTransactionAndClose(datastore, txConsumer, maxRetries);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    private <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(
-            Class<D> datastoreType, CheckedConsumer<TypedReadTransaction<D>, E> txConsumer, int tries) throws E {
+    private <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(final D datastore,
+            final CheckedConsumer<TypedReadTransaction<D>, E> txConsumer, final int tries) throws E {
         try {
-            delegate.callWithNewReadOnlyTransactionAndClose(datastoreType, txConsumer);
+            delegate.callWithNewReadOnlyTransactionAndClose(datastore, txConsumer);
         } catch (Exception e) {
             if (isRetriableException(e) && tries - 1 > 0) {
-                callWithNewReadOnlyTransactionAndClose(datastoreType, txConsumer, tries - 1);
+                callWithNewReadOnlyTransactionAndClose(datastore, txConsumer, tries - 1);
             } else {
                 throw e;
             }
@@ -165,23 +166,22 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     }
 
     @Override
-    public <D extends Datastore, E extends Exception> FluentFuture<? extends Object>
-        callWithNewReadWriteTransactionAndSubmit(
-            Class<D> datastoreType, InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
-        return callWithNewReadWriteTransactionAndSubmit(datastoreType, txConsumer, maxRetries);
+    public <D extends Datastore, E extends Exception>
+        FluentFuture<? extends Object> callWithNewReadWriteTransactionAndSubmit(final D datastore,
+            final InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
+        return callWithNewReadWriteTransactionAndSubmit(datastore, txConsumer, maxRetries);
     }
 
-    private <D extends Datastore, E extends Exception, T> FluentFuture<T>
-        callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
-            InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txRunner, int tries) {
-
+    private <D extends Datastore, E extends Exception, T> FluentFuture<T> callWithNewReadWriteTransactionAndSubmit(
+            final D datastore, final InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txRunner,
+            final int tries) {
         return (FluentFuture<T>) requireNonNull(
-            delegate.callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner),
+            delegate.callWithNewReadWriteTransactionAndSubmit(datastore, txRunner),
             "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null")
             .catchingAsync(Exception.class, exception -> {
                 // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
                 if (isRetriableException(exception) && tries - 1 > 0) {
-                    return callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, tries - 1);
+                    return callWithNewReadWriteTransactionAndSubmit(datastore, txRunner, tries - 1);
                 } else {
                     // out of retries, so propagate the exception
                     throw exception;
@@ -190,23 +190,22 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     }
 
     @Override
-    public <D extends Datastore, E extends Exception> FluentFuture<? extends Object>
-        callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
-            InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer) {
-        return callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txConsumer, maxRetries);
+    public <D extends Datastore, E extends Exception>
+        FluentFuture<? extends Object> callWithNewWriteOnlyTransactionAndSubmit(final D datastore,
+            final InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer) {
+        return callWithNewWriteOnlyTransactionAndSubmit(datastore, txConsumer, maxRetries);
     }
 
-    private <D extends Datastore, E extends Exception, T> FluentFuture<T>
-        callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
-            InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txRunner, int tries) {
-
+    private <D extends Datastore, E extends Exception, T> FluentFuture<T> callWithNewWriteOnlyTransactionAndSubmit(
+            final D datastore, final InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txRunner,
+            final int tries) {
         return (FluentFuture<T>) requireNonNull(
-            delegate.callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner),
+            delegate.callWithNewWriteOnlyTransactionAndSubmit(datastore, txRunner),
             "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null")
             .catchingAsync(OptimisticLockFailedException.class, optimisticLockFailedException -> {
                 // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
                 if (tries - 1 > 0) {
-                    return callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner, tries - 1);
+                    return callWithNewWriteOnlyTransactionAndSubmit(datastore, txRunner, tries - 1);
                 } else {
                     // out of retries, so propagate the OptimisticLockFailedException
                     throw optimisticLockFailedException;
@@ -214,8 +213,8 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
             }, executor);
     }
 
-    private boolean isRetriableException(Throwable throwable) {
-        return throwable instanceof OptimisticLockFailedException || throwable instanceof ReadFailedException || (
-            throwable instanceof ExecutionException && isRetriableException(throwable.getCause()));
+    private boolean isRetriableException(final Throwable throwable) {
+        return throwable instanceof OptimisticLockFailedException || throwable instanceof ReadFailedException
+            || throwable instanceof ExecutionException && isRetriableException(throwable.getCause());
     }
 }

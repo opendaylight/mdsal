@@ -20,8 +20,8 @@ abstract class TypedTransaction<D extends Datastore, X extends Transaction> exte
     private final LogicalDatastoreType datastoreType;
     private final X delegate;
 
-    TypedTransaction(final Class<D> datastoreType, final X delegate) {
-        this.datastoreType = Datastore.toType(datastoreType);
+    TypedTransaction(final D datastore, final X delegate) {
+        this.datastoreType = datastore.type();
         this.delegate = delegate;
     }
 
@@ -35,8 +35,8 @@ abstract class TypedTransaction<D extends Datastore, X extends Transaction> exte
     }
 
     final <T extends DataObject> FluentFuture<QueryResult<T>> doExecute(final QueryExpression<T> query) {
-        if (delegate instanceof QueryOperations) {
-            return ((QueryOperations) delegate).execute(datastoreType, query);
+        if (delegate instanceof QueryOperations queryOps) {
+            return queryOps.execute(datastoreType, query);
         }
         throw new UnsupportedOperationException("Query execution requires backend support");
     }
