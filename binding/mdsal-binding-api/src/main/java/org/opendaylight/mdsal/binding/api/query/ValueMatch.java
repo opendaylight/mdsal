@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @param <T> query result type
  */
 @Beta
-public interface ValueMatch<T extends DataObject> extends StructuralBuilder<QueryExpression<T>> {
+public non-sealed interface ValueMatch<T extends DataObject> extends StructuralBuilder<QueryExpression<T>> {
     /**
      * Start chaining an additional match for the query. Query results are guaranteed both this match and that
      * additional match at the same time.

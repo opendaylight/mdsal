@@ -22,6 +22,21 @@ final class DefaultComparableMatchBuilder<T extends DataObject, V extends Compar
     }
 
     @Override
+    public ValueMatch<T> nonNull() {
+        return nonNullImpl();
+    }
+
+    @Override
+    public ValueMatch<T> isNull() {
+        return isNullImpl();
+    }
+
+    @Override
+    public ValueMatch<T> valueEquals(final V value) {
+        return valueEqualsImpl(value);
+    }
+
+    @Override
     public ValueMatch<T> lessThan(final V value) {
         return withMatch(Match.lessThan(value));
     }

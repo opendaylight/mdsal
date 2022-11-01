@@ -11,7 +11,6 @@ import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.query.ValueMatch;
-import org.opendaylight.mdsal.binding.api.query.ValueMatchBuilder;
 import org.opendaylight.mdsal.binding.dom.adapter.query.QueryBuilderState.BoundMethod;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate.Match;
@@ -20,7 +19,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 
-abstract class AbstractValueMatchBuilder<T extends DataObject, V> implements ValueMatchBuilder<T, V> {
+abstract class AbstractValueMatchBuilder<T extends DataObject, V> {
     private final QueryBuilderState builder;
     private final InstanceIdentifier<T> select;
     private final BoundMethod method;
@@ -32,18 +31,15 @@ abstract class AbstractValueMatchBuilder<T extends DataObject, V> implements Val
         this.method = requireNonNull(method);
     }
 
-    @Override
-    public final ValueMatch<T> nonNull() {
+    final @NonNull ValueMatch<T> nonNullImpl() {
         return withMatch(Match.exists());
     }
 
-    @Override
-    public final ValueMatch<T> isNull() {
+    final @NonNull ValueMatch<T> isNullImpl() {
         return withMatch(Match.exists().negate());
     }
 
-    @Override
-    public final ValueMatch<T> valueEquals(final V value) {
+    final @NonNull ValueMatch<T> valueEqualsImpl(final V value) {
         return withMatch(Match.valueEquals(value));
     }
 
