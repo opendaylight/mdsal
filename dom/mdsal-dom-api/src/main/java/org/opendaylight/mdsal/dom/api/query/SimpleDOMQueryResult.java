@@ -7,47 +7,31 @@
  */
 package org.opendaylight.mdsal.dom.api.query;
 
-import com.google.common.base.MoreObjects;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ImmutableList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Spliterator;
-import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-@NonNullByDefault
-final class SimpleDOMQueryResult implements DOMQueryResult {
+record SimpleDOMQueryResult(@NonNull ImmutableList<Entry<YangInstanceIdentifier, NormalizedNode>> items)
+        implements DOMQueryResult {
     static final SimpleDOMQueryResult EMPTY_INSTANCE = new SimpleDOMQueryResult(ImmutableList.of());
 
-    private final ImmutableList<Entry<YangInstanceIdentifier, NormalizedNode>> items;
-
-    SimpleDOMQueryResult(final ImmutableList<Entry<YangInstanceIdentifier, NormalizedNode>> items) {
-        this.items = items;
-    }
-
-    SimpleDOMQueryResult(final List<Entry<YangInstanceIdentifier, NormalizedNode>> items) {
-        this(ImmutableList.copyOf(items));
+    SimpleDOMQueryResult {
+        requireNonNull(items);
     }
 
     @Override
-    public Iterator<Entry<YangInstanceIdentifier, NormalizedNode>> iterator() {
+    public Iterator<@NonNull Entry<@NonNull YangInstanceIdentifier, @NonNull NormalizedNode>> iterator() {
         return items.iterator();
     }
 
     @Override
-    public Spliterator<Entry<YangInstanceIdentifier, NormalizedNode>> spliterator() {
+    public Spliterator<@NonNull Entry<@NonNull YangInstanceIdentifier, @NonNull NormalizedNode>> spliterator() {
         return items.spliterator();
-    }
-
-    @Override
-    public List<? extends Entry<YangInstanceIdentifier, NormalizedNode>> items() {
-        return items;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this).add("items", items).toString();
     }
 }
