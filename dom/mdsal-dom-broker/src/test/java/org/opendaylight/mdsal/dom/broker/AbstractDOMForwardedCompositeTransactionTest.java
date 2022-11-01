@@ -39,7 +39,7 @@ public class AbstractDOMForwardedCompositeTransactionTest {
 
         final var ex = assertThrows(IllegalStateException.class,
             domForwardedCompositeTransaction::closeSubtransactions);
-        assertEquals("Uncaught exception occured during closing transaction", ex.getMessage());
+        assertEquals("Uncaught exception occurred during closing transaction", ex.getMessage());
         assertThat(ex.getCause(), instanceOf(UnsupportedOperationException.class));
     }
 
