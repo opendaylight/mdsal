@@ -47,6 +47,6 @@ public interface DOMQueryResult extends Iterable<Entry<YangInstanceIdentifier, N
     }
 
     static DOMQueryResult of(final List<Entry<YangInstanceIdentifier, NormalizedNode>> items) {
-        return items.isEmpty() ? of() : new SimpleDOMQueryResult(items);
+        return items.isEmpty() ? of() : new SimpleDOMQueryResult(ImmutableList.copyOf(items));
     }
 }
