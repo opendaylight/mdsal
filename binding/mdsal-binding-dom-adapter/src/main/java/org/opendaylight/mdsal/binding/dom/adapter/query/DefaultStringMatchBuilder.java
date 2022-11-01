@@ -23,6 +23,21 @@ final class DefaultStringMatchBuilder<T extends DataObject> extends AbstractValu
     }
 
     @Override
+    public ValueMatch<T> nonNull() {
+        return nonNullImpl();
+    }
+
+    @Override
+    public ValueMatch<T> isNull() {
+        return isNullImpl();
+    }
+
+    @Override
+    public ValueMatch<T> valueEquals(final String value) {
+        return valueEqualsImpl(value);
+    }
+
+    @Override
     public ValueMatch<T> startsWith(final String str) {
         return withMatch(Match.stringStartsWith(str));
     }

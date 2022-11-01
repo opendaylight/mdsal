@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * @param <P> Product of builder
  */
 @Beta
-public interface StructuralBuilder<P> {
+public sealed interface StructuralBuilder<P> permits DescendantQueryBuilder, ValueMatch {
     /**
      * Returns instance of the product. Multiple calls to this method are not required to return same instance if
      * the state of the builder has changed.

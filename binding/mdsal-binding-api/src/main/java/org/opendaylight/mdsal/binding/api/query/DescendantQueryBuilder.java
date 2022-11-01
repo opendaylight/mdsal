@@ -23,7 +23,7 @@ import org.opendaylight.yangtools.yang.binding.KeyAware;
  * @param <T> Query result type
  */
 @Beta
-public interface DescendantQueryBuilder<T extends DataObject> extends StructuralBuilder<QueryExpression<T>> {
+public non-sealed interface DescendantQueryBuilder<T extends DataObject> extends StructuralBuilder<QueryExpression<T>> {
     /**
      * Add a child path component to the specification of what needs to be extracted. This method, along with its
      * alternatives, can be used to specify which object type to select from the root path.

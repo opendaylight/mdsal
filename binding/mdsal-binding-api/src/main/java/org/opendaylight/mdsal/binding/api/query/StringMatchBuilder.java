@@ -18,7 +18,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @param <T> query result type
  */
 @Beta
-public interface StringMatchBuilder<T extends DataObject> extends ValueMatchBuilder<T, String> {
+public non-sealed interface StringMatchBuilder<T extends DataObject> extends ValueMatchBuilder<T, String> {
     /**
      * Match if the leaf exists and its value starts with specified string, i.e. its {@link String#startsWith(String)}
      * would return true.

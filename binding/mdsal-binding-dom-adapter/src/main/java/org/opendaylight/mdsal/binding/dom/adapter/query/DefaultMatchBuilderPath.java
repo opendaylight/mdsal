@@ -135,7 +135,7 @@ final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> 
     }
 
     private <F> @NonNull ValueMatchBuilder<O, F> defaultFor(final LeafReference<T, F> ref) {
-        return new DefaultValueMatchBuilder<>(builder, select, builder.bindMethod(target.build(), ref));
+        return new DefaultValueMatchBuilder<O, F>(builder, select, builder.bindMethod(target.build(), ref));
     }
 
     private <F extends Comparable<F>> @NonNull ComparableMatchBuilder<O, F> comparableFor(
