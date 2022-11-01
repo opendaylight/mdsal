@@ -18,7 +18,8 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @param <V> value type
  */
 @Beta
-public interface ValueMatchBuilder<T extends DataObject, V> {
+public sealed interface ValueMatchBuilder<T extends DataObject, V>
+        permits ComparableMatchBuilder, StringMatchBuilder, AbstractValueMatchBuilder {
     /**
      * Match any existing value.
      *
