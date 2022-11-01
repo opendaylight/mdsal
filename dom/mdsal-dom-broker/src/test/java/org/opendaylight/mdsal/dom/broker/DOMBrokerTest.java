@@ -11,30 +11,34 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ForwardingExecutorService;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitDeadlockException;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
@@ -48,24 +52,20 @@ import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
 public class DOMBrokerTest extends AbstractDatastoreTest {
-
     private AbstractDOMDataBroker domBroker;
     private ListeningExecutorService executor;
     private ExecutorService futureExecutor;
     private CommitExecutorService commitExecutor;
 
-    @Before
-    public void setupStore() {
-        final InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
-                MoreExecutors.newDirectExecutorService());
-        final InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
-                MoreExecutors.newDirectExecutorService());
+    @BeforeEach
+    public void beforeEach() {
+        final var operStore = new InMemoryDOMDataStore("OPER", MoreExecutors.newDirectExecutorService());
+        final var configStore = new InMemoryDOMDataStore("CFG", MoreExecutors.newDirectExecutorService());
 
         operStore.onModelContextUpdated(SCHEMA_CONTEXT);
         configStore.onModelContextUpdated(SCHEMA_CONTEXT);
 
-        final ImmutableMap<LogicalDatastoreType, DOMStore> stores =
-                ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
+        final var stores = ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
                 .put(CONFIGURATION, configStore)
                 .put(OPERATIONAL, operStore)
                 .build();
@@ -77,8 +77,8 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
         domBroker = new SerializedDOMDataBroker(stores, executor);
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    public void affterEach() {
         if (executor != null) {
             executor.shutdownNow();
         }
@@ -88,14 +88,15 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test
+    @Timeout(value = 10, unit = TimeUnit.SECONDS)
     public void testTransactionIsolation() throws InterruptedException, ExecutionException {
         assertNotNull(domBroker);
 
-        final DOMDataTreeReadTransaction readTx = domBroker.newReadOnlyTransaction();
+        final var readTx = domBroker.newReadOnlyTransaction();
         assertNotNull(readTx);
 
-        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final var writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull(writeTx);
 
         /**
@@ -108,48 +109,41 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
          * Reads /test from readTx Read should return Absent.
          *
          */
-        final ListenableFuture<Optional<NormalizedNode>> readTxContainer = readTx.read(OPERATIONAL,
-            TestModel.TEST_PATH);
+        final var readTxContainer = readTx.read(OPERATIONAL, TestModel.TEST_PATH);
         assertFalse(readTxContainer.get().isPresent());
     }
 
-    @Test(timeout = 10000)
+    @Test
+    @Timeout(value = 10, unit = TimeUnit.SECONDS)
     public void testTransactionCommit() throws InterruptedException, ExecutionException {
-        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final var writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull(writeTx);
         /**
          * Writes /test in writeTx
          *
          */
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
-
         writeTx.commit().get();
 
-        final Optional<NormalizedNode> afterCommitRead = domBroker.newReadOnlyTransaction()
-                .read(OPERATIONAL, TestModel.TEST_PATH).get();
+        final var afterCommitRead = domBroker.newReadOnlyTransaction().read(OPERATIONAL, TestModel.TEST_PATH).get();
         assertTrue(afterCommitRead.isPresent());
     }
 
-    @Test(expected = TransactionCommitFailedException.class)
-    @SuppressWarnings({"checkstyle:AvoidHidingCauseException", "checkstyle:IllegalThrows"})
+    @Test
     public void testRejectedCommit() throws Throwable {
         commitExecutor.delegate = Mockito.mock(ExecutorService.class);
-        Mockito.doThrow(new RejectedExecutionException("mock"))
-            .when(commitExecutor.delegate).execute(Mockito.any(Runnable.class));
-        Mockito.doNothing().when(commitExecutor.delegate).shutdown();
-        Mockito.doReturn(Collections.emptyList()).when(commitExecutor.delegate).shutdownNow();
-        Mockito.doReturn("").when(commitExecutor.delegate).toString();
-        Mockito.doReturn(Boolean.TRUE).when(commitExecutor.delegate)
+        doThrow(new RejectedExecutionException("mock")).when(commitExecutor.delegate).execute(any(Runnable.class));
+        doNothing().when(commitExecutor.delegate).shutdown();
+        doReturn(Collections.emptyList()).when(commitExecutor.delegate).shutdownNow();
+        doReturn("").when(commitExecutor.delegate).toString();
+        doReturn(Boolean.TRUE).when(commitExecutor.delegate)
             .awaitTermination(Mockito.anyLong(), Mockito.any(TimeUnit.class));
 
-        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final var writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
-
-        try {
-            writeTx.commit().get(5, TimeUnit.SECONDS);
-        } catch (ExecutionException e) {
-            throw e.getCause();
-        }
+        final var future = writeTx.commit();
+        final var ex = assertThrows(ExecutionException.class, () -> future.get(5, TimeUnit.SECONDS));
+        assertEquals("", ex.getMessage());
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
@@ -166,9 +160,8 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
         return caughtEx;
     }
 
-    @Test(expected = ReadFailedException.class)
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:AvoidHidingCauseException"})
-    public void basicTests() throws Throwable {
+    @Test
+    public void basicTests() throws Exception {
         final DataContainerChild outerList = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
                 .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
                 .build();
@@ -208,29 +201,23 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
 
         readRx.close();
 
-        //Expected exception after close call
-
-        try {
-            readRx.read(OPERATIONAL, TestModel.TEST_PATH).get();
-        } catch (ExecutionException e) {
-            throw e.getCause();
-        }
+        // Expected exception after close call
+        final var future = readRx.read(OPERATIONAL, TestModel.TEST_PATH);
+        final var ex = assertThrows(ExecutionException.class, future::get).getCause();
+        assertInstanceOf(ReadFailedException.class, ex);
+        assertEquals("Transaction is closed", ex.getMessage());
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test
-    public void closeTest() throws Exception {
+    public void closeTest() {
         final String testException = "TestException";
 
         domBroker.setCloseable(() -> {
             throw new Exception(testException);
         });
 
-        try {
-            domBroker.close();
-        } catch (final Exception e) {
-            assertTrue(e.getMessage().contains(testException));
-        }
+        final var ex = assertThrows(Exception.class, domBroker::close);
+        assertEquals(testException, ex.getMessage());
     }
 
     static class CommitExecutorService extends ForwardingExecutorService {

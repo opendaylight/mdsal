@@ -7,62 +7,70 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.Futures;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
+@ExtendWith(MockitoExtension.class)
 public class CommitCoordinationTaskTest {
+    @Mock
+    private DOMStoreThreePhaseCommitCohort cohort;
 
-    private final DOMStoreThreePhaseCommitCohort cohort = mock(DOMStoreThreePhaseCommitCohort.class);
     private CommitCoordinationTask task;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    public void beforeEach() {
         final DOMDataTreeWriteTransaction tx = mock(DOMDataTreeWriteTransaction.class);
         task = new CommitCoordinationTask(tx, ImmutableList.of(cohort), null);
         doReturn("test").when(tx).getIdentifier();
     }
 
-    @Test(expected = TransactionCommitFailedException.class)
+    @Test
     public void canCommitBlockingWithFail() throws Exception {
         doReturn(FluentFutures.immediateNullFluentFuture()).when(cohort).abort();
 
         doReturn(FluentFutures.immediateFalseFluentFuture()).when(cohort).canCommit();
-        task.call();
+        final var ex = assertThrows(TransactionCommitFailedException.class, task::call);
+        assertEquals("Can Commit failed, no detailed cause available.", ex.getMessage());
     }
 
-    @Test(expected = TransactionCommitFailedException.class)
+    @Test
     public void canCommitBlockingWithFailException() throws Exception {
         doReturn(FluentFutures.immediateNullFluentFuture()).when(cohort).abort();
-
         doReturn(Futures.immediateFailedFuture(new InterruptedException())).when(cohort).canCommit();
-        task.call();
+        final var ex = assertThrows(TransactionCommitFailedException.class, task::call);
+        assertEquals("canCommit execution failed", ex.getMessage());
     }
 
-    @Test(expected = TransactionCommitFailedException.class)
+    @Test
     public void preCommitBlockingWithFail() throws Exception {
         doReturn(FluentFutures.immediateTrueFluentFuture()).when(cohort).canCommit();
         doReturn(FluentFutures.immediateNullFluentFuture()).when(cohort).abort();
-
         doReturn(Futures.immediateFailedFuture(new InterruptedException())).when(cohort).preCommit();
-        task.call();
+        final var ex = assertThrows(TransactionCommitFailedException.class, task::call);
+        assertEquals("preCommit execution failed", ex.getMessage());
     }
 
-    @Test(expected = TransactionCommitFailedException.class)
+    @Test
     public void commitBlockingWithFail() throws Exception {
         doReturn(FluentFutures.immediateTrueFluentFuture()).when(cohort).canCommit();
         doReturn(FluentFutures.immediateNullFluentFuture()).when(cohort).preCommit();
         doReturn(FluentFutures.immediateNullFluentFuture()).when(cohort).abort();
-
         doReturn(Futures.immediateFailedFuture(new InterruptedException())).when(cohort).commit();
-        task.call();
+        final var ex = assertThrows(TransactionCommitFailedException.class, task::call);
+        assertEquals("commit execution failed", ex.getMessage());
     }
 }
