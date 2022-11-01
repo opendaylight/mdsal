@@ -23,7 +23,8 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @param <V> value type
  */
 @Beta
-public interface ComparableMatchBuilder<T extends DataObject, V extends Comparable<V>> extends ValueMatchBuilder<T, V> {
+public non-sealed interface ComparableMatchBuilder<T extends DataObject, V extends Comparable<V>>
+        extends ValueMatchBuilder<T, V> {
     /**
      * Match if the leaf exists and its value is less than the specified value.
      *
