@@ -16,13 +16,10 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
  * Simple implementation of {@link TransactionChainListener} for testing.
  *
  *<p>
- * This transaction chain listener does not contain any logic, only update
- * futures ({@link #getFailFuture()} and {@link #getSuccessFuture()} when
- * transaction chain event is retrieved.
- *
+ * This transaction chain listener does not contain any logic, only update futures ({@link #getFailFuture()} and
+ * {@link #getSuccessFuture()} when transaction chain event is retrieved.
  */
-class BlockingTransactionChainListener implements DOMTransactionChainListener {
-
+final class BlockingTransactionChainListener implements DOMTransactionChainListener {
     private final SettableFuture<Throwable> failFuture = SettableFuture.create();
     private final SettableFuture<Void> successFuture = SettableFuture.create();
 
@@ -44,5 +41,4 @@ class BlockingTransactionChainListener implements DOMTransactionChainListener {
     public SettableFuture<Void> getSuccessFuture() {
         return successFuture;
     }
-
 }
