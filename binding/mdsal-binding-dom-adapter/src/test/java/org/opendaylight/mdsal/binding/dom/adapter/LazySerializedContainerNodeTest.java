@@ -29,7 +29,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
+import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 
 public class LazySerializedContainerNodeTest {
@@ -50,8 +50,7 @@ public class LazySerializedContainerNodeTest {
                 .getRpcMethodToSchema(OpendaylightTestRpcServiceService.class);
         final NodeIdentifier name = new NodeIdentifier(((RpcDefinition) biMap.values().iterator().next()).getInput()
             .getQName());
-        final LeafNode<?> leafNode = ImmutableLeafNodeBuilder.create().withNodeIdentifier(NodeIdentifier
-                .create(QName.create("", "test"))).withValue("").build();
+        final LeafNode<String> leafNode = ImmutableNodes.leafNode(QName.create("", "test"), "");
         final ContainerNode normalizedNode = LazySerializedContainerNode.create(name, dataObject, codec);
         assertNotNull(normalizedNode);
         final LazySerializedContainerNode lazySerializedContainerNode =
