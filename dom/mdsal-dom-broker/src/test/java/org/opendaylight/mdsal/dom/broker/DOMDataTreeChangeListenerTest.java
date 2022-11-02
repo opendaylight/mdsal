@@ -19,7 +19,6 @@ import static org.mockito.Mockito.verify;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -30,8 +29,8 @@ import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 
 public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
@@ -45,7 +44,7 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
     }
 
     @Test
-    public void receiveOnDataInitialEventForEmptyRoot() throws InterruptedException, ExecutionException {
+    public void receiveOnDataInitialEventForEmptyRoot() throws Exception {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
         doNothing().when(listener).onInitialData();
 
@@ -54,7 +53,7 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
     }
 
     @Test
-    public void receiveOnDataInitialEventForNonExistingData() throws InterruptedException, ExecutionException {
+    public void receiveOnDataInitialEventForNonExistingData() throws Exception {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
         final ArgumentCaptor<List> candidateCapture = ArgumentCaptor.forClass(List.class);
         doNothing().when(listener).onInitialData();
@@ -77,7 +76,7 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
     }
 
     @Test
-    public void receiveOnDataTreeChangedEventForPreExistingEmptyData() throws InterruptedException, ExecutionException {
+    public void receiveOnDataTreeChangedEventForPreExistingEmptyData() throws Exception {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
         final ArgumentCaptor<List> candidateCapture = ArgumentCaptor.forClass(List.class);
         doNothing().when(listener).onDataTreeChanged(any());
@@ -99,12 +98,12 @@ public class DOMDataTreeChangeListenerTest extends AbstractDatastoreTest {
     }
 
     @Test
-    public void receiveOnDataTreeChangeEventForPreExistingData() throws InterruptedException, ExecutionException {
+    public void receiveOnDataTreeChangeEventForPreExistingData() throws Exception {
         final DOMDataTreeChangeListener listener = mock(DOMDataTreeChangeListener.class);
         final ArgumentCaptor<List> candidateCapture = ArgumentCaptor.forClass(List.class);
         doNothing().when(listener).onDataTreeChanged(any());
 
-        final ContainerNode testNode = ImmutableContainerNodeBuilder.create()
+        final ContainerNode testNode = Builders.containerBuilder()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TestModel.TEST_QNAME))
                 .addChild(ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
                         .addChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME,

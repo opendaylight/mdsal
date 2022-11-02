@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import static java.util.Objects.requireNonNull;
-import static org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes.leafNode;
 
 import com.google.common.util.concurrent.FluentFuture;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -24,7 +23,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
 
 final class TestUtils {
     private static final MapNode OUTER_LIST = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
@@ -36,10 +34,10 @@ final class TestUtils {
     private static final QName TOP_LEVEL_LIST_QNAME = QName.create(TOP_QNAME, "top-level-list");
     private static final QName TOP_LEVEL_LIST_KEY_QNAME = QName.create(TOP_QNAME, "name");
 
-    private static final MapEntryNode TOP_LEVEL_LIST_NODE = ImmutableMapEntryNodeBuilder.create()
+    private static final MapEntryNode TOP_LEVEL_LIST_NODE = Builders.mapEntryBuilder()
         .withNodeIdentifier(NodeIdentifierWithPredicates.of(
             TOP_LEVEL_LIST_QNAME, TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
-        .withChild(leafNode(TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
+        .withChild(ImmutableNodes.leafNode(TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
         .build();
 
     private static final MapNode CHILD_LIST = ImmutableNodes.mapNodeBuilder(TestModel.TEST_QNAME)
