@@ -16,12 +16,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class SchemaUpdateForTransactionTest {
     private static final YangInstanceIdentifier TOP_PATH = YangInstanceIdentifier.of(TestModel.TEST_QNAME);
 
-    private SchemaContext schemaContext;
+    private EffectiveModelContext schemaContext;
     private InMemoryDOMDataStore domStore;
 
     @Before
@@ -84,7 +84,5 @@ public class SchemaUpdateForTransactionTest {
          *
          */
         // writeTx.write(TOP_PATH, ImmutableNodes.containerNode(Top.QNAME));
-
     }
-
 }
