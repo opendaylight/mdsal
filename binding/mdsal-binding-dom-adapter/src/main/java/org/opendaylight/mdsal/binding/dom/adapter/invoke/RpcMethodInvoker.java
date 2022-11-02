@@ -14,7 +14,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -32,9 +31,6 @@ final class RpcMethodInvoker {
     }
 
     static RpcMethodInvoker from(final Method method) {
-        BindingReflections.resolveRpcInputClass(method)
-            .orElseThrow(() -> new IllegalArgumentException("Method " + method + " does not have an input argument"));
-
         final MethodHandle methodHandle;
         try {
             methodHandle = MethodHandles.publicLookup().unreflect(method);

@@ -123,44 +123,6 @@ public final class BindingReflections {
                 && possibleMethod.getParameterCount() <= 2;
     }
 
-    /**
-     * Extracts Output class for RPC method.
-     *
-     * @param targetMethod method to scan
-     * @return Optional.empty() if result type could not be get, or return type is Void.
-     * @deprecated This method is unused and scheduled for removal
-     */
-    @Deprecated(since = "10.0.4", forRemoval = true)
-    @SuppressWarnings("rawtypes")
-    public static Optional<Class<?>> resolveRpcOutputClass(final Method targetMethod) {
-        checkState(isRpcMethod(targetMethod), "Supplied method is not a RPC invocation method");
-        Type futureType = targetMethod.getGenericReturnType();
-        Type rpcResultType = ClassLoaderUtils.getFirstGenericParameter(futureType).orElse(null);
-        Type rpcResultArgument = ClassLoaderUtils.getFirstGenericParameter(rpcResultType).orElse(null);
-        if (rpcResultArgument instanceof Class cls && !Void.class.equals(rpcResultArgument)) {
-            return Optional.of(cls);
-        }
-        return Optional.empty();
-    }
-
-    /**
-     * Extracts input class for RPC method.
-     *
-     * @param targetMethod method to scan
-     * @return Optional.empty() if RPC has no input, RPC input type otherwise.
-     * @deprecated This method is unused and scheduled for removal
-     */
-    @Deprecated(since = "10.0.4", forRemoval = true)
-    @SuppressWarnings("rawtypes")
-    public static Optional<Class<? extends DataContainer>> resolveRpcInputClass(final Method targetMethod) {
-        for (Class clazz : targetMethod.getParameterTypes()) {
-            if (DataContainer.class.isAssignableFrom(clazz)) {
-                return Optional.of(clazz);
-            }
-        }
-        return Optional.empty();
-    }
-
     public static @NonNull QName getQName(final BaseIdentity identity) {
         return getContractQName(identity);
     }
