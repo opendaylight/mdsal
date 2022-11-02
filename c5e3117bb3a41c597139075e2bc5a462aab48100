@@ -48,6 +48,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c2f5e3d_c3e76c2e",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/CodecDataObjectGenerator.java",
+        "patchSetId": 40
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-02T15:43:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "116d0744_c28fdf1a",
+      "range": {
+        "startLine": 216,
+        "startChar": 16,
+        "endLine": 216,
+        "endChar": 85
+      },
+      "revId": "c5e3117bb3a41c597139075e2bc5a462aab48100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7c8327ab_b4b4afe9",
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "Changed to:\n```\n    public Bar nonnullBar() {\n        return (Bar)this.nonnullMember(getBar$$$V, BarBuilder.empty(), Bar.class);\n    }\n```",
       "parentUuid": "7c8327ab_b4b4afe9",
+      "range": {
+        "startLine": 489,
+        "startChar": 20,
+        "endLine": 489,
+        "endChar": 79
+      },
+      "revId": "c5e3117bb3a41c597139075e2bc5a462aab48100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2075fde1_14c74903",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/CodecDataObjectGenerator.java",
+        "patchSetId": 40
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-02T15:43:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2849ce23_1d485665",
       "range": {
         "startLine": 489,
         "startChar": 20,
