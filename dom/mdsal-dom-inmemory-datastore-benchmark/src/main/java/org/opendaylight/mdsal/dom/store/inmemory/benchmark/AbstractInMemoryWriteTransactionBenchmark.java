@@ -8,14 +8,15 @@
 package org.opendaylight.mdsal.dom.store.inmemory.benchmark;
 
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.SystemMapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.builder.CollectionNodeBuilder;
+import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public abstract class AbstractInMemoryWriteTransactionBenchmark {
@@ -81,8 +82,8 @@ public abstract class AbstractInMemoryWriteTransactionBenchmark {
     public abstract void tearDown();
 
     protected static DataContainerChild provideOuterListNode() {
-        return ImmutableContainerNodeBuilder.create()
-                .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(BenchmarkModel.TEST_QNAME))
+        return Builders.containerBuilder()
+                .withNodeIdentifier(new NodeIdentifier(BenchmarkModel.TEST_QNAME))
                 .withChild(ImmutableNodes.mapNodeBuilder(BenchmarkModel.OUTER_LIST_QNAME).build()).build();
     }
 }
