@@ -11,13 +11,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>10.0.3-SNAPSHOT</version>
+        <version>10.0.3</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-rfc7952</artifactId>
-    <version>10.0.3-SNAPSHOT</version>
+    <version>10.0.3</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Model :: RFC7952</name>
     <description>Models from RFC7952</description>
