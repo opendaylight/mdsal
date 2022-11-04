@@ -50,7 +50,6 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
     }
 
     @Override
-    @SuppressWarnings("checkstyle:illegalCatch")
     public List<ObjectRegistration<YangModuleInfo>> addingBundle(final Bundle bundle, final BundleEvent event) {
         if (bundle.getBundleId() == Constants.SYSTEM_BUNDLE_ID) {
             LOG.debug("Ignoring system bundle {}", bundle);
