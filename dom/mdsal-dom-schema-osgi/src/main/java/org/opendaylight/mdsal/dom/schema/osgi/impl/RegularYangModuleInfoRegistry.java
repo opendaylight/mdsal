@@ -46,7 +46,7 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
     RegularYangModuleInfoRegistry(final ComponentFactory<OSGiModuleInfoSnapshotImpl> contextFactory,
             final YangParserFactory factory) {
         this.contextFactory = requireNonNull(contextFactory);
-        resolver = new ModuleInfoSnapshotResolver("binding-dom-codec", factory);
+        resolver = new ModuleInfoSnapshotResolver("dom-schema-osgi", factory);
     }
 
     // Invocation from scanner, we may want to ignore this in order to not process partial updates
