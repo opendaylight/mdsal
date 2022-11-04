@@ -14,7 +14,7 @@ import org.apache.karaf.features.DeploymentEvent;
 import org.apache.karaf.features.DeploymentListener;
 import org.apache.karaf.features.FeaturesService;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +75,7 @@ final class KarafYangModuleInfoRegistry extends YangModuleInfoRegistry implement
     }
 
     @Override
-    List<ObjectRegistration<YangModuleInfo>> registerInfos(final List<YangModuleInfo> infos) {
+    Registration registerInfos(final List<YangModuleInfo> infos) {
         return delegate.registerInfos(infos);
     }
 

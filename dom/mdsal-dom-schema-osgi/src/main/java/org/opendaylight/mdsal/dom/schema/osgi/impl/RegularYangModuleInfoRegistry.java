@@ -15,7 +15,9 @@ import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.lock.qual.Holding;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotResolver;
+import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.osgi.service.component.ComponentFactory;
@@ -30,7 +32,7 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
     private static final Logger LOG = LoggerFactory.getLogger(RegularYangModuleInfoRegistry.class);
 
     private final ComponentFactory<OSGiModuleInfoSnapshotImpl> contextFactory;
-    private final ModuleInfoSnapshotResolver moduleInfoRegistry;
+    private final ModuleInfoSnapshotResolver resolver;
 
     @GuardedBy("this")
     private ComponentInstance<OSGiModuleInfoSnapshotImpl> currentInstance;
@@ -44,7 +46,7 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
     RegularYangModuleInfoRegistry(final ComponentFactory<OSGiModuleInfoSnapshotImpl> contextFactory,
             final YangParserFactory factory) {
         this.contextFactory = requireNonNull(contextFactory);
-        moduleInfoRegistry = new ModuleInfoSnapshotResolver("binding-dom-codec", factory);
+        resolver = new ModuleInfoSnapshotResolver("binding-dom-codec", factory);
     }
 
     // Invocation from scanner, we may want to ignore this in order to not process partial updates
@@ -78,15 +80,21 @@ final class RegularYangModuleInfoRegistry extends YangModuleInfoRegistry {
     }
 
     @Override
-    List<ObjectRegistration<YangModuleInfo>> registerInfos(final List<YangModuleInfo> infos) {
-        return moduleInfoRegistry.registerModuleInfos(infos);
+    Registration registerInfos(final List<YangModuleInfo> infos) {
+        final var regs = resolver.registerModuleInfos(infos);
+        return new AbstractRegistration() {
+            @Override
+            protected void removeRegistration() {
+                regs.forEach(ObjectRegistration::close);
+            }
+        };
     }
 
     @Holding("this")
     private void updateService() {
         final ModuleInfoSnapshot newSnapshot;
         try {
-            newSnapshot = moduleInfoRegistry.takeSnapshot();
+            newSnapshot = resolver.takeSnapshot();
         } catch (NoSuchElementException e) {
             LOG.debug("No snapshot available", e);
             return;

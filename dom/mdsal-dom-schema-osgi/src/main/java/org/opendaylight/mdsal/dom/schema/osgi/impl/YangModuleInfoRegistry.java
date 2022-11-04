@@ -9,14 +9,14 @@ package org.opendaylight.mdsal.dom.schema.osgi.impl;
 
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentFactory;
 
 /**
- * Update SchemaContext service in Service Registry each time new YangModuleInfo is added or removed.
+ * Update EffectiveModelContext service in Service Registry each time new YangModuleInfo is added or removed.
  */
 abstract class YangModuleInfoRegistry {
     static @NonNull YangModuleInfoRegistry create(final BundleContext ctx,
@@ -33,5 +33,5 @@ abstract class YangModuleInfoRegistry {
 
     abstract void close();
 
-    abstract List<ObjectRegistration<YangModuleInfo>> registerInfos(List<YangModuleInfo> infos);
+    abstract @NonNull Registration registerInfos(List<YangModuleInfo> infos);
 }
