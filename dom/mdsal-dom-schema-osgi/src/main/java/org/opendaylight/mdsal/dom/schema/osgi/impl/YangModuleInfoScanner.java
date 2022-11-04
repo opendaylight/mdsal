@@ -9,18 +9,16 @@ package org.opendaylight.mdsal.dom.schema.osgi.impl;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
 import java.io.IOException;
 import java.io.Serial;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.osgi.framework.Bundle;
@@ -34,8 +32,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Tracks bundles and attempts to retrieve YangModuleInfo, which is then fed into ModuleInfoRegistry.
  */
-final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<YangModuleInfo>>> {
+final class YangModuleInfoScanner extends BundleTracker<Registration> {
     private static final Logger LOG = LoggerFactory.getLogger(YangModuleInfoScanner.class);
+    // Special registration for when we want to track the bundle, but there is nothing in there
+    private static final Registration NOOP_REGISTRATION = () -> { };
     // FIXME: this should be in a place shared with maven-sal-api-gen-plugin
     private static final String MODULE_INFO_PROVIDER_PATH_PREFIX = "META-INF/services/";
 
@@ -50,16 +50,17 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
     }
 
     @Override
-    public List<ObjectRegistration<YangModuleInfo>> addingBundle(final Bundle bundle, final BundleEvent event) {
+    public Registration addingBundle(final Bundle bundle, final BundleEvent event) {
         if (bundle.getBundleId() == Constants.SYSTEM_BUNDLE_ID) {
-            LOG.debug("Ignoring system bundle {}", bundle);
-            return ImmutableList.of();
+            // We do want to track this bundle so we get modifiedBundle() callback
+            LOG.debug("Not scanning system bundle {}", bundle);
+            return NOOP_REGISTRATION;
         }
 
-        final URL resource = bundle.getEntry(YANG_MODLE_BINDING_PROVIDER_SERVICE);
+        final var resource = bundle.getEntry(YANG_MODLE_BINDING_PROVIDER_SERVICE);
         if (resource == null) {
             LOG.debug("Bundle {} does not have an entry for {}", bundle, YANG_MODLE_BINDING_PROVIDER_SERVICE);
-            return ImmutableList.of();
+            return null;
         }
 
         LOG.debug("Got addingBundle({}) with YangModelBindingProvider resource {}", bundle, resource);
@@ -68,16 +69,16 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
             lines = Resources.readLines(resource, StandardCharsets.UTF_8);
         } catch (IOException e) {
             LOG.error("Error while reading {} from bundle {}", resource, bundle, e);
-            return ImmutableList.of();
+            return null;
         }
 
         if (lines.isEmpty()) {
             LOG.debug("Bundle {} has empty services for {}", bundle, YANG_MODLE_BINDING_PROVIDER_SERVICE);
-            return ImmutableList.of();
+            return null;
         }
 
-        final List<YangModuleInfo> infos = new ArrayList<>(lines.size());
-        for (String moduleInfoName : lines) {
+        final var infos = new ArrayList<YangModuleInfo>(lines.size());
+        for (var moduleInfoName : lines) {
             LOG.trace("Retrieve ModuleInfo({}, {})", moduleInfoName, bundle);
             final YangModuleInfo moduleInfo;
             try {
@@ -90,15 +91,13 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
             infos.add(moduleInfo);
         }
 
-        final List<ObjectRegistration<YangModuleInfo>> registrations = moduleInfoRegistry.registerInfos(infos);
-        LOG.trace("Bundle {} resulted in registrations {}", bundle, registrations);
+        final var reg = moduleInfoRegistry.registerInfos(infos);
         moduleInfoRegistry.scannerUpdate();
-        return registrations;
+        return reg;
     }
 
     @Override
-    public void modifiedBundle(final Bundle bundle, final BundleEvent event,
-            final List<ObjectRegistration<YangModuleInfo>> regs) {
+    public void modifiedBundle(final Bundle bundle, final BundleEvent event, final Registration object) {
         if (bundle.getBundleId() == Constants.SYSTEM_BUNDLE_ID) {
             LOG.debug("Framework bundle {} got event {}", bundle, event.getType());
             if ((event.getType() & BundleEvent.STOPPING) != 0) {
@@ -109,9 +108,8 @@ final class YangModuleInfoScanner extends BundleTracker<List<ObjectRegistration<
     }
 
     @Override
-    public void removedBundle(final Bundle bundle, final BundleEvent event,
-            final List<ObjectRegistration<YangModuleInfo>> regs) {
-        regs.forEach(ObjectRegistration::close);
+    public void removedBundle(final Bundle bundle, final BundleEvent event, final Registration object) {
+        object.close();
         moduleInfoRegistry.scannerUpdate();
     }
 
