@@ -37,27 +37,10 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices
 @Singleton
 public final class DefaultQueryFactory implements QueryFactory {
-    private static final class MethodId {
-        final DataNodeContainer parent;
-        final String methodName;
-
-        MethodId(final DataNodeContainer parent, final String methodName) {
-            this.parent = requireNonNull(parent);
-            this.methodName = requireNonNull(methodName);
-        }
-
-        @Override
-        public int hashCode() {
-            return parent.hashCode() * 31 + methodName.hashCode();
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (!(obj instanceof MethodId)) {
-                return false;
-            }
-            final MethodId other = (MethodId) obj;
-            return methodName.equals(other.methodName) && parent.equals(other.parent);
+    private record MethodId(@NonNull DataNodeContainer parent, @NonNull String methodName) {
+        MethodId {
+            requireNonNull(parent);
+            requireNonNull(methodName);
         }
     }
 
