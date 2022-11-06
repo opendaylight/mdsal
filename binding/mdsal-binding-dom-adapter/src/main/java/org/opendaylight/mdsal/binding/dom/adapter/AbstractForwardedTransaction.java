@@ -83,17 +83,17 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
         return readOps.exists(store, adapterContext.currentSerializer().toYangInstanceIdentifier(path));
     }
 
-    protected final <T extends @NonNull DataObject> @NonNull FluentFuture<QueryResult<T>> doExecute(
+    protected static final <T extends @NonNull DataObject> @NonNull FluentFuture<QueryResult<T>> doExecute(
             final DOMDataTreeReadOperations readOps, final @NonNull LogicalDatastoreType store,
             final @NonNull QueryExpression<T> query) {
         checkArgument(query instanceof DefaultQuery, "Unsupported query type %s", query);
-        final DefaultQuery<T> defaultQuery = (DefaultQuery<T>) query;
+        final var defaultQuery = (DefaultQuery<T>) query;
 
-        final FluentFuture<DOMQueryResult> domResult = readOps instanceof DOMDataTreeQueryOperations
-            ? ((DOMDataTreeQueryOperations) readOps).execute(store, defaultQuery.asDOMQuery())
+        final var domFuture = requireNonNull(readOps) instanceof DOMDataTreeQueryOperations dtqOps
+            ? dtqOps.execute(store, defaultQuery.asDOMQuery())
                 : fallbackExecute(readOps, store, defaultQuery.asDOMQuery());
 
-        return domResult.transform(defaultQuery::toQueryResult, MoreExecutors.directExecutor());
+        return domFuture.transform(defaultQuery::toQueryResult, MoreExecutors.directExecutor());
     }
 
     private static FluentFuture<DOMQueryResult> fallbackExecute(final @NonNull DOMDataTreeReadOperations readOps,
