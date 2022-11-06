@@ -30,10 +30,15 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Beta
+@Component
 @MetaInfServices
 @Singleton
 public final class DefaultQueryFactory implements QueryFactory {
@@ -68,8 +73,16 @@ public final class DefaultQueryFactory implements QueryFactory {
     }
 
     @Inject
-    public DefaultQueryFactory(final BindingCodecTree codec) {
+    @Activate
+    public DefaultQueryFactory(@Reference final BindingCodecTree codec) {
         this.codec = requireNonNull(codec);
+        LOG.debug("Binding Query activated");
+    }
+
+    @Deactivate
+    @SuppressWarnings("static-method")
+    void deactivate() {
+        LOG.debug("Binding Query deactivated");
     }
 
     @Override
