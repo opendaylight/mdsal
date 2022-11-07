@@ -71,7 +71,7 @@ public class SerializedDOMDataBroker extends AbstractDOMDataBroker {
 
         try {
             return FluentFuture.from(executor.submit(
-                new CommitCoordinationTask(transaction, cohorts, commitStatsTracker)));
+                new CommitCoordinationTask.WithTracker(transaction, cohorts, commitStatsTracker)));
         } catch (RejectedExecutionException e) {
             LOG.error("The commit executor's queue is full - submit task was rejected. \n{}", executor, e);
             return FluentFutures.immediateFailedFluentFuture(new TransactionCommitFailedException(

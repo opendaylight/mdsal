@@ -20,14 +20,14 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 public class CommitCoordinationTaskTest {
-
     private final DOMStoreThreePhaseCommitCohort cohort = mock(DOMStoreThreePhaseCommitCohort.class);
+
     private CommitCoordinationTask task;
 
     @Before
     public void setUp() throws Exception {
         final DOMDataTreeWriteTransaction tx = mock(DOMDataTreeWriteTransaction.class);
-        task = new CommitCoordinationTask(tx, ImmutableList.of(cohort), null);
+        task = new CommitCoordinationTask(tx, ImmutableList.of(cohort));
         doReturn("test").when(tx).getIdentifier();
     }
 
