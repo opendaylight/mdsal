@@ -51,6 +51,7 @@
         <module>mdsal-binding-util</module>
         <module>mdsal-binding-test-utils</module>
         <module>mdsal-binding-dom-adapter</module>
+        <module>mdsal-binding-json-codec</module>
     </modules>
 
     <properties>
