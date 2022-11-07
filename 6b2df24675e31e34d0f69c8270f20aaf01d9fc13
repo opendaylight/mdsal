@@ -22,6 +22,30 @@
       },
       "revId": "6b2df24675e31e34d0f69c8270f20aaf01d9fc13",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5eadc2e_397bd1ee",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMForwardedTransactionFactory.java",
+        "patchSetId": 38
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2022-11-07T09:48:19Z",
+      "side": 1,
+      "message": "this property was only used to build an exception for case when \nstoreTxFactories map has only 1 entry (i.e CONFIGURATION), but the request is \nfor transaction targeted to other store (i.e OPERATIONAL),\nthe thrown exception expected to reference which store type is eligible\n\nremoved to avoid confusion, related logic is moved to methods themselves",
+      "parentUuid": "fb150f0e_b4796206",
+      "range": {
+        "startLine": 59,
+        "startChar": 18,
+        "endLine": 59,
+        "endChar": 55
+      },
+      "revId": "6b2df24675e31e34d0f69c8270f20aaf01d9fc13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
