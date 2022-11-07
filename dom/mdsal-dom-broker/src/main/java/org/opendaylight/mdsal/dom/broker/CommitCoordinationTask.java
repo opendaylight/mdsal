@@ -27,7 +27,29 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of blocking three-phase commit-coordination tasks without support of cancellation.
  */
-final class CommitCoordinationTask implements Callable<CommitInfo> {
+sealed class CommitCoordinationTask implements Callable<CommitInfo> {
+    static final class WithTracker extends CommitCoordinationTask {
+        private final DurationStatisticsTracker commitStatTracker;
+
+        WithTracker(final DOMDataTreeWriteTransaction transaction,
+                final Collection<DOMStoreThreePhaseCommitCohort> cohorts,
+                final DurationStatisticsTracker commitStatTracker) {
+            super(transaction, cohorts);
+            this.commitStatTracker = requireNonNull(commitStatTracker);
+        }
+
+        @Override
+        public CommitInfo call() throws TransactionCommitFailedException {
+            final long startTime = System.nanoTime();
+
+            try {
+                return super.call();
+            } finally {
+                commitStatTracker.addDuration(System.nanoTime() - startTime);
+            }
+        }
+    }
+
     private enum Phase {
         CAN_COMMIT,
         PRE_COMMIT,
@@ -36,23 +58,17 @@ final class CommitCoordinationTask implements Callable<CommitInfo> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CommitCoordinationTask.class);
     private final Collection<DOMStoreThreePhaseCommitCohort> cohorts;
-    private final DurationStatisticsTracker commitStatTracker;
     private final DOMDataTreeWriteTransaction tx;
 
     CommitCoordinationTask(final DOMDataTreeWriteTransaction transaction,
-            final Collection<DOMStoreThreePhaseCommitCohort> cohorts,
-            final DurationStatisticsTracker commitStatTracker) {
-        this.tx = requireNonNull(transaction, "transaction must not be null");
+            final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
+        tx = requireNonNull(transaction, "transaction must not be null");
         this.cohorts = requireNonNull(cohorts, "cohorts must not be null");
-        this.commitStatTracker = commitStatTracker;
     }
 
     @Override
     public CommitInfo call() throws TransactionCommitFailedException {
-        final long startTime = commitStatTracker != null ? System.nanoTime() : 0;
-
-        Phase phase = Phase.CAN_COMMIT;
-
+        var phase = Phase.CAN_COMMIT;
         try {
             LOG.debug("Transaction {}: canCommit Started", tx.getIdentifier());
             canCommitBlocking();
@@ -71,10 +87,6 @@ final class CommitCoordinationTask implements Callable<CommitInfo> {
             LOG.warn("Tx: {} Error during phase {}, starting Abort", tx.getIdentifier(), phase, e);
             abortBlocking(e);
             throw e;
-        } finally {
-            if (commitStatTracker != null) {
-                commitStatTracker.addDuration(System.nanoTime() - startTime);
-            }
         }
     }
 
