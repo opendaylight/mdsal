@@ -89,13 +89,11 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
     }
 
     /**
-     * Invokes canCommit on underlying cohort and blocks till the result is returned.
-     *
-     * <p>
-     * Valid state transition is from SUBMITTED to CAN_COMMIT, if currentPhase is not SUBMITTED throws
-     * IllegalStateException.
+     * Invokes canCommit on underlying cohort and blocks till the result is returned. Valid state transition to
+     * {@link Phase#CAN_COMMIT}.
      *
      * @throws TransactionCommitFailedException If cohort fails Commit
+     * @throws IllegalStateException if current phase not {@code SUBMITTED}
      */
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     private void canCommitBlocking() throws TransactionCommitFailedException {
@@ -113,12 +111,10 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
     }
 
     /**
-     * Invokes preCommit on underlying cohort and blocks until the result is returned.
+     * Invokes preCommit on underlying cohort and blocks until the result is returned. Valid state transition is from
+     * {@link Phase#CAN_COMMIT} to {@link Phase#PRE_COMMIT}.
      *
-     * <p>
-     * Valid state transition is from CAN_COMMIT to PRE_COMMIT, if current state is not CAN_COMMIT throws
-     * IllegalStateException.
-     *
+     * @throws IllegalStateException if current state is not {@link Phase#CAN_COMMIT}
      * @throws TransactionCommitFailedException If cohort fails preCommit
      */
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
@@ -134,9 +130,8 @@ sealed class CommitCoordinationTask implements Callable<CommitInfo> {
     /**
      * Invokes commit on underlying cohort and blocks until result is returned.
      *
-     * <p>
-     * Valid state transition is from PRE_COMMIT to COMMIT, if not throws IllegalStateException.
-     *
+     * @return Returns the commit information
+     * @throws IllegalStateException if current state is not {@link Phase#PRE_COMMIT}
      * @throws TransactionCommitFailedException If cohort fails preCommit
      */
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
