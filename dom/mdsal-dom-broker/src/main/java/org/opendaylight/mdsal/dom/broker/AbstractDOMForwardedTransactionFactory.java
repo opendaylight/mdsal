@@ -28,6 +28,8 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionFactory;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract composite transaction factory.
@@ -43,10 +45,13 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * @param <T> Type of {@link DOMStoreTransactionFactory} factory.
  */
 abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransactionFactory> implements AutoCloseable {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractDOMForwardedTransactionFactory.class);
     @SuppressWarnings("rawtypes")
     private static final AtomicIntegerFieldUpdater<AbstractDOMForwardedTransactionFactory> UPDATER =
             AtomicIntegerFieldUpdater.newUpdater(AbstractDOMForwardedTransactionFactory.class, "closed");
+
     private final Map<LogicalDatastoreType, T> storeTxFactories;
+
     private volatile int closed = 0;
 
     protected AbstractDOMForwardedTransactionFactory(final Map<LogicalDatastoreType, ? extends T> txFactories) {
@@ -180,6 +185,8 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
 
     @Override
     public void close() {
-        checkState(UPDATER.compareAndSet(this, 0, 1), "Transaction factory was already closed");
+        if (!UPDATER.compareAndSet(this, 0, 1)) {
+            LOG.warn("Transaction factory was already closed", new Throwable());
+        }
     }
 }
