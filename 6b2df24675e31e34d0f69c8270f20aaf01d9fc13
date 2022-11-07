@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb150f0e_b4796206",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMForwardedTransactionFactory.java",
+        "patchSetId": 38
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-07T02:08:48Z",
+      "side": 1,
+      "message": "this is something we should be recording on first access",
+      "range": {
+        "startLine": 59,
+        "startChar": 18,
+        "endLine": 59,
+        "endChar": 55
+      },
+      "revId": "6b2df24675e31e34d0f69c8270f20aaf01d9fc13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
