@@ -10,11 +10,11 @@ package org.opendaylight.mdsal.dom.broker;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.util.concurrent.FluentFuture;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -46,13 +46,20 @@ import org.slf4j.LoggerFactory;
  */
 abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransactionFactory> implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDOMForwardedTransactionFactory.class);
-    @SuppressWarnings("rawtypes")
-    private static final AtomicIntegerFieldUpdater<AbstractDOMForwardedTransactionFactory> UPDATER =
-            AtomicIntegerFieldUpdater.newUpdater(AbstractDOMForwardedTransactionFactory.class, "closed");
+    private static final VarHandle CLOSED;
+
+    static {
+        try {
+            CLOSED = MethodHandles.lookup()
+                .findVarHandle(AbstractDOMForwardedTransactionFactory.class, "closed", boolean.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     private final Map<LogicalDatastoreType, T> storeTxFactories;
 
-    private volatile int closed = 0;
+    private volatile boolean closed;
 
     protected AbstractDOMForwardedTransactionFactory(final Map<LogicalDatastoreType, ? extends T> txFactories) {
         this.storeTxFactories = new EnumMap<>(txFactories);
@@ -98,8 +105,8 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     public final DOMDataTreeReadTransaction newReadOnlyTransaction() {
         checkNotClosed();
 
-        final Map<LogicalDatastoreType, DOMStoreReadTransaction> txns = new EnumMap<>(LogicalDatastoreType.class);
-        for (final Entry<LogicalDatastoreType, T> store : storeTxFactories.entrySet()) {
+        final var txns = new EnumMap<LogicalDatastoreType, DOMStoreReadTransaction>(LogicalDatastoreType.class);
+        for (var store : storeTxFactories.entrySet()) {
             txns.put(store.getKey(), store.getValue().newReadOnlyTransaction());
         }
         return new DOMForwardedReadOnlyTransaction(newTransactionIdentifier(), txns);
@@ -141,8 +148,8 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     public final DOMDataTreeWriteTransaction newWriteOnlyTransaction() {
         checkNotClosed();
 
-        final Map<LogicalDatastoreType, DOMStoreWriteTransaction> txns = new EnumMap<>(LogicalDatastoreType.class);
-        for (final Entry<LogicalDatastoreType, T> store : storeTxFactories.entrySet()) {
+        final var txns = new EnumMap<LogicalDatastoreType, DOMStoreWriteTransaction>(LogicalDatastoreType.class);
+        for (var store : storeTxFactories.entrySet()) {
             txns.put(store.getKey(), store.getValue().newWriteOnlyTransaction());
         }
         return new DOMForwardedWriteTransaction<>(newTransactionIdentifier(), txns, this);
@@ -156,8 +163,8 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     public final DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
         checkNotClosed();
 
-        final Map<LogicalDatastoreType, DOMStoreReadWriteTransaction> txns = new EnumMap<>(LogicalDatastoreType.class);
-        for (Entry<LogicalDatastoreType, T> store : storeTxFactories.entrySet()) {
+        final var txns = new EnumMap<LogicalDatastoreType, DOMStoreReadWriteTransaction>(LogicalDatastoreType.class);
+        for (var store : storeTxFactories.entrySet()) {
             txns.put(store.getKey(), store.getValue().newReadWriteTransaction());
         }
         return new DOMForwardedReadWriteTransaction(newTransactionIdentifier(), txns, this);
@@ -180,12 +187,12 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      * @throws IllegalStateException If instance of this class was closed.
      */
     protected final void checkNotClosed() {
-        checkState(closed == 0, "Transaction factory was closed. No further operations allowed.");
+        checkState(!closed, "Transaction factory was closed. No further operations allowed.");
     }
 
     @Override
     public void close() {
-        if (!UPDATER.compareAndSet(this, 0, 1)) {
+        if (!CLOSED.compareAndSet(this, 0, 1)) {
             LOG.warn("Transaction factory was already closed", new Throwable());
         }
     }
