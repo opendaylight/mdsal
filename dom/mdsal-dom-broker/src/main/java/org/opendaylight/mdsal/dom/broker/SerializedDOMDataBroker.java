@@ -25,21 +25,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of blocking three phase commit coordinator, which which
- * supports coordination on multiple {@link DOMStoreThreePhaseCommitCohort}.
+ * Implementation of blocking three phase commit coordinator, which which supports coordination on multiple
+ * {@link DOMStoreThreePhaseCommitCohort}. This implementation does not support cancellation of commit.
  *
- *<p>
- * This implementation does not support cancellation of commit,
+ * <p>
+ * In order to advance to next phase of three phase commit all subtasks of previous step must be finish.
  *
- *<p>
- * In order to advance to next phase of three phase commit all subtasks of
- * previous step must be finish.
- *
- *<p>
+ * <p>
  * This executor does not have an upper bound on subtask timeout.
  */
-public class SerializedDOMDataBroker extends AbstractDOMDataBroker {
+public final class SerializedDOMDataBroker extends AbstractDOMDataBroker {
     private static final Logger LOG = LoggerFactory.getLogger(SerializedDOMDataBroker.class);
+
     private final DurationStatisticsTracker commitStatsTracker = DurationStatisticsTracker.createConcurrent();
     private final ListeningExecutorService executor;
 
