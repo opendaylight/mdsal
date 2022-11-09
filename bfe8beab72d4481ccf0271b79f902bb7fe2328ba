@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ca6c576_1e01570f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-09T22:14:59Z",
+      "side": 1,
+      "message": "This leaves hashCode()/equals() still working on Objects.hashCode/equals(), which causes unnecessary boxing. We\u0027ll deal with that in a follow-up patch.",
+      "revId": "bfe8beab72d4481ccf0271b79f902bb7fe2328ba",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
