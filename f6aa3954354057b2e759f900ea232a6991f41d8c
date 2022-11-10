@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8b1d7a5_7630caf9",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 14
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-10T01:43:16Z",
+      "side": 1,
+      "message": "use 4 spaces for indent. always.",
+      "range": {
+        "startLine": 324,
+        "startChar": 6,
+        "endLine": 324,
+        "endChar": 8
+      },
+      "revId": "f6aa3954354057b2e759f900ea232a6991f41d8c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
