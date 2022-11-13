@@ -1,0 +1,205 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a816abb_31b1a61c",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/AbstractTypeObjectGenerator.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 906,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-13T22:53:12Z",
+      "side": 1,
+      "message": "this is always implemented from here,\nfrom TypedefGenerator it is implied by the superclass",
+      "range": {
+        "startLine": 906,
+        "startChar": 25,
+        "endLine": 906,
+        "endChar": 73
+      },
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5f9c6c7a_e9479530",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/AbstractTypeObjectGenerator.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 908,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-13T22:53:12Z",
+      "side": 1,
+      "message": "why a Map, when all we generate from it is a Set?",
+      "range": {
+        "startLine": 908,
+        "startChar": 59,
+        "endLine": 908,
+        "endChar": 71
+      },
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62499124_a69e1787",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/AbstractTypeObjectGenerator.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 934,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-13T22:53:12Z",
+      "side": 1,
+      "message": "all of this really is:\n\n        return bits.stream()\n            .sorted(Comparator.comparing(Bit::getPosition))\n            .collect(ImmutableMap.toImmutableMap(Bit::getPosition,\n                bit -\u003e BindingMapping.getPropertyName(bit.getName())));\n                \nalso note we are already calling BindingMapping.getPropertyName() in the method calling here, hence we are creating duplicate strings.",
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d1f3912_0fbbd6e5",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/TypedefGenerator.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-13T22:53:12Z",
+      "side": 1,
+      "message": "this is not right: we should generate a new field ONLY if the bits have been restricted as per https://www.rfc-editor.org/rfc/rfc7950#section-9.7\n\nIf the set has not changed, we want to refer to super\u0027s field.",
+      "range": {
+        "startLine": 93,
+        "startChar": 8,
+        "endLine": 93,
+        "endChar": 67
+      },
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6ae8a2b_5b6f01c0",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 25
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-13T22:53:12Z",
+      "side": 1,
+      "message": "why implicit super() invocation?",
+      "range": {
+        "startLine": 263,
+        "startChar": 28,
+        "endLine": 263,
+        "endChar": 33
+      },
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cca485d4_b9408174",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 25
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-13T22:53:12Z",
+      "side": 1,
+      "message": "no, we have an explicit utility method, getterMethodName(), for this",
+      "range": {
+        "startLine": 263,
+        "startChar": 34,
+        "endLine": 263,
+        "endChar": 53
+      },
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c0db2493_cd0537ca",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 25
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-13T22:53:12Z",
+      "side": 1,
+      "message": "STRING.importedName",
+      "range": {
+        "startLine": 560,
+        "startChar": 68,
+        "endLine": 560,
+        "endChar": 74
+      },
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf847a2f_33208a8a",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 25
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-13T22:53:12Z",
+      "side": 1,
+      "message": "multiple import: cache in a variable\nalso use a constant for JavaTypeName of ImmutableSet (see JU_LIST et al)",
+      "range": {
+        "startLine": 560,
+        "startChar": 41,
+        "endLine": 560,
+        "endChar": 66
+      },
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8a7dcd8_e3eaa773",
+        "filename": "binding/mdsal-binding-model-ri/src/main/java/org/opendaylight/mdsal/binding/model/ri/TypeConstants.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-13T22:53:12Z",
+      "side": 1,
+      "message": "missing documentation",
+      "range": {
+        "startLine": 27,
+        "startChar": 4,
+        "endLine": 27,
+        "endChar": 71
+      },
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
