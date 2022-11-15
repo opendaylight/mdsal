@@ -54,6 +54,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8a6d74b8_0e6d9ea2",
+        "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/BindingIndependentMappingService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-11-15T11:19:37Z",
+      "side": 1,
+      "message": "Am I suppose to change the year 2022 to 2019 in all the copyright headers?",
+      "parentUuid": "f9ddac7f_220022fb",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "21c4d635_5e9f35d4",
         "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/JSONCodec.java",
         "patchSetId": 20
