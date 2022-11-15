@@ -35,6 +35,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "826b5fbd_88cb6ef4",
+        "filename": "binding/mdsal-binding-json-codec/pom.xml",
+        "patchSetId": 20
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-11-15T11:51:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a1b8d23_4ba680ec",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f9ddac7f_220022fb",
@@ -88,6 +106,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef71a85b_d77de629",
+        "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/BindingIndependentMappingService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-11-15T11:51:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a6d74b8_0e6d9ea2",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "21c4d635_5e9f35d4",
@@ -101,6 +137,24 @@
       "writtenOn": "2022-11-15T10:20:34Z",
       "side": 1,
       "message": "Copyright (c) 2019 PANTHEON.tech s.r.o. All rights reserved.",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9263c600_07df8d76",
+        "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/JSONCodec.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-11-15T11:51:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "21c4d635_5e9f35d4",
       "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -122,6 +176,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ad50057a_6dcf6ba1",
+        "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/JSONCodec.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-11-15T11:51:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d9920fc2_539409ca",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e1dc73e3_2614f7c4",
@@ -139,6 +211,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "796b0754_b4acf50c",
+        "filename": "binding/mdsal-binding-json-codec/src/test/java/org/opendaylight/mdsal/binding/json/codec/AbstractBindingRuntimeTest.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-11-15T11:51:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e1dc73e3_2614f7c4",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a4b238d7_9a205a68",
@@ -152,6 +242,24 @@
       "writtenOn": "2022-11-15T10:20:34Z",
       "side": 1,
       "message": "Copyright (c) 2019 PANTHEON.tech s.r.o. All rights reserved.",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "660eb8fb_ef408594",
+        "filename": "binding/mdsal-binding-json-codec/src/test/java/org/opendaylight/mdsal/binding/json/codec/SimpleBindingRuntimeTest.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-11-15T11:51:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a4b238d7_9a205a68",
       "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
