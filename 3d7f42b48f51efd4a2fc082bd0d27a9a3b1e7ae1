@@ -72,6 +72,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "109b3882_2bfb80be",
+        "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/BindingIndependentMappingService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-11-15T11:50:42Z",
+      "side": 1,
+      "message": "2022 is correct but company name is not.",
+      "parentUuid": "8a6d74b8_0e6d9ea2",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "21c4d635_5e9f35d4",
         "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/JSONCodec.java",
         "patchSetId": 20
