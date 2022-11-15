@@ -16,6 +16,108 @@
       "message": "Fixed",
       "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a1b8d23_4ba680ec",
+        "filename": "binding/mdsal-binding-json-codec/pom.xml",
+        "patchSetId": 20
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-11-15T10:20:34Z",
+      "side": 1,
+      "message": "Missing copyright?",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9ddac7f_220022fb",
+        "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/BindingIndependentMappingService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-11-15T10:20:34Z",
+      "side": 1,
+      "message": "hmm... `Copyright (c) 2022 PANTHEON.tech s.r.o. All rights reserved.`",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21c4d635_5e9f35d4",
+        "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/JSONCodec.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-11-15T10:20:34Z",
+      "side": 1,
+      "message": "Copyright (c) 2019 PANTHEON.tech s.r.o. All rights reserved.",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9920fc2_539409ca",
+        "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/JSONCodec.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-11-15T10:20:34Z",
+      "side": 1,
+      "message": "final",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1dc73e3_2614f7c4",
+        "filename": "binding/mdsal-binding-json-codec/src/test/java/org/opendaylight/mdsal/binding/json/codec/AbstractBindingRuntimeTest.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-11-15T10:20:34Z",
+      "side": 1,
+      "message": "Copyright (c) 2019 PANTHEON.tech s.r.o. All rights reserved.",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4b238d7_9a205a68",
+        "filename": "binding/mdsal-binding-json-codec/src/test/java/org/opendaylight/mdsal/binding/json/codec/SimpleBindingRuntimeTest.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2022-11-15T10:20:34Z",
+      "side": 1,
+      "message": "Copyright (c) 2019 PANTHEON.tech s.r.o. All rights reserved.",
+      "revId": "3d7f42b48f51efd4a2fc082bd0d27a9a3b1e7ae1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
