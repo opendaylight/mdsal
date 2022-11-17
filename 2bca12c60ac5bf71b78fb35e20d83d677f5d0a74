@@ -179,6 +179,54 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "190a7fca_b6c4d327",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 25
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-17T19:08:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cf847a2f_33208a8a",
+      "range": {
+        "startLine": 560,
+        "startChar": 41,
+        "endLine": 560,
+        "endChar": 66
+      },
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "97187fd6_aecc08d3",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 25
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-17T19:08:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c0db2493_cd0537ca",
+      "range": {
+        "startLine": 560,
+        "startChar": 68,
+        "endLine": 560,
+        "endChar": 74
+      },
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f8a7dcd8_e3eaa773",
@@ -192,6 +240,30 @@
       "writtenOn": "2022-11-13T22:53:12Z",
       "side": 1,
       "message": "missing documentation",
+      "range": {
+        "startLine": 27,
+        "startChar": 4,
+        "endLine": 27,
+        "endChar": 71
+      },
+      "revId": "2bca12c60ac5bf71b78fb35e20d83d677f5d0a74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "823d8753_b9d9f3a7",
+        "filename": "binding/mdsal-binding-model-ri/src/main/java/org/opendaylight/mdsal/binding/model/ri/TypeConstants.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-17T19:08:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f8a7dcd8_e3eaa773",
       "range": {
         "startLine": 27,
         "startChar": 4,
