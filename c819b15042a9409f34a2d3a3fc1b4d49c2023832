@@ -45,6 +45,30 @@
       },
       "revId": "c819b15042a9409f34a2d3a3fc1b4d49c2023832",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7f06410_9640a44f",
+        "filename": "yanglib/mdsal-yanglib-rfc8525/src/main/java/org/opendaylight/mdsal/yanglib/rfc8525/MountPointContextFactoryImpl.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2022-11-18T09:40:33Z",
+      "side": 1,
+      "message": "If we use yang model provided in this patch, multiple interfaces with default requireMyGrp() methods would be created. And if there is a class or interface that implements those interfaces it would have a conflict between default methods implemented from different interfaces but having same names, so the naming of those methods was changed similarly to how the naming of the classes.",
+      "parentUuid": "9a3382b1_c245316d",
+      "range": {
+        "startLine": 132,
+        "startChar": 45,
+        "endLine": 132,
+        "endChar": 46
+      },
+      "revId": "c819b15042a9409f34a2d3a3fc1b4d49c2023832",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
