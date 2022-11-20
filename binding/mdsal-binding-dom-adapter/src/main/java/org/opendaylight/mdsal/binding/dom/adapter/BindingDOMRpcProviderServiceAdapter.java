@@ -36,14 +36,14 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     }
 
     @Override
-    public <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(final Class<S> type,
-            final T implementation) {
+    public <R extends RpcService, I extends R> ObjectRegistration<I> registerRpcImplementation(final Class<R> type,
+            final I implementation) {
         return register(type, implementation, GLOBAL);
     }
 
     @Override
-    public <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(final Class<S> type,
-            final T implementation, final Set<InstanceIdentifier<?>> paths) {
+    public <R extends RpcService, I extends R> ObjectRegistration<I> registerRpcImplementation(final Class<R> type,
+            final I implementation, final Set<InstanceIdentifier<?>> paths) {
         return register(type, implementation, toYangInstanceIdentifiers(paths));
     }
 
