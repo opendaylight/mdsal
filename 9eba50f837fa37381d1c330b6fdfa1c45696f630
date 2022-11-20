@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "96388fd9_0529abf6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 19
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-20T12:32:21Z",
+      "side": 1,
+      "message": "Right, so properties are meant to be alpha-sorted. While for bits it makes sense to order by position, this has a high chance to silently break users.\nLet\u0027s punt this for later.",
+      "revId": "9eba50f837fa37381d1c330b6fdfa1c45696f630",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
