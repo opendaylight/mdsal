@@ -30,14 +30,14 @@ public final class OSGiRpcProviderService extends AbstractAdaptedService<RpcProv
     }
 
     @Override
-    public <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(final Class<S> type,
-            final T implementation) {
+    public <R extends RpcService, I extends R> ObjectRegistration<I> registerRpcImplementation(final Class<R> type,
+            final I implementation) {
         return delegate().registerRpcImplementation(type, implementation);
     }
 
     @Override
-    public <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(final Class<S> type,
-            final T implementation, final Set<InstanceIdentifier<?>> paths) {
+    public <R extends RpcService, I extends R> ObjectRegistration<I> registerRpcImplementation(final Class<R> type,
+            final I implementation, final Set<InstanceIdentifier<?>> paths) {
         return delegate().registerRpcImplementation(type, implementation, paths);
     }
 
