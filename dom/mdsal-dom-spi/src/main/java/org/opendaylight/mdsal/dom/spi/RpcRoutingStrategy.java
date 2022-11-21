@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 
-public abstract class RpcRoutingStrategy implements Identifiable<QName> {
+public abstract sealed class RpcRoutingStrategy implements Identifiable<QName> {
     private final @NonNull QName identifier;
 
     private RpcRoutingStrategy(final QName identifier) {
@@ -93,7 +93,6 @@ public abstract class RpcRoutingStrategy implements Identifiable<QName> {
     }
 
     private static final class GlobalRpcStrategy extends RpcRoutingStrategy {
-
         GlobalRpcStrategy(final QName identifier) {
             super(identifier);
         }
