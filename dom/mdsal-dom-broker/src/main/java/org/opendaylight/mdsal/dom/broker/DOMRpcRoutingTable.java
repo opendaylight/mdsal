@@ -17,7 +17,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
-import org.opendaylight.mdsal.dom.spi.RpcRoutingStrategy;
+import org.opendaylight.mdsal.dom.spi.ContentRoutedRpcContext;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -60,13 +60,10 @@ final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier,
             return new UnknownDOMRpcRoutingTableEntry(key, implementations);
         }
 
-        final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(rpcDef);
-        if (strategy.isContextBasedRouted()) {
-            return new RoutedDOMRpcRoutingTableEntry(rpcDef.argument(), YangInstanceIdentifier.of(strategy.getLeaf()),
+        final var contentContext = ContentRoutedRpcContext.forRpc(rpcDef);
+        return contentContext == null ? new GlobalDOMRpcRoutingTableEntry(rpcDef.argument(), implementations)
+            : new RoutedDOMRpcRoutingTableEntry(rpcDef.argument(), YangInstanceIdentifier.of(contentContext.leaf()),
                 implementations);
-        }
-
-        return new GlobalDOMRpcRoutingTableEntry(rpcDef.argument(), implementations);
     }
 
     private static @Nullable RpcEffectiveStatement findRpcDefinition(final EffectiveModelContext context,
