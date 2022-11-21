@@ -27,7 +27,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSeriali
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.mdsal.dom.spi.RpcRoutingStrategy;
+import org.opendaylight.mdsal.dom.spi.ContentRoutedRpcContext;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -68,10 +68,10 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     private RpcInvocationStrategy createStrategy(final Method method, final RpcDefinition schema) {
-        final QName rpcType = schema.getQName();
-        final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(schema.asEffectiveStatement());
-        return strategy.isContextBasedRouted() ? new RoutedStrategy(rpcType, method, strategy.getLeaf())
-                : new NonRoutedStrategy(rpcType);
+        final var rpcName = schema.getQName();
+        final var contentContext = ContentRoutedRpcContext.forRpc(schema.asEffectiveStatement());
+        return contentContext == null ? new NonRoutedStrategy(rpcName)
+            : new RoutedStrategy(rpcName, method, contentContext.leaf());
     }
 
     RpcService getProxy() {
