@@ -13,8 +13,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.odlext.model.api.ContextReferenceEffectiveStatement;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 
 public abstract sealed class RpcRoutingStrategy implements Identifiable<QName> {
@@ -52,18 +52,23 @@ public abstract sealed class RpcRoutingStrategy implements Identifiable<QName> {
      */
     public abstract boolean isContextBasedRouted();
 
-    public static RpcRoutingStrategy from(final RpcDefinition rpc) {
+    public static @NonNull RpcRoutingStrategy from(final RpcEffectiveStatement rpc) {
         // FIXME: deprecate context-reference
-        for (EffectiveStatement<?, ?> stmt : rpc.getInput().asEffectiveStatement().effectiveSubstatements()) {
+        return of(rpc.argument(), rpc.findFirstEffectiveSubstatement(InputEffectiveStatement.class)
+            .orElseThrow(() -> new IllegalArgumentException("Cannot find input in " + rpc)));
+    }
+
+    private static @NonNull RpcRoutingStrategy of(final QName rpcName, final InputEffectiveStatement input) {
+        for (var stmt : input.effectiveSubstatements()) {
             if (stmt instanceof SchemaTreeEffectiveStatement<?> schemaStmt) {
                 final var context =
                     stmt.findFirstEffectiveSubstatementArgument(ContextReferenceEffectiveStatement.class);
                 if (context.isPresent()) {
-                    return new RoutedRpcStrategy(rpc.getQName(), context.orElseThrow(), schemaStmt.argument());
+                    return new RoutedRpcStrategy(rpcName, context.orElseThrow(), schemaStmt.argument());
                 }
             }
         }
-        return new GlobalRpcStrategy(rpc.getQName());
+        return new GlobalRpcStrategy(rpcName);
     }
 
     private static final class RoutedRpcStrategy extends RpcRoutingStrategy {

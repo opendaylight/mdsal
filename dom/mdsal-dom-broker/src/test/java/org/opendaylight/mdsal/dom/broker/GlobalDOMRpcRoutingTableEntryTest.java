@@ -14,37 +14,32 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.opendaylight.mdsal.dom.broker.TestUtils.EXCEPTION_TEXT;
 import static org.opendaylight.mdsal.dom.broker.TestUtils.TEST_CONTAINER;
 import static org.opendaylight.mdsal.dom.broker.TestUtils.getTestRpcImplementation;
 
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.OperationInvocation;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 
 public class GlobalDOMRpcRoutingTableEntryTest {
     @Test
     public void basicTest() {
         final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> rpcImplementations = new HashMap<>();
         final List<DOMRpcImplementation> rpcImplementation = new ArrayList<>();
-        final RpcDefinition rpcDefinition = mock(RpcDefinition.class);
         final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.builder().build();
 
-        doReturn(TestModel.TEST2_QNAME).when(rpcDefinition).getQName();
         final GlobalDOMRpcRoutingTableEntry globalDOMRpcRoutingTableEntry = new GlobalDOMRpcRoutingTableEntry(
-                rpcDefinition, new HashMap<>());
+            TestModel.TEST2_QNAME, new HashMap<>());
         rpcImplementation.add(getTestRpcImplementation());
         rpcImplementations.put(yangInstanceIdentifier, rpcImplementation);
 
@@ -57,8 +52,7 @@ public class GlobalDOMRpcRoutingTableEntryTest {
         final ListenableFuture<?> future = OperationInvocation.invoke(
             globalDOMRpcRoutingTableEntry.newInstance(rpcImplementations), TEST_CONTAINER);
 
-        final ExecutionException ex = assertThrows(ExecutionException.class, () -> future.get(5, TimeUnit.SECONDS));
-        final Throwable cause = ex.getCause();
+        final var cause = assertThrows(ExecutionException.class, () -> Futures.getDone(future)).getCause();
         assertThat(cause, instanceOf(DOMRpcImplementationNotAvailableException.class));
         assertThat(cause.getMessage(), containsString(EXCEPTION_TEXT));
     }

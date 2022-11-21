@@ -37,7 +37,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class RoutedDOMRpcRoutingTableEntryTest {
@@ -63,8 +62,6 @@ public class RoutedDOMRpcRoutingTableEntryTest {
         .build();
 
     @Mock
-    public RpcDefinition definition;
-    @Mock
     public DOMRpcImplementation impl;
     @Mock
     public DOMRpcResult result;
@@ -72,9 +69,8 @@ public class RoutedDOMRpcRoutingTableEntryTest {
 
     @Before
     public void before() {
-        doReturn(Rpcs.BAR).when(definition).getQName();
         // Note: ImmutableMap.of() allows get(null), Map.of() does not
-        entry = new RoutedDOMRpcRoutingTableEntry(definition, CTX_IN_INPUT, ImmutableMap.of());
+        entry = new RoutedDOMRpcRoutingTableEntry(Rpcs.BAR, CTX_IN_INPUT, ImmutableMap.of());
     }
 
     @Test

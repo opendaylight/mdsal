@@ -14,20 +14,21 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.Iterables;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.extension.yang.ext.rev130709.$YangModuleInfoImpl;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
+import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserConfiguration;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class RpcRoutingStrategyTest {
-    private static Collection<? extends RpcDefinition> RPCS;
+    private static List<RpcEffectiveStatement> RPCS;
 
     @BeforeClass
     public static void beforeClass() {
@@ -36,10 +37,9 @@ public class RpcRoutingStrategyTest {
                 $YangModuleInfoImpl.getInstance().getYangTextByteSource()),
             YangTextSchemaSource.forResource(RpcRoutingStrategy.class, "/rpc-routing-strategy.yang"));
 
-        RPCS = ctx.getModules().stream()
-            .filter(module -> module.getName().equals("foo"))
-            .findFirst().orElseThrow()
-            .getRpcs();
+        RPCS = Iterables.getOnlyElement(ctx.findModuleStatements("foo"))
+            .streamEffectiveSubstatements(RpcEffectiveStatement.class)
+            .collect(Collectors.toUnmodifiableList());
     }
 
     @AfterClass

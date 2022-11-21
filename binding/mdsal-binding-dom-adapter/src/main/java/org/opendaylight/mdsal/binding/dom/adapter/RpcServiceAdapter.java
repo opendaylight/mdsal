@@ -69,7 +69,7 @@ class RpcServiceAdapter implements InvocationHandler {
 
     private RpcInvocationStrategy createStrategy(final Method method, final RpcDefinition schema) {
         final QName rpcType = schema.getQName();
-        final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(schema);
+        final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(schema.asEffectiveStatement());
         return strategy.isContextBasedRouted() ? new RoutedStrategy(rpcType, method, strategy.getLeaf())
                 : new NonRoutedStrategy(rpcType);
     }

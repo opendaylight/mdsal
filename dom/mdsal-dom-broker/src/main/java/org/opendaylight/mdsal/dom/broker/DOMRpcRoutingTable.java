@@ -13,6 +13,7 @@ import com.google.common.collect.ListMultimap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
@@ -20,9 +21,7 @@ import org.opendaylight.mdsal.dom.spi.RpcRoutingStrategy;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 
 final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier, YangInstanceIdentifier,
         DOMRpcImplementation, DOMRpcAvailabilityListener, QName, AbstractDOMRpcRoutingTableEntry> {
@@ -56,32 +55,26 @@ final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier,
     @Override
     AbstractDOMRpcRoutingTableEntry createOperationEntry(final EffectiveModelContext context, final QName key,
             final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> implementations) {
-        final RpcDefinition rpcDef = findRpcDefinition(context, key);
+        final var rpcDef = findRpcDefinition(context, key);
         if (rpcDef == null) {
             return new UnknownDOMRpcRoutingTableEntry(key, implementations);
         }
 
         final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(rpcDef);
         if (strategy.isContextBasedRouted()) {
-            return new RoutedDOMRpcRoutingTableEntry(rpcDef, YangInstanceIdentifier.of(strategy.getLeaf()),
+            return new RoutedDOMRpcRoutingTableEntry(rpcDef.argument(), YangInstanceIdentifier.of(strategy.getLeaf()),
                 implementations);
         }
 
-        return new GlobalDOMRpcRoutingTableEntry(rpcDef, implementations);
+        return new GlobalDOMRpcRoutingTableEntry(rpcDef.argument(), implementations);
     }
 
-    private static RpcDefinition findRpcDefinition(final SchemaContext context, final QName qname) {
-        if (context != null) {
-            final Module module = context.findModule(qname.getModule()).orElse(null);
-            if (module != null && module.getRpcs() != null) {
-                for (RpcDefinition rpc : module.getRpcs()) {
-                    if (qname.equals(rpc.getQName())) {
-                        return rpc;
-                    }
-                }
-            }
-        }
-
-        return null;
+    private static @Nullable RpcEffectiveStatement findRpcDefinition(final EffectiveModelContext context,
+            final QName qname) {
+        return context == null ? null : context.findModuleStatement(qname.getModule())
+            .flatMap(module -> module.findSchemaTreeNode(qname))
+            .filter(RpcEffectiveStatement.class::isInstance)
+            .map(RpcEffectiveStatement.class::cast)
+            .orElse(null);
     }
 }

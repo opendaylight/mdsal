@@ -9,10 +9,11 @@ package org.opendaylight.mdsal.dom.broker;
 
 import java.util.List;
 import java.util.Map;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 
 final class GlobalDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntry {
     private GlobalDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId,
@@ -22,9 +23,9 @@ final class GlobalDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
 
     // We do not need the RpcDefinition, but this makes sure we do not
     // forward something we don't know to be an RPC.
-    GlobalDOMRpcRoutingTableEntry(final RpcDefinition def,
+    GlobalDOMRpcRoutingTableEntry(final @NonNull QName rpcName,
             final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
-        super(DOMRpcIdentifier.create(def.getQName()), impls);
+        super(DOMRpcIdentifier.create(rpcName), impls);
     }
 
     @Override
