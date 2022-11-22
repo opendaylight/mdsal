@@ -69,6 +69,30 @@
       },
       "revId": "c819b15042a9409f34a2d3a3fc1b4d49c2023832",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7fc103e7_10c719c6",
+        "filename": "yanglib/mdsal-yanglib-rfc8525/src/main/java/org/opendaylight/mdsal/yanglib/rfc8525/MountPointContextFactoryImpl.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-22T20:27:31Z",
+      "side": 1,
+      "message": "Right, but looking at the model which this code talks I just do not see where that conflict occurs.\n\nFurthermore, in the other comment (and really across the changed files), the name of the getter method remains the same and name of the require method is changing.\nThose two are supposed to be mirrors, aren\u0027t they?",
+      "parentUuid": "b7f06410_9640a44f",
+      "range": {
+        "startLine": 132,
+        "startChar": 45,
+        "endLine": 132,
+        "endChar": 46
+      },
+      "revId": "c819b15042a9409f34a2d3a3fc1b4d49c2023832",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
