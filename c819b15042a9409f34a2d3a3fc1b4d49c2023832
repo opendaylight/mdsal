@@ -26,6 +26,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9e335fd6_2436f8d7",
+        "filename": "binding/mdsal-binding-generator/src/test/java/org/opendaylight/mdsal/binding/generator/impl/Mdsal502Test.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-22T20:30:26Z",
+      "side": 1,
+      "message": "should private, static and initialized with @BeforeClass",
+      "range": {
+        "startLine": 36,
+        "startChar": 30,
+        "endLine": 36,
+        "endChar": 35
+      },
+      "revId": "c819b15042a9409f34a2d3a3fc1b4d49c2023832",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9a3382b1_c245316d",
         "filename": "yanglib/mdsal-yanglib-rfc8525/src/main/java/org/opendaylight/mdsal/yanglib/rfc8525/MountPointContextFactoryImpl.java",
         "patchSetId": 18
