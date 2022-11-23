@@ -21,14 +21,19 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.InstanceNotificationSpec;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -63,6 +68,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
                 }
             });
 
+    private final ConcurrentMap<JavaTypeName, ContextReferenceExtractor> extractors = new ConcurrentHashMap<>();
     private final @NonNull BindingDOMCodecServices delegate;
 
     public CurrentAdapterSerializer(final BindingDOMCodecServices delegate) {
@@ -105,6 +111,32 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         verify(stmt instanceof NotificationEffectiveStatement, "Notification %s resolved to unexpected statement %s",
             spec, stmt);
         return stack.toSchemaNodeIdentifier();
+    }
+
+    @Nullable ContextReferenceExtractor findExtractor(final @NonNull InputRuntimeType inputType) {
+        final var inputName = inputType.getIdentifier();
+        final var cached = extractors.get(inputName);
+        if (cached != null) {
+            return cached;
+        }
+
+        // Load the class
+        final Class<?> inputClass;
+        try {
+            inputClass = getRuntimeContext().loadClass(inputName);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("Failed to load class for " + inputType, e);
+        }
+
+        // Check if there is an extractor at all
+        final var created = ContextReferenceExtractor.of(inputClass);
+        if (created == null) {
+            return null;
+        }
+
+        // Reconcile with cache
+        final var raced = extractors.putIfAbsent(inputName, created);
+        return raced != null ? raced : created;
     }
 
     private @NonNull Entry<SchemaInferenceStack, QNameModule> resolvePath(final @NonNull InstanceIdentifier<?> path) {

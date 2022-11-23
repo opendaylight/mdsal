@@ -7,12 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.EncapsulatedRoute;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.EncapsulatedRouteInGrouping;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.RoutedSimpleRouteInput;
@@ -41,32 +43,30 @@ public final class ContextExtractorTest {
 
     @Test
     public void testNonRoutedExtraction() {
-        final ContextReferenceExtractor extractor = ContextReferenceExtractor.from(RockTheHouseInput.class);
-        final RockTheHouseInput input = new RockTheHouseInputBuilder().build();
-        final InstanceIdentifier<?> extractedValue = extractor.extract(input);
-        assertNull(extractedValue);
+        assertNull(ContextReferenceExtractor.of(RockTheHouseInput.class));
     }
 
     @Test
     public void testRoutedSimpleExtraction() {
-        final ContextReferenceExtractor extractor = ContextReferenceExtractor.from(RoutedSimpleRouteInput.class);
-        final RoutedSimpleRouteInput input = new RoutedSimpleRouteInputBuilder().setRoute(TEST_ROUTE).build();
-        final InstanceIdentifier<?> extractedValue = extractor.extract(input);
-        assertSame(TEST_ROUTE,extractedValue);
+        final var extractor = ContextReferenceExtractor.of(RoutedSimpleRouteInput.class);
+        assertNotNull(extractor);
+        assertThat(extractor, instanceOf(DirectGetterRouteContextExtractor.class));
+        assertSame(TEST_ROUTE, extractor.extract(new RoutedSimpleRouteInputBuilder().setRoute(TEST_ROUTE).build()));
     }
 
     @Test
     public void testRoutedEncapsulatedExtraction() {
-        final ContextReferenceExtractor extractor = ContextReferenceExtractor.from(EncapsulatedRouteInGrouping.class);
-        final InstanceIdentifier<?> extractedValue = extractor.extract(TEST_GROUPING);
-        assertSame(TEST_ROUTE,extractedValue);
-
+        final var extractor = ContextReferenceExtractor.of(EncapsulatedRouteInGrouping.class);
+        assertNotNull(extractor);
+        assertThat(extractor, instanceOf(GetValueRouteContextExtractor.class));
+        assertSame(TEST_ROUTE, extractor.extract(TEST_GROUPING));
     }
 
     @Test
     public void testRoutedEncapsulatedTransitiveExtraction() {
-        final ContextReferenceExtractor extractor = ContextReferenceExtractor.from(Transitive.class);
-        final InstanceIdentifier<?> extractedValue = extractor.extract(TEST_GROUPING);
-        assertSame(TEST_ROUTE,extractedValue);
+        final var extractor = ContextReferenceExtractor.of(Transitive.class);
+        assertNotNull(extractor);
+        assertThat(extractor, instanceOf(GetValueRouteContextExtractor.class));
+        assertSame(TEST_ROUTE, extractor.extract(TEST_GROUPING));
     }
 }
