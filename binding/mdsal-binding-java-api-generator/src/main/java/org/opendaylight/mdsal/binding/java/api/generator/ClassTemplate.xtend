@@ -296,17 +296,19 @@ class ClassTemplate extends BaseTemplate {
     public «type.name»(«allProperties.asArgumentsDeclaration») {
         «IF !parentProperties.empty»
             super(«parentProperties.asArguments»);
+        «ELSE»
+           «CODEHELPERS.importedName».requireValue(_value);
         «ENDIF»
         «FOR p : allProperties»
-            «generateRestrictions(type, p.fieldName, p.returnType)»
+            «IF p.fieldName != "_value"»
+                «generateRestrictions(type, p.fieldName, p.returnType)»
+            «ENDIF»
         «ENDFOR»
         «/*
          * If we have patterns, we need to apply them to the value field. This is a sad consequence of how this code is
          * structured.
          */»
-        «CODEHELPERS.importedName».requireValue(_value);
         «genPatternEnforcer("_value")»
-
         «FOR p : properties»
             «val fieldName = p.fieldName»
             this.«fieldName» = «fieldName»«p.cloneCall»;

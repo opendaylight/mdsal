@@ -204,7 +204,11 @@ module opendaylight-default-value-test {
     }
 
     typedef my-derived-decimal3 {
-        type my-derived-decimal;
+        type decimal64 {
+             fraction-digits 3;
+              range "77.777 .. 111.111";
+        }
+        default "99.999";
     }
 
     typedef my-string {
