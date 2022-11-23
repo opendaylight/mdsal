@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -39,13 +38,38 @@ class RpcServiceAdapter implements InvocationHandler {
         delegate = requireNonNull(domService);
         facade = (RpcService) Proxy.newProxyInstance(type.getClassLoader(), new Class[] {type}, this);
 
-        final var methods = getRpcMethodToSchema(adapterContext.currentSerializer(), type);
-        final var rpcBuilder = ImmutableMap.<Method, RpcInvocationStrategy>builderWithExpectedSize(methods.size());
-        for (var entry : methods.entrySet()) {
-            final var method = entry.getKey();
-            rpcBuilder.put(method, RpcInvocationStrategy.of(this, method, entry.getValue()));
-        }
-        rpcNames = rpcBuilder.build();
+        // FIXME: This should be probably part of BindingRuntimeContext and RpcServices perhaps should have their own
+        //        RuntimeType. At any rate, we are dancing around to reconstruct information RpcServiceRuntimeType would
+        //        carry and the runtime context would bind to actual classes.
+        final var serializer = adapterContext.currentSerializer();
+        final var runtimeContext = serializer.getRuntimeContext();
+        final var types = runtimeContext.getTypes();
+        final var qnameModule = BindingReflections.getQNameModule(type);
+
+        // We are dancing a bit here to reconstruct things a RpcServiceRuntimeType could easily hold
+        final var module = runtimeContext.getEffectiveModelContext().findModuleStatement(qnameModule)
+            .orElseThrow(() -> new IllegalStateException("No module found for " + qnameModule + " service " + type));
+        rpcNames = module.streamEffectiveSubstatements(RpcEffectiveStatement.class)
+            .map(rpc -> {
+                final var rpcName = rpc.argument();
+                final var inputClz = runtimeContext.getRpcInput(rpcName);
+                final var methodName = BindingMapping.getRpcMethodName(rpcName);
+
+                final Method method;
+                try {
+                    method = type.getMethod(methodName, inputClz);
+                } catch (NoSuchMethodException e) {
+                    throw new IllegalStateException("Cannot find RPC method for " + rpc, e);
+                }
+
+                final var runtimeType = types.schemaTreeChild(rpcName);
+                if (!(runtimeType instanceof RpcRuntimeType rpcType)) {
+                    throw new IllegalStateException("Unexpected run-time type " + runtimeType + " for " + rpcName);
+                }
+
+                return Map.entry(method, RpcInvocationStrategy.of(this, method, rpcType));
+            })
+            .collect(ImmutableMap.toImmutableMap(Entry::getKey, Entry::getValue));
     }
 
     final @NonNull CurrentAdapterSerializer currentSerializer() {
@@ -92,38 +116,5 @@ class RpcServiceAdapter implements InvocationHandler {
         }
 
         throw new UnsupportedOperationException("Method " + method.toString() + "is unsupported.");
-    }
-
-    // FIXME: This should be probably part of BindingRuntimeContext and RpcServices perhaps should have their own
-    //        RuntimeType
-    private static ImmutableBiMap<Method, RpcRuntimeType> getRpcMethodToSchema(
-            final CurrentAdapterSerializer serializer, final Class<? extends RpcService> key) {
-        final var runtimeContext = serializer.getRuntimeContext();
-        final var types = runtimeContext.getTypes();
-        final var qnameModule = BindingReflections.getQNameModule(key);
-
-        // We are dancing a bit here to reconstruct things a RpcServiceRuntimeType could easily hold
-        final var module = runtimeContext.getEffectiveModelContext().findModuleStatement(qnameModule)
-            .orElseThrow(() -> new IllegalStateException("No module found for " + qnameModule + " service " + key));
-        return module.streamEffectiveSubstatements(RpcEffectiveStatement.class)
-            .map(rpc -> {
-                final var rpcName = rpc.argument();
-                final var inputClz = runtimeContext.getRpcInput(rpcName);
-                final var methodName = BindingMapping.getRpcMethodName(rpcName);
-
-                final Method method;
-                try {
-                    method = key.getMethod(methodName, inputClz);
-                } catch (NoSuchMethodException e) {
-                    throw new IllegalStateException("Cannot find RPC method for " + rpc, e);
-                }
-
-                final var type = types.schemaTreeChild(rpcName);
-                if (!(type instanceof RpcRuntimeType rpcType)) {
-                    throw new IllegalStateException("Unexpected run-time type " + type + " for " + rpcName);
-                }
-                return Map.entry(method, rpcType);
-            })
-            .collect(ImmutableBiMap.toImmutableBiMap(Entry::getKey, Entry::getValue));
     }
 }
