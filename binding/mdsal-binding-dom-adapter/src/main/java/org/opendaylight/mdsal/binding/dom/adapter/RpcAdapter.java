@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static java.util.Objects.requireNonNull;
 
 import java.lang.reflect.Method;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
@@ -28,7 +29,7 @@ final class RpcAdapter<T extends Rpc<?, ?>> extends AbstractRpcAdapter {
         }
 
         try {
-            invokeMethod = type.getMethod("invoke", RpcInput.class);
+            invokeMethod = type.getMethod(BindingMapping.RPC_INVOKE_NAME, RpcInput.class);
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException("Failed to find invoke method in " + type, e);
         }

@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -28,7 +29,7 @@ final class ActionAdapterFilter implements InvocationHandler {
 
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        if (method.getName().equals("invoke") && args.length == 2) {
+        if (BindingMapping.ACTION_INVOKE_NAME.equals(method.getName()) && args.length == 2) {
             final InstanceIdentifier<?> path = (InstanceIdentifier<?>) requireNonNull(args[0]);
             checkState(nodes.contains(DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, path)),
                 "Cannot service %s", path);
