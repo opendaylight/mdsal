@@ -29,6 +29,7 @@ import org.opendaylight.mdsal.binding.api.InstanceNotificationSpec;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.RpcRuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -45,6 +46,7 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ListEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.slf4j.Logger;
@@ -139,19 +141,36 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         return Map.entry(stack, lastNamespace);
     }
 
-    // FIXME: This should be probably part of Binding Runtime context
-    ImmutableBiMap<Method, RpcDefinition> getRpcMethodToSchema(final Class<? extends RpcService> key) {
-        final Module module = getModule(key);
-        final ImmutableBiMap.Builder<Method, RpcDefinition> ret = ImmutableBiMap.builder();
-        try {
-            for (final RpcDefinition rpcDef : module.getRpcs()) {
-                final Method method = findRpcMethod(key, rpcDef);
-                ret.put(method, rpcDef);
-            }
-        } catch (final NoSuchMethodException e) {
-            throw new IllegalStateException("Rpc defined in model does not have representation in generated class.", e);
-        }
-        return ret.build();
+    // FIXME: This should be probably part of Binding Runtime context and RpcServices perhaps should have their own
+    //        RuntimeType
+    ImmutableBiMap<Method, RpcRuntimeType> getRpcMethodToSchema(final Class<? extends RpcService> key) {
+        final var runtimeContext = getRuntimeContext();
+        final var types = runtimeContext.getTypes();
+        final var qnameModule = BindingReflections.getQNameModule(key);
+
+        // We are dancing a bit here to reconstruct things a RpcServiceRuntimeType could easily hold
+        final var module = runtimeContext.getEffectiveModelContext().findModuleStatement(qnameModule)
+            .orElseThrow(() -> new IllegalStateException("No module found for " + qnameModule + " service " + key));
+        return module.streamEffectiveSubstatements(RpcEffectiveStatement.class)
+            .map(rpc -> {
+                final var rpcName = rpc.argument();
+                final var inputClz = runtimeContext.getRpcInput(rpcName);
+                final var methodName = BindingMapping.getRpcMethodName(rpcName);
+
+                final Method method;
+                try {
+                    method = key.getMethod(methodName, inputClz);
+                } catch (NoSuchMethodException e) {
+                    throw new IllegalStateException("Cannot find RPC method for " + rpc, e);
+                }
+
+                final var type = types.schemaTreeChild(rpcName);
+                if (!(type instanceof RpcRuntimeType rpcType)) {
+                    throw new IllegalStateException("Unexpected run-time type " + type + " for " + rpcName);
+                }
+                return Map.entry(method, rpcType);
+            })
+            .collect(ImmutableBiMap.toImmutableBiMap(Entry::getKey, Entry::getValue));
     }
 
     // FIXME: This should be probably part of Binding Runtime context
