@@ -17,6 +17,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.YangConstants;
@@ -39,7 +40,7 @@ sealed class RpcInvocationStrategy {
 
         @Override
         ContainerNode serialize(final NodeIdentifier inputIdentifier, final CurrentAdapterSerializer serializer,
-                final DataObject input) {
+                final RpcInput input) {
             final var bindingII = refExtractor.extract(input);
             if (bindingII == null) {
                 return super.serialize(inputIdentifier, serializer, input);
@@ -62,7 +63,7 @@ sealed class RpcInvocationStrategy {
         inputIdentifier = NodeIdentifier.create(YangConstants.operationInputQName(namespace.intern()));
     }
 
-    final ListenableFuture<RpcResult<?>> invoke(final DataObject input) {
+    final ListenableFuture<RpcResult<?>> invoke(final RpcInput input) {
         return invoke(serialize(inputIdentifier, adapter.currentSerializer(), input));
     }
 
@@ -75,7 +76,7 @@ sealed class RpcInvocationStrategy {
     }
 
     ContainerNode serialize(final @NonNull NodeIdentifier identifier,
-            final @NonNull CurrentAdapterSerializer serializer, final DataObject input) {
+            final @NonNull CurrentAdapterSerializer serializer, final RpcInput input) {
         return LazySerializedContainerNode.create(inputIdentifier, input, serializer);
     }
 

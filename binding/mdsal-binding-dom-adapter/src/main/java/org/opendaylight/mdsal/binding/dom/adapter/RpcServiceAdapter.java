@@ -22,7 +22,7 @@ import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.ContentRoutedRpcContext;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 
@@ -100,10 +100,7 @@ class RpcServiceAdapter implements InvocationHandler {
     public Object invoke(final Object proxy, final Method method, final Object[] args) {
         final var strategy = rpcNames.get(method);
         if (strategy != null) {
-            if (args.length != 1) {
-                throw new IllegalArgumentException("Input must be provided.");
-            }
-            return strategy.invoke((DataObject) requireNonNull(args[0]));
+            return strategy.invoke((RpcInput) requireNonNull(args[0]));
         }
 
         switch (method.getName()) {
