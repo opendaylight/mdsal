@@ -13,13 +13,9 @@ import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENA
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.mdsal.binding.runtime.api.RpcRuntimeType;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.mdsal.dom.spi.ContentRoutedRpcContext;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -30,7 +26,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 sealed class RpcInvocationStrategy {
-    private static final class ContentRouted extends RpcInvocationStrategy {
+    static final class ContentRouted extends RpcInvocationStrategy {
         private final ContextReferenceExtractor refExtractor;
         private final NodeIdentifier contextName;
 
@@ -59,25 +55,11 @@ sealed class RpcInvocationStrategy {
     private final @NonNull NodeIdentifier inputIdentifier;
     private final @NonNull Absolute outputPath;
 
-    private RpcInvocationStrategy(final RpcServiceAdapter adapter, final QName rpcName) {
+    RpcInvocationStrategy(final RpcServiceAdapter adapter, final QName rpcName) {
         this.adapter = requireNonNull(adapter);
         final var namespace = rpcName.getModule();
         outputPath = Absolute.of(rpcName, YangConstants.operationOutputQName(namespace).intern()).intern();
         inputIdentifier = NodeIdentifier.create(YangConstants.operationInputQName(namespace.intern()));
-    }
-
-    static @NonNull RpcInvocationStrategy of(final RpcServiceAdapter adapter, final Method method,
-            final RpcRuntimeType type) {
-        final var schema = type.statement();
-        final var contentContext = ContentRoutedRpcContext.forRpc(schema);
-        if (contentContext == null) {
-            return new RpcInvocationStrategy(adapter, schema.argument());
-        }
-
-        return new ContentRouted(adapter, schema.argument(), contentContext.leaf(), ContextReferenceExtractor.from(
-            // FIXME: do not use BindingReflections here
-            BindingReflections.resolveRpcInputClass(method).orElseThrow(
-                () -> new IllegalArgumentException("RPC method " + method.getName() + " has no input"))));
     }
 
     final ListenableFuture<RpcResult<?>> invoke(final DataObject input) {
