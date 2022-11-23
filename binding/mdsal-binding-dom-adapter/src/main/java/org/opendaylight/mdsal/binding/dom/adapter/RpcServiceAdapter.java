@@ -9,14 +9,21 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.runtime.api.RpcRuntimeType;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
+import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
+import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 
 class RpcServiceAdapter implements InvocationHandler {
     private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
@@ -31,7 +38,7 @@ class RpcServiceAdapter implements InvocationHandler {
         this.adapterContext = requireNonNull(adapterContext);
         delegate = requireNonNull(domService);
 
-        final var methods = adapterContext.currentSerializer().getRpcMethodToSchema(type);
+        final var methods = getRpcMethodToSchema(adapterContext.currentSerializer(), type);
         final var rpcBuilder = ImmutableMap.<Method, RpcInvocationStrategy>builderWithExpectedSize(methods.size());
         for (var entry : methods.entrySet()) {
             final var method = entry.getKey();
@@ -85,5 +92,38 @@ class RpcServiceAdapter implements InvocationHandler {
         }
 
         throw new UnsupportedOperationException("Method " + method.toString() + "is unsupported.");
+    }
+
+    // FIXME: This should be probably part of BindingRuntimeContext and RpcServices perhaps should have their own
+    //        RuntimeType
+    private static ImmutableBiMap<Method, RpcRuntimeType> getRpcMethodToSchema(
+            final CurrentAdapterSerializer serializer, final Class<? extends RpcService> key) {
+        final var runtimeContext = serializer.getRuntimeContext();
+        final var types = runtimeContext.getTypes();
+        final var qnameModule = BindingReflections.getQNameModule(key);
+
+        // We are dancing a bit here to reconstruct things a RpcServiceRuntimeType could easily hold
+        final var module = runtimeContext.getEffectiveModelContext().findModuleStatement(qnameModule)
+            .orElseThrow(() -> new IllegalStateException("No module found for " + qnameModule + " service " + key));
+        return module.streamEffectiveSubstatements(RpcEffectiveStatement.class)
+            .map(rpc -> {
+                final var rpcName = rpc.argument();
+                final var inputClz = runtimeContext.getRpcInput(rpcName);
+                final var methodName = BindingMapping.getRpcMethodName(rpcName);
+
+                final Method method;
+                try {
+                    method = key.getMethod(methodName, inputClz);
+                } catch (NoSuchMethodException e) {
+                    throw new IllegalStateException("Cannot find RPC method for " + rpc, e);
+                }
+
+                final var type = types.schemaTreeChild(rpcName);
+                if (!(type instanceof RpcRuntimeType rpcType)) {
+                    throw new IllegalStateException("Unexpected run-time type " + type + " for " + rpcName);
+                }
+                return Map.entry(method, rpcType);
+            })
+            .collect(ImmutableBiMap.toImmutableBiMap(Entry::getKey, Entry::getValue));
     }
 }
