@@ -16,10 +16,12 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.dom.adapter.RpcInvocationStrategy.ContentRouted;
 import org.opendaylight.mdsal.binding.runtime.api.RpcRuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.spi.ContentRoutedRpcContext;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
@@ -67,7 +69,18 @@ class RpcServiceAdapter implements InvocationHandler {
                     throw new IllegalStateException("Unexpected run-time type " + runtimeType + " for " + rpcName);
                 }
 
-                return Map.entry(method, RpcInvocationStrategy.of(this, method, rpcType));
+                final var contentContext = ContentRoutedRpcContext.forRpc(rpc);
+                final RpcInvocationStrategy strategy;
+                if (contentContext != null) {
+                    strategy = new ContentRouted(this, rpcName, contentContext.leaf(), ContextReferenceExtractor.from(
+                        // FIXME: do not use BindingReflections here
+                        BindingReflections.resolveRpcInputClass(method).orElseThrow(
+                            () -> new IllegalArgumentException("RPC method " + method.getName() + " has no input"))));
+                } else {
+                    strategy = new RpcInvocationStrategy(this, rpcName);
+                }
+
+                return Map.entry(method, strategy);
             })
             .collect(ImmutableMap.toImmutableMap(Entry::getKey, Entry::getValue));
     }
