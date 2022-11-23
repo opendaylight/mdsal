@@ -9,25 +9,21 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 
 class RpcServiceAdapter implements InvocationHandler {
     private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
     private final @NonNull Class<? extends RpcService> type;
     private final @NonNull AdapterContext adapterContext;
     private final @NonNull DOMRpcService delegate;
-    private final RpcService proxy;
+    private final @NonNull RpcService facade;
 
     RpcServiceAdapter(final Class<? extends RpcService> type, final AdapterContext adapterContext,
             final DOMRpcService domService) {
@@ -35,15 +31,14 @@ class RpcServiceAdapter implements InvocationHandler {
         this.adapterContext = requireNonNull(adapterContext);
         delegate = requireNonNull(domService);
 
-        final ImmutableBiMap<Method, RpcDefinition> methods = adapterContext.currentSerializer()
-                .getRpcMethodToSchema(type);
-        final Builder<Method, RpcInvocationStrategy> rpcBuilder = ImmutableMap.builderWithExpectedSize(methods.size());
-        for (final Entry<Method, RpcDefinition> rpc : methods.entrySet()) {
-            rpcBuilder.put(rpc.getKey(),
-                RpcInvocationStrategy.of(this, rpc.getKey(), rpc.getValue().asEffectiveStatement()));
+        final var methods = adapterContext.currentSerializer().getRpcMethodToSchema(type);
+        final var rpcBuilder = ImmutableMap.<Method, RpcInvocationStrategy>builderWithExpectedSize(methods.size());
+        for (var rpc : methods.entrySet()) {
+            final var method = rpc.getKey();
+            rpcBuilder.put(method, RpcInvocationStrategy.of(this, method, rpc.getValue().asEffectiveStatement()));
         }
         rpcNames = rpcBuilder.build();
-        proxy = (RpcService) Proxy.newProxyInstance(type.getClassLoader(), new Class[] {type}, this);
+        facade = (RpcService) Proxy.newProxyInstance(type.getClassLoader(), new Class[] {type}, this);
     }
 
     final @NonNull CurrentAdapterSerializer currentSerializer() {
@@ -54,19 +49,18 @@ class RpcServiceAdapter implements InvocationHandler {
         return delegate;
     }
 
-    RpcService getProxy() {
-        return proxy;
+    final @NonNull RpcService facade() {
+        return facade;
     }
 
     @Override
-    @SuppressWarnings("checkstyle:hiddenField")
     public Object invoke(final Object proxy, final Method method, final Object[] args) {
-        final RpcInvocationStrategy rpc = rpcNames.get(method);
-        if (rpc != null) {
+        final var strategy = rpcNames.get(method);
+        if (strategy != null) {
             if (args.length != 1) {
                 throw new IllegalArgumentException("Input must be provided.");
             }
-            return rpc.invoke((DataObject) requireNonNull(args[0]));
+            return strategy.invoke((DataObject) requireNonNull(args[0]));
         }
 
         switch (method.getName()) {
