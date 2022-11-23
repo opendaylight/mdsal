@@ -7,6 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Throwables;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -15,7 +20,64 @@ import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class ContextReferenceExtractor {
+abstract sealed class ContextReferenceExtractor {
+    @VisibleForTesting
+    static final class Direct extends ContextReferenceExtractor {
+        private final MethodHandle handle;
+
+        private Direct(final MethodHandle rawHandle) {
+            handle = rawHandle.asType(MethodType.methodType(InstanceIdentifier.class, DataObject.class));
+        }
+
+        @VisibleForTesting
+        static ContextReferenceExtractor create(final Method getterMethod) throws IllegalAccessException {
+            return new Direct(MethodHandles.publicLookup().unreflect(getterMethod));
+        }
+
+        @SuppressWarnings("checkstyle:IllegalCatch")
+        @Override
+        InstanceIdentifier<?> extract(final DataObject obj) {
+            try {
+                return (InstanceIdentifier<?>) handle.invokeExact(obj);
+            } catch (final Throwable e) {
+                Throwables.throwIfUnchecked(e);
+                throw new IllegalStateException(e);
+            }
+        }
+    }
+
+    @VisibleForTesting
+    static final class GetValue extends ContextReferenceExtractor {
+        private final MethodHandle contextHandle;
+        private final MethodHandle valueHandle;
+
+        private GetValue(final MethodHandle rawContextHandle, final MethodHandle rawValueHandle) {
+            contextHandle = rawContextHandle.asType(MethodType.methodType(Object.class, DataObject.class));
+            valueHandle = rawValueHandle.asType(MethodType.methodType(InstanceIdentifier.class, Object.class));
+        }
+
+        private static ContextReferenceExtractor create(final Method contextGetter, final Method getValueMethod)
+                throws IllegalAccessException {
+            final var lookup = MethodHandles.publicLookup();
+            return new GetValue(lookup.unreflect(contextGetter), lookup.unreflect(getValueMethod));
+        }
+
+        @SuppressWarnings("checkstyle:IllegalCatch")
+        @Override
+        InstanceIdentifier<?> extract(final DataObject obj) {
+            try {
+                final Object ctx = contextHandle.invokeExact(obj);
+                if (ctx != null) {
+                    return (InstanceIdentifier<?>) valueHandle.invokeExact(ctx);
+                }
+                return null;
+            } catch (final Throwable e) {
+                Throwables.throwIfUnchecked(e);
+                throw new IllegalStateException(e);
+            }
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(ContextReferenceExtractor.class);
     // FIXME: this should be somewhere in BindingMapping or similar -- it works with ScalarTypeObject after all, which
     //        is not obvious here
@@ -30,11 +92,11 @@ abstract class ContextReferenceExtractor {
         final var returnType = contextGetter.getReturnType();
         try {
             if (InstanceIdentifier.class.isAssignableFrom(returnType)) {
-                return DirectGetterRouteContextExtractor.create(contextGetter);
+                return Direct.create(contextGetter);
             }
             final var getValueMethod = findGetValueMethod(returnType, InstanceIdentifier.class);
             if (getValueMethod != null) {
-                return GetValueRouteContextExtractor.create(contextGetter, getValueMethod);
+                return GetValue.create(contextGetter, getValueMethod);
             } else {
                 LOG.warn("Class {} can not be used to determine context, falling back to NULL_EXTRACTOR.", returnType);
             }
