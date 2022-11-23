@@ -14,6 +14,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
@@ -79,9 +80,6 @@ abstract sealed class ContextReferenceExtractor {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(ContextReferenceExtractor.class);
-    // FIXME: this should be somewhere in BindingMapping or similar -- it works with ScalarTypeObject after all, which
-    //        is not obvious here
-    private static final String GET_VALUE_NAME = "getValue";
 
     static @Nullable ContextReferenceExtractor of(final Class<?> type) {
         final var contextGetter = getContextGetter(type);
@@ -120,7 +118,7 @@ abstract sealed class ContextReferenceExtractor {
     private static @Nullable Method findGetValueMethod(final Class<?> type, final Class<?> returnType) {
         final Method method;
         try {
-            method = type.getMethod(GET_VALUE_NAME);
+            method = type.getMethod(BindingMapping.SCALAR_TYPE_OBJECT_GET_VALUE_NAME);
         } catch (NoSuchMethodException e) {
             LOG.warn("Value class {} does not comform to Binding Specification v1.", type, e);
             return null;
