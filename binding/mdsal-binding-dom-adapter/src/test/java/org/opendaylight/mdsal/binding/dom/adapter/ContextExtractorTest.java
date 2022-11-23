@@ -14,6 +14,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.dom.adapter.ContextReferenceExtractor.Direct;
+import org.opendaylight.mdsal.binding.dom.adapter.ContextReferenceExtractor.GetValue;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.EncapsulatedRoute;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.EncapsulatedRouteInGrouping;
@@ -50,7 +52,7 @@ public final class ContextExtractorTest {
     public void testRoutedSimpleExtraction() {
         final var extractor = ContextReferenceExtractor.of(RoutedSimpleRouteInput.class);
         assertNotNull(extractor);
-        assertThat(extractor, instanceOf(DirectGetterRouteContextExtractor.class));
+        assertThat(extractor, instanceOf(Direct.class));
         assertSame(TEST_ROUTE, extractor.extract(new RoutedSimpleRouteInputBuilder().setRoute(TEST_ROUTE).build()));
     }
 
@@ -58,7 +60,7 @@ public final class ContextExtractorTest {
     public void testRoutedEncapsulatedExtraction() {
         final var extractor = ContextReferenceExtractor.of(EncapsulatedRouteInGrouping.class);
         assertNotNull(extractor);
-        assertThat(extractor, instanceOf(GetValueRouteContextExtractor.class));
+        assertThat(extractor, instanceOf(GetValue.class));
         assertSame(TEST_ROUTE, extractor.extract(TEST_GROUPING));
     }
 
@@ -66,7 +68,7 @@ public final class ContextExtractorTest {
     public void testRoutedEncapsulatedTransitiveExtraction() {
         final var extractor = ContextReferenceExtractor.of(Transitive.class);
         assertNotNull(extractor);
-        assertThat(extractor, instanceOf(GetValueRouteContextExtractor.class));
+        assertThat(extractor, instanceOf(GetValue.class));
         assertSame(TEST_ROUTE, extractor.extract(TEST_GROUPING));
     }
 }
