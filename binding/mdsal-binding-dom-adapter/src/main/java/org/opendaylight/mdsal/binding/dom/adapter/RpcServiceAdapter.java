@@ -33,9 +33,9 @@ class RpcServiceAdapter implements InvocationHandler {
 
         final var methods = adapterContext.currentSerializer().getRpcMethodToSchema(type);
         final var rpcBuilder = ImmutableMap.<Method, RpcInvocationStrategy>builderWithExpectedSize(methods.size());
-        for (var rpc : methods.entrySet()) {
-            final var method = rpc.getKey();
-            rpcBuilder.put(method, RpcInvocationStrategy.of(this, method, rpc.getValue().asEffectiveStatement()));
+        for (var entry : methods.entrySet()) {
+            final var method = entry.getKey();
+            rpcBuilder.put(method, RpcInvocationStrategy.of(this, method, entry.getValue()));
         }
         rpcNames = rpcBuilder.build();
         facade = (RpcService) Proxy.newProxyInstance(type.getClassLoader(), new Class[] {type}, this);

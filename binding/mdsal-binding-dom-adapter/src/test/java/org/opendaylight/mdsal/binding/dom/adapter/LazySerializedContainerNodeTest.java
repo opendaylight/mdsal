@@ -16,13 +16,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInput;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -30,7 +29,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 
 public class LazySerializedContainerNodeTest {
     @Test
@@ -46,10 +44,7 @@ public class LazySerializedContainerNodeTest {
         final BindingTestContext bindingTestContext = bindingBrokerTestFactory.getTestContext();
         bindingTestContext.start();
 
-        final ImmutableBiMap<?, ?> biMap = bindingTestContext.getCodec().currentSerializer()
-                .getRpcMethodToSchema(OpendaylightTestRpcServiceService.class);
-        final NodeIdentifier name = new NodeIdentifier(((RpcDefinition) biMap.values().iterator().next()).getInput()
-            .getQName());
+        final NodeIdentifier name = new NodeIdentifier(RockTheHouseInput.QNAME);
         final LeafNode<String> leafNode = ImmutableNodes.leafNode(QName.create("", "test"), "");
         final ContainerNode normalizedNode = LazySerializedContainerNode.create(name, dataObject, codec);
         assertNotNull(normalizedNode);

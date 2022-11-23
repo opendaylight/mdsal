@@ -16,6 +16,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.runtime.api.RpcRuntimeType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.spi.ContentRoutedRpcContext;
@@ -26,7 +27,6 @@ import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
-import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 sealed class RpcInvocationStrategy {
@@ -67,7 +67,8 @@ sealed class RpcInvocationStrategy {
     }
 
     static @NonNull RpcInvocationStrategy of(final RpcServiceAdapter adapter, final Method method,
-            final RpcEffectiveStatement schema) {
+            final RpcRuntimeType type) {
+        final var schema = type.statement();
         final var contentContext = ContentRoutedRpcContext.forRpc(schema);
         if (contentContext == null) {
             return new RpcInvocationStrategy(adapter, schema.argument());
