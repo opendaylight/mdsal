@@ -33,7 +33,7 @@ public final class BindingDOMRpcServiceAdapter
 
     @Override
     public <T extends RpcService> T getRpcService(final Class<T> rpcService) {
-        return rpcService.cast(getAdapter(requireNonNull(rpcService)).getProxy());
+        return rpcService.cast(getAdapter(requireNonNull(rpcService)).facade());
     }
 
     @Override
