@@ -72,10 +72,9 @@ class RpcServiceAdapter implements InvocationHandler {
                 final var contentContext = ContentRoutedRpcContext.forRpc(rpc);
                 final RpcInvocationStrategy strategy;
                 if (contentContext != null) {
-                    strategy = new ContentRouted(this, rpcName, contentContext.leaf(), ContextReferenceExtractor.from(
-                        // FIXME: do not use BindingReflections here
-                        BindingReflections.resolveRpcInputClass(method).orElseThrow(
-                            () -> new IllegalArgumentException("RPC method " + method.getName() + " has no input"))));
+                    final var extractor = serializer.findExtractor(rpcType.input());
+                    strategy = extractor == null ? new RpcInvocationStrategy(this, rpcName)
+                        : new ContentRouted(this, rpcName, contentContext.leaf(), extractor);
                 } else {
                     strategy = new RpcInvocationStrategy(this, rpcName);
                 }
