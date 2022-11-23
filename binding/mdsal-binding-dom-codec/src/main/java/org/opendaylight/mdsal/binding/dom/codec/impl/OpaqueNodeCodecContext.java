@@ -22,6 +22,7 @@ import net.bytebuddy.jar.asm.Opcodes;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingOpaqueObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader;
+import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader.ClassNameBuilder;
 import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader.GeneratorResult;
 import org.opendaylight.yangtools.yang.binding.OpaqueData;
 import org.opendaylight.yangtools.yang.binding.OpaqueObject;
@@ -155,7 +156,7 @@ abstract class OpaqueNodeCodecContext<T extends OpaqueObject<T>> extends ValueNo
     }
 
     private static MethodHandle createImpl(final CodecClassLoader rootLoader, final Class<?> bindingClass) {
-        final Class<?> proxyClass = rootLoader.generateClass(bindingClass, "codecImpl",
+        final Class<?> proxyClass = rootLoader.generateClass(bindingClass, ClassNameBuilder.CODEC_IMPL,
             (loader, fqcn, bindingInterface) -> GeneratorResult.of(TEMPLATE
                 .name(fqcn)
                 .implement(bindingInterface)

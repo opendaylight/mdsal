@@ -34,6 +34,7 @@ import net.bytebuddy.implementation.bytecode.member.MethodVariableAccess;
 import net.bytebuddy.jar.asm.Opcodes;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader.ClassNameBuilder;
 import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader.GeneratorResult;
 import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
 import org.opendaylight.yangtools.yang.binding.BaseNotification;
@@ -73,9 +74,9 @@ final class NotificationCodecContext<D extends DataObject & BaseNotification>
         super(DataContainerCodecPrototype.from(key, schema, factory));
         final Class<D> bindingClass = getBindingClass();
 
-        final Class<?> awareClass = factory().getLoader().generateClass(bindingClass, "eventInstantAware",
+        final Class<?> awareClass = factory().getLoader().generateClass(bindingClass, ClassNameBuilder.EVENT_AWARE,
             (loader, fqcn, bindingInterface) -> {
-                final Class<?> codecImpl = loader.getGeneratedClass(bindingClass, "codecImpl");
+                final Class<?> codecImpl = loader.getGeneratedClass(bindingClass, ClassNameBuilder.CODEC_IMPL);
 
                 return GeneratorResult.of(new ByteBuddy()
                     .subclass(codecImpl, ConstructorStrategy.Default.NO_CONSTRUCTORS)

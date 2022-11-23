@@ -45,6 +45,7 @@ import org.opendaylight.mdsal.binding.dom.codec.impl.ClassGeneratorBridge.LocalN
 import org.opendaylight.mdsal.binding.dom.codec.impl.ClassGeneratorBridge.NodeContextSupplierProvider;
 import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader;
 import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader.ClassGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader.ClassNameBuilder;
 import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader.GeneratorResult;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -263,7 +264,7 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
     static <D extends DataObject, T extends CodecDataObject<T>> Class<T> generate(final CodecClassLoader loader,
             final Class<D> bindingInterface, final ImmutableMap<Method, ValueNodeCodecContext> simpleProperties,
             final Map<Class<?>, PropertyInfo> daoProperties, final Method keyMethod) {
-        return loader.generateClass(bindingInterface, "codecImpl",
+        return loader.generateClass(bindingInterface, ClassNameBuilder.CODEC_IMPL,
             new Reusable<>(BB_CDO, simpleProperties, daoProperties, keyMethod));
     }
 
@@ -271,7 +272,7 @@ abstract class CodecDataObjectGenerator<T extends CodecDataObject<?>> implements
             final CodecClassLoader loader, final Class<D> bindingInterface,
             final ImmutableMap<Method, ValueNodeCodecContext> simpleProperties,
             final Map<Class<?>, PropertyInfo> daoProperties, final Method keyMethod) {
-        return loader.generateClass(bindingInterface, "codecImpl",
+        return loader.generateClass(bindingInterface, ClassNameBuilder.CODEC_IMPL,
             new Reusable<>(BB_ACDO, simpleProperties, daoProperties, keyMethod));
     }
 

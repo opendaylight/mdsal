@@ -28,6 +28,7 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType.Unloaded;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,13 +73,32 @@ public abstract class CodecClassLoader extends ClassLoader {
         }
     }
 
+    public enum ClassNameBuilder {
+        CODEC_IMPL("org.opendaylight.mdsal.gen.codec.v1", "CodecImpl"),
+        STREAMER("org.opendaylight.mdsal.gen.streamer.v1", "Streamer"),
+        EVENT_AWARE("org.opendaylight.mdsal.gen.event.v1", "EventInstantAware");
+
+        private String packagePrefix;
+        private String nameSuffix;
+
+        ClassNameBuilder(String packagePrefix, String nameSuffix) {
+            this.packagePrefix = packagePrefix;
+            this.nameSuffix = nameSuffix;
+        }
+
+        public String buildCodecClassName(final Class<?> bindingInterface) {
+            return bindingInterface.getName().replace(BindingMapping.PACKAGE_PREFIX, packagePrefix)
+                    + "$$$" + nameSuffix;
+        }
+    }
+
     public static final class GeneratorResult<T> {
-        private final @NonNull ImmutableSet<Class<?>> dependecies;
+        private final @NonNull ImmutableSet<Class<?>> dependencies;
         private final @NonNull Unloaded<T> result;
 
-        GeneratorResult(final Unloaded<T> result, final ImmutableSet<Class<?>> dependecies) {
+        GeneratorResult(final Unloaded<T> result, final ImmutableSet<Class<?>> dependencies) {
             this.result = requireNonNull(result);
-            this.dependecies = requireNonNull(dependecies);
+            this.dependencies = requireNonNull(dependencies);
         }
 
         public static <T> @NonNull GeneratorResult<T> of(final Unloaded<T> result) {
@@ -96,7 +116,7 @@ public abstract class CodecClassLoader extends ClassLoader {
         }
 
         @NonNull ImmutableSet<Class<?>> getDependencies() {
-            return dependecies;
+            return dependencies;
         }
     }
 
@@ -128,34 +148,36 @@ public abstract class CodecClassLoader extends ClassLoader {
      * @return A new CodecClassLoader.
      */
     public static @NonNull CodecClassLoader create() {
-        return AccessController.doPrivileged((PrivilegedAction<CodecClassLoader>)() -> new RootCodecClassLoader());
+        return AccessController.doPrivileged((PrivilegedAction<CodecClassLoader>) () -> new RootCodecClassLoader());
     }
 
     /**
-     * The name of the target class is formed through concatenation of the name of a {@code bindingInterface} and
-     * specified {@code suffix}.
+     * Generates class object.
      *
      * @param bindingInterface Binding compile-time-generated interface
-     * @param suffix Suffix to use
-     * @param generator Code generator to run
+     * @param classNameBuilder class name builder
+     * @param generator        Code generator to run
      * @return A generated class object
      * @throws NullPointerException if any argument is null
      */
     public final <T> Class<T> generateClass(final Class<?> bindingInterface,
-            final String suffix, final ClassGenerator<T> generator)  {
-        return findClassLoader(requireNonNull(bindingInterface)).doGenerateClass(bindingInterface, suffix, generator);
+            final ClassNameBuilder classNameBuilder, final ClassGenerator<T> generator) {
+        return findClassLoader(requireNonNull(bindingInterface))
+                .doGenerateClass(bindingInterface, classNameBuilder, generator);
     }
 
-    public final @NonNull Class<?> getGeneratedClass(final Class<?> bindingInterface, final String suffix) {
+    public final @NonNull Class<?> getGeneratedClass(final Class<?> bindingInterface,
+            final ClassNameBuilder classNameBuilder) {
         final CodecClassLoader loader = findClassLoader(requireNonNull(bindingInterface));
-        final String fqcn = generatedClassName(bindingInterface, suffix);
+        final String fqcn = requireNonNull(classNameBuilder).buildCodecClassName(bindingInterface);
 
         final Class<?> ret;
         synchronized (loader.getClassLoadingLock(fqcn)) {
             ret = loader.findLoadedClass(fqcn);
         }
 
-        checkArgument(ret != null, "Failed to find generated class %s for %s of %s", fqcn, suffix, bindingInterface);
+        checkArgument(ret != null, "Failed to find generated class %s for %s of %s",
+                fqcn, classNameBuilder, bindingInterface);
         return ret;
     }
 
@@ -178,9 +200,9 @@ public abstract class CodecClassLoader extends ClassLoader {
      */
     abstract @NonNull CodecClassLoader findClassLoader(@NonNull Class<?> bindingClass);
 
-    private <T> Class<T> doGenerateClass(final Class<?> bindingInterface, final String suffix,
-            final ClassGenerator<T> generator)  {
-        final String fqcn = generatedClassName(bindingInterface, suffix);
+    private <T> Class<T> doGenerateClass(final Class<?> bindingInterface, final ClassNameBuilder classNameBuilder,
+            final ClassGenerator<T> generator) {
+        final String fqcn = requireNonNull(classNameBuilder).buildCodecClassName(bindingInterface);
 
         synchronized (getClassLoadingLock(fqcn)) {
             // Attempt to find a loaded class
@@ -243,7 +265,4 @@ public abstract class CodecClassLoader extends ClassLoader {
         }
     }
 
-    private static String generatedClassName(final Class<?> bindingInterface, final String suffix) {
-        return bindingInterface.getName() + "$$$" + suffix;
-    }
 }
