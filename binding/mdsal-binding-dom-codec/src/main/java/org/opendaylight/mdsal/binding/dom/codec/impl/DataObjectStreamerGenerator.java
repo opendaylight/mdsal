@@ -52,6 +52,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader;
 import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader.ClassGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader.ClassNameBuilder;
 import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader.GeneratorResult;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingSchemaMapping;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -196,7 +197,7 @@ final class DataObjectStreamerGenerator<T extends DataObjectStreamer<?>> impleme
             throw new UnsupportedOperationException("Schema type " + schema.getClass() + " is not supported");
         }
 
-        return loader.generateClass(type, "streamer",
+        return loader.generateClass(type, ClassNameBuilder.STREAMER,
             // FIXME: cast to GeneratedType: we really should adjust getTypeWithSchema()
             new DataObjectStreamerGenerator<>(registry, (GeneratedType) typeAndSchema.javaType(),
                 (DataNodeContainer) schema, type, startEvent));
