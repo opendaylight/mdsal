@@ -113,10 +113,11 @@ public final class BindingReflections {
     /**
      * Checks if method is RPC invocation.
      *
-     * @param possibleMethod
-     *            Method to check
+     * @param possibleMethod Method to check
      * @return true if method is RPC invocation, false otherwise.
+     * @deprecated This method is not used anywhere and is scheduled for removal.
      */
+    @Deprecated(since = "10.0.4", forRemoval = true)
     public static boolean isRpcMethod(final Method possibleMethod) {
         return possibleMethod != null && RpcService.class.isAssignableFrom(possibleMethod.getDeclaringClass())
                 && ListenableFuture.class.isAssignableFrom(possibleMethod.getReturnType())
