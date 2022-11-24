@@ -48,6 +48,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa3cb71e_a6700381",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/loader/CodecClassLoader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-24T13:17:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4f097f6d_d3df6dd1",
+      "range": {
+        "startLine": 76,
+        "startChar": 16,
+        "endLine": 76,
+        "endChar": 32
+      },
+      "revId": "83c94848f9dbecb6e4495acf9eebc084b2bdb1ef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e3d5f352_c64e9f3b",
@@ -61,6 +85,30 @@
       "writtenOn": "2022-11-23T09:24:13Z",
       "side": 1,
       "message": "again, due to dependencies, we should be receiving a fully-formed class name here.",
+      "range": {
+        "startLine": 164,
+        "startChar": 12,
+        "endLine": 164,
+        "endChar": 51
+      },
+      "revId": "83c94848f9dbecb6e4495acf9eebc084b2bdb1ef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3f3bb436_43daa2e2",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/loader/CodecClassLoader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-24T13:17:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e3d5f352_c64e9f3b",
       "range": {
         "startLine": 164,
         "startChar": 12,

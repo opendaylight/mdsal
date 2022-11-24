@@ -16,6 +16,24 @@
       "message": "Please rebase this on top of https://git.opendaylight.org/gerrit/c/mdsal/+/103337, which forces the correct dependency separation.",
       "revId": "71cc79e8cebd00eed760cd6fc98438df4fe0ecde",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6d903eb_6c94fd0b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-11-24T13:17:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6714c942_2b86c9de",
+      "revId": "71cc79e8cebd00eed760cd6fc98438df4fe0ecde",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
