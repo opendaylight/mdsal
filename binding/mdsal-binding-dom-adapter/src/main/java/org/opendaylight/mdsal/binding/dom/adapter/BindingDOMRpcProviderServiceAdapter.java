@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
@@ -27,7 +26,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 @VisibleForTesting
@@ -98,10 +96,10 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
             if (def == null) {
                 throw new IllegalArgumentException("Cannot resolve YANG definition of " + type);
             }
-            final var name = def.statement().argument();
-            final var impl = new BindingDOMRpcImplementationAdapter(adapterContext(), entry.getValue(), name);
+            final var rpcName  = def.statement().argument();
+            final var impl = new BindingDOMRpcImplementationAdapter(adapterContext(), rpcName, entry.getValue());
 
-            for (var id : createDomRpcIdentifiers(Set.of(name), rpcContextPaths)) {
+            for (var id : createDomRpcIdentifiers(Set.of(rpcName), rpcContextPaths)) {
                 builder.put(id, impl);
             }
         }
@@ -113,15 +111,14 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     private <S extends RpcService, T extends S> ObjectRegistration<T> register(
             final CurrentAdapterSerializer serializer, final Class<S> type, final T implementation,
             final Collection<YangInstanceIdentifier> rpcContextPaths) {
-        // FIXME: do not use BindingReflections here
-        final var inputName = YangConstants.operationInputQName(BindingReflections.getQNameModule(type)).intern();
-        final var methodHandles = currentSerializer().getRpcMethods(type);
+        final var methodHandles = serializer.getRpcMethods(type);
         final var builder = ImmutableMap.<DOMRpcIdentifier, DOMRpcImplementation>builderWithExpectedSize(
             methodHandles.size());
         for (var entry : methodHandles.entrySet()) {
-            final var impl = new LegacyDOMRpcImplementationAdapter(adapterContext(), inputName,
+            final var rpcName = entry.getKey();
+            final var impl = new LegacyDOMRpcImplementationAdapter(adapterContext(), rpcName,
                 entry.getValue().bindTo(implementation));
-            for (var id : createDomRpcIdentifiers(Set.of(entry.getKey()), rpcContextPaths)) {
+            for (var id : createDomRpcIdentifiers(Set.of(rpcName), rpcContextPaths)) {
                 builder.put(id, impl);
             }
         }
