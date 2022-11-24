@@ -37,8 +37,8 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ActionProviderServiceAdapterTest extends AbstractActionAdapterTest {
     private static final @NonNull Foo FOO = (path, input) -> RpcResultBuilder.success(BINDING_FOO_OUTPUT).buildFuture();
-    private static final @NonNull Fooio FOOIO = (path, input) -> RpcResultBuilder.success(
-            new org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.fooio.OutputBuilder().build()).buildFuture();
+    private static final @NonNull Fooio FOOIO = (path, input) -> RpcResultBuilder.success(BINDING_LSTIO_OUTPUT)
+        .buildFuture();
     private static final @NonNull QName KEYIO_QNAME = QName.create(Lstio.QNAME, "keyio");
     private static final String LIST_KEY = "list-key";
 

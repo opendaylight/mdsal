@@ -14,7 +14,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -32,11 +31,9 @@ import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Lstio;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.LstioKey;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
-import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.Output;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.Fooio;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
@@ -60,13 +57,12 @@ public class ActionServiceAdapterTest extends AbstractActionAdapterTest {
 
     @Test
     public void testInvocation() throws ExecutionException {
-        final Foo handle = service.getActionHandle(ActionSpec.builder(Cont.class).build(Foo.class));
-        final ListenableFuture<RpcResult<Output>> future = handle.invoke(InstanceIdentifier.create(Cont.class),
-            BINDING_FOO_INPUT);
+        final var handle = service.getActionHandle(ActionSpec.builder(Cont.class).build(Foo.class));
+        final var future = handle.invoke(InstanceIdentifier.create(Cont.class), BINDING_FOO_INPUT);
         assertNotNull(future);
         assertFalse(future.isDone());
         domResult.set(new SimpleDOMActionResult(DOM_FOO_OUTPUT, List.of()));
-        final RpcResult<Output> bindingResult = Futures.getDone(future);
+        final var bindingResult = Futures.getDone(future);
 
         assertEquals(List.of(), bindingResult.getErrors());
         assertEquals(BINDING_FOO_OUTPUT, bindingResult.getResult());
