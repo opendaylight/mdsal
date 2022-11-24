@@ -81,6 +81,11 @@
             <!-- Binding MD-SAL & Java Binding -->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-binding-loader</artifactId>
+                <version>11.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-model-api</artifactId>
                 <version>11.0.0-SNAPSHOT</version>
             </dependency>

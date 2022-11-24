@@ -33,6 +33,7 @@
         <module>binding-parent</module>
         <!-- FIXME: rename to mdsal-binding-spec-api -->
         <module>yang-binding</module>
+        <module>mdsal-binding-loader</module>
         <module>mdsal-binding-spec-util</module>
 
         <!-- Binding Runtime Services, dealing with class/schema mapping -->
