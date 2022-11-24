@@ -43,10 +43,10 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCod
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
-import org.opendaylight.mdsal.binding.dom.codec.impl.loader.CodecClassLoader;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingSchemaMapping;
+import org.opendaylight.mdsal.binding.loader.BindingClassLoader;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -137,7 +137,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
             }
         });
 
-    private final @NonNull CodecClassLoader loader = CodecClassLoader.create();
+    private final @NonNull BindingClassLoader loader = BindingClassLoader.create(BindingCodecContext.class);
     private final @NonNull InstanceIdentifierCodec instanceIdentifierCodec;
     private final @NonNull IdentityCodec identityCodec;
     private final @NonNull BindingRuntimeContext context;
@@ -161,7 +161,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     @Override
-    public CodecClassLoader getLoader() {
+    public BindingClassLoader getLoader() {
         return loader;
     }
 
