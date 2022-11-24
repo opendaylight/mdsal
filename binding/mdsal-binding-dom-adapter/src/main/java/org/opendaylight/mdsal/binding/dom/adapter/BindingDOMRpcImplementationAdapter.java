@@ -13,7 +13,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.yangtools.yang.binding.Rpc;
-import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.YangConstants;
@@ -31,9 +30,9 @@ final class BindingDOMRpcImplementationAdapter extends AbstractDOMRpcImplementat
     }
 
     @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     ListenableFuture<RpcResult<?>> invokeRpc(final CurrentAdapterSerializer serializer, final DOMRpcIdentifier rpc,
             final ContainerNode input) {
-        final var bindingInput = input != null ? deserialize(serializer, rpcName, input) : null;
-        return ((Rpc) delegate).invoke((RpcInput) bindingInput);
+        return ((Rpc) delegate).invoke(deserialize(serializer, rpcName, input));
     }
 }

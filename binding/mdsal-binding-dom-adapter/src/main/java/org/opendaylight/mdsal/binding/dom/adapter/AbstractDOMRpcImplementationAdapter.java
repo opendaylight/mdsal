@@ -18,7 +18,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -49,10 +49,10 @@ abstract sealed class AbstractDOMRpcImplementationAdapter implements DOMRpcImple
     abstract @NonNull ListenableFuture<RpcResult<?>> invokeRpc(@NonNull CurrentAdapterSerializer serializer,
         @NonNull DOMRpcIdentifier rpc, @NonNull ContainerNode input);
 
-    final @NonNull DataObject deserialize(final @NonNull CurrentAdapterSerializer serializer,
+    final @NonNull RpcInput deserialize(final @NonNull CurrentAdapterSerializer serializer,
             final @NonNull QName rpcName, final @NonNull ContainerNode input) {
         if (ENABLE_CODEC_SHORTCUT && input instanceof BindingLazyContainerNode<?> lazy) {
-            return lazy.getDataObject();
+            return (RpcInput) lazy.getDataObject();
         }
 
         // TODO: this is a bit inefficient: typically we get the same CurrentAdapterSerializer and the path is also
@@ -64,6 +64,6 @@ abstract sealed class AbstractDOMRpcImplementationAdapter implements DOMRpcImple
         //       constant, hence we should be able to cache this lookup and just have the appropriate
         //       BindingDataObjectCodecTreeNode and reuse it directly
         // FIXME: should be a guaranteed return, as innput is @NonNull
-        return verifyNotNull(serializer.fromNormalizedNodeRpcData(Absolute.of(rpcName, inputName), input));
+        return verifyNotNull((RpcInput) serializer.fromNormalizedNodeRpcData(Absolute.of(rpcName, inputName), input));
     }
 }
