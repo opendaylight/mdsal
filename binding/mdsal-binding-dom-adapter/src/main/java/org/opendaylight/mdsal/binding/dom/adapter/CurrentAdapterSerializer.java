@@ -16,6 +16,14 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.ListenableFuture;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,10 +39,13 @@ import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.RpcService;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
@@ -44,10 +55,16 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ListEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Beta
 @VisibleForTesting
 public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecServices {
+    private static final Logger LOG = LoggerFactory.getLogger(CurrentAdapterSerializer.class);
+    private static final MethodType RPC_SERVICE_METHOD_SIGNATURE = MethodType.methodType(ListenableFuture.class,
+        RpcService.class, DataObject.class);
+
     private final LoadingCache<InstanceIdentifier<?>, YangInstanceIdentifier> cache = CacheBuilder.newBuilder()
             .softValues().build(new CacheLoader<InstanceIdentifier<?>, YangInstanceIdentifier>() {
                 @Override
@@ -57,6 +74,9 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
             });
 
     private final ConcurrentMap<JavaTypeName, ContextReferenceExtractor> extractors = new ConcurrentHashMap<>();
+    @Deprecated
+    private final ConcurrentMap<Class<? extends RpcService>, ImmutableMap<QName, MethodHandle>> rpcMethods =
+        new ConcurrentHashMap<>();
     private final @NonNull BindingDOMCodecServices delegate;
 
     public CurrentAdapterSerializer(final BindingDOMCodecServices delegate) {
@@ -125,6 +145,49 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         // Reconcile with cache
         final var raced = extractors.putIfAbsent(inputName, created);
         return raced != null ? raced : created;
+    }
+
+    @Deprecated
+    @NonNull ImmutableMap<QName, MethodHandle> getRpcMethods(final @NonNull Class<? extends RpcService> serviceType) {
+        return rpcMethods.computeIfAbsent(serviceType, ignored -> {
+            final var lookup = MethodHandles.publicLookup();
+            return ImmutableMap.copyOf(Maps.transformValues(createQNameToMethod(serviceType), method -> {
+                final MethodHandle raw;
+                try {
+                    raw = lookup.unreflect(method);
+                } catch (IllegalAccessException e) {
+                    throw new IllegalStateException("Lookup on public method failed", e);
+                }
+                return raw.asType(RPC_SERVICE_METHOD_SIGNATURE);
+            }));
+        });
+    }
+
+    @Deprecated
+    @VisibleForTesting
+    // FIXME: This should be probably part of Binding Runtime context
+    ImmutableMap<QName, Method> createQNameToMethod(final Class<? extends RpcService> key) {
+        final var moduleName = BindingReflections.getQNameModule(key);
+        final var runtimeContext = getRuntimeContext();
+        final var module = runtimeContext.getEffectiveModelContext().findModule(moduleName).orElse(null);
+        if (module == null) {
+            LOG.trace("Schema for {} is not available; expected module name: {}; BindingRuntimeContext: {}",
+                key, moduleName, runtimeContext);
+            throw new IllegalStateException(String.format("Schema for %s is not available; expected module name: %s;"
+                + " full BindingRuntimeContext available in trace log", key, moduleName));
+        }
+
+        final var ret = ImmutableBiMap.<QName, Method>builder();
+        try {
+            for (var rpcDef : module.getRpcs()) {
+                final var rpcName = rpcDef.getQName();
+                ret.put(rpcName, key.getMethod(BindingMapping.getRpcMethodName(rpcName),
+                    runtimeContext.getRpcInput(rpcName)));
+            }
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException("Rpc defined in model does not have representation in generated class.", e);
+        }
+        return ret.build();
     }
 
     private @NonNull Entry<SchemaInferenceStack, QNameModule> resolvePath(final @NonNull InstanceIdentifier<?> path) {
