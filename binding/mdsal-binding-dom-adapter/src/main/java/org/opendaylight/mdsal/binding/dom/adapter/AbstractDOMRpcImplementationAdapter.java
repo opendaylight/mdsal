@@ -21,6 +21,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
@@ -28,10 +29,12 @@ abstract sealed class AbstractDOMRpcImplementationAdapter implements DOMRpcImple
         permits BindingDOMRpcImplementationAdapter, LegacyDOMRpcImplementationAdapter {
     private final AdapterContext adapterContext;
     private final @NonNull QName inputName;
+    private final @NonNull QName rpcName;
 
-    AbstractDOMRpcImplementationAdapter(final AdapterContext adapterContext, @NonNull QName inputName) {
+    AbstractDOMRpcImplementationAdapter(final AdapterContext adapterContext, final QName rpcName) {
         this.adapterContext = requireNonNull(adapterContext);
-        this.inputName = requireNonNull(inputName);
+        this.rpcName = requireNonNull(rpcName);
+        inputName = YangConstants.operationInputQName(rpcName.getModule()).intern();
     }
 
     @Override
@@ -43,13 +46,12 @@ abstract sealed class AbstractDOMRpcImplementationAdapter implements DOMRpcImple
     @Override
     public final ListenableFuture<DOMRpcResult> invokeRpc(final DOMRpcIdentifier rpc, final ContainerNode input) {
         final var serializer = adapterContext.currentSerializer();
-        return LazyDOMRpcResultFuture.create(serializer, invokeRpc(serializer, rpc, input));
+        return LazyDOMRpcResultFuture.create(serializer, invokeRpc(deserialize(serializer, rpcName, input)));
     }
 
-    abstract @NonNull ListenableFuture<RpcResult<?>> invokeRpc(@NonNull CurrentAdapterSerializer serializer,
-        @NonNull DOMRpcIdentifier rpc, @NonNull ContainerNode input);
+    abstract @NonNull ListenableFuture<RpcResult<?>> invokeRpc(@NonNull RpcInput input);
 
-    final @NonNull RpcInput deserialize(final @NonNull CurrentAdapterSerializer serializer,
+    private @NonNull RpcInput deserialize(final @NonNull CurrentAdapterSerializer serializer,
             final @NonNull QName rpcName, final @NonNull ContainerNode input) {
         if (ENABLE_CODEC_SHORTCUT && input instanceof BindingLazyContainerNode<?> lazy) {
             return (RpcInput) lazy.getDataObject();

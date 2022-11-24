@@ -11,28 +11,24 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.yangtools.yang.binding.Rpc;
+import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
-import org.opendaylight.yangtools.yang.common.YangConstants;
-import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 final class BindingDOMRpcImplementationAdapter extends AbstractDOMRpcImplementationAdapter {
-    private final @NonNull Rpc<?, ?> delegate;
-    private final @NonNull QName rpcName;
+    @SuppressWarnings("rawtypes")
+    private final @NonNull Rpc delegate;
 
-    BindingDOMRpcImplementationAdapter(final AdapterContext adapterContext, final Rpc<?, ?> delegate,
-            final QName rpcName) {
-        super(adapterContext, YangConstants.operationInputQName(rpcName.getModule()).intern());
+    BindingDOMRpcImplementationAdapter(final AdapterContext adapterContext, final QName rpcName,
+            final Rpc<?, ?> delegate) {
+        super(adapterContext, rpcName);
         this.delegate = requireNonNull(delegate);
-        this.rpcName = requireNonNull(rpcName);
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    ListenableFuture<RpcResult<?>> invokeRpc(final CurrentAdapterSerializer serializer, final DOMRpcIdentifier rpc,
-            final ContainerNode input) {
-        return ((Rpc) delegate).invoke(deserialize(serializer, rpcName, input));
+    @SuppressWarnings("unchecked")
+    ListenableFuture<RpcResult<?>> invokeRpc(final RpcInput input) {
+        return delegate.invoke(input);
     }
 }
