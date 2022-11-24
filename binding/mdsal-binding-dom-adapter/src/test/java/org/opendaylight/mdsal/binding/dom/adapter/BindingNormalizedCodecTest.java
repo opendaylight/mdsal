@@ -75,9 +75,7 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
 
     @Test
     public void testGetRpcMethodToQName() {
-        assertTrue(
-            BindingDOMRpcProviderServiceAdapter.createQNameToMethod(serializer,
-                OpendaylightTestRpcServiceService.class)
+        assertTrue(serializer.createQNameToMethod(OpendaylightTestRpcServiceService.class)
             .values().stream()
             .map(Method::getName)
             .anyMatch("rockTheHouse"::equals));

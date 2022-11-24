@@ -9,18 +9,14 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.binding.dom.adapter.invoke.RpcMethodInvoker;
-import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
@@ -31,14 +27,12 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @VisibleForTesting
 public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<DOMRpcProviderService>
         implements RpcProviderService {
-    private static final Logger LOG = LoggerFactory.getLogger(BindingDOMRpcProviderServiceAdapter.class);
     private static final ImmutableSet<YangInstanceIdentifier> GLOBAL = ImmutableSet.of(YangInstanceIdentifier.empty());
 
     public BindingDOMRpcProviderServiceAdapter(final AdapterContext adapterContext,
@@ -119,12 +113,14 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     private <S extends RpcService, T extends S> ObjectRegistration<T> register(
             final CurrentAdapterSerializer serializer, final Class<S> type, final T implementation,
             final Collection<YangInstanceIdentifier> rpcContextPaths) {
-        final var qnameToMethod = createQNameToMethod(currentSerializer(), type);
+        // FIXME: do not use BindingReflections here
+        final var inputName = YangConstants.operationInputQName(BindingReflections.getQNameModule(type)).intern();
+        final var methodHandles = currentSerializer().getRpcMethods(type);
         final var builder = ImmutableMap.<DOMRpcIdentifier, DOMRpcImplementation>builderWithExpectedSize(
-            qnameToMethod.size());
-        for (var entry : qnameToMethod.entrySet()) {
-            final var impl = new LegacyDOMRpcImplementationAdapter<>(adapterContext(), type, implementation,
-                RpcMethodInvoker.from(entry.getValue()));
+            methodHandles.size());
+        for (var entry : methodHandles.entrySet()) {
+            final var impl = new LegacyDOMRpcImplementationAdapter(adapterContext(), inputName,
+                entry.getValue().bindTo(implementation));
             for (var id : createDomRpcIdentifiers(Set.of(entry.getKey()), rpcContextPaths)) {
                 builder.put(id, impl);
             }
@@ -132,34 +128,6 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
 
         return new BindingRpcAdapterRegistration<>(implementation,
             getDelegate().registerRpcImplementations(builder.build()));
-    }
-
-    @Deprecated
-    @VisibleForTesting
-    // FIXME: This should be probably part of Binding Runtime context
-    static ImmutableMap<QName, Method> createQNameToMethod(final CurrentAdapterSerializer serializer,
-            final Class<? extends RpcService> key) {
-        final var moduleName = BindingReflections.getQNameModule(key);
-        final var runtimeContext = serializer.getRuntimeContext();
-        final var module = runtimeContext.getEffectiveModelContext().findModule(moduleName).orElse(null);
-        if (module == null) {
-            LOG.trace("Schema for {} is not available; expected module name: {}; BindingRuntimeContext: {}",
-                key, moduleName, runtimeContext);
-            throw new IllegalStateException(String.format("Schema for %s is not available; expected module name: %s;"
-                + " full BindingRuntimeContext available in trace log", key, moduleName));
-        }
-
-        final var ret = ImmutableBiMap.<QName, Method>builder();
-        try {
-            for (var rpcDef : module.getRpcs()) {
-                final var rpcName = rpcDef.getQName();
-                ret.put(rpcName, key.getMethod(BindingMapping.getRpcMethodName(rpcName),
-                    runtimeContext.getRpcInput(rpcName)));
-            }
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException("Rpc defined in model does not have representation in generated class.", e);
-        }
-        return ret.build();
     }
 
     private static Set<DOMRpcIdentifier> createDomRpcIdentifiers(final Set<QName> rpcs,
