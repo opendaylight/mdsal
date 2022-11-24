@@ -7,33 +7,39 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableClassToInstanceMap;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.TransactionChainListener;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.yang.gen.v1.bug8449.rev170516.Top;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingDOMAdapterLoaderTest {
-
     @Mock
     private DOMDataBroker domService;
     @Mock
     private AdapterContext mockContext;
 
     private BindingDOMAdapterLoader bindingDOMAdapterLoader;
-    private BindingDOMDataBrokerAdapter bindingDOMDataBrokerAdapter;
 
     @Before
     public void setUp() {
@@ -48,22 +54,29 @@ public class BindingDOMAdapterLoaderTest {
 
     @Test
     public void createBuilderTest() {
-        assertTrue(bindingDOMAdapterLoader.load(DataBroker.class).get() instanceof BindingDOMDataBrokerAdapter);
+        assertDataBrokerAdapter();
         domService = null;
-        assertFalse(bindingDOMAdapterLoader.load(DataBroker.class).isPresent());
+        assertEquals(Optional.empty(), bindingDOMAdapterLoader.load(DataBroker.class));
     }
 
     @Test
     public void createChainTest() {
-        bindingDOMDataBrokerAdapter
-                = (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).get();
-        assertNotNull(bindingDOMDataBrokerAdapter.createTransactionChain(mock(TransactionChainListener.class)));
+        final var adapter = assertDataBrokerAdapter();
+        assertNotNull(adapter.createTransactionChain(mock(TransactionChainListener.class)));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void registerWithException() {
-        bindingDOMDataBrokerAdapter
-                = (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).get();
-        bindingDOMDataBrokerAdapter.registerDataTreeChangeListener(null, null);
+        final var adapter = assertDataBrokerAdapter();
+        final var ex = assertThrows(UnsupportedOperationException.class, () -> adapter.registerDataTreeChangeListener(
+                DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Top.class)),
+                mock(DataTreeChangeListener.class)));
+        assertEquals("Underlying data broker does not expose DOMDataTreeChangeService.", ex.getMessage());
+    }
+
+    private BindingDOMDataBrokerAdapter assertDataBrokerAdapter() {
+        final var service = bindingDOMAdapterLoader.load(DataBroker.class).orElseThrow();
+        assertThat(service, instanceOf(BindingDOMDataBrokerAdapter.class));
+        return (BindingDOMDataBrokerAdapter) service;
     }
 }
