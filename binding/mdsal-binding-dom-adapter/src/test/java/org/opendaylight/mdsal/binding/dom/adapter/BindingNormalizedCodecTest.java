@@ -14,10 +14,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.SetMultimap;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractSchemaAwareTest;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
@@ -77,11 +75,12 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
 
     @Test
     public void testGetRpcMethodToQName() {
-        final List<String> retMap = serializer
-                .getRpcMethodToQName(OpendaylightTestRpcServiceService.class).keySet().stream()
-                .map(Method::getName)
-                .collect(Collectors.toList());
-        assertTrue(retMap.contains("rockTheHouse"));
+        assertTrue(
+            BindingDOMRpcProviderServiceAdapter.createQNameToMethod(serializer,
+                OpendaylightTestRpcServiceService.class)
+            .values().stream()
+            .map(Method::getName)
+            .anyMatch("rockTheHouse"::equals));
     }
 
     static class EmptyEffectiveModelContext extends AbstractSchemaContext implements EffectiveModelContext {
