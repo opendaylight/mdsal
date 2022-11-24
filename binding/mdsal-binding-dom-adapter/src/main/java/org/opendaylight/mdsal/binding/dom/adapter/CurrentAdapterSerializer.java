@@ -44,6 +44,7 @@ import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
@@ -62,8 +63,9 @@ import org.slf4j.LoggerFactory;
 @VisibleForTesting
 public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecServices {
     private static final Logger LOG = LoggerFactory.getLogger(CurrentAdapterSerializer.class);
+    @Deprecated
     private static final MethodType RPC_SERVICE_METHOD_SIGNATURE = MethodType.methodType(ListenableFuture.class,
-        RpcService.class, DataObject.class);
+        RpcService.class, RpcInput.class);
 
     private final LoadingCache<InstanceIdentifier<?>, YangInstanceIdentifier> cache = CacheBuilder.newBuilder()
             .softValues().build(new CacheLoader<InstanceIdentifier<?>, YangInstanceIdentifier>() {
