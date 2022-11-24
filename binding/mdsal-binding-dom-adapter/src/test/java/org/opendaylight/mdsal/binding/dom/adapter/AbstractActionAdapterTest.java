@@ -15,11 +15,15 @@ import static org.opendaylight.yangtools.yang.data.impl.schema.Builders.leafBuil
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Lstio;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
-import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.Input;
-import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.InputBuilder;
-import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.Output;
-import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.OutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.FooInput;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.FooInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.FooOutput;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.FooOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.Fooio;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.FooioInput;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.FooioInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.FooioOutput;
+import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.FooioOutputBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -35,11 +39,9 @@ public abstract class AbstractActionAdapterTest extends AbstractAdapterTest  {
             .withChild(leafBuilder().withNodeIdentifier(FOO_XYZZY).withValue("xyzzy").build())
             .build();
     protected static final ContainerNode DOM_FOO_OUTPUT = containerBuilder().withNodeIdentifier(FOO_OUTPUT).build();
-    protected static final Input BINDING_FOO_INPUT = new InputBuilder().setXyzzy("xyzzy").build();
-    protected static final Output BINDING_FOO_OUTPUT = new OutputBuilder().build();
+    protected static final FooInput BINDING_FOO_INPUT = new FooInputBuilder().setXyzzy("xyzzy").build();
+    protected static final FooOutput BINDING_FOO_OUTPUT = new FooOutputBuilder().build();
+    protected static final FooioInput BINDING_LSTIO_INPUT = new FooioInputBuilder().build();
+    protected static final FooioOutput BINDING_LSTIO_OUTPUT = new FooioOutputBuilder().build();
 
-    protected static final org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.fooio.Input BINDING_LSTIO_INPUT =
-        new org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.fooio.InputBuilder().build();
-    protected static final org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.fooio.Output BINDING_LSTIO_OUTPUT =
-        new org.opendaylight.yang.gen.v1.urn.odl.actions.norev.lstio.fooio.OutputBuilder().build();
 }
