@@ -14,7 +14,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.SetMultimap;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,11 +76,12 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
 
     @Test
     public void testGetRpcMethodToQName() {
-        final List<String> retMap = serializer
-                .getRpcMethodToQName(OpendaylightTestRpcServiceService.class).keySet().stream()
+        final var methodNames =
+            BindingDOMRpcProviderServiceAdapter.getRpcMethodToQName(serializer, OpendaylightTestRpcServiceService.class)
+                .keySet().stream()
                 .map(Method::getName)
                 .collect(Collectors.toList());
-        assertTrue(retMap.contains("rockTheHouse"));
+        assertTrue(methodNames.contains("rockTheHouse"));
     }
 
     static class EmptyEffectiveModelContext extends AbstractSchemaContext implements EffectiveModelContext {
