@@ -7,9 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
-import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -18,16 +16,13 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.RpcServiceInvoker;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 @Deprecated(since = "11.0.0", forRemoval = true)
 final class LegacyDOMRpcImplementationAdapter<T extends RpcService> extends AbstractDOMRpcImplementationAdapter {
@@ -36,11 +31,11 @@ final class LegacyDOMRpcImplementationAdapter<T extends RpcService> extends Abst
 
     private final RpcServiceInvoker invoker;
     private final T delegate;
-    private final QName inputQname;
 
     LegacyDOMRpcImplementationAdapter(final AdapterContext adapterContext, final Class<T> type,
             final Map<QName, Method> localNameToMethod, final T delegate) {
-        super(adapterContext);
+        // FIXME: do not use BindingReflections here
+        super(adapterContext, YangConstants.operationInputQName(BindingReflections.getQNameModule(type)).intern());
 
         try {
             invoker = SERVICE_INVOKERS.get(type, () -> RpcServiceInvoker.from(localNameToMethod));
@@ -49,25 +44,13 @@ final class LegacyDOMRpcImplementationAdapter<T extends RpcService> extends Abst
         }
 
         this.delegate = requireNonNull(delegate);
-        inputQname = YangConstants.operationInputQName(BindingReflections.getQNameModule(type)).intern();
     }
 
     @Override
     ListenableFuture<RpcResult<?>> invokeRpc(final CurrentAdapterSerializer serializer, final DOMRpcIdentifier rpc,
             final ContainerNode input) {
         final QName rpcType = rpc.getType();
-        final DataObject bindingInput = input != null ? deserialize(serializer, rpcType, input) : null;
+        final var bindingInput = input != null ? deserialize(serializer, rpcType, input) : null;
         return invoker.invokeRpc(delegate, rpcType, bindingInput);
-    }
-
-    private DataObject deserialize(final CurrentAdapterSerializer serializer, final QName rpcType,
-            final ContainerNode input) {
-        if (ENABLE_CODEC_SHORTCUT && input instanceof BindingLazyContainerNode) {
-            return ((BindingLazyContainerNode<?>) input).getDataObject();
-        }
-
-        checkArgument(inputQname.equals(input.getIdentifier().getNodeType()),
-            "Unexpected RPC %s input %s", rpcType, input);
-        return serializer.fromNormalizedNodeRpcData(Absolute.of(rpcType, inputQname), input);
     }
 }
