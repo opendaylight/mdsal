@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.annotations.Beta;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -114,10 +115,9 @@ public final class BindingReflections {
      *
      * @param possibleMethod Method to check
      * @return true if method is RPC invocation, false otherwise.
-     * @deprecated This method is not used anywhere and is scheduled for removal.
      */
-    @Deprecated(since = "10.0.4", forRemoval = true)
-    public static boolean isRpcMethod(final Method possibleMethod) {
+    @VisibleForTesting
+    static boolean isRpcMethod(final Method possibleMethod) {
         return possibleMethod != null && RpcService.class.isAssignableFrom(possibleMethod.getDeclaringClass())
                 && ListenableFuture.class.isAssignableFrom(possibleMethod.getReturnType())
                 // length <= 2: it seemed to be impossible to get correct RpcMethodInvoker because of
