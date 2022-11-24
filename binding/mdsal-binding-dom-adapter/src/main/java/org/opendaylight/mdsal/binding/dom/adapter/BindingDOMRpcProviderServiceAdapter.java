@@ -121,7 +121,7 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
         final var rpcs = createQNameToMethod(currentSerializer(), type);
 
         return new BindingRpcAdapterRegistration<>(implementation, getDelegate().registerRpcImplementation(
-            new LegacyDOMRpcImplementationAdapter<>(adapterContext(), type, rpcs, implementation),
+            new LegacyDOMRpcImplementationAdapter<>(adapterContext(), type, implementation, rpcs),
             createDomRpcIdentifiers(rpcs.keySet(), rpcContextPaths)));
     }
 

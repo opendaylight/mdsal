@@ -14,12 +14,13 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 @Deprecated(since = "11.0.0", forRemoval = true)
-final class RpcMethodInvoker {
+public final class RpcMethodInvoker {
     private static final MethodType INVOCATION_SIGNATURE = MethodType.methodType(ListenableFuture.class,
         RpcService.class, DataObject.class);
 
@@ -30,21 +31,18 @@ final class RpcMethodInvoker {
         this.handle = handle.asType(INVOCATION_SIGNATURE);
     }
 
-    static RpcMethodInvoker from(final Method method) {
-        final MethodHandle methodHandle;
+    public static @NonNull RpcMethodInvoker from(final Method method) {
         try {
-            methodHandle = MethodHandles.publicLookup().unreflect(method);
+            return new RpcMethodInvoker(MethodHandles.publicLookup().unreflect(method));
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Lookup on public method failed.", e);
         }
-
-        return new RpcMethodInvoker(methodHandle);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    ListenableFuture<RpcResult<?>> invokeOn(final RpcService impl, final DataObject input) {
+    public @NonNull ListenableFuture<RpcResult<?>> invokeOn(final RpcService impl, final DataObject input) {
         try {
-            return (ListenableFuture<RpcResult<?>>) handle.invokeExact(impl,input);
+            return (ListenableFuture<RpcResult<?>>) handle.invokeExact(impl, input);
         } catch (Throwable e) {
             Throwables.throwIfUnchecked(e);
             throw new IllegalStateException(e);
