@@ -30,16 +30,16 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 @Deprecated(since = "11.0.0", forRemoval = true)
-final class LegacyDOMRpcImplementationAdapter extends AbstractDOMRpcImplementationAdapter {
+final class LegacyDOMRpcImplementationAdapter<T extends RpcService> extends AbstractDOMRpcImplementationAdapter {
     private static final Cache<Class<?>, RpcServiceInvoker> SERVICE_INVOKERS = CacheBuilder.newBuilder().weakKeys()
             .build();
 
     private final RpcServiceInvoker invoker;
-    private final RpcService delegate;
+    private final T delegate;
     private final QName inputQname;
 
-    <T extends RpcService> LegacyDOMRpcImplementationAdapter(final AdapterContext adapterContext,
-            final Class<T> type, final Map<QName, Method> localNameToMethod, final T delegate) {
+    LegacyDOMRpcImplementationAdapter(final AdapterContext adapterContext, final Class<T> type,
+            final Map<QName, Method> localNameToMethod, final T delegate) {
         super(adapterContext);
 
         try {
