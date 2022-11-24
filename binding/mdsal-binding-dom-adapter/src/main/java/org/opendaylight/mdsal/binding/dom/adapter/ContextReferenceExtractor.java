@@ -35,15 +35,9 @@ abstract sealed class ContextReferenceExtractor {
             return new Direct(MethodHandles.publicLookup().unreflect(getterMethod));
         }
 
-        @SuppressWarnings("checkstyle:IllegalCatch")
         @Override
-        InstanceIdentifier<?> extract(final DataObject obj) {
-            try {
-                return (InstanceIdentifier<?>) handle.invokeExact(obj);
-            } catch (final Throwable e) {
-                Throwables.throwIfUnchecked(e);
-                throw new IllegalStateException(e);
-            }
+        InstanceIdentifier<?> extractImpl(final DataObject obj) throws Throwable {
+            return (InstanceIdentifier<?>) handle.invokeExact(obj);
         }
     }
 
@@ -63,19 +57,10 @@ abstract sealed class ContextReferenceExtractor {
             return new GetValue(lookup.unreflect(contextGetter), lookup.unreflect(getValueMethod));
         }
 
-        @SuppressWarnings("checkstyle:IllegalCatch")
         @Override
-        InstanceIdentifier<?> extract(final DataObject obj) {
-            try {
-                final Object ctx = contextHandle.invokeExact(obj);
-                if (ctx != null) {
-                    return (InstanceIdentifier<?>) valueHandle.invokeExact(ctx);
-                }
-                return null;
-            } catch (final Throwable e) {
-                Throwables.throwIfUnchecked(e);
-                throw new IllegalStateException(e);
-            }
+        InstanceIdentifier<?> extractImpl(final DataObject obj) throws Throwable {
+            final var ctx = contextHandle.invokeExact(obj);
+            return ctx == null ? null : (InstanceIdentifier<?>) valueHandle.invokeExact(ctx);
         }
     }
 
@@ -113,7 +98,18 @@ abstract sealed class ContextReferenceExtractor {
      * @return Instance Identifier representing context reference or null, if data object does not contain a context
      *         reference.
      */
-    abstract @Nullable InstanceIdentifier<?> extract(DataObject obj);
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    final @Nullable InstanceIdentifier<?> extract(final DataObject obj) {
+        try {
+            return extractImpl(obj);
+        } catch (Throwable e) {
+            Throwables.throwIfUnchecked(e);
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @SuppressWarnings("checkstyle:IllegalThrows")
+    abstract @Nullable InstanceIdentifier<?> extractImpl(DataObject obj) throws Throwable;
 
     private static @Nullable Method findGetValueMethod(final Class<?> type, final Class<?> returnType) {
         final Method method;
