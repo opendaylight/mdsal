@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.dom.adapter.invoke.RpcMethodInvoker;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -118,11 +119,19 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
     private <S extends RpcService, T extends S> ObjectRegistration<T> register(
             final CurrentAdapterSerializer serializer, final Class<S> type, final T implementation,
             final Collection<YangInstanceIdentifier> rpcContextPaths) {
-        final var rpcs = createQNameToMethod(currentSerializer(), type);
+        final var qnameToMethod = createQNameToMethod(currentSerializer(), type);
+        final var builder = ImmutableMap.<DOMRpcIdentifier, DOMRpcImplementation>builderWithExpectedSize(
+            qnameToMethod.size());
+        for (var entry : qnameToMethod.entrySet()) {
+            final var impl = new LegacyDOMRpcImplementationAdapter<>(adapterContext(), type, implementation,
+                RpcMethodInvoker.from(entry.getValue()));
+            for (var id : createDomRpcIdentifiers(Set.of(entry.getKey()), rpcContextPaths)) {
+                builder.put(id, impl);
+            }
+        }
 
-        return new BindingRpcAdapterRegistration<>(implementation, getDelegate().registerRpcImplementation(
-            new LegacyDOMRpcImplementationAdapter<>(adapterContext(), type, implementation, rpcs),
-            createDomRpcIdentifiers(rpcs.keySet(), rpcContextPaths)));
+        return new BindingRpcAdapterRegistration<>(implementation,
+            getDelegate().registerRpcImplementations(builder.build()));
     }
 
     @Deprecated

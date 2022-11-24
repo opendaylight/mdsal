@@ -7,15 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
 @Deprecated(since = "11.0.0", forRemoval = true)
 class BindingRpcAdapterRegistration<T extends RpcService> extends AbstractObjectRegistration<T> {
-    private final DOMRpcImplementationRegistration<?> reg;
+    private final Registration reg;
 
-    BindingRpcAdapterRegistration(T instance, DOMRpcImplementationRegistration<?> reg) {
+    BindingRpcAdapterRegistration(final T instance, final Registration reg) {
         super(instance);
         this.reg = reg;
     }
