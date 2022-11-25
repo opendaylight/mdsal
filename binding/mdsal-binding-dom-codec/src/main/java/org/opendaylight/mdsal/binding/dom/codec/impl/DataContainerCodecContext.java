@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
@@ -126,6 +127,23 @@ abstract sealed class DataContainerCodecContext<D extends DataObject, T extends 
         final var child = getStreamChild(arg.getType());
         child.addYangPathArgument(arg, builder);
         return child;
+    }
+
+    @Override
+    public BindingDataObjectCodecTreeNode<?> schemaTreeChild(final QName qname) {
+        final var myType = type();
+        final var childType = myType.schemaTreeChild(qname);
+
+        if (childType == null) {
+            return null;
+        }
+        final Class<? extends DataObject> childClass;
+        try {
+            childClass = factory().getRuntimeContext().loadClass(childType.javaType());
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+        return (BindingDataObjectCodecTreeNode<?>) streamChild(childClass);
     }
 
     /**

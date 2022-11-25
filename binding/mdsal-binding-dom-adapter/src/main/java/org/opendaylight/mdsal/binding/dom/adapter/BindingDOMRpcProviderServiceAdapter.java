@@ -100,7 +100,8 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
                 throw new IllegalArgumentException("Cannot resolve YANG definition of " + type);
             }
             final var rpcName = def.statement().argument();
-            return new Impl(rpcName, new BindingDOMRpcImplementationAdapter(adapterContext(), rpcName, impl));
+            return new Impl(rpcName, new BindingDOMRpcImplementationAdapter(adapterContext(), serializer, rpcName,
+                impl));
         });
     }
 
@@ -111,7 +112,8 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
             final Collection<YangInstanceIdentifier> paths) {
         return new BindingRpcAdapterRegistration<>(implementation, register(
             serializer.getRpcMethods(requireNonNull(type)), paths, (rpcName, mh) -> new Impl(requireNonNull(rpcName),
-                new LegacyDOMRpcImplementationAdapter(adapterContext(), rpcName, mh.bindTo(implementation)))));
+                new LegacyDOMRpcImplementationAdapter(adapterContext(), serializer, rpcName,
+                    mh.bindTo(implementation)))));
     }
 
     private <K, V> @NonNull Registration register(final Map<K, V> map, final Collection<YangInstanceIdentifier> paths,
