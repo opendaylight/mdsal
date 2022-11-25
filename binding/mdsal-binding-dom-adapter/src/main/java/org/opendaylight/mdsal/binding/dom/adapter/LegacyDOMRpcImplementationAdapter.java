@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.invoke.MethodHandle;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -20,9 +21,9 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 final class LegacyDOMRpcImplementationAdapter extends AbstractDOMRpcImplementationAdapter {
     private final MethodHandle handle;
 
-    LegacyDOMRpcImplementationAdapter(final AdapterContext adapterContext, final QName rpcName,
-            final MethodHandle handle) {
-        super(adapterContext, rpcName);
+    LegacyDOMRpcImplementationAdapter(final AdapterContext adapterContext, final BindingCodecTree codecTree,
+            final QName rpcName, final MethodHandle handle) {
+        super(adapterContext, codecTree, rpcName);
         this.handle = requireNonNull(handle);
     }
 
