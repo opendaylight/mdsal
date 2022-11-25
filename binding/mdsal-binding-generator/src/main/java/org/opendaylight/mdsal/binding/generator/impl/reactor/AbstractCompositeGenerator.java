@@ -11,6 +11,7 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -144,7 +145,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
      * List of children which have not had their original linked. This list starts of as null. When we first attempt
      * linkage, it becomes non-null.
      */
-    private List<Generator> unlinkedChildren;
+    private ArrayDeque<Generator> unlinkedChildren;
 
     AbstractCompositeGenerator(final S statement) {
         super(statement);
@@ -302,7 +303,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
             unlinkedChildren = childGenerators.stream()
                 .filter(AbstractExplicitGenerator.class::isInstance)
                 .map(child -> (AbstractExplicitGenerator<?, ?>) child)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ArrayDeque::new));
         }
 
         var progress = LinkageProgress.NONE;
