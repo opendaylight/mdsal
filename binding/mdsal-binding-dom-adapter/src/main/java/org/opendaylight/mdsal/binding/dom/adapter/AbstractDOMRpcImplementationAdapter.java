@@ -8,12 +8,16 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.dom.adapter.StaticConfiguration.ENABLE_CODEC_SHORTCUT;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.lang.ref.WeakReference;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
@@ -27,9 +31,31 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 
 abstract sealed class AbstractDOMRpcImplementationAdapter implements DOMRpcImplementation
         permits BindingDOMRpcImplementationAdapter, LegacyDOMRpcImplementationAdapter {
+    private static final class RpcInputCodec extends WeakReference<BindingCodecTree> {
+        final @NonNull BindingDataObjectCodecTreeNode<RpcInput> codec;
+
+        RpcInputCodec(final BindingCodecTree referent, final BindingDataObjectCodecTreeNode<RpcInput> codec) {
+            super(referent);
+            this.codec = requireNonNull(codec);
+        }
+    }
+
+    private static final VarHandle CODEC;
+
+    static {
+        try {
+            CODEC = MethodHandles.lookup()
+                .findVarHandle(AbstractDOMRpcImplementationAdapter.class, "codec", RpcInputCodec.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
     private final AdapterContext adapterContext;
     private final @NonNull QName inputName;
     private final @NonNull QName rpcName;
+
+    private volatile RpcInputCodec codec;
 
     AbstractDOMRpcImplementationAdapter(final AdapterContext adapterContext, final QName rpcName) {
         this.adapterContext = requireNonNull(adapterContext);
@@ -60,10 +86,30 @@ abstract sealed class AbstractDOMRpcImplementationAdapter implements DOMRpcImple
         checkArgument(inputName.equals(input.getIdentifier().getNodeType()),
             "Unexpected RPC %s input %s", rpcName, input);
 
-        // TODO: this is a bit inefficient: typically we get the same CurrentAdapterSerializer and the path is also
-        //       constant, hence we should be able to cache this lookup and just have the appropriate
-        //       BindingDataObjectCodecTreeNode and reuse it directly
-        // FIXME: should be a guaranteed return, as innput is @NonNull
-        return verifyNotNull((RpcInput) serializer.fromNormalizedNodeRpcData(Absolute.of(rpcName, inputName), input));
+        return getCodec(serializer).deserialize(input);
+    }
+
+    private @NonNull BindingDataObjectCodecTreeNode<RpcInput> getCodec(@NonNull BindingCodecTree codecTree) {
+        RpcInputCodec local = (RpcInputCodec) CODEC.getAcquire(this);
+        while (true) {
+            final var cached = local.get();
+            if (codecTree == cached) {
+                return local.codec;
+            }
+
+            final var path = Absolute.of(rpcName, inputName);
+            @SuppressWarnings("unchecked")
+            final var found = (BindingDataObjectCodecTreeNode<RpcInput>) codecTree.getSubtreeCodec(path);
+            if (found == null) {
+                throw new IllegalStateException("Cannot findl codec for " + path);
+            }
+
+            final var updated = new RpcInputCodec(codecTree, found);
+            final var witness = (RpcInputCodec) CODEC.compareAndExchangeRelease(this, local, updated);
+            if (witness == local) {
+                return found;
+            }
+            local = witness;
+        }
     }
 }
