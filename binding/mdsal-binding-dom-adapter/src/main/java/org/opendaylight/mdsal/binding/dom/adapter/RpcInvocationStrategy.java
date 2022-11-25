@@ -14,7 +14,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
@@ -72,7 +73,7 @@ sealed class RpcInvocationStrategy {
         if (ENABLE_CODEC_SHORTCUT && domFuture instanceof BindingRpcFutureAware bindingAware) {
             return bindingAware.getBindingFuture();
         }
-        return transformFuture(domFuture, adapter.currentSerializer());
+        return transformFuture(domFuture);
     }
 
     ContainerNode serialize(final @NonNull NodeIdentifier identifier,
@@ -80,13 +81,15 @@ sealed class RpcInvocationStrategy {
         return LazySerializedContainerNode.create(inputIdentifier, input, serializer);
     }
 
-    private ListenableFuture<RpcResult<?>> transformFuture(final ListenableFuture<? extends DOMRpcResult> domFuture,
-            final BindingNormalizedNodeSerializer resultCodec) {
+    private ListenableFuture<RpcResult<?>> transformFuture(final ListenableFuture<? extends DOMRpcResult> domFuture) {
         return Futures.transform(domFuture, input -> {
             final ContainerNode domData = input.value();
             final DataObject bindingResult;
             if (domData != null) {
-                bindingResult = resultCodec.fromNormalizedNodeRpcData(outputPath, domData);
+                final BindingCodecContext codecContext = new BindingCodecContext();
+                final BindingDataObjectCodecTreeNode codecTreeNode = (BindingDataObjectCodecTreeNode)codecContext
+                        .getSubtreeCodec(outputPath);
+                bindingResult = (DataObject) codecTreeNode.deserialize(domData);
             } else {
                 bindingResult = null;
             }
