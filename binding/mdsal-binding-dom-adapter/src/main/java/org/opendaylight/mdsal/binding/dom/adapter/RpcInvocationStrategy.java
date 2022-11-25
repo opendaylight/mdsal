@@ -14,7 +14,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
@@ -81,12 +82,14 @@ sealed class RpcInvocationStrategy {
     }
 
     private ListenableFuture<RpcResult<?>> transformFuture(final ListenableFuture<? extends DOMRpcResult> domFuture,
-            final BindingNormalizedNodeSerializer resultCodec) {
+            BindingCodecTree codecTree) {
         return Futures.transform(domFuture, input -> {
             final ContainerNode domData = input.value();
             final DataObject bindingResult;
             if (domData != null) {
-                bindingResult = resultCodec.fromNormalizedNodeRpcData(outputPath, domData);
+                final BindingDataObjectCodecTreeNode codecTreeNode = (BindingDataObjectCodecTreeNode)codecTree
+                        .getSubtreeCodec(outputPath);
+                bindingResult = (DataObject) codecTreeNode.deserialize(domData);
             } else {
                 bindingResult = null;
             }

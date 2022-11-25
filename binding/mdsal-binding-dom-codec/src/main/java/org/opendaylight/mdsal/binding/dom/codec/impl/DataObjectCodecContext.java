@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -510,5 +511,10 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
             getYangModeledReturnType(method, prefix).ifPresent(entity -> ret.put(entity, method));
         }
         return ret;
+    }
+
+    @Override
+    public BindingCodecTreeNode schemaTreeChild(QName qname) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 }
