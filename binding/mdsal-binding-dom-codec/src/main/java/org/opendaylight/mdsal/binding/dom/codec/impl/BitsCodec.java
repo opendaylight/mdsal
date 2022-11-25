@@ -30,6 +30,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
+import org.opendaylight.yangtools.yang.binding.BitsTypeObject;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition.Bit;
 
@@ -47,8 +48,8 @@ final class BitsCodec extends SchemaUnawareCodec {
      *     "Virtual machine implementations are, however, encouraged to bias against clearing recently-created or
      *      recently-used soft references."
      */
-    private static final Cache<Class<?>, @NonNull BitsCodec> CACHE = CacheBuilder.newBuilder().weakKeys().softValues()
-        .build();
+    private static final Cache<Class<? extends BitsTypeObject>, @NonNull BitsCodec> CACHE =
+        CacheBuilder.newBuilder().weakKeys().softValues().build();
     private static final MethodType CONSTRUCTOR_INVOKE_TYPE = MethodType.methodType(Object.class, Boolean[].class);
 
     // Ordered by position
@@ -65,7 +66,7 @@ final class BitsCodec extends SchemaUnawareCodec {
 
     static @NonNull BitsCodec of(final Class<?> returnType, final BitsTypeDefinition rootType)
             throws ExecutionException {
-        return CACHE.get(returnType, () -> {
+        return CACHE.get(returnType.asSubclass(BitsTypeObject.class), () -> {
             final Map<String, Method> getters = new LinkedHashMap<>();
             final Set<String> ctorArgs = new TreeSet<>();
 
