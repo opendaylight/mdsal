@@ -309,7 +309,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         }
 
         // Algorithm ended in list as whole representation
-        // we sill need to emit identifier for list
+        // we still need to emit identifier for list
         if (currentNode instanceof ChoiceNodeCodecContext) {
             LOG.debug("Instance identifier targeting a choice is not representable ({})", dom);
             return null;
@@ -502,7 +502,14 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final Absolute path) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        BindingDataObjectCodecTreeNode<?> currentNode = root;
+
+        root.
+
+        for (QName qname : path.getNodeIdentifiers()) {
+            currentNode = currentNode.schemaTreeChild(qname);
+        }
+        return currentNode;
     }
 
     @Override

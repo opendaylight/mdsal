@@ -129,6 +129,11 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
         return child;
     }
 
+    @Override
+    public @Nullable BindingDataObjectCodecTreeNode<?> schemaTreeChild(QName qname) {
+        return null;
+    }
+
     /**
      * Returns deserialized Binding Path Argument from YANG instance identifier.
      */

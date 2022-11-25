@@ -24,6 +24,8 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.ActionRuntimeType;
@@ -237,6 +239,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         return getOrRethrow(childrenByQName, arg.getNodeType());
     }
 
+    @NonNull
     @Override
     public D deserialize(final NormalizedNode data) {
         throw new UnsupportedOperationException("Could not create Binding data representation for root");
@@ -370,6 +373,22 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         }
 
         return super.bindingPathArgumentChild(arg, builder);
+    }
+
+    @Override
+    public BindingDataObjectCodecTreeNode<?> schemaTreeChild(final QName qname) {
+        final var myType = getType();
+        final var childType = myType.schemaTreeChild(qname);
+        if (childType == null) {
+            return null;
+        }
+        final Class<?> childClass;
+        try {
+            childClass = factory().getRuntimeContext().loadClass(childType.javaType());
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+        return streamChild((Class) childClass);
     }
 
     private static Class<?> findCaseChoice(final Class<? extends DataObject> caseClass) {
