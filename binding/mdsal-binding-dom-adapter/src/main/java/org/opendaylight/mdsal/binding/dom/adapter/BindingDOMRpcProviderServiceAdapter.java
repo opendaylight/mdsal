@@ -97,7 +97,8 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
                 throw new IllegalArgumentException("Cannot resolve YANG definition of " + type);
             }
             final var rpcName  = def.statement().argument();
-            final var impl = new BindingDOMRpcImplementationAdapter(adapterContext(), rpcName, entry.getValue());
+            final var impl = new BindingDOMRpcImplementationAdapter(adapterContext(), serializer, rpcName,
+                entry.getValue());
 
             for (var id : createDomRpcIdentifiers(Set.of(rpcName), rpcContextPaths)) {
                 builder.put(id, impl);
@@ -116,7 +117,7 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
             methodHandles.size());
         for (var entry : methodHandles.entrySet()) {
             final var rpcName = entry.getKey();
-            final var impl = new LegacyDOMRpcImplementationAdapter(adapterContext(), rpcName,
+            final var impl = new LegacyDOMRpcImplementationAdapter(adapterContext(), serializer, rpcName,
                 entry.getValue().bindTo(implementation));
             for (var id : createDomRpcIdentifiers(Set.of(rpcName), rpcContextPaths)) {
                 builder.put(id, impl);
