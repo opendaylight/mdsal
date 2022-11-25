@@ -502,7 +502,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final Absolute path) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return (BindingCodecTreeNode)root.getRpc(path);
     }
 
     @Override

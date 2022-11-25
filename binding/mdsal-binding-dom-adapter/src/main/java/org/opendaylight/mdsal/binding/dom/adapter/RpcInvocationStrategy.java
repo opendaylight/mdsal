@@ -14,7 +14,10 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
+import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
@@ -23,6 +26,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
@@ -86,7 +90,10 @@ sealed class RpcInvocationStrategy {
             final ContainerNode domData = input.value();
             final DataObject bindingResult;
             if (domData != null) {
-                bindingResult = resultCodec.fromNormalizedNodeRpcData(outputPath, domData);
+                final BindingCodecContext codecContext = new BindingCodecContext();
+                final BindingDataObjectCodecTreeNode codecTreeNode = (BindingDataObjectCodecTreeNode)codecContext
+                        .getSubtreeCodec(Absolute.of(domData.getIdentifier().getNodeType()));
+                bindingResult = (DataObject) codecTreeNode.deserialize(domData);
             } else {
                 bindingResult = null;
             }
