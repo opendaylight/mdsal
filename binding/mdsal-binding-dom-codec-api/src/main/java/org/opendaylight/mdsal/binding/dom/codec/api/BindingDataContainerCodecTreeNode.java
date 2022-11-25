@@ -16,6 +16,7 @@ import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 /**
@@ -112,6 +113,8 @@ public interface BindingDataContainerCodecTreeNode<T extends BindingObject & Dat
      * @return Summary children addressability.
      */
     @NonNull ChildAddressabilitySummary getChildAddressabilitySummary();
+
+    @Nullable BindingDataContainerCodecTreeNode<?> schemaTreeChild(QName qname);
 
     /**
      * Enumeration of possible addressability attribute of all children.
