@@ -17,6 +17,7 @@ import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 
@@ -146,4 +147,6 @@ public interface BindingDataObjectCodecTreeNode<T extends DataObject>
          */
         MIXED
     }
+
+    BindingCodecTreeNode schemaTreeChild(QName qname);
 }

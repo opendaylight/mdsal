@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.ActionRuntimeType;
@@ -235,6 +236,11 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     @Override
     public DataContainerCodecContext<?,?> yangPathArgumentChild(final PathArgument arg) {
         return getOrRethrow(childrenByQName, arg.getNodeType());
+    }
+
+    @Override
+    public BindingCodecTreeNode schemaTreeChild(final QName qname) {
+        return getOrRethrow(childrenByQName, qname);
     }
 
     @Override

@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
@@ -400,5 +401,10 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
             }
         }
         return true;
+    }
+
+    @Override
+    public BindingCodecTreeNode schemaTreeChild(QName qname) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 }
