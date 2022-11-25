@@ -46,6 +46,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCod
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingSchemaMapping;
@@ -536,7 +537,22 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final Absolute path) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        try {
+            return (BindingCodecTreeNode)root.getRpc(path);
+        } catch (IncorrectNestingException e1) {
+            try {
+                return root.getNotification(path);
+            }
+            catch (IncorrectNestingException  e2) {
+                BindingDataObjectCodecTreeNode<?> currentNode = root;
+
+                for (QName qname : path.getNodeIdentifiers()) {
+                    currentNode = currentNode.schemaTreeChild(qname);
+                    break;
+                }
+                return currentNode;
+            }
+        }
     }
 
     @Override
