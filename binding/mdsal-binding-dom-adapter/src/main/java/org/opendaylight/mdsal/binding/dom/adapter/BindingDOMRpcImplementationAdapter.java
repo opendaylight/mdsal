@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -20,9 +21,9 @@ final class BindingDOMRpcImplementationAdapter extends AbstractDOMRpcImplementat
     @SuppressWarnings("rawtypes")
     private final @NonNull Rpc delegate;
 
-    BindingDOMRpcImplementationAdapter(final AdapterContext adapterContext, final QName rpcName,
-            final Rpc<?, ?> delegate) {
-        super(adapterContext, rpcName);
+    BindingDOMRpcImplementationAdapter(final AdapterContext adapterContext, final BindingCodecTree codecTree,
+            final QName rpcName, final Rpc<?, ?> delegate) {
+        super(adapterContext, codecTree, rpcName);
         this.delegate = requireNonNull(delegate);
     }
 
