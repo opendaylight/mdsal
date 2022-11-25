@@ -309,7 +309,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         }
 
         // Algorithm ended in list as whole representation
-        // we sill need to emit identifier for list
+        // we still need to emit identifier for list
         if (currentNode instanceof ChoiceNodeCodecContext) {
             LOG.debug("Instance identifier targeting a choice is not representable ({})", dom);
             return null;
@@ -502,7 +502,67 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final Absolute path) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        NodeCodecContext currentNode = root;
+        ListNodeCodecContext<?> currentList = null;
+
+        YangInstanceIdentifier.PathArgument dom = null;
+
+        for (QName qName : path.getNodeIdentifiers()) {
+            checkArgument(currentNode instanceof DataContainerCodecContext,
+                    "Unexpected child of non-container node %s", currentNode);
+            final DataContainerCodecContext<?,?> previous = (DataContainerCodecContext<?, ?>) currentNode;
+            dom = YangInstanceIdentifier.NodeIdentifier.create(qName);
+            final NodeCodecContext nextNode = previous.yangPathArgumentChild(dom);
+
+            /*
+             * List representation in YANG Instance Identifier consists of two
+             * arguments: first is list as a whole, second is list as an item so
+             * if it is /list it means list as whole, if it is /list/list - it
+             * is wildcarded and if it is /list/list[key] it is concrete item,
+             * all this variations are expressed in Binding Aware Instance
+             * Identifier as Item or IdentifiableItem
+             */
+            if (currentList != null) {
+                checkArgument(currentList == nextNode,
+                        "List should be referenced two times in YANG Instance Identifier %s", dom);
+
+                // We entered list, so now we have all information to emit
+                // list path using second list argument.
+                currentList = null;
+                currentNode = nextNode;
+            } else if (nextNode instanceof ListNodeCodecContext) {
+                // We enter list, we do not update current Node yet,
+                // since we need to verify
+                currentList = (ListNodeCodecContext<?>) nextNode;
+            } else if (nextNode instanceof ChoiceNodeCodecContext) {
+                // We do not add path argument for choice, since
+                // it is not supported by binding instance identifier.
+                currentNode = nextNode;
+            } else if (nextNode instanceof DataContainerCodecContext) {
+                currentNode = nextNode;
+            } else if (nextNode instanceof ValueNodeCodecContext) {
+                LOG.debug("Instance identifier referencing a leaf is not representable ({})", dom);
+                return null;
+            }
+        }
+        if (currentNode instanceof ChoiceNodeCodecContext) {
+            LOG.debug("Instance identifier targeting a choice is not representable ({})", dom);
+            return null;
+        }
+        if (currentNode instanceof CaseNodeCodecContext) {
+            LOG.debug("Instance identifier targeting a case is not representable ({})", dom);
+            return null;
+        }
+
+        if (currentList != null) {
+            return currentList;
+        }
+        if (currentNode != null) {
+            verify(currentNode instanceof BindingDataObjectCodecTreeNode, "Illegal return node %s for identifier %s",
+                    currentNode, dom);
+            return currentNode;
+        }
+        return null;
     }
 
     @Override
