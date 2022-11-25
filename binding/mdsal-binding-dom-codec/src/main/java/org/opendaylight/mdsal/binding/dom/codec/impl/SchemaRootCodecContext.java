@@ -252,6 +252,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         return getOrRethrow(childrenByQName, arg.getNodeType());
     }
 
+    @NonNull
     @Override
     public D deserialize(final NormalizedNode data) {
         throw new UnsupportedOperationException("Could not create Binding data representation for root");
