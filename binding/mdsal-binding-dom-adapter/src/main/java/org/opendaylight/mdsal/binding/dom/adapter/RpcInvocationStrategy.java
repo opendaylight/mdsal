@@ -86,6 +86,7 @@ sealed class RpcInvocationStrategy {
             final ContainerNode domData = input.value();
             final DataObject bindingResult;
             if (domData != null) {
+                // FIXME: use cached codec
                 bindingResult = resultCodec.fromNormalizedNodeRpcData(outputPath, domData);
             } else {
                 bindingResult = null;
