@@ -120,6 +120,23 @@ abstract sealed class DataContainerCodecContext<D extends BindingObject & DataCo
         return child;
     }
 
+    @Override
+    public BindingDataContainerCodecTreeNode<?> schemaTreeChild(final QName qname) {
+        final var myType = type();
+        final var childType = myType.schemaTreeChild(qname);
+
+        if (childType == null) {
+            return null;
+        }
+        final Class<? extends DataObject> childClass;
+        try {
+            childClass = factory().getRuntimeContext().loadClass(childType.javaType());
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+        return streamChild(childClass);
+    }
+
     /**
      * Serializes supplied Binding Path Argument and adds all necessary YANG instance identifiers to supplied list.
      *

@@ -857,7 +857,21 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final Absolute path) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        try {
+            return getNotificationContext(path);
+        } catch (IncorrectNestingException e1) {
+            try {
+                return (BindingCodecTreeNode) getRpcInputCodec(path);
+            } catch (IncorrectNestingException e2) {
+                CodecContext currentNode = getOrRethrow(childrenByDomArg, path.firstNodeIdentifier());
+
+                for (QName qname : path.getNodeIdentifiers()) {
+                    currentNode = (CodecContext) ((DataContainerCodecContext<?, ?>) currentNode).schemaTreeChild(qname);
+                    break;
+                }
+                return currentNode;
+            }
+        }
     }
 
     @Override
