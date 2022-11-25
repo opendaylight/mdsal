@@ -41,6 +41,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.kohsuke.MetaInfServices;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeParent;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
@@ -309,7 +310,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         }
 
         // Algorithm ended in list as whole representation
-        // we sill need to emit identifier for list
+        // we still need to emit identifier for list
         if (currentNode instanceof ChoiceNodeCodecContext) {
             LOG.debug("Instance identifier targeting a choice is not representable ({})", dom);
             return null;
@@ -502,7 +503,64 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final Absolute path) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        NodeCodecContext currentNode = root;
+        ListNodeCodecContext<?> currentList = null;
+
+        for (QName qname : path.getNodeIdentifiers()) {
+            if (!(currentNode instanceof DataContainerCodecContext<?,?>)) {
+                //TODO
+                throw new IllegalArgumentException("ERROR MESSAGE 1");
+            }
+            final DataContainerCodecContext<?,?> previous = (DataContainerCodecContext<?, ?>) currentNode;
+            final NodeCodecContext nextNode = (NodeCodecContext) previous.schemaTreeChild(qname);
+
+            if (currentList != null) {
+                if (currentList != nextNode) {
+                    //TODO
+                    throw new IllegalStateException("ERROR MESSAGE 2 ");
+                }
+
+                // We entered list, so now we have all information to emit
+                // list path using second list argument.
+                currentList = null;
+                currentNode = nextNode;
+            } else if (nextNode instanceof ListNodeCodecContext) {
+                // We enter list, we do not update current Node yet,
+                // since we need to verify
+                currentList = (ListNodeCodecContext<?>) nextNode;
+            } else if (nextNode instanceof ChoiceNodeCodecContext) {
+                // We do not add path argument for choice, since
+                // it is not supported by binding instance identifier.
+                currentNode = nextNode;
+            } else if (nextNode instanceof DataContainerCodecContext) {
+                currentNode = nextNode;
+            } else if (nextNode instanceof ValueNodeCodecContext) {
+                //TODO
+                LOG.debug("DEBUG MESSAGE 1");
+                return null;
+            }
+        }
+        if (currentNode instanceof ChoiceNodeCodecContext) {
+            //TODO
+            LOG.debug("DEBUG MESSAGE 2");
+            return null;
+        }
+        if (currentNode instanceof CaseNodeCodecContext) {
+            //TODO
+            LOG.debug("DEBUG MESSAGE 3");
+            return null;
+        }
+
+        if (currentList != null) {
+            return currentList;
+        }
+        if (currentNode != null) {
+            if (!(currentNode instanceof BindingDataObjectCodecTreeNode<?>)) {
+                throw new IllegalStateException("Illegal return node " + currentNode.toString());
+            }
+            return currentNode;
+        }
+        return null;
     }
 
     @Override
