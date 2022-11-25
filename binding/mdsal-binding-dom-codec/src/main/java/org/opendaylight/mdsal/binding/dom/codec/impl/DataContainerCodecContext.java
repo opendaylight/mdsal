@@ -129,6 +129,23 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
         return child;
     }
 
+    @Override
+    public BindingDataObjectCodecTreeNode<?> schemaTreeChild(final QName qname) {
+        final var myType = getType();
+        final var childType = myType.schemaTreeChild(qname);
+
+        if (childType == null) {
+            return null;
+        }
+        final Class<? extends DataObject> childClass;
+        try {
+            childClass = factory().getRuntimeContext().loadClass(childType.javaType());
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+        return streamChild(childClass);
+    }
+
     /**
      * Returns deserialized Binding Path Argument from YANG instance identifier.
      */

@@ -44,6 +44,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNo
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
+import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
@@ -309,7 +310,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         }
 
         // Algorithm ended in list as whole representation
-        // we sill need to emit identifier for list
+        // we still need to emit identifier for list
         if (currentNode instanceof ChoiceNodeCodecContext) {
             LOG.debug("Instance identifier targeting a choice is not representable ({})", dom);
             return null;
@@ -502,7 +503,22 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final Absolute path) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        try {
+            return (BindingCodecTreeNode)root.getRpc(path);
+        } catch (IncorrectNestingException e1) {
+            try {
+                return root.getNotification(path);
+            }
+            catch (IncorrectNestingException  e2) {
+                BindingDataObjectCodecTreeNode<?> currentNode = root;
+
+                for (QName qname : path.getNodeIdentifiers()) {
+                    currentNode = currentNode.schemaTreeChild(qname);
+                    break;
+                }
+                return currentNode;
+            }
+        }
     }
 
     @Override
