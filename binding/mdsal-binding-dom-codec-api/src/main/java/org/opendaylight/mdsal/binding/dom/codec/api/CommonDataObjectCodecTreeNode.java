@@ -15,6 +15,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 /**
@@ -77,6 +78,8 @@ public interface CommonDataObjectCodecTreeNode<T extends DataObject>
      */
     @NonNull CommonDataObjectCodecTreeNode<?> bindingPathArgumentChild(InstanceIdentifier.@NonNull PathArgument arg,
             @Nullable List<YangInstanceIdentifier.PathArgument> builder);
+
+    @Nullable BindingDataObjectCodecTreeNode<?> schemaTreeChild(QName qname);
 
     /**
      * Serializes path argument for current node.
