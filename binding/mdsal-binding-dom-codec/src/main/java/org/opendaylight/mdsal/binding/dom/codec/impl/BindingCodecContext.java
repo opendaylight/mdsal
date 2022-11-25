@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.ServiceLoader;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -51,6 +50,7 @@ import org.opendaylight.mdsal.binding.dom.codec.spi.BindingSchemaMapping;
 import org.opendaylight.mdsal.binding.loader.BindingClassLoader;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Immutable;
@@ -153,8 +153,12 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     private final SchemaRootCodecContext<?> root;
 
     public BindingCodecContext() {
+        this(BindingRuntimeHelpers.createRuntimeContext());
+        /* this call seems to always end up in orElseThrow branch
         this(ServiceLoader.load(BindingRuntimeContext.class).findFirst()
             .orElseThrow(() -> new IllegalStateException("Failed to load BindingRuntimeContext")));
+
+         */
     }
 
     public BindingCodecContext(final BindingRuntimeContext context) {
@@ -502,7 +506,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
     @Override
     public BindingCodecTreeNode getSubtreeCodec(final Absolute path) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return (BindingCodecTreeNode)root.getRpc(path);
     }
 
     @Override
