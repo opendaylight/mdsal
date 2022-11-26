@@ -53,18 +53,6 @@
         </dependency>
     </dependencies>
 
-    <!-- FIXME: remove this section once we require JDK17+ -->
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration combine.children="append">
-                    <doclint>-html</doclint>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <scm>
         <connection>scm:git:http://git.opendaylight.org/gerrit/controller.git</connection>
         <developerConnection>scm:git:ssh://git.opendaylight.org:29418/controller.git</developerConnection>
