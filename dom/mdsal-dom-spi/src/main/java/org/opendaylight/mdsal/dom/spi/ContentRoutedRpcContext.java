@@ -14,7 +14,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.odlext.model.api.ContextReferenceEffectiveStatement;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.stmt.InputEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 
@@ -39,10 +38,7 @@ public record ContentRoutedRpcContext(@NonNull QName identity, @NonNull QName le
      * @return A {@link ContentRoutedRpcContext}, or {@code null} if the RPC does not contain context information
      */
     public static @Nullable ContentRoutedRpcContext forRpc(final RpcEffectiveStatement rpc) {
-        final var input = rpc.findFirstEffectiveSubstatement(InputEffectiveStatement.class)
-            .orElseThrow(() -> new IllegalArgumentException("Cannot find input in " + rpc));
-
-        for (var stmt : input.effectiveSubstatements()) {
+        for (var stmt : rpc.input().effectiveSubstatements()) {
             // TODO: LeafEffectiveStatement instead? Because that is what we are promising for #leaf()'s QName
             if (stmt instanceof SchemaTreeEffectiveStatement<?> schemaStmt) {
                 final var context =
@@ -52,7 +48,6 @@ public record ContentRoutedRpcContext(@NonNull QName identity, @NonNull QName le
                 }
             }
         }
-
         return null;
     }
 }
