@@ -14,7 +14,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -25,7 +24,6 @@ import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcService;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 @VisibleForTesting
@@ -96,12 +94,9 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
             if (def == null) {
                 throw new IllegalArgumentException("Cannot resolve YANG definition of " + type);
             }
-            final var rpcName  = def.statement().argument();
+            final var rpcName = def.statement().argument();
             final var impl = new BindingDOMRpcImplementationAdapter(adapterContext(), rpcName, entry.getValue());
-
-            for (var id : createDomRpcIdentifiers(Set.of(rpcName), rpcContextPaths)) {
-                builder.put(id, impl);
-            }
+            rpcContextPaths.forEach(path -> builder.put(DOMRpcIdentifier.create(rpcName, path), impl));
         }
 
         return getDelegate().registerRpcImplementations(builder.build());
@@ -118,24 +113,11 @@ public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<
             final var rpcName = entry.getKey();
             final var impl = new LegacyDOMRpcImplementationAdapter(adapterContext(), rpcName,
                 entry.getValue().bindTo(implementation));
-            for (var id : createDomRpcIdentifiers(Set.of(rpcName), rpcContextPaths)) {
-                builder.put(id, impl);
-            }
+            rpcContextPaths.forEach(path -> builder.put(DOMRpcIdentifier.create(rpcName, path), impl));
         }
 
         return new BindingRpcAdapterRegistration<>(implementation,
             getDelegate().registerRpcImplementations(builder.build()));
-    }
-
-    private static Set<DOMRpcIdentifier> createDomRpcIdentifiers(final Set<QName> rpcs,
-            final Collection<YangInstanceIdentifier> paths) {
-        final Set<DOMRpcIdentifier> ret = new HashSet<>();
-        for (final YangInstanceIdentifier path : paths) {
-            for (final QName rpc : rpcs) {
-                ret.add(DOMRpcIdentifier.create(rpc, path));
-            }
-        }
-        return ret;
     }
 
     private static Collection<YangInstanceIdentifier> toYangInstanceIdentifiers(
