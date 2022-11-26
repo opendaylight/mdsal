@@ -178,13 +178,10 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
     @Override
     protected final void transactionAborted(final SnapshotBackedWriteTransaction<T> tx) {
         final State localState = state;
-        if (localState instanceof Allocated allocated) {
-            if (allocated.getTransaction().equals(tx)) {
-                final boolean success = STATE_UPDATER.compareAndSet(this, localState, idleState);
-                if (!success) {
-                    LOG.warn("Transaction {} aborted, but chain {} state already transitioned from {} to {}, "
-                        + "very strange", tx, this, localState, state);
-                }
+        if (localState instanceof Allocated allocated && allocated.getTransaction().equals(tx)) {
+            if (!STATE_UPDATER.compareAndSet(this, localState, idleState)) {
+                LOG.warn("Transaction {} aborted, but chain {} state already transitioned from {} to {}, very strange",
+                    tx, this, localState, state);
             }
         }
     }
