@@ -22,6 +22,8 @@ import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract class FutureSchema implements AutoCloseable {
     private static final class Waiting extends FutureSchema {
@@ -46,15 +48,16 @@ abstract class FutureSchema implements AutoCloseable {
 
         final boolean waitForSchema() {
             try {
-                schemaPromise.get(FutureSchema.this.duration, FutureSchema.this.unit);
+                schemaPromise.get(duration, unit);
                 return true;
             } catch (final InterruptedException | ExecutionException e) {
                 throw new IllegalStateException(e);
             } catch (final TimeoutException e) {
+                LOG.trace("Wait for {} timed out", schemaPromise, e);
                 return false;
             } finally {
-                synchronized (FutureSchema.this.postponedOperations) {
-                    FutureSchema.this.postponedOperations.remove(this);
+                synchronized (postponedOperations) {
+                    postponedOperations.remove(this);
                 }
             }
         }
@@ -70,6 +73,8 @@ abstract class FutureSchema implements AutoCloseable {
         }
     }
 
+    private static final Logger LOG = LoggerFactory.getLogger(FutureSchema.class);
+
     @GuardedBy("postponedOperations")
     private final Set<FutureSchemaPredicate> postponedOperations = new LinkedHashSet<>();
     private final long duration;
@@ -78,7 +83,7 @@ abstract class FutureSchema implements AutoCloseable {
     private volatile BindingRuntimeContext runtimeContext;
 
     FutureSchema(final long time, final TimeUnit unit) {
-        this.duration = time;
+        duration = time;
         this.unit = requireNonNull(unit);
     }
 
