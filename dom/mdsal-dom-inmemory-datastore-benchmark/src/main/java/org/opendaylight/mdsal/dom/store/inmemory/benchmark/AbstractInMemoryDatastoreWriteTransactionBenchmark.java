@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory.benchmark;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
@@ -26,7 +27,7 @@ public abstract class AbstractInMemoryDatastoreWriteTransactionBenchmark
 
     protected InMemoryDOMDataStore domStore;
 
-    protected void initTestNode() throws Exception {
+    protected void initTestNode() throws InterruptedException, ExecutionException {
         final YangInstanceIdentifier testPath = YangInstanceIdentifier.builder(BenchmarkModel.TEST_PATH).build();
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         writeTx.write(testPath, provideOuterListNode());
@@ -40,7 +41,8 @@ public abstract class AbstractInMemoryDatastoreWriteTransactionBenchmark
     @Benchmark
     @Warmup(iterations = WARMUP_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
     @Measurement(iterations = MEASUREMENT_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
-    public void write100KSingleNodeWithOneInnerItemInOneCommitBenchmark() throws Exception {
+    public void write100KSingleNodeWithOneInnerItemInOneCommitBenchmark()
+            throws InterruptedException, ExecutionException {
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         for (int outerListKey = 0; outerListKey < OUTER_LIST_100K; ++outerListKey) {
             writeTx.write(OUTER_LIST_100K_PATHS[outerListKey], OUTER_LIST_ONE_ITEM_INNER_LIST[outerListKey]);
@@ -54,7 +56,8 @@ public abstract class AbstractInMemoryDatastoreWriteTransactionBenchmark
     @Benchmark
     @Warmup(iterations = WARMUP_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
     @Measurement(iterations = MEASUREMENT_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
-    public void write100KSingleNodeWithOneInnerItemInCommitPerWriteBenchmark() throws Exception {
+    public void write100KSingleNodeWithOneInnerItemInCommitPerWriteBenchmark()
+            throws InterruptedException, ExecutionException {
         for (int outerListKey = 0; outerListKey < OUTER_LIST_100K; ++outerListKey) {
             DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
             writeTx.write(OUTER_LIST_100K_PATHS[outerListKey], OUTER_LIST_ONE_ITEM_INNER_LIST[outerListKey]);
@@ -69,7 +72,8 @@ public abstract class AbstractInMemoryDatastoreWriteTransactionBenchmark
     @Benchmark
     @Warmup(iterations = WARMUP_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
     @Measurement(iterations = MEASUREMENT_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
-    public void write50KSingleNodeWithTwoInnerItemsInOneCommitBenchmark() throws Exception {
+    public void write50KSingleNodeWithTwoInnerItemsInOneCommitBenchmark()
+            throws InterruptedException, ExecutionException {
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         for (int outerListKey = 0; outerListKey < OUTER_LIST_50K; ++outerListKey) {
             writeTx.write(OUTER_LIST_50K_PATHS[outerListKey], OUTER_LIST_TWO_ITEM_INNER_LIST[outerListKey]);
@@ -83,7 +87,8 @@ public abstract class AbstractInMemoryDatastoreWriteTransactionBenchmark
     @Benchmark
     @Warmup(iterations = WARMUP_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
     @Measurement(iterations = MEASUREMENT_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
-    public void write50KSingleNodeWithTwoInnerItemsInCommitPerWriteBenchmark() throws Exception {
+    public void write50KSingleNodeWithTwoInnerItemsInCommitPerWriteBenchmark()
+            throws InterruptedException, ExecutionException {
         for (int outerListKey = 0; outerListKey < OUTER_LIST_50K; ++outerListKey) {
             DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
             writeTx.write(OUTER_LIST_50K_PATHS[outerListKey], OUTER_LIST_TWO_ITEM_INNER_LIST[outerListKey]);
@@ -97,7 +102,8 @@ public abstract class AbstractInMemoryDatastoreWriteTransactionBenchmark
     @Benchmark
     @Warmup(iterations = WARMUP_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
     @Measurement(iterations = MEASUREMENT_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
-    public void write10KSingleNodeWithTenInnerItemsInOneCommitBenchmark() throws Exception {
+    public void write10KSingleNodeWithTenInnerItemsInOneCommitBenchmark()
+            throws InterruptedException, ExecutionException {
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         for (int outerListKey = 0; outerListKey < OUTER_LIST_10K; ++outerListKey) {
             writeTx.write(OUTER_LIST_10K_PATHS[outerListKey], OUTER_LIST_TEN_ITEM_INNER_LIST[outerListKey]);
@@ -111,7 +117,8 @@ public abstract class AbstractInMemoryDatastoreWriteTransactionBenchmark
     @Benchmark
     @Warmup(iterations = WARMUP_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
     @Measurement(iterations = MEASUREMENT_ITERATIONS, timeUnit = TimeUnit.MILLISECONDS)
-    public void write10KSingleNodeWithTenInnerItemsInCommitPerWriteBenchmark() throws Exception {
+    public void write10KSingleNodeWithTenInnerItemsInCommitPerWriteBenchmark()
+            throws InterruptedException, ExecutionException {
         for (int outerListKey = 0; outerListKey < OUTER_LIST_10K; ++outerListKey) {
             DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
             writeTx.write(OUTER_LIST_10K_PATHS[outerListKey], OUTER_LIST_TEN_ITEM_INNER_LIST[outerListKey]);
