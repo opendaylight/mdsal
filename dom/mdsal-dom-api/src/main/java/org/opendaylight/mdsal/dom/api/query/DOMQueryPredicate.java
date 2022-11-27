@@ -12,6 +12,13 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -19,6 +26,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.Immutable;
+import org.opendaylight.yangtools.concepts.WritableObject;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -35,7 +43,21 @@ public final class DOMQueryPredicate implements Immutable {
      * A single match. The primary entrypoint is {@link #test(NormalizedNode)}, but during composition instances may
      * be combined in a manner similar to {@link Predicate}.
      */
-    public abstract static class Match {
+    public abstract static class Match implements WritableObject {
+        static final byte GREATER_THAN = 0x00;
+        static final byte GREATER_THAN_OR_EQUAL = 0x01;
+        static final byte LESS_THAN = 0x02;
+        static final byte LESS_THAN_OR_EQUAL = 0x03;
+        static final byte STRING_MATCHES = 0x04;
+        static final byte STRING_STARTS_WITH = 0x05;
+        static final byte STRING_ENDS_WITH = 0x06;
+        static final byte STRING_CONTAINS = 0x07;
+        static final byte VALUE_EQUAL = 0x08;
+        static final byte NEGATE = 0x09;
+        static final byte AND = 0x0A;
+        static final byte OR = 0x0B;
+        static final byte EXISTS = 0x0C;
+
         Match() {
             // Hidden on purpose
         }
@@ -117,6 +139,59 @@ public final class DOMQueryPredicate implements Immutable {
             appendTo(sb);
             return sb.toString();
         }
+
+        @Override
+        public abstract void writeTo(@NonNull DataOutput out) throws IOException;
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException, ClassNotFoundException {
+            final byte matcherType = in.readByte();
+            return switch (matcherType) {
+                case GREATER_THAN -> MatchGreaterThan.readFrom(in);
+                case GREATER_THAN_OR_EQUAL -> MatchGreaterThanOrEqual.readFrom(in);
+                case LESS_THAN -> MatchLessThan.readFrom(in);
+                case LESS_THAN_OR_EQUAL -> MatchLessThanOrEqual.readFrom(in);
+                case STRING_MATCHES -> MatchStringMatches.readFrom(in);
+                case STRING_STARTS_WITH -> MatchStringStartsWith.readFrom(in);
+                case STRING_ENDS_WITH -> MatchStringEndsWith.readFrom(in);
+                case STRING_CONTAINS -> MatchStringContains.readFrom(in);
+                case VALUE_EQUAL -> MatchValueEquals.readFrom(in);
+                case NEGATE -> MatchNot.readFrom(in);
+                case AND -> MatchAll.readFrom(in);
+                case OR -> MatchAny.readFrom(in);
+                case EXISTS -> Match.exists();
+                default -> throw new IOException("Unknown type " + matcherType);
+            };
+        }
+
+        static <V> void writeValue(@NonNull final DataOutput out, final V value) throws IOException {
+            final var data = serialize(value);
+            out.writeInt(data.length);
+            out.write(data);
+        }
+
+        static @NonNull Object readValue(final DataInput in) throws IOException, ClassNotFoundException {
+            final int size = in.readInt();
+            final byte[] data = new byte[size];
+            in.readFully(data);
+            return deserialize(data);
+        }
+    }
+
+    private static byte[] serialize(final Object obj) throws IOException {
+        try (ByteArrayOutputStream b = new ByteArrayOutputStream()) {
+            try (ObjectOutputStream o = new ObjectOutputStream(b)) {
+                o.writeObject(obj);
+            }
+            return b.toByteArray();
+        }
+    }
+
+    private static Object deserialize(final byte[] bytes) throws IOException, ClassNotFoundException {
+        try (ByteArrayInputStream b = new ByteArrayInputStream(bytes)) {
+            try (ObjectInputStream o = new ObjectInputStream(b)) {
+                return o.readObject();
+            }
+        }
     }
 
     private static final class MatchAll extends CompositeMatch {
@@ -142,6 +217,16 @@ public final class DOMQueryPredicate implements Immutable {
         @Override
         String op() {
             return "allOf";
+        }
+
+        @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(AND);
+            writeComponents(out);
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException, ClassNotFoundException {
+            return new MatchAll(readComponents(in));
         }
     }
 
@@ -169,6 +254,15 @@ public final class DOMQueryPredicate implements Immutable {
         String op() {
             return "anyOf";
         }
+
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(OR);
+            writeComponents(out);
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException, ClassNotFoundException {
+            return new MatchAny(readComponents(in));
+        }
     }
 
     private static final class MatchExists extends Match {
@@ -186,6 +280,11 @@ public final class DOMQueryPredicate implements Immutable {
         @Override
         String op() {
             return "exists";
+        }
+
+        @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(EXISTS);
         }
     }
 
@@ -212,6 +311,16 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(NEGATE);
+            match.writeTo(out);
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException, ClassNotFoundException {
+            return Match.readFrom(in).negate();
+        }
+
+        @Override
         void appendArgument(final StringBuilder sb) {
             match.appendTo(sb);
         }
@@ -220,6 +329,16 @@ public final class DOMQueryPredicate implements Immutable {
     private static final class MatchValueEquals<T> extends AbstractMatchValue<T> {
         MatchValueEquals(final T value) {
             super(value);
+        }
+
+        @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(VALUE_EQUAL);
+            writeValue(out, value());
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException, ClassNotFoundException {
+            return Match.valueEquals(readValue(in));
         }
 
         @Override
@@ -236,6 +355,16 @@ public final class DOMQueryPredicate implements Immutable {
     private static final class MatchStringContains extends AbstractMatchString {
         MatchStringContains(final String value) {
             super(value);
+        }
+
+        @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(STRING_CONTAINS);
+            out.writeUTF(value());
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException {
+            return Match.stringContains(in.readUTF());
         }
 
         @Override
@@ -262,6 +391,16 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(STRING_MATCHES);
+            writeValue(out, pattern);
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException, ClassNotFoundException {
+            return Match.stringMatches((Pattern) readValue(in));
+        }
+
+        @Override
         void appendArgument(final StringBuilder sb) {
             sb.append(pattern);
         }
@@ -283,6 +422,16 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(STRING_STARTS_WITH);
+            out.writeUTF(value());
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException {
+            return Match.stringStartsWith(in.readUTF());
+        }
+
+        @Override
         boolean testString(final String str) {
             return str.startsWith(value());
         }
@@ -291,6 +440,16 @@ public final class DOMQueryPredicate implements Immutable {
     private static final class MatchStringEndsWith extends AbstractMatchString {
         MatchStringEndsWith(final String value) {
             super(value);
+        }
+
+        @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(STRING_ENDS_WITH);
+            out.writeUTF(value());
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException {
+            return Match.stringEndsWith(in.readUTF());
         }
 
         @Override
@@ -307,6 +466,16 @@ public final class DOMQueryPredicate implements Immutable {
     private static final class MatchGreaterThan<T extends Comparable<T>> extends AbstractMatchComparable<T> {
         MatchGreaterThan(final T value) {
             super(value);
+        }
+
+        @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(GREATER_THAN);
+            writeValue(out, value());
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException, ClassNotFoundException {
+            return Match.greaterThan((Comparable) readValue(in));
         }
 
         @Override
@@ -331,6 +500,16 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(GREATER_THAN_OR_EQUAL);
+            writeValue(out, value());
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException, ClassNotFoundException {
+            return Match.greaterThanOrEqual((Comparable) readValue(in));
+        }
+
+        @Override
         boolean testCompare(final int valueToData) {
             return valueToData <= 0;
         }
@@ -347,6 +526,16 @@ public final class DOMQueryPredicate implements Immutable {
         }
 
         @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(LESS_THAN);
+            writeValue(out, value());
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException, ClassNotFoundException {
+            return Match.lessThan((Comparable) readValue(in));
+        }
+
+        @Override
         boolean testCompare(final int valueToData) {
             return valueToData > 0;
         }
@@ -360,6 +549,16 @@ public final class DOMQueryPredicate implements Immutable {
         @Override
         String op() {
             return "lte";
+        }
+
+        @Override
+        public void writeTo(@NonNull final DataOutput out) throws IOException {
+            out.write(LESS_THAN_OR_EQUAL);
+            writeValue(out, value());
+        }
+
+        public static @NonNull Match readFrom(final DataInput in) throws IOException, ClassNotFoundException {
+            return Match.lessThanOrEqual((Comparable) readValue(in));
         }
 
         @Override
@@ -384,6 +583,22 @@ public final class DOMQueryPredicate implements Immutable {
                 .addAll(components)
                 .add(nextComponent)
                 .build();
+        }
+
+        final void writeComponents(final DataOutput out) throws IOException {
+            out.writeInt(components.size());
+            for (int i = 0; i < components.size(); i++) {
+                components.get(i).writeTo(out);
+            }
+        }
+
+        static ImmutableList<Match> readComponents(final DataInput in) throws IOException, ClassNotFoundException {
+            final int size = in.readInt();
+            final var matchers = ImmutableList.<Match>builderWithExpectedSize(size);
+            for (int i = 0; i < size; i++) {
+                matchers.add(Match.readFrom(in));
+            }
+            return matchers.build();
         }
 
         @Override
