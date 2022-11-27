@@ -79,6 +79,11 @@
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-repo-spi</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-data-codec-binfmt</artifactId>
+            <version>11.0.1-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>

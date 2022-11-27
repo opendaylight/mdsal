@@ -19,6 +19,7 @@ module org.opendaylight.mdsal.dom.api {
     requires transitive org.opendaylight.mdsal.common.api;
     requires transitive org.opendaylight.yangtools.concepts;
     requires org.opendaylight.yangtools.util;
+    requires org.opendaylight.yangtools.yang.data.codec.binfmt;
 
     // Annotations
     requires static com.github.spotbugs.annotations;
