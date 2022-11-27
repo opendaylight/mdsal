@@ -66,7 +66,7 @@ public class MatchWritableObjectTest {
         final DataInputStream inputStream = new DataInputStream(byteArrayInputStream);
 
         final var matcherDe = DOMQueryPredicate.Match.readFrom(inputStream);
-        final var match = "anyOf(matches(AA), contains(BB), endsWith(CC), startsWith(DD), eq(1), not(contains(BBB)))";
+        final var match = "anyOf(matches(AA), contains(BB), endsWith(CC), startsWith(DD), eq(1), not(contains(BB)))";
         assertEquals(matcherDe.toString(), match);
     }
 
