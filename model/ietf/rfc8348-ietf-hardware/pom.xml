@@ -14,13 +14,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>10.0.4-SNAPSHOT</version>
+        <version>10.0.4</version>
         <relativePath>../../../binding/binding-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
     <artifactId>rfc8348-ietf-hardware</artifactId>
-    <version>10.0.4-SNAPSHOT</version>
+    <version>10.0.4</version>
     <packaging>bundle</packaging>
 
     <name>${project.artifactId}</name>
