@@ -13,6 +13,7 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
@@ -39,6 +40,12 @@ final class DOMActionRoutingTable extends AbstractDOMRoutingTable<DOMActionInsta
     protected DOMActionRoutingTable newInstance(final Map<Absolute, DOMActionRoutingTableEntry> operations,
             final EffectiveModelContext schemaContext) {
         return new DOMActionRoutingTable(operations, schemaContext);
+    }
+
+    @Override
+    protected Entry<Absolute, DOMDataTreeIdentifier> decomposeIdentifier(final DOMActionInstance instance) {
+        // Not used
+        throw new UnsupportedOperationException();
     }
 
     @Override

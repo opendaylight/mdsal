@@ -12,6 +12,7 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
@@ -41,6 +42,11 @@ final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier,
     protected DOMRpcRoutingTable newInstance(final Map<QName, AbstractDOMRpcRoutingTableEntry> operations,
             final EffectiveModelContext schemaContext) {
         return new DOMRpcRoutingTable(operations, schemaContext);
+    }
+
+    @Override
+    protected Entry<QName, YangInstanceIdentifier> decomposeIdentifier(final DOMRpcIdentifier instance) {
+        return Map.entry(instance.getType(), instance.getContextReference());
     }
 
     @Override
