@@ -25,6 +25,7 @@ import static org.opendaylight.mdsal.dom.broker.TestUtils.getTestRpcImplementati
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
@@ -87,6 +88,29 @@ public class DOMRpcRouterTest {
             assertOperationKeys(rpcRouter);
         }
     }
+
+    @Test
+    public void registerRpcImplementations() {
+        try (DOMRpcRouter rpcRouter = rpcsRouter()) {
+            assertOperationKeys(rpcRouter);
+
+            final Registration fooReg = rpcRouter.getRpcProviderService().registerRpcImplementations(
+                Map.of(DOMRpcIdentifier.create(Rpcs.FOO, null), getTestRpcImplementation()));
+            assertOperationKeys(rpcRouter, Rpcs.FOO);
+
+            final Registration barReg = rpcRouter.getRpcProviderService().registerRpcImplementations(
+                Map.of(
+                    DOMRpcIdentifier.create(Rpcs.BAR, null), getTestRpcImplementation(),
+                    DOMRpcIdentifier.create(Rpcs.BAZ, null), getTestRpcImplementation()));
+            assertOperationKeys(rpcRouter, Rpcs.FOO, Rpcs.BAR, Rpcs.BAZ);
+
+            fooReg.close();
+            assertOperationKeys(rpcRouter, Rpcs.BAR, Rpcs.BAZ);
+            barReg.close();
+            assertOperationKeys(rpcRouter);
+        }
+    }
+
 
     private static void assertOperationKeys(final DOMRpcRouter router, final QName... keys) {
         assertEquals(Set.of(keys), router.routingTable().getOperations().keySet());
@@ -223,13 +247,9 @@ public class DOMRpcRouterTest {
         return router;
     }
 
-    private static void assertAvailable(final DOMActionService actionService, final YangInstanceIdentifier path) {
-        final DOMActionResult result;
-        try {
-            result = Futures.getDone(invokeBaz(actionService, path));
-        } catch (ExecutionException e) {
-            throw new AssertionError("Unexpected invocation failure", e);
-        }
+    private static void assertAvailable(final DOMActionService actionService, final YangInstanceIdentifier path)
+            throws ExecutionException {
+        final DOMActionResult result = Futures.getDone(invokeBaz(actionService, path));
         assertEquals(List.of(), result.getErrors());
     }
 

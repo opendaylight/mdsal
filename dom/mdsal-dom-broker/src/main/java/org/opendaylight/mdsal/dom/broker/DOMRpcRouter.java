@@ -16,8 +16,8 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
@@ -164,12 +164,13 @@ public final class DOMRpcRouter extends AbstractRegistration
         listenerNotifier.execute(() -> notifyRemoved(newTable, implementation));
     }
 
-    private synchronized void removeRpcImplementations(final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
+    private synchronized void removeRpcImplementations(
+            final ImmutableTable<QName, YangInstanceIdentifier, DOMRpcImplementation> implTable) {
         final DOMRpcRoutingTable oldTable = routingTable;
-        final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.removeAll(map);
+        final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.removeAll(implTable);
         routingTable = newTable;
 
-        listenerNotifier.execute(() -> notifyRemoved(newTable, map.values()));
+        listenerNotifier.execute(() -> notifyRemoved(newTable, implTable.values()));
     }
 
     private synchronized void removeActionImplementation(final DOMActionImplementation implementation,
@@ -527,21 +528,27 @@ public final class DOMRpcRouter extends AbstractRegistration
         @Override
         public org.opendaylight.yangtools.concepts.Registration registerRpcImplementations(
                 final Map<DOMRpcIdentifier, DOMRpcImplementation> map) {
-            final ImmutableMap<DOMRpcIdentifier, DOMRpcImplementation> defensive = ImmutableMap.copyOf(map);
             checkArgument(!map.isEmpty());
+
+            final var builder = ImmutableTable.<QName, YangInstanceIdentifier, DOMRpcImplementation>builder();
+            for (var entry : map.entrySet()) {
+                final var id = entry.getKey();
+                builder.put(id.getType(), id.getContextReference(), entry.getValue());
+            }
+            final var implTable = builder.build();
 
             synchronized (DOMRpcRouter.this) {
                 final DOMRpcRoutingTable oldTable = routingTable;
-                final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.addAll(defensive);
+                final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.addAll(implTable);
                 routingTable = newTable;
 
-                listenerNotifier.execute(() -> notifyAdded(newTable, defensive.values()));
+                listenerNotifier.execute(() -> notifyAdded(newTable, implTable.values()));
             }
 
             return new AbstractRegistration() {
                 @Override
                 protected void removeRegistration() {
-                    removeRpcImplementations(defensive);
+                    removeRpcImplementations(implTable);
                 }
             };
         }
