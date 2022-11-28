@@ -179,7 +179,7 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
         return newInstance(tableInputBuilder.build(), schemaContext);
     }
 
-    HashMultimap<M, I> invertImplementationsMap(final Map<I, M> map) {
+    static final <K, V> HashMultimap<V, K> invertImplementationsMap(final Map<K, V> map) {
         return Multimaps.invertFrom(Multimaps.forMap(map), HashMultimap.create());
     }
 
