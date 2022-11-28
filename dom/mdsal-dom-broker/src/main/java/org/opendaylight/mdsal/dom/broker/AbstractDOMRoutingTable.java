@@ -11,11 +11,14 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
 import java.util.ArrayList;
@@ -69,25 +72,19 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
             return this;
         }
 
-        final Builder<K, E> mb = ImmutableMap.builder();
-        add(implementation, oprsToAdd, mb);
-
-        return newInstance(mb.build(), schemaContext);
-    }
-
-    private void add(final M implementation, final Set<I> oprsToAdd,
-            final Builder<K, E> tableInputBuilder) {
         // First decompose the identifiers to a multimap
         final ListMultimap<K, D> toAdd = decomposeIdentifiers(oprsToAdd);
+
+        final Builder<K, E> mb = ImmutableMap.builder();
 
         // Now iterate over existing entries, modifying them as appropriate...
         for (Entry<K, E> re : this.operations.entrySet()) {
             List<D> newOperations = new ArrayList<>(toAdd.removeAll(re.getKey()));
             if (!newOperations.isEmpty()) {
                 final E ne = (E) re.getValue().add(implementation, newOperations);
-                tableInputBuilder.put(re.getKey(), ne);
+                mb.put(re.getKey(), ne);
             } else {
-                tableInputBuilder.put(re);
+                mb.put(re);
             }
         }
 
@@ -101,24 +98,48 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
 
             final E entry = createOperationEntry(schemaContext, e.getKey(), vb.build());
             if (entry != null) {
-                tableInputBuilder.put(e.getKey(), entry);
+                mb.put(e.getKey(), entry);
             }
         }
+
+        return newInstance(mb.build(), schemaContext);
     }
 
-    AbstractDOMRoutingTable<I, D, M, L, K, E> addAll(final Map<I, M> map) {
-        if (map.isEmpty()) {
+    AbstractDOMRoutingTable<I, D, M, L, K, E> addAll(final ImmutableTable<K, D, M> impls) {
+        if (impls.isEmpty()) {
             return this;
         }
 
-        HashMultimap<M, I> inverted = invertImplementationsMap(map);
+        // Create a temporary map, which we will mutatate
+        final var toAdd = HashBasedTable.create(impls);
+        final var mb = ImmutableMap.<K, E>builder();
 
-        final Builder<K, E> tableInputBuilder = ImmutableMap.builder();
-        for (M impl : inverted.keySet()) {
-            add(impl, inverted.get(impl), tableInputBuilder);
+        // Now iterate over existing entries, modifying them as appropriate...
+        for (Entry<K, E> re : this.operations.entrySet()) {
+            var ne = re;
+
+            final var newImpls = toAdd.rowMap().remove(re.getKey());
+            if (newImpls != null) {
+                for (var oper : newImpls.entrySet()) {
+                    @SuppressWarnings("unchecked")
+                    final E newVal = (E) re.getValue().add(oper.getValue(), Lists.newArrayList(oper.getKey()));
+                    ne = Map.entry(re.getKey(), newVal);
+                }
+            }
+
+            mb.put(ne);
         }
 
-        return newInstance(tableInputBuilder.build(), schemaContext);
+        // Finally add whatever is left in the decomposed multimap
+        for (Entry<K, Map<D, M>> e : toAdd.rowMap().entrySet()) {
+            final E entry = createOperationEntry(schemaContext, e.getKey(), ImmutableMap.copyOf(
+                Maps.<D, M, List<M>>transformValues(e.getValue(), ImmutableList::of)));
+            if (entry != null) {
+                mb.put(e.getKey(), entry);
+            }
+        }
+
+        return newInstance(mb.build(), schemaContext);
     }
 
     AbstractDOMRoutingTable<I, D, M, L, K, E> remove(final M implementation, final Set<I> instances) {
@@ -147,36 +168,41 @@ abstract class AbstractDOMRoutingTable<I, D, M, L extends EventListener, K,
         return newInstance(b.build(), schemaContext);
     }
 
-
-    private void remove(final M implementation, final Set<I> oprsToRemove,
-                        final Builder<K, E> tableInputBuilder) {
-        final ListMultimap<K, D> toRemove = decomposeIdentifiers(oprsToRemove);
-
-        for (Entry<K, E> e : this.operations.entrySet()) {
-            final List<D> removed = new ArrayList<>(toRemove.removeAll(e.getKey()));
-            if (!removed.isEmpty()) {
-                final E ne = (E) e.getValue().remove(implementation, removed);
-                if (ne != null) {
-                    tableInputBuilder.put(e.getKey(), ne);
-                }
-            } else {
-                tableInputBuilder.put(e);
-            }
-        }
-    }
-
-    AbstractDOMRoutingTable<I, D, M, L, K, E> removeAll(final Map<I, M> map) {
-        if (map.isEmpty()) {
+    AbstractDOMRoutingTable<I, D, M, L, K, E> removeAll(final ImmutableTable<K, D, M> impls) {
+        if (impls.isEmpty()) {
             return this;
         }
-        HashMultimap<M, I> inverted = invertImplementationsMap(map);
 
-        final Builder<K, E> tableInputBuilder = ImmutableMap.builder();
-        for (M impl : inverted.keySet()) {
-            remove(impl, inverted.get(impl), tableInputBuilder);
+        // Create a temporary map, which we will mutatate
+        final var toRemove = HashBasedTable.create(impls);
+        final var mb = ImmutableMap.<K, E>builder();
+
+        // Now iterate over existing entries, modifying them as appropriate...
+        for (Entry<K, E> re : this.operations.entrySet()) {
+            var ne = re;
+
+            final var oldImpls = toRemove.rowMap().remove(re.getKey());
+            if (oldImpls != null) {
+                for (var oper : oldImpls.entrySet()) {
+                    if (ne != null) {
+                        @SuppressWarnings("unchecked")
+                        final E newVal = (E) ne.getValue().remove(oper.getValue(), Lists.newArrayList(oper.getKey()));
+                        if (newVal != null) {
+                            ne = Map.entry(re.getKey(), newVal);
+                        } else {
+                            ne = null;
+                        }
+                    }
+                }
+            }
+
+            if (ne != null) {
+                mb.put(ne);
+            }
         }
 
-        return newInstance(tableInputBuilder.build(), schemaContext);
+        // All done, whatever is in toRemove, was not there in the first place
+        return newInstance(mb.build(), schemaContext);
     }
 
     static final <K, V> HashMultimap<V, K> invertImplementationsMap(final Map<K, V> map) {
