@@ -12,14 +12,14 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>10.0.5-SNAPSHOT</version>
+        <version>10.0.5</version>
         <relativePath>../../binding/binding-parent</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>general-entity</artifactId>
-    <version>10.0.5-SNAPSHOT</version>
+    <version>10.0.5</version>
     <packaging>bundle</packaging>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
