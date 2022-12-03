@@ -12,12 +12,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>dom-parent</artifactId>
-        <version>10.0.5-SNAPSHOT</version>
+        <version>10.0.6-SNAPSHOT</version>
         <relativePath>../../dom/dom-parent</relativePath>
     </parent>
 
     <artifactId>mdsal-trace-cli</artifactId>
-    <version>10.0.5-SNAPSHOT</version>
+    <version>10.0.6-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <dependencies>

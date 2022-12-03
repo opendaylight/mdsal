@@ -11,13 +11,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>10.0.5-SNAPSHOT</version>
+        <version>10.0.6-SNAPSHOT</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-rfc8819</artifactId>
-    <version>10.0.5-SNAPSHOT</version>
+    <version>10.0.6-SNAPSHOT</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Model :: RFC8819</name>
     <description>Models from RFC8819</description>
