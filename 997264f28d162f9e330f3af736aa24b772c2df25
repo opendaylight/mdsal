@@ -93,6 +93,52 @@
       },
       "revId": "997264f28d162f9e330f3af736aa24b772c2df25",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "45baba78_eedc8916",
+        "filename": "binding/mdsal-binding-dom-codec/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-12-05T17:11:11Z",
+      "side": 1,
+      "message": "only needed for tests, as noted in two deps above",
+      "range": {
+        "startLine": 124,
+        "startChar": 0,
+        "endLine": 127,
+        "endChar": 19
+      },
+      "revId": "997264f28d162f9e330f3af736aa24b772c2df25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c314a44_15756338",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/module-info.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-12-05T17:11:11Z",
+      "side": 1,
+      "message": "move this to the appropriate block, but we should be getting it transitively",
+      "range": {
+        "startLine": 49,
+        "startChar": 4,
+        "endLine": 49,
+        "endChar": 56
+      },
+      "revId": "997264f28d162f9e330f3af736aa24b772c2df25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
