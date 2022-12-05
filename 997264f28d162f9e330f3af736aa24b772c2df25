@@ -45,6 +45,30 @@
       },
       "revId": "997264f28d162f9e330f3af736aa24b772c2df25",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a96b3dc_245e47f4",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/RpcInvocationStrategy.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-12-05T13:17:17Z",
+      "side": 1,
+      "message": "I did take a look, but have not found the place where to exchange BindingNormalizedNodeSerializer for BindingCodecContext.\nWhere is the place to inject BindingCodecContext so we dont expose imlementation?",
+      "parentUuid": "a33ee033_2ef0dfe5",
+      "range": {
+        "startLine": 89,
+        "startChar": 16,
+        "endLine": 89,
+        "endChar": 83
+      },
+      "revId": "997264f28d162f9e330f3af736aa24b772c2df25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
