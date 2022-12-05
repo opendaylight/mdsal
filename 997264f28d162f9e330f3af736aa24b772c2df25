@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9685d55_516f1976",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/RpcInvocationStrategy.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-12-05T10:38:18Z",
+      "side": 1,
+      "message": "nope, direct dependency on implementation",
+      "range": {
+        "startLine": 18,
+        "startChar": 48,
+        "endLine": 18,
+        "endChar": 72
+      },
+      "revId": "997264f28d162f9e330f3af736aa24b772c2df25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a33ee033_2ef0dfe5",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/RpcInvocationStrategy.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-12-05T10:38:18Z",
+      "side": 1,
+      "message": "yeah, \"new BindingCodecContext()\" does a rather different thing than we want.\n\nhave you taken a look at adapter.currentSerializer()?",
+      "range": {
+        "startLine": 89,
+        "startChar": 16,
+        "endLine": 89,
+        "endChar": 83
+      },
+      "revId": "997264f28d162f9e330f3af736aa24b772c2df25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
