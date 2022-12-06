@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "164cda64_826d3e1f",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/RpcInvocationStrategy.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-12-06T11:42:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9685d55_516f1976",
+      "range": {
+        "startLine": 18,
+        "startChar": 48,
+        "endLine": 18,
+        "endChar": 72
+      },
+      "revId": "997264f28d162f9e330f3af736aa24b772c2df25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a33ee033_2ef0dfe5",
@@ -95,6 +119,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ecac4fb_7b422f79",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/RpcInvocationStrategy.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-12-06T11:42:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5eba910e_af158223",
+      "range": {
+        "startLine": 89,
+        "startChar": 16,
+        "endLine": 89,
+        "endChar": 83
+      },
+      "revId": "997264f28d162f9e330f3af736aa24b772c2df25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "45baba78_eedc8916",
@@ -118,6 +166,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c94bc035_3a35e96c",
+        "filename": "binding/mdsal-binding-dom-codec/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-12-06T11:42:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "45baba78_eedc8916",
+      "range": {
+        "startLine": 124,
+        "startChar": 0,
+        "endLine": 127,
+        "endChar": 19
+      },
+      "revId": "997264f28d162f9e330f3af736aa24b772c2df25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2c314a44_15756338",
@@ -131,6 +203,30 @@
       "writtenOn": "2022-12-05T17:11:11Z",
       "side": 1,
       "message": "move this to the appropriate block, but we should be getting it transitively",
+      "range": {
+        "startLine": 49,
+        "startChar": 4,
+        "endLine": 49,
+        "endChar": 56
+      },
+      "revId": "997264f28d162f9e330f3af736aa24b772c2df25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6795c1db_6b723843",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/module-info.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-12-06T11:42:53Z",
+      "side": 1,
+      "message": "reverted",
+      "parentUuid": "2c314a44_15756338",
       "range": {
         "startLine": 49,
         "startChar": 4,
