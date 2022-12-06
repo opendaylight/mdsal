@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "35383e8c_f78db89f",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/DOMQueryPredicate.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2022-12-06T11:51:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c38b3f0_e81b107e",
+      "range": {
+        "startLine": 47,
+        "startChar": 41,
+        "endLine": 47,
+        "endChar": 45
+      },
+      "revId": "5594b5e52ec707f69cecf464ad8f47d399408999",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b006e570_471edd1d",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-11-28T19:15:38Z",
       "side": 1,
       "message": "not thrown here, right?",
+      "range": {
+        "startLine": 508,
+        "startChar": 86,
+        "endLine": 508,
+        "endChar": 108
+      },
+      "revId": "5594b5e52ec707f69cecf464ad8f47d399408999",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4d010a8_d93f4627",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/DOMQueryPredicate.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 508,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2022-12-06T11:51:38Z",
+      "side": 1,
+      "message": "it\u0027s thrown by readValue()",
+      "parentUuid": "b006e570_471edd1d",
       "range": {
         "startLine": 508,
         "startChar": 86,
