@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c896015_8f7aec23",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-12-06T14:55:59Z",
+      "side": 1,
+      "message": "yeah, this is not sufficient: path can represent any other construct as well, so just assuming it points to an RPC.\n\nThis should really operate in a manner similar to the method just above, getCodecContextNode() -- except the walk is not by PathArgument, but rather QName -- and for that BindingDataObjectCodecTreeNode needs a BindingCodecTreeNode schemaTreeChild(QName) method.",
+      "range": {
+        "startLine": 505,
+        "startChar": 15,
+        "endLine": 505,
+        "endChar": 54
+      },
+      "revId": "163ed2307f3f668ba5a40f149699c874945d41c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
