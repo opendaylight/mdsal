@@ -38,12 +38,14 @@ public class ForwardingWriteTransaction extends ForwardingTransaction implements
         delegate.put(store, path, data);
     }
 
+    @Deprecated
     @Override
     public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path, final T data) {
         delegate.mergeParentStructurePut(store, path, data);
     }
 
+    @Deprecated
     @Override
     public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data) {

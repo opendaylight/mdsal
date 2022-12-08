@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
@@ -59,9 +58,24 @@ public interface WriteOperations {
      * @throws IllegalStateException if the transaction has already been submitted
      * @throws NullPointerException if any of the arguments is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
+     * @deprecated Use of this method is a manifestation of bad lifecycle management: it attempts to create data tree
+     *             parent nodes which may have semantic meaning without assigning responsibility. The datastore handles
+     *             all the cases which do not attach semantics, such as {@code container}s without {@code presence},
+     *             {@code augmentation} and {@code list} encapsulation.
+     *             This method does not work in the general case, where there are:
+     *             <ul>
+     *               <li>{@code container} parents with {@code presence}, as these form a {@code mandatory} enforcement
+     *                   boundary. We cannot infer the mandatory nodes from {@code path} and hence we may end up wanting
+     *                   to create an invalid structure</li>
+     *               <li>{@code list} parents with {@code unique} encompassing other leaves than {@code key}. While we
+     *                   can re-create the key {@code leaf} items, we have no way of constructing of {@code unique}
+     *                   requirements.</li>
+     *             </ul>
+     *             Based on this analysis, all users of this method need to be migrated to have a proper lifecycle
+     *             relationship with entities responsible for managing such semantic items which are created by this
+     *             method.
      */
-    // TODO: can we come up with a better name?
-    @Beta
+    @Deprecated(since = "11.0.3")
     <T extends DataObject> void mergeParentStructurePut(@NonNull LogicalDatastoreType store,
             @NonNull InstanceIdentifier<T> path, @NonNull T data);
 
@@ -103,9 +117,24 @@ public interface WriteOperations {
      * @throws IllegalStateException if the transaction has already been submitted
      * @throws NullPointerException if any of the arguments is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
+     * @deprecated Use of this method is a manifestation of bad lifecycle management: it attempts to create data tree
+     *             parent nodes which may have semantic meaning without assigning responsibility. The datastore handles
+     *             all the cases which do not attach semantics, such as {@code container}s without {@code presence},
+     *             {@code augmentation} and {@code list} encapsulation.
+     *             This method does not work in the general case, where there are:
+     *             <ul>
+     *               <li>{@code container} parents with {@code presence}, as these form a {@code mandatory} enforcement
+     *                   boundary. We cannot infer the mandatory nodes from {@code path} and hence we may end up wanting
+     *                   to create an invalid structure</li>
+     *               <li>{@code list} parents with {@code unique} encompassing other leaves than {@code key}. While we
+     *                   can re-create the key {@code leaf} items, we have no way of constructing of {@code unique}
+     *                   requirements.</li>
+     *             </ul>
+     *             Based on this analysis, all users of this method need to be migrated to have a proper lifecycle
+     *             relationship with entities responsible for managing such semantic items which are created by this
+     *             method.
      */
-    // TODO: can we come up with a better name?
-    @Beta
+    @Deprecated(since = "11.0.3")
     <T extends DataObject> void mergeParentStructureMerge(@NonNull LogicalDatastoreType store,
             @NonNull InstanceIdentifier<T> path, @NonNull T data);
 

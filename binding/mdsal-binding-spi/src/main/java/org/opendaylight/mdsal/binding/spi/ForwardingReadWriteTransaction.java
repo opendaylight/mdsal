@@ -39,6 +39,7 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
         delegate.put(store, path, data);
     }
 
+    @Deprecated
     @Override
     public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path, final T data) {
@@ -67,6 +68,7 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
         delegate.merge(store, path, data);
     }
 
+    @Deprecated
     @Override
     public <T extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path, final T data) {

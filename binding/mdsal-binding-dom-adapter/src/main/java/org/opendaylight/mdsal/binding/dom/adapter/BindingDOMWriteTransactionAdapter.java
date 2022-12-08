@@ -34,6 +34,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         getDelegate().put(store, normalized.getKey(), normalized.getValue());
     }
 
+    @Deprecated
     @Override
     public final <U extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
             final InstanceIdentifier<U> path, final U data) {
@@ -50,6 +51,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         getDelegate().merge(store, normalized.getKey(), normalized.getValue());
     }
 
+    @Deprecated
     @Override
     public final <U extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
             final InstanceIdentifier<U> path, final U data) {
