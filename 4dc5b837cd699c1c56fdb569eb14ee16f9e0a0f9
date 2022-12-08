@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72e0f63b_3dc30cbf",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 513,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-12-08T21:21:45Z",
+      "side": 1,
+      "message": "Java 17: use instanceof pattern:\n\n  if (!(currentNode instanceof DataContainerCodecContext\u003c?, ?\u003e previous) {\n    throw new IllegalArgumentException(...);\n  }",
+      "range": {
+        "startLine": 511,
+        "startChar": 12,
+        "endLine": 513,
+        "endChar": 106
+      },
+      "revId": "4dc5b837cd699c1c56fdb569eb14ee16f9e0a0f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7bf75b89_7a99509f",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-12-08T21:21:45Z",
+      "side": 1,
+      "message": "so this is a mistake... YangInstanceIdentifier.PathArgument is something different than a QName -- especially the trees they address are very different.\n\nA PathArgument cannot identify an \u0027rpc\u0027 or a \u0027notification\u0027 statement. A QName from SchemaNodeIdentifier.getNodeIdentifiers() can.\n\nBtw. \u0027qName\u0027 is an ugly name, we use \u0027qname\u0027 instead. Since it comes from a certain sourcem \u0027nodeId\u0027 or is more appropriate.",
+      "range": {
+        "startLine": 514,
+        "startChar": 41,
+        "endLine": 514,
+        "endChar": 70
+      },
+      "revId": "4dc5b837cd699c1c56fdb569eb14ee16f9e0a0f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82a46dfa_f100731f",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 515,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-12-08T21:21:45Z",
+      "side": 1,
+      "message": "here is where we need help from \u0027previous\u0027: we need a schemaTreeChild(QName) method, so that \u0027previous\u0027 does the right thing in terms of addressing  -- which is different from yangPathArgumentChild(), as it does *NOT* skip \u0027case\u0027 statements.",
+      "range": {
+        "startLine": 515,
+        "startChar": 55,
+        "endLine": 515,
+        "endChar": 76
+      },
+      "revId": "4dc5b837cd699c1c56fdb569eb14ee16f9e0a0f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
