@@ -35,6 +35,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d94f4ad5_6ac03e52",
+        "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/BindingIndependentMappingService.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-12-09T12:30:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "203d6c84_c578ba72",
+      "revId": "f7f39cc29c913de846895bf0c822ca32a41913da",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "04d789a8_f08f11a6",
@@ -48,6 +66,24 @@
       "writtenOn": "2022-12-08T08:49:00Z",
       "side": 1,
       "message": "is there any reason these 2 methods can\u0027t be static?",
+      "revId": "f7f39cc29c913de846895bf0c822ca32a41913da",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9d9ca70_50b99a5b",
+        "filename": "binding/mdsal-binding-json-codec/src/main/java/org/opendaylight/mdsal/binding/json/codec/JSONCodec.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-12-09T12:30:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "04d789a8_f08f11a6",
       "revId": "f7f39cc29c913de846895bf0c822ca32a41913da",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }

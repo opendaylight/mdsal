@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b6d1823_7c66d36d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 25
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2022-12-09T12:30:22Z",
+      "side": 1,
+      "message": "There was actually no reason. Methods changed to static",
+      "revId": "73770f05d8ad72e61185f009b09a61ef8853e7e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
