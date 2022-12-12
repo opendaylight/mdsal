@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6eefc38_b9bce53b",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 5
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2022-12-12T12:20:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3d6bedd_c3e11039",
+      "revId": "83ecf131b55d9ed111ebba52d5e78338a4c3f404",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6afbbc1e_630ed576",
@@ -35,6 +53,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eaf97a30_642495d2",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/Decimal64RangeGenerator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2022-12-12T12:20:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6afbbc1e_630ed576",
+      "revId": "83ecf131b55d9ed111ebba52d5e78338a4c3f404",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0581abad_aa9f57f6",
@@ -48,6 +84,30 @@
       "writtenOn": "2022-12-04T20:09:45Z",
       "side": 1,
       "message": "scale is always an int, right?",
+      "range": {
+        "startLine": 241,
+        "startChar": 67,
+        "endLine": 241,
+        "endChar": 73
+      },
+      "revId": "83ecf131b55d9ed111ebba52d5e78338a4c3f404",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3348320d_c75571e8",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/CodeHelpers.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2022-12-12T12:20:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0581abad_aa9f57f6",
       "range": {
         "startLine": 241,
         "startChar": 67,
