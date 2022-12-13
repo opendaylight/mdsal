@@ -34,6 +34,11 @@ enum StatementNamespace {
      */
     GROUPING("$G"),
     /**
+     * The namespace of all RFC8040 {@code rc:yang-data} statements. These sit outside of the usual YANG statement
+     * namespaces.
+     */
+    YANG_DATA("$YD"),
+    /**
      * All other processed statements. Includes {@code augment}, and {@code schema tree} statements.
      */
     // FIXME: peel augment into "$A", which our own thing

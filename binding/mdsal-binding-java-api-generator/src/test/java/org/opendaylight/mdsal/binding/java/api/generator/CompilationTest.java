@@ -792,11 +792,64 @@ public class CompilationTest extends BaseCompilationTest {
         generateTestSources("/compilation/union-string-pattern", sourcesOutputDir);
         CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
 
-        final ClassLoader loader = new URLClassLoader(new URL[] { compiledOutputDir.toURI().toURL() });
+        final ClassLoader loader = new URLClassLoader(new URL[]{compiledOutputDir.toURI().toURL()});
         final Class<?> fooClass = Class.forName(CompilationTestUtils.BASE_PKG + ".foo.norev.Foo", true, loader);
 
         final Field patterns = fooClass.getDeclaredField(TypeConstants.PATTERN_CONSTANT_NAME);
         assertEquals(List.class, patterns.getType());
+
+        CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
+    }
+
+    @Test
+    public void yangDataCompilation() throws Exception {
+        final File sourcesOutputDir = CompilationTestUtils.generatorOutput("yang-data-gen");
+        final File compiledOutputDir = CompilationTestUtils.compilerOutput("yang-data-gen");
+
+        generateTestSources("/compilation/yang-data-gen", sourcesOutputDir);
+        CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
+
+        final ClassLoader loader = new URLClassLoader(new URL[]{compiledOutputDir.toURI().toURL()});
+        final List<String> artifactNames = List.of(
+                // module with top level container
+                "$YangModuleInfoImpl", "YangDataDemoData", "RootContainer", "RootContainerBuilder",
+
+                // yang-data artifacts
+                "YangDataWithContainer", "YangDataWithList",
+                "YangDataWithLeaf", "YangDataWithLeafList",
+                "YangDataWithAnydata", "YangDataWithAnyxml",
+
+                // yang-data content artifacts
+                "ContainerFromYangData", "ContainerFromYangDataBuilder",
+                "ListFromYangData", "ListFromYangDataBuilder",
+                "AnydataFromYangData", "AnyxmlFromYangData",
+
+                // yang-data artifacts using groups
+                "YangDataWithContainerFromGroup", "YangDataWithListFromGroup",
+                "YangDataWithLeafFromGroup", "YangDataWithLeafListFromGroup",
+                "YangDataWithAnydataFromGroup", "YangDataWithAnyxmlFromGroup",
+
+                // group artifacts
+                "GrpForContainer", "GrpForList", "GrpForLeaf", "GrpForLeafList", "GrpForAnydata", "GrpForAnyxml",
+
+                // group content artifacts
+                "grp._for.container.ContainerFromGroup", "grp._for.container.ContainerFromGroupBuilder",
+                "grp._for.list.ListFromGroup", "grp._for.list.ListFromGroupBuilder",
+                "grp._for.anydata.AnydataFromGroup", "grp._for.anyxml.AnyxmlFromGroup",
+
+                // artifacts for non-ascii template naming: yang data artifact, inner container + builder
+                "$lalaho$20$papluhu", "LatinNaming", "LatinNamingBuilder",
+                "$$43F$$440$$438$$432$$435$$442$", "CyrillicNaming", "CyrillicNamingBuilder"
+        );
+
+        for (String name : artifactNames) {
+            // ensure class is loadable
+            final String className = CompilationTestUtils.BASE_PKG + ".urn.test.yang.data.demo.rev220222." + name;
+            Class.forName(className, true, loader);
+            // ensure class source is generated
+            final String srcPath = className.replace('.', File.separatorChar) + ".java";
+            assertTrue(new File(sourcesOutputDir, srcPath).exists());
+        }
 
         CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
     }
