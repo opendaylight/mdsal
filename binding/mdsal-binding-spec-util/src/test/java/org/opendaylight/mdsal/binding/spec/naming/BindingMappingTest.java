@@ -114,4 +114,17 @@ public class BindingMappingTest {
 
         assertEquals(expected, BindingMapping.mapEnumAssignedNames(yang));
     }
+
+    @Test
+    public void yangDataMapping() {
+        // single ascii compliant non-conflicting word - remain as is
+        assertEquals("single", BindingMapping.mapYangDataName("single"));
+        // ascii compliant - non-compliany chars only encoded
+        assertEquals("$abc$20$cde", BindingMapping.mapYangDataName("abc cde"));
+        // latin1 compliant -> latin chars normalized, non-compliant chars are encoded
+        assertEquals("$lalaho$20$papluhu", BindingMapping.mapYangDataName("ľaľaho papľuhu"));
+        // latin1 non-compliant - all non-compliant characters encoded
+        assertEquals("$$43F$$440$$438$$432$$435$$442$$20$pap$13E$uhu",
+                BindingMapping.mapYangDataName("привет papľuhu"));
+    }
 }

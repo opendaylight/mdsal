@@ -15,7 +15,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 
 @NonNullByDefault
-final class CamelCaseNamingStrategy extends ClassNamingStrategy {
+class CamelCaseNamingStrategy extends ClassNamingStrategy {
     private final StatementNamespace namespace;
     private final AbstractQName nodeIdentifier;
 
