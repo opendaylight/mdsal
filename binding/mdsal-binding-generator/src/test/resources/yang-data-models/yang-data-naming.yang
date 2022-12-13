@@ -1,0 +1,49 @@
+module yang-data-naming {
+  yang-version 1.1;
+  namespace "urn:test:yang:data:naming";
+  prefix ydn;
+
+  import ietf-restconf { prefix rc; }
+
+  rc:yang-data "ľaľa ho, papľuha, ogrcal mi krpce!" {
+    container krpce {
+      leaf moje {
+        type boolean;
+      }
+      leaf ogrcanie {
+        type boolean;
+      }
+    }
+  }
+  rc:yang-data "привет" {
+    container cyrillic {
+      leaf ja {
+        type boolean;
+      }
+    }
+  }
+  rc:yang-data "identifier-compliant-name" {
+    container cont {
+      leaf lf {
+        type boolean;
+      }
+    }
+  }
+  rc:yang-data collision1 {
+    container collision1 {
+    }
+  }
+  rc:yang-data collision2 {
+    container some {
+    }
+  }
+  rc:yang-data collision3 {
+    uses collision3;
+  }
+  container collision2 {
+  }
+  grouping collision3{
+    container some {
+    }
+  }
+}

@@ -18,6 +18,8 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
+import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Optional;
@@ -424,6 +426,38 @@ public final class BindingMapping {
         }
 
         return javaToYang.inverse();
+    }
+
+    /**
+     * Builds class name representing yang-data template name which is not yang identifier compliant.
+     *
+     * @param input template name
+     * @return java class name
+     */
+    public static String mapYangDataName(final String input) {
+        requireNonNull(input);
+        if (StandardCharsets.US_ASCII.newEncoder().canEncode(input)) {
+            return mapEnumAssignedName(input);
+        }
+        final String normalized = tryNormalize(input);
+        final StringBuilder sb = new StringBuilder().append('$');
+        normalized.codePoints().forEachOrdered(codePoint -> {
+            if (codePoint == '$' || !Character.isJavaIdentifierPart(codePoint) || codePoint > Byte.MAX_VALUE) {
+                sb.append('$').append(Integer.toHexString(codePoint).toUpperCase(Locale.ROOT)).append('$');
+            } else {
+                sb.appendCodePoint(codePoint);
+            }
+        });
+        return sb.toString();
+    }
+
+    private static String tryNormalize(final String input) {
+        // try converting unicode latin1 chars to ascii representation e.g. "öäü" -> "oau"
+        final String normalized = Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("[^\\p{ASCII}]", "");
+        // successful transformation will result the string of same length,
+        // non-latin characters are just removed causing string shortening
+        return normalized.length() == input.length() ? normalized : input;
     }
 
     // See https://docs.oracle.com/javase/specs/jls/se16/html/jls-3.html#jls-3.8
