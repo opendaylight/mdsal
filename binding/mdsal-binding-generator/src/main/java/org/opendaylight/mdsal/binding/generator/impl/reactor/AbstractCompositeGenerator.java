@@ -25,6 +25,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.yangtools.rfc8040.model.api.YangDataEffectiveStatement;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
 import org.opendaylight.yangtools.yang.model.api.CopyableNode;
@@ -263,6 +264,11 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
                         usesGen.resolveGrouping(uses, grouping);
                     }
                 }
+            }
+            if (this instanceof ModuleGenerator && stmt instanceof YangDataEffectiveStatement yangData) {
+                // resolve groups for 'uses' within 'yang-data' statements defined on top level
+                yangData.findFirstEffectiveSubstatement(UsesEffectiveStatement.class).ifPresent(
+                        uses -> tmp.add(context.resolveTreeScoped(GroupingGenerator.class, uses.argument())));
             }
         }
         groupings = List.copyOf(tmp);
@@ -553,6 +559,14 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
                     if (usesSub instanceof AugmentEffectiveStatement usesAug) {
                         tmpAug.add(new UsesAugmentGenerator(usesAug, uses, this));
                     }
+                }
+            } else if (stmt instanceof YangDataEffectiveStatement yangData) {
+                if (this instanceof ModuleGenerator) {
+                    // 'yang-data' statements translates into a top level container;
+                    // container statement itself is defined as a substatement of YangDataEffectiveStatement
+                    // for both cases: direct container definition or via 'uses' of groupping
+                    yangData.findFirstEffectiveSubstatement(ContainerEffectiveStatement.class)
+                            .ifPresent(cont -> tmp.add(new ContainerGenerator(cont, this, true)));
                 }
             } else {
                 LOG.trace("Ignoring statement {}", stmt);

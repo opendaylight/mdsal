@@ -792,11 +792,50 @@ public class CompilationTest extends BaseCompilationTest {
         generateTestSources("/compilation/union-string-pattern", sourcesOutputDir);
         CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
 
-        final ClassLoader loader = new URLClassLoader(new URL[] { compiledOutputDir.toURI().toURL() });
+        final ClassLoader loader = new URLClassLoader(new URL[]{compiledOutputDir.toURI().toURL()});
         final Class<?> fooClass = Class.forName(CompilationTestUtils.BASE_PKG + ".foo.norev.Foo", true, loader);
 
         final Field patterns = fooClass.getDeclaredField(TypeConstants.PATTERN_CONSTANT_NAME);
         assertEquals(List.class, patterns.getType());
+
+        CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
+    }
+
+    @Test
+    public void yangDataCompilation() throws Exception {
+        final File sourcesOutputDir = CompilationTestUtils.generatorOutput("yang-data-gen");
+        final File compiledOutputDir = CompilationTestUtils.compilerOutput("yang-data-gen");
+
+        generateTestSources("/compilation/yang-data-gen", sourcesOutputDir);
+        CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
+
+        final ClassLoader loader = new URLClassLoader(new URL[]{compiledOutputDir.toURI().toURL()});
+        final List<String> artifactNames = List.of(
+                "$YangModuleInfoImpl", "YangDataExtDemoData", "Grp",
+                "ContainerFromYangData", "ContainerFromYangDataBuilder",
+                "grp.ContainerFromGroup", "grp.ContainerFromGroupBuilder",
+                "ContainerFromYangData", "ContainerFromYangDataBuilder",
+                "RootContainer", "RootContainerBuilder");
+        for (String name : artifactNames) {
+            // ensure class is loadable
+            final String className = CompilationTestUtils.BASE_PKG + ".urn.test.yang.data.demo.rev220222." + name;
+            Class.forName(className, true, loader);
+            // ensure class source is generated
+            final String srcPath = className.replace('.', File.separatorChar) + ".java";
+            assertTrue(new File(sourcesOutputDir, srcPath).exists());
+        }
+
+        // check module interface for expected methods
+        final Class<?> moduleClass = Class.forName(CompilationTestUtils.BASE_PKG
+                + ".urn.test.yang.data.demo.rev220222.YangDataExtDemoData", true, loader);
+        assertTrue(moduleClass.isInterface());
+        final List<String> declaredMethodNames = Arrays.stream(moduleClass.getDeclaredMethods())
+                .map(Method::getName).toList();
+        final List<String> expectedMethodNames = List.of(
+                "getContainerFromYangData", "nonnullContainerFromYangData",
+                "getContainerFromGroup", "nonnullContainerFromGroup",
+                "getRootContainer", "nonnullRootContainer");
+        assertTrue(declaredMethodNames.containsAll(expectedMethodNames));
 
         CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
     }

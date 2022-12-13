@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
 import java.util.List;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultContainerRuntimeType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.ValueMechanics;
@@ -27,8 +28,20 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
  * Generator corresponding to a {@code container} statement.
  */
 final class ContainerGenerator extends CompositeSchemaTreeGenerator<ContainerEffectiveStatement, ContainerRuntimeType> {
+
+    /*
+     *  Indicates current container is a root of a 'yang-data' content.
+     */
+    private final boolean isYangDataRoot;
+
     ContainerGenerator(final ContainerEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
+        this(statement, parent, false);
+    }
+
+    ContainerGenerator(final ContainerEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent,
+            final boolean isYangDataRoot) {
         super(statement, parent);
+        this.isYangDataRoot = isYangDataRoot;
     }
 
     @Override
@@ -82,4 +95,19 @@ final class ContainerGenerator extends CompositeSchemaTreeGenerator<ContainerEff
         }
         return ret;
     }
+
+    @Override
+    void addAsGetterMethodOverride(final @NonNull GeneratedTypeBuilderBase<?> builder,
+            final @NonNull TypeBuilderFactory builderFactory) {
+        // This getter method construction is only invoked if current container is being marked
+        // as 'addedByUses'. Generating a getter method is required for case when container represents 'yang-data'
+        // with content being defined via usage of grouping.
+        if (isYangDataRoot) {
+            // extract type from original statement (grouping) resolved
+            final Type returnType = getOriginal().methodReturnType(builderFactory);
+            constructGetter(builder, returnType);
+            constructRequire(builder, returnType);
+        }
+    }
+
 }

@@ -1,0 +1,40 @@
+module yang-data-ext-demo {
+  namespace "urn:test:yang:data:demo";
+  prefix ydd;
+
+  import ietf-restconf {
+    prefix rc;
+  }
+
+  revision 2022-02-22;
+
+  rc:yang-data "yang-data-with-container" {
+    container container-from-yang-data {
+      leaf str {
+        type string;
+      }
+    }
+  }
+
+  rc:yang-data "yang-data-with-uses-group" {
+    uses grp;
+  }
+
+  grouping grp {
+    container container-from-group {
+      leaf num {
+        type uint32;
+      }
+    }
+  }
+
+  container root-container {
+    rc:yang-data "yang-data-ignored" {
+      container container-ignored {
+        leaf bool {
+          type boolean;
+        }
+      }
+    }
+  }
+}
