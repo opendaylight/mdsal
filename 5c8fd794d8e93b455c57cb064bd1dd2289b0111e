@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c1c701a_593ef6fa",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ContainerGenerator.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2022-12-13T17:13:53Z",
+      "side": 1,
+      "message": "nope, we should have a yang.binding baseline interface, so that these never get confused.",
+      "range": {
+        "startLine": 35,
+        "startChar": 4,
+        "endLine": 35,
+        "endChar": 41
+      },
+      "revId": "5c8fd794d8e93b455c57cb064bd1dd2289b0111e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
