@@ -426,6 +426,11 @@ public final class BindingMapping {
         return javaToYang.inverse();
     }
 
+    // FIXME: document this method
+    public static String mapYangDataName(final String yangDataName) {
+        return mapEnumAssignedName(yangDataName);
+    }
+
     // See https://docs.oracle.com/javase/specs/jls/se16/html/jls-3.html#jls-3.8
     // TODO: we are being conservative here, but should differentiate TypeIdentifier and UnqualifiedMethodIdentifier,
     //       which have different exclusions
