@@ -18,6 +18,8 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
+import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Optional;
@@ -70,7 +72,11 @@ public final class BindingMapping {
     public static final @NonNull String NOTIFICATION_LISTENER_SUFFIX = "Listener";
     public static final @NonNull String BUILDER_SUFFIX = "Builder";
     public static final @NonNull String KEY_SUFFIX = "Key";
+    // ietf-restconf:yang-data, i.e. YangDataName
+    public static final @NonNull String NAME_STATIC_FIELD_NAME = "NAME";
+    // everything that can have a QName (e.g. identifier bound to a namespace)
     public static final @NonNull String QNAME_STATIC_FIELD_NAME = "QNAME";
+    // concrete extensible contracts, for example 'feature', 'identity' and similar
     public static final @NonNull String VALUE_STATIC_FIELD_NAME = "VALUE";
     public static final @NonNull String PACKAGE_PREFIX = "org.opendaylight.yang.gen.v1";
     public static final @NonNull String AUGMENTATION_FIELD = "augmentation";
@@ -83,6 +89,7 @@ public final class BindingMapping {
 
     public static final @NonNull String MODULE_INFO_CLASS_NAME = "$YangModuleInfoImpl";
     public static final @NonNull String MODULE_INFO_QNAMEOF_METHOD_NAME = "qnameOf";
+    public static final @NonNull String MODULE_INFO_YANGDATANAMEOF_METHOD_NAME = "yangDataNameOf";
     public static final @NonNull String MODEL_BINDING_PROVIDER_CLASS_NAME = "$YangModelBindingProvider";
 
     /**
@@ -424,6 +431,38 @@ public final class BindingMapping {
         }
 
         return javaToYang.inverse();
+    }
+
+    /**
+     * Builds class name representing yang-data template name which is not yang identifier compliant.
+     *
+     * @param input template name
+     * @return java class name
+     */
+    public static String mapYangDataName(final String input) {
+        requireNonNull(input);
+        if (StandardCharsets.US_ASCII.newEncoder().canEncode(input)) {
+            return mapEnumAssignedName(input);
+        }
+        final String normalized = tryNormalize(input);
+        final StringBuilder sb = new StringBuilder().append('$');
+        normalized.codePoints().forEachOrdered(codePoint -> {
+            if (codePoint == '$' || !Character.isJavaIdentifierPart(codePoint) || codePoint > Byte.MAX_VALUE) {
+                sb.append('$').append(Integer.toHexString(codePoint).toUpperCase(Locale.ROOT)).append('$');
+            } else {
+                sb.appendCodePoint(codePoint);
+            }
+        });
+        return sb.toString();
+    }
+
+    private static String tryNormalize(final String input) {
+        // try converting unicode latin1 chars to ascii representation e.g. "öäü" -> "oau"
+        final String normalized = Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("[^\\p{ASCII}]", "");
+        // successful transformation will result the string of same length,
+        // non-latin characters are just removed causing string shortening
+        return normalized.length() == input.length() ? normalized : input;
     }
 
     // See https://docs.oracle.com/javase/specs/jls/se16/html/jls-3.html#jls-3.8
