@@ -1,0 +1,29 @@
+module yang-data-collision {
+  yang-version 1.1;
+  namespace "urn:test:yang:data:collision";
+  prefix ydc;
+
+  import ietf-restconf {
+    prefix rc;
+  }
+
+  revision 2022-02-22;
+
+  rc:yang-data collision1 {
+    container collision1 {
+    }
+  }
+  rc:yang-data collision2 {
+    container some {
+    }
+  }
+  rc:yang-data collision3 {
+    uses collision3;
+  }
+  container collision2 {
+  }
+  grouping collision3{
+    container some {
+    }
+  }
+}
