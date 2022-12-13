@@ -415,16 +415,17 @@ public final class CodeHelpers {
     }
 
     /**
-     * Utility method for checking whether a target object is a compatible DataObject.
+     * Utility method for checking whether a target object is compatible with DataObject or YangData.
      *
-     * @param requiredClass Required DataObject class
+     * @param requiredClass required class extending either DataObject or YangData class
      * @param obj Object to check, may be null
      * @return Object cast to required class, if its implemented class matches requirement, null otherwise
      * @throws NullPointerException if {@code requiredClass} is null
      */
-    public static <T extends DataObject> @Nullable T checkCast(final @NonNull Class<T> requiredClass,
+    public static <T> @Nullable T checkCast(final @NonNull Class<T> requiredClass,
             final @Nullable Object obj) {
-        return obj instanceof DataObject && requiredClass.equals(((DataObject) obj).implementedInterface())
+        return obj instanceof DataObject dataObj && requiredClass.equals(dataObj.implementedInterface())
+                || obj instanceof YangData yangData && requiredClass.equals(yangData.implementedInterface())
             ? requiredClass.cast(obj) : null;
     }
 
