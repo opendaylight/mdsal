@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.yangtools.rfc8040.model.api.YangDataEffectiveStatement;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
@@ -100,8 +101,18 @@ abstract class CompositeRuntimeTypeBuilder<S extends EffectiveStatement<?, ?>, R
 
         // Now construct RuntimeTypes for each schema tree child of stmt
         for (var stmt : statement.effectiveSubstatements()) {
-            if (stmt instanceof SchemaTreeEffectiveStatement) {
-                final var child = (SchemaTreeEffectiveStatement<?>) stmt;
+            final SchemaTreeEffectiveStatement<?> child;
+            if (statement instanceof ModuleEffectiveStatement
+                && stmt instanceof YangDataEffectiveStatement yangDataStmt) {
+                // set content of yang-data as top level child of a module
+                child = yangDataStmt.findFirstEffectiveSubstatement(SchemaTreeEffectiveStatement.class).get();
+            } else if (stmt instanceof SchemaTreeEffectiveStatement) {
+                child = (SchemaTreeEffectiveStatement<?>) stmt;
+            } else {
+                child = null;
+            }
+
+            if (child != null) {
 
                 // Try valid augments first: they should be empty most of the time and filter all the cases where we
                 // would not find the streamChild among our local and grouping statements. Note that unlike all others,
@@ -110,8 +121,9 @@ abstract class CompositeRuntimeTypeBuilder<S extends EffectiveStatement<?, ?>, R
                 //
                 // That is in general -- 'choice' statements are doing their own thing separately.
                 if (!isAugmentedChild(child.argument())) {
-                    final var childGen = verifyNotNull(findChildGenerator(generator, child.argument().getLocalName()),
-                        "Cannot find child for %s in %s", child, generator);
+                    final var childGen = verifyNotNull(findChildGenerator(
+                        generator.isAddedByUses() ? generator.getOriginal() : generator,
+                            child.argument().getLocalName()), "Cannot find child for %s in %s", child, generator);
                     final var childRuntimeType = childGen.createInternalRuntimeType(resolver, child);
                     if (childRuntimeType != null) {
                         childTypes.add(childRuntimeType);

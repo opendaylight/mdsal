@@ -25,6 +25,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.yangtools.rfc8040.model.api.YangDataEffectiveStatement;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
 import org.opendaylight.yangtools.yang.model.api.CopyableNode;
@@ -263,6 +264,11 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
                         usesGen.resolveGrouping(uses, grouping);
                     }
                 }
+            }
+            if (this instanceof ModuleGenerator && stmt instanceof YangDataEffectiveStatement yangData) {
+                // resolve groups for 'uses' within 'yang-data' statements defined on top level
+                yangData.findFirstEffectiveSubstatement(UsesEffectiveStatement.class).ifPresent(
+                    uses -> tmp.add(context.resolveTreeScoped(GroupingGenerator.class, uses.argument())));
             }
         }
         groupings = List.copyOf(tmp);
@@ -553,6 +559,36 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
                     if (usesSub instanceof AugmentEffectiveStatement usesAug) {
                         tmpAug.add(new UsesAugmentGenerator(usesAug, uses, this));
                     }
+                }
+            } else if (stmt instanceof YangDataEffectiveStatement yangData) {
+                if (this instanceof ModuleGenerator) {
+                    // 'yang-data' statements translates into a top level element;
+                    // expected sub-statements are: container, list, leaf, leaf-list, anydata and anyxml;
+                    // same can be provided via group usage --> group content in this case expected
+                    // as direct sub-statement of YangDataEffectiveStatement instance
+
+                    yangData.findFirstEffectiveSubstatement(SchemaTreeEffectiveStatement.class)
+                        .ifPresent(subStmt -> {
+                            final Generator gen;
+                            if (subStmt instanceof ContainerEffectiveStatement contStmt) {
+                                gen = new ContainerGenerator(contStmt, this);
+                            } else if (subStmt instanceof ListEffectiveStatement listStmt) {
+                                gen = new ListGenerator(listStmt, this);
+                            } else if (subStmt instanceof LeafEffectiveStatement leafStmt) {
+                                gen = new LeafGenerator(leafStmt, this);
+                            } else if (subStmt instanceof LeafListEffectiveStatement leafListStmt) {
+                                gen = new LeafListGenerator(leafListStmt, this);
+                            } else if (subStmt instanceof AnydataEffectiveStatement anydataStmt) {
+                                gen = new OpaqueObjectGenerator.Anydata(anydataStmt, this);
+                            } else if (subStmt instanceof AnyxmlEffectiveStatement anyxmlStmt) {
+                                gen = new OpaqueObjectGenerator.Anyxml(anyxmlStmt, this);
+                            } else {
+                                gen = null;
+                            }
+                            if (gen != null) {
+                                tmp.add(gen);
+                            }
+                        });
                 }
             } else {
                 LOG.trace("Ignoring statement {}", stmt);

@@ -1,0 +1,97 @@
+module yang-data-demo {
+  yang-version 1.1;
+  namespace "urn:test:yang:data:demo";
+  prefix ydd;
+
+  import ietf-restconf {
+    prefix rc;
+  }
+
+  revision 2022-02-22;
+
+  rc:yang-data yang-data-with-container {
+    container yang-data-container {
+      leaf str {
+        type string;
+      }
+    }
+  }
+  rc:yang-data yang-data-with-list {
+    list yang-data-list {
+      leaf str {
+        type string;
+      }
+    }
+  }
+  rc:yang-data yang-data-with-leaf {
+    leaf yang-data-leaf {
+      type string;
+    }
+  }
+  rc:yang-data yang-data-with-leaf-list {
+    leaf-list yang-data-leaf-list {
+      type string;
+    }
+  }
+  rc:yang-data yang-data-with-anydata {
+    anydata yang-data-anydata;
+  }
+  rc:yang-data yang-data-with-anyxml {
+    anyxml yang-data-anyxml;
+  }
+
+  rc:yang-data yang-data-container-from-group {
+    uses grp-container;
+  }
+  rc:yang-data yang-data-list-from-group {
+    uses grp-list;
+  }
+  rc:yang-data yang-data-leaf-from-group {
+    uses grp-leaf;
+  }
+  rc:yang-data yang-data-leaf-list-from-group {
+    uses grp-leaf-list;
+  }
+  rc:yang-data yang-data-anydata-from-group {
+    uses grp-anydata;
+  }
+  rc:yang-data yang-data-anyxml-from-group {
+    uses grp-anyxml;
+  }
+  grouping grp-container {
+    container container-from-group {
+      leaf str {
+        type string;
+      }
+    }
+  }
+  grouping grp-list {
+    list list-from-group {
+      leaf num {
+        type uint32;
+      }
+    }
+  }
+  grouping grp-leaf {
+    leaf leaf-from-group {
+      type uint32;
+    }
+  }
+  grouping grp-leaf-list {
+    leaf leaf-list-from-group {
+      type uint32;
+    }
+  }
+  grouping grp-anydata {
+    anydata anydata-from-group;
+  }
+  grouping grp-anyxml{
+    anyxml anyxml-from-group;
+  }
+  container root-container {
+    rc:yang-data "yang-data-ignored" {
+      container container-ignored {
+      }
+    }
+  }
+}
