@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.runtime.api;
 
 import com.google.common.annotations.Beta;
+import com.google.common.collect.ImmutableList;
 import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
@@ -89,4 +90,8 @@ public interface BindingRuntimeTypes extends EffectiveModelContextProvider, Runt
      * @throws NullPointerException if {@code ChoiceRuntimeType} is null
      */
     @NonNull Set<CaseRuntimeType> allCaseChildren(ChoiceRuntimeType choiceType);
+
+    ImmutableList<CaseRuntimeType> getSubstitutionsForCase(CaseRuntimeType caseType);
+
+    ImmutableList<AugmentRuntimeType> getSubstitutionsForAugment(AugmentRuntimeType augmentType);
 }
