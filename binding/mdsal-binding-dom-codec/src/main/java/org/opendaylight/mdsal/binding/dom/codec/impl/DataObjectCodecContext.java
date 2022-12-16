@@ -183,9 +183,9 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
 
     private @Nullable AugmentationCodecPrototype<?> mismatchedAugmentationByClass(final @NonNull Class<?> childClass) {
         /*
-         * It is potentially mismatched valid augmentation - we look up equivalent augmentation using reflection
-         * and walk all stream child and compare augmentations classes if they are equivalent. When we find a match
-         * we'll cache it so we do not need to perform reflection operations again.
+         * It is potentially mismatched valid augmentation - we look up equivalent augmentation using precalculated
+         * mapping and walk all stream child and compare augmentations classes if they are equivalent.
+         * When we find a match we'll cache it so we do not need to go through it again.
          */
         final var local = (ImmutableMap<Class<?>, AugmentationCodecPrototype<?>>) MISMATCHED_AUGMENTED.getAcquire(this);
         final var mismatched = local.get(childClass);
@@ -198,12 +198,18 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
         @SuppressWarnings("rawtypes")
         final Class<?> augTarget = findAugmentationTarget((Class) childClass);
         // Do not bother with proposals which are not augmentations of our class, or do not match what the runtime
-        // context would load.
-        if (getBindingClass().equals(augTarget) && belongsToRuntimeContext(childClass)) {
-            for (var realChild : augmentToPrototype.values()) {
-                final var realClass = realChild.javaClass();
-                if (Augmentation.class.isAssignableFrom(realClass) && isSubstitutionFor(childClass, realClass)) {
-                    return cacheMismatched(oldMismatched, childClass, realChild);
+        // context would load. Also skip processing if we do not have any augment prototypes.
+        if (getBindingClass().equals(augTarget) && belongsToRuntimeContext(childClass)
+                && !augmentToPrototype.isEmpty()) {
+            // acquire RuntimeType of the requested childClass and substitutions
+            final var context = prototype().contextFactory().getRuntimeContext();
+            final var childType = context.getAugmentationDefinition(childClass.asSubclass(Augmentation.class));
+            final var substitutables = context.getTypes().getSubstitutionsForAugment(childType);
+
+            for (var entry : augmentToPrototype.entrySet()) {
+                final var augBindingClass = entry.getKey().asSubclass(Augmentation.class);
+                if (substitutables.contains(context.getAugmentationDefinition(augBindingClass))) {
+                    return cacheMismatched(oldMismatched, childClass, entry.getValue());
                 }
             }
         }
