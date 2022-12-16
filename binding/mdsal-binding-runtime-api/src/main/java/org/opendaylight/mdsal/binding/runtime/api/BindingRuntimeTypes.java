@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.runtime.api;
 
 import com.google.common.annotations.Beta;
+import com.google.common.collect.ImmutableList;
 import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
@@ -89,4 +90,28 @@ public interface BindingRuntimeTypes extends EffectiveModelContextProvider, Runt
      * @throws NullPointerException if {@code ChoiceRuntimeType} is null
      */
     @NonNull Set<CaseRuntimeType> allCaseChildren(ChoiceRuntimeType choiceType);
+
+    /**
+     * Get all {@link CaseRuntimeType}s that can be used to substitute the {@code caseType},
+     * that is given as a parameter.
+     *
+     * <p>
+     * This method provides a way to get the precalculated CaseRuntimeType substitutions.
+     *
+     * @param caseType A {@link CaseRuntimeType} to which substitutions are being looked for
+     * @return The {@link ImmutableList} of {@link CaseRuntimeType}s that can substitute the one, given as a parameter
+     */
+    ImmutableList<CaseRuntimeType> getSubstitutionsForCase(CaseRuntimeType caseType);
+
+    /**
+     * Get all {@link AugmentRuntimeType}s that can be used to substitute the {@code augmentType},
+     * that is given as a parameter.
+     *
+     * <p>
+     * This method provides a way to get the precalculated AugmentRuntimeType substitutions.
+     *
+     * @param augmentType A {@link AugmentRuntimeType} to which substitutions are being looked for
+     * @return The {@link ImmutableList} of {@link AugmentRuntimeType}s that can substitute the given one as a parameter
+     */
+    ImmutableList<AugmentRuntimeType> getSubstitutionsForAugment(AugmentRuntimeType augmentType);
 }
