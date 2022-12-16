@@ -34,6 +34,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaForClassException;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
@@ -286,6 +287,7 @@ abstract sealed class DataContainerCodecContext<D extends BindingObject & DataCo
      * @param target Class which should be used at particular subtree
      * @return true if and only if classes represents same data.
      * @throws NullPointerException if any argument is {@code null}
+     * @deprecated use {@link BindingRuntimeTypes#getSubstitutionsForAugment} to get available (or none) substitutions
      */
     // FIXME: MDSAL-785: this really should live in BindingRuntimeTypes and should not be based on reflection. The only
     //                   user is binding-dom-codec and the logic could easily be performed on GeneratedType instead. For
@@ -293,6 +295,7 @@ abstract sealed class DataContainerCodecContext<D extends BindingObject & DataCo
     //                   when we create BindingRuntimeTypes. Achieving that will bring us one step closer to being able
     //                   to have a pre-compiled Binding Runtime.
     @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Deprecated(forRemoval = true)
     static final boolean isSubstitutionFor(final Class potential, final Class target) {
         Set<Class> subImplemented = new HashSet<>(Arrays.asList(potential.getInterfaces()));
         Set<Class> targetImplemented = new HashSet<>(Arrays.asList(target.getInterfaces()));
