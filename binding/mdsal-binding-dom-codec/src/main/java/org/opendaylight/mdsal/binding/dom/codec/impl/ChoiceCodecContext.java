@@ -115,10 +115,11 @@ final class ChoiceCodecContext<D extends DataObject> extends DataContainerCodecC
         // Load case statements valid in this choice and keep track of their names
         final var choiceType = prototype.getType();
         final var factory = prototype.getFactory();
+        final var context = factory.getRuntimeContext();
         final var localCases = new HashSet<JavaTypeName>();
         for (var caseType : choiceType.validCaseChildren()) {
             @SuppressWarnings("unchecked")
-            final var caseClass = (Class<? extends DataObject>) loadCase(factory.getRuntimeContext(), caseType);
+            final var caseClass = (Class<? extends DataObject>) loadCase(context, caseType);
             final var caseProto = new CaseCodecPrototype(caseClass, caseType, factory);
 
             localCases.add(caseType.getIdentifier());
@@ -167,20 +168,13 @@ final class ChoiceCodecContext<D extends DataObject> extends DataContainerCodecC
          * lost, and users may use incorrect case class using copy builders.
          */
         final var bySubstitutionBuilder = new HashMap<Class<?>, DataContainerCodecPrototype<?>>();
-        final var context = factory.getRuntimeContext();
-        for (var caseType : context.getTypes().allCaseChildren(choiceType)) {
-            final var caseName = caseType.getIdentifier();
-            if (!localCases.contains(caseName)) {
-                // FIXME: do not rely on class loading here, the check we are performing should be possible on
-                //        GeneratedType only -- or it can be provided by BindingRuntimeTypes -- i.e. rather than
-                //        'allCaseChildren()' it would calculate additional mappings we can use off-the-bat.
-                final var substitution = loadCase(context, caseType);
-
-                search: for (var real : byClassBuilder.entrySet()) {
-                    if (isSubstitutionFor(substitution, real.getKey())) {
-                        bySubstitutionBuilder.put(substitution, real.getValue());
-                        break search;
-                    }
+        for (final var localCaseType : choiceType.validCaseChildren()) {
+            final var substitutions = context.getTypes().getSubstitutionsForCase(localCaseType);
+            for (final var substitution : substitutions) {
+                if (!localCases.contains(substitution.getIdentifier())) {
+                    final var substitutionClass = loadCase(context, substitution);
+                    bySubstitutionBuilder.put(substitutionClass,
+                            new CaseCodecPrototype(substitutionClass, substitution, factory));
                 }
             }
         }
