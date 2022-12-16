@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -181,20 +182,13 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
          * lost, and users may use incorrect case class using copy builders.
          */
         final Map<Class<?>, DataContainerCodecPrototype<?>> bySubstitutionBuilder = new HashMap<>();
-        final var context = factory.getRuntimeContext();
-        for (var caseType : context.getTypes().allCaseChildren(choiceType)) {
-            final var caseName = caseType.getIdentifier();
-            if (!localCases.contains(caseName)) {
-                // FIXME: do not rely on class loading here, the check we are performing should be possible on
-                //        GeneratedType only -- or it can be provided by BindingRuntimeTypes -- i.e. rather than
-                //        'allCaseChildren()' it would calculate additional mappings we can use off-the-bat.
-                final Class<?> substitution = loadCase(context, caseType);
 
-                search: for (final Entry<Class<?>, DataContainerCodecPrototype<?>> real : byClassBuilder.entrySet()) {
-                    if (isSubstitutionFor(substitution, real.getKey())) {
-                        bySubstitutionBuilder.put(substitution, real.getValue());
-                        break search;
-                    }
+        for (final var localCaseType : choiceType.validCaseChildren()) {
+            final var context = factory.getRuntimeContext();
+            final var substitutions = context.getTypes().getSubstitutionsForCase(localCaseType);
+            for (final var substitution : substitutions) {
+                if (!localCases.contains(substitution.getIdentifier())) {
+                    bySubstitutionBuilder.put(loadCase(context, substitution), loadCase(factory, localCaseType));
                 }
             }
         }
