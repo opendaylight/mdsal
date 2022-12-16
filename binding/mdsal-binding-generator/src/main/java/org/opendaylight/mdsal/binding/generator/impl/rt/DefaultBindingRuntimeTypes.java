@@ -10,16 +10,21 @@ package org.opendaylight.mdsal.binding.generator.impl.rt;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.SetMultimap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
@@ -47,18 +52,24 @@ public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
     private final ImmutableMap<QName, OutputRuntimeType> rpcOutputs;
     private final ImmutableMap<QName, InputRuntimeType> rpcInputs;
     private final ImmutableMap<JavaTypeName, RuntimeType> types;
+    private final ImmutableMultimap<GeneratedType, CaseRuntimeType> caseToSubstitutionCases;
+    private final ImmutableMultimap<GeneratedType, AugmentRuntimeType> augmentToSubstitutionAugments;
 
     public DefaultBindingRuntimeTypes(final EffectiveModelContext context,
             final Map<QNameModule, ModuleRuntimeType> modules, final Map<JavaTypeName, RuntimeType> types,
             final Map<QName, IdentityRuntimeType> identities, final Map<QName, InputRuntimeType> rpcInputs,
             final Map<QName, OutputRuntimeType> rpcOutputs,
-            final SetMultimap<JavaTypeName, CaseRuntimeType> choiceToCases) {
+            final SetMultimap<JavaTypeName, CaseRuntimeType> choiceToCases,
+            final Multimap<GeneratedType, CaseRuntimeType> caseToSubstitutionCases,
+            final Multimap<GeneratedType, AugmentRuntimeType> augmentToSubstitutionAugments) {
         this.context = requireNonNull(context);
         this.identities = ImmutableMap.copyOf(identities);
         this.types = ImmutableMap.copyOf(types);
         this.rpcInputs = ImmutableMap.copyOf(rpcInputs);
         this.rpcOutputs = ImmutableMap.copyOf(rpcOutputs);
         this.choiceToCases = ImmutableSetMultimap.copyOf(choiceToCases);
+        this.caseToSubstitutionCases = ImmutableMultimap.copyOf(caseToSubstitutionCases);
+        this.augmentToSubstitutionAugments = ImmutableMultimap.copyOf(augmentToSubstitutionAugments);
 
         modulesByNamespace = ImmutableMap.copyOf(modules);
         modulesByPackage = ImmutableSortedMap.copyOf(Maps.uniqueIndex(modules.values(),
@@ -112,6 +123,16 @@ public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
     @Override
     public Set<CaseRuntimeType> allCaseChildren(final ChoiceRuntimeType choiceType) {
         return choiceToCases.get(choiceType.getIdentifier());
+    }
+
+    @Override
+    public ImmutableList<CaseRuntimeType> getSubstitutionsForCase(final CaseRuntimeType caseType) {
+        return (ImmutableList<CaseRuntimeType>) caseToSubstitutionCases.get(caseType.javaType());
+    }
+
+    @Override
+    public ImmutableList<AugmentRuntimeType> getSubstitutionsForAugment(final AugmentRuntimeType augmentType) {
+        return (ImmutableList<AugmentRuntimeType>) augmentToSubstitutionAugments.get(augmentType.javaType());
     }
 
     @Override
