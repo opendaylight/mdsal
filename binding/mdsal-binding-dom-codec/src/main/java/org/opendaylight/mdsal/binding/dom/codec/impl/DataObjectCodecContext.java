@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Throwables;
@@ -183,9 +184,9 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
 
     private @Nullable AugmentationCodecPrototype<?> mismatchedAugmentationByClass(final @NonNull Class<?> childClass) {
         /*
-         * It is potentially mismatched valid augmentation - we look up equivalent augmentation using reflection
-         * and walk all stream child and compare augmentations classes if they are equivalent. When we find a match
-         * we'll cache it so we do not need to perform reflection operations again.
+         * It is potentially mismatched valid augmentation - we look up equivalent augmentation using precalculated
+         * mapping and walk all stream child and compare augmentations classes if they are equivalent.
+         * When we find a match we'll cache it so we do not need to go through it again.
          */
         final var local = (ImmutableMap<Class<?>, AugmentationCodecPrototype<?>>) MISMATCHED_AUGMENTED.getAcquire(this);
         final var mismatched = local.get(childClass);
@@ -200,10 +201,24 @@ public abstract sealed class DataObjectCodecContext<D extends DataObject, T exte
         // Do not bother with proposals which are not augmentations of our class, or do not match what the runtime
         // context would load.
         if (getBindingClass().equals(augTarget) && belongsToRuntimeContext(childClass)) {
-            for (var realChild : augmentToPrototype.values()) {
-                final var realClass = realChild.javaClass();
-                if (Augmentation.class.isAssignableFrom(realClass) && isSubstitutionFor(childClass, realClass)) {
-                    return cacheMismatched(oldMismatched, childClass, realChild);
+            // grab context
+            final var context = augmentToPrototype.values().size() == 0 ? null :
+                    augmentToPrototype.values().iterator().next().contextFactory().getRuntimeContext();
+            if (context == null) {
+                // the augmentToPrototype map is empty
+                return null;
+            }
+            // acquire RuntimeType of the requested childClass
+            final var childType = context.getAugmentationDefinition((Class)childClass);
+
+            // get the precalculated possible substitutions
+            final var substitutables = context.getTypes().getSubstitutionsForAugment(childType);
+            for (final var augBindingClass : augmentToPrototype.keySet()) {
+                final var augType = context.getAugmentationDefinition((Class)augBindingClass);
+                if (Augmentation.class.isAssignableFrom(augBindingClass) && substitutables.contains(augType)) {
+                    final var augPrototype = augmentToPrototype.get(augBindingClass);
+                    verifyNotNull(augPrototype, "Cannot find value for key %s", augBindingClass);
+                    return cacheMismatched(oldMismatched, childClass, augPrototype);
                 }
             }
         }
