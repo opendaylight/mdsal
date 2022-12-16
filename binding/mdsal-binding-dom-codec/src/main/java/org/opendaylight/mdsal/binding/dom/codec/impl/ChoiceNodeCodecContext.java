@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -119,7 +120,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
         // Load case statements valid in this choice and keep track of their names
         final var choiceType = prototype.getType();
         final var factory = prototype.getFactory();
-        final var localCases = new HashSet<JavaTypeName>();
+        final Set<JavaTypeName> localCases = new HashSet<>();
         for (var caseType : choiceType.validCaseChildren()) {
             final var cazeDef = loadCase(factory, caseType);
             localCases.add(caseType.getIdentifier());
@@ -181,20 +182,13 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
          * lost, and users may use incorrect case class using copy builders.
          */
         final Map<Class<?>, DataContainerCodecPrototype<?>> bySubstitutionBuilder = new HashMap<>();
-        final var context = factory.getRuntimeContext();
-        for (var caseType : context.getTypes().allCaseChildren(choiceType)) {
-            final var caseName = caseType.getIdentifier();
-            if (!localCases.contains(caseName)) {
-                // FIXME: do not rely on class loading here, the check we are performing should be possible on
-                //        GeneratedType only -- or it can be provided by BindingRuntimeTypes -- i.e. rather than
-                //        'allCaseChildren()' it would calculate additional mappings we can use off-the-bat.
-                final Class<?> substitution = loadCase(context, caseType);
 
-                search: for (final Entry<Class<?>, DataContainerCodecPrototype<?>> real : byClassBuilder.entrySet()) {
-                    if (isSubstitutionFor(substitution, real.getKey())) {
-                        bySubstitutionBuilder.put(substitution, real.getValue());
-                        break search;
-                    }
+        for (var localCaseType : choiceType.validCaseChildren()) {
+            var context = factory.getRuntimeContext();
+            ImmutableList<CaseRuntimeType> substitutions = context.getTypes().getSubstitutionsForCase(localCaseType);
+            for (CaseRuntimeType substitution : substitutions) {
+                if (!localCases.contains(substitution.getIdentifier())) {
+                    bySubstitutionBuilder.put(loadCase(context, substitution), loadCase(factory, localCaseType));
                 }
             }
         }
@@ -301,8 +295,8 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
                 // Issue a warning, but only once so as not to flood the logs
                 if (ambiguousByCaseChildWarnings.add(type)) {
                     LOG.warn("Ambiguous reference {} to child of {} resolved to {}, the first case in {} This mapping "
-                            + "is not guaranteed to be stable and is subject to variations based on runtime "
-                            + "circumstances. Please see the stack trace for hints about the source of ambiguity.",
+                                + "is not guaranteed to be stable and is subject to variations based on runtime "
+                                + "circumstances. Please see the stack trace for hints about the source of ambiguity.",
                             type, bindingArg(), result.getBindingClass(),
                             Lists.transform(inexact, DataContainerCodecPrototype::getBindingClass), new Throwable());
                 }
