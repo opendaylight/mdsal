@@ -18,7 +18,7 @@
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>features-mdsal</artifactId>
-    <version>11.0.3-SNAPSHOT</version>
+    <version>11.0.3</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Stable Features</name>
     <description>MD-SAL stable feature repository</description>
