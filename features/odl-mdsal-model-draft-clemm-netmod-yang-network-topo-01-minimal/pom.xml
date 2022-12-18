@@ -11,13 +11,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>11.0.3-SNAPSHOT</version>
+        <version>11.0.4-SNAPSHOT</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</artifactId>
-    <version>11.0.3-SNAPSHOT</version>
+    <version>11.0.4-SNAPSHOT</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Model :: draft-clemm-netmod-yang-network-topo-01 :: Minimal</name>
     <description>Models from draft-clemm-netmod-yang-network-topo-01 (minimal)</description>

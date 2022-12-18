@@ -17,7 +17,7 @@
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>feature-parent</artifactId>
-    <version>11.0.3-SNAPSHOT</version>
+    <version>11.0.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>OpenDaylight :: MD-SAL :: Feature Parent</name>
@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>dom-parent</artifactId>
-                <version>11.0.3-SNAPSHOT</version>
+                <version>11.0.4-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
