@@ -39,10 +39,14 @@ import org.slf4j.LoggerFactory;
  * An explicit {@link Generator}, associated with a particular {@link EffectiveStatement}.
  */
 public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, ?>, R extends RuntimeType>
-        extends Generator implements CopyableNode, StatementRepresentation<S> {
+        extends Generator implements StatementRepresentation<S> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractExplicitGenerator.class);
 
+    private static final byte HISTORY_ADDED_BY_USES = 0x01;
+    private static final byte HISTORY_AUGMENTING    = 0x02;
+
     private final @NonNull S statement;
+    private final byte history;
 
     /**
      * Field tracking previous incarnation (along reverse of 'uses' and 'augment' axis) of this statement. This field
@@ -66,11 +70,26 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
 
     AbstractExplicitGenerator(final S statement) {
         this.statement = requireNonNull(statement);
+        history = computeHistory(statement);
     }
 
     AbstractExplicitGenerator(final S statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(parent);
         this.statement = requireNonNull(statement);
+        history = computeHistory(statement);
+    }
+
+    // FIXME: this should be coming from AbstractCompositeGenerator instead
+    @Deprecated(forRemoval = true)
+    private static byte computeHistory(final EffectiveStatement<?, ?> statement) {
+        byte history = 0;
+        if (statement instanceof AddedByUsesAware aware && aware.isAddedByUses()) {
+            history |= HISTORY_ADDED_BY_USES;
+        }
+        if (statement instanceof CopyableNode copyable && copyable.isAugmenting()) {
+            history |= HISTORY_AUGMENTING;
+        }
+        return history;
     }
 
     @Override
@@ -157,14 +176,12 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
     abstract @NonNull R createInternalRuntimeType(@NonNull AugmentResolver resolver, @NonNull S statement,
         @NonNull Type type);
 
-    @Override
-    public final boolean isAddedByUses() {
-        return statement instanceof AddedByUsesAware aware && aware.isAddedByUses();
+    final boolean isAddedByUses() {
+        return (history & HISTORY_ADDED_BY_USES) != 0;
     }
 
-    @Override
-    public final boolean isAugmenting() {
-        return statement instanceof CopyableNode copyable && copyable.isAugmenting();
+    final boolean isAugmenting() {
+        return (history & HISTORY_AUGMENTING) != 0;
     }
 
     /**
