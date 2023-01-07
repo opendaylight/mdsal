@@ -27,8 +27,6 @@ import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
-import org.opendaylight.yangtools.yang.model.api.CopyableNode;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.DescriptionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
@@ -39,10 +37,12 @@ import org.slf4j.LoggerFactory;
  * An explicit {@link Generator}, associated with a particular {@link EffectiveStatement}.
  */
 public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, ?>, R extends RuntimeType>
-        extends Generator implements CopyableNode, StatementRepresentation<S> {
+        extends Generator implements StatementRepresentation<S> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractExplicitGenerator.class);
 
     private final @NonNull S statement;
+    private final boolean addedByUses;
+    private final boolean augmenting;
 
     /**
      * Field tracking previous incarnation (along reverse of 'uses' and 'augment' axis) of this statement. This field
@@ -64,18 +64,35 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
     private @Nullable R runtimeType;
     private boolean runtimeTypeInitialized;
 
-    AbstractExplicitGenerator(final S statement) {
+    AbstractExplicitGenerator(final S statement, final Provenance provenance) {
         this.statement = requireNonNull(statement);
+        addedByUses = provenance.addedByUses();
+        augmenting = provenance.augmenting();
+    }
+
+    AbstractExplicitGenerator(final S statement, final Provenance provenance,
+            final AbstractCompositeGenerator<?, ?> parent) {
+        super(parent);
+        this.statement = requireNonNull(statement);
+        addedByUses = provenance.addedByUses();
+        augmenting = provenance.augmenting();
     }
 
     AbstractExplicitGenerator(final S statement, final AbstractCompositeGenerator<?, ?> parent) {
-        super(parent);
-        this.statement = requireNonNull(statement);
+        this(statement, Provenance.of(statement, parent));
     }
 
     @Override
     public final @NonNull S statement() {
         return statement;
+    }
+
+    final boolean isAddedByUses() {
+        return addedByUses;
+    }
+
+    final boolean isAugmenting() {
+        return augmenting;
     }
 
     /**
@@ -156,16 +173,6 @@ public abstract class AbstractExplicitGenerator<S extends EffectiveStatement<?, 
 
     abstract @NonNull R createInternalRuntimeType(@NonNull AugmentResolver resolver, @NonNull S statement,
         @NonNull Type type);
-
-    @Override
-    public final boolean isAddedByUses() {
-        return statement instanceof AddedByUsesAware aware && aware.isAddedByUses();
-    }
-
-    @Override
-    public final boolean isAugmenting() {
-        return statement instanceof CopyableNode copyable && copyable.isAugmenting();
-    }
 
     /**
      * Attempt to link the generator corresponding to the original definition for this generator.

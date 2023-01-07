@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 final class FeatureGenerator extends AbstractExplicitGenerator<FeatureEffectiveStatement, FeatureRuntimeType> {
     FeatureGenerator(final FeatureEffectiveStatement statement, final ModuleGenerator parent) {
-        super(statement, parent);
+        super(statement, Provenance.ORIGINAL, parent);
     }
 
     @Override

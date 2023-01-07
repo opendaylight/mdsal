@@ -22,8 +22,9 @@ abstract class AbstractInvokableGenerator<S extends SchemaTreeEffectiveStatement
         extends CompositeSchemaTreeGenerator<S, R> {
     private static final JavaTypeName FUNCTIONAL_INTERFACE_ANNOTATION = JavaTypeName.create(FunctionalInterface.class);
 
-    AbstractInvokableGenerator(final S statement, final AbstractCompositeGenerator<?, ?> parent) {
-        super(statement, parent);
+    AbstractInvokableGenerator(final S statement, final Provenance provenance,
+            final AbstractCompositeGenerator<?, ?> parent) {
+        super(statement, provenance, parent);
     }
 
     @Override
