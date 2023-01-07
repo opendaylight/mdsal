@@ -466,8 +466,32 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
     }
 
     private @NonNull List<Generator> createChildren(final EffectiveStatement<?, ?> statement) {
-        final var tmp = new ArrayList<Generator>();
+        // Construct augment generators
+        // FIXME: MDSAL-695: So here we are ignoring any augment which is not in a module, while the 'uses'
+        //                   processing takes care of the rest. There are two problems here:
+        //
+        //                   1) this could be an augment introduced through uses -- in this case we are picking
+        //                      confusing it with this being its declaration site, we should probably be
+        //                      ignoring it, but then
+        //
+        //                   2) we are losing track of AugmentEffectiveStatement for which we do not generate
+        //                      interfaces -- and recover it at runtime through explicit walk along the
+        //                      corresponding AugmentationSchemaNode.getOriginalDefinition() pointer
+        //
+        //                   So here is where we should decide how to handle this augment, and make sure we
+        //                   retain information about this being an alias. That will serve as the base for keys
+        //                   in the augment -> original map we provide to BindingRuntimeTypes.
         final var tmpAug = new ArrayList<AbstractAugmentGenerator>();
+        if (this instanceof ModuleGenerator module) {
+            statement.streamEffectiveSubstatements(AugmentEffectiveStatement.class)
+                .forEach(augment -> tmpAug.add(new ModuleAugmentGenerator(augment, module)));
+        }
+        statement.streamEffectiveSubstatements(UsesEffectiveStatement.class).forEach(uses -> {
+            uses.streamEffectiveSubstatements(AugmentEffectiveStatement.class)
+                .forEach(usesAug -> tmpAug.add(new UsesAugmentGenerator(usesAug, uses, this)));
+        });
+
+        final var tmp = new ArrayList<Generator>();
 
         for (var stmt : statement.effectiveSubstatements()) {
             if (stmt instanceof ActionEffectiveStatement action) {
@@ -532,31 +556,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
                 }
             } else if (stmt instanceof TypedefEffectiveStatement typedef) {
                 tmp.add(new TypedefGenerator(typedef, this));
-            } else if (stmt instanceof AugmentEffectiveStatement augment) {
-                // FIXME: MDSAL-695: So here we are ignoring any augment which is not in a module, while the 'uses'
-                //                   processing takes care of the rest. There are two problems here:
-                //
-                //                   1) this could be an augment introduced through uses -- in this case we are picking
-                //                      confusing it with this being its declaration site, we should probably be
-                //                      ignoring it, but then
-                //
-                //                   2) we are losing track of AugmentEffectiveStatement for which we do not generate
-                //                      interfaces -- and recover it at runtime through explicit walk along the
-                //                      corresponding AugmentationSchemaNode.getOriginalDefinition() pointer
-                //
-                //                   So here is where we should decide how to handle this augment, and make sure we
-                //                   retain information about this being an alias. That will serve as the base for keys
-                //                   in the augment -> original map we provide to BindingRuntimeTypes.
-                if (this instanceof ModuleGenerator module) {
-                    tmpAug.add(new ModuleAugmentGenerator(augment, module));
-                }
-            } else if (stmt instanceof UsesEffectiveStatement uses) {
-                for (var usesSub : uses.effectiveSubstatements()) {
-                    if (usesSub instanceof AugmentEffectiveStatement usesAug) {
-                        tmpAug.add(new UsesAugmentGenerator(usesAug, uses, this));
-                    }
-                }
-            } else {
+            } else  {
                 LOG.trace("Ignoring statement {}", stmt);
             }
         }
