@@ -146,13 +146,14 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
      */
     private List<Generator> unlinkedChildren;
 
-    AbstractCompositeGenerator(final S statement) {
-        super(statement);
+    AbstractCompositeGenerator(final S statement, final Provenance provenance) {
+        super(statement, provenance);
         childGenerators = createChildren(statement);
     }
 
-    AbstractCompositeGenerator(final S statement, final AbstractCompositeGenerator<?, ?> parent) {
-        super(statement, parent);
+    AbstractCompositeGenerator(final S statement, final Provenance provenance,
+            final AbstractCompositeGenerator<?, ?> parent) {
+        super(statement, provenance, parent);
         childGenerators = createChildren(statement);
     }
 
@@ -470,8 +471,9 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
 
         for (var stmt : statement.effectiveSubstatements()) {
             if (stmt instanceof ActionEffectiveStatement action) {
-                if (!isAugmenting(action)) {
-                    tmp.add(new ActionGenerator(action, this));
+                final var prov = Provenance.of(action);
+                if (!prov.augmenting()) {
+                    tmp.add(new ActionGenerator(action, prov, this));
                 }
             } else if (stmt instanceof AnydataEffectiveStatement anydata) {
                 if (!isAugmenting(anydata)) {

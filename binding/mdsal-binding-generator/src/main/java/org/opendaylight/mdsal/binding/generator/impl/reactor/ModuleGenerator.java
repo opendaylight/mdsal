@@ -46,7 +46,7 @@ public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffe
     private final Member prefixMember;
 
     ModuleGenerator(final ModuleEffectiveStatement statement) {
-        super(statement);
+        super(statement, Provenance.ORIGINAL);
         yangModuleInfo = JavaTypeName.create(javaPackage(), BindingMapping.MODULE_INFO_CLASS_NAME);
         prefixMember = domain().addPrefix(this, new ModuleNamingStrategy(statement.argument()));
     }

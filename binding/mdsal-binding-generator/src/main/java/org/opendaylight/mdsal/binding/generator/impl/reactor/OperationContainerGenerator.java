@@ -26,9 +26,9 @@ abstract sealed class OperationContainerGenerator<S extends DataTreeEffectiveSta
         permits InputGenerator, OutputGenerator {
     private final ConcreteType baseInterface;
 
-    OperationContainerGenerator(final S statement, final AbstractCompositeGenerator<?, ?> parent,
-            final ConcreteType baseInterface) {
-        super(statement, parent);
+    OperationContainerGenerator(final S statement, final Provenance provenance,
+            final AbstractCompositeGenerator<?, ?> parent, final ConcreteType baseInterface) {
+        super(statement, provenance, parent);
         this.baseInterface = requireNonNull(baseInterface);
     }
 

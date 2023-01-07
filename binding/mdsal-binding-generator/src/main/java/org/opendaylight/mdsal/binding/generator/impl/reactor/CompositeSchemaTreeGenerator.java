@@ -15,7 +15,8 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStateme
  */
 abstract class CompositeSchemaTreeGenerator<S extends SchemaTreeEffectiveStatement<?>, R extends CompositeRuntimeType>
         extends AbstractCompositeGenerator<S, R> {
-    CompositeSchemaTreeGenerator(final S statement, final AbstractCompositeGenerator<?, ?> parent) {
-        super(statement, parent);
+    CompositeSchemaTreeGenerator(final S statement, final Provenance provenance,
+            final AbstractCompositeGenerator<?, ?> parent) {
+        super(statement, provenance, parent);
     }
 }

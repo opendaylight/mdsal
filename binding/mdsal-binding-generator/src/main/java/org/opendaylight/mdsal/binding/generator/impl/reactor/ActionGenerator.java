@@ -21,8 +21,9 @@ import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
  * Generator corresponding to a {@code action} statement.
  */
 final class ActionGenerator extends AbstractInvokableGenerator<ActionEffectiveStatement, ActionRuntimeType> {
-    ActionGenerator(final ActionEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
-        super(statement, parent);
+    ActionGenerator(final ActionEffectiveStatement statement, final Provenance provenance,
+            final AbstractCompositeGenerator<?, ?> parent) {
+        super(statement, provenance, parent);
     }
 
     @Override

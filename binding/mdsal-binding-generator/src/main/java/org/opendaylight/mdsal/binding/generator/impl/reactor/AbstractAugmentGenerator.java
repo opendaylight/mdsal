@@ -94,7 +94,7 @@ abstract class AbstractAugmentGenerator
     private AbstractCompositeGenerator<?, ?> targetGen;
 
     AbstractAugmentGenerator(final AugmentEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
-        super(statement, parent);
+        super(statement, Provenance.ORIGINAL, parent);
     }
 
     @Override
