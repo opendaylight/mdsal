@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02413ade_dffa9840",
+        "filename": "binding/mdsal-binding-json-codec/pom.xml",
+        "patchSetId": 28
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2023-01-09T14:42:04Z",
+      "side": 1,
+      "message": "11.0.4-SANPSHOT",
+      "revId": "2f77e292ee943e964ad5689de6ad86e92a1abb27",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
