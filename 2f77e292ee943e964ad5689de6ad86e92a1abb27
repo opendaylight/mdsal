@@ -16,6 +16,24 @@
       "message": "11.0.4-SANPSHOT",
       "revId": "2f77e292ee943e964ad5689de6ad86e92a1abb27",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c7a3f93_5815a7ea",
+        "filename": "binding/mdsal-binding-json-codec/pom.xml",
+        "patchSetId": 28
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-01-09T14:53:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "02413ade_dffa9840",
+      "revId": "2f77e292ee943e964ad5689de6ad86e92a1abb27",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
