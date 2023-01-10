@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "54a6f52d_dd35bb80",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2023-01-10T15:57:26Z",
+      "side": 1,
+      "message": "Please try to follow project code style, using `final`, do not mix `var` with pre-Java 17 style, etc.",
+      "revId": "4836ae8eb53fa8a18a62fac2e7e76a9825117fc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "763d7d2d_153825b6",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/ChoiceNodeCodecContext.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2023-01-10T15:57:26Z",
+      "side": 1,
+      "message": "`final var`, everywhere.",
+      "revId": "4836ae8eb53fa8a18a62fac2e7e76a9825117fc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23b0492f_3106cc42",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2023-01-10T15:57:26Z",
+      "side": 1,
+      "message": "Inconsistent style - use `final var` everywhere.",
+      "revId": "4836ae8eb53fa8a18a62fac2e7e76a9825117fc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2d3be9d_4c6e873a",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2023-01-10T15:57:26Z",
+      "side": 1,
+      "message": "final",
+      "revId": "4836ae8eb53fa8a18a62fac2e7e76a9825117fc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab1fea8b_66a0626b",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2023-01-10T15:57:26Z",
+      "side": 1,
+      "message": "Javadoc should look like:\n```\nFirst sentence.\n\n\u003cp\u003e\nSome more details.\n\n@param\n@return",
+      "revId": "4836ae8eb53fa8a18a62fac2e7e76a9825117fc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55d2d38f_00ce1b14",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2023-01-10T15:57:26Z",
+      "side": 1,
+      "message": "final",
+      "revId": "4836ae8eb53fa8a18a62fac2e7e76a9825117fc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9a9519b_95fdaa56",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2023-01-10T15:57:26Z",
+      "side": 1,
+      "message": "final",
+      "revId": "4836ae8eb53fa8a18a62fac2e7e76a9825117fc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d7e3516_ebf95b3a",
+        "filename": "binding/mdsal-binding-runtime-api/src/main/java/org/opendaylight/mdsal/binding/runtime/api/BindingRuntimeTypes.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2023-01-10T15:57:26Z",
+      "side": 1,
+      "message": "This deserves some javadoc.",
+      "revId": "4836ae8eb53fa8a18a62fac2e7e76a9825117fc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
