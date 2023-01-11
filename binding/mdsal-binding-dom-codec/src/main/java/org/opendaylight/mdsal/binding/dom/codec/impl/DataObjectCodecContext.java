@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
@@ -293,6 +294,23 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
         }
 
         return childNonNull(childSupplier, arg, "Argument %s is not valid child of %s", arg, getSchema()).get();
+    }
+
+    @Override
+    public BindingDataObjectCodecTreeNode<?> schemaTreeChild(final QName qname) {
+        final var myType = getType();
+        final var childType = myType.schemaTreeChild(qname);
+        if (childType == null) {
+            return null;
+        }
+
+        final Class<?> childClass;
+        try {
+            childClass = factory().getRuntimeContext().loadClass(childType.javaType());
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+        return streamChild((Class) childClass);
     }
 
     protected final ValueNodeCodecContext getLeafChild(final String name) {
