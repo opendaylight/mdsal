@@ -17,6 +17,7 @@ import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BINDING_
 import static org.opendaylight.mdsal.binding.spec.naming.BindingMapping.BUILDER_SUFFIX
 import static extension org.opendaylight.mdsal.binding.model.ri.BindingTypes.isBitsType
 import static extension org.opendaylight.mdsal.binding.model.ri.BindingTypes.isIdentityType
+import org.opendaylight.mdsal.binding.model.ri.TypeConstants
 
 import java.util.Base64;
 import org.opendaylight.mdsal.binding.model.api.Enumeration
@@ -74,6 +75,9 @@ class UnionTemplate extends ClassTemplate {
                 «IF restrictions !== null»
                     «checkArgument(property, restrictions, actualType, propFieldName)»
                 «ENDIF»
+                «IF propFieldName.equals("_string")»
+                    «genPatternEnforcer(propFieldName)»
+                «ENDIF»
                 «FOR other : finalProperties»
                     «IF property.equals(other)»
                         this.«propFieldName» = «JU_OBJECTS.importedName».requireNonNull(«propFieldName»);
@@ -84,6 +88,14 @@ class UnionTemplate extends ClassTemplate {
             }
         «ENDFOR»
     '''
+
+    def private genPatternEnforcer(String ref) '''
+            «FOR c : super.consts»
+                «IF TypeConstants.PATTERN_CONSTANT_NAME.equals(c.name)»
+                  «CODEHELPERS.importedName».checkPattern(«ref», «Constants.MEMBER_PATTERN_LIST», «Constants.MEMBER_REGEX_LIST»);
+                «ENDIF»
+            «ENDFOR»
+        '''
 
     def typeBuilder() {
         val outerCls = getOuterClassName(type);
