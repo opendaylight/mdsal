@@ -1,0 +1,32 @@
+module mdsal405 {
+  namespace "urn:opendaylight:params:xml:ns:mdsal405";
+  prefix "mdsal405";
+
+  typedef my-union {
+    type union {
+      type uint32;
+      type string {
+        pattern "[+-][0-9]+";
+        length 1..253;
+      }
+    }
+  }
+
+  typedef my-union2 {
+    type union {
+      type uint32;
+      type string {
+        pattern "[+-][0-9]+";
+      }
+    }
+  }
+
+  typedef union-typedef {
+    type union {
+      type string {
+        pattern "[a-g]";
+      }
+      type int16;
+    }
+  }
+}
