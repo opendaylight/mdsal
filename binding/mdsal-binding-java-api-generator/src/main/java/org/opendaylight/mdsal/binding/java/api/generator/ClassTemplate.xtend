@@ -31,6 +31,7 @@ import com.google.common.base.Preconditions
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Lists
+import com.google.common.primitives.Primitives
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import java.util.ArrayList
 import java.util.Base64;
@@ -435,7 +436,7 @@ class ClassTemplate extends BaseTemplate {
             «val propType = prop.returnType»
             «IF !(INSTANCE_IDENTIFIER.identifier.equals(propType.identifier))»
             public static «genTO.name» getDefaultInstance(final String defaultValue) {
-                «IF allProperties.size > 1»
+                «IF prop.returnType.equals(Types.primitiveBooleanType())»
                     «bitsArgs»
                 «ELSEIF VALUEOF_TYPES.contains(propType)»
                     return new «genTO.name»(«propType.importedName».valueOf(defaultValue));

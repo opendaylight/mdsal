@@ -41,6 +41,12 @@ final class FileSearchUtil {
         assertFileContains(fileContent, String.join(LS, lines));
     }
 
+    static void assertFileContainsLines(final String fileContent, final String ... lines) {
+        for (final String line : lines) {
+            assertFileContains(fileContent, line);
+        }
+    }
+
     static Map<String, File> getFiles(final File path) {
         final Map<String, File> ret = new HashMap<>();
         getFiles(path, ret);
