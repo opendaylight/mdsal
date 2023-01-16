@@ -1,4 +1,5 @@
 module opendaylight-default-value-test {
+    yang-version 1.1;
     namespace "urn:opendaylight:params:xml:ns:default:value:test";
     prefix "def-val-test";
 
@@ -244,6 +245,71 @@ module opendaylight-default-value-test {
             }
         }
         default "second";
+    }
+
+    typedef bgp-set-med-type3 {
+        type string {
+            pattern "[+-][0-9]+";
+            length 1..253;
+        }
+    }
+
+    typedef bgp-set-med-type2 {
+        type union {
+            type uint32;
+            type string {
+                pattern "[+-][0-9]+";
+                length 1..253;
+            }
+            type enumeration {
+                enum IGP {
+                    description "set the MED value to the IGP cost toward the
+                                 next hop for the route";
+                }
+            }
+        }
+        description
+        "Type definition for specifying how the BGP MED can
+         be set in BGP policy actions. The three choices are to set
+         the MED directly, increment/decrement using +/- notation,
+         and setting it to the IGP cost (predefined value).";
+    }
+
+
+    typedef bgp-set-med-type {
+        type union {
+            type uint32;
+            type string {
+                pattern "[+-][0-9]+";
+            }
+            type enumeration {
+                enum IGP {
+                    description "set the MED value to the IGP cost toward the
+                                 next hop for the route";
+                }
+            }
+        }
+        description
+        "Type definition for specifying how the BGP MED can
+         be set in BGP policy actions. The three choices are to set
+         the MED directly, increment/decrement using +/- notation,
+         and setting it to the IGP cost (predefined value).";
+    }
+
+    typedef union-typedef {
+        type union {
+            type string {
+                pattern "[a-g]";
+            }
+            type int16;
+        }
+    }
+
+    typedef union-typedef2 {
+        type union {
+            type string;
+            type int16;
+        }
     }
 
     typedef my-bits {
