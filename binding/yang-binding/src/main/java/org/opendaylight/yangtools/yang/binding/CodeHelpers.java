@@ -182,8 +182,10 @@ public final class CodeHelpers {
         if (!pattern.matcher(value).matches()) {
             final String match = RegexPatterns.isNegatedPattern(pattern) ? "matches forbidden"
                 : "does not match required";
-            throw new IllegalArgumentException("Supplied value \"" + value + "\" " + match + " pattern \""
+            if (!value.isEmpty()) {
+                throw new IllegalArgumentException("Supplied value \"" + value + "\" " + match + " pattern \""
                     + regex + "\"");
+            }
         }
     }
 

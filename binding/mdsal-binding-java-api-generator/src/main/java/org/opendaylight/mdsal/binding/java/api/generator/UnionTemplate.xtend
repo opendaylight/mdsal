@@ -22,6 +22,7 @@ import java.util.Base64;
 import org.opendaylight.mdsal.binding.model.api.Enumeration
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
 import org.opendaylight.mdsal.binding.model.api.Type
+import org.opendaylight.mdsal.binding.model.ri.TypeConstants
 
 /**
  * Template for generating JAVA class.
@@ -74,6 +75,9 @@ class UnionTemplate extends ClassTemplate {
                 «IF restrictions !== null»
                     «checkArgument(property, restrictions, actualType, propFieldName)»
                 «ENDIF»
+                «IF propFieldName.equals("_string")»
+                    «genPatternEnforcer(propFieldName)»
+                «ENDIF»
                 «FOR other : finalProperties»
                     «IF property.equals(other)»
                         this.«propFieldName» = «JU_OBJECTS.importedName».requireNonNull(«propFieldName»);
@@ -82,6 +86,14 @@ class UnionTemplate extends ClassTemplate {
                     «ENDIF»
                 «ENDFOR»
             }
+        «ENDFOR»
+    '''
+
+    def private genPatternEnforcer(String ref) '''
+        «FOR c : super.consts»
+            «IF TypeConstants.PATTERN_CONSTANT_NAME.equals(c.name)»
+                «CODEHELPERS.importedName».checkPattern(«ref», «Constants.MEMBER_PATTERN_LIST», «Constants.MEMBER_REGEX_LIST»);
+            «ENDIF»
         «ENDFOR»
     '''
 
