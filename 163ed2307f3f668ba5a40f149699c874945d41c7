@@ -22,6 +22,30 @@
       },
       "revId": "163ed2307f3f668ba5a40f149699c874945d41c7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "87409b6e_1c7e3c00",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-01-16T10:45:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6c896015_8f7aec23",
+      "range": {
+        "startLine": 505,
+        "startChar": 15,
+        "endLine": 505,
+        "endChar": 54
+      },
+      "revId": "163ed2307f3f668ba5a40f149699c874945d41c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }

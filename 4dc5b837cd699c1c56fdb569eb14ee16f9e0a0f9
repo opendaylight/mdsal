@@ -24,6 +24,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ce9f4be7_fd9598e4",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 513,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-01-16T10:45:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "72e0f63b_3dc30cbf",
+      "range": {
+        "startLine": 511,
+        "startChar": 12,
+        "endLine": 513,
+        "endChar": 106
+      },
+      "revId": "4dc5b837cd699c1c56fdb569eb14ee16f9e0a0f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7bf75b89_7a99509f",
@@ -47,6 +71,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "618f63d9_d38dfe98",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-01-16T10:45:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7bf75b89_7a99509f",
+      "range": {
+        "startLine": 514,
+        "startChar": 41,
+        "endLine": 514,
+        "endChar": 70
+      },
+      "revId": "4dc5b837cd699c1c56fdb569eb14ee16f9e0a0f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "82a46dfa_f100731f",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-12-08T21:21:45Z",
       "side": 1,
       "message": "here is where we need help from \u0027previous\u0027: we need a schemaTreeChild(QName) method, so that \u0027previous\u0027 does the right thing in terms of addressing  -- which is different from yangPathArgumentChild(), as it does *NOT* skip \u0027case\u0027 statements.",
+      "range": {
+        "startLine": 515,
+        "startChar": 55,
+        "endLine": 515,
+        "endChar": 76
+      },
+      "revId": "4dc5b837cd699c1c56fdb569eb14ee16f9e0a0f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0848f59f_2d53812a",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 515,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-01-16T10:45:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "82a46dfa_f100731f",
       "range": {
         "startLine": 515,
         "startChar": 55,
