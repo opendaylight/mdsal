@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9b17b40_b8496ed0",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/yang-data-demo.yang",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-17T21:04:45Z",
+      "side": 1,
+      "message": "So this generates:\n\npublic interface YangDataWithContainer\n    extends\n    DataRoot,\n    DataObject,\n    Augmentable\u003cYangDataWithContainer\u003e\n{\n\nWhen actually we want to generate YangData",
+      "range": {
+        "startLine": 12,
+        "startChar": 15,
+        "endLine": 12,
+        "endChar": 39
+      },
+      "revId": "9dab4048b11db123c9bd235efea469e486292c6f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
