@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "622c56fb_198649fe",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/YangDataGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-17T21:10:54Z",
+      "side": 1,
+      "message": "this does not work: rc:yang-data argument is a \u0027template name\u0027 (see the description of the extension)\n\nthere are no guaratees the name conforms to localName of a QName, so this call is invalid.",
+      "range": {
+        "startLine": 34,
+        "startChar": 8,
+        "endLine": 35,
+        "endChar": 92
+      },
+      "revId": "c826a84a16e3e0a60398f1e1d7e1e13461187777",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ba00fe1d_e5656f80",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/YangDataGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-17T21:10:54Z",
+      "side": 1,
+      "message": "yeah, this should not be overridden -- default behavior takes care of that",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 5
+      },
+      "revId": "c826a84a16e3e0a60398f1e1d7e1e13461187777",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e0dcf6c_e3ab92f7",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/YangDataGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-17T21:10:54Z",
+      "side": 1,
+      "message": "nope, the stuff we generate here is not Augmentable",
+      "range": {
+        "startLine": 70,
+        "startChar": 8,
+        "endLine": 70,
+        "endChar": 66
+      },
+      "revId": "c826a84a16e3e0a60398f1e1d7e1e13461187777",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
