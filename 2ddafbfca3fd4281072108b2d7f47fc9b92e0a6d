@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9042d2a_75b425ea",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/YangDataGenerator.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-17T22:48:42Z",
+      "side": 1,
+      "message": "this needs to be addressed, as exemplified by \u0027#\u0027 being part of the name",
+      "range": {
+        "startLine": 60,
+        "startChar": 18,
+        "endLine": 60,
+        "endChar": 64
+      },
+      "revId": "2ddafbfca3fd4281072108b2d7f47fc9b92e0a6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
