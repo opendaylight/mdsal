@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "be054f15_581746cb",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ClassNamingStrategy.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-01-17T13:09:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6359dd99_bd24202c",
+      "revId": "590b20970a496f25ad49e0062e23f6dc099546f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dce29720_78debe90",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-01-10T15:39:54Z",
       "side": 1,
       "message": "One empty line is expected here.",
+      "revId": "590b20970a496f25ad49e0062e23f6dc099546f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5f795234_c5d5b1cf",
+        "filename": "binding/mdsal-binding-spec-util/src/main/java/org/opendaylight/mdsal/binding/spec/naming/BindingMapping.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-01-17T13:09:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dce29720_78debe90",
       "revId": "590b20970a496f25ad49e0062e23f6dc099546f4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -52,6 +88,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "05265921_0b04709e",
+        "filename": "binding/mdsal-binding-spec-util/src/main/java/org/opendaylight/mdsal/binding/spec/naming/BindingMapping.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-01-17T13:09:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "727ce4cc_f9afd772",
+      "revId": "590b20970a496f25ad49e0062e23f6dc099546f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c99106ad_7cf142ee",
@@ -65,6 +119,24 @@
       "writtenOn": "2023-01-10T15:39:54Z",
       "side": 1,
       "message": "This is probably not intentional change - revert it back.",
+      "revId": "590b20970a496f25ad49e0062e23f6dc099546f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6bcc189_b983a39a",
+        "filename": "yanglib/mdsal-yanglib-rfc8525/src/main/java/org/opendaylight/mdsal/yanglib/rfc8525/MountPointContextFactoryImpl.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-01-17T13:09:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c99106ad_7cf142ee",
       "revId": "590b20970a496f25ad49e0062e23f6dc099546f4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
