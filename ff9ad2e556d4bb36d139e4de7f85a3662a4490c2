@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "79776bd1_c2533202",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/DOMQueryPredicate.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-01-19T11:31:10Z",
+      "side": 1,
+      "message": "It\u0027s used to determine which Match we are desalinizing.",
+      "parentUuid": "ebfc100f_fee278d4",
+      "revId": "ff9ad2e556d4bb36d139e4de7f85a3662a4490c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "eeb7706e_577d5088",
         "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/DOMQueryPredicate.java",
         "patchSetId": 3
@@ -48,6 +66,24 @@
       "writtenOn": "2023-01-11T09:03:17Z",
       "side": 1,
       "message": "We do not need to override methods in abstract class.",
+      "revId": "ff9ad2e556d4bb36d139e4de7f85a3662a4490c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2010f1f8_c49c913a",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/query/DOMQueryPredicate.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-01-19T11:31:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eeb7706e_577d5088",
       "revId": "ff9ad2e556d4bb36d139e4de7f85a3662a4490c2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
