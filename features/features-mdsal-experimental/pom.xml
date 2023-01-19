@@ -18,7 +18,7 @@
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>features-mdsal-experimental</artifactId>
-    <version>11.0.4-SNAPSHOT</version>
+    <version>11.0.4</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Experimental Features</name>
     <description>MD-SAL experimental feature repository</description>
