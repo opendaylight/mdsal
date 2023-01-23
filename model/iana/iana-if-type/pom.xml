@@ -12,14 +12,14 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>11.0.4-SNAPSHOT</version>
+        <version>11.0.5-SNAPSHOT</version>
         <relativePath>../../../binding/binding-parent</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
     <artifactId>iana-if-type</artifactId>
-    <version>11.0.4-SNAPSHOT</version>
+    <version>11.0.5-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>${project.artifactId}</name>
