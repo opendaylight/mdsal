@@ -22,6 +22,30 @@
       },
       "revId": "2ddafbfca3fd4281072108b2d7f47fc9b92e0a6d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d894ff22_c7b0b89a",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/YangDataGenerator.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-01-23T13:33:19Z",
+      "side": 1,
+      "message": "yangDataNamingStrategy provided",
+      "parentUuid": "b9042d2a_75b425ea",
+      "range": {
+        "startLine": 60,
+        "startChar": 18,
+        "endLine": 60,
+        "endChar": 64
+      },
+      "revId": "2ddafbfca3fd4281072108b2d7f47fc9b92e0a6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
