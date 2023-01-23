@@ -7,21 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.runtime.osgi.impl;
 
-import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Set;
 import org.checkerframework.checker.lock.qual.GuardedBy;
-import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
-import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
-import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.dom.schema.osgi.OSGiModuleInfoSnapshot;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -31,138 +24,57 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Beta
 @Component(immediate = true)
 public final class OSGiBindingRuntime {
-    // TODO: can we get rid of this complexity?
-    private abstract static class AbstractInstances {
-
-        abstract void add(OSGiModuleInfoSnapshot snapshot);
-
-        abstract void remove(OSGiModuleInfoSnapshot snapshot);
-
-        abstract @NonNull AbstractInstances toActive(BindingRuntimeGenerator generator,
-            ComponentFactory<OSGiBindingRuntimeContextImpl> factory);
-
-        abstract @NonNull AbstractInstances toInactive();
-    }
-
-    private static final class InactiveInstances extends AbstractInstances {
-        private final Set<OSGiModuleInfoSnapshot> instances = Collections.newSetFromMap(new IdentityHashMap<>());
-
-        InactiveInstances() {
-
-        }
-
-        InactiveInstances(final Set<OSGiModuleInfoSnapshot> keySet) {
-            instances.addAll(keySet);
-        }
-
-        @Override
-        void add(final OSGiModuleInfoSnapshot snapshot) {
-            verify(instances.add(snapshot), "Duplicate instance %s?!", snapshot);
-        }
-
-        @Override
-        void remove(final OSGiModuleInfoSnapshot snapshot) {
-            instances.remove(snapshot);
-        }
-
-        @Override
-        AbstractInstances toActive(final BindingRuntimeGenerator generator,
-                final ComponentFactory<OSGiBindingRuntimeContextImpl> factory) {
-            final ActiveInstances active = new ActiveInstances(generator, factory);
-            instances.stream()
-                .sorted(Comparator.comparing(OSGiModuleInfoSnapshot::getGeneration).reversed())
-                .forEach(active::add);
-            return active;
-        }
-
-        @Override
-        AbstractInstances toInactive() {
-            throw new IllegalStateException("Attempted to deactivate inactive instances");
-        }
-    }
-
-    private static final class ActiveInstances extends AbstractInstances {
-        private final Map<OSGiModuleInfoSnapshot, ComponentInstance<OSGiBindingRuntimeContextImpl>> instances =
-            new IdentityHashMap<>();
-        private final BindingRuntimeGenerator generator;
-        private final ComponentFactory<OSGiBindingRuntimeContextImpl> factory;
-
-        ActiveInstances(final BindingRuntimeGenerator generator,
-                final ComponentFactory<OSGiBindingRuntimeContextImpl> factory) {
-            this.generator = requireNonNull(generator);
-            this.factory = requireNonNull(factory);
-        }
-
-        @Override
-        void add(final OSGiModuleInfoSnapshot snapshot) {
-            final ModuleInfoSnapshot context = snapshot.getService();
-            final BindingRuntimeTypes types = generator.generateTypeMapping(context.getEffectiveModelContext());
-
-            instances.put(snapshot, factory.newInstance(OSGiBindingRuntimeContextImpl.props(
-                snapshot.getGeneration(), snapshot.getServiceRanking(),
-                new DefaultBindingRuntimeContext(types, context))));
-        }
-
-        @Override
-        void remove(final OSGiModuleInfoSnapshot snapshot) {
-            final var instance = instances.remove(snapshot);
-            if (instance != null) {
-                instance.dispose();
-            } else {
-                LOG.warn("Instance for generation {} not found", snapshot.getGeneration());
-            }
-        }
-
-        @Override
-        AbstractInstances toActive(final BindingRuntimeGenerator ignoreGenerator,
-                final ComponentFactory<OSGiBindingRuntimeContextImpl> ignoreFactory) {
-            throw new IllegalStateException("Attempted to activate active instances");
-        }
-
-        @Override
-        AbstractInstances toInactive() {
-            instances.values().forEach(ComponentInstance::dispose);
-            return new InactiveInstances(instances.keySet());
-        }
-    }
-
     private static final Logger LOG = LoggerFactory.getLogger(OSGiBindingRuntime.class);
 
-    @Reference
-    BindingRuntimeGenerator generator = null;
-
-    @Reference(target = "(component.factory=" + OSGiBindingRuntimeContextImpl.FACTORY_NAME + ")")
-    ComponentFactory<OSGiBindingRuntimeContextImpl> contextFactory = null;
-
     @GuardedBy("this")
-    private AbstractInstances instances = new InactiveInstances();
+    private final Map<OSGiModuleInfoSnapshot, ComponentInstance<OSGiBindingRuntimeContextImpl>> instances =
+        new IdentityHashMap<>();
+    private final ComponentFactory<OSGiBindingRuntimeContextImpl> contextFactory;
+    private final BindingRuntimeGenerator generator;
 
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+    @Activate
+    public OSGiBindingRuntime(@Reference final BindingRuntimeGenerator generator,
+            @Reference(target = "(component.factory=" + OSGiBindingRuntimeContextImpl.FACTORY_NAME + ")")
+            final ComponentFactory<OSGiBindingRuntimeContextImpl> contextFactory) {
+        this.generator = requireNonNull(generator);
+        this.contextFactory = requireNonNull(contextFactory);
+        LOG.info("Binding Runtime activated");
+    }
+
+    @Reference(
+        cardinality = ReferenceCardinality.MULTIPLE,
+        policy = ReferencePolicy.DYNAMIC,
+        policyOption = ReferencePolicyOption.GREEDY)
     synchronized void addModuleInfoSnapshot(final OSGiModuleInfoSnapshot snapshot) {
-        instances.add(snapshot);
+        final var service = snapshot.getService();
+        final var types = generator.generateTypeMapping(service.getEffectiveModelContext());
+
+        instances.put(snapshot, contextFactory.newInstance(OSGiBindingRuntimeContextImpl.props(
+            snapshot.getGeneration(), snapshot.getServiceRanking(),
+            new DefaultBindingRuntimeContext(types, service))));
+        LOG.info("Binding Runtime updated");
     }
 
     synchronized void removeModuleInfoSnapshot(final OSGiModuleInfoSnapshot snapshot) {
-        instances.remove(snapshot);
-    }
-
-    @Activate
-    synchronized void activate() {
-        LOG.info("Binding Runtime activating");
-        instances = instances.toActive(generator, contextFactory);
-        LOG.info("Binding Runtime activated");
+        final var instance = instances.remove(snapshot);
+        if (instance != null) {
+            instance.dispose();
+        } else {
+            LOG.warn("Instance for generation {} not found", snapshot.getGeneration());
+        }
     }
 
     @Deactivate
     synchronized void deactivate() {
         LOG.info("Binding Runtime deactivating");
-        instances = instances.toInactive();
+        instances.values().forEach(ComponentInstance::dispose);
         LOG.info("Binding Runtime deactivated");
     }
 }
