@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12beb615_0359aa57",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-24T20:33:14Z",
+      "side": 1,
+      "message": "Also needs a rebase",
+      "revId": "376ffa1561cc76ebd72114ac630f51e579e6ad25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae2e3b45_6835df89",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/YangDataGenerator.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-24T20:33:14Z",
+      "side": 1,
+      "message": "also needs to add default implementedInterface() method",
+      "range": {
+        "startLine": 70,
+        "startChar": 35,
+        "endLine": 70,
+        "endChar": 42
+      },
+      "revId": "376ffa1561cc76ebd72114ac630f51e579e6ad25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "883dfa39_1a4f29dd",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/ietf-models/ietf-restconf.yang",
+        "patchSetId": 14
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-24T20:33:14Z",
+      "side": 1,
+      "message": "minimize this module to just the extension",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 22
+      },
+      "revId": "376ffa1561cc76ebd72114ac630f51e579e6ad25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae5daf2b_219beac6",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/CompilationTest.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 818,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-24T20:33:14Z",
+      "side": 1,
+      "message": "we are missing builders and builder-based implementation",
+      "range": {
+        "startLine": 818,
+        "startChar": 17,
+        "endLine": 818,
+        "endChar": 38
+      },
+      "revId": "376ffa1561cc76ebd72114ac630f51e579e6ad25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
