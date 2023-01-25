@@ -300,7 +300,7 @@ public class InstanceIdentifier<T extends DataObject>
 
     /**
      * Check whether this instance identifier contains the other identifier after wildcard expansion. This is similar
-     * to {@link #contains(InstanceIdentifier)}, with the exception that a wildcards are assumed to match the their
+     * to {@link #contains(InstanceIdentifier)}, with the exception that a wildcards are assumed to match to their
      * non-wildcarded PathArgument counterpart.
      *
      * @param other Identifier which should be checked for inclusion.
@@ -891,6 +891,8 @@ public class InstanceIdentifier<T extends DataObject>
          * @throws NullPointerException if {@code container} is null
          */
         <N extends ChildOf<? super T>> @NonNull InstanceIdentifierBuilder<N> child(Class<N> container);
+
+        <N extends ChildOf<? super T> & Identifiable<? extends Identifier<N>>> InstanceIdentifierBuilder<N> wildcardChild(Class<N> container);
 
         /**
          * Append the specified container as a child of the current InstanceIdentifier referenced by the builder. This

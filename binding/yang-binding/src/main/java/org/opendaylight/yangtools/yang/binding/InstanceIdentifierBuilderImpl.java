@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.util.HashCodeBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
@@ -19,7 +20,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 
 final class InstanceIdentifierBuilderImpl<T extends DataObject> implements InstanceIdentifierBuilder<T> {
-    private final ImmutableList.Builder<PathArgument> pathBuilder = ImmutableList.builder();
+    private final ImmutableList.Builder<PathArgument> pathBuilder;
     private final HashCodeBuilder<PathArgument> hashBuilder;
     private final Iterable<? extends PathArgument> basePath;
     private boolean wildcard = false;
@@ -28,6 +29,7 @@ final class InstanceIdentifierBuilderImpl<T extends DataObject> implements Insta
     InstanceIdentifierBuilderImpl() {
         this.hashBuilder = new HashCodeBuilder<>();
         this.basePath = null;
+        this.pathBuilder = ImmutableList.builder();
     }
 
     InstanceIdentifierBuilderImpl(final PathArgument item, final Iterable<? extends PathArgument> pathArguments,
@@ -36,6 +38,20 @@ final class InstanceIdentifierBuilderImpl<T extends DataObject> implements Insta
         this.basePath = pathArguments;
         this.wildcard = wildcard;
         this.arg = item;
+        this.pathBuilder = ImmutableList.builder();
+    }
+
+    InstanceIdentifierBuilderImpl(final PathArgument item, final Iterable<? extends PathArgument> pathArguments,
+            final int hash, final boolean wildcard, final ImmutableList.@Nullable Builder<PathArgument> pathBuilder) {
+        this.hashBuilder = new HashCodeBuilder<>(hash);
+        this.basePath = pathArguments;
+        this.wildcard = wildcard;
+        this.arg = item;
+        if (pathBuilder != null) {
+            this.pathBuilder = pathBuilder;
+        } else {
+            this.pathBuilder = ImmutableList.builder();
+        }
     }
 
     @Override
@@ -59,8 +75,22 @@ final class InstanceIdentifierBuilderImpl<T extends DataObject> implements Insta
     }
 
     @Override
-    public <N extends ChildOf<? super T>> InstanceIdentifierBuilderImpl<N> child(final Class<N> container) {
+    public <N extends ChildOf<? super T>> @NonNull InstanceIdentifierBuilderImpl<N> child(final Class<N> container) {
+        if (Identifiable.class.isAssignableFrom(container)) {
+            throw new IllegalArgumentException("Container must not be Identifiable. Use wildcardedChild() method instead");
+        }
         return addNode(container);
+    }
+
+    public <N extends Identifiable<? extends Identifier<N>> & ChildOf<? super T>> WildcardedInstanceIdentifierBuilder<N> Child(
+            final Class<N> container) {
+        return null;
+    }
+
+    @Override
+    public <N extends ChildOf<? super T> & Identifiable<? extends Identifier<N>>> WildcardedInstanceIdentifierBuilder<N> wildcardChild(
+            final Class<N> container) {
+        return null;
     }
 
     @Override
