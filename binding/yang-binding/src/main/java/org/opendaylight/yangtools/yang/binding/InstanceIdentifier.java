@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.base.Preconditions;
 import com.google.common.base.VerifyException;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -30,6 +31,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.util.HashCodeBuilder;
+import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier.KeyedInstanceIdentifierBuilder;
+import org.opendaylight.yangtools.yang.binding.WildcardedInstanceIdentifier.WildcardedInstanceIdentifierBuilder;
 
 /**
  * This instance identifier uniquely identifies a specific DataObject in the data tree modeled by YANG.
@@ -123,8 +126,8 @@ public class InstanceIdentifier<T extends DataObject>
      *
      * @return true if any of the path arguments has a null key.
      */
-    public final boolean isWildcarded() {
-        return wildcarded;
+    public boolean isWildcarded() {
+        return false;
     }
 
     @Override
@@ -300,7 +303,7 @@ public class InstanceIdentifier<T extends DataObject>
 
     /**
      * Check whether this instance identifier contains the other identifier after wildcard expansion. This is similar
-     * to {@link #contains(InstanceIdentifier)}, with the exception that a wildcards are assumed to match the their
+     * to {@link #contains(InstanceIdentifier)}, with the exception that a wildcards are assumed to match to their
      * non-wildcarded PathArgument counterpart.
      *
      * @param other Identifier which should be checked for inclusion.
@@ -426,7 +429,7 @@ public class InstanceIdentifier<T extends DataObject>
      */
     // FIXME: rename this method to 'toBuilder()'
     public @NonNull InstanceIdentifierBuilder<T> builder() {
-        return new InstanceIdentifierBuilderImpl<>(Item.of(targetType), pathArguments, hash, isWildcarded());
+        return new InstanceIdentifierBuilderImpl<>(Item.of(targetType), pathArguments, hash);
     }
 
     /**
@@ -439,7 +442,9 @@ public class InstanceIdentifier<T extends DataObject>
      */
     public static <T extends ChildOf<? extends DataRoot>> @NonNull InstanceIdentifierBuilder<T> builder(
             final Class<T> container) {
-        return new InstanceIdentifierBuilderImpl<T>().addWildNode(Item.of(container));
+        Preconditions.checkArgument(!Identifiable.class.isAssignableFrom(container),
+                "Must not be Identifiable. Use wildcardBuilder() method instead");
+        return new InstanceIdentifierBuilderImpl<T>().addNode(Item.of(container));
     }
 
     /**
@@ -455,7 +460,9 @@ public class InstanceIdentifier<T extends DataObject>
      */
     public static <C extends ChoiceIn<? extends DataRoot> & DataObject, T extends ChildOf<? super C>>
             @NonNull InstanceIdentifierBuilder<T> builder(final Class<C> caze, final Class<T> container) {
-        return new InstanceIdentifierBuilderImpl<T>().addWildNode(Item.of(caze, container));
+        Preconditions.checkArgument(!Identifiable.class.isAssignableFrom(container),
+                "Must not be Identifiable. Use wildcardBuilder() method instead");
+        return new InstanceIdentifierBuilderImpl<T>().addNode(Item.of(caze, container));
     }
 
     /**
@@ -470,9 +477,11 @@ public class InstanceIdentifier<T extends DataObject>
      * @throws NullPointerException if any argument is null
      */
     public static <N extends Identifiable<K> & ChildOf<? extends DataRoot>,
-            K extends Identifier<N>> @NonNull InstanceIdentifierBuilder<N> builder(final Class<N> listItem,
+            K extends Identifier<N>> @NonNull KeyedInstanceIdentifierBuilder<N,K> builder(final Class<N> listItem,
                     final K listKey) {
-        return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(listItem, listKey));
+        final KeyedInstanceIdentifierBuilderImpl<N,K> builder = new KeyedInstanceIdentifierBuilderImpl<>();
+        builder.addNode(IdentifiableItem.of(listItem, listKey));
+        return builder;
     }
 
     /**
@@ -490,15 +499,34 @@ public class InstanceIdentifier<T extends DataObject>
      */
     public static <C extends ChoiceIn<? extends DataRoot> & DataObject,
             N extends Identifiable<K> & ChildOf<? super C>, K extends Identifier<N>>
-            @NonNull InstanceIdentifierBuilder<N> builder(final Class<C> caze, final Class<N> listItem,
+            @NonNull KeyedInstanceIdentifierBuilder<N,K> builder(final Class<C> caze, final Class<N> listItem,
                     final K listKey) {
-        return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(caze, listItem, listKey));
+        final KeyedInstanceIdentifierBuilderImpl<N,K> builder = new KeyedInstanceIdentifierBuilderImpl<>();
+        builder.addNode(IdentifiableItem.of(caze, listItem, listKey));
+        return builder;
+    }
+
+    public static <T extends ChildOf<? extends DataRoot> & Identifiable<?>>
+        @NonNull WildcardedInstanceIdentifierBuilder<T> wildcardBuilder(final Class<T> container) {
+        final WildcardedInstanceIdentifierBuilderImpl<T> builder = new WildcardedInstanceIdentifierBuilderImpl<>();
+        builder.addNode(Item.of(container));
+        return builder;
+    }
+
+    public static <C extends ChoiceIn<? extends DataRoot> & DataObject, T extends ChildOf<? super C>>
+        @NonNull WildcardedInstanceIdentifierBuilder<T> wilcardBuilder(final Class<C> caze, final Class<T> container) {
+        final WildcardedInstanceIdentifierBuilderImpl<T> builder = new WildcardedInstanceIdentifierBuilderImpl<>();
+        builder.addNode(Item.of(caze, container));
+        return builder;
     }
 
     public static <R extends DataRoot & DataObject, T extends ChildOf<? super R>>
             @NonNull InstanceIdentifierBuilder<T> builderOfInherited(final Class<R> root, final Class<T> container) {
         // FIXME: we are losing root identity, hence namespaces may not work correctly
-        return new InstanceIdentifierBuilderImpl<T>().addWildNode(Item.of(container));
+        Preconditions.checkArgument(!Identifiable.class.isAssignableFrom(container),
+                "Must not be Identifiable. Use wildcardBuilderOfInherited() method instead");
+
+        return new InstanceIdentifierBuilderImpl<T>().addNode(Item.of(container));
     }
 
     public static <R extends DataRoot & DataObject, C extends ChoiceIn<? super R> & DataObject,
@@ -506,12 +534,14 @@ public class InstanceIdentifier<T extends DataObject>
             @NonNull InstanceIdentifierBuilder<T> builderOfInherited(final Class<R> root,
                 final Class<C> caze, final Class<T> container) {
         // FIXME: we are losing root identity, hence namespaces may not work correctly
-        return new InstanceIdentifierBuilderImpl<T>().addWildNode(Item.of(caze, container));
+        Preconditions.checkArgument(!Identifiable.class.isAssignableFrom(container),
+                "Must not be Identifiable. Use wildcardBuilderOfInherited() method instead");
+        return new InstanceIdentifierBuilderImpl<T>().addNode(Item.of(caze, container));
     }
 
     public static <R extends DataRoot & DataObject, N extends Identifiable<K> & ChildOf<? super R>,
             K extends Identifier<N>>
-            @NonNull InstanceIdentifierBuilder<N> builderOfInherited(final Class<R> root,
+            @NonNull KeyedInstanceIdentifierBuilder<N,K> builderOfInherited(final Class<R> root,
                 final Class<N> listItem, final K listKey) {
         // FIXME: we are losing root identity, hence namespaces may not work correctly
         return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(listItem, listKey));
@@ -519,10 +549,26 @@ public class InstanceIdentifier<T extends DataObject>
 
     public static <R extends DataRoot & DataObject, C extends ChoiceIn<? super R> & DataObject,
             N extends Identifiable<K> & ChildOf<? super C>, K extends Identifier<N>>
-            @NonNull InstanceIdentifierBuilder<N> builderOfInherited(final Class<R> root,
+            @NonNull KeyedInstanceIdentifierBuilder<N,K> builderOfInherited(final Class<R> root,
                 final Class<C> caze, final Class<N> listItem, final K listKey) {
         // FIXME: we are losing root identity, hence namespaces may not work correctly
         return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(caze, listItem, listKey));
+    }
+
+    public static <R extends DataRoot & DataObject, T extends ChildOf<? super R>>
+    @NonNull WildcardedInstanceIdentifierBuilder<T> wildcardBuilderOfInherited(final Class<R> root, final Class<T> container) {
+        // FIXME: we are losing root identity, hence namespaces may not work correctly
+        return new InstanceIdentifierBuilderImpl<T>().addWildNode(Item.of(container));
+    }
+
+    public static <R extends DataRoot & DataObject, C extends ChoiceIn<? super R> & DataObject,
+            T extends ChildOf<? super C>>
+    @NonNull WildcardedInstanceIdentifierBuilder<T> wildcardBuilderOfInherited(final Class<R> root,
+            final Class<C> caze, final Class<T> container) {
+        // FIXME: we are losing root identity, hence namespaces may not work correctly
+        Preconditions.checkArgument(!Identifiable.class.isAssignableFrom(container),
+                "Must not be Identifiable. Use wildcardBuilderOfInherited() method instead");
+        return new InstanceIdentifierBuilderImpl<T>().addWildNode(Item.of(caze, container));
     }
 
     /**
@@ -626,8 +672,8 @@ public class InstanceIdentifier<T extends DataObject>
             final Iterable<PathArgument> pathArguments, final int hash, boolean wildcarded) {
         if (Identifiable.class.isAssignableFrom(arg.getType()) && !wildcarded) {
             Identifier<?> key = null;
-            if (arg instanceof IdentifiableItem) {
-                key = ((IdentifiableItem<?, ?>)arg).getKey();
+            if (arg instanceof IdentifiableItem identifiableItem) {
+                key = identifiableItem.getKey();
             } else {
                 wildcarded = true;
             }
@@ -920,7 +966,7 @@ public class InstanceIdentifier<T extends DataObject>
          * @throws NullPointerException if any argument is null
          */
         <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
-                @NonNull InstanceIdentifierBuilder<N> child(Class<@NonNull N> listItem, K listKey);
+                @NonNull KeyedInstanceIdentifierBuilder<N,K> child(Class<@NonNull N> listItem, K listKey);
 
         /**
          * Append the specified listItem as a child of the current InstanceIdentifier referenced by the builder. This
@@ -937,8 +983,14 @@ public class InstanceIdentifier<T extends DataObject>
          * @throws NullPointerException if any argument is null
          */
         <C extends ChoiceIn<? super T> & DataObject, K extends Identifier<N>,
-                N extends Identifiable<K> & ChildOf<? super C>> @NonNull InstanceIdentifierBuilder<N> child(
+                N extends Identifiable<K> & ChildOf<? super C>> @NonNull KeyedInstanceIdentifierBuilder<N,K> child(
                         Class<C> caze, Class<N> listItem, K listKey);
+
+        <N extends ChildOf<? super T> & Identifiable<?>> WildcardedInstanceIdentifierBuilder<N> wildcardChild(
+                Class<N> container);
+
+        <C extends ChoiceIn<? super T> & DataObject & Identifiable<?>, N extends ChildOf<? super C>>
+            @NonNull WildcardedInstanceIdentifierBuilder<N> wildcardChild(Class<C> caze, Class<N> container);
 
         /**
          * Build an identifier which refers to a specific augmentation of the current InstanceIdentifier referenced by
@@ -951,6 +1003,9 @@ public class InstanceIdentifier<T extends DataObject>
          */
         <N extends DataObject & Augmentation<? super T>> @NonNull InstanceIdentifierBuilder<N> augmentation(
                 Class<N> container);
+
+        <N extends DataObject & Augmentation<? super T> & Identifiable<?>> @NonNull
+                WildcardedInstanceIdentifierBuilder<N> wildcardAugmentation(Class<N> container);
 
         /**
          * Build the instance identifier.

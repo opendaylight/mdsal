@@ -1,0 +1,30 @@
+module mdsal798 {
+yang-version 1;
+namespace "mdsal798";
+prefix "mdsal798";
+
+  list list1 {
+    key attr-str;
+    leaf attr-str {
+      type string;
+    }
+    list list1-1 {
+      key attr-int;
+      leaf attr-int {
+        type int32;
+      }
+      leaf attr-str {
+        type string;
+      }
+    }
+    list list1-2 {
+      key attr-int;
+      leaf attr-int {
+        type int32;
+      }
+      leaf attr-str {
+        type string;
+      }
+    }
+  }
+}
