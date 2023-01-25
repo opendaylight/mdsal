@@ -45,7 +45,7 @@ public class InstanceIdentifierTest {
         assertNotNull(nodes);
         assertEquals(Nodes.class, nodes.getTargetType());
 
-        final InstanceIdentifier<Node> node = nodes.builder().child(Node.class).build();
+        final InstanceIdentifier<Node> node = nodes.builder().wildcardChild(Node.class).build();
 
         assertNotNull(node);
         assertEquals(Node.class, node.getTargetType());
@@ -89,9 +89,10 @@ public class InstanceIdentifierTest {
     @Test
     public void containsWildcarded() {
         final InstanceIdentifier<Nodes> nodes = InstanceIdentifier.builder(Nodes.class).build();
-        final InstanceIdentifier<Node> wildcarded = InstanceIdentifier.builder(Nodes.class).child(Node.class).build();
+        final InstanceIdentifier<Node> wildcarded = InstanceIdentifier.builder(Nodes.class)
+                .wildcardChild(Node.class).build();
         final InstanceIdentifier<NodeChild> wildcardedChildren = InstanceIdentifier.builder(Nodes.class) //
-                .child(Node.class) //
+                .wildcardChild(Node.class) //
                 .child(NodeChild.class).build();
 
         assertTrue(wildcarded.isWildcarded());
@@ -111,7 +112,7 @@ public class InstanceIdentifierTest {
                 .child(InstantiatedFoo.class).build().containsWildcarded(wildcarded));
 
         final InstanceIdentifier<NodeChild> nodeTenChildWildcarded = InstanceIdentifier.builder(Nodes.class) //
-                .child(Node.class,new NodeKey(10)).child(NodeChild.class).build();
+                .child(Node.class,new NodeKey(10)).wildcardChild(NodeChild.class).build();
 
         assertTrue(nodeTenChildWildcarded.isWildcarded());
 
@@ -130,7 +131,7 @@ public class InstanceIdentifierTest {
         final InstanceIdentifier<FooRoot> instanceIdentifier2 = InstanceIdentifier.create(FooRoot.class);
         final InstanceIdentifier<FooRoot> instanceIdentifier4 = InstanceIdentifier.create(FooRoot.class);
         final InstanceIdentifier<NodeChild> instanceIdentifier3 = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, new NodeKey(10)).child(NodeChild.class).build();
+                .child(Node.class, new NodeKey(10)).wildcardChild(NodeChild.class).build();
         final Object object = new Object();
 
         assertTrue(instanceIdentifier1.equals(instanceIdentifier1));
@@ -232,9 +233,9 @@ public class InstanceIdentifierTest {
         assertFalse(builder3.equals(builder4));
         assertFalse(builder4.equals(builder3));
 
-        InstanceIdentifierBuilder<Nodes> iib1 = new InstanceIdentifierBuilderImpl<>(null, null, 31, true);
-        InstanceIdentifierBuilder<Nodes> iib2 = new InstanceIdentifierBuilderImpl<>(null, null, 31, false);
-        InstanceIdentifierBuilder<Nodes> iib3 = new InstanceIdentifierBuilderImpl<>(null, null, 31, true);
+        InstanceIdentifierBuilder<Nodes> iib1 = new InstanceIdentifierBuilderImpl<>(null, null, 31);
+        InstanceIdentifierBuilder<Nodes> iib2 = new WildcardedInstanceIdentifierBuilder<>(null, null, 31);
+        InstanceIdentifierBuilder<Nodes> iib3 = new InstanceIdentifierBuilderImpl<>(null, null, 31);
         assertFalse(iib1.equals(iib2));
         assertFalse(iib2.equals(iib1));
         assertTrue(iib1.equals(iib3));

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2023 PANTHEON.tech s.r.o. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -12,67 +12,70 @@ import com.google.common.collect.ImmutableList;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 
-class InstanceIdentifierBuilderImpl<T extends DataObject> extends AbstractInstanceIdentifierBuilder<T> {
+public class KeyedInstanceIdentifierBuilder<T extends DataObject & Identifiable<K>,
+        K extends Identifier<T>> extends AbstractInstanceIdentifierBuilder<T> {
 
     @Override
     boolean wildcarded() {
         return false;
     }
 
-    InstanceIdentifierBuilderImpl() {
+    KeyedInstanceIdentifierBuilder() {
         super();
     }
 
-    InstanceIdentifierBuilderImpl(final PathArgument item, final Iterable<? extends PathArgument> pathArguments,
+    KeyedInstanceIdentifierBuilder(final PathArgument item, final Iterable<? extends PathArgument> pathArguments,
             final int hash) {
         super(item, pathArguments, hash);
     }
 
-    InstanceIdentifierBuilderImpl(final PathArgument item, final Iterable<? extends PathArgument> pathArguments,
+    KeyedInstanceIdentifierBuilder(final PathArgument item, final Iterable<? extends PathArgument> pathArguments,
             final int hash, final ImmutableList.@Nullable Builder<PathArgument> pathBuilder) {
         super(item, pathArguments, hash, pathBuilder);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <N extends ChildOf<? super T>> @NonNull InstanceIdentifierBuilderImpl<N> child(final Class<N> container) {
+    public @NonNull <N extends ChildOf<? super T>> InstanceIdentifierBuilderImpl<N> child(
+            Class<N> container) {
         Preconditions.checkArgument(!Identifiable.class.isAssignableFrom(container),
                 "Must not be Identifiable. Use wildcardChild() method instead");
         addNode(Item.of(container));
-        return (InstanceIdentifierBuilderImpl<N>) this;
+        return getNormalBuilder();
+    }
+
+    @Override
+    public @NonNull <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>>
+            InstanceIdentifierBuilderImpl<N> child(Class<C> caze, Class<N> container) {
+        Preconditions.checkArgument(!Identifiable.class.isAssignableFrom(container),
+                "Must not be Identifiable. Use wildcardChild() method instead");
+        addNode(Item.of(container));
+        return getNormalBuilder();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>> InstanceIdentifierBuilderImpl<N>
-            child(final Class<C> caze, final Class<N> container) {
-        Preconditions.checkArgument(!Identifiable.class.isAssignableFrom(container),
-                "Must not be Identifiable. Use wildcardChild() method instead");
-        addNode(Item.of(caze, container));
-        return (InstanceIdentifierBuilderImpl<N>) this;
-    }
-
-    @Override
-    public <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>> KeyedInstanceIdentifierBuilder<N,K>
-            child(final Class<@NonNull N> listItem, final K listKey) {
+    public @NonNull <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
+            KeyedInstanceIdentifierBuilder<N,K> child(Class<@NonNull N> listItem, K listKey) {
         addNode(IdentifiableItem.of(listItem, listKey));
-        return getKeyedBuilder();
+        return (KeyedInstanceIdentifierBuilder<N, K>) this;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public <C extends ChoiceIn<? super T> & DataObject, K extends Identifier<N>,
-        N extends Identifiable<K> & ChildOf<? super C>> @NonNull KeyedInstanceIdentifierBuilder<N,K> child(
-                final Class<C> caze, final Class<N> listItem, final K listKey) {
+    public @NonNull <C extends ChoiceIn<? super T> & DataObject, K extends Identifier<N>,
+            N extends Identifiable<K> & ChildOf<? super C>> KeyedInstanceIdentifierBuilder<N,K> child(Class<C> caze,
+            Class<N> listItem, K listKey) {
         addNode(IdentifiableItem.of(caze, listItem, listKey));
-        return getKeyedBuilder();
+        return (KeyedInstanceIdentifierBuilder<N, K>) this;
     }
 
     @Override
     public <N extends ChildOf<? super T> & Identifiable<?>> WildcardedInstanceIdentifierBuilder<N> wildcardChild(
-            final Class<N> container) {
+            Class<N> container) {
         addNode(Item.of(container));
         return getWildcardedBuilder();
     }
@@ -84,33 +87,20 @@ class InstanceIdentifierBuilderImpl<T extends DataObject> extends AbstractInstan
         return getWildcardedBuilder();
     }
 
-    /**
-     * Build an identifier which refers to a specific augmentation of the current InstanceIdentifier referenced by
-     * the builder.
-     *
-     * @param container Augmentation to be added
-     * @param <N> Augmentation type
-     * @return This builder
-     */
-    @SuppressWarnings("unchecked")
     @Override
-    public <N extends DataObject & Augmentation<? super T>> @NonNull InstanceIdentifierBuilderImpl<N> augmentation(
-            final Class<N> container) {
+    public @NonNull <N extends DataObject & Augmentation<? super T>> InstanceIdentifierBuilder<N> augmentation(
+            Class<N> container) {
         Preconditions.checkArgument(!Identifiable.class.isAssignableFrom(container),
-                "Must not be Identifiable. Use wildcardAugmentation() method instead");
+                "Must not be Identifiable. Use wildcardChild() method instead");
         addNode(Item.of(container));
-        return (InstanceIdentifierBuilderImpl<N>) this;
+        return getNormalBuilder();
     }
 
     @Override
-    public <N extends DataObject & Augmentation<? super T> & Identifiable<?>> @NonNull
+    public @NonNull <N extends DataObject & Augmentation<? super T> & Identifiable<?>>
             WildcardedInstanceIdentifierBuilder<N> wildcardAugmentation(Class<N> container) {
         addNode(Item.of(container));
         return getWildcardedBuilder();
     }
 
-    <N extends DataObject> @NonNull InstanceIdentifierBuilderImpl<N> addWildNode(final PathArgument newArg) {
-        //FIXME wildcard handling
-        return (InstanceIdentifierBuilderImpl<N>) addNode(newArg);
-    }
 }
