@@ -39,8 +39,8 @@ import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -107,17 +107,19 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     }
 
     @NonNull Absolute getActionPath(final @NonNull ActionSpec<?, ?> spec) {
+        final QName qname = BindingRuntimeHelpers.getQName(getRuntimeContext(), spec.type());
         final var entry = resolvePath(spec.path());
         final var stack = entry.getKey();
-        final var stmt = stack.enterSchemaTree(BindingReflections.findQName(spec.type()).bindTo(entry.getValue()));
+        final var stmt = stack.enterSchemaTree(qname.bindTo(entry.getValue()));
         verify(stmt instanceof ActionEffectiveStatement, "Action %s resolved to unexpected statement %s", spec, stmt);
         return stack.toSchemaNodeIdentifier();
     }
 
     @NonNull Absolute getNotificationPath(final @NonNull InstanceNotificationSpec<?, ?> spec) {
+        final QName qname = BindingRuntimeHelpers.getQName(getRuntimeContext(), spec.type());
         final var entry = resolvePath(spec.path());
         final var stack = entry.getKey();
-        final var stmt = stack.enterSchemaTree(BindingReflections.findQName(spec.type()).bindTo(entry.getValue()));
+        final var stmt = stack.enterSchemaTree(qname.bindTo(entry.getValue()));
         verify(stmt instanceof NotificationEffectiveStatement, "Notification %s resolved to unexpected statement %s",
             spec, stmt);
         return stack.toSchemaNodeIdentifier();
@@ -169,14 +171,15 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
     @VisibleForTesting
     // FIXME: This should be probably part of Binding Runtime context
     ImmutableMap<QName, Method> createQNameToMethod(final Class<? extends RpcService> key) {
-        final var moduleName = BindingReflections.getQNameModule(key);
         final var runtimeContext = getRuntimeContext();
-        final var module = runtimeContext.getEffectiveModelContext().findModule(moduleName).orElse(null);
+        final QNameModule qnameModule = BindingRuntimeHelpers.getQNameModule(runtimeContext, key);
+        final var module = runtimeContext.getEffectiveModelContext().findModule(qnameModule).orElse(null);
+
         if (module == null) {
             LOG.trace("Schema for {} is not available; expected module name: {}; BindingRuntimeContext: {}",
-                key, moduleName, runtimeContext);
+                key, qnameModule, runtimeContext);
             throw new IllegalStateException(String.format("Schema for %s is not available; expected module name: %s;"
-                + " full BindingRuntimeContext available in trace log", key, moduleName));
+                + " full BindingRuntimeContext available in trace log", key, qnameModule));
         }
 
         final var ret = ImmutableBiMap.<QName, Method>builder();
