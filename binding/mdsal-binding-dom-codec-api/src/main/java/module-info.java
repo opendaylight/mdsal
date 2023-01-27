@@ -12,6 +12,7 @@ module org.opendaylight.mdsal.binding.dom.codec.api {
     requires transitive org.opendaylight.yangtools.yang.model.api;
     requires transitive org.opendaylight.yangtools.yang.binding;
     requires transitive org.opendaylight.mdsal.binding.runtime.api;
+    requires org.opendaylight.mdsal.binding.runtime.spi;
     requires org.opendaylight.mdsal.binding.spec.util;
 
     // Annotations
