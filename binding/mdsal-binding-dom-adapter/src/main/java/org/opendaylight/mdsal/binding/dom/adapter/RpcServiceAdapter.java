@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.opendaylight.mdsal.binding.runtime.api.RpcRuntimeType;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
@@ -35,7 +35,7 @@ final class RpcServiceAdapter extends AbstractRpcAdapter {
         final var serializer = adapterContext.currentSerializer();
         final var runtimeContext = serializer.getRuntimeContext();
         final var types = runtimeContext.getTypes();
-        final var qnameModule = BindingReflections.getQNameModule(type);
+        final var qnameModule = BindingRuntimeHelpers.getQNameModule(runtimeContext, type);
 
         // We are dancing a bit here to reconstruct things a RpcServiceRuntimeType could easily hold
         final var module = runtimeContext.getEffectiveModelContext().findModuleStatement(qnameModule)
