@@ -16,13 +16,18 @@ import java.util.Collection;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
+import org.opendaylight.mdsal.binding.runtime.api.ModuleRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
@@ -153,6 +158,20 @@ public final class BindingRuntimeHelpers {
         for (var dependency : moduleInfo.getImportedModules()) {
             collectYangModuleInfo(dependency, moduleInfoSet);
         }
+    }
+
+    public static QName getQName(final BindingRuntimeContext context, final Class<?> clazz) {
+        final JavaTypeName javaTypeName = JavaTypeName.create(clazz);
+        final RuntimeType runtimeType = context.getTypes().findSchema(javaTypeName).orElseThrow(() ->
+            new IllegalStateException("Failed to get QName for " + clazz));
+        return (QName) runtimeType.statement().argument();
+    }
+
+    public static QNameModule getQNameModule(final BindingRuntimeContext context, final Class<?> clazz) {
+        final JavaTypeName javaTypeName = JavaTypeName.create(clazz);
+        final ModuleRuntimeType qnameModule = context.getTypes().findQNameModule(javaTypeName).orElseThrow(() ->
+            new IllegalStateException("Failed to get QNameModule for " + clazz));
+        return qnameModule.statement().localQNameModule();
     }
 
     private static @NonNull ModuleInfoSnapshot prepareContext(final YangParserFactory parserFactory,
