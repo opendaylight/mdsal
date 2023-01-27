@@ -11,8 +11,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.yang.binding.Notification;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
@@ -25,7 +27,9 @@ final class LazySerializedNotification extends AbstractLazySerializedEvent<Notif
             @Override
             public Absolute load(final Class<?> key) {
                 // FIXME: do not use reflection here, look the QName up from BindingRuntimeType
-                return Absolute.of(BindingReflections.findQName(key)).intern();
+                BindingRuntimeContext runtimeContext = BindingRuntimeHelpers.createRuntimeContext();
+                QName qname = BindingRuntimeHelpers.getQName(runtimeContext, key);
+                return Absolute.of(qname).intern();
             }
         });
 

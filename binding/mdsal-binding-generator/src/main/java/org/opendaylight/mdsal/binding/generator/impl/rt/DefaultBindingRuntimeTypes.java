@@ -88,6 +88,12 @@ public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
     }
 
     @Override
+    public Optional<ModuleRuntimeType> findQNameModule(JavaTypeName typeName) {
+        final var entry = modulesByPackage.floorEntry(typeName.packageName());
+        return Optional.ofNullable(requireNonNull(entry).getValue());
+    }
+
+    @Override
     public RuntimeType schemaTreeChild(final QName qname) {
         final var module = modulesByNamespace.get(qname.getModule());
         return module == null ? null : module.schemaTreeChild(qname);
