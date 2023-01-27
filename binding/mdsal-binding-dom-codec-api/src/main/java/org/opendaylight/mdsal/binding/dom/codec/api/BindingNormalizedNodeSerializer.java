@@ -12,7 +12,8 @@ import java.time.Instant;
 import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.BaseNotification;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
@@ -21,6 +22,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -177,8 +179,11 @@ public interface BindingNormalizedNodeSerializer {
      */
     @Beta default @NonNull BindingLazyContainerNode<RpcInput> toLazyNormalizedNodeActionInput(
             @NonNull final Class<? extends Action<?, ?, ?>> action, @NonNull final RpcInput input) {
+        BindingRuntimeContext runtimeContext = BindingRuntimeHelpers.createRuntimeContext();
+        QNameModule qnameModule = BindingRuntimeHelpers.getQNameModule(runtimeContext, action);
+
         return toLazyNormalizedNodeActionInput(action,
-            new NodeIdentifier(YangConstants.operationInputQName(BindingReflections.getQNameModule(action))), input);
+            new NodeIdentifier(YangConstants.operationInputQName(qnameModule)), input);
     }
 
     /**
@@ -191,8 +196,12 @@ public interface BindingNormalizedNodeSerializer {
      */
     @Beta default @NonNull ContainerNode toNormalizedNodeActionInput(
             @NonNull final Class<? extends Action<?, ?, ?>> action, @NonNull final RpcInput input) {
+
+        BindingRuntimeContext runtimeContext = BindingRuntimeHelpers.createRuntimeContext();
+        QNameModule qnameModule = BindingRuntimeHelpers.getQNameModule(runtimeContext, action);
+
         return toLazyNormalizedNodeActionInput(action,
-            new NodeIdentifier(YangConstants.operationInputQName(BindingReflections.getQNameModule(action))), input)
+            new NodeIdentifier(YangConstants.operationInputQName(qnameModule)), input)
                 .getDelegate();
     }
 
@@ -217,8 +226,11 @@ public interface BindingNormalizedNodeSerializer {
      */
     @Beta default @NonNull BindingLazyContainerNode<RpcOutput> toLazyNormalizedNodeActionOutput(
             @NonNull final Class<? extends Action<?, ?, ?>> action, @NonNull final RpcOutput output) {
+        BindingRuntimeContext runtimeContext = BindingRuntimeHelpers.createRuntimeContext();
+        QNameModule qnameModule = BindingRuntimeHelpers.getQNameModule(runtimeContext, action);
+
         return toLazyNormalizedNodeActionOutput(action,
-            new NodeIdentifier(YangConstants.operationInputQName(BindingReflections.getQNameModule(action))), output);
+            new NodeIdentifier(YangConstants.operationInputQName(qnameModule)), output);
     }
 
     /**
@@ -229,8 +241,11 @@ public interface BindingNormalizedNodeSerializer {
      */
     @Beta default @NonNull ContainerNode toNormalizedNodeActionOutput(
             @NonNull final Class<? extends Action<?, ?, ?>> action, @NonNull final RpcOutput output) {
+        BindingRuntimeContext runtimeContext = BindingRuntimeHelpers.createRuntimeContext();
+        QNameModule qnameModule = BindingRuntimeHelpers.getQNameModule(runtimeContext, action);
+
         return toLazyNormalizedNodeActionOutput(action,
-            new NodeIdentifier(YangConstants.operationInputQName(BindingReflections.getQNameModule(action))), output)
+            new NodeIdentifier(YangConstants.operationInputQName(qnameModule)), output)
                 .getDelegate();
     }
 }

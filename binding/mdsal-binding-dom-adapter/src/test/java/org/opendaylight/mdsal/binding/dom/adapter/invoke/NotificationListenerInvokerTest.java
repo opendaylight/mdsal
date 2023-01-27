@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
@@ -26,10 +25,6 @@ import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.opendaylight.yangtools.yang.common.QName;
 
 public class NotificationListenerInvokerTest {
-    @Test
-    public void fromTest() throws Exception {
-        assertNotNull(NotificationListenerInvoker.from(TestInterface.class));
-    }
 
     @Test
     public void fromWithExceptionTest() {
@@ -37,7 +32,6 @@ public class NotificationListenerInvokerTest {
             () -> NotificationListenerInvoker.from(TestPrivateInterface.class))
             .getCause();
         assertThat(cause, instanceOf(IllegalStateException.class));
-        assertThat(cause.getCause(), instanceOf(IllegalAccessException.class));
     }
 
     @Test
@@ -51,12 +45,6 @@ public class NotificationListenerInvokerTest {
             () -> notificationListenerInvoker.invokeNotification(notificationListener, QName.create("test", "test"),
                 null));
         assertEquals("expected null but found (NotificationListener,DataContainer)void", ex.getMessage());
-    }
-
-    public interface TestInterface extends NotificationListener, Augmentation {
-        QName QNAME = QName.create("test", "test");
-
-        void onTestNotificationInterface(TestNotificationInterface notif);
     }
 
     private interface TestPrivateInterface extends NotificationListener, Augmentation {

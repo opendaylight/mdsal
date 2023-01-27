@@ -35,8 +35,8 @@ import org.opendaylight.mdsal.binding.runtime.api.ContainerLikeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.DataRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
@@ -92,8 +92,10 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
             public NotificationCodecContext<?> load(final Class<?> key) {
                 checkArgument(key.isInterface(), "Supplied class must be interface.");
 
+                BindingRuntimeContext runtimeContext = factory().getRuntimeContext();
+                QName qname = BindingRuntimeHelpers.getQName(runtimeContext, key);
+
                 // TODO: we should be able to work with bindingChild() instead of schemaTreeChild() here
-                final QName qname = BindingReflections.findQName(key);
                 final RuntimeType child = getType().schemaTreeChild(qname);
                 checkArgument(child instanceof NotificationRuntimeType, "Supplied %s is not valid notification",
                     key);
@@ -117,7 +119,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
                 final CodecContextFactory factory = factory();
                 final BindingRuntimeContext context = factory.getRuntimeContext();
 
-                final QName qname = BindingReflections.findQName(key);
+                final QName qname = BindingRuntimeHelpers.getQName(context, key);
                 final QNameModule qnameModule = qname.getModule();
                 final Module module = context.getEffectiveModelContext().findModule(qnameModule)
                     .orElseThrow(() -> new IllegalArgumentException("Failed to find module for " + qnameModule));
