@@ -30,7 +30,9 @@ module org.opendaylight.mdsal.binding.dom.adapter {
     requires transitive org.opendaylight.mdsal.binding.dom.codec.spi;
     requires transitive org.opendaylight.mdsal.dom.api;
     requires transitive org.opendaylight.yangtools.yang.data.impl;
+    requires org.opendaylight.mdsal.binding.generator;
     requires org.opendaylight.mdsal.binding.dom.codec.api;
+    requires org.opendaylight.mdsal.binding.runtime.spi;
     requires org.opendaylight.mdsal.binding.spec.util;
     requires org.opendaylight.mdsal.dom.spi;
     requires org.slf4j;

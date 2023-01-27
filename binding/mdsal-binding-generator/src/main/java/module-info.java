@@ -12,6 +12,7 @@ import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 
 module org.opendaylight.mdsal.binding.generator {
     exports org.opendaylight.mdsal.binding.generator;
+    exports org.opendaylight.mdsal.binding.generator.impl;
     exports org.opendaylight.mdsal.binding.generator.impl.di;
 
     provides BindingGenerator with DefaultBindingGenerator;
