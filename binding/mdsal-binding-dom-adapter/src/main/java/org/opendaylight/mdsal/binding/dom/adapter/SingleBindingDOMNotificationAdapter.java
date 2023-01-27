@@ -11,11 +11,14 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Set;
 import java.util.concurrent.Executor;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.NotificationService.CompositeListener.Component;
 import org.opendaylight.mdsal.binding.api.NotificationService.Listener;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 final class SingleBindingDOMNotificationAdapter<N extends Notification<N> & DataObject>
@@ -44,6 +47,8 @@ final class SingleBindingDOMNotificationAdapter<N extends Notification<N> & Data
 
     @Override
     Set<Absolute> getSupportedNotifications() {
-        return Set.of(Absolute.of(BindingReflections.findQName(type)));
+        @NonNull BindingRuntimeContext runtimeContext = BindingRuntimeHelpers.createRuntimeContext();
+        QName qname = BindingRuntimeHelpers.getQName(runtimeContext, type);
+        return Set.of(Absolute.of(qname));
     }
 }
