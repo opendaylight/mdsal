@@ -37,8 +37,7 @@ public class NotificationListenerInvokerTest {
         final var cause = assertThrows(UncheckedExecutionException.class,
             () -> NotificationListenerInvoker.from(TestPrivateInterface.class))
             .getCause();
-        assertThat(cause, instanceOf(IllegalStateException.class));
-        assertThat(cause.getCause(), instanceOf(IllegalAccessException.class));
+        assertThat(cause, instanceOf(IllegalArgumentException.class));
     }
 
     @Test
