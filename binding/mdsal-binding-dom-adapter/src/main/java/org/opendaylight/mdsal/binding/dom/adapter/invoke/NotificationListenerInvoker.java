@@ -23,6 +23,8 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
@@ -49,12 +51,13 @@ public final class NotificationListenerInvoker {
 
                 private ImmutableMap<QName, MethodHandle> createInvokerMap(
                         final Class<? extends NotificationListener> key) {
+                    final BindingRuntimeContext runtimeContext = BindingRuntimeHelpers.createRuntimeContext();
                     final Builder<QName, MethodHandle> ret = ImmutableMap.builder();
                     for (final Method method : key.getMethods()) {
                         if (BindingReflections.isNotificationCallback(method)) {
 
                             final Class<?> notification = method.getParameterTypes()[0];
-                            final QName name = BindingReflections.findQName(notification);
+                            final QName name = BindingRuntimeHelpers.getQName(runtimeContext, notification);
                             MethodHandle handle;
                             try {
                                 handle = LOOKUP.unreflect(method).asType(MethodType.methodType(void.class,
