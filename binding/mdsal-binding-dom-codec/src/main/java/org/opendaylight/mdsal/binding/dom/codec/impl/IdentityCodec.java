@@ -18,13 +18,15 @@ import java.lang.reflect.Modifier;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingIdentityCodec;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.common.QName;
 
 final class IdentityCodec extends AbstractValueCodec<QName, BaseIdentity> implements BindingIdentityCodec {
+
     private final LoadingCache<@NonNull QName, @NonNull BaseIdentity> values = CacheBuilder.newBuilder()
         .build(new CacheLoader<>() {
             @Override
@@ -87,6 +89,10 @@ final class IdentityCodec extends AbstractValueCodec<QName, BaseIdentity> implem
 
     @Override
     public QName fromBinding(final BaseIdentity bindingValue) {
-        return BindingReflections.getQName(bindingValue);
+
+        RuntimeType runtimeType = context.getTypes()
+            .findSchema(JavaTypeName.create(bindingValue.implementedInterface())).orElse(null);
+
+        return (QName) runtimeType.statement().argument();
     }
 }
