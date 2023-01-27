@@ -92,4 +92,6 @@ public interface BindingRuntimeTypes extends EffectiveModelContextProvider, Runt
      * @throws NullPointerException if {@code ChoiceRuntimeType} is null
      */
     @NonNull Set<CaseRuntimeType> allCaseChildren(ChoiceRuntimeType choiceType);
+
+    Optional<ModuleRuntimeType> findQNameModule(JavaTypeName typeName);
 }
