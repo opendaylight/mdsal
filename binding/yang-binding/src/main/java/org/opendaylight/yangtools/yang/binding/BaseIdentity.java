@@ -7,9 +7,17 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.yang.common.QName;
+
 /**
  * Base Identity. Interface generated for {@code identity} statements extend this interface.
  */
 public non-sealed interface BaseIdentity extends BindingObject, BindingContract<BaseIdentity> {
-
+    /**
+     * Return the {@link QName} associated with this {@code identity}.
+     *
+     * @return A QName
+     */
+    @NonNull QName qname();
 }

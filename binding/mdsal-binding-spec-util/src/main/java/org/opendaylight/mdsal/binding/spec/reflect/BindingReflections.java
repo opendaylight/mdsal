@@ -110,6 +110,7 @@ public final class BindingReflections {
                 && possibleMethod.getParameterCount() <= 2;
     }
 
+    @Deprecated(since = "11.0.5", forRemoval = true)
     public static @NonNull QName getQName(final BaseIdentity identity) {
         return getContractQName(identity);
     }

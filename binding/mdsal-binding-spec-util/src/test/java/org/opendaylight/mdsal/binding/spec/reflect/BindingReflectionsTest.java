@@ -16,6 +16,7 @@ import static org.mockito.Mockito.mock;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.spec.util.FooChild;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -46,8 +47,18 @@ public class BindingReflectionsTest {
     }
 
     interface TestIdentity extends BaseIdentity {
-        QName QNAME = QName.create("test", "test");
-        TestIdentity VALUE = () -> TestIdentity.class;
+        @NonNull QName QNAME = QName.create("test", "test");
+        TestIdentity VALUE = new TestIdentity() {
+            @Override
+            public QName qname() {
+                return QNAME;
+            }
+
+            @Override
+            public Class<TestIdentity> implementedInterface() {
+                return TestIdentity.class;
+            }
+        };
 
         @Override
         Class<? extends TestIdentity> implementedInterface();

@@ -314,6 +314,11 @@ abstract class BaseTemplate extends JavaFileTemplate {
                 }
 
                 @«override»
+                public «QNAME.importedName» qname() {
+                    return «BindingMapping.QNAME_STATIC_FIELD_NAME»;
+                }
+
+                @«override»
                 public int hashCode() {
                     return «typeName».class.hashCode();
                 }

@@ -16,10 +16,8 @@ import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.YangFeature;
-import org.opendaylight.yangtools.yang.common.QName;
 
 final class FeatureTemplate extends ClassTemplate {
-    private static final @NonNull JavaTypeName QNAME = JavaTypeName.create(QName.class);
     private static final @NonNull JavaTypeName YANG_FEATURE = JavaTypeName.create(YangFeature.class);
 
     private final @NonNull Type dataRoot;
