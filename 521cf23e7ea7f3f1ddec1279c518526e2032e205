@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f30f6798_de08f0a2",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/yang-data-models/yang-data-naming.yang",
+        "patchSetId": 20
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-30T22:12:53Z",
+      "side": 1,
+      "message": "nice touch! 👍 😊",
+      "range": {
+        "startLine": 19,
+        "startChar": 16,
+        "endLine": 19,
+        "endChar": 22
+      },
+      "revId": "521cf23e7ea7f3f1ddec1279c518526e2032e205",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
