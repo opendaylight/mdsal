@@ -41,6 +41,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4dd2a3f_dee149c3",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/YangDataGenerator.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-01-30T12:52:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ae2e3b45_6835df89",
+      "range": {
+        "startLine": 70,
+        "startChar": 35,
+        "endLine": 70,
+        "endChar": 42
+      },
+      "revId": "376ffa1561cc76ebd72114ac630f51e579e6ad25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "883dfa39_1a4f29dd",
@@ -64,6 +88,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "23a6f2b0_733ddcd3",
+        "filename": "binding/mdsal-binding-generator/src/test/resources/ietf-models/ietf-restconf.yang",
+        "patchSetId": 14
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-01-30T12:52:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "883dfa39_1a4f29dd",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 22
+      },
+      "revId": "376ffa1561cc76ebd72114ac630f51e579e6ad25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ae5daf2b_219beac6",
@@ -77,6 +125,30 @@
       "writtenOn": "2023-01-24T20:33:14Z",
       "side": 1,
       "message": "we are missing builders and builder-based implementation",
+      "range": {
+        "startLine": 818,
+        "startChar": 17,
+        "endLine": 818,
+        "endChar": 38
+      },
+      "revId": "376ffa1561cc76ebd72114ac630f51e579e6ad25",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ceee0c7f_7b7dde1a",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/CompilationTest.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 818,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-01-30T12:52:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ae5daf2b_219beac6",
       "range": {
         "startLine": 818,
         "startChar": 17,
