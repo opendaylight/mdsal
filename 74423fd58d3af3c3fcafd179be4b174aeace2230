@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "14cbccd4_5eb70893",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-30T22:13:42Z",
+      "side": 1,
+      "message": "This means we won\u0027t need to subclass CamelCaseNamingStrategy.",
+      "revId": "74423fd58d3af3c3fcafd179be4b174aeace2230",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
