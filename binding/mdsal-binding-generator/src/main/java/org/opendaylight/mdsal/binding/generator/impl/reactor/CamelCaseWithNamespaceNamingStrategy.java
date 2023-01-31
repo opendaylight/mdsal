@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 
-final class CamelCaseWithNamespaceNamingStrategy extends ClassNamingStrategy {
+final class CamelCaseWithNamespaceNamingStrategy extends YangIdentifierClassNamingStrategy {
     private final CamelCaseNamingStrategy delegate;
 
     CamelCaseWithNamespaceNamingStrategy(final CamelCaseNamingStrategy delegate) {

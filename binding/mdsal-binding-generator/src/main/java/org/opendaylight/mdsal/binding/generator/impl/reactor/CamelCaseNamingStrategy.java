@@ -16,7 +16,7 @@ import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 
 @NonNullByDefault
-final class CamelCaseNamingStrategy extends ClassNamingStrategy {
+final class CamelCaseNamingStrategy extends YangIdentifierClassNamingStrategy {
     private final StatementNamespace namespace;
     private final AbstractQName nodeIdentifier;
 
