@@ -229,6 +229,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9906e524_94c75e53",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-01-31T09:12:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c22e5d83_5d20befd",
+      "revId": "b9331f37c48ca472181291465b707f55735278ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bd43a6b8_aaf5d43e",
