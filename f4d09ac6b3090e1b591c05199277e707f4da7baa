@@ -22,6 +22,30 @@
       },
       "revId": "f4d09ac6b3090e1b591c05199277e707f4da7baa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a25b2bd2_fc9a1ce2",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/YangDataGenerator.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-01-31T23:13:43Z",
+      "side": 1,
+      "message": "This ends up being easy, as we already have a unique Java identifier fragment -- just a simple concat with \u0027$\u0027 does the trick.",
+      "parentUuid": "c9327e3d_a3301c72",
+      "range": {
+        "startLine": 74,
+        "startChar": 49,
+        "endLine": 74,
+        "endChar": 89
+      },
+      "revId": "f4d09ac6b3090e1b591c05199277e707f4da7baa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
