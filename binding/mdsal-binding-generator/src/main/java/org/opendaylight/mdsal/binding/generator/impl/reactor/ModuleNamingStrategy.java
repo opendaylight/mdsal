@@ -11,10 +11,9 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 
-final class ModuleNamingStrategy extends ClassNamingStrategy {
+final class ModuleNamingStrategy extends YangIdentifierClassNamingStrategy {
     private final @NonNull AbstractQName name;
 
     ModuleNamingStrategy(final AbstractQName name) {
@@ -24,11 +23,6 @@ final class ModuleNamingStrategy extends ClassNamingStrategy {
     @Override
     AbstractQName nodeIdentifier() {
         return name;
-    }
-
-    @Override
-    String simpleClassName() {
-        return BindingMapping.getClassName(name.getLocalName());
     }
 
     @Override
