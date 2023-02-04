@@ -171,6 +171,7 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
         for (var e : typeToListener.entrySet()) {
             b.put(e.getKey(), tmp.computeIfAbsent(e.getValue(), ComponentReg::new));
         }
+        replaceListeners(b.build());
 
         final var regs = List.copyOf(tmp.values());
         return new AbstractRegistration() {

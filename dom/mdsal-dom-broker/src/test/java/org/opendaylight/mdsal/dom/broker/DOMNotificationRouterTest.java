@@ -24,6 +24,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +34,7 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
 import org.opendaylight.yangtools.util.ListenerRegistry;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public class DOMNotificationRouterTest {
@@ -40,6 +42,33 @@ public class DOMNotificationRouterTest {
     @Test
     public void create() throws Exception {
         assertNotNull(DOMNotificationRouter.create(1024));
+    }
+
+    @Test
+    public void registerNotificationListener() {
+        final var domNotificationRouter = new DOMNotificationRouter(1024);
+        final var domNotificationListener = mock(DOMNotificationListener.class);
+
+        domNotificationRouter.registerNotificationListener(domNotificationListener,
+            List.of(Absolute.of(QName.create("urn:opendaylight:test-listener", "notif1"))));
+        assertEquals(1, domNotificationRouter.listeners().size());
+
+        domNotificationRouter.registerNotificationListener(domNotificationListener,
+            List.of(Absolute.of(QName.create("urn:opendaylight:test-listener", "notif2")),
+                Absolute.of(QName.create("urn:opendaylight:test-listener", "notif3"))));
+        assertEquals(3, domNotificationRouter.listeners().size());
+    }
+
+    @Test
+    public void registerNotificationListeners() {
+        final var domNotificationRouter = new DOMNotificationRouter(1024);
+        final var domNotificationListener1 = mock(DOMNotificationListener.class);
+        final var domNotificationListener2 = mock(DOMNotificationListener.class);
+
+        domNotificationRouter.registerNotificationListeners(
+            Map.of(Absolute.of(QName.create("urn:opendaylight:test-listener", "notif1")), domNotificationListener1,
+                Absolute.of(QName.create("urn:opendaylight:test-listener", "notif2")), domNotificationListener2));
+        assertEquals(2, domNotificationRouter.listeners().size());
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
