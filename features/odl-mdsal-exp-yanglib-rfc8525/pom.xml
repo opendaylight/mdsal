@@ -11,12 +11,12 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>11.0.6-SNAPSHOT</version>
+        <version>11.0.7-SNAPSHOT</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <artifactId>odl-mdsal-exp-yanglib-rfc8525</artifactId>
-    <version>0.16.6-SNAPSHOT</version>
+    <version>0.16.7-SNAPSHOT</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: RFC8525 YANG Library</name>
     <description>MD-SAL YANG Library (RFC8525)</description>
