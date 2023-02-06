@@ -107,6 +107,18 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- below prevents failure for tests reading/writing files with non-ascii chars in names -->
+                    <environmentVariables>
+                        <LANG>en_US.UTF-8</LANG>
+                        <LANGUAGE>en_US.UTF-8</LANGUAGE>
+                        <LC_CTYPE>UTF-8</LC_CTYPE>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
