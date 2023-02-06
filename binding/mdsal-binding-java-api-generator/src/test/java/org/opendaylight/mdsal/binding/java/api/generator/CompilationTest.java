@@ -46,6 +46,8 @@ import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.opendaylight.yangtools.yang.common.Uint8;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test correct code generation.
@@ -805,6 +807,12 @@ public class CompilationTest extends BaseCompilationTest {
     public void yangDataCompilation() throws Exception {
         final File sourcesOutputDir = CompilationTestUtils.generatorOutput("yang-data-gen");
         final File compiledOutputDir = CompilationTestUtils.compilerOutput("yang-data-gen");
+
+        final Logger log = LoggerFactory.getLogger("test");
+        log.info("{}", System.getenv());
+        log.info("file.encoding: {} \n sun.jnu.encoding: {} \n native.encoding: {}",
+                System.getProperty("file.encoding"),
+                System.getProperty("sun.jnu.encoding"), System.getProperty("native.encoding"));
 
         generateTestSources("/compilation/yang-data-gen", sourcesOutputDir);
         CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
