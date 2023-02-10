@@ -18,6 +18,41 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e542a013_98136ff7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-02-10T10:38:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d4049460_3b46775d",
+      "revId": "35248f278b6fc3724c0e7e2921d43ad97671dce2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2f5e497_15a38095",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-02-10T10:38:47Z",
+      "side": 1,
+      "message": "fixed",
+      "revId": "35248f278b6fc3724c0e7e2921d43ad97671dce2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "85a5e8bb_2fa5ef2e",
@@ -31,6 +66,30 @@
       "writtenOn": "2023-02-09T12:05:42Z",
       "side": 1,
       "message": "\u0027instanceof\u0027 ignores the \u003cList12Mock\u003e part (see https://www.baeldung.com/java-type-erasure)",
+      "range": {
+        "startLine": 35,
+        "startChar": 57,
+        "endLine": 35,
+        "endChar": 69
+      },
+      "revId": "35248f278b6fc3724c0e7e2921d43ad97671dce2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "caeee5f5_bb756f9c",
+        "filename": "binding/mdsal-binding-test-model/src/test/java/org/opendaylight/mdsal/binding/test/model/Mdsal798Test.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-02-10T10:38:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "85a5e8bb_2fa5ef2e",
       "range": {
         "startLine": 35,
         "startChar": 57,
