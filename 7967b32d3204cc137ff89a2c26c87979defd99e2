@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "59c0cecf_1df5bc01",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-02-14T20:25:57Z",
+      "side": 1,
+      "message": "not quite, as there is some cost of instantiating a builder and quite a few times we have a base identifier (like pointing to a list) from which we are creating children -- like pointing to concrete items). Going through a builder (in current state of affairs) would be quite verbose.",
+      "range": {
+        "startLine": 21,
+        "startChar": 2,
+        "endLine": 21,
+        "endChar": 248
+      },
+      "revId": "7967b32d3204cc137ff89a2c26c87979defd99e2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b40e682_03df58c8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-02-14T20:25:57Z",
+      "side": 1,
+      "message": "this is quite problematic, really. The reason for that is the DataObject and compile-time safety. So a child(Container.class) is not a wildcard, but a child(KeyedList.class) is. Unfortunately there is nothing in the type system to prevent you from doing the latter, simply because both implement DataObject -- we just have to note that.\n\nI will go through this patch, but I think we need to punt it for a major release. The reason for that is that yang.binding.InstanceIdentifier:\n- cannot represent all the YangInstanceIdentifier namespace, which is a problem of its own (because there is a \u0027type instance-identifier\u0027, for which we really break an there is an issue)\n- in its current form should live in mdsal-binding-api\n- the two cases, wildcarded or not, should really be separate top-level constructs: you cannot ReadTransaction.read() a wildcard IID, but you can DataBroker.registerDataTreeChangeListener() to both a wildcard a non-wildcard\n- as such, all of binding should be as type-safe as possible, but the wildcards here are an accidental feature (from ~2013) which never was cleaned up.\n- we really need solve all this (and two other things) before we move yang.binding back to yangtools, where it belongs",
+      "range": {
+        "startLine": 23,
+        "startChar": 3,
+        "endLine": 23,
+        "endChar": 70
+      },
+      "revId": "7967b32d3204cc137ff89a2c26c87979defd99e2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
