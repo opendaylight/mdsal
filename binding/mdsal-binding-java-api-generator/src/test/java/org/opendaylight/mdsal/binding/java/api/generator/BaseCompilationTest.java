@@ -19,9 +19,11 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.BeforeClass;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingGenerator;
+import org.opendaylight.mdsal.binding.generator.impl.reactor.ModuleGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.plugin.generator.api.GeneratedFile;
 import org.opendaylight.yangtools.plugin.generator.api.GeneratedFilePath;
@@ -61,6 +63,8 @@ public abstract class BaseCompilationTest {
         final List<File> sourceFiles = CompilationTestUtils.getSourceFiles(resourceDirPath);
         final EffectiveModelContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         final List<GeneratedType> types = new DefaultBindingGenerator().generateTypes(context);
+        final Map<Module, ModuleGenerator> moduleGens = new DefaultBindingGenerator()
+                .generateMappingForModuleGenerators(context);
         generateTestSources(types, sourcesOutputDir);
 
         // Also generate YangModuleInfo
@@ -68,8 +72,9 @@ public abstract class BaseCompilationTest {
             final YangModuleInfoTemplate template = new YangModuleInfoTemplate(module, context,
                 mod -> Optional.of("fake/" + mod.getName()));
 
+            final String moduleRootPackageName = moduleGens.get(module).getRootPackageName();
             final File file = new File(new File(sourcesOutputDir,
-                Naming.getRootPackageName(module.getQNameModule()).replace('.', File.separatorChar)),
+                moduleRootPackageName.replace('.', File.separatorChar)),
                 Naming.MODULE_INFO_CLASS_NAME + ".java");
             Files.createParentDirs(file);
             Files.asCharSink(file, StandardCharsets.UTF_8).write(template.generate());

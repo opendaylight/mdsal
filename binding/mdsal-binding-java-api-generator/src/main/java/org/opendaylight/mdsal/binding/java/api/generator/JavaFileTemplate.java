@@ -374,7 +374,7 @@ class JavaFileTemplate {
                 methods.add(implMethod);
             } else {
                 final String implMethodName = implMethod.getName();
-                if (Naming.isGetterMethodName(implMethodName)
+                if (isGetterMethodName(implMethodName)
                         && getterByName(methods, implMethodName).isEmpty()) {
 
                     methods.add(implMethod);
@@ -387,7 +387,7 @@ class JavaFileTemplate {
             final String implMethodName) {
         for (MethodSignature method : methods) {
             final String methodName = method.getName();
-            if (Naming.isGetterMethodName(methodName) && isSameProperty(method.getName(), implMethodName)) {
+            if (isGetterMethodName(methodName) && isSameProperty(method.getName(), implMethodName)) {
                 return Optional.of(method);
             }
         }
@@ -400,17 +400,31 @@ class JavaFileTemplate {
 
     protected static String propertyNameFromGetter(final String getterName) {
         final String prefix;
-        if (Naming.isGetterMethodName(getterName)) {
+        if (isGetterMethodName(getterName)) {
             prefix = Naming.GETTER_PREFIX;
-        } else if (Naming.isNonnullMethodName(getterName)) {
+        } else if (isNonnullMethodName(getterName)) {
             prefix = Naming.NONNULL_PREFIX;
-        } else if (Naming.isRequireMethodName(getterName)) {
+        } else if (isRequireMethodName(getterName)) {
             prefix = Naming.REQUIRE_PREFIX;
         } else {
             throw new IllegalArgumentException(getterName + " is not a getter");
         }
         return StringExtensions.toFirstLower(getterName.substring(prefix.length()));
     }
+
+
+    static boolean isGetterMethodName(final String methodName) {
+        return methodName.startsWith(Naming.GETTER_PREFIX);
+    }
+
+    static boolean isNonnullMethodName(final String methodName) {
+        return methodName.startsWith(Naming.NONNULL_PREFIX);
+    }
+
+    static boolean isRequireMethodName(final String methodName) {
+        return methodName.startsWith(Naming.REQUIRE_PREFIX);
+    }
+
 
     /**
      * Check whether specified method has an attached annotation which corresponds to {@code @Override}.
@@ -578,7 +592,7 @@ class JavaFileTemplate {
         if (method.isDefault()) {
             return null;
         }
-        if (!Naming.isGetterMethodName(method.getName())) {
+        if (!isGetterMethodName(method.getName())) {
             return null;
         }
 
