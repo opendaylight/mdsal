@@ -59,4 +59,14 @@ public class GeneratorTest {
         GeneratedTransferObject genTO = builder.build();
         assertEquals(List.of(), genTO.getConstantDefinitions());
     }
+
+    @Test
+    public void testNormalizePackageName() {
+        assertEquals("testpublic", Generator.normalizePackageName("testpublic"));
+        assertEquals("_1testpublic", Generator.normalizePackageName("1testpublic"));
+        assertEquals("org.opendaylight.yang.gen.v1.test._enum.rev171026",
+                Generator.normalizePackageName("org.opendaylight.yang.gen.v1.test.enum.rev171026"));
+        assertEquals("org.opendaylight.yang.gen._1.test.rev171026",
+                Generator.normalizePackageName("org.opendaylight.yang.gen.1.test.rev171026"));
+    }
 }

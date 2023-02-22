@@ -7,13 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
-import static extension org.opendaylight.yangtools.yang.binding.contract.Naming.getGetterMethodForNonnull
-import static extension org.opendaylight.yangtools.yang.binding.contract.Naming.getGetterMethodForRequire
-import static extension org.opendaylight.yangtools.yang.binding.contract.Naming.isGetterMethodName
-import static extension org.opendaylight.yangtools.yang.binding.contract.Naming.isNonnullMethodName
-import static extension org.opendaylight.yangtools.yang.binding.contract.Naming.isRequireMethodName
+import static extension com.google.common.base.Preconditions.checkArgument;
 import static org.opendaylight.mdsal.binding.model.ri.Types.BOOLEAN
 import static org.opendaylight.mdsal.binding.model.ri.Types.STRING
+import static org.opendaylight.yangtools.yang.binding.contract.Naming.GETTER_PREFIX
+import static org.opendaylight.yangtools.yang.binding.contract.Naming.NONNULL_PREFIX
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.REQUIRE_PREFIX
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.AUGMENTATION_FIELD
 import static org.opendaylight.yangtools.yang.binding.contract.Naming.BINDING_CONTRACT_IMPLEMENTED_INTERFACE_NAME
@@ -393,6 +391,17 @@ class InterfaceTemplate extends BaseTemplate {
         }
         return type.importedName
     }
+
+    private def String getGetterMethodForNonnull(String methodName) {
+        checkArgument(isNonnullMethodName(methodName))
+        return GETTER_PREFIX + methodName.substring(NONNULL_PREFIX.length())
+    }
+
+    private def String getGetterMethodForRequire(String methodName) {
+        checkArgument(isRequireMethodName(methodName));
+        return GETTER_PREFIX + methodName.substring(REQUIRE_PREFIX.length())
+    }
+
 
     def private static boolean isObject(Type type) {
         // The return type has a package, so it's not a primitive type

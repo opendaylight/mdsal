@@ -146,7 +146,7 @@ final class RootCodecContext<D extends DataObject> extends DataContainerCodecCon
                 final QNameModule qnameModule = qname.getModule();
                 final Module module = context.getEffectiveModelContext().findModule(qnameModule)
                     .orElseThrow(() -> new IllegalArgumentException("Failed to find module for " + qnameModule));
-                final String className = Naming.getClassName(qname);
+                final String className = getClassName(qname);
 
                 for (final RpcDefinition potential : module.getRpcs()) {
                     final QName potentialQName = potential.getQName();
@@ -157,7 +157,7 @@ final class RootCodecContext<D extends DataObject> extends DataContainerCodecCon
                      *
                      * FIXME: Rework this to have more precise logic regarding Binding Specification.
                      */
-                    if (key.getSimpleName().equals(Naming.getClassName(potentialQName) + className)) {
+                    if (key.getSimpleName().equals(getClassName(potentialQName) + className)) {
                         final ContainerLike schema = getRpcDataSchema(potential, qname);
                         checkArgument(schema != null, "Schema for %s does not define input / output.", potentialQName);
 
@@ -417,5 +417,9 @@ final class RootCodecContext<D extends DataObject> extends DataContainerCodecCon
             }
             throw e;
         }
+    }
+
+    private static @NonNull String getClassName(final QName name) {
+        return Naming.getClassName(name.getLocalName());
     }
 }
