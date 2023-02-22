@@ -7,11 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl.reactor;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.reactor.CollisionDomain.Member;
 import org.opendaylight.mdsal.binding.generator.impl.rt.DefaultModuleRuntimeType;
@@ -26,6 +30,7 @@ import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.AbstractQName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
@@ -34,6 +39,9 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
  * particular {@link QNameModule} as mapped into the root package.
  */
 public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffectiveStatement, ModuleRuntimeType> {
+    private static final Pattern COLON_SLASH_SLASH = Pattern.compile("://", Pattern.LITERAL);
+    private static final String QUOTED_DOT = Matcher.quoteReplacement(".");
+
     private final @NonNull JavaTypeName yangModuleInfo;
 
     /**
@@ -45,8 +53,11 @@ public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffe
      */
     private final Member prefixMember;
 
+    private final String rootPackageName;
+
     ModuleGenerator(final ModuleEffectiveStatement statement) {
         super(statement);
+        rootPackageName = rootPackageName();
         yangModuleInfo = JavaTypeName.create(javaPackage(), Naming.MODULE_INFO_CLASS_NAME);
         prefixMember = domain().addPrefix(this, new ModuleNamingStrategy(statement.argument()));
     }
@@ -68,7 +79,7 @@ public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffe
 
     @Override
     String createJavaPackage() {
-        return Naming.getRootPackageName(statement().localQNameModule());
+        return rootPackageName();
     }
 
     @Override
@@ -131,5 +142,46 @@ public final class ModuleGenerator extends AbstractCompositeGenerator<ModuleEffe
                 return new DefaultModuleRuntimeType(type, statement, children);
             }
         };
+    }
+
+    public String getRootPackageName() {
+        return rootPackageName;
+    }
+
+    private @NonNull String rootPackageName() {
+        final StringBuilder packageNameBuilder = new StringBuilder().append(Naming.PACKAGE_PREFIX).append('.');
+
+        final QNameModule module = statement().localQNameModule();
+        String namespace = module.getNamespace().toString();
+        namespace = COLON_SLASH_SLASH.matcher(namespace).replaceAll(QUOTED_DOT);
+
+        final char[] chars = namespace.toCharArray();
+        for (int i = 0; i < chars.length; ++i) {
+            switch (chars[i]) {
+                case '/', ':', '-', '@', '$', '#', '\'', '*', '+', ',', ';', '=' -> chars[i] = '.';
+                default -> {
+                    // no-op
+                }
+            }
+        }
+
+        packageNameBuilder.append(chars);
+        if (chars[chars.length - 1] != '.') {
+            packageNameBuilder.append('.');
+        }
+
+        final Optional<Revision> optRev = module.getRevision();
+        if (optRev.isPresent()) {
+            // Revision is in format 2017-10-26, we want the output to be 171026, which is a matter of picking the
+            // right characters.
+            final String rev = optRev.orElseThrow().toString();
+            checkArgument(rev.length() == 10, "Unsupported revision %s", rev);
+            packageNameBuilder.append("rev").append(rev, 2, 4).append(rev, 5, 7).append(rev.substring(8));
+        } else {
+            // No-revision packages are special
+            packageNameBuilder.append("norev");
+        }
+
+        return normalizePackageName(packageNameBuilder.toString());
     }
 }

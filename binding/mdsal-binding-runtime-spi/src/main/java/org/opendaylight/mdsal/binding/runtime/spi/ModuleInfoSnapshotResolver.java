@@ -36,7 +36,6 @@ import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.YangFeature;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -200,7 +199,7 @@ public final class ModuleInfoSnapshotResolver implements Mutable {
             final var info = reg.info;
             moduleInfos.put(source, info);
             final var infoClass = info.getClass();
-            classLoaders.put(Naming.getModelRootPackageName(infoClass.getPackage().getName()),
+            classLoaders.put(BindingReflections.getModelRootPackageName(infoClass.getPackage().getName()),
                 infoClass.getClassLoader());
         }
 

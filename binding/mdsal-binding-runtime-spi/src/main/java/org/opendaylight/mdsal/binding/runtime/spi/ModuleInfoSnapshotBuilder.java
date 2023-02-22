@@ -29,7 +29,6 @@ import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.YangFeature;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.repo.api.FeatureSet;
@@ -112,7 +111,7 @@ public final class ModuleInfoSnapshotBuilder {
             mappedInfos.put(source.getIdentifier(), info);
 
             final Class<?> infoClass = info.getClass();
-            classLoaders.put(Naming.getModelRootPackageName(infoClass.getPackage().getName()),
+            classLoaders.put(BindingReflections.getModelRootPackageName(infoClass.getPackage().getName()),
                 infoClass.getClassLoader());
 
             try {
