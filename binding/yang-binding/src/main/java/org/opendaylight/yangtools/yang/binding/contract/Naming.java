@@ -8,22 +8,12 @@
 package org.opendaylight.yangtools.yang.binding.contract;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
-import java.util.Collection;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.checkerframework.checker.regex.qual.Regex;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
@@ -34,8 +24,6 @@ import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.ScalarTypeObject;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.common.Revision;
 
 @Beta
 public final class Naming {
@@ -81,9 +69,6 @@ public final class Naming {
 
     private static final Splitter CAMEL_SPLITTER = Splitter.on(CharMatcher.anyOf(" _.-/").precomputed())
             .omitEmptyStrings().trimResults();
-    private static final Pattern COLON_SLASH_SLASH = Pattern.compile("://", Pattern.LITERAL);
-    private static final String QUOTED_DOT = Matcher.quoteReplacement(".");
-    private static final Splitter DOT_SPLITTER = Splitter.on('.');
 
     public static final @NonNull String MODULE_INFO_CLASS_NAME = "$YangModuleInfoImpl";
     public static final @NonNull String MODULE_INFO_QNAMEOF_METHOD_NAME = "qnameOf";
@@ -156,83 +141,12 @@ public final class Naming {
     public static final @NonNull String RPC_INPUT_SUFFIX = "Input";
     public static final @NonNull String RPC_OUTPUT_SUFFIX = "Output";
 
-    private static final Interner<String> PACKAGE_INTERNER = Interners.newWeakInterner();
-    @Regex
-    private static final String ROOT_PACKAGE_PATTERN_STRING =
-            "(org.opendaylight.yang.gen.v1.[a-z0-9_\\.]*?\\.(?:rev[0-9][0-9][0-1][0-9][0-3][0-9]|norev))";
-    private static final Pattern ROOT_PACKAGE_PATTERN = Pattern.compile(ROOT_PACKAGE_PATTERN_STRING);
-
     private Naming() {
         // Hidden on purpose
     }
 
-    public static @NonNull String getRootPackageName(final QName module) {
-        return getRootPackageName(module.getModule());
-    }
-
-    public static @NonNull String getRootPackageName(final QNameModule module) {
-        final StringBuilder packageNameBuilder = new StringBuilder().append(PACKAGE_PREFIX).append('.');
-
-        String namespace = module.getNamespace().toString();
-        namespace = COLON_SLASH_SLASH.matcher(namespace).replaceAll(QUOTED_DOT);
-
-        final char[] chars = namespace.toCharArray();
-        for (int i = 0; i < chars.length; ++i) {
-            switch (chars[i]) {
-                case '/', ':', '-', '@', '$', '#', '\'', '*', '+', ',', ';', '=' -> chars[i] = '.';
-                default -> {
-                    // no-op
-                }
-            }
-        }
-
-        packageNameBuilder.append(chars);
-        if (chars[chars.length - 1] != '.') {
-            packageNameBuilder.append('.');
-        }
-
-        final Optional<Revision> optRev = module.getRevision();
-        if (optRev.isPresent()) {
-            // Revision is in format 2017-10-26, we want the output to be 171026, which is a matter of picking the
-            // right characters.
-            final String rev = optRev.get().toString();
-            checkArgument(rev.length() == 10, "Unsupported revision %s", rev);
-            packageNameBuilder.append("rev").append(rev, 2, 4).append(rev, 5, 7).append(rev.substring(8));
-        } else {
-            // No-revision packages are special
-            packageNameBuilder.append("norev");
-        }
-
-        return normalizePackageName(packageNameBuilder.toString());
-    }
-
-    public static @NonNull String normalizePackageName(final String packageName) {
-        final StringBuilder builder = new StringBuilder();
-        boolean first = true;
-
-        for (String p : DOT_SPLITTER.split(packageName.toLowerCase(Locale.ENGLISH))) {
-            if (first) {
-                first = false;
-            } else {
-                builder.append('.');
-            }
-
-            if (Character.isDigit(p.charAt(0)) || JAVA_RESERVED_WORDS.contains(p)) {
-                builder.append('_');
-            }
-            builder.append(p);
-        }
-
-        // Prevent duplication of input string
-        return PACKAGE_INTERNER.intern(builder.toString());
-    }
-
     public static @NonNull String getClassName(final String localName) {
         return toFirstUpper(toCamelCase(localName));
-    }
-
-    public static @NonNull String getClassName(final QName name) {
-        return toFirstUpper(toCamelCase(name.getLocalName()));
     }
 
     public static @NonNull String getMethodName(final String yangIdentifier) {
@@ -243,62 +157,12 @@ public final class Naming {
         return getMethodName(name.getLocalName());
     }
 
-    public static @NonNull String getGetterMethodName(final String localName) {
-        return GETTER_PREFIX + toFirstUpper(getPropertyName(localName));
-    }
-
-    public static @NonNull String getGetterMethodName(final QName name) {
-        return GETTER_PREFIX + getGetterSuffix(name);
-    }
-
-    public static boolean isGetterMethodName(final String methodName) {
-        return methodName.startsWith(GETTER_PREFIX);
-    }
-
-    public static @NonNull String getGetterMethodForNonnull(final String methodName) {
-        checkArgument(isNonnullMethodName(methodName));
-        return GETTER_PREFIX + methodName.substring(NONNULL_PREFIX.length());
-    }
-
-    public static @NonNull String getNonnullMethodName(final String localName) {
-        return NONNULL_PREFIX + toFirstUpper(getPropertyName(localName));
-    }
-
-    public static boolean isNonnullMethodName(final String methodName) {
-        return methodName.startsWith(NONNULL_PREFIX);
-    }
-
-    public static @NonNull String getGetterMethodForRequire(final String methodName) {
-        checkArgument(isRequireMethodName(methodName));
-        return GETTER_PREFIX + methodName.substring(REQUIRE_PREFIX.length());
-    }
-
-    public static @NonNull String getRequireMethodName(final String localName) {
-        return REQUIRE_PREFIX + toFirstUpper(getPropertyName(localName));
-    }
-
-    public static boolean isRequireMethodName(final String methodName) {
-        return methodName.startsWith(REQUIRE_PREFIX);
-    }
-
-    public static @NonNull String getGetterSuffix(final QName name) {
-        final String candidate = toFirstUpper(toCamelCase(name.getLocalName()));
-        return "Class".equals(candidate) ? "XmlClass" : candidate;
-    }
-
     public static @NonNull String getPropertyName(final String yangIdentifier) {
         final String potential = toFirstLower(toCamelCase(yangIdentifier));
         if ("class".equals(potential)) {
             return "xmlClass";
         }
         return potential;
-    }
-
-    // FIXME: this is legacy union/leafref property handling. The resulting value is *not* normalized for use as a
-    //        property.
-    public static @NonNull String getUnionLeafrefMemberName(final String unionClassSimpleName,
-            final String referencedClassSimpleName) {
-        return requireNonNull(referencedClassSimpleName) + requireNonNull(unionClassSimpleName) + "Value";
     }
 
     private static @NonNull String toCamelCase(final String rawString) {
@@ -363,72 +227,12 @@ public final class Naming {
      * @param qname RPC QName
      * @return The RPC method name as determined by considering the localname against the JLS.
      * @throws NullPointerException if {@code qname} is null
+     * @deprecated This method is used only by either deprecated methods or deprecated classes.
      */
+    @Deprecated
     public static @NonNull String getRpcMethodName(final @NonNull QName qname) {
         final String methodName = getMethodName(qname);
         return JAVA_RESERVED_WORDS.contains(methodName) ? methodName + "$" : methodName;
-    }
-
-    /**
-     * Returns root package name for supplied package name.
-     *
-     * @param packageName Package for which find model root package.
-     * @return Package of model root.
-     * @throws NullPointerException if {@code packageName} is {@code null}
-     * @throws IllegalArgumentException if {@code packageName} does not start with {@link #PACKAGE_PREFIX} or it does
-     *                                  not match package name formatting rules
-     */
-    public static @NonNull String getModelRootPackageName(final String packageName) {
-        checkArgument(packageName.startsWith(PACKAGE_PREFIX), "Package name not starting with %s, is: %s",
-            PACKAGE_PREFIX, packageName);
-        final var match = ROOT_PACKAGE_PATTERN.matcher(packageName);
-        checkArgument(match.find(), "Package name '%s' does not match required pattern '%s'", packageName,
-            ROOT_PACKAGE_PATTERN_STRING);
-        return match.group(0);
-    }
-
-    /**
-     * Returns Java identifiers, conforming to JLS9 Section 3.8 to use for specified YANG assigned names
-     * (RFC7950 Section 9.6.4). This method considers two distinct encodings: one the pre-Fluorine mapping, which is
-     * okay and convenient for sane strings, and an escaping-based bijective mapping which works for all possible
-     * Unicode strings.
-     *
-     * @param assignedNames Collection of assigned names
-     * @return A BiMap keyed by assigned name, with Java identifiers as values
-     * @throws NullPointerException if assignedNames is null or contains null items
-     * @throws IllegalArgumentException if any of the names is empty
-     */
-    public static BiMap<String, String> mapEnumAssignedNames(final Collection<String> assignedNames) {
-        /*
-         * Original mapping assumed strings encountered are identifiers, hence it used getClassName to map the names
-         * and that function is not an injection -- this is evidenced in MDSAL-208 and results in a failure to compile
-         * generated code. If we encounter such a conflict or if the result is not a valid identifier (like '*'), we
-         * abort and switch the mapping schema to mapEnumAssignedName(), which is a bijection.
-         *
-         * Note that assignedNames can contain duplicates, which must not trigger a duplication fallback.
-         */
-        final BiMap<String, String> javaToYang = HashBiMap.create(assignedNames.size());
-        boolean valid = true;
-        for (String name : assignedNames) {
-            checkArgument(!name.isEmpty());
-            if (!javaToYang.containsValue(name)) {
-                final String mappedName = getClassName(name);
-                if (!isValidJavaIdentifier(mappedName) || javaToYang.forcePut(mappedName, name) != null) {
-                    valid = false;
-                    break;
-                }
-            }
-        }
-
-        if (!valid) {
-            // Fall back to bijective mapping
-            javaToYang.clear();
-            for (String name : assignedNames) {
-                javaToYang.put(mapEnumAssignedName(name), name);
-            }
-        }
-
-        return javaToYang.inverse();
     }
 
     /**
@@ -447,13 +251,13 @@ public final class Naming {
     // See https://docs.oracle.com/javase/specs/jls/se16/html/jls-3.html#jls-3.8
     // TODO: we are being conservative here, but should differentiate TypeIdentifier and UnqualifiedMethodIdentifier,
     //       which have different exclusions
-    private static boolean isValidJavaIdentifier(final String str) {
+    public static boolean isValidJavaIdentifier(final String str) {
         return !str.isEmpty() && !JAVA_RESERVED_WORDS.contains(str)
                 && Character.isJavaIdentifierStart(str.codePointAt(0))
                 && str.codePoints().skip(1).allMatch(Character::isJavaIdentifierPart);
     }
 
-    private static String mapEnumAssignedName(final String assignedName) {
+    public static String mapEnumAssignedName(final String assignedName) {
         checkArgument(!assignedName.isEmpty());
 
         // Mapping rules:

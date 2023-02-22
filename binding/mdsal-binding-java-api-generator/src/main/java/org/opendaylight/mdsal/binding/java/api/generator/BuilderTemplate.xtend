@@ -34,7 +34,6 @@ import org.opendaylight.mdsal.binding.model.api.ParameterizedType
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.ri.TypeConstants
 import org.opendaylight.mdsal.binding.model.ri.Types
-import org.opendaylight.yangtools.yang.binding.contract.Naming
 
 /**
  * Template for generating JAVA builder classes.
@@ -167,7 +166,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «IF (implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))»
             «val ifc = implementedIfc as GeneratedType»
             «FOR getter : ifc.nonDefaultMethods»
-                «IF Naming.isGetterMethodName(getter.name)»
+                «IF isGetterMethodName(getter.name)»
                     «val propertyName = getter.propertyNameFromGetter»
                     «printPropertySetter(getter, '''arg.«getter.name»()''', propertyName)»;
                 «ENDIF»
@@ -182,7 +181,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «IF (implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))»
             «val ifc = implementedIfc as GeneratedType»
             «FOR getter : ifc.nonDefaultMethods»
-                «IF Naming.isGetterMethodName(getter.name) && getterByName(alreadySetProperties, getter.name).isEmpty»
+                «IF isGetterMethodName(getter.name) && getterByName(alreadySetProperties, getter.name).isEmpty»
                     «val propertyName = getter.propertyNameFromGetter»
                     «printPropertySetter(getter, '''arg.«getter.name»()''', propertyName)»;
                 «ENDIF»
@@ -287,7 +286,7 @@ class BuilderTemplate extends AbstractBuilderTemplate {
         «IF (implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))»
         «val ifc = implementedIfc as GeneratedType»
         «FOR getter : ifc.nonDefaultMethods»
-            «IF Naming.isGetterMethodName(getter.name) && !hasOverrideAnnotation(getter)»
+            «IF isGetterMethodName(getter.name) && !hasOverrideAnnotation(getter)»
                 «printPropertySetter(getter, '''castArg.«getter.name»()''', getter.propertyNameFromGetter)»;
             «ENDIF»
         «ENDFOR»

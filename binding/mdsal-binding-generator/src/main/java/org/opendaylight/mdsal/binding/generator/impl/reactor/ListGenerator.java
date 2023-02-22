@@ -108,7 +108,7 @@ final class ListGenerator extends CompositeSchemaTreeGenerator<ListEffectiveStat
             .setMechanics(ValueMechanics.NULLIFY_EMPTY);
 
         final MethodSignatureBuilder nonnull = builder
-            .addMethod(Naming.getNonnullMethodName(localName().getLocalName()))
+            .addMethod(getNonnullMethodName(localName().getLocalName()))
             .setReturnType(returnType)
             .setDefault(true);
         annotateDeprecatedIfNecessary(nonnull);
