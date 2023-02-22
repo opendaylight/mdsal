@@ -20,6 +20,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -203,7 +204,7 @@ public abstract class Generator implements Iterable<Generator> {
     @NonNull String createJavaPackage() {
         final String parentPackage = getPackageParent().javaPackage();
         final String myPackage = getMember().currentPackage();
-        return Naming.normalizePackageName(parentPackage + '.' + myPackage);
+        return normalizePackageName(parentPackage + '.' + myPackage);
     }
 
     final @NonNull JavaTypeName typeName() {
@@ -251,6 +252,27 @@ public abstract class Generator implements Iterable<Generator> {
         }
 
         builder.addImplementsType(BindingTypes.childOf(Type.of(ancestor.typeName())));
+    }
+
+    static @NonNull String normalizePackageName(final String packageName) {
+        final StringBuilder builder = new StringBuilder();
+        boolean first = true;
+
+        for (String p : Naming.DOT_SPLITTER.split(packageName.toLowerCase(Locale.ENGLISH))) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append('.');
+            }
+
+            if (Character.isDigit(p.charAt(0)) || Naming.JAVA_RESERVED_WORDS.contains(p)) {
+                builder.append('_');
+            }
+            builder.append(p);
+        }
+
+        // Prevent duplication of input string
+        return Naming.PACKAGE_INTERNER.intern(builder.toString());
     }
 
     /**
