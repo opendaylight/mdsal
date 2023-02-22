@@ -21,7 +21,6 @@ import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParser;
@@ -93,7 +92,7 @@ public final class ModuleInfoSnapshotBuilder {
             mappedInfos.put(source.getIdentifier(), info);
 
             final Class<?> infoClass = info.getClass();
-            classLoaders.put(Naming.getModelRootPackageName(infoClass.getPackage().getName()),
+            classLoaders.put(BindingReflections.getModelRootPackageName(infoClass.getPackage().getName()),
                 infoClass.getClassLoader());
 
             try {
