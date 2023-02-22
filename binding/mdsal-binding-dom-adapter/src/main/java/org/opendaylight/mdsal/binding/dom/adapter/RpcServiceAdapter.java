@@ -14,11 +14,11 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.opendaylight.mdsal.binding.runtime.api.RpcRuntimeType;
-import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
+import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
 
 @Deprecated
@@ -44,7 +44,7 @@ final class RpcServiceAdapter extends AbstractRpcAdapter {
             .map(rpc -> {
                 final var rpcName = rpc.argument();
                 final var inputClz = runtimeContext.getRpcInput(rpcName);
-                final var methodName = BindingMapping.getRpcMethodName(rpcName);
+                final var methodName = Naming.getRpcMethodName(rpcName);
 
                 final Method method;
                 try {
