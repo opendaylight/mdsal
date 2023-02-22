@@ -12,11 +12,13 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -55,14 +57,24 @@ public class DefaultBindingGeneratorTest {
         JavaTypeName.create(TEST_TYPE_PROVIDER_B, "TestTypeProviderBData");
     public static final JavaTypeName TEST_TYPE_PROVIDER_FOO =
         JavaTypeName.create(TEST_TYPE_PROVIDER, "Foo");
+    public static final Map<String, String> SOURCE_TO_PACKAGE = Map.of(
+            "/base-yang-types.yang",
+            "org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914",
+
+            "/test-type-provider.yang",
+            "org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.type.provider.model.rev140912",
+
+            "/test-type-provider-b.yang",
+            "org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.type.provider.b.model.rev140915"
+    );
+    public static final Set<String> RESOURCES = SOURCE_TO_PACKAGE.keySet();
 
     public static EffectiveModelContext SCHEMA_CONTEXT;
     public static List<GeneratedType> TYPES;
 
     @BeforeClass
     public static void beforeClass() {
-        SCHEMA_CONTEXT = YangParserTestUtils.parseYangResources(DefaultBindingGeneratorTest.class,
-            "/base-yang-types.yang", "/test-type-provider-b.yang", "/test-type-provider.yang");
+        SCHEMA_CONTEXT = YangParserTestUtils.parseYangResources(DefaultBindingGeneratorTest.class, RESOURCES);
         TYPES = DefaultBindingGenerator.generateFor(SCHEMA_CONTEXT);
     }
 
@@ -70,6 +82,25 @@ public class DefaultBindingGeneratorTest {
     public static void afterClass() {
         SCHEMA_CONTEXT = null;
         TYPES = null;
+    }
+
+    @Test
+    public void assertRootPackageCorrectness() {
+        final var mapping = new DefaultBindingGenerator().generateMappingForModuleGenerators(SCHEMA_CONTEXT);
+        assertEquals("number of distinct resources must be equal to generated module generators",
+                mapping.values().size(), RESOURCES.size());
+
+        RESOURCES.stream()
+                .forEach(name -> {
+                    final var module = mapping.keySet()
+                            .stream()
+                            .filter(m -> m.getName().equals(getResourceName(name)))
+                            .findFirst()
+                            .orElseThrow(() -> new IllegalArgumentException("Unknown yang source name"));
+                    final var expected = SOURCE_TO_PACKAGE.get(name);
+                    final var generated = mapping.get(module).getRootPackageName();
+                    assertEquals(expected, generated);
+                });
     }
 
     @Test
@@ -314,5 +345,17 @@ public class DefaultBindingGeneratorTest {
         final var type = assertGeneratedType(name);
         assertThat(type, instanceOf(GeneratedTransferObject.class));
         return (GeneratedTransferObject) type;
+    }
+
+
+    private static String getResourceName(final String yangFileDestination) {
+        assertNotNull(yangFileDestination);
+        assertFalse("Yang source destination can not be empty, nor blank",
+                yangFileDestination.isEmpty() && yangFileDestination.isBlank());
+        assertTrue("Yang source destination is expected to have .yang extension",
+                yangFileDestination.endsWith(".yang"));
+        final int dot = yangFileDestination.lastIndexOf(".");
+        final int sep = yangFileDestination.lastIndexOf("/");
+        return yangFileDestination.substring(sep + 1, dot);
     }
 }

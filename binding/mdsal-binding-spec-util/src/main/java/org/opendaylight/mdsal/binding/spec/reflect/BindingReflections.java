@@ -24,6 +24,9 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.checkerframework.checker.regex.qual.Regex;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.Action;
@@ -48,6 +51,11 @@ import org.slf4j.LoggerFactory;
 
 public final class BindingReflections {
     private static final Logger LOG = LoggerFactory.getLogger(BindingReflections.class);
+    @Regex
+    private static final String ROOT_PACKAGE_PATTERN_STRING =
+            "(org.opendaylight.yang.gen.v1.[a-z0-9_\\.]*?\\.(?:rev[0-9][0-9][0-1][0-9][0-3][0-9]|norev))";
+    private static final Pattern ROOT_PACKAGE_PATTERN = Pattern.compile(ROOT_PACKAGE_PATTERN_STRING);
+
     private static final LoadingCache<Class<?>, Optional<QName>> CLASS_TO_QNAME = CacheBuilder.newBuilder()
             .weakKeys()
             .expireAfterAccess(60, TimeUnit.SECONDS)
@@ -124,27 +132,18 @@ public final class BindingReflections {
     }
 
     /**
-     * Returns root package name for supplied package.
-     *
-     * @param pkg Package for which find model root package.
-     * @deprecated Use {@link Naming#getModelRootPackageName(String)} instead.
-     */
-    @Deprecated(since = "11.0.3", forRemoval = true)
-    public static String getModelRootPackageName(final Package pkg) {
-        return getModelRootPackageName(pkg.getName());
-    }
-
-    /**
      * Returns root package name for supplied package name.
      *
-     * @param name Package for which find model root package.
+     * @param packageName Package for which find model root package.
      * @return Package of model root.
-     * @deprecated Use {@link Naming#getModelRootPackageName(String)} instead.
      */
-    @Deprecated(since = "11.0.3", forRemoval = true)
-    public static String getModelRootPackageName(final String name) {
-        checkArgument(name != null, "Package name should not be null.");
-        return Naming.getModelRootPackageName(name);
+    public static @NonNull String getModelRootPackageName(final String packageName) {
+        checkArgument(packageName.startsWith(Naming.PACKAGE_PREFIX), "Package name not starting with %s, is: %s",
+                Naming.PACKAGE_PREFIX, packageName);
+        final Matcher match = ROOT_PACKAGE_PATTERN.matcher(packageName);
+        checkArgument(match.find(), "Package name '%s' does not match required pattern '%s'", packageName,
+                ROOT_PACKAGE_PATTERN_STRING);
+        return match.group(0);
     }
 
     public static QNameModule getQNameModule(final Class<?> clz) {
@@ -163,7 +162,7 @@ public final class BindingReflections {
      * @return Instance of {@link YangModuleInfo} associated with model, from which this class was derived.
      */
     public static @NonNull YangModuleInfo getModuleInfo(final Class<?> cls) {
-        final String packageName = Naming.getModelRootPackageName(cls.getPackage().getName());
+        final String packageName = getModelRootPackageName(cls.getPackage().getName());
         final String potentialClassName = getModuleInfoClassName(packageName);
         final Class<?> moduleInfoClass;
         try {
