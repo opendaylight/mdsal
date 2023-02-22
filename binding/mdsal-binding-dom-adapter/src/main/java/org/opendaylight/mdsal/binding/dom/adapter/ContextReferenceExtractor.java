@@ -14,10 +14,10 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
+import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,7 +114,7 @@ abstract sealed class ContextReferenceExtractor {
     private static @Nullable Method findGetValueMethod(final Class<?> type, final Class<?> returnType) {
         final Method method;
         try {
-            method = type.getMethod(BindingMapping.SCALAR_TYPE_OBJECT_GET_VALUE_NAME);
+            method = type.getMethod(Naming.SCALAR_TYPE_OBJECT_GET_VALUE_NAME);
         } catch (NoSuchMethodException e) {
             LOG.warn("Value class {} does not comform to Binding Specification v1.", type, e);
             return null;
