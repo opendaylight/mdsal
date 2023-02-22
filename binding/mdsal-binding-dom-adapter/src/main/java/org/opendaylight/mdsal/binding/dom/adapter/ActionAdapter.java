@@ -19,13 +19,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
-import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
+import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
@@ -59,7 +59,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMActionService> imple
                     return spec.type().getName() + "$Adapter{delegate=" + getDelegate() + "}";
                 }
                 break;
-            case BindingMapping.ACTION_INVOKE_NAME:
+            case Naming.ACTION_INVOKE_NAME:
                 if (args.length == 2) {
                     final InstanceIdentifier<?> path = (InstanceIdentifier<?>) requireNonNull(args[0]);
                     checkArgument(!path.isWildcarded(), "Cannot invoke action on wildcard path %s", path);
