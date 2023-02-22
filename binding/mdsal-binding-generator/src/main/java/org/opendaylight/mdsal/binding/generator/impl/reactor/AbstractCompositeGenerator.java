@@ -26,6 +26,7 @@ import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.yangtools.rfc8040.model.api.YangDataEffectiveStatement;
+import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AddedByUsesAware;
 import org.opendaylight.yangtools.yang.model.api.CopyableNode;
@@ -441,6 +442,10 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
             builder.addImplementsType(grp.getGeneratedType(builderFactory));
         }
         return groupings.size();
+    }
+
+    static @NonNull String getNonnullMethodName(final String localName) {
+        return getPrefixedMethodName(localName, Naming.NONNULL_PREFIX);
     }
 
     static final void addAugmentable(final GeneratedTypeBuilder builder) {
