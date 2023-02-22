@@ -39,13 +39,13 @@ import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.ForwardingBindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
-import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
+import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -183,8 +183,7 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         try {
             for (var rpcDef : module.getRpcs()) {
                 final var rpcName = rpcDef.getQName();
-                ret.put(rpcName, key.getMethod(BindingMapping.getRpcMethodName(rpcName),
-                    runtimeContext.getRpcInput(rpcName)));
+                ret.put(rpcName, key.getMethod(Naming.getRpcMethodName(rpcName), runtimeContext.getRpcInput(rpcName)));
             }
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException("Rpc defined in model does not have representation in generated class.", e);
