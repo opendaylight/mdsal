@@ -8,7 +8,9 @@
 package org.opendaylight.mdsal.binding.dom.codec.spi;
 
 import com.google.common.annotations.Beta;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 
 @Beta
@@ -18,6 +20,12 @@ public final class BindingSchemaMapping {
     }
 
     public static String getGetterMethodName(final DataSchemaNode node) {
-        return Naming.getGetterMethodName(node.getQName());
+        return getGetterMethodName(node.getQName());
+    }
+
+    private static @NonNull String getGetterMethodName(final QName name) {
+        final String candidate = Naming.getClassName(name.getLocalName());
+        final String getterSuffix = "Class".equals(candidate) ? "XmlClass" : candidate;
+        return Naming.GETTER_PREFIX + getterSuffix;
     }
 }
