@@ -56,8 +56,10 @@ public class InstanceIdentifierTest {
     @Test
     public void fluentConstruction() {
         final InstanceIdentifier<Nodes> nodes = InstanceIdentifier.builder(Nodes.class).build();
-        final InstanceIdentifier<Node> node =
-                InstanceIdentifier.builder(Nodes.class).child(Node.class,new NodeKey(10)).build();
+        final var node =
+                InstanceIdentifier.builder(Nodes.class)
+                        .child(Node.class,new NodeKey(10))
+                        .build();
 
         assertNotNull(node);
         assertEquals(Node.class, node.getTargetType());
