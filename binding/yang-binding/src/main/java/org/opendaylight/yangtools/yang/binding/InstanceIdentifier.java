@@ -429,6 +429,11 @@ public class InstanceIdentifier<T extends DataObject>
         return new InstanceIdentifierBuilderImpl<>(Item.of(targetType), pathArguments, hash, isWildcarded());
     }
 
+    @Serial
+    private Object writeReplace() throws ObjectStreamException {
+        return new InstanceIdentifierV3<>(this);
+    }
+
     /**
      * Create an InstanceIdentifierBuilder for a specific type of InstanceIdentifier as specified by container.
      *
@@ -470,7 +475,7 @@ public class InstanceIdentifier<T extends DataObject>
      * @throws NullPointerException if any argument is null
      */
     public static <N extends Identifiable<K> & ChildOf<? extends DataRoot>,
-            K extends Identifier<N>> @NonNull InstanceIdentifierBuilder<N> builder(final Class<N> listItem,
+            K extends Identifier<N>> @NonNull KeyedBuilder<N, K> builder(final Class<N> listItem,
                     final K listKey) {
         return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(listItem, listKey));
     }
@@ -490,7 +495,7 @@ public class InstanceIdentifier<T extends DataObject>
      */
     public static <C extends ChoiceIn<? extends DataRoot> & DataObject,
             N extends Identifiable<K> & ChildOf<? super C>, K extends Identifier<N>>
-            @NonNull InstanceIdentifierBuilder<N> builder(final Class<C> caze, final Class<N> listItem,
+            @NonNull KeyedBuilder<N, K> builder(final Class<C> caze, final Class<N> listItem,
                     final K listKey) {
         return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(caze, listItem, listKey));
     }
@@ -511,7 +516,7 @@ public class InstanceIdentifier<T extends DataObject>
 
     public static <R extends DataRoot & DataObject, N extends Identifiable<K> & ChildOf<? super R>,
             K extends Identifier<N>>
-            @NonNull InstanceIdentifierBuilder<N> builderOfInherited(final Class<R> root,
+            @NonNull KeyedBuilder<N, K> builderOfInherited(final Class<R> root,
                 final Class<N> listItem, final K listKey) {
         // FIXME: we are losing root identity, hence namespaces may not work correctly
         return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(listItem, listKey));
@@ -519,7 +524,7 @@ public class InstanceIdentifier<T extends DataObject>
 
     public static <R extends DataRoot & DataObject, C extends ChoiceIn<? super R> & DataObject,
             N extends Identifiable<K> & ChildOf<? super C>, K extends Identifier<N>>
-            @NonNull InstanceIdentifierBuilder<N> builderOfInherited(final Class<R> root,
+            @NonNull KeyedBuilder<N, K> builderOfInherited(final Class<R> root,
                 final Class<C> caze, final Class<N> listItem, final K listKey) {
         // FIXME: we are losing root identity, hence namespaces may not work correctly
         return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(caze, listItem, listKey));
@@ -871,7 +876,6 @@ public class InstanceIdentifier<T extends DataObject>
     }
 
     // FIXME: rename to 'Builder'
-    // FIXME: introduce KeyedBuilder with specialized build() method
     public interface InstanceIdentifierBuilder<T extends DataObject> {
         /**
          * Append the specified container as a child of the current InstanceIdentifier referenced by the builder. This
@@ -920,7 +924,7 @@ public class InstanceIdentifier<T extends DataObject>
          * @throws NullPointerException if any argument is null
          */
         <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
-                @NonNull InstanceIdentifierBuilder<N> child(Class<@NonNull N> listItem, K listKey);
+                @NonNull KeyedBuilder<N, K> child(Class<@NonNull N> listItem, K listKey);
 
         /**
          * Append the specified listItem as a child of the current InstanceIdentifier referenced by the builder. This
@@ -937,7 +941,7 @@ public class InstanceIdentifier<T extends DataObject>
          * @throws NullPointerException if any argument is null
          */
         <C extends ChoiceIn<? super T> & DataObject, K extends Identifier<N>,
-                N extends Identifiable<K> & ChildOf<? super C>> @NonNull InstanceIdentifierBuilder<N> child(
+                N extends Identifiable<K> & ChildOf<? super C>> @NonNull KeyedBuilder<N, K> child(
                         Class<C> caze, Class<N> listItem, K listKey);
 
         /**
@@ -960,8 +964,14 @@ public class InstanceIdentifier<T extends DataObject>
         @NonNull InstanceIdentifier<T> build();
     }
 
-    @Serial
-    private Object writeReplace() throws ObjectStreamException {
-        return new InstanceIdentifierV3<>(this);
+    public interface KeyedBuilder<T extends DataObject & Identifiable<K>, K extends Identifier<T>>
+            extends InstanceIdentifierBuilder<T> {
+        /**
+         * Build the instance identifier.
+         *
+         * @return Resulting instance identifier.
+         */
+        @Override
+        @NonNull KeyedInstanceIdentifier<T, K> build();
     }
 }
