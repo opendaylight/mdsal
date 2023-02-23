@@ -20,6 +20,10 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 // FIXME: move this to 'BindingNamespace' in binding-spec-util
 enum StatementNamespace {
     /**
+     * The namespace of all {@code extension} statements, bullet 2.
+     */
+    EXTENSION("$X"),
+    /**
      * The namespace of all {@code feature} statements, bullet 3.
      */
     FEATURE("$F"),
