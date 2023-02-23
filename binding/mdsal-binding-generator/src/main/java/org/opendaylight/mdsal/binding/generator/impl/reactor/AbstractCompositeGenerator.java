@@ -37,6 +37,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.AugmentEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.CaseEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ChoiceEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ContainerEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.ExtensionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.FeatureEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.GroupingEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.IdentityEffectiveStatement;
@@ -493,6 +494,8 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
                 if (isOriginalDeclaration(container)) {
                     tmp.add(new ContainerGenerator(container, this));
                 }
+            } else if (stmt instanceof ExtensionEffectiveStatement ext && this instanceof ModuleGenerator parent) {
+                tmp.add(new ExtensionGenerator(ext, parent));
             } else if (stmt instanceof FeatureEffectiveStatement feature && this instanceof ModuleGenerator parent) {
                 tmp.add(new FeatureGenerator(feature, parent));
             } else if (stmt instanceof GroupingEffectiveStatement grouping) {
