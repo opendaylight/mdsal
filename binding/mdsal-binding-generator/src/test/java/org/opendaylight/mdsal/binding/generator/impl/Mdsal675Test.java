@@ -41,7 +41,7 @@ public class Mdsal675Test {
                 YangParserTestUtils.parseYangResources(Mdsal675Test.class,
                         "/yang-data-models/ietf-restconf.yang", "/yang-data-models/yang-data-demo.yang"));
         assertNotNull(allGenTypes);
-        assertEquals(29, allGenTypes.size());
+        assertEquals(30, allGenTypes.size());
         final Map<String, GeneratedType> genTypesMap = allGenTypes.stream()
                 .collect(ImmutableMap.toImmutableMap(type -> type.getIdentifier().toString(), type -> type));
 
@@ -139,7 +139,7 @@ public class Mdsal675Test {
                 YangParserTestUtils.parseYangResources(Mdsal675Test.class,
                         "/yang-data-models/ietf-restconf.yang", "/yang-data-models/yang-data-naming.yang"));
         assertNotNull(allGenTypes);
-        assertEquals(22, allGenTypes.size());
+        assertEquals(23, allGenTypes.size());
         final Set<String> genTypeNames =
                 allGenTypes.stream().map(type -> type.getIdentifier().toString()).collect(Collectors.toSet());
 

@@ -25,7 +25,7 @@ public class BindingGeneratorImplTest {
             BindingGeneratorImplTest.class,
             "/isis-topology/network-topology@2013-10-21.yang", "/isis-topology/isis-topology@2013-10-21.yang",
             "/isis-topology/l3-unicast-igp-topology@2013-10-21.yang"));
-        assertEquals(11, generateTypes.size());
+        assertEquals(12, generateTypes.size());
     }
 
     @Test
