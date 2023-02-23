@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2023 PANTHEON.tech s.r.o. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -17,34 +17,24 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier.KeyedInstanceIdentifierBuilder;
 
-final class InstanceIdentifierBuilderImpl<T extends DataObject> extends
-        AbstractInstanceIdentifierBuilder<T>
-        implements InstanceIdentifierBuilder<T> {
+public class KeyedInstanceIdentifierBuilderImpl<T extends DataObject & Identifiable<K>,K extends Identifier<T>>
+        extends AbstractInstanceIdentifierBuilder<T> implements KeyedInstanceIdentifierBuilder<T,K> {
 
-    InstanceIdentifierBuilderImpl() {
-        super();
-    }
-
-    InstanceIdentifierBuilderImpl(final PathArgument item, final Iterable<? extends PathArgument> pathArguments,
-            final int hash, final boolean wildcard) {
-        super(item, pathArguments, hash, wildcard);
-    }
-
-    InstanceIdentifierBuilderImpl(final PathArgument item, final Iterable<? extends PathArgument> pathArguments,
+    KeyedInstanceIdentifierBuilderImpl(final PathArgument item, final Iterable<? extends PathArgument> pathArguments,
             ImmutableList.Builder<PathArgument> pathBuilder, final int hash, final boolean wildcard) {
         super(item, pathArguments, pathBuilder, hash, wildcard);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected <N extends DataObject> InstanceIdentifierBuilderImpl<N> getInstanceIdentifierBuilder() {
-        return (InstanceIdentifierBuilderImpl<N>) this;
+        return new InstanceIdentifierBuilderImpl<>(arg, basePath, pathBuilder, hashCode(), wildcard);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected <N extends DataObject & Identifiable<K>, K extends Identifier<N>>
-        KeyedInstanceIdentifierBuilderImpl<N, K> getKeyedInstanceIdentifierBuilder(K key) {
-        return new KeyedInstanceIdentifierBuilderImpl<>(arg, basePath, pathBuilder, hashCode(), wildcard);
+    protected <N extends DataObject & Identifiable<Y>, Y extends Identifier<N>>
+        KeyedInstanceIdentifierBuilderImpl<N, Y> getKeyedInstanceIdentifierBuilder(Y key) {
+        return (KeyedInstanceIdentifierBuilderImpl<N,Y>) this;
     }
 
     @Override
@@ -66,8 +56,8 @@ final class InstanceIdentifierBuilderImpl<T extends DataObject> extends
 
     @Override
     public <C extends ChoiceIn<? super T> & DataObject, K extends Identifier<N>,
-        N extends Identifiable<K> & ChildOf<? super C>> @NonNull KeyedInstanceIdentifierBuilder<N,K>
-        child(final Class<C> caze, final Class<N> listItem, final K listKey) {
+            N extends Identifiable<K> & ChildOf<? super C>> @NonNull KeyedInstanceIdentifierBuilder<N,K> child(
+                    final Class<C> caze, final Class<N> listItem, final K listKey) {
         return addNode(IdentifiableItem.of(caze, listItem, listKey));
     }
 
