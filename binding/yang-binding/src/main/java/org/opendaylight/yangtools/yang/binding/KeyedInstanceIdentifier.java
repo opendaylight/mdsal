@@ -62,4 +62,92 @@ public class KeyedInstanceIdentifier<T extends Identifiable<K> & DataObject, K e
     private Object writeReplace() throws ObjectStreamException {
         return new KeyedInstanceIdentifierV2<>(this);
     }
+
+    public interface KeyedInstanceIdentifierBuilder<T extends DataObject & Identifiable<K>, K extends Identifier<T>> {
+        /**
+         * Append the specified container as a child of the current InstanceIdentifier referenced by the builder. This
+         * method should be used when you want to build an instance identifier by appending top-level elements, for
+         * example
+         * <pre>
+         *     InstanceIdentifier.builder().child(Nodes.class).build();
+         * </pre>
+         *
+         * <p>
+         * NOTE :- The above example is only for illustration purposes InstanceIdentifier.builder() has been deprecated
+         * and should not be used. Use InstanceIdentifier.builder(Nodes.class) instead
+         *
+         * @param container Container to append
+         * @param <N> Container type
+         * @return this builder
+         * @throws NullPointerException if {@code container} is null
+         */
+        <N extends ChildOf<? super T>> @NonNull InstanceIdentifierBuilder<N> child(Class<N> container);
+
+        /**
+         * Append the specified container as a child of the current InstanceIdentifier referenced by the builder. This
+         * method should be used when you want to build an instance identifier by appending a container node to the
+         * identifier and the {@code container} is defined in a {@code grouping} used in a {@code case} statement.
+         *
+         * @param caze Choice case class
+         * @param container Container to append
+         * @param <C> Case type
+         * @param <N> Container type
+         * @return this builder
+         * @throws NullPointerException if {@code container} is null
+         */
+        <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>>
+            @NonNull InstanceIdentifierBuilder<N> child(Class<C> caze, Class<N> container);
+
+        /**
+         * Append the specified listItem as a child of the current InstanceIdentifier referenced by the builder. This
+         * method should be used when you want to build an instance identifier by appending a specific list element to
+         * the identifier.
+         *
+         * @param listItem List to append
+         * @param listKey List key
+         * @param <N> List type
+         * @param <K> Key type
+         * @return this builder
+         * @throws NullPointerException if any argument is null
+         */
+        <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
+            @NonNull KeyedInstanceIdentifierBuilder<N,K> child(Class<@NonNull N> listItem, K listKey);
+
+        /**
+         * Append the specified listItem as a child of the current InstanceIdentifier referenced by the builder. This
+         * method should be used when you want to build an instance identifier by appending a specific list element to
+         * the identifier and the {@code list} is defined in a {@code grouping} used in a {@code case} statement.
+         *
+         * @param caze Choice case class
+         * @param listItem List to append
+         * @param listKey List key
+         * @param <C> Case type
+         * @param <N> List type
+         * @param <K> Key type
+         * @return this builder
+         * @throws NullPointerException if any argument is null
+         */
+        <C extends ChoiceIn<? super T> & DataObject, K extends Identifier<N>,
+                N extends Identifiable<K> & ChildOf<? super C>> @NonNull KeyedInstanceIdentifierBuilder<N,K> child(
+                Class<C> caze, Class<N> listItem, K listKey);
+
+        /**
+         * Build an identifier which refers to a specific augmentation of the current InstanceIdentifier referenced by
+         * the builder.
+         *
+         * @param container augmentation class
+         * @param <N> augmentation type
+         * @return this builder
+         * @throws NullPointerException if {@code container} is null
+         */
+        <N extends DataObject & Augmentation<? super T>> @NonNull InstanceIdentifierBuilder<N> augmentation(
+                Class<N> container);
+
+        /**
+         * Build the instance identifier.
+         *
+         * @return Resulting instance identifier.
+         */
+        @NonNull InstanceIdentifier<T> build();
+    }
 }

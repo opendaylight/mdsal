@@ -30,6 +30,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.HierarchicalIdentifier;
 import org.opendaylight.yangtools.util.HashCodeBuilder;
+import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier.KeyedInstanceIdentifierBuilder;
 
 /**
  * This instance identifier uniquely identifies a specific DataObject in the data tree modeled by YANG.
@@ -470,7 +471,7 @@ public class InstanceIdentifier<T extends DataObject>
      * @throws NullPointerException if any argument is null
      */
     public static <N extends Identifiable<K> & ChildOf<? extends DataRoot>,
-            K extends Identifier<N>> @NonNull InstanceIdentifierBuilder<N> builder(final Class<N> listItem,
+            K extends Identifier<N>> @NonNull KeyedInstanceIdentifierBuilder<N, K> builder(final Class<N> listItem,
                     final K listKey) {
         return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(listItem, listKey));
     }
@@ -490,7 +491,7 @@ public class InstanceIdentifier<T extends DataObject>
      */
     public static <C extends ChoiceIn<? extends DataRoot> & DataObject,
             N extends Identifiable<K> & ChildOf<? super C>, K extends Identifier<N>>
-            @NonNull InstanceIdentifierBuilder<N> builder(final Class<C> caze, final Class<N> listItem,
+            @NonNull KeyedInstanceIdentifierBuilder<N, K> builder(final Class<C> caze, final Class<N> listItem,
                     final K listKey) {
         return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(caze, listItem, listKey));
     }
@@ -511,7 +512,7 @@ public class InstanceIdentifier<T extends DataObject>
 
     public static <R extends DataRoot & DataObject, N extends Identifiable<K> & ChildOf<? super R>,
             K extends Identifier<N>>
-            @NonNull InstanceIdentifierBuilder<N> builderOfInherited(final Class<R> root,
+            @NonNull KeyedInstanceIdentifierBuilder<N, K> builderOfInherited(final Class<R> root,
                 final Class<N> listItem, final K listKey) {
         // FIXME: we are losing root identity, hence namespaces may not work correctly
         return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(listItem, listKey));
@@ -519,7 +520,7 @@ public class InstanceIdentifier<T extends DataObject>
 
     public static <R extends DataRoot & DataObject, C extends ChoiceIn<? super R> & DataObject,
             N extends Identifiable<K> & ChildOf<? super C>, K extends Identifier<N>>
-            @NonNull InstanceIdentifierBuilder<N> builderOfInherited(final Class<R> root,
+            @NonNull KeyedInstanceIdentifierBuilder<N, K> builderOfInherited(final Class<R> root,
                 final Class<C> caze, final Class<N> listItem, final K listKey) {
         // FIXME: we are losing root identity, hence namespaces may not work correctly
         return new InstanceIdentifierBuilderImpl<N>().addNode(IdentifiableItem.of(caze, listItem, listKey));
@@ -920,7 +921,7 @@ public class InstanceIdentifier<T extends DataObject>
          * @throws NullPointerException if any argument is null
          */
         <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>>
-                @NonNull InstanceIdentifierBuilder<N> child(Class<@NonNull N> listItem, K listKey);
+                @NonNull KeyedInstanceIdentifierBuilder<N, K> child(Class<@NonNull N> listItem, K listKey);
 
         /**
          * Append the specified listItem as a child of the current InstanceIdentifier referenced by the builder. This
@@ -937,7 +938,7 @@ public class InstanceIdentifier<T extends DataObject>
          * @throws NullPointerException if any argument is null
          */
         <C extends ChoiceIn<? super T> & DataObject, K extends Identifier<N>,
-                N extends Identifiable<K> & ChildOf<? super C>> @NonNull InstanceIdentifierBuilder<N> child(
+                N extends Identifiable<K> & ChildOf<? super C>> @NonNull KeyedInstanceIdentifierBuilder<N, K> child(
                         Class<C> caze, Class<N> listItem, K listKey);
 
         /**
