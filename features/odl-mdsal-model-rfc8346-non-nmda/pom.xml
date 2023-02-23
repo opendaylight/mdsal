@@ -11,13 +11,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>11.0.7-SNAPSHOT</version>
+        <version>11.0.7</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-rfc8346-non-nmda</artifactId>
-    <version>11.0.7-SNAPSHOT</version>
+    <version>11.0.7</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Model :: RFC8346 :: NON-NMDA</name>
     <description>Non-NMDA models from RFC8346</description>
