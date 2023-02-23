@@ -48,6 +48,7 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.ScalarTypeObject;
 import org.opendaylight.yangtools.yang.binding.UnionTypeObject;
 import org.opendaylight.yangtools.yang.binding.YangData;
+import org.opendaylight.yangtools.yang.binding.YangExtension;
 import org.opendaylight.yangtools.yang.binding.YangFeature;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -97,8 +98,9 @@ public final class BindingTypes {
     private static final ConcreteType OPAQUE_OBJECT = typeForClass(OpaqueObject.class);
     private static final ConcreteType RPC = typeForClass(Rpc.class);
     private static final ConcreteType RPC_RESULT = typeForClass(RpcResult.class);
-    private static final ConcreteType YANG_FEATURE = typeForClass(YangFeature.class);
     private static final ConcreteType YANG_DATA = typeForClass(YangData.class);
+    private static final ConcreteType YANG_EXTENSION = typeForClass(YangExtension.class);
+    private static final ConcreteType YANG_FEATURE = typeForClass(YangFeature.class);
 
     private BindingTypes() {
 
@@ -315,6 +317,18 @@ public final class BindingTypes {
     }
 
     /**
+     * Type specializing {@link YangExtension} for a particular type.
+     *
+     * @param concreteType The concrete type of this extension
+     * @param parent Type of parent defining the extension
+     * @return A parameterized type corresponding to {@code YangExtension<Type, DataRootType>}
+     * @throws NullPointerException if any argument is is {@code null}
+     */
+    public static ParameterizedType yangExtension(final Type concreteType, final Type parent) {
+        return parameterizedTypeFor(YANG_EXTENSION, concreteType, parent);
+    }
+
+    /**
      * Type specializing {@link YangFeature} for a particular type.
      *
      * @param concreteType The concrete type of this feature
@@ -407,11 +421,20 @@ public final class BindingTypes {
     }
 
     @Beta
+    public static @Nullable Type extractYangExtensionDataRoot(final GeneratedTransferObject gto) {
+        return extractDataRoot(YANG_EXTENSION, gto);
+    }
+
+    @Beta
     public static @Nullable Type extractYangFeatureDataRoot(final GeneratedTransferObject gto) {
+        return extractDataRoot(YANG_FEATURE, gto);
+    }
+
+    private static @Nullable Type extractDataRoot(final ConcreteType expectedType, final GeneratedTransferObject gto) {
         if (!gto.isAbstract() && gto.getSuperType() == null) {
             final var impls = gto.getImplements();
             if (impls.size() == 1 && impls.get(0) instanceof ParameterizedType param
-                && YANG_FEATURE.equals(param.getRawType())) {
+                && expectedType.equals(param.getRawType())) {
                 final var args = param.getActualTypeArguments();
                 if (args.length == 2) {
                     return args[1];

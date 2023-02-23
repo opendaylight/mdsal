@@ -7,16 +7,23 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.CodeGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.ri.BindingTypes;
+import org.opendaylight.yangtools.yang.binding.YangExtension;
+import org.opendaylight.yangtools.yang.binding.YangFeature;
 
 /**
  * Transformator of the data from the virtual form to JAVA source code. The result source code represents JAVA class.
  * For generating of the source code is used the template written in XTEND language.
  */
 public final class TOGenerator implements CodeGenerator {
+    private static final @NonNull JavaTypeName EXTENSION_TYPE = JavaTypeName.create(YangExtension.class);
+    private static final @NonNull JavaTypeName FEATURE_TYPE = JavaTypeName.create(YangFeature.class);
+
     /**
      * Generates JAVA source code for generated type <code>Type</code>. The code is generated according to the template
      * source code template which is written in XTEND language.
@@ -29,9 +36,18 @@ public final class TOGenerator implements CodeGenerator {
             } else if (genTO.isTypedef()) {
                 return new ClassTemplate(genTO).generate();
             } else {
-                final var featureDataRoot = BindingTypes.extractYangFeatureDataRoot(genTO);
-                return featureDataRoot == null ? new ListKeyTemplate(genTO).generate()
-                    : new FeatureTemplate(genTO, featureDataRoot).generate();
+                ClassTemplate template;
+                var dataRoot = BindingTypes.extractYangExtensionDataRoot(genTO);
+                if (dataRoot != null) {
+                    template = new YangConstructTemplate(genTO, EXTENSION_TYPE, dataRoot);
+                }
+                dataRoot = BindingTypes.extractYangFeatureDataRoot(genTO);
+                if (dataRoot != null) {
+                    template = new YangConstructTemplate(genTO, FEATURE_TYPE, dataRoot);
+                } else {
+                    template = new ListKeyTemplate(genTO);
+                }
+                return template.generate();
             }
         }
         return "";
