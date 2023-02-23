@@ -48,6 +48,7 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.ScalarTypeObject;
 import org.opendaylight.yangtools.yang.binding.UnionTypeObject;
 import org.opendaylight.yangtools.yang.binding.YangData;
+import org.opendaylight.yangtools.yang.binding.YangExtension;
 import org.opendaylight.yangtools.yang.binding.YangFeature;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -312,6 +313,18 @@ public final class BindingTypes {
      */
     public static ParameterizedType yangData(final Type concreteType) {
         return parameterizedTypeFor(YANG_DATA, concreteType);
+    }
+
+    /**
+     * Type specializing {@link YangExtension} for a particular type.
+     *
+     * @param concreteType The concrete type of this extension
+     * @param parent Type of parent defining the extension
+     * @return A parameterized type corresponding to {@code YangExtension<Type, DataRootType>}
+     * @throws NullPointerException if any argument is is {@code null}
+     */
+    public static ParameterizedType yangExtension(final Type concreteType, final Type parent) {
+        return parameterizedTypeFor(YANG_FEATURE, concreteType, parent);
     }
 
     /**
