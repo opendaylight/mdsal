@@ -14,18 +14,21 @@ import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.binding.YangExtension;
 import org.opendaylight.yangtools.yang.binding.YangFeature;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.QName;
 
-final class FeatureTemplate extends ClassTemplate {
+final class YangConstructTemplate extends ClassTemplate {
     private static final @NonNull JavaTypeName QNAME = JavaTypeName.create(QName.class);
-    private static final @NonNull JavaTypeName YANG_FEATURE = JavaTypeName.create(YangFeature.class);
 
+    private final @NonNull JavaTypeName constructName;
     private final @NonNull Type dataRoot;
 
-    FeatureTemplate(final GeneratedTransferObject genType, final Type dataRoot) {
+    YangConstructTemplate(final GeneratedTransferObject genType, final JavaTypeName constructName,
+            final Type dataRoot) {
         super(genType);
+        this.constructName = requireNonNull(constructName);
         this.dataRoot = requireNonNull(dataRoot);
     }
 
@@ -34,7 +37,7 @@ final class FeatureTemplate extends ClassTemplate {
         final var typeName = type().getName();
 
         return "@" + importedName(NONNULL_BY_DEFAULT) + '\n'
-            + "public final class " + typeName + " extends " + importedName(YANG_FEATURE) + '<' + typeName + ", "
+            + "public final class " + typeName + " extends " + importedName(constructName) + '<' + typeName + ", "
             + importedName(dataRoot) + '>';
     }
 
@@ -50,17 +53,19 @@ final class FeatureTemplate extends ClassTemplate {
     @SuppressWarnings("checkstyle:ParameterName")
     @Override
     protected CharSequence emitConstant(final Constant c) {
-        if (!Naming.VALUE_STATIC_FIELD_NAME.equals(c.getName()) || !YangFeature.class.equals(c.getValue())) {
+        // FIXME: fix this check!
+        if (!Naming.VALUE_STATIC_FIELD_NAME.equals(c.getName())
+            || !YangFeature.class.equals(c.getValue()) && !YangExtension.class.equals(c.getValue())) {
             return super.emitConstant(c);
         }
 
         final var type = type();
         final var typeName = type.getName();
         return "/**\n"
-            + " * {@link " + typeName + "} singleton instance.\n"
-            + " */\n"
-            + "public static final " + importedName(type) + ' ' + Naming.VALUE_STATIC_FIELD_NAME + " = new "
-            + type.getName() + "();";
+             + " * {@link " + typeName + "} singleton instance.\n"
+             + " */\n"
+             + "public static final " + importedName(type) + ' ' + Naming.VALUE_STATIC_FIELD_NAME + " = new "
+             + type.getName() + "();";
     }
 
     @Override
