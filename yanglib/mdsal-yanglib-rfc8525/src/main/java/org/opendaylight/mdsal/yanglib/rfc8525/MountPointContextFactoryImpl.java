@@ -39,15 +39,16 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.librar
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.ModuleSet;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.yang.library.parameters.SchemaKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangIdentifier;
-import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
-import org.opendaylight.yangtools.rfc8528.data.api.YangLibraryConstants.ContainerName;
 import org.opendaylight.yangtools.rfc8528.data.util.AbstractMountPointContextFactory;
+import org.opendaylight.yangtools.rfc8528.model.api.MountPointLabel;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.common.UnresolvedQName.Unqualified;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.data.api.schema.MountPointContextFactory;
+import org.opendaylight.yangtools.yang.data.api.schema.MountPointException;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
@@ -64,13 +65,13 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
     private final EffectiveModelContext yangLibContext;
     private final SchemaContextResolver resolver;
 
-    MountPointContextFactoryImpl(final MountPointIdentifier mountId, final SchemaContextResolver resolver,
+    MountPointContextFactoryImpl(final MountPointLabel label, final SchemaContextResolver resolver,
             final EffectiveModelContext yangLibContext,
             final BindingIdentityCodec identityCodec,
             final BindingDataObjectCodecTreeNode<YangLibrary> codec,
             @SuppressWarnings("deprecation")
             final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec) {
-        super(mountId);
+        super(new MountPointIdentifier(label));
         this.resolver = requireNonNull(resolver);
         this.identityCodec = requireNonNull(identityCodec);
         this.yangLibContext = requireNonNull(yangLibContext);
@@ -80,8 +81,8 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
 
     @Override
     protected MountPointContextFactory createContextFactory(final MountPointDefinition mountPoint) {
-        return new MountPointContextFactoryImpl(mountPoint.getIdentifier(), resolver, yangLibContext, identityCodec,
-            codec, legacyCodec);
+        return new MountPointContextFactoryImpl(mountPoint.label(), resolver, yangLibContext, identityCodec, codec,
+            legacyCodec);
     }
 
     @Override
@@ -93,14 +94,14 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
 
     @Override
     protected EffectiveModelContext bindLibrary(final ContainerName containerName, final ContainerNode libData)
-            throws YangParserException {
+            throws MountPointException {
         return switch (containerName) {
             case RFC7895 -> bindLibrary(verifyNotNull(legacyCodec.deserialize(libData)));
             case RFC8525 -> bindLibrary(verifyNotNull(codec.deserialize(libData)));
         };
     }
 
-    private @NonNull EffectiveModelContext bindLibrary(final @NonNull YangLibrary yangLib) throws YangParserException {
+    private @NonNull EffectiveModelContext bindLibrary(final @NonNull YangLibrary yangLib) throws MountPointException {
         final var datastores = yangLib.nonnullDatastore();
         checkArgument(!datastores.isEmpty(), "No datastore defined");
 
@@ -115,12 +116,16 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
         }
         checkArgument(moduleSet.isEmpty(), "Failed to resolve module sets %s", moduleSet);
 
-        return resolver.resolveSchemaContext(librarySources, requiredSources, supportedFeatures);
+        try {
+            return resolver.resolveSchemaContext(librarySources, requiredSources, supportedFeatures);
+        } catch (YangParserException e) {
+            throw new MountPointException("Failed to assemble model context", e);
+        }
     }
 
     @SuppressWarnings("deprecation")
     private @NonNull EffectiveModelContext bindLibrary(final @NonNull ModulesState modState)
-            throws YangParserException {
+            throws MountPointException {
         final var requiredSources = new ArrayList<SourceReference>();
         final var librarySources = new ArrayList<SourceReference>();
         final var supportedFeatures = new HashSet<QName>();
@@ -147,7 +152,11 @@ final class MountPointContextFactoryImpl extends AbstractMountPointContextFactor
             }
         }
 
-        return resolver.resolveSchemaContext(librarySources, requiredSources, supportedFeatures);
+        try {
+            return resolver.resolveSchemaContext(librarySources, requiredSources, supportedFeatures);
+        } catch (YangParserException e) {
+            throw new MountPointException("Failed to assemble model context", e);
+        }
     }
 
     private String findSchemaName(final Map<DatastoreKey, Datastore> datastores, final QName qname) {

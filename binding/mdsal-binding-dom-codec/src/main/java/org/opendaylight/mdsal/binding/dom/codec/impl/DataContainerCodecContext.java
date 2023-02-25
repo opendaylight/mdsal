@@ -51,7 +51,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.Augmentat
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
-import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
+import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -264,11 +264,11 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
 
     @Override
     public NormalizedNode serialize(final D data) {
-        final NormalizedNodeResult result = new NormalizedNodeResult();
+        final NormalizationResultHolder result = new NormalizationResultHolder();
         // We create DOM stream writer which produces normalized nodes
         final NormalizedNodeStreamWriter domWriter = ImmutableNormalizedNodeStreamWriter.from(result);
         writeAsNormalizedNode(data, domWriter);
-        return result.getResult();
+        return result.getResult().data();
     }
 
     @Override
