@@ -611,7 +611,7 @@
                         <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
 
                         <link>https://www.javadoc.io/doc/org.opendaylight.odlparent/odlparent-docs/12.0.3/</link>
-                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/10.0.4/</link>
+                        <link>https://www.javadoc.io/doc/org.opendaylight.yangtools/yangtools-docs/11.0.0-SNAPSHOT/</link>
                     </links>
                     <groups>
                         <group>
