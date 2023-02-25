@@ -87,7 +87,6 @@ import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeAware;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.api.stmt.TypeDefinitionAware;
@@ -268,8 +267,20 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         for (final YangInstanceIdentifier.PathArgument domArg : dom.getPathArguments()) {
             checkArgument(currentNode instanceof DataContainerCodecContext,
                 "Unexpected child of non-container node %s", currentNode);
-            final DataContainerCodecContext<?,?> previous = (DataContainerCodecContext<?, ?>) currentNode;
-            final NodeCodecContext nextNode = previous.yangPathArgumentChild(domArg);
+            final DataContainerCodecContext<?, ?> previous = (DataContainerCodecContext<?, ?>) currentNode;
+            NodeCodecContext nextNode = previous.yangPathArgumentChild(domArg);
+
+            /**
+             * Compatibility case: if it's determined the node belongs to augmentation
+             * then insert augmentation path argument in between.
+             */
+            if (nextNode instanceof AugmentationNodeContext<?> augmContext) {
+                if (bindingArguments != null) {
+                    bindingArguments.add(augmContext.bindingArg());
+                }
+                currentNode = nextNode;
+                nextNode = augmContext.yangPathArgumentChild(domArg);
+            }
 
             /*
              * List representation in YANG Instance Identifier consists of two

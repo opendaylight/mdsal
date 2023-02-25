@@ -9,15 +9,20 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.binding.dom.codec.impl.AugmentationNodeContext;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
@@ -30,8 +35,33 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     @Override
     public final <U extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<U> path,
             final U data) {
-        final Entry<YangInstanceIdentifier, NormalizedNode> normalized = toNormalized("put", path, data);
-        getDelegate().put(store, normalized.getKey(), normalized.getValue());
+        if (isAugmentation(path)) {
+            /* augmentation only compatibility case:
+             put child nodes provided with augmentation, remove those having no data
+             */
+            final var parentNodeIdentifier = adapterContext().currentSerializer().toYangInstanceIdentifier(path);
+            final var codec = adapterContext().currentSerializer().getSubtreeCodec(path);
+            if (data instanceof Augmentation<?> && codec instanceof AugmentationNodeContext augmCodec) {
+                final var augmNode = (ContainerNode) augmCodec.serializeToContainerNode(data,
+                    parentNodeIdentifier.getLastPathArgument());
+                final Set<YangInstanceIdentifier.PathArgument> childPaths = augmCodec.getChildPaths();
+                final var childMap = augmNode.body().stream().collect(
+                    ImmutableMap.toImmutableMap(node -> node.getIdentifier(), node -> node));
+                for (var childPath : childPaths) {
+                    if (!childMap.containsKey(childPath)) {
+                        getDelegate().delete(store, parentNodeIdentifier.node(childPath));
+                    }
+                }
+                for (var entry : childMap.entrySet()) {
+                    getDelegate().put(store, parentNodeIdentifier.node(entry.getKey()), entry.getValue());
+                }
+            } else {
+                throw new IllegalStateException("Unexpected augmentation codec " + codec.getBindingClass());
+            }
+        } else {
+            final Entry<YangInstanceIdentifier, NormalizedNode> entry = toNormalized("put", path, data);
+            getDelegate().put(store, entry.getKey(), entry.getValue());
+        }
     }
 
     @Deprecated
@@ -64,7 +94,21 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     @Override
     public final void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         checkArgument(!path.isWildcarded(), "Cannot delete wildcarded path %s", path);
-        getDelegate().delete(store, adapterContext().currentSerializer().toYangInstanceIdentifier(path));
+        if (isAugmentation(path)) {
+            // augmentation only compatibility case: remove all children belonging to augmentation
+            final var parentNodeIdentifier = adapterContext().currentSerializer().toYangInstanceIdentifier(path);
+            final var codec = adapterContext().currentSerializer().getSubtreeCodec(path);
+            if (codec instanceof AugmentationNodeContext augmCodec) {
+                final Set<YangInstanceIdentifier.PathArgument> childPaths = augmCodec.getChildPaths();
+                for (var childPath : childPaths) {
+                    getDelegate().delete(store, parentNodeIdentifier.node(childPath));
+                }
+            } else {
+                throw new IllegalStateException("Unexpected augmentation codec " + codec.getBindingClass());
+            }
+        } else {
+            getDelegate().delete(store, adapterContext().currentSerializer().toYangInstanceIdentifier(path));
+        }
     }
 
     @Override

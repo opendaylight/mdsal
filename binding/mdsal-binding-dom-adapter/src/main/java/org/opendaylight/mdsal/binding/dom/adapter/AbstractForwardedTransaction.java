@@ -27,6 +27,8 @@ import org.opendaylight.mdsal.dom.api.query.DOMQueryResult;
 import org.opendaylight.mdsal.dom.spi.query.DOMQueryEvaluator;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.yang.binding.Augmentable;
+import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -73,8 +75,17 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
         final YangInstanceIdentifier domPath = codec.toYangInstanceIdentifier(path);
 
         return readOps.read(store, domPath)
-                .transform(optData -> optData.map(domData -> (D) codec.fromNormalizedNode(domPath, domData).getValue()),
-                    MoreExecutors.directExecutor());
+            .transform(optData -> optData.map(
+                domData -> {
+                    final var dataObject = codec.fromNormalizedNode(domPath, domData).getValue();
+                    final var targetType = path.getTargetType();
+                    // for augmentation path case the domPath points to parent node
+                    if (isAugmentation(path) && dataObject instanceof Augmentable parent) {
+                        return (D) parent.augmentation(targetType);
+                    }
+                    return (D) dataObject;
+                }),
+                MoreExecutors.directExecutor());
     }
 
     protected final @NonNull FluentFuture<Boolean> doExists(final DOMDataTreeReadOperations readOps,
@@ -104,5 +115,10 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
                 node -> node.map(data -> DOMQueryEvaluator.evaluateOn(domQuery, data)).orElse(DOMQueryResult.of()),
                 // TODO: execute on a dedicated thread pool
                 MoreExecutors.directExecutor());
+    }
+
+    protected static boolean isAugmentation(final @NonNull InstanceIdentifier<?> path) {
+        requireNonNull(path);
+        return Augmentation.class.isAssignableFrom(path.getTargetType());
     }
 }
