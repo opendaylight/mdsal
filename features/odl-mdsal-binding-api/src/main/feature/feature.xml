@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="odl-mdsal-binding-api">
     <feature name="odl-mdsal-binding-api">
-        <feature version="[10,11)">odl-yangtools-data-api</feature>
+        <feature version="[11,12)">odl-yangtools-data-api</feature>
     </feature>
 </features>
