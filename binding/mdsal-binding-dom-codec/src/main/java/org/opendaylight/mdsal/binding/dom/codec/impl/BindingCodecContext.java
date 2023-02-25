@@ -56,6 +56,7 @@ import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.Action;
+import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.BaseNotification;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
@@ -268,8 +269,20 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         for (final YangInstanceIdentifier.PathArgument domArg : dom.getPathArguments()) {
             checkArgument(currentNode instanceof DataContainerCodecContext,
                 "Unexpected child of non-container node %s", currentNode);
-            final DataContainerCodecContext<?,?> previous = (DataContainerCodecContext<?, ?>) currentNode;
-            final NodeCodecContext nextNode = previous.yangPathArgumentChild(domArg);
+            final DataContainerCodecContext<?, ?> previous = (DataContainerCodecContext<?, ?>) currentNode;
+            NodeCodecContext nextNode = previous.yangPathArgumentChild(domArg);
+
+            /**
+             * Compatibility case: if it's determined the node belongs to augmentation
+             * then insert augmentation path argument in between.
+             */
+            if (nextNode instanceof AugmentationNodeContext<?> augmContext) {
+                if (bindingArguments != null) {
+                    bindingArguments.add(augmContext.bindingArg());
+                }
+                currentNode = nextNode;
+                nextNode = augmContext.yangPathArgumentChild(domArg);
+            }
 
             /*
              * List representation in YANG Instance Identifier consists of two
@@ -519,6 +532,11 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     @Override
     public <T extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode> toNormalizedNode(
             final InstanceIdentifier<T> path, final T data) {
+        if (Augmentation.class.isAssignableFrom(path.getTargetType())) {
+            // AugmentationNode removal backward compatibility case
+            return augmentationToNormalizedNode(path, data);
+        }
+
         final var result = new NormalizationResultHolder();
         // We create DOM stream writer which produces normalized nodes
         final var domWriter = ImmutableNormalizedNodeStreamWriter.from(result);
@@ -535,6 +553,34 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
             throw new IllegalStateException("Failed to create normalized node", e);
         }
         return Map.entry(writeCtx.getKey(), result.getResult().data());
+    }
+
+    /**
+     * Serializes the augmentation data into a standalone normalized node. Due to augmentation requires a parent
+     * container-like node and may include multiple child nodes, the wrapper node will be created.
+     *
+     * @param path instance identifier path
+     * @param data data object
+     * @param <T> augmentation binding type
+     * @return normalized node
+     */
+    private <T extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode> augmentationToNormalizedNode(
+            final InstanceIdentifier<T> path, final T data) {
+        final var result = new NormalizationResultHolder();
+        final var domWriter = ImmutableNormalizedNodeStreamWriter.from(result);
+        final var yangInstanceIdentifier = toYangInstanceIdentifier(path);
+        try {
+            domWriter.startContainerNode(
+                new YangInstanceIdentifier.NodeIdentifier(yangInstanceIdentifier.getLastPathArgument().getNodeType()),
+                BindingStreamEventWriter.UNKNOWN_SIZE);
+            getSubtreeCodec(path).writeAsNormalizedNode(data, domWriter);
+            domWriter.endNode();
+            return Map.entry(yangInstanceIdentifier, result.getResult().data());
+
+        } catch (final IOException e) {
+            LOG.error("Unexpected failure while serializing path {} data {}", path, data, e);
+            throw new IllegalStateException("Failed to create normalized node", e);
+        }
     }
 
     @Override
