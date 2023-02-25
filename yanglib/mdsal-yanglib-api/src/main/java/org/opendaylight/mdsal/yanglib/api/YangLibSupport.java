@@ -9,9 +9,9 @@ package org.opendaylight.mdsal.yanglib.api;
 
 import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
-import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
+import org.opendaylight.yangtools.rfc8528.model.api.MountPointLabel;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.data.api.schema.MountPointContextFactory;
 
 /**
  * Main entry point into YANG (Module) Library support instance.
@@ -22,13 +22,12 @@ public interface YangLibSupport {
     /**
      * Create a MountPointContextFactory, backed by a specific SchemaContextResolver.
      *
-     * @param mountId Resulting Mount Point identifier
+     * @param label Resulting Mount Point identifier
      * @param resolver SchemaContext resolver
      * @return A new factory
      * @throws NullPointerException if any argument is null
      */
-    MountPointContextFactory createMountPointContextFactory(MountPointIdentifier mountId,
-            SchemaContextResolver resolver);
+    MountPointContextFactory createMountPointContextFactory(MountPointLabel label, SchemaContextResolver resolver);
 
     /**
      * Return the revision date of the model this support implements. The value returned from this method is suitable

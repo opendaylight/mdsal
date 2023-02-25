@@ -26,10 +26,10 @@ import org.opendaylight.mdsal.yanglib.api.YangLibSupport;
 import org.opendaylight.mdsal.yanglib.api.YangLibraryContentBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.ModulesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104.YangLibrary;
-import org.opendaylight.yangtools.rfc8528.data.api.MountPointContextFactory;
-import org.opendaylight.yangtools.rfc8528.data.api.MountPointIdentifier;
+import org.opendaylight.yangtools.rfc8528.model.api.MountPointLabel;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.data.api.schema.MountPointContextFactory;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
@@ -72,9 +72,9 @@ public final class YangLibrarySupport implements YangLibSupport {
     }
 
     @Override
-    public MountPointContextFactory createMountPointContextFactory(final MountPointIdentifier mountId,
+    public MountPointContextFactory createMountPointContextFactory(final MountPointLabel label,
             final SchemaContextResolver resolver) {
-        return new MountPointContextFactoryImpl(mountId, resolver, context, identityCodec, codec, legacyCodec);
+        return new MountPointContextFactoryImpl(label, resolver, context, identityCodec, codec, legacyCodec);
     }
 
     @Override
