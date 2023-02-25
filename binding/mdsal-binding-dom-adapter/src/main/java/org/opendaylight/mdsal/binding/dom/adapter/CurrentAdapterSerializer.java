@@ -49,7 +49,6 @@ import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.model.api.stmt.ActionEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.stmt.ListEffectiveStatement;
@@ -199,13 +198,6 @@ public final class CurrentAdapterSerializer extends ForwardingBindingDOMCodecSer
         QNameModule lastNamespace;
         do {
             final var arg = it.next();
-            if (arg instanceof AugmentationIdentifier) {
-                final var augChildren = ((AugmentationIdentifier) arg).getPossibleChildNames();
-                verify(!augChildren.isEmpty(), "Invalid empty augmentation %s", arg);
-                lastNamespace = augChildren.iterator().next().getModule();
-                continue;
-            }
-
             final var qname = arg.getNodeType();
             final var stmt = stack.enterDataTree(qname);
             lastNamespace = qname.getModule();

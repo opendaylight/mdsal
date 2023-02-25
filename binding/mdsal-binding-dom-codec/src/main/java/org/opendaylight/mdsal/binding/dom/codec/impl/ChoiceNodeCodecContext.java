@@ -44,9 +44,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.util.DataSchemaContextNode;
-import org.opendaylight.yangtools.yang.data.util.NormalizedNodeSchemaUtils;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.slf4j.Logger;
@@ -134,16 +131,6 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             // Updates collection of YANG instance identifier to case
             for (var stmt : cazeDef.getType().statement().effectiveSubstatements()) {
                 if (stmt instanceof DataSchemaNode cazeChild) {
-                    if (cazeChild.isAugmenting()) {
-                        final AugmentationSchemaNode augment = NormalizedNodeSchemaUtils.findCorrespondingAugment(
-                            // FIXME: bad cast
-                            (DataSchemaNode) cazeDef.getType().statement(), cazeChild);
-                        if (augment != null) {
-                            byYangCaseChildBuilder.put(DataSchemaContextNode.augmentationIdentifierFrom(augment),
-                                cazeDef);
-                            continue;
-                        }
-                    }
                     byYangCaseChildBuilder.put(NodeIdentifier.create(cazeChild.getQName()), cazeDef);
                 }
             }
