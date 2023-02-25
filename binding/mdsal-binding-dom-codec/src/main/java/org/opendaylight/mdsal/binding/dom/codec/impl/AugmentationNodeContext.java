@@ -10,10 +10,10 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-final class AugmentationNodeContext<D extends DataObject & Augmentation<?>>
+public final class AugmentationNodeContext<D extends DataObject & Augmentation<?>>
         extends DataObjectCodecContext<D, AugmentRuntimeType> {
 
     AugmentationNodeContext(final DataContainerCodecPrototype<AugmentRuntimeType> prototype) {
@@ -22,7 +22,7 @@ final class AugmentationNodeContext<D extends DataObject & Augmentation<?>>
 
     @Override
     public D deserialize(final NormalizedNode data) {
-        return createBindingProxy(checkDataArgument(AugmentationNode.class, data));
+        return createBindingProxy(checkDataArgument(ContainerNode.class, data));
     }
 
     @Override

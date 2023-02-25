@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ImmutableCollection;
@@ -47,7 +46,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
@@ -177,7 +175,7 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
     protected final <V> @NonNull V childNonNull(final @Nullable V nullable,
             final YangInstanceIdentifier.PathArgument child, final String message, final Object... args) {
         if (nullable == null) {
-            throw childNullException(extractName(child), message, args);
+            throw childNullException(child.getNodeType(), message, args);
         }
         return nullable;
     }
@@ -227,15 +225,6 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
         }
 
         throw IncorrectNestingException.create(message, args);
-    }
-
-    private static QName extractName(final YangInstanceIdentifier.PathArgument child) {
-        if (child instanceof AugmentationIdentifier) {
-            final Set<QName> children = ((AugmentationIdentifier) child).getPossibleChildNames();
-            checkArgument(!children.isEmpty(), "Augmentation without childs must not be used in data");
-            return children.iterator().next();
-        }
-        return child.getNodeType();
     }
 
     final DataObjectSerializer eventStreamSerializer() {

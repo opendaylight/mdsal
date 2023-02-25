@@ -16,7 +16,6 @@ import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaForClassException;
 import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeLeafOnlyAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
@@ -33,8 +32,6 @@ public class ExceptionReportingTest {
     private static final InstanceIdentifier<TopLevelList> BA_TOP_LEVEL_LIST = InstanceIdentifier.builder(Top.class)
         .child(TopLevelList.class, TOP_FOO_KEY)
         .build();
-    private static final InstanceIdentifier<TreeLeafOnlyAugment> BA_TREE_LEAF_ONLY =
-        BA_TOP_LEVEL_LIST.augmentation(TreeLeafOnlyAugment.class);
 
     private static final YangInstanceIdentifier BI_TOP_PATH = YangInstanceIdentifier.of(Top.QNAME);
 
@@ -45,21 +42,9 @@ public class ExceptionReportingTest {
     }
 
     @Test
-    public void testDOMAugment() {
-        final var yiid = FULL_CODEC.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY);
-        assertThrows(MissingSchemaException.class, () -> CODEC_WITHOUT_TOP.fromYangInstanceIdentifier(yiid));
-    }
-
-    @Test
     public void testBindingTop() {
         assertThrows(MissingSchemaForClassException.class,
             () -> CODEC_WITHOUT_TOP.toYangInstanceIdentifier(BA_TOP_LEVEL_LIST));
-    }
-
-    @Test
-    public void testBindingAugment() {
-        assertThrows(MissingSchemaForClassException.class,
-            () -> ONLY_TOP_CODEC.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY));
     }
 
     @Test

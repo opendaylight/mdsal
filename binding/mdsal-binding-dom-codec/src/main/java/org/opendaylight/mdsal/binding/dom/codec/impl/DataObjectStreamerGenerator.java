@@ -102,7 +102,7 @@ final class DataObjectStreamerGenerator<T extends DataObjectStreamer<?>> impleme
     private static final StackManipulation UNKNOWN_SIZE = IntegerConstant.forValue(
         BindingStreamEventWriter.UNKNOWN_SIZE);
 
-    private static final StackManipulation START_AUGMENTATION_NODE = invokeMethod(BindingStreamEventWriter.class,
+    private static final StackManipulation START_AUGMENTATION = invokeMethod(BindingStreamEventWriter.class,
         "startAugmentationNode", Class.class);
     private static final StackManipulation START_CASE = invokeMethod(BindingStreamEventWriter.class,
         "startCase", Class.class, int.class);
@@ -189,7 +189,7 @@ final class DataObjectStreamerGenerator<T extends DataObjectStreamer<?>> impleme
             // startAugmentationNode(Foo.class)
             startEvent = new StackManipulation.Compound(
                 ClassConstant.of(Sort.describe(type).asErasure()),
-                START_AUGMENTATION_NODE);
+                START_AUGMENTATION);
         } else if (schema instanceof CaseSchemaNode) {
             startEvent = classUnknownSizeMethod(START_CASE, type);
         } else {
