@@ -11,6 +11,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableCollection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
@@ -128,6 +129,24 @@ public interface BindingDataObjectCodecTreeNode<T extends DataObject>
 
     @Beta
     void writeAsNormalizedNode(T data, NormalizedNodeStreamWriter writer);
+
+    /**
+     * Returns full set of child path arguments.
+     *
+     * @return set of path arguments
+     */
+    default @NonNull Set<YangInstanceIdentifier.PathArgument> getChildPathArguments() {
+        return Set.of();
+    }
+
+    /**
+     * Returns full set of child binding classes.
+     *
+     * @return set of child classes
+     */
+    default @NonNull Set<Class<?>> getChildBindingClasses() {
+        return Set.of();
+    }
 
     /**
      * Enumeration of possible addressability attribute of all children.
