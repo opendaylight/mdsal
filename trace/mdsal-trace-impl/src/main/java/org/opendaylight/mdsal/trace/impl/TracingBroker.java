@@ -118,7 +118,7 @@ public class TracingBroker implements TracingDOMDataBroker {
         final LogicalDatastoreType store;
 
         Watch(final String iidString, final LogicalDatastoreType storeOrNull) {
-            this.store = storeOrNull;
+            store = storeOrNull;
             this.iidString = iidString;
         }
 
@@ -167,12 +167,12 @@ public class TracingBroker implements TracingDOMDataBroker {
         this.codec = requireNonNull(codec, "codec");
         configure(config);
 
-        this.isDebugging = Boolean.TRUE.equals(config.getTransactionDebugContextEnabled());
+        isDebugging = Boolean.TRUE.equals(config.getTransactionDebugContextEnabled());
         final String db = "DataBroker";
-        this.transactionChainsRegistry     = new CloseTrackedRegistry<>(db, "createTransactionChain()", isDebugging);
-        this.readOnlyTransactionsRegistry  = new CloseTrackedRegistry<>(db, "newReadOnlyTransaction()", isDebugging);
-        this.writeTransactionsRegistry     = new CloseTrackedRegistry<>(db, "newWriteOnlyTransaction()", isDebugging);
-        this.readWriteTransactionsRegistry = new CloseTrackedRegistry<>(db, "newReadWriteTransaction()", isDebugging);
+        transactionChainsRegistry     = new CloseTrackedRegistry<>(db, "createTransactionChain()", isDebugging);
+        readOnlyTransactionsRegistry  = new CloseTrackedRegistry<>(db, "newReadOnlyTransaction()", isDebugging);
+        writeTransactionsRegistry     = new CloseTrackedRegistry<>(db, "newWriteOnlyTransaction()", isDebugging);
+        readWriteTransactionsRegistry = new CloseTrackedRegistry<>(db, "newReadWriteTransaction()", isDebugging);
     }
 
     private void configure(final Config config) {
@@ -267,10 +267,6 @@ public class TracingBroker implements TracingDOMDataBroker {
     private static void reconstructIidPathString(final YangInstanceIdentifier yiid, final StringBuilder sb) {
         sb.append("<RECONSTRUCTED FROM: \"").append(yiid.toString()).append("\">");
         for (YangInstanceIdentifier.PathArgument pathArg : yiid.getPathArguments()) {
-            if (pathArg instanceof YangInstanceIdentifier.AugmentationIdentifier) {
-                sb.append('/').append("AUGMENTATION");
-                continue;
-            }
             sb.append('/').append(pathArg.getNodeType().getLocalName());
         }
     }

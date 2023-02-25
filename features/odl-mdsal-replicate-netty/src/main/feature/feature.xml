@@ -4,6 +4,6 @@
         <configfile finalname="etc/org.opendaylight.mdsal.replicate.netty.sink.cfg">mvn:org.opendaylight.mdsal/mdsal-replicate-netty/${project.version}/config/sink</configfile>
         <configfile finalname="etc/org.opendaylight.mdsal.replicate.netty.source.cfg">mvn:org.opendaylight.mdsal/mdsal-replicate-netty/${project.version}/config/source</configfile>
         <feature version="[11,12)">odl-netty-4</feature>
-        <feature version="[10,11)">odl-yangtools-codec</feature>
+        <feature version="[11,12)">odl-yangtools-codec</feature>
     </feature>
 </features>

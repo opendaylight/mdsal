@@ -9,8 +9,9 @@ module org.opendaylight.mdsal.yanglib.api {
     exports org.opendaylight.mdsal.yanglib.api;
 
     requires transitive org.opendaylight.yangtools.yang.common;
+    requires transitive org.opendaylight.yangtools.yang.data.api;
     requires transitive org.opendaylight.yangtools.yang.model.api;
-    requires transitive org.opendaylight.yangtools.rfc8528.data.api;
+    requires transitive org.opendaylight.yangtools.yang.parser.api;
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;

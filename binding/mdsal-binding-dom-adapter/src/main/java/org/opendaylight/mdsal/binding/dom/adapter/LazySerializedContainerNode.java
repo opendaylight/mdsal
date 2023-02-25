@@ -14,7 +14,6 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSeriali
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingLazyContainerNode;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
@@ -63,7 +62,7 @@ class LazySerializedContainerNode
         }
 
         @Override
-        public DataContainerChild childByArg(final PathArgument child) {
+        public DataContainerChild childByArg(final NodeIdentifier child) {
             // Use pre-cached value of routing field and do not run full serialization if we are accessing it.
             return contextRef.getIdentifier().equals(child) ? contextRef : super.childByArg(child);
         }
