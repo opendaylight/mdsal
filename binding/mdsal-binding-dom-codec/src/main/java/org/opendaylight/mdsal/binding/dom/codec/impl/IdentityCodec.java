@@ -18,10 +18,12 @@ import java.lang.reflect.Modifier;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingIdentityCodec;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
+import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.common.QName;
 
 final class IdentityCodec extends AbstractValueCodec<QName, BaseIdentity> implements BindingIdentityCodec {
@@ -87,6 +89,21 @@ final class IdentityCodec extends AbstractValueCodec<QName, BaseIdentity> implem
 
     @Override
     public QName fromBinding(final BaseIdentity bindingValue) {
-        return BindingReflections.getQName(bindingValue);
+        return fromBinding(bindingValue.implementedInterface());
+    }
+
+    @Override
+    public @NonNull QName fromBinding(@NonNull Class<?> clazz) {
+        if (!BindingObject.class.isAssignableFrom(clazz)) {
+            throw new IllegalStateException("Cannot get QName for " + clazz);
+        }
+        final RuntimeType runtimeType = context.getTypes()
+            .findSchema(JavaTypeName.create(clazz))
+            .orElseThrow(() -> new IllegalStateException("Failed to resolve QName of " + clazz));
+
+        if (runtimeType.statement().argument() instanceof QName qName) {
+            return qName;
+        }
+        throw new IllegalStateException("Failed to resolve QName of " + clazz);
     }
 }
