@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9477caa_0cf66b12",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-02-27T12:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "32be0b0e_c5184f22",
+      "revId": "fdf6088d55de56e26af35030d3a583028b386c34",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a5df274a_7e45a672",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-02-16T07:48:53Z",
       "side": 1,
       "message": "you should be be able to use Pattern Matching for instanceof here\nhttps://openjdk.org/jeps/394",
+      "revId": "fdf6088d55de56e26af35030d3a583028b386c34",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed384065_5a49d81d",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/IdentityCodec.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-02-27T12:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a5df274a_7e45a672",
       "revId": "fdf6088d55de56e26af35030d3a583028b386c34",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
