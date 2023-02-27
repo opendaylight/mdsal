@@ -38,4 +38,12 @@ public interface BindingIdentityCodec extends Immutable {
      * @throws NullPointerException if bindingClass is null
      */
     @NonNull QName fromBinding(@NonNull BaseIdentity bindingValue);
+
+    /**
+     * Convert a class to its QName equivalent.
+     *
+     * @param clazz Binding class to convert
+     * @return QName corresponding to the binding clas
+     */
+    @NonNull QName fromBinding(@NonNull Class<?> clazz);
 }
