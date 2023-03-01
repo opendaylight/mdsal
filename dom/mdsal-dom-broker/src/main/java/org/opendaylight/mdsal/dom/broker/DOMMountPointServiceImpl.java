@@ -48,8 +48,8 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
     }
 
     @Override
-    public DOMMountPointBuilder createMountPoint(final YangInstanceIdentifier path) {
-        checkState(!mountPoints.containsKey(path), "Mount point already exists");
+    public synchronized DOMMountPointBuilder createMountPoint(final YangInstanceIdentifier path) {
+        checkNotExists(path, mountPoints.get(requireNonNull(path)));
         return new DOMMountPointBuilderImpl(path);
     }
 
@@ -74,8 +74,7 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
     private ObjectRegistration<DOMMountPoint> registerMountPoint(final SimpleDOMMountPoint mountPoint) {
         final YangInstanceIdentifier mountPointId = mountPoint.getIdentifier();
         synchronized (mountPoints) {
-            final DOMMountPoint prev = mountPoints.putIfAbsent(mountPointId, mountPoint);
-            checkState(prev == null, "Mount point %s already exists as %s", mountPointId, prev);
+            checkNotExists(mountPointId, mountPoints.putIfAbsent(mountPointId, mountPoint));
         }
         listeners.streamListeners().forEach(listener -> {
             try {
@@ -111,8 +110,11 @@ public final class DOMMountPointServiceImpl implements DOMMountPointService {
         });
     }
 
-    private final class DOMMountPointBuilderImpl implements DOMMountPointBuilder {
+    private static void checkNotExists(final YangInstanceIdentifier id, final DOMMountPoint mountPoint) {
+        checkState(mountPoint == null, "Mount point %s already exists as %s", id, mountPoint);
+    }
 
+    private final class DOMMountPointBuilderImpl implements DOMMountPointBuilder {
         private final MutableClassToInstanceMap<DOMService> services = MutableClassToInstanceMap.create();
         private final YangInstanceIdentifier path;
 
