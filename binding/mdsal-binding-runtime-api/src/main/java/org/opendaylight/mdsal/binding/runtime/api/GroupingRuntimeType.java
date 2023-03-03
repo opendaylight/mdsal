@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.runtime.api;
 
+import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.model.api.stmt.GroupingEffectiveStatement;
 
 /**
@@ -15,4 +17,67 @@ import org.opendaylight.yangtools.yang.model.api.stmt.GroupingEffectiveStatement
 public interface GroupingRuntimeType extends CompositeRuntimeType {
     @Override
     GroupingEffectiveStatement statement();
+
+    /**
+     * Return the set of all concrete data tree instantiations of this {@code grouping}. This is necessary to completely
+     * resolve type information for {@code leafref}s.
+     *
+     * <p>
+     * As an example, consider {@link GroupingRuntimeType} of {@code grouping baz} and it's instantiations roots
+     * {@code container one} and {@code container two} define in these three models:
+     * <pre>{@code
+     *   module baz {
+     *     namespace baz;
+     *     prefix baz;
+     *
+     *     grouping baz {
+     *       leaf baz {
+     *         type leafref {
+     *           path "../bar";
+     *         }
+     *       }
+     *     }
+     *   }
+     *
+     *   module one {
+     *     namespace one;
+     *     prefix one;
+     *     import baz { prefix baz; }
+     *
+     *     container one {
+     *       leaf bar {
+     *         type string;
+     *       }
+     *       uses baz:baz;
+     *     }
+     *   }
+     *
+     *   module two {
+     *     namespace two;
+     *     prefix two;
+     *     import baz { prefix baz; }
+     *
+     *     container two {
+     *       leaf bar {
+     *         type uint16;
+     *       }
+     *       uses baz:baz;
+     *     }
+     *   }
+     * }</pre>
+     *
+     * <p>
+     * Since these are separate modules, each of them can be part of its own compilation unit and therefore
+     * {@code grouping baz} compile-time analysis cannot definitely determine the return type of {@code getBaz()} and
+     * must fall back to {@code Object}.
+     *
+     * <p>
+     * At run-time, though, we have a closed world, and therefore we can provide accurate information about
+     * instantiation sites: this method will return the {@link CompositeRuntimeType}s for {@code one} and {@code two}.
+     * We can then use this information to know that {@code getBaz()} can either be a {@code String} or an
+     * {@code Uint32} and which type is appropriate at a particular point in YANG data tree.
+     *
+     * @return The set instantiated {@link CompositeRuntimeType}s which use this grouping
+     */
+    @NonNull Set<CompositeRuntimeType> instantiations();
 }
