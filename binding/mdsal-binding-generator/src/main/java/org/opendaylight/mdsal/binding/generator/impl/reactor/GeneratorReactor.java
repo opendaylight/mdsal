@@ -222,14 +222,22 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
             }
         } while (haveUnresolved);
 
-        // Step eight: generate actual Types
-        //
-        // We have now properly cross-linked all generators and have assigned their naming roots, so from this point
-        // it looks as though we are performing a simple recursive execution. In reality, though, the actual path taken
-        // through generators is dictated by us as well as generator linkage.
+        /*
+         * Step eight: generate actual Types
+         *
+         * We have now properly cross-linked all generators and have assigned their naming roots, so from this point
+         * it looks as though we are performing a simple recursive execution. In reality, though, the actual path taken
+         * through generators is dictated by us as well as generator linkage.
+         */
         for (var module : children) {
             module.ensureType(builderFactory);
         }
+
+        // Step nine: resolve grouping instantiations, so that each GroupingGenerator knows whether its definitions
+        //             have reached an instantiated context or not.
+        // FIXME: this should be purely optional and only executed for runtime types -- perhaps it should be part of
+        //        TypeBuilderFactory?
+        linkGroupingInstantiations(children);
 
         LOG.debug("Processed {} modules in {}", generators.size(), sw);
         state = State.FINISHED;
@@ -416,6 +424,21 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
                 bindTypeDefinition(child);
             }
             stack.pop();
+        }
+    }
+
+    // FIXME: this is not sufficient, as we need to cross over to groupings if they are used, so this needs to be,
+    //        again, multiple-pass thing. We also need to be marking which subtrees have been fully-visited, so we do
+    //        not visit them more than once (performance) and we also need to track whether or not we have marked any
+    //        grouping (termination condition)
+    private static void linkGroupingInstantiations(final Iterable<? extends Generator> parent) {
+        for (var child : parent) {
+            if (!(child instanceof GroupingGenerator) && child instanceof AbstractCompositeGenerator<?, ?> composite) {
+                for (var grouping : composite.groupings()) {
+                    grouping.addUser(composite);
+                }
+                linkGroupingInstantiations(composite);
+            }
         }
     }
 }
