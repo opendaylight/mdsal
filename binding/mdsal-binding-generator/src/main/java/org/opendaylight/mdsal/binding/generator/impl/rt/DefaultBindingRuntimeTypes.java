@@ -15,6 +15,8 @@ import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -23,7 +25,9 @@ import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.GeneratedRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.GroupingRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.IdentityRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleRuntimeType;
@@ -112,6 +116,28 @@ public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
     @Override
     public Set<CaseRuntimeType> allCaseChildren(final ChoiceRuntimeType choiceType) {
         return choiceToCases.get(choiceType.getIdentifier());
+    }
+
+    @Override
+    public Set<CompositeRuntimeType> allGroupingInstances(final GroupingRuntimeType groupingType) {
+        final var vectors = groupingType.instantiationVectors();
+        if (vectors.isEmpty()) {
+            return Set.of();
+        }
+
+        final var ret = new HashSet<CompositeRuntimeType>();
+        resolveVectors(ret, vectors);
+        return ret;
+    }
+
+    private static void resolveVectors(final Set<CompositeRuntimeType> set, final List<CompositeRuntimeType> vectors) {
+        for (var vector : vectors) {
+            if (vector instanceof GroupingRuntimeType grouping) {
+                resolveVectors(set, grouping.instantiationVectors());
+            } else {
+                set.add(vector);
+            }
+        }
     }
 
     @Override
