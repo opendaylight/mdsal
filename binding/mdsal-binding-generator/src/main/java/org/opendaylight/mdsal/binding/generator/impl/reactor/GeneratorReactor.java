@@ -17,8 +17,10 @@ import com.google.common.collect.Maps;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
@@ -222,14 +224,22 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
             }
         } while (haveUnresolved);
 
-        // Step eight: generate actual Types
-        //
-        // We have now properly cross-linked all generators and have assigned their naming roots, so from this point
-        // it looks as though we are performing a simple recursive execution. In reality, though, the actual path taken
-        // through generators is dictated by us as well as generator linkage.
+        /*
+         * Step eight: generate actual Types
+         *
+         * We have now properly cross-linked all generators and have assigned their naming roots, so from this point
+         * it looks as though we are performing a simple recursive execution. In reality, though, the actual path taken
+         * through generators is dictated by us as well as generator linkage.
+         */
         for (var module : children) {
             module.ensureType(builderFactory);
         }
+
+        // Step nine: resolve grouping instantiations, so that each GroupingGenerator knows whether its definitions
+        //            have reached an instantiated context or not.
+        // FIXME: this should be purely optional and only executed for runtime types -- perhaps it should be part of
+        //        TypeBuilderFactory?
+        linkGroupingInstantiations();
 
         LOG.debug("Processed {} modules in {}", generators.size(), sw);
         state = State.FINISHED;
@@ -416,6 +426,63 @@ public final class GeneratorReactor extends GeneratorContext implements Mutable 
                 bindTypeDefinition(child);
             }
             stack.pop();
+        }
+    }
+
+    private void linkGroupingInstantiations() {
+        // Primary pass on modules, collecting all groupings which were left unprocessed
+        final var remaining = new HashSet<GroupingGenerator>();
+        linkGroupingInstantiations(remaining, children);
+        LOG.debug("Grouping pass 1 found {} groupings", remaining.size());
+
+        // Secondary passes: if any unprocessed groupings have been marked as used, process their children, potentially
+        //                   adding more work
+        int passes = 2;
+        int processed;
+        do {
+            // Do not process groupings again unless we make some progress
+            processed = 0;
+
+            final var found = new HashSet<GroupingGenerator>();
+            final var it = remaining.iterator();
+            while (it.hasNext()) {
+                final var next = it.next();
+                if (next.hasUser()) {
+                    // Process this grouping and remember we need to iterate again, as groupings we have already visited
+                    // may become used as a side-effect.
+                    it.remove();
+                    linkGroupingInstantiations(found, next);
+                    processed++;
+                }
+            }
+
+            final var foundSize = found.size();
+            LOG.debug("Grouping pass {} processed {} and found {} grouping(s)", passes, processed, foundSize);
+            if (foundSize != 0) {
+                // we have some more groupings to process, shove them into the next iteration
+                remaining.addAll(found);
+            }
+
+            passes++;
+        } while (processed != 0);
+
+        LOG.debug("Grouping instantiation completed after {} pass(es) with {} unused grouping(s)", passes,
+            remaining.size());
+    }
+
+    // Iterate over a some generators recursively, linking them to the GroupingGenerators they use. GroupingGenerators
+    // are skipped and added to unprocessedGroupings for later processing.
+    private static void linkGroupingInstantiations(final Set<GroupingGenerator> groupings,
+            final Iterable<? extends Generator> parent) {
+        for (var child : parent) {
+            if (child instanceof GroupingGenerator grouping) {
+                groupings.add(grouping);
+            } else if (child instanceof AbstractCompositeGenerator<?, ?> composite) {
+                for (var grouping : composite.groupings()) {
+                    grouping.addUser(composite);
+                }
+                linkGroupingInstantiations(groupings, composite);
+            }
         }
     }
 }
