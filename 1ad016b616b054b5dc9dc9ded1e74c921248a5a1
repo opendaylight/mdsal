@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57dd5873_15177395",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-03-03T10:45:02Z",
+      "side": 1,
+      "message": "resolve merge conflict",
+      "revId": "1ad016b616b054b5dc9dc9ded1e74c921248a5a1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ad4d968_0b631e98",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/contract/Naming.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-03-03T10:45:02Z",
+      "side": 1,
+      "message": "correctly no longer marked as Beta?",
+      "revId": "1ad016b616b054b5dc9dc9ded1e74c921248a5a1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
