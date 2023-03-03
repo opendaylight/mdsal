@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a4fbdc8_35fde498",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-03-03T10:44:17Z",
+      "side": 1,
+      "message": "sign-off should be last",
+      "revId": "40cde94fec6e16de15f2dba27326024c2663a312",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5c1c49f2_ddd937c9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-03-03T10:44:17Z",
+      "side": 1,
+      "message": "resolve merge conflict",
+      "revId": "40cde94fec6e16de15f2dba27326024c2663a312",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15818a0d_9bf8665c",
+        "filename": "binding/mdsal-binding-dom-codec-spi/src/main/java/org/opendaylight/mdsal/binding/dom/codec/spi/BindingSchemaMapping.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-03-03T10:44:17Z",
+      "side": 1,
+      "message": "do we need to have this as separate method? do we call this elsewhere?\n\nyou even name it same as the calling method",
+      "revId": "40cde94fec6e16de15f2dba27326024c2663a312",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
