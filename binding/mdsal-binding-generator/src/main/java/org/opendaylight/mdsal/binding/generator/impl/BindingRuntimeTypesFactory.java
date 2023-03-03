@@ -10,7 +10,9 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static com.google.common.base.Verify.verify;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.SetMultimap;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +31,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.GroupingRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.IdentityRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleRuntimeType;
@@ -56,6 +59,8 @@ final class BindingRuntimeTypesFactory implements Mutable {
     private final Map<QName, InputRuntimeType> rpcInputs = new HashMap<>();
     // All known 'choice's to their corresponding cases
     private final SetMultimap<JavaTypeName, CaseRuntimeType> choiceToCases = HashMultimap.create();
+    // All known instantiations to their corresponding grouping
+    private final ListMultimap<JavaTypeName, JavaTypeName> groupingToInstantiation = ArrayListMultimap.create();
 
     private BindingRuntimeTypesFactory() {
         // Hidden on purpose
@@ -70,7 +75,7 @@ final class BindingRuntimeTypesFactory implements Mutable {
         LOG.debug("Indexed {} generators in {}", moduleGens.size(), sw);
 
         return new DefaultBindingRuntimeTypes(context, factory.modules, factory.allTypes, factory.identities,
-            factory.rpcInputs, factory.rpcOutputs, factory.choiceToCases);
+            factory.rpcInputs, factory.rpcOutputs, factory.choiceToCases, factory.groupingToInstantiation);
     }
 
     private void indexModules(final Map<QNameModule, ModuleGenerator> moduleGens) {
@@ -102,6 +107,7 @@ final class BindingRuntimeTypesFactory implements Mutable {
         }
 
         indexRuntimeTypes(moduleGens.values());
+        populateGroupingInstances(moduleGens.values());
     }
 
     private void indexRuntimeTypes(final Iterable<? extends Generator> generators) {
@@ -129,6 +135,21 @@ final class BindingRuntimeTypesFactory implements Mutable {
             indexRuntimeTypes(gen);
         }
     }
+
+    private void populateGroupingInstances(final Iterable<? extends Generator> generators) {
+        for (Generator gen : generators) {
+            if (gen.generatedType().isPresent()) {
+                var genType = gen.generatedType().orElseThrow();
+                for (var type : genType.getImplements()) {
+                    if (allTypes.get(type.getIdentifier()) instanceof GroupingRuntimeType) {
+                        groupingToInstantiation.put(type.getIdentifier(), genType.getIdentifier());
+                    }
+                }
+            }
+            populateGroupingInstances(gen);
+        }
+    }
+
 
     private static <K, V> void safePut(final Map<K, V> map, final String name, final K key, final V value) {
         final var prev = map.put(key, value);
