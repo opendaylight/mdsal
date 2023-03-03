@@ -23,6 +23,7 @@ import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.GeneratedRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.IdentityRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
@@ -47,18 +48,21 @@ public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
     private final ImmutableMap<QName, OutputRuntimeType> rpcOutputs;
     private final ImmutableMap<QName, InputRuntimeType> rpcInputs;
     private final ImmutableMap<JavaTypeName, RuntimeType> types;
+    private final ImmutableSetMultimap<JavaTypeName, CompositeRuntimeType> groupingToInstantiation;
 
     public DefaultBindingRuntimeTypes(final EffectiveModelContext context,
             final Map<QNameModule, ModuleRuntimeType> modules, final Map<JavaTypeName, RuntimeType> types,
             final Map<QName, IdentityRuntimeType> identities, final Map<QName, InputRuntimeType> rpcInputs,
             final Map<QName, OutputRuntimeType> rpcOutputs,
-            final SetMultimap<JavaTypeName, CaseRuntimeType> choiceToCases) {
+            final SetMultimap<JavaTypeName, CaseRuntimeType> choiceToCases,
+            final SetMultimap<JavaTypeName, CompositeRuntimeType> groupingToInstantiation) {
         this.context = requireNonNull(context);
         this.identities = ImmutableMap.copyOf(identities);
         this.types = ImmutableMap.copyOf(types);
         this.rpcInputs = ImmutableMap.copyOf(rpcInputs);
         this.rpcOutputs = ImmutableMap.copyOf(rpcOutputs);
         this.choiceToCases = ImmutableSetMultimap.copyOf(choiceToCases);
+        this.groupingToInstantiation = ImmutableSetMultimap.copyOf(groupingToInstantiation);
 
         modulesByNamespace = ImmutableMap.copyOf(modules);
         modulesByPackage = ImmutableSortedMap.copyOf(Maps.uniqueIndex(modules.values(),
@@ -112,6 +116,11 @@ public final class DefaultBindingRuntimeTypes implements BindingRuntimeTypes {
     @Override
     public Set<CaseRuntimeType> allCaseChildren(final ChoiceRuntimeType choiceType) {
         return choiceToCases.get(choiceType.getIdentifier());
+    }
+
+    @Override
+    public Set<CompositeRuntimeType> allGroupingInstances(final JavaTypeName groupingType) {
+        return groupingToInstantiation.get(groupingType);
     }
 
     @Override
