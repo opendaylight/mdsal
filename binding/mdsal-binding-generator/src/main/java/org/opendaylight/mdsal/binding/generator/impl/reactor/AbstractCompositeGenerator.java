@@ -166,7 +166,7 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
         return augments;
     }
 
-    final @NonNull List<GroupingGenerator> groupings() {
+    public final @NonNull List<GroupingGenerator> groupings() {
         return verifyNotNull(groupings, "Groupings not initialized in %s", this);
     }
 
