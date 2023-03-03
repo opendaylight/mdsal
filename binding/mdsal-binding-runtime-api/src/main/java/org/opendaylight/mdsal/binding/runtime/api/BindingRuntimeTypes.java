@@ -92,4 +92,44 @@ public interface BindingRuntimeTypes extends EffectiveModelContextProvider, Runt
      * @throws NullPointerException if {@code ChoiceRuntimeType} is null
      */
     @NonNull Set<CaseRuntimeType> allCaseChildren(ChoiceRuntimeType choiceType);
+
+    /**
+     * Lookup to {@link GroupingRuntimeType}s of all instantiations roots for given grouping
+     *
+     * <p>
+     * As an example, consider {@link GroupingRuntimeType} of {@code grouping baz} and it's instantiations roots
+     * {@code container one} and {@code container two} in the following model:
+     * <pre>
+     *   <code>
+     *      grouping baz {
+     *        leaf baz {
+     *          type leafref {
+     *            path "../bar";
+     *          }
+     *        }
+     *      }
+     *
+     *      container one {
+     *        leaf bar {
+     *          type string;
+     *        }
+     *        uses baz;
+     *      }
+     *
+     *      container two {
+     *        leaf bar {
+     *          type uint16;
+     *        }
+     *        uses baz;
+     *      }
+     *   </code>
+     * </pre>
+     *
+     * <p>
+     * This method provide information about grouping instantiation to make leafref mapping predictable.
+     *
+     * @param groupingType A GroupingRuntimeType
+     * @return The set instantiated {@link CompositeRuntimeType}s which use the grouping
+     */
+    @NonNull Set<CompositeRuntimeType> allGroupingInstances(GroupingRuntimeType groupingType);
 }
