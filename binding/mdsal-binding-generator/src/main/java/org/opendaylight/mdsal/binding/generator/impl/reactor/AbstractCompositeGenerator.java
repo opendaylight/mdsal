@@ -162,12 +162,12 @@ public abstract class AbstractCompositeGenerator<S extends EffectiveStatement<?,
         return childGenerators.iterator();
     }
 
-    final @NonNull List<AbstractAugmentGenerator> augments() {
-        return augments;
+    public final @NonNull List<GroupingGenerator> groupings() {
+        return verifyNotNull(groupings, "Groupings not initialized in %s", this);
     }
 
-    final @NonNull List<GroupingGenerator> groupings() {
-        return verifyNotNull(groupings, "Groupings not initialized in %s", this);
+    final @NonNull List<AbstractAugmentGenerator> augments() {
+        return augments;
     }
 
     @Override
