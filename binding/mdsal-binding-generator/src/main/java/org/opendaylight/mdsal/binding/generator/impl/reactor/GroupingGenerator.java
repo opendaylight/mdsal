@@ -25,7 +25,8 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 /**
  * Generator corresponding to a {@code grouping} statement.
  */
-final class GroupingGenerator extends AbstractCompositeGenerator<GroupingEffectiveStatement, GroupingRuntimeType> {
+public final class GroupingGenerator extends
+        AbstractCompositeGenerator<GroupingEffectiveStatement, GroupingRuntimeType> {
     GroupingGenerator(final GroupingEffectiveStatement statement, final AbstractCompositeGenerator<?, ?> parent) {
         super(statement, parent);
     }
