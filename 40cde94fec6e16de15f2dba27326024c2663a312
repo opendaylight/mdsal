@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "a2e249c7_a67d0f32",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-03-10T07:42:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a4fbdc8_35fde498",
+      "revId": "40cde94fec6e16de15f2dba27326024c2663a312",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "5c1c49f2_ddd937c9",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -48,6 +66,24 @@
       "writtenOn": "2023-03-03T10:44:17Z",
       "side": 1,
       "message": "do we need to have this as separate method? do we call this elsewhere?\n\nyou even name it same as the calling method",
+      "revId": "40cde94fec6e16de15f2dba27326024c2663a312",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1256e08a_365f45cd",
+        "filename": "binding/mdsal-binding-dom-codec-spi/src/main/java/org/opendaylight/mdsal/binding/dom/codec/spi/BindingSchemaMapping.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 9171
+      },
+      "writtenOn": "2023-03-10T07:42:26Z",
+      "side": 1,
+      "message": "refactored to be one method",
+      "parentUuid": "15818a0d_9bf8665c",
       "revId": "40cde94fec6e16de15f2dba27326024c2663a312",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
