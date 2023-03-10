@@ -34,6 +34,24 @@
       "parentUuid": "9750bd45_a9c1850b",
       "revId": "f930bb09e805a16a485232bf2b3e2334f430468b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e78eab3e_4a4fd9ef",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/contract/Naming.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-03-10T07:52:55Z",
+      "side": 0,
+      "message": "I mean why change the year in copyright. 2013 to 2016 bit weird change",
+      "parentUuid": "b6bf7034_479a705f",
+      "revId": "f930bb09e805a16a485232bf2b3e2334f430468b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
