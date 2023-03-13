@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b37e2c45_5d82f42b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-03-13T16:31:40Z",
+      "side": 1,
+      "message": "sign-off should be last",
+      "revId": "e0c9f949a525747d25443a29a339879003149dc2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ac464e7_308bf299",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-03-13T16:31:40Z",
+      "side": 1,
+      "message": "this patch belongs to MDSAL-783 right?",
+      "revId": "e0c9f949a525747d25443a29a339879003149dc2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "23d56e78_a4e66756",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-03-13T16:31:40Z",
+      "side": 1,
+      "message": "Lot of variables are missing final \nin some variables I don\u0027t see the need to crate them",
+      "revId": "e0c9f949a525747d25443a29a339879003149dc2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
