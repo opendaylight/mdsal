@@ -50,6 +50,23 @@
       "message": "Lot of variables are missing final \nin some variables I don\u0027t see the need to crate them",
       "revId": "e0c9f949a525747d25443a29a339879003149dc2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4a4c8db6_015e50b8",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/SingleBindingDOMNotificationAdapter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-03-14T07:58:51Z",
+      "side": 1,
+      "message": "for example here both variables are missing final\nand I don\u0027t think there is a reason to create both of them",
+      "revId": "e0c9f949a525747d25443a29a339879003149dc2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
