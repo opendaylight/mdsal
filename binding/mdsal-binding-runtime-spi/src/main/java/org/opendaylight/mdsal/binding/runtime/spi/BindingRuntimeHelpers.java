@@ -7,10 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.runtime.spi;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSet.Builder;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
@@ -18,6 +22,7 @@ import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
+import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
@@ -58,7 +63,7 @@ public final class BindingRuntimeHelpers {
         final ModuleInfoSnapshot infos;
         try {
             infos = prepareContext(ServiceLoaderState.ParserFactory.INSTANCE,
-                BindingReflections.loadModuleInfos());
+                loadModuleInfos());
         } catch (YangParserException e) {
             throw new IllegalStateException("Failed to parse models", e);
         }
@@ -102,13 +107,31 @@ public final class BindingRuntimeHelpers {
         return new DefaultBindingRuntimeContext(generator.generateTypeMapping(infos.getEffectiveModelContext()), infos);
     }
 
-    @SuppressWarnings("checkstyle:IllegalCatch")
-    static @NonNull YangModuleInfo extractYangModuleInfo(final Class<?> clazz) {
-        try {
-            return BindingReflections.getModuleInfo(clazz);
-        } catch (Exception e) {
-            Throwables.throwIfUnchecked(e);
-            throw new IllegalStateException("Failed to extract module info from " + clazz, e);
+    public static @NonNull YangModuleInfo extractYangModuleInfo(final Class<?> clazz) {
+        return loadModuleInfos().stream()
+            .filter(info -> info.getName().getNamespace().equals(BindingReflections.findQName(clazz).getNamespace()))
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("Failed to extract module info from " + clazz));
+    }
+
+    public static @NonNull ImmutableSet<YangModuleInfo> loadModuleInfos() {
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        Builder<YangModuleInfo> moduleInfoSet = ImmutableSet.builder();
+        ServiceLoader<YangModelBindingProvider> serviceLoader = ServiceLoader.load(YangModelBindingProvider.class,
+            loader);
+        for (YangModelBindingProvider bindingProvider : serviceLoader) {
+            YangModuleInfo moduleInfo = bindingProvider.getModuleInfo();
+            checkState(moduleInfo != null, "Module Info for %s is not available.", bindingProvider.getClass());
+            collectYangModuleInfo(bindingProvider.getModuleInfo(), moduleInfoSet);
+        }
+        return moduleInfoSet.build();
+    }
+
+    private static void collectYangModuleInfo(final YangModuleInfo moduleInfo,
+        final Builder<YangModuleInfo> moduleInfoSet) {
+        moduleInfoSet.add(moduleInfo);
+        for (YangModuleInfo dependency : moduleInfo.getImportedModules()) {
+            collectYangModuleInfo(dependency, moduleInfoSet);
         }
     }
 

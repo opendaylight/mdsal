@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
@@ -42,7 +41,7 @@ public final class ModuleInfoSnapshotBuilder {
     public @NonNull ModuleInfoSnapshotBuilder add(final Class<? extends BindingObject> clazz) {
         final YangModuleInfo moduleInfo;
         try {
-            moduleInfo = BindingReflections.getModuleInfo(clazz);
+            moduleInfo = BindingRuntimeHelpers.extractYangModuleInfo(clazz);
         } catch (Exception e) {
             Throwables.throwIfUnchecked(e);
             throw new IllegalStateException("Failed to introspect " + clazz, e);

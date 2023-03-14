@@ -20,6 +20,7 @@ module org.opendaylight.mdsal.binding.runtime.spi {
 
     uses org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
     uses org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
+    uses org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
