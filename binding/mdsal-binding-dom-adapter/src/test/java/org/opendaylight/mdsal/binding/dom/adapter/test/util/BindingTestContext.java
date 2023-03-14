@@ -11,7 +11,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Set;
@@ -29,7 +28,6 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceA
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcProviderServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
 import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -184,8 +182,7 @@ public class BindingTestContext implements AutoCloseable {
     }
 
     public void loadYangSchemaFromClasspath() {
-        final ImmutableSet<YangModuleInfo> moduleInfos = BindingReflections.loadModuleInfos();
-        updateYangSchema(moduleInfos);
+        updateYangSchema(BindingRuntimeHelpers.loadModuleInfos());
     }
 
     public DOMRpcProviderService getDomRpcRegistry() {
