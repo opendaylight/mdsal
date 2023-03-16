@@ -52,6 +52,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ee3706d_8f1e4f25",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 8144
+      },
+      "writtenOn": "2023-03-16T09:15:13Z",
+      "side": 1,
+      "message": "So, you are moving classes, not creating them? Then why old classes are not deleted?",
+      "parentUuid": "1497baff_ae1c1e82",
+      "revId": "ba8d46a9317511eb6afe13c0864319d271b848bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d642aa21_c0fd175b",
