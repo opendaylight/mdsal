@@ -1,0 +1,204 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d124dc94_c87f53ab",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/BijectiveNamingStrategy.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-03-16T13:20:52Z",
+      "side": 1,
+      "message": "2023",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 22
+      },
+      "revId": "b104142ae22d093621a49c373480ca44da4c6358",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d550257e_37410a6e",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/BijectiveWithNamespaceNamingStrategy.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-03-16T13:20:52Z",
+      "side": 1,
+      "message": "2023",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 22
+      },
+      "revId": "b104142ae22d093621a49c373480ca44da4c6358",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ab3e230_70206deb",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/CamelCaseWithNamespaceNamingStrategy.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-03-16T13:20:52Z",
+      "side": 1,
+      "message": "We don\u0027t need 2 empty lines here",
+      "revId": "b104142ae22d093621a49c373480ca44da4c6358",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d139b7ed_9c1a92e3",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/CamelCaseWithNamespaceNamingStrategy.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-03-16T13:20:52Z",
+      "side": 1,
+      "message": "I\u0027m not sure about this TODO. It was marked as MDSAL-502 FIXME previously, so I think it should be fixed here, no? May be you forgot remove it?",
+      "range": {
+        "startLine": 27,
+        "startChar": 8,
+        "endLine": 29,
+        "endChar": 110
+      },
+      "revId": "b104142ae22d093621a49c373480ca44da4c6358",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bbcf68e3_55c8af69",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ClassNamingStrategy.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-03-16T13:20:52Z",
+      "side": 1,
+      "message": "Random empty line",
+      "revId": "b104142ae22d093621a49c373480ca44da4c6358",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "98705862_56125b94",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ForwardingClassNamingStrategy.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-03-16T13:20:52Z",
+      "side": 1,
+      "message": "2023",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 22
+      },
+      "revId": "b104142ae22d093621a49c373480ca44da4c6358",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25c97216_ee7a3d7d",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ModuleNamingStrategy.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-03-16T13:20:52Z",
+      "side": 1,
+      "message": "Random empty line",
+      "revId": "b104142ae22d093621a49c373480ca44da4c6358",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a2a7e8f_c9a7eb39",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ModuleNamingStrategy.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-03-16T13:20:52Z",
+      "side": 1,
+      "message": "Same here",
+      "revId": "b104142ae22d093621a49c373480ca44da4c6358",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "beb7f21d_7529e40d",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/ResistedCamelCaseNamingStrategy.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-03-16T13:20:52Z",
+      "side": 1,
+      "message": "Random empty line",
+      "revId": "b104142ae22d093621a49c373480ca44da4c6358",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ddf7ff4c_c8a313c5",
+        "filename": "binding/mdsal-binding-generator/src/test/java/org/opendaylight/mdsal/binding/generator/impl/Mdsal502Test.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 9063
+      },
+      "writtenOn": "2023-03-16T13:20:52Z",
+      "side": 1,
+      "message": "2023",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 22
+      },
+      "revId": "b104142ae22d093621a49c373480ca44da4c6358",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
