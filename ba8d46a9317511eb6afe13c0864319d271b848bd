@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "7fe026ca_6635808b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-03-16T11:50:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8369dca1_4936afa5",
+      "revId": "ba8d46a9317511eb6afe13c0864319d271b848bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "bf571e4b_33dee8d4",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 6
@@ -88,6 +106,23 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5276644_98b07feb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-03-16T11:50:42Z",
+      "side": 1,
+      "message": "resolved",
+      "revId": "ba8d46a9317511eb6afe13c0864319d271b848bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d642aa21_c0fd175b",
@@ -101,6 +136,30 @@
       "writtenOn": "2023-03-16T08:47:12Z",
       "side": 1,
       "message": "It would be better to follow `var` convention in each variable declaration inside this method or not use var",
+      "range": {
+        "startLine": 62,
+        "startChar": 14,
+        "endLine": 62,
+        "endChar": 17
+      },
+      "revId": "ba8d46a9317511eb6afe13c0864319d271b848bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd49845b_4fdfa806",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/InstanceIdentifierTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-03-16T11:50:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d642aa21_c0fd175b",
       "range": {
         "startLine": 62,
         "startChar": 14,
@@ -134,6 +193,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3eed6f3f_642f1651",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/InstanceIdentifierTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-03-16T11:50:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ca33b338_03907374",
+      "range": {
+        "startLine": 96,
+        "startChar": 14,
+        "endLine": 96,
+        "endChar": 32
+      },
+      "revId": "ba8d46a9317511eb6afe13c0864319d271b848bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "794ddd80_f4e03483",
@@ -157,6 +240,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9ec2cfe_089cf84c",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/InstanceIdentifierTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-03-16T11:50:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "794ddd80_f4e03483",
+      "range": {
+        "startLine": 150,
+        "startChar": 14,
+        "endLine": 150,
+        "endChar": 17
+      },
+      "revId": "ba8d46a9317511eb6afe13c0864319d271b848bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6e9316d3_188c5ff3",
@@ -170,6 +277,30 @@
       "writtenOn": "2023-03-16T08:47:12Z",
       "side": 1,
       "message": "Same here",
+      "range": {
+        "startLine": 294,
+        "startChar": 14,
+        "endLine": 294,
+        "endChar": 17
+      },
+      "revId": "ba8d46a9317511eb6afe13c0864319d271b848bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ee17fb1_240b899b",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/InstanceIdentifierTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-03-16T11:50:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6e9316d3_188c5ff3",
       "range": {
         "startLine": 294,
         "startChar": 14,
