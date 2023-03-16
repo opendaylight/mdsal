@@ -11,13 +11,13 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>9.0.8-SNAPSHOT</version>
+        <version>9.0.9-SNAPSHOT</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>odl-mdsal-model-rfc8040</artifactId>
-    <version>9.0.8-SNAPSHOT</version>
+    <version>9.0.9-SNAPSHOT</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: Model :: RFC8040</name>
     <description>Models from RFC8040</description>
