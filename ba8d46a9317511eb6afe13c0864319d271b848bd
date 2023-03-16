@@ -70,6 +70,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a716aff_5b8d1dd1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-03-16T11:31:35Z",
+      "side": 1,
+      "message": "We are creating a new concept very similar to yang.binding.InstanceIdentifier, however there are some major changes in behavior. We want to keep the old classes in yang.binding intact as they are broadly used through the project. After we are done with these patches (where this is the first one of them) then all methods using yang.binding.InstanceIdentifier will be deprecated, after which yang.binding.InstanceIdentifier itself will be deprecated.\n\nI dont know why I cannot reply to the copyright year comment separatly, but here is the answer:\nTo be discussed if the files that are migrated intact or with minor changes should have the old or the new header.",
+      "parentUuid": "6ee3706d_8f1e4f25",
+      "revId": "ba8d46a9317511eb6afe13c0864319d271b848bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d642aa21_c0fd175b",
