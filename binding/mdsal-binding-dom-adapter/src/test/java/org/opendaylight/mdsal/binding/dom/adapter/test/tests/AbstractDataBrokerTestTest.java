@@ -37,7 +37,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AbstractDataBrokerTestTest extends AbstractConcurrentDataBrokerTest {
-    private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
+    private static final InstanceIdentifier<Top> LEGACY_TOP_PATH = InstanceIdentifier.create(Top.class);
+    private static final org.opendaylight.mdsal.binding.api.InstanceIdentifier<Top> TOP_PATH =
+            org.opendaylight.mdsal.binding.api.InstanceIdentifier.create(Top.class);
 
     @Before
     public void before() {
@@ -63,7 +65,7 @@ public class AbstractDataBrokerTestTest extends AbstractConcurrentDataBrokerTest
     // copy/pasted from Bug1125RegressionTest.writeInitialState()
     private void writeInitialState() throws InterruptedException, ExecutionException {
         WriteTransaction initialTx = getDataBroker().newWriteOnlyTransaction();
-        initialTx.put(LogicalDatastoreType.OPERATIONAL, TOP_PATH, new TopBuilder().build());
+        initialTx.put(LogicalDatastoreType.OPERATIONAL, LEGACY_TOP_PATH, new TopBuilder().build());
         TreeComplexUsesAugment fooAugment = new TreeComplexUsesAugmentBuilder()
                 .setContainerWithUses(new ContainerWithUsesBuilder().setLeafFromGrouping("foo").build()).build();
         initialTx.put(LogicalDatastoreType.OPERATIONAL, path(TOP_FOO_KEY), topLevelList(TOP_FOO_KEY, fooAugment));
@@ -72,7 +74,8 @@ public class AbstractDataBrokerTestTest extends AbstractConcurrentDataBrokerTest
 
     private boolean isTopInDataStore() throws InterruptedException, ExecutionException {
         try (ReadTransaction readTx = getDataBroker().newReadOnlyTransaction()) {
-            return readTx.exists(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();
+            return readTx.exists(LogicalDatastoreType.OPERATIONAL, LEGACY_TOP_PATH).get()
+                    && readTx.exists(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();
         }
     }
 }
