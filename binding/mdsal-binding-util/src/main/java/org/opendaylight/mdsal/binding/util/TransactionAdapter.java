@@ -12,6 +12,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -86,6 +87,14 @@ public final class TransactionAdapter {
         }
 
         @Override
+        public <T extends DataObject> void put(@NonNull LogicalDatastoreType store,
+                org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path,
+                @NonNull T data) {
+            checkStore(store);
+            delegate.put(path,data);
+        }
+
+        @Override
         public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
                 final InstanceIdentifier<T> path, final T data) {
             checkStore(store);
@@ -95,6 +104,14 @@ public final class TransactionAdapter {
         @Override
         public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
                 final T data) {
+            checkStore(store);
+            delegate.merge(path, data);
+        }
+
+        @Override
+        public <T extends DataObject> void merge(@NonNull LogicalDatastoreType store,
+                org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path,
+                @NonNull T data) {
             checkStore(store);
             delegate.merge(path, data);
         }
@@ -113,6 +130,13 @@ public final class TransactionAdapter {
 
         @Override
         public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+            checkStore(store);
+            delegate.delete(path);
+        }
+
+        @Override
+        public void delete(@NonNull LogicalDatastoreType store,
+                org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> path) {
             checkStore(store);
             delegate.delete(path);
         }
@@ -152,8 +176,22 @@ public final class TransactionAdapter {
         }
 
         @Override
+        public @NonNull <T extends DataObject> FluentFuture<Optional<T>> read(
+                @NonNull LogicalDatastoreType store,
+                org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path) {
+            checkStore(store);
+            return delegate().read(path);
+        }
+
+        @Override
         public FluentFuture<Boolean> exists(final LogicalDatastoreType store,final InstanceIdentifier<?> path) {
             checkStore(store);
+            return delegate().exists(path);
+        }
+
+        @Override
+        public @NonNull FluentFuture<Boolean> exists(@NonNull LogicalDatastoreType store,
+                org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> path) {
             return delegate().exists(path);
         }
     }
