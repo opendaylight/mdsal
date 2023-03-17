@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.InstanceIdentifier;
 import org.opendaylight.yangtools.util.ImmutableOffsetMap;
 import org.opendaylight.yangtools.util.ImmutableOffsetMapTemplate;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
@@ -82,7 +83,8 @@ abstract class IdentifiableItemCodec {
              * We need to re-index to make sure we instantiate nodes in the order in which they are defined. We will
              * also need to instantiate values in the same order.
              */
-            final var keyDef = schema.findFirstEffectiveSubstatementArgument(KeyEffectiveStatement.class).orElseThrow();
+            final var keyDef = schema.findFirstEffectiveSubstatementArgument(KeyEffectiveStatement.class)
+                    .orElseThrow();
             predicateTemplate = ImmutableOffsetMapTemplate.ordered(keyDef);
             this.keyValueContexts = predicateTemplate.instantiateTransformed(keyValueContexts, (key, value) -> value);
 
@@ -151,6 +153,10 @@ abstract class IdentifiableItemCodec {
     }
 
     final @NonNull NodeIdentifierWithPredicates bindingToDom(final IdentifiableItem<?, ?> input) {
+        return serializeIdentifier(qname, input.getKey());
+    }
+
+    final @NonNull NodeIdentifierWithPredicates bindingToDom(final InstanceIdentifier.IdentifiableItem<?, ?> input) {
         return serializeIdentifier(qname, input.getKey());
     }
 

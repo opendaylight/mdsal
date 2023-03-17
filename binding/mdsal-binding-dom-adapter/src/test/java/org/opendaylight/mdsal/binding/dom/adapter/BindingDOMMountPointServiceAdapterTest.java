@@ -29,7 +29,8 @@ public class BindingDOMMountPointServiceAdapterTest {
     public void basicTest() throws Exception {
         final BindingDOMCodecServices registry = mock(BindingDOMCodecServices.class);
         final AdapterContext codec = new ConstantAdapterContext(registry);
-        doReturn(YangInstanceIdentifier.empty()).when(registry).toYangInstanceIdentifier(any());
+        doReturn(YangInstanceIdentifier.empty()).when(registry).toYangInstanceIdentifier(
+                (InstanceIdentifier<?>) any());
         final DOMMountPointService mountPointService = mock(DOMMountPointService.class);
 
         final BindingDOMMountPointServiceAdapter adapter =

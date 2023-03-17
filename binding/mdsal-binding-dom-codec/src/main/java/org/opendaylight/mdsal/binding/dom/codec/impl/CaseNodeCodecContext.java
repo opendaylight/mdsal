@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.List;
+import org.opendaylight.mdsal.binding.api.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.runtime.api.CaseRuntimeType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
@@ -36,6 +37,12 @@ final class CaseNodeCodecContext<D extends DataObject> extends DataObjectCodecCo
 
     @Override
     protected void addYangPathArgument(final PathArgument arg,
+            final List<YangInstanceIdentifier.PathArgument> builder) {
+        // NOOP
+    }
+
+    @Override
+    protected void addYangPathArgument(final InstanceIdentifier.PathArgument arg,
             final List<YangInstanceIdentifier.PathArgument> builder) {
         // NOOP
     }

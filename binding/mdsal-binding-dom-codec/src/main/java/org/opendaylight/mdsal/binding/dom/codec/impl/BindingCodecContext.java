@@ -39,6 +39,7 @@ import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.kohsuke.MetaInfServices;
+import org.opendaylight.mdsal.binding.api.InstanceWildcard;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCodec;
@@ -209,6 +210,15 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     @Override
+    public @NonNull Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriterAndIdentifier(
+            final org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> path,
+            final @NonNull NormalizedNodeStreamWriter domWriter) {
+        final List<YangInstanceIdentifier.PathArgument> yangArgs = new LinkedList<>();
+        final DataContainerCodecContext<?,?> codecContext = getCodecContextNode(path, yangArgs);
+        return Map.entry(YangInstanceIdentifier.create(yangArgs), codecContext.createWriter(domWriter));
+    }
+
+    @Override
     public BindingStreamEventWriter newWriter(final InstanceIdentifier<?> path,
             final NormalizedNodeStreamWriter domWriter) {
         return new BindingToNormalizedStreamWriter(getCodecContextNode(path, null), domWriter);
@@ -242,6 +252,28 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
             final List<YangInstanceIdentifier.PathArgument> builder) {
         DataContainerCodecContext<?,?> currentNode = root;
         for (final InstanceIdentifier.PathArgument bindingArg : binding.getPathArguments()) {
+            currentNode = currentNode.bindingPathArgumentChild(bindingArg, builder);
+            checkArgument(currentNode != null, "Supplied Instance Identifier %s is not valid.", binding);
+        }
+        return currentNode;
+    }
+
+    DataContainerCodecContext<?,?> getCodecContextNode(final org.opendaylight.mdsal.binding.api.InstanceIdentifier<?>
+            binding, final List<YangInstanceIdentifier.PathArgument> builder) {
+        DataContainerCodecContext<?,?> currentNode = root;
+        for (final org.opendaylight.mdsal.binding.api.InstanceIdentifier.PathArgument bindingArg :
+                binding.getPathArguments()) {
+            currentNode = currentNode.bindingPathArgumentChild(bindingArg, builder);
+            checkArgument(currentNode != null, "Supplied Instance Identifier %s is not valid.", binding);
+        }
+        return currentNode;
+    }
+
+    DataContainerCodecContext<?,?> getCodecContextNode(final org.opendaylight.mdsal.binding.api.InstanceWildcard<?>
+            binding, final List<YangInstanceIdentifier.PathArgument> builder) {
+        DataContainerCodecContext<?,?> currentNode = root;
+        for (final org.opendaylight.mdsal.binding.api.InstanceIdentifier.PathArgument bindingArg :
+                binding.getPathArguments()) {
             currentNode = currentNode.bindingPathArgumentChild(bindingArg, builder);
             checkArgument(currentNode != null, "Supplied Instance Identifier %s is not valid.", binding);
         }
@@ -512,6 +544,18 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     @Override
+    public @NonNull YangInstanceIdentifier toYangInstanceIdentifier(
+            org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> binding) {
+        return instanceIdentifierCodec.fromBinding(binding);
+    }
+
+    @Override
+    public @NonNull YangInstanceIdentifier toYangInstanceIdentifier(
+            @NonNull InstanceWildcard<?> binding) {
+        return instanceIdentifierCodec.fromBinding(binding);
+    }
+
+    @Override
     public <T extends DataObject> InstanceIdentifier<T> fromYangInstanceIdentifier(final YangInstanceIdentifier dom) {
         return instanceIdentifierCodec.toBinding(dom);
     }
@@ -526,6 +570,27 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         // We create Binding Stream Writer which translates from Binding to Normalized Nodes
         final Entry<YangInstanceIdentifier, BindingStreamEventWriter> writeCtx = newWriterAndIdentifier(path,
             domWriter);
+
+        // We get serializer which reads binding data and uses Binding To Normalized Node writer to write result
+        try {
+            getSerializer(path.getTargetType()).serialize(data, writeCtx.getValue());
+        } catch (final IOException e) {
+            LOG.error("Unexpected failure while serializing path {} data {}", path, data, e);
+            throw new IllegalStateException("Failed to create normalized node", e);
+        }
+        return Map.entry(writeCtx.getKey(), result.getResult());
+    }
+
+    @Override
+    public @NonNull <T extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode> toNormalizedNode(
+            org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path, T data) {
+        final NormalizedNodeResult result = new NormalizedNodeResult();
+        // We create DOM stream writer which produces normalized nodes
+        final NormalizedNodeStreamWriter domWriter = ImmutableNormalizedNodeStreamWriter.from(result);
+
+        // We create Binding Stream Writer which translates from Binding to Normalized Nodes
+        final Entry<YangInstanceIdentifier, BindingStreamEventWriter> writeCtx = newWriterAndIdentifier(path,
+                domWriter);
 
         // We get serializer which reads binding data and uses Binding To Normalized Node writer to write result
         try {

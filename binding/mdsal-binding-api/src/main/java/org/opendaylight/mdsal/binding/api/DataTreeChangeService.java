@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -54,5 +55,13 @@ public interface DataTreeChangeService extends BindingService {
      *         delivery of change events.
      */
     <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
-            registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener);
+        registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener);
+
+    <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
+        registerDataTreeChangeListener(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
+            @NonNull L listener);
+
+    <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
+        registerDataTreeChangeListener(@NonNull LogicalDatastoreType store, @NonNull InstanceWildcard<T> path,
+            @NonNull L listener);
 }
