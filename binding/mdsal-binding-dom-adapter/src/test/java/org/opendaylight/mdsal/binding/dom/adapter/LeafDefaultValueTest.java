@@ -58,15 +58,19 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
-    private static final InstanceIdentifier<TinyIntContainer> TINY_INT_NODE_PATH
+    private static final InstanceIdentifier<TinyIntContainer> LEGACY_TINY_INT_NODE_PATH
             = InstanceIdentifier.create(TinyIntContainer.class);
+    private static final org.opendaylight.mdsal.binding.api.InstanceIdentifier<TinyIntContainer> TINY_INT_NODE_PATH
+            = org.opendaylight.mdsal.binding.api.InstanceIdentifier.create(TinyIntContainer.class);
     private static final InstanceIdentifier<SmallIntContainer> SMALL_INT_NODE_PATH
+
             = InstanceIdentifier.create(SmallIntContainer.class);
     private static final InstanceIdentifier<NormalIntContainer> NORMAL_INT_NODE_PATH
             = InstanceIdentifier.create(NormalIntContainer.class);
-    private static final InstanceIdentifier<BigIntContainer> BIG_INT_NODE_PATH
+    private static final InstanceIdentifier<BigIntContainer> LEGACY_BIG_INT_NODE_PATH
             = InstanceIdentifier.create(BigIntContainer.class);
-
+    private static final org.opendaylight.mdsal.binding.api.InstanceIdentifier<BigIntContainer> BIG_INT_NODE_PATH
+            = org.opendaylight.mdsal.binding.api.InstanceIdentifier.create(BigIntContainer.class);
     private static final InstanceIdentifier<TinyUintContainer> TINY_UINT_NODE_PATH
             = InstanceIdentifier.create(TinyUintContainer.class);
     private static final InstanceIdentifier<SmallUintContainer> SMALL_UINT_NODE_PATH
@@ -79,8 +83,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     private static final InstanceIdentifier<DecimalContainer> DECIMAL_NODE_PATH
             = InstanceIdentifier.create(DecimalContainer.class);
 
-    private static final InstanceIdentifier<StringContainer> STRING_NODE_PATH
+    private static final InstanceIdentifier<StringContainer> LEGACY_STRING_NODE_PATH
             = InstanceIdentifier.create(StringContainer.class);
+    private static final org.opendaylight.mdsal.binding.api.InstanceIdentifier<StringContainer> STRING_NODE_PATH
+            = org.opendaylight.mdsal.binding.api.InstanceIdentifier.create(StringContainer.class);
 
     private static final InstanceIdentifier<BooleanContainer> BOOLEAN_NODE_PATH
             = InstanceIdentifier.create(BooleanContainer.class);
@@ -96,6 +102,27 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
     private static final InstanceIdentifier<IdentityrefContainer> IDENTITYREF_NODE_PATH
             = InstanceIdentifier.create(IdentityrefContainer.class);
+
+    @Test
+    public void testLegacyTinyIntDefaultValue() throws ExecutionException, InterruptedException {
+        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        writeTx.put(LogicalDatastoreType.OPERATIONAL, LEGACY_TINY_INT_NODE_PATH, new TinyIntContainerBuilder().build());
+        writeTx.commit().get();
+
+        final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
+        final Optional<TinyIntContainer> tinyIntContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
+                LEGACY_TINY_INT_NODE_PATH).get();
+
+        assertTrue(tinyIntContainerNode.isPresent());
+
+        TinyIntContainer tinyIntContainer = tinyIntContainerNode.get();
+        assertEquals(-18, tinyIntContainer.getTinyIntLeaf().getValue().byteValue());
+        assertEquals(-18, tinyIntContainer.getTinyIntLeaf2().getValue().byteValue());
+        assertEquals(-15, tinyIntContainer.getTinyIntLeaf3().getValue().byteValue());
+        assertEquals(-18, tinyIntContainer.getTinyIntLeaf4().getValue().byteValue());
+        assertEquals(-120, tinyIntContainer.getTinyIntLeaf5().byteValue());
+        assertEquals(null, tinyIntContainer.getTinyIntLeaf6());
+    }
 
     @Test
     public void testTinyIntDefaultValue() throws ExecutionException, InterruptedException {
@@ -158,6 +185,27 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
         assertEquals(-200000, normalIntContainer.getNormalIntLeaf4().getValue().intValue());
         assertEquals(-95000, normalIntContainer.getNormalIntLeaf5().intValue());
         assertEquals(null, normalIntContainer.getNormalIntLeaf6());
+    }
+
+    @Test
+    public void testLegacyBigIntDefaultValue() throws ExecutionException, InterruptedException {
+        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        writeTx.put(LogicalDatastoreType.OPERATIONAL, LEGACY_BIG_INT_NODE_PATH, new BigIntContainerBuilder().build());
+        writeTx.commit().get();
+
+        final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
+        final Optional<BigIntContainer> bigIntContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
+                LEGACY_BIG_INT_NODE_PATH).get();
+
+        assertTrue(bigIntContainerNode.isPresent());
+
+        BigIntContainer bigIntContainer = bigIntContainerNode.get();
+        assertEquals(-3300000000L, bigIntContainer.getBigIntLeaf().getValue().longValue());
+        assertEquals(-3300000000L, bigIntContainer.getBigIntLeaf2().getValue().longValue());
+        assertEquals(-2800000000L, bigIntContainer.getBigIntLeaf3().getValue().longValue());
+        assertEquals(-3300000000L, bigIntContainer.getBigIntLeaf4().getValue().longValue());
+        assertEquals(-2500000000L, bigIntContainer.getBigIntLeaf5().longValue());
+        assertEquals(null, bigIntContainer.getBigIntLeaf6());
     }
 
     @Test
@@ -284,6 +332,27 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
         assertEquals(66.66, decimalCont.getDecimalLeaf4().getValue().doubleValue(), 0.001);
         assertEquals(120.55, decimalCont.getDecimalLeaf5().doubleValue(), 0.001);
         assertEquals(null, decimalCont.getDecimalLeaf6());
+    }
+
+    @Test
+    public void testLegacyStringDefaultValue() throws ExecutionException, InterruptedException {
+        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        writeTx.put(LogicalDatastoreType.OPERATIONAL, LEGACY_STRING_NODE_PATH, new StringContainerBuilder().build());
+        writeTx.commit().get();
+
+        final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
+        final Optional<StringContainer> stringContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
+                LEGACY_STRING_NODE_PATH).get();
+
+        assertTrue(stringContainerNode.isPresent());
+
+        StringContainer stringCont = stringContainerNode.get();
+        assertEquals("unspecified string", stringCont.getStringLeaf().getValue());
+        assertEquals("unspecified string", stringCont.getStringLeaf2().getValue());
+        assertEquals("unknown", stringCont.getStringLeaf3().getValue());
+        assertEquals("unspecified string", stringCont.getStringLeaf4().getValue());
+        assertEquals("whatever", stringCont.getStringLeaf5());
+        assertNull(stringCont.getStringLeaf6());
     }
 
     @Test

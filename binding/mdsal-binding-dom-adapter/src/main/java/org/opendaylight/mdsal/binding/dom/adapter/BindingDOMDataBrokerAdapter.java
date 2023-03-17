@@ -16,12 +16,15 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.api.InstanceIdentifier;
+import org.opendaylight.mdsal.binding.api.InstanceWildcard;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.TransactionChain;
 import org.opendaylight.mdsal.binding.api.TransactionChainListener;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMService;
@@ -93,12 +96,33 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
     }
 
     @Override
-    public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
+    public @NonNull <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
             registerDataTreeChangeListener(
             final DataTreeIdentifier<T> treeId, final L listener) {
         if (treeChangeService == null) {
             throw new UnsupportedOperationException("Underlying data broker does not expose DOMDataTreeChangeService.");
         }
         return treeChangeService.registerDataTreeChangeListener(treeId, listener);
+    }
+
+
+    @Override
+    public @NonNull <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
+        registerDataTreeChangeListener(final @NonNull LogicalDatastoreType store,
+            final @NonNull InstanceIdentifier<T> path, final @NonNull L listener) {
+        if (treeChangeService == null) {
+            throw new UnsupportedOperationException("Underlying data broker does not expose DOMDataTreeChangeService.");
+        }
+        return treeChangeService.registerDataTreeChangeListener(store, path, listener);
+    }
+
+    @Override
+    public @NonNull <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
+        registerDataTreeChangeListener(final @NonNull LogicalDatastoreType store,
+            final @NonNull InstanceWildcard<T> path, final @NonNull L listener) {
+        if (treeChangeService == null) {
+            throw new UnsupportedOperationException("Underlying data broker does not expose DOMDataTreeChangeService.");
+        }
+        return treeChangeService.registerDataTreeChangeListener(store, path, listener);
     }
 }

@@ -40,4 +40,10 @@ public interface BindingInstanceIdentifierCodec extends Immutable {
     // FIXME: Document MissingSchemaException being thrown
     // FIXME: Document MissingSchemaForClassException being thrown
     @NonNull YangInstanceIdentifier fromBinding(@NonNull InstanceIdentifier<?> bindingPath);
+
+    @NonNull YangInstanceIdentifier fromBinding(org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?>
+            bindingPath);
+
+    @NonNull YangInstanceIdentifier fromBinding(org.opendaylight.mdsal.binding.api.@NonNull InstanceWildcard<?>
+            bindingPath);
 }
