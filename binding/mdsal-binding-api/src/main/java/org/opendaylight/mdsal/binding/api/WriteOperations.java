@@ -11,7 +11,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Write-like operations supported by {@link WriteTransaction} and {@link ReadWriteTransaction}. This interface defines
@@ -33,6 +32,9 @@ public interface WriteOperations {
      * @throws NullPointerException if any of the arguments is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
+    <T extends DataObject> void put(@NonNull LogicalDatastoreType store,
+            org.opendaylight.yangtools.yang.binding.@NonNull InstanceIdentifier<T> path, @NonNull T data);
+
     <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
             @NonNull T data);
 
@@ -77,7 +79,7 @@ public interface WriteOperations {
      */
     @Deprecated(since = "11.0.3")
     <T extends DataObject> void mergeParentStructurePut(@NonNull LogicalDatastoreType store,
-            @NonNull InstanceIdentifier<T> path, @NonNull T data);
+            org.opendaylight.yangtools.yang.binding.@NonNull InstanceIdentifier<T> path, @NonNull T data);
 
     /**
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data which is not explicitly
@@ -93,6 +95,9 @@ public interface WriteOperations {
      * @throws NullPointerException if any of the arguments is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
+    <T extends DataObject> void merge(@NonNull LogicalDatastoreType store,
+            org.opendaylight.yangtools.yang.binding.@NonNull InstanceIdentifier<T> path, @NonNull T data);
+
     <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
             @NonNull T data);
 
@@ -136,7 +141,7 @@ public interface WriteOperations {
      */
     @Deprecated(since = "11.0.3")
     <T extends DataObject> void mergeParentStructureMerge(@NonNull LogicalDatastoreType store,
-            @NonNull InstanceIdentifier<T> path, @NonNull T data);
+            org.opendaylight.yangtools.yang.binding.@NonNull InstanceIdentifier<T> path, @NonNull T data);
 
     /**
      * Removes a piece of data from specified path. This operation does not fail if the specified path does not exist.
@@ -147,5 +152,8 @@ public interface WriteOperations {
      * @throws NullPointerException if any of the arguments is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
+    void delete(@NonNull LogicalDatastoreType store,
+            org.opendaylight.yangtools.yang.binding.@NonNull InstanceIdentifier<?> path);
+
     void delete(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path);
 }
