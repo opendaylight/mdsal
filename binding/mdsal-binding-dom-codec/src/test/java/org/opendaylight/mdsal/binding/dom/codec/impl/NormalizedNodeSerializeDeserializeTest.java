@@ -89,13 +89,16 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingCodec
     public static final QName EXTENDED_ID_QNAME = QName.create(CHOICE_CONTAINER_QNAME, "extended-id");
     private static final QName SIMPLE_VALUE_QNAME = QName.create(TreeComplexUsesAugment.QNAME, "simple-value");
 
-    private static final InstanceIdentifier<TopLevelList> BA_TOP_LEVEL_LIST = InstanceIdentifier
+    private static final InstanceIdentifier<TopLevelList> LEGACY_BA_TOP_LEVEL_LIST = InstanceIdentifier
             .builder(Top.class).child(TopLevelList.class, TOP_LEVEL_LIST_FOO_KEY).build();
-    private static final InstanceIdentifier<TreeLeafOnlyAugment> BA_TREE_LEAF_ONLY =
-            BA_TOP_LEVEL_LIST.augmentation(TreeLeafOnlyAugment.class);
-    private static final InstanceIdentifier<TreeComplexUsesAugment> BA_TREE_COMPLEX_USES =
-            BA_TOP_LEVEL_LIST.augmentation(TreeComplexUsesAugment.class);
 
+    private static final org.opendaylight.mdsal.binding.api.InstanceIdentifier<TopLevelList> BA_TOP_LEVEL_LIST =
+            org.opendaylight.mdsal.binding.api.InstanceIdentifier.builder(Top.class).child(TopLevelList.class,
+                    TOP_LEVEL_LIST_FOO_KEY).build();
+    private static final InstanceIdentifier<TreeLeafOnlyAugment> LEGACY_BA_TREE_LEAF_ONLY =
+            LEGACY_BA_TOP_LEVEL_LIST.augmentation(TreeLeafOnlyAugment.class);
+    private static final org.opendaylight.mdsal.binding.api.InstanceIdentifier<TreeLeafOnlyAugment> BA_TREE_LEAF_ONLY =
+            BA_TOP_LEVEL_LIST.augmentation(TreeLeafOnlyAugment.class);
     public static final YangInstanceIdentifier BI_TOP_PATH = YangInstanceIdentifier.of(TOP_QNAME);
     public static final YangInstanceIdentifier BI_TOP_LEVEL_LIST_PATH = BI_TOP_PATH.node(TOP_LEVEL_LIST_QNAME);
     public static final YangInstanceIdentifier BI_TOP_LEVEL_LIST_FOO_PATH = BI_TOP_LEVEL_LIST_PATH
@@ -216,14 +219,17 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingCodec
 
     @Test
     public void listWithKeysToNormalized() {
-        final Entry<YangInstanceIdentifier, NormalizedNode> entry = codecContext.toNormalizedNode(
-            BA_TOP_LEVEL_LIST, topLevelList(TOP_LEVEL_LIST_FOO_KEY));
+        final Entry<YangInstanceIdentifier, NormalizedNode> entry1 = codecContext.toNormalizedNode(
+                LEGACY_BA_TOP_LEVEL_LIST, topLevelList(TOP_LEVEL_LIST_FOO_KEY));
+        final Entry<YangInstanceIdentifier, NormalizedNode> entry2 = codecContext.toNormalizedNode(
+                BA_TOP_LEVEL_LIST, topLevelList(TOP_LEVEL_LIST_FOO_KEY));
         final MapEntryNode topLevelListNormalized = mapEntryBuilder()
             .withNodeIdentifier(NodeIdentifierWithPredicates.of(TOP_LEVEL_LIST_QNAME, TOP_LEVEL_LIST_KEY_QNAME,
                 TOP_LEVEL_LIST_FOO_KEY_VALUE))
             .withChild(leafNode(TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
             .build();
-        assertEquals(topLevelListNormalized, entry.getValue());
+        assertEquals(topLevelListNormalized, entry1.getValue());
+        assertEquals(topLevelListNormalized, entry2.getValue());
     }
 
     @Test
@@ -240,13 +246,16 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingCodec
 
     @Test
     public void leafOnlyAugmentationToNormalized() {
-        final Entry<YangInstanceIdentifier, NormalizedNode> entry = codecContext.toNormalizedNode(
-            BA_TREE_LEAF_ONLY, new TreeLeafOnlyAugmentBuilder().setSimpleValue("simpleValue").build());
+        final Entry<YangInstanceIdentifier, NormalizedNode> entry1 = codecContext.toNormalizedNode(
+                LEGACY_BA_TREE_LEAF_ONLY, new TreeLeafOnlyAugmentBuilder().setSimpleValue("simpleValue").build());
+        final Entry<YangInstanceIdentifier, NormalizedNode> entry2 = codecContext.toNormalizedNode(
+                BA_TREE_LEAF_ONLY, new TreeLeafOnlyAugmentBuilder().setSimpleValue("simpleValue").build());
         final AugmentationNode augmentationNode = augmentationBuilder()
             .withNodeIdentifier(new AugmentationIdentifier(Set.of(SIMPLE_VALUE_QNAME)))
             .withChild(leafNode(SIMPLE_VALUE_QNAME, "simpleValue"))
             .build();
-        assertEquals(augmentationNode, entry.getValue());
+        assertEquals(augmentationNode, entry1.getValue());
+        assertEquals(augmentationNode, entry2.getValue());
     }
 
     @Test
@@ -456,8 +465,10 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingCodec
                 new NestedListBuilder().withKey(new NestedListKey("foo")).build(),
                 new NestedListBuilder().withKey(new NestedListKey("bar")).build()))
             .build();
-        final Entry<YangInstanceIdentifier, NormalizedNode> entry = codecContext.toNormalizedNode(BA_TOP_LEVEL_LIST,
-            topLevelList);
+        final Entry<YangInstanceIdentifier, NormalizedNode> entry1 = codecContext.toNormalizedNode(
+                LEGACY_BA_TOP_LEVEL_LIST, topLevelList);
+        final Entry<YangInstanceIdentifier, NormalizedNode> entry2 = codecContext.toNormalizedNode(
+                BA_TOP_LEVEL_LIST, topLevelList);
         final MapEntryNode foo = mapEntryBuilder().withNodeIdentifier(NodeIdentifierWithPredicates.of(
                 TOP_LEVEL_LIST_QNAME, TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
                 .withChild(leafNode(TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
@@ -465,7 +476,8 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingCodec
                     .withNodeIdentifier(new NodeIdentifier(NESTED_LIST_QNAME))
                     .withChild(mapEntry(NESTED_LIST_QNAME, NESTED_LIST_KEY_QNAME, "foo"))
                     .withChild(mapEntry(NESTED_LIST_QNAME, NESTED_LIST_KEY_QNAME, "bar")).build()).build();
-        assertEquals(foo, entry.getValue());
+        assertEquals(foo, entry1.getValue());
+        assertEquals(foo, entry2.getValue());
     }
 
     @Test

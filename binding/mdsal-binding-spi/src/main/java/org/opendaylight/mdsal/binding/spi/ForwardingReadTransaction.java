@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -38,8 +39,20 @@ public class ForwardingReadTransaction extends ForwardingTransaction implements 
     }
 
     @Override
+    public @NonNull <T extends DataObject> FluentFuture<Optional<T>> read(final @NonNull LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path) {
+        return delegate.read(store, path);
+    }
+
+    @Override
     public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         return delegate.exists(store, path);
+    }
+
+    @Override
+    public @NonNull FluentFuture<Boolean> exists(final @NonNull LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> path) {
+        return delegate.exists(store,path);
     }
 
     @Override
