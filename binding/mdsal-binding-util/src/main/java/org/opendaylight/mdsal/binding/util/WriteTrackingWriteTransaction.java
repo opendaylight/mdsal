@@ -32,6 +32,13 @@ class WriteTrackingWriteTransaction extends ForwardingWriteTransaction implement
     }
 
     @Override
+    public <T extends DataObject> void put(final LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path, final T data) {
+        super.put(store, path, data);
+        written = true;
+    }
+
+    @Override
     public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data) {
         super.merge(store, path, data);
@@ -39,7 +46,21 @@ class WriteTrackingWriteTransaction extends ForwardingWriteTransaction implement
     }
 
     @Override
+    public <T extends DataObject> void merge(final LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path, final T data) {
+        super.merge(store, path, data);
+        written = true;
+    }
+
+    @Override
     public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+        super.delete(store, path);
+        written = true;
+    }
+
+    @Override
+    public void delete(final LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier<?> path) {
         super.delete(store, path);
         written = true;
     }
