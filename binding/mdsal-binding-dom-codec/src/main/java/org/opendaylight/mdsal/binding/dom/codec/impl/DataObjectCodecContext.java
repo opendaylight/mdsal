@@ -282,6 +282,39 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
     }
 
     @Override
+    public DataContainerCodecContext<?,?> bindingPathArgumentChild(
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier.PathArgument arg,
+            final List<YangInstanceIdentifier.PathArgument> builder) {
+
+        final Class<? extends DataObject> argType = arg.getType();
+        DataContainerCodecPrototype<?> ctxProto = byBindingArgClass.get(argType);
+        if (ctxProto == null && Augmentation.class.isAssignableFrom(argType)) {
+            ctxProto = augmentationByClass(argType);
+        }
+        final DataContainerCodecContext<?, ?> context = childNonNull(ctxProto, argType,
+                "Class %s is not valid child of %s", argType, getBindingClass()).get();
+        if (context instanceof ChoiceNodeCodecContext) {
+            final ChoiceNodeCodecContext<?> choice = (ChoiceNodeCodecContext<?>) context;
+            choice.addYangPathArgument(arg, builder);
+
+            final Optional<? extends Class<? extends DataObject>> caseType = arg.getCaseType();
+            final Class<? extends DataObject> type = arg.getType();
+            final DataContainerCodecContext<?, ?> caze;
+            if (caseType.isPresent()) {
+                // Non-ambiguous addressing this should not pose any problems
+                caze = choice.streamChild(caseType.get());
+            } else {
+                caze = choice.getCaseByChildClass(type);
+            }
+
+            caze.addYangPathArgument(arg, builder);
+            return caze.bindingPathArgumentChild(arg, builder);
+        }
+        context.addYangPathArgument(arg, builder);
+        return context;
+    }
+
+    @Override
     public NodeCodecContext yangPathArgumentChild(final YangInstanceIdentifier.PathArgument arg) {
         final NodeContextSupplier childSupplier;
         if (arg instanceof NodeIdentifierWithPredicates) {

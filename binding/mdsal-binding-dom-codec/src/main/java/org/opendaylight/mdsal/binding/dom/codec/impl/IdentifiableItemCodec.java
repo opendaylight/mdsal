@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.InstanceIdentifier;
 import org.opendaylight.yangtools.util.ImmutableOffsetMap;
 import org.opendaylight.yangtools.util.ImmutableOffsetMapTemplate;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
@@ -136,7 +137,7 @@ abstract class IdentifiableItemCodec {
             final Class<?> identifiable, final Map<QName, ValueContext> keyValueContexts) {
         return switch (keyValueContexts.size()) {
             case 0 -> throw new IllegalArgumentException(
-                "Key " + keyClass + " of " + identifiable + " has no components");
+                    "Key " + keyClass + " of " + identifiable + " has no components");
             case 1 -> {
                 final var entry = keyValueContexts.entrySet().iterator().next();
                 yield new SingleKey(schema, keyClass, identifiable, entry.getKey(), entry.getValue());
@@ -151,6 +152,10 @@ abstract class IdentifiableItemCodec {
     }
 
     final @NonNull NodeIdentifierWithPredicates bindingToDom(final IdentifiableItem<?, ?> input) {
+        return serializeIdentifier(qname, input.getKey());
+    }
+
+    final @NonNull NodeIdentifierWithPredicates bindingToDom(final InstanceIdentifier.IdentifiableItem<?, ?> input) {
         return serializeIdentifier(qname, input.getKey());
     }
 
