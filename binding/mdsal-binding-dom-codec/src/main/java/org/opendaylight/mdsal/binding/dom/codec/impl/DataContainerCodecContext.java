@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.api.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
@@ -125,6 +126,16 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
         final DataContainerCodecContext<?,?> child = streamChild(arg.getType());
         if (builder != null) {
             child.addYangPathArgument(arg,builder);
+        }
+        return child;
+    }
+
+    @Override
+    public DataContainerCodecContext<?,?> bindingPathArgumentChild(final InstanceIdentifier.PathArgument arg,
+            final List<YangInstanceIdentifier.PathArgument> builder) {
+        final DataContainerCodecContext<?,?> child = streamChild(arg.getType());
+        if (builder != null) {
+            child.addYangPathArgument(arg, builder);
         }
         return child;
     }

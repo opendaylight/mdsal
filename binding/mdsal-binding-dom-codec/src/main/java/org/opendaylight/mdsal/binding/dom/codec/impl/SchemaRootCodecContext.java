@@ -372,6 +372,22 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         return super.bindingPathArgumentChild(arg, builder);
     }
 
+    @Override
+    public DataContainerCodecContext<?, ?> bindingPathArgumentChild(final
+        org.opendaylight.mdsal.binding.api.InstanceIdentifier.PathArgument arg, final List<PathArgument> builder) {
+        final var caseType = arg.getCaseType();
+        if (caseType.isPresent()) {
+            final @NonNull Class<? extends DataObject> type = caseType.orElseThrow();
+            final var choice = choicesByClass.getUnchecked(type);
+            choice.addYangPathArgument(arg, builder);
+            final var caze = choice.streamChild(type);
+            caze.addYangPathArgument(arg, builder);
+            return caze.bindingPathArgumentChild(arg, builder);
+        }
+
+        return super.bindingPathArgumentChild(arg, builder);
+    }
+
     private static Class<?> findCaseChoice(final Class<? extends DataObject> caseClass) {
         for (var type : caseClass.getGenericInterfaces()) {
             if (type instanceof Class<?> typeClass && ChoiceIn.class.isAssignableFrom(typeClass)) {

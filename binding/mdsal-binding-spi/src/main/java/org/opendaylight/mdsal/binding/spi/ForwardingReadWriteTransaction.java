@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -39,6 +40,13 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
         delegate.put(store, path, data);
     }
 
+    @Override
+    public <T extends DataObject> void put(@NonNull LogicalDatastoreType store,
+            org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path,
+            @NonNull T data) {
+        delegate.put(store, path, data);
+    }
+
     @Deprecated
     @Override
     public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
@@ -53,7 +61,20 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
     }
 
     @Override
+    public @NonNull <T extends DataObject> FluentFuture<Optional<T>> read(
+            @NonNull LogicalDatastoreType store,
+            org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path) {
+        return delegate.read(store, path);
+    }
+
+    @Override
     public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+        return delegate.exists(store, path);
+    }
+
+    @Override
+    public @NonNull FluentFuture<Boolean> exists(@NonNull LogicalDatastoreType store,
+            org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> path) {
         return delegate.exists(store, path);
     }
 
@@ -65,6 +86,13 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
     @Override
     public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data) {
+        delegate.merge(store, path, data);
+    }
+
+    @Override
+    public <T extends DataObject> void merge(@NonNull LogicalDatastoreType store,
+            org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path,
+            @NonNull T data) {
         delegate.merge(store, path, data);
     }
 
@@ -82,6 +110,12 @@ public class ForwardingReadWriteTransaction extends ForwardingTransaction implem
 
     @Override
     public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+        delegate.delete(store, path);
+    }
+
+    @Override
+    public void delete(@NonNull LogicalDatastoreType store,
+            org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> path) {
         delegate.delete(store, path);
     }
 }
