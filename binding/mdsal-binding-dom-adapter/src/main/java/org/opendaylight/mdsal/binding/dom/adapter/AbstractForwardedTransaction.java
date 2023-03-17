@@ -77,9 +77,25 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
                     MoreExecutors.directExecutor());
     }
 
+    protected final <D extends DataObject> @NonNull FluentFuture<Optional<D>> doRead(
+            final DOMDataTreeReadOperations readOps, final LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier<D> path) {
+        final CurrentAdapterSerializer codec = adapterContext.currentSerializer();
+        final YangInstanceIdentifier domPath = codec.toYangInstanceIdentifier(path);
+
+        return readOps.read(store, domPath)
+                .transform(optData -> optData.map(domData -> (D) codec.fromNormalizedNode(domPath, domData).getValue()),
+                        MoreExecutors.directExecutor());
+    }
+
     protected final @NonNull FluentFuture<Boolean> doExists(final DOMDataTreeReadOperations readOps,
             final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         checkArgument(!path.isWildcarded(), "Invalid exists of wildcarded path %s", path);
+        return readOps.exists(store, adapterContext.currentSerializer().toYangInstanceIdentifier(path));
+    }
+
+    protected final @NonNull FluentFuture<Boolean> doExists(final DOMDataTreeReadOperations readOps,
+            final LogicalDatastoreType store, final org.opendaylight.mdsal.binding.api.InstanceIdentifier<?> path) {
         return readOps.exists(store, adapterContext.currentSerializer().toYangInstanceIdentifier(path));
     }
 

@@ -75,6 +75,10 @@ public interface BindingDataObjectCodecTreeNode<T extends DataObject>
     @NonNull BindingDataObjectCodecTreeNode<?> bindingPathArgumentChild(InstanceIdentifier.@NonNull PathArgument arg,
             @Nullable List<YangInstanceIdentifier.PathArgument> builder);
 
+    @NonNull BindingDataObjectCodecTreeNode<?> bindingPathArgumentChild(
+            org.opendaylight.mdsal.binding.api.InstanceIdentifier.PathArgument arg,
+            @Nullable List<YangInstanceIdentifier.PathArgument> builder);
+
     /**
      * Serializes path argument for current node.
      *

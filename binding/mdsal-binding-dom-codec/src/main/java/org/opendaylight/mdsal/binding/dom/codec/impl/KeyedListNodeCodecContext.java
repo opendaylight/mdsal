@@ -74,7 +74,7 @@ abstract class KeyedListNodeCodecContext<I extends Identifier<D>, D extends Data
     }
 
     @Override
-    void addYangPathArgument(final InstanceIdentifier.PathArgument arg,
+    protected void addYangPathArgument(final InstanceIdentifier.PathArgument arg,
             final List<YangInstanceIdentifier.PathArgument> builder) {
         /*
          * DOM Instance Identifier for list is always represent by two entries one for map and one for children. This
@@ -87,6 +87,26 @@ abstract class KeyedListNodeCodecContext<I extends Identifier<D>, D extends Data
         super.addYangPathArgument(arg, builder);
         if (arg instanceof IdentifiableItem<?, ?> identifiable) {
             builder.add(codec.bindingToDom(identifiable));
+        } else {
+            // Adding wildcarded
+            super.addYangPathArgument(arg, builder);
+        }
+    }
+
+    @Override
+    protected void addYangPathArgument(final org.opendaylight.mdsal.binding.api.InstanceIdentifier.PathArgument arg,
+            final List<YangInstanceIdentifier.PathArgument> builder) {
+        /*
+         * DOM Instance Identifier for list is always represent by two entries one for map and one for children. This
+         * is also true for wildcarded instance identifiers
+         */
+        if (builder == null) {
+            return;
+        }
+
+        super.addYangPathArgument(arg, builder);
+        if (arg instanceof org.opendaylight.mdsal.binding.api.InstanceIdentifier.IdentifiableItem<?,?> ii) {
+            builder.add(codec.bindingToDom(ii));
         } else {
             // Adding wildcarded
             super.addYangPathArgument(arg, builder);

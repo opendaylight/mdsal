@@ -32,7 +32,18 @@ final class TypedReadTransactionImpl<D extends Datastore> extends TypedTransacti
     }
 
     @Override
+    public <T extends DataObject> FluentFuture<Optional<T>> read(final
+            org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path) {
+        return delegate().read(getDatastoreType(), path);
+    }
+
+    @Override
     public FluentFuture<Boolean> exists(final InstanceIdentifier<?> path) {
+        return delegate().exists(getDatastoreType(), path);
+    }
+
+    @Override
+    public FluentFuture<Boolean> exists(final org.opendaylight.mdsal.binding.api.InstanceIdentifier<?> path) {
         return delegate().exists(getDatastoreType(), path);
     }
 

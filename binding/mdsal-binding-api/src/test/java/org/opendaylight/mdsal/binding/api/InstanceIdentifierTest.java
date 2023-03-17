@@ -300,10 +300,6 @@ public class InstanceIdentifierTest {
         assertEquals(wildcard1, InstanceWildcard.ofLegacy(legacyIdentifier2));
         assertThrows(IllegalArgumentException.class, () -> InstanceIdentifier.ofLegacy(legacyIdentifier2));
 
-        /*
-        * through a leak in the logic of legacy InstanceIdentifier, there exists no such thing as legacy
-        * KeyedInstanceIdentifier that is wildcarded. Such state is represented by an InstanceIdentifier
-        * whose last path argument is IdentifiableItem and is wildcarded. Hence, the obscure assertFalse.*/
         final var legacyIdentifier3 = wildcard2.toLegacy();
         assertTrue(legacyIdentifier3
                 instanceof org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier<?,?>);

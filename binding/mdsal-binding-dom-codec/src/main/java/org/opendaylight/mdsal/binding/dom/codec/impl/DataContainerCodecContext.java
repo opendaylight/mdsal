@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.api.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
@@ -130,13 +131,31 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
         return child;
     }
 
+    @Override
+    public DataContainerCodecContext<?,?> bindingPathArgumentChild(final InstanceIdentifier.PathArgument arg,
+            final List<YangInstanceIdentifier.PathArgument> builder) {
+        final DataContainerCodecContext<?,?> child = streamChild(arg.getType());
+        if (builder != null) {
+            child.addYangPathArgument(arg, builder);
+        }
+        return child;
+    }
+
     /**
      * Serializes supplied Binding Path Argument and adds all necessary YANG instance identifiers to supplied list.
      *
      * @param arg Binding Path Argument
      * @param builder DOM Path argument.
      */
-    void addYangPathArgument(final PathArgument arg, final List<YangInstanceIdentifier.PathArgument> builder) {
+    protected void addYangPathArgument(final PathArgument arg, final List<YangInstanceIdentifier.PathArgument>
+        builder) {
+        if (builder != null) {
+            builder.add(getDomPathArgument());
+        }
+    }
+
+    protected void addYangPathArgument(final org.opendaylight.mdsal.binding.api.InstanceIdentifier.PathArgument arg,
+            final List<YangInstanceIdentifier.PathArgument> builder) {
         if (builder != null) {
             builder.add(getDomPathArgument());
         }
