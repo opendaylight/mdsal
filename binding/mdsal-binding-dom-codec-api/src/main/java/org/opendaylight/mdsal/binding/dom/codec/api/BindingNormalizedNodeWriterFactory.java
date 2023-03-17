@@ -45,6 +45,10 @@ public interface BindingNormalizedNodeWriterFactory {
     @NonNull Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriterAndIdentifier(
             @NonNull InstanceIdentifier<?> path, @NonNull NormalizedNodeStreamWriter domWriter);
 
+    @NonNull Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriterAndIdentifier(
+            org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> path,
+            @NonNull NormalizedNodeStreamWriter domWriter);
+
     /**
      * Creates a {@link BindingStreamEventWriter} for data tree path which will translate to NormalizedNode model
      * and invoke proper events on supplied {@link NormalizedNodeStreamWriter}.

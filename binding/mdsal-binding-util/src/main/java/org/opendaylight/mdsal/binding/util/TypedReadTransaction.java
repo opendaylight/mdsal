@@ -39,6 +39,9 @@ public interface TypedReadTransaction<D extends Datastore> extends Transaction {
      */
     <T extends DataObject> FluentFuture<Optional<T>> read(InstanceIdentifier<T> path);
 
+    <T extends DataObject> FluentFuture<Optional<T>> read(
+            org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path);
+
     /**
      * Determines if an object exists at the given path.
      *
@@ -48,6 +51,8 @@ public interface TypedReadTransaction<D extends Datastore> extends Transaction {
      * @return A future providing access to the result of the check, when it’s available, or any error encountered.
      */
     FluentFuture<Boolean> exists(InstanceIdentifier<?> path);
+
+    FluentFuture<Boolean> exists(org.opendaylight.mdsal.binding.api.InstanceIdentifier<?> path);
 
     /**
      * Executes a {@link QueryExpression}.
