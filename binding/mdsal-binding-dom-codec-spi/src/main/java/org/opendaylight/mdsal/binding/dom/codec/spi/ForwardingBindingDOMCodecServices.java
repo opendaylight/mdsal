@@ -12,6 +12,7 @@ import com.google.common.collect.ForwardingObject;
 import java.time.Instant;
 import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.InstanceWildcard;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingIdentityCodec;
@@ -57,6 +58,17 @@ public abstract class ForwardingBindingDOMCodecServices extends ForwardingObject
     }
 
     @Override
+    public YangInstanceIdentifier toYangInstanceIdentifier(final
+        org.opendaylight.mdsal.binding.api.InstanceIdentifier<?> binding) {
+        return delegate().toYangInstanceIdentifier(binding);
+    }
+
+    @Override
+    public @NonNull YangInstanceIdentifier toYangInstanceIdentifier(final @NonNull InstanceWildcard<?> binding) {
+        return delegate().toYangInstanceIdentifier(binding);
+    }
+
+    @Override
     public <T extends DataObject> InstanceIdentifier<T> fromYangInstanceIdentifier(final YangInstanceIdentifier dom) {
         return delegate().fromYangInstanceIdentifier(dom);
     }
@@ -64,6 +76,12 @@ public abstract class ForwardingBindingDOMCodecServices extends ForwardingObject
     @Override
     public <T extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode> toNormalizedNode(
             final InstanceIdentifier<T> path, final T data) {
+        return delegate().toNormalizedNode(path, data);
+    }
+
+    @Override
+    public @NonNull <T extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode> toNormalizedNode(
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path, final T data) {
         return delegate().toNormalizedNode(path, data);
     }
 
@@ -131,6 +149,13 @@ public abstract class ForwardingBindingDOMCodecServices extends ForwardingObject
     @Override
     public Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriterAndIdentifier(
             final InstanceIdentifier<?> path, final NormalizedNodeStreamWriter domWriter) {
+        return delegate().newWriterAndIdentifier(path, domWriter);
+    }
+
+    @Override
+    public @NonNull Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriterAndIdentifier(
+            final org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> path,
+            final @NonNull NormalizedNodeStreamWriter domWriter) {
         return delegate().newWriterAndIdentifier(path, domWriter);
     }
 
