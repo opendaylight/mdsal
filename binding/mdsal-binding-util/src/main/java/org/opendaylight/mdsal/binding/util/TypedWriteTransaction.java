@@ -33,6 +33,8 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
      */
     <T extends DataObject> void put(InstanceIdentifier<T> path, T data);
 
+    <T extends DataObject> void put(org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path, T data);
+
     /**
      * Writes an object to the given path, creating significant parents, like presence containers and list entries,
      * if needed.
@@ -58,6 +60,8 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
      */
     <T extends DataObject> void merge(InstanceIdentifier<T> path, T data);
 
+    <T extends DataObject> void merge(org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path, T data);
+
     /**
      * Merges an object with the data already present at the given path, creating missing parents if requested.
      *
@@ -79,4 +83,6 @@ public interface TypedWriteTransaction<D extends Datastore> extends Transaction 
      * @param path The path to delete.
      */
     void delete(InstanceIdentifier<?> path);
+
+    void delete(org.opendaylight.mdsal.binding.api.InstanceIdentifier<?> path);
 }

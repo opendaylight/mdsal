@@ -72,6 +72,12 @@ public class BindingDOMAdapterLoaderTest {
                 DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Top.class)),
                 mock(DataTreeChangeListener.class)));
         assertEquals("Underlying data broker does not expose DOMDataTreeChangeService.", ex.getMessage());
+        final var ex2 = assertThrows(UnsupportedOperationException.class, () -> adapter.registerDataTreeChangeListener(
+                LogicalDatastoreType.OPERATIONAL,
+                org.opendaylight.mdsal.binding.api.InstanceIdentifier.create(Top.class),
+                mock(DataTreeChangeListener.class)
+        ));
+        assertEquals("Underlying data broker does not expose DOMDataTreeChangeService.", ex.getMessage());
     }
 
     private BindingDOMDataBrokerAdapter assertDataBrokerAdapter() {
