@@ -38,10 +38,12 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
  * https://lists.opendaylight.org/pipermail/controller-dev/2014-July/005541.html.
  */
 public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeListenerTest {
-    private static final InstanceIdentifier<Top> TOP = InstanceIdentifier.create(Top.class);
-    private static final InstanceIdentifier<TopLevelList> WILDCARDED = TOP.child(TopLevelList.class);
-    private static final InstanceIdentifier<TopLevelList> TOP_FOO = TOP.child(TopLevelList.class, TOP_FOO_KEY);
-    private static final InstanceIdentifier<TopLevelList> TOP_BAR = TOP.child(TopLevelList.class, TOP_BAR_KEY);
+    private static final InstanceIdentifier<Top> LEGACY_TOP = InstanceIdentifier.create(Top.class);
+    private static final org.opendaylight.mdsal.binding.api.InstanceIdentifier<Top> TOP =
+            org.opendaylight.mdsal.binding.api.InstanceIdentifier.create(Top.class);
+    private static final InstanceIdentifier<TopLevelList> WILDCARDED = LEGACY_TOP.child(TopLevelList.class);
+    private static final InstanceIdentifier<TopLevelList> TOP_FOO = LEGACY_TOP.child(TopLevelList.class, TOP_FOO_KEY);
+    private static final InstanceIdentifier<TopLevelList> TOP_BAR = LEGACY_TOP.child(TopLevelList.class, TOP_BAR_KEY);
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
@@ -51,7 +53,7 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
     @Before
     public void setupWithDataBroker() {
         WriteTransaction initialTx = getDataBroker().newWriteOnlyTransaction();
-        initialTx.put(CONFIGURATION, TOP, top(topLevelList(TOP_FOO_KEY)));
+        initialTx.put(CONFIGURATION, LEGACY_TOP, top(topLevelList(TOP_FOO_KEY)));
         assertCommit(initialTx.commit());
     }
 
@@ -62,8 +64,8 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
         final TopLevelList topFoo = topLevelList(TOP_FOO_KEY);
 
         // Listener for TOP element
-        final TestListener<Top> topListener = createListener(CONFIGURATION, TOP,
-                added(TOP, top(topLevelList(TOP_FOO_KEY))), replaced(TOP, top(topFoo), top));
+        final TestListener<Top> topListener = createListener(CONFIGURATION, LEGACY_TOP,
+                added(LEGACY_TOP, top(topLevelList(TOP_FOO_KEY))), replaced(LEGACY_TOP, top(topFoo), top));
 
         // Listener for all list items. This one should see Foo item deleted and Bar item added.
         final TestListener<TopLevelList> allListener = createListener(CONFIGURATION, WILDCARDED,
@@ -78,7 +80,7 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
                 added(TOP_BAR, topBar));
 
         ReadWriteTransaction writeTx = getDataBroker().newReadWriteTransaction();
-        writeTx.put(CONFIGURATION, TOP, top);
+        writeTx.put(CONFIGURATION, LEGACY_TOP, top);
         assertCommit(writeTx.commit());
 
         topListener.verify();
@@ -88,12 +90,12 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
     }
 
     @Test
-    public void mergeTopNodeSubtreeListeners() {
+    public void legacyMergeTopNodeSubtreeListeners() {
         final TopLevelList topBar = topLevelList(TOP_BAR_KEY);
         final TopLevelList topFoo = topLevelList(TOP_FOO_KEY);
 
-        final TestListener<Top> topListener = createListener(CONFIGURATION, TOP,
-                added(TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
+        final TestListener<Top> topListener = createListener(CONFIGURATION, LEGACY_TOP,
+                added(LEGACY_TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
         final TestListener<TopLevelList> allListener = createListener(CONFIGURATION, WILDCARDED,
                 added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
         final TestListener<TopLevelList> fooListener = createListener(CONFIGURATION, TOP_FOO,
@@ -111,13 +113,36 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
         barListener.verify();
     }
 
+    public void mergeTopNodeSubtreeListeners() {
+        final TopLevelList topBar = topLevelList(TOP_BAR_KEY);
+        final TopLevelList topFoo = topLevelList(TOP_FOO_KEY);
+
+        final TestListener<Top> topListener = createListener(CONFIGURATION, LEGACY_TOP,
+                added(LEGACY_TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
+        final TestListener<TopLevelList> allListener = createListener(CONFIGURATION, WILDCARDED,
+                added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
+        final TestListener<TopLevelList> fooListener = createListener(CONFIGURATION, TOP_FOO,
+                added(TOP_FOO, topFoo));
+        final TestListener<TopLevelList> barListener = createListener(CONFIGURATION, TOP_BAR,
+                added(TOP_BAR, topBar));
+
+        ReadWriteTransaction writeTx = getDataBroker().newReadWriteTransaction();
+        writeTx.merge(CONFIGURATION, LEGACY_TOP, top(topLevelList(TOP_BAR_KEY)));
+        assertCommit(writeTx.commit());
+
+        topListener.verify();
+        allListener.verify();
+        fooListener.verify();
+        barListener.verify();
+    }
+
     @Test
     public void putTopBarNodeSubtreeListeners() {
         final TopLevelList topBar = topLevelList(TOP_BAR_KEY);
         final TopLevelList topFoo = topLevelList(TOP_FOO_KEY);
 
-        final TestListener<Top> topListener = createListener(CONFIGURATION, TOP,
-                added(TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
+        final TestListener<Top> topListener = createListener(CONFIGURATION, LEGACY_TOP,
+                added(LEGACY_TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
         final TestListener<TopLevelList> allListener = createListener(CONFIGURATION, WILDCARDED,
                 added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
         final TestListener<TopLevelList> fooListener = createListener(CONFIGURATION, TOP_FOO,
@@ -140,8 +165,8 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
         final TopLevelList topBar = topLevelList(TOP_BAR_KEY);
         final TopLevelList topFoo = topLevelList(TOP_FOO_KEY);
 
-        final TestListener<Top> topListener = createListener(CONFIGURATION, TOP,
-                added(TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
+        final TestListener<Top> topListener = createListener(CONFIGURATION, LEGACY_TOP,
+                added(LEGACY_TOP, top(topLevelList(TOP_FOO_KEY))), topSubtreeModified(topFoo, topBar));
         final TestListener<TopLevelList> allListener = createListener(CONFIGURATION, WILDCARDED,
                 added(TOP_FOO, topFoo), added(TOP_BAR, topBar));
         final TestListener<TopLevelList> fooListener = createListener(CONFIGURATION, TOP_FOO,
@@ -161,7 +186,7 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataTreeChangeL
 
     private static Function<DataTreeModification<Top>, Boolean> topSubtreeModified(final TopLevelList topFoo,
             final TopLevelList topBar) {
-        return match(ModificationType.SUBTREE_MODIFIED, TOP,
+        return match(ModificationType.SUBTREE_MODIFIED, LEGACY_TOP,
             (Function<Top, Boolean>) dataBefore -> Objects.equals(top(topFoo), dataBefore),
             dataAfter -> {
                 Set<TopLevelList> expList = new HashSet<>(top(topBar, topFoo).getTopLevelList().values());

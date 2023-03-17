@@ -12,12 +12,13 @@ import java.time.Instant;
 import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.api.InstanceIdentifier;
+import org.opendaylight.mdsal.binding.api.InstanceWildcard;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.BaseNotification;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
@@ -41,7 +42,12 @@ public interface BindingNormalizedNodeSerializer {
      * @throws IllegalArgumentException If supplied Instance Identifier is not valid.
      */
     // FIXME: MDSAL-525: reconcile this with BindingInstanceIdentifierCodec
+    @NonNull YangInstanceIdentifier toYangInstanceIdentifier(org.opendaylight.yangtools.yang.binding.@NonNull
+            InstanceIdentifier<?> binding);
+
     @NonNull YangInstanceIdentifier toYangInstanceIdentifier(@NonNull InstanceIdentifier<?> binding);
+
+    @NonNull YangInstanceIdentifier toYangInstanceIdentifier(@NonNull InstanceWildcard<?> binding);
 
     /**
      * Translates supplied YANG Instance Identifier into Binding instance identifier.
@@ -50,8 +56,8 @@ public interface BindingNormalizedNodeSerializer {
      * @return Binding Instance Identifier, or null if the instance identifier is not representable.
      */
     // FIXME: MDSAL-525: reconcile this with BindingInstanceIdentifierCodec
-    <T extends DataObject> @Nullable InstanceIdentifier<T> fromYangInstanceIdentifier(
-            @NonNull YangInstanceIdentifier dom);
+    <T extends DataObject> org.opendaylight.yangtools.yang.binding.@Nullable InstanceIdentifier<T>
+        fromYangInstanceIdentifier(@NonNull YangInstanceIdentifier dom);
 
     /**
      * Translates supplied Binding Instance Identifier and data into NormalizedNode representation.
@@ -62,6 +68,9 @@ public interface BindingNormalizedNodeSerializer {
      * @throws IllegalArgumentException If supplied Instance Identifier is not valid.
      */
     <T extends DataObject> @NonNull Entry<YangInstanceIdentifier, NormalizedNode> toNormalizedNode(
+            org.opendaylight.yangtools.yang.binding.InstanceIdentifier<T> path, T data);
+
+    <T extends DataObject> @NonNull Entry<YangInstanceIdentifier, NormalizedNode> toNormalizedNode(
             InstanceIdentifier<T> path, T data);
 
     /**
@@ -71,7 +80,8 @@ public interface BindingNormalizedNodeSerializer {
      * @param data NormalizedNode representing data
      * @return DOM Instance Identifier
      */
-    @Nullable Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(@NonNull YangInstanceIdentifier path,
+    @Nullable Entry<org.opendaylight.yangtools.yang.binding.InstanceIdentifier<?>, DataObject>
+        fromNormalizedNode(@NonNull YangInstanceIdentifier path,
             NormalizedNode data);
 
     /**
