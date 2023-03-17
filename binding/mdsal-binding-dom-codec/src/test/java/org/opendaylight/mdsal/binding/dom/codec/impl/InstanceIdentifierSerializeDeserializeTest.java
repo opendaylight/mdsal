@@ -94,11 +94,16 @@ public class InstanceIdentifierSerializeDeserializeTest extends AbstractBindingC
 
     @Test
     public void testBindingAwareIIToYangIContainer() {
-        final YangInstanceIdentifier yangInstanceIdentifier = codecContext.toYangInstanceIdentifier(
+        final YangInstanceIdentifier yangInstanceIdentifier1 = codecContext.toYangInstanceIdentifier(
                 InstanceIdentifier.create(Top.class).child(TopLevelList.class));
-        final PathArgument lastPathArgument = yangInstanceIdentifier.getLastPathArgument();
-        assertTrue(lastPathArgument instanceof NodeIdentifier);
-        assertEquals(TopLevelList.QNAME, lastPathArgument.getNodeType());
+        final YangInstanceIdentifier yangInstanceIdentifier2 = codecContext.toYangInstanceIdentifier(
+                org.opendaylight.mdsal.binding.api.InstanceIdentifier.create(Top.class)
+                        .wildcardChild(TopLevelList.class));
+        final PathArgument lastPathArgument1 = yangInstanceIdentifier1.getLastPathArgument();
+        final PathArgument lastPathArgument2 = yangInstanceIdentifier2.getLastPathArgument();
+        assertTrue(lastPathArgument1 instanceof NodeIdentifier && lastPathArgument2 instanceof NodeIdentifier);
+        assertEquals(TopLevelList.QNAME, lastPathArgument1.getNodeType());
+        assertEquals(TopLevelList.QNAME, lastPathArgument2.getNodeType());
     }
 
     @Test
@@ -112,34 +117,57 @@ public class InstanceIdentifierSerializeDeserializeTest extends AbstractBindingC
 
     @Test
     public void testBindingAwareIIToYangIIListWithKey() {
-        final YangInstanceIdentifier yangInstanceIdentifier = codecContext.toYangInstanceIdentifier(
+        final YangInstanceIdentifier yangInstanceIdentifier1 = codecContext.toYangInstanceIdentifier(
                 InstanceIdentifier.create(Top.class).child(TopLevelList.class, TOP_FOO_KEY));
-        final PathArgument lastPathArgument = yangInstanceIdentifier.getLastPathArgument();
-        assertTrue(lastPathArgument instanceof NodeIdentifierWithPredicates);
-        assertTrue(((NodeIdentifierWithPredicates) lastPathArgument).values().contains(TOP_LEVEL_LIST_KEY_VALUE));
-        assertEquals(TopLevelList.QNAME, lastPathArgument.getNodeType());
+        final YangInstanceIdentifier yangInstanceIdentifier2 = codecContext.toYangInstanceIdentifier(
+                org.opendaylight.mdsal.binding.api.InstanceIdentifier.create(Top.class)
+                        .child(TopLevelList.class, TOP_FOO_KEY));
+        final PathArgument lastPathArgument1 = yangInstanceIdentifier1.getLastPathArgument();
+        final PathArgument lastPathArgument2 = yangInstanceIdentifier2.getLastPathArgument();
+        assertTrue(lastPathArgument1 instanceof NodeIdentifierWithPredicates);
+        assertTrue(lastPathArgument2 instanceof NodeIdentifierWithPredicates);
+        assertTrue(((NodeIdentifierWithPredicates) lastPathArgument1).values().contains(TOP_LEVEL_LIST_KEY_VALUE));
+        assertTrue(((NodeIdentifierWithPredicates) lastPathArgument2).values().contains(TOP_LEVEL_LIST_KEY_VALUE));
+        assertEquals(TopLevelList.QNAME, lastPathArgument1.getNodeType());
+        assertEquals(TopLevelList.QNAME, lastPathArgument2.getNodeType());
     }
 
     @Test
     public void testBindingAwareIIToYangIIAugmentation() {
-        final PathArgument lastArg = codecContext.toYangInstanceIdentifier(BA_TREE_COMPLEX_USES).getLastPathArgument();
-        assertTrue(lastArg instanceof AugmentationIdentifier);
+        final PathArgument lastArg1 = codecContext.toYangInstanceIdentifier(BA_TREE_COMPLEX_USES).getLastPathArgument();
+        final PathArgument lastArg2 = codecContext.toYangInstanceIdentifier(
+                org.opendaylight.mdsal.binding.api.InstanceIdentifier.ofLegacy(BA_TREE_COMPLEX_USES)).getLastPathArgument();
+        assertTrue(lastArg1 instanceof AugmentationIdentifier);
+        assertTrue(lastArg2 instanceof AugmentationIdentifier);
     }
 
     @Test
     public void testBindingAwareIIToYangIILeafOnlyAugmentation() {
-        final PathArgument leafOnlyLastArg = codecContext.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY)
+        final PathArgument leafOnlyLastArg1 = codecContext.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY)
                 .getLastPathArgument();
-        assertTrue(leafOnlyLastArg instanceof AugmentationIdentifier);
-        assertTrue(((AugmentationIdentifier) leafOnlyLastArg).getPossibleChildNames().contains(SIMPLE_VALUE_QNAME));
+        final PathArgument leafOnlyLastArg2 = codecContext.toYangInstanceIdentifier(
+                        org.opendaylight.mdsal.binding.api.InstanceIdentifier.ofLegacy(BA_TREE_LEAF_ONLY))
+                .getLastPathArgument();
+        assertTrue(leafOnlyLastArg1 instanceof AugmentationIdentifier);
+        assertTrue(leafOnlyLastArg2 instanceof AugmentationIdentifier);
+        assertTrue(((AugmentationIdentifier) leafOnlyLastArg1).getPossibleChildNames().contains(SIMPLE_VALUE_QNAME));
+        assertTrue(((AugmentationIdentifier) leafOnlyLastArg2).getPossibleChildNames().contains(SIMPLE_VALUE_QNAME));
     }
 
     @Test
     public void testChoiceCaseGroupingFromBinding() {
+        final InstanceIdentifier<GrpCont> identifier = InstanceIdentifier.builder(Cont.class)
+                .child(ContBase.class, GrpCont.class)
+                .build();
         final YangInstanceIdentifier contBase = codecContext.toYangInstanceIdentifier(
-            InstanceIdentifier.builder(Cont.class).child(ContBase.class, GrpCont.class).build());
+                org.opendaylight.mdsal.binding.api.InstanceIdentifier.ofLegacy(identifier).toLegacy());
         assertEquals(YangInstanceIdentifier.create(NodeIdentifier.create(Cont.QNAME),
             NodeIdentifier.create(ContChoice.QNAME), NodeIdentifier.create(GrpCont.QNAME)), contBase);
+
+        final YangInstanceIdentifier contBase2 = codecContext.toYangInstanceIdentifier(
+                org.opendaylight.mdsal.binding.api.InstanceIdentifier.ofLegacy(identifier));
+        assertEquals(YangInstanceIdentifier.create(NodeIdentifier.create(Cont.QNAME),
+                NodeIdentifier.create(ContChoice.QNAME), NodeIdentifier.create(GrpCont.QNAME)), contBase2);
 
         final YangInstanceIdentifier contAug = codecContext.toYangInstanceIdentifier(
             InstanceIdentifier.builder(Cont.class).child(ContAug.class, GrpCont.class).build());

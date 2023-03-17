@@ -14,7 +14,6 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.TransactionDatastoreMismatchException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Read-like operations supported by {@link ReadTransaction} and {@link ReadWriteTransaction}. This interface defines
@@ -39,13 +38,16 @@ public interface ReadOperations {
      *         <li>If the read of the data fails, the Future will fail with a {@link ReadFailedException} or
      *         an exception derived from ReadFailedException.</li>
      *         </ul>
-     * @throws IllegalArgumentException if the path is {@link InstanceIdentifier#isWildcarded()}
+     * @throws IllegalArgumentException if the path is
+     * {@link org.opendaylight.yangtools.yang.binding.InstanceIdentifier#isWildcarded()}
      * @throws NullPointerException if any of the arguments is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
     <T extends DataObject> @NonNull FluentFuture<Optional<T>> read(@NonNull LogicalDatastoreType store,
-            @NonNull InstanceIdentifier<T> path);
+            org.opendaylight.yangtools.yang.binding.@NonNull InstanceIdentifier<T> path);
 
+    <T extends DataObject> @NonNull FluentFuture<Optional<T>> read(@NonNull LogicalDatastoreType store,
+            @NonNull InstanceIdentifier<T> path);
     /**
      * Determines if data data exists in the provided logical data store located at the provided path.
      *
@@ -64,10 +66,14 @@ public interface ReadOperations {
      *         <li>If the check fails, the Future will fail with a {@link ReadFailedException} or an exception derived
      *             from ReadFailedException.</li>
      *         </ul>
-     * @throws IllegalArgumentException if the path is {@link InstanceIdentifier#isWildcarded()} and the implementation
+     * @throws IllegalArgumentException if the path is
+     * {@link org.opendaylight.yangtools.yang.binding.InstanceIdentifier#isWildcarded()} and the implementation
      *                                  does not support evaluating wildcards.
      * @throws NullPointerException if any of the arguments is {@code null}
      * @throws TransactionDatastoreMismatchException if this transaction is already bound to a different data store
      */
+    @NonNull FluentFuture<Boolean> exists(@NonNull LogicalDatastoreType store,
+            org.opendaylight.yangtools.yang.binding.@NonNull InstanceIdentifier<?> path);
+
     @NonNull FluentFuture<Boolean> exists(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path);
 }

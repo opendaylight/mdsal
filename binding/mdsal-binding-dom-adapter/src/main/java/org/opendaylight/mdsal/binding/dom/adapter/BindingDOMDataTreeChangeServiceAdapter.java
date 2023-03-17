@@ -7,10 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.api.InstanceIdentifier;
+import org.opendaylight.mdsal.binding.api.InstanceWildcard;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -32,8 +35,8 @@ final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapte
     }
 
     @Override
-    public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
-            registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId, final L listener) {
+    public @NonNull <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
+            registerDataTreeChangeListener(final @NonNull DataTreeIdentifier<T> treeId, final @NonNull L listener) {
         final DOMDataTreeIdentifier domIdentifier = toDomTreeIdentifier(treeId);
         final LogicalDatastoreType storeType = treeId.getDatastoreType();
         final BindingDOMDataTreeChangeListenerAdapter<T> domListener =
@@ -47,8 +50,52 @@ final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapte
         return new BindingDataTreeChangeListenerRegistration<>(listener, domReg);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public @NonNull <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L> registerDataTreeChangeListener(
+            @NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
+            @NonNull L listener) {
+
+        final DOMDataTreeIdentifier domIdentifier = toDomTreeIdentifier(store, path);
+        final BindingDOMDataTreeChangeListenerAdapter<T> domListener =
+                listener instanceof ClusteredDataTreeChangeListener
+                        ? new BindingClusteredDOMDataTreeChangeListenerAdapter<>(
+                        adapterContext(), (ClusteredDataTreeChangeListener<T>) listener, store)
+                        : new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), listener, store);
+        final ListenerRegistration<BindingDOMDataTreeChangeListenerAdapter<T>> domReg =
+                getDelegate().registerDataTreeChangeListener(domIdentifier, domListener);
+        return new BindingDataTreeChangeListenerRegistration<>(listener, domReg);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public @NonNull <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L> registerDataTreeChangeListener(
+            @NonNull LogicalDatastoreType store, @NonNull InstanceWildcard<T> path,
+            @NonNull L listener) {
+        final DOMDataTreeIdentifier domIdentifier = toDomTreeIdentifier(store, path);
+        final BindingDOMDataTreeChangeListenerAdapter<T> domListener =
+                listener instanceof ClusteredDataTreeChangeListener
+                        ? new BindingClusteredDOMDataTreeChangeListenerAdapter<>(
+                        adapterContext(), (ClusteredDataTreeChangeListener<T>) listener, store)
+                        : new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), listener, store);
+        final ListenerRegistration<BindingDOMDataTreeChangeListenerAdapter<T>> domReg =
+                getDelegate().registerDataTreeChangeListener(domIdentifier, domListener);
+        return new BindingDataTreeChangeListenerRegistration<>(listener, domReg);
+    }
+
     private DOMDataTreeIdentifier toDomTreeIdentifier(final DataTreeIdentifier<?> treeId) {
         return new DOMDataTreeIdentifier(treeId.getDatastoreType(),
             currentSerializer().toYangInstanceIdentifier(treeId.getRootIdentifier()));
+    }
+    private DOMDataTreeIdentifier toDomTreeIdentifier(final LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier<?> id) {
+        return new DOMDataTreeIdentifier(store,
+                currentSerializer().toYangInstanceIdentifier(id));
+    }
+
+    private DOMDataTreeIdentifier toDomTreeIdentifier(final LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.InstanceWildcard<?> id) {
+        return new DOMDataTreeIdentifier(store,
+                currentSerializer().toYangInstanceIdentifier(id));
     }
 }
