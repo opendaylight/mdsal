@@ -79,6 +79,16 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
     }
 
     @Override
+    public LogicalDatastoreType datastore() {
+        return path.getDatastoreType();
+    }
+
+    @Override
+    public org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> rootPath() {
+        return org.opendaylight.mdsal.binding.api.InstanceIdentifier.ofLegacy(path.getRootIdentifier());
+    }
+
+    @Override
     public String toString() {
         return MoreObjects.toStringHelper(this).add("path", path).add("rootNode", rootNode).toString();
     }
