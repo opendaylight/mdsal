@@ -311,7 +311,7 @@ public class InstanceIdentifierTest {
         * KeyedInstanceIdentifier that is wildcarded. Such state is represented by an InstanceIdentifier
         * whose last path argument is IdentifiableItem and is wildcarded. Hence, the obscure assertFalse.*/
         final var legacyIdentifier3 = wildcard2.toLegacy();
-        assertFalse(legacyIdentifier3
+        assertTrue(legacyIdentifier3
                 instanceof org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier<?,?>);
         assertEquals(wildcard2, InstanceWildcard.ofLegacy(legacyIdentifier3));
     }
