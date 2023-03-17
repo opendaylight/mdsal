@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.util.ImmutableOffsetMap;
 import org.opendaylight.yangtools.util.ImmutableOffsetMapTemplate;
@@ -151,6 +152,10 @@ abstract class IdentifiableItemCodec {
     }
 
     final @NonNull NodeIdentifierWithPredicates bindingToDom(final IdentifiableItem<?, ?> input) {
+        return serializeIdentifier(qname, input.getKey());
+    }
+
+    final @NonNull NodeIdentifierWithPredicates bindingToDom(final InstanceIdentifier.IdentifiableItem<?, ?> input) {
         return serializeIdentifier(qname, input.getKey());
     }
 

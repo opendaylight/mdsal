@@ -31,7 +31,20 @@ final class BindingDOMReadTransactionAdapter extends AbstractForwardedTransactio
     }
 
     @Override
+    public @NonNull <T extends DataObject> FluentFuture<Optional<T>> read(
+            @NonNull LogicalDatastoreType store,
+            org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path) {
+        return doRead(getDelegate(), store, path);
+    }
+
+    @Override
     public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+        return doExists(getDelegate(), store, path);
+    }
+
+    @Override
+    public @NonNull FluentFuture<Boolean> exists(@NonNull LogicalDatastoreType store,
+            org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> path) {
         return doExists(getDelegate(), store, path);
     }
 
