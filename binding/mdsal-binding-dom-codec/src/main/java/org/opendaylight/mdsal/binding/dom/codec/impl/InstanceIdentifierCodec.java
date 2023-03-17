@@ -53,6 +53,22 @@ final class InstanceIdentifierCodec implements BindingInstanceIdentifierCodec,
     }
 
     @Override
+    public @NonNull YangInstanceIdentifier fromBinding(final
+            org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> bindingPath) {
+        final List<PathArgument> domArgs = new ArrayList<>();
+        context.getCodecContextNode(bindingPath, domArgs);
+        return YangInstanceIdentifier.create(domArgs);
+    }
+
+    @Override
+    public @NonNull YangInstanceIdentifier fromBinding(final
+    org.opendaylight.mdsal.binding.api.@NonNull InstanceWildcard<?> bindingPath) {
+        final List<PathArgument> domArgs = new ArrayList<>();
+        context.getCodecContextNode(bindingPath, domArgs);
+        return YangInstanceIdentifier.create(domArgs);
+    }
+
+    @Override
     @Deprecated
     public YangInstanceIdentifier serialize(final InstanceIdentifier<?> input) {
         return fromBinding(input);

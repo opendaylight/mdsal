@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -22,7 +23,14 @@ public interface DataTreeModification<T extends DataObject> {
      *
      * @return absolute path of the root node
      */
-    @NonNull DataTreeIdentifier<T> getRootPath();
+    @Deprecated
+    default DataTreeIdentifier<T> getRootPath() {
+        return DataTreeIdentifier.create(datastore(), rootPath().toLegacy());
+    }
+
+    LogicalDatastoreType datastore();
+
+    InstanceIdentifier<T> rootPath();
 
     /**
      * Get the modification root node.

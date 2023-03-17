@@ -34,6 +34,13 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     }
 
     @Override
+    public <T extends DataObject> void put(final LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path, final T data) {
+        super.put(store, path, data);
+        written = true;
+    }
+
+    @Override
     public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path, final T data) {
         super.mergeParentStructurePut(store, path, data);
@@ -48,6 +55,13 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
     }
 
     @Override
+    public <T extends DataObject> void merge(final LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path, final T data) {
+        super.merge(store, path, data);
+        written = true;
+    }
+
+    @Override
     public <T extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path, final T data) {
         super.mergeParentStructureMerge(store, path, data);
@@ -56,6 +70,13 @@ final class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransac
 
     @Override
     public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+        super.delete(store, path);
+        written = true;
+    }
+
+    @Override
+    public void delete(final LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier<?> path) {
         super.delete(store, path);
         written = true;
     }
