@@ -17,4 +17,5 @@ module org.opendaylight.mdsal.binding.dom.codec.api {
     // Annotations
     requires static transitive org.eclipse.jdt.annotation;
     requires static com.github.spotbugs.annotations;
+    requires org.opendaylight.mdsal.binding.api;
 }

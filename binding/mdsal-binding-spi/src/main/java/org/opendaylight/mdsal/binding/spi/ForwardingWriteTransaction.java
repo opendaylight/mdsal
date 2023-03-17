@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.spi;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.FluentFuture;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -38,6 +39,12 @@ public class ForwardingWriteTransaction extends ForwardingTransaction implements
         delegate.put(store, path, data);
     }
 
+    @Override
+    public <T extends DataObject> void put(final @NonNull LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path, final @NonNull T data) {
+        delegate.put(store, path, data);
+    }
+
     @Deprecated
     @Override
     public <T extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
@@ -45,13 +52,19 @@ public class ForwardingWriteTransaction extends ForwardingTransaction implements
         delegate.mergeParentStructurePut(store, path, data);
     }
 
-    @Deprecated
     @Override
     public <T extends DataObject> void merge(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final T data) {
         delegate.merge(store, path, data);
     }
 
+    @Override
+    public <T extends DataObject> void merge(final @NonNull LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path, final @NonNull T data) {
+        delegate.merge(store, path, data);
+    }
+
+    @Deprecated
     @Override
     public <T extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
             final InstanceIdentifier<T> path, final T data) {
@@ -60,6 +73,12 @@ public class ForwardingWriteTransaction extends ForwardingTransaction implements
 
     @Override
     public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
+        delegate.delete(store, path);
+    }
+
+    @Override
+    public void delete(final @NonNull LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> path) {
         delegate.delete(store, path);
     }
 

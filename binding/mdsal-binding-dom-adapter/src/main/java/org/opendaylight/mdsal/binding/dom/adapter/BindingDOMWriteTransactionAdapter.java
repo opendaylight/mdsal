@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Map.Entry;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -34,6 +35,13 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         getDelegate().put(store, normalized.getKey(), normalized.getValue());
     }
 
+    @Override
+    public <T extends DataObject> void put(final @NonNull LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path, final @NonNull T data) {
+        final Entry<YangInstanceIdentifier, NormalizedNode> normalized = toNormalized(path, data);
+        getDelegate().put(store, normalized.getKey(), normalized.getValue());
+    }
+
     @Deprecated
     @Override
     public final <U extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
@@ -51,6 +59,14 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         getDelegate().merge(store, normalized.getKey(), normalized.getValue());
     }
 
+    @Override
+    public <T extends DataObject> void merge(final @NonNull LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<T> path,
+            final @NonNull T data) {
+        final Entry<YangInstanceIdentifier, NormalizedNode> normalized = toNormalized(path, data);
+        getDelegate().merge(store, normalized.getKey(), normalized.getValue());
+    }
+
     @Deprecated
     @Override
     public final <U extends DataObject> void mergeParentStructureMerge(final LogicalDatastoreType store,
@@ -64,6 +80,12 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     @Override
     public final void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         checkArgument(!path.isWildcarded(), "Cannot delete wildcarded path %s", path);
+        getDelegate().delete(store, adapterContext().currentSerializer().toYangInstanceIdentifier(path));
+    }
+
+    @Override
+    public void delete(final @NonNull LogicalDatastoreType store,
+            final org.opendaylight.mdsal.binding.api.@NonNull InstanceIdentifier<?> path) {
         getDelegate().delete(store, adapterContext().currentSerializer().toYangInstanceIdentifier(path));
     }
 
@@ -100,10 +122,21 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
         return toNormalized(adapterContext().currentSerializer(), operation, path, data);
     }
 
+    private <U extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode> toNormalized(
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier<U> path, final U data) {
+        return toNormalized(adapterContext().currentSerializer(), path, data);
+    }
+
     private static <U extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode> toNormalized(
             final CurrentAdapterSerializer serializer, final String operation, final InstanceIdentifier<U> path,
             final U data) {
         checkArgument(!path.isWildcarded(), "Cannot %s data into wildcarded path %s", operation, path);
+        return serializer.toNormalizedNode(path, data);
+    }
+
+    private static <U extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode> toNormalized(
+            final CurrentAdapterSerializer serializer,
+            final org.opendaylight.mdsal.binding.api.InstanceIdentifier<U> path, final U data) {
         return serializer.toNormalizedNode(path, data);
     }
 }
