@@ -100,6 +100,13 @@ abstract class NodeCodecContext implements BindingCodecTreeNode {
         }
     }
 
+    protected void addYangPathArgument(final org.opendaylight.mdsal.binding.api.InstanceIdentifier.PathArgument arg,
+            final List<YangInstanceIdentifier.PathArgument> builder) {
+        if (builder != null) {
+            builder.add(getDomPathArgument());
+        }
+    }
+
     /**
      * Return the default value object. Implementations of this method are explicitly allowed to throw unchecked
      * exceptions, which are propagated as-is upwards the stack.

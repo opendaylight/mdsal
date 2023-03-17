@@ -30,6 +30,13 @@ class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction>
     }
 
     @Override
+    public <T extends DataObject> void put(
+        org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path, T data) {
+        delegate().put(getDatastoreType(), path, data);
+        postOperation();
+    }
+
+    @Override
     public final <T extends DataObject> void mergeParentStructurePut(final InstanceIdentifier<T> path,
             final T data) {
         delegate().mergeParentStructurePut(getDatastoreType(), path, data);
@@ -43,6 +50,14 @@ class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction>
     }
 
     @Override
+    public <T extends DataObject> void merge(
+            org.opendaylight.mdsal.binding.api.InstanceIdentifier<T> path, T data) {
+        delegate().merge(getDatastoreType(), path, data);
+        postOperation();
+
+    }
+
+    @Override
     public final <T extends DataObject> void mergeParentStructureMerge(final InstanceIdentifier<T> path,
             final T data) {
         delegate().mergeParentStructureMerge(getDatastoreType(), path, data);
@@ -53,6 +68,12 @@ class TypedWriteTransactionImpl<D extends Datastore, X extends WriteTransaction>
     public final void delete(final InstanceIdentifier<?> path) {
         delegate().delete(getDatastoreType(), path);
         postOperation();
+    }
+
+    @Override
+    public void delete(org.opendaylight.mdsal.binding.api.InstanceIdentifier<?> path) {
+        delegate().delete(getDatastoreType(), path);
+
     }
 
     void postOperation() {

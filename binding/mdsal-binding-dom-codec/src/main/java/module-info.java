@@ -46,4 +46,5 @@ module org.opendaylight.mdsal.binding.dom.codec.impl {
     requires static org.eclipse.jdt.annotation;
     requires static org.kohsuke.metainf_services;
     requires static org.osgi.service.component.annotations;
+    requires org.opendaylight.mdsal.binding.api;
 }
