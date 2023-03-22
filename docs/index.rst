@@ -127,3 +127,4 @@ Table of Contents
    incremental-backup
    binding-query-user-guide
    query-binding-language-developer-guide
+   osgi-model-registration
