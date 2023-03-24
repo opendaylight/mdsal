@@ -17,16 +17,15 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 
 final class DefaultDescendantQueryBuilder<R extends DataObject, T extends DataObject>
         implements DescendantQueryBuilder<T> {
-    private final InstanceIdentifierBuilder<T> childPath;
+    private final InstanceIdentifier.Builder<T> childPath;
     private final QueryBuilderState builder;
 
     DefaultDescendantQueryBuilder(final DefaultQueryFactory factory, final InstanceIdentifier<T> rootPath) {
-        this.builder = new QueryBuilderState(factory, rootPath);
-        this.childPath = rootPath.builder();
+        builder = new QueryBuilderState(factory, rootPath);
+        childPath = rootPath.builder();
     }
 
     @Override

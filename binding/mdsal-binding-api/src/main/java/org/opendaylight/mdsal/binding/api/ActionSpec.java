@@ -22,7 +22,6 @@ import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 
 /**
  * A combination of an {@link Action} class and its corresponding instantiation wildcard, expressed as
@@ -83,9 +82,9 @@ public final class ActionSpec<A extends Action<? extends InstanceIdentifier<P>, 
 
     @Beta
     public static final class Builder<P extends DataObject> implements Mutable {
-        private final InstanceIdentifierBuilder<P> pathBuilder;
+        private final InstanceIdentifier.Builder<P> pathBuilder;
 
-        Builder(final InstanceIdentifierBuilder<P> pathBuilder) {
+        Builder(final InstanceIdentifier.Builder<P> pathBuilder) {
             this.pathBuilder = requireNonNull(pathBuilder);
         }
 

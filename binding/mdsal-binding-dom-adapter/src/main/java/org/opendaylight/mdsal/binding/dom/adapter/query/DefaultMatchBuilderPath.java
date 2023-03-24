@@ -21,7 +21,6 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.Empty;
@@ -33,10 +32,10 @@ import org.opendaylight.yangtools.yang.common.Uint8;
 final class DefaultMatchBuilderPath<O extends DataObject, T extends DataObject> implements MatchBuilderPath<O, T> {
     private final QueryBuilderState builder;
     private final InstanceIdentifier<O> select;
-    private final InstanceIdentifierBuilder<T> target;
+    private final InstanceIdentifier.Builder<T> target;
 
     DefaultMatchBuilderPath(final QueryBuilderState builder, final InstanceIdentifier<O> select,
-            final InstanceIdentifierBuilder<T> target) {
+            final InstanceIdentifier.Builder<T> target) {
         this.builder = requireNonNull(builder);
         this.select = requireNonNull(select);
         this.target = requireNonNull(target);

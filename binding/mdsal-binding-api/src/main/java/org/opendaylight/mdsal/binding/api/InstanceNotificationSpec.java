@@ -21,7 +21,6 @@ import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceNotification;
 
 /**
@@ -85,9 +84,9 @@ public final class InstanceNotificationSpec<N extends InstanceNotification<N, P>
 
     @Beta
     public static final class Builder<P extends DataObject> implements Mutable {
-        private final InstanceIdentifierBuilder<P> pathBuilder;
+        private final InstanceIdentifier.Builder<P> pathBuilder;
 
-        Builder(final InstanceIdentifierBuilder<P> pathBuilder) {
+        Builder(final InstanceIdentifier.Builder<P> pathBuilder) {
             this.pathBuilder = requireNonNull(pathBuilder);
         }
 
