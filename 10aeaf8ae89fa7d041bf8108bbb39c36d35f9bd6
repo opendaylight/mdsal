@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f18acfad_5c9921d8",
+        "filename": "docs/osgi-model-registration.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-03-28T05:26:41Z",
+      "side": 1,
+      "message": "it is not the framework which does the searching",
+      "range": {
+        "startLine": 12,
+        "startChar": 67,
+        "endLine": 12,
+        "endChar": 82
+      },
+      "revId": "10aeaf8ae89fa7d041bf8108bbb39c36d35f9bd6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcab9b09_e541f839",
+        "filename": "docs/osgi-model-registration.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-03-28T05:26:41Z",
+      "side": 1,
+      "message": "this should live in yangtools.git, there is just no way we can maintain accuracy of what are very much implementation specifics here.\n\nInstead this guide should focus on:\n- a block diagram of components which are involved in OSGi loading\n- call diagrams for feature:install",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 14
+      },
+      "revId": "10aeaf8ae89fa7d041bf8108bbb39c36d35f9bd6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
