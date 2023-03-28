@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4fca0bc_b6290c50",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-03-28T11:39:01Z",
+      "side": 1,
+      "message": "this is confusing: the key is the grouping TypeName and value type should be a RuntimeType, right?",
+      "range": {
+        "startLine": 62,
+        "startChar": 32,
+        "endLine": 62,
+        "endChar": 40
+      },
+      "revId": "90f5026422f96565eece8644b21f731f3e1fbfbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "de083ca0_253dbfdc",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-03-28T11:39:01Z",
+      "side": 1,
+      "message": "so... each composite type already knows its groupings, so we should not need to access the generated type.",
+      "range": {
+        "startLine": 139,
+        "startChar": 17,
+        "endLine": 139,
+        "endChar": 42
+      },
+      "revId": "90f5026422f96565eece8644b21f731f3e1fbfbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e94a35bf_5716b3ae",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-03-28T11:39:01Z",
+      "side": 1,
+      "message": "ifPresent() instead isPresent/orElseThrow",
+      "range": {
+        "startLine": 141,
+        "startChar": 36,
+        "endLine": 141,
+        "endChar": 45
+      },
+      "revId": "90f5026422f96565eece8644b21f731f3e1fbfbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb67fe28_8a2b4e9b",
+        "filename": "binding/mdsal-binding-generator/src/test/java/org/opendaylight/mdsal/binding/generator/impl/Mdsal669Test.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-03-28T11:39:01Z",
+      "side": 1,
+      "message": "assertions should always be imported statically",
+      "range": {
+        "startLine": 31,
+        "startChar": 15,
+        "endLine": 31,
+        "endChar": 27
+      },
+      "revId": "90f5026422f96565eece8644b21f731f3e1fbfbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8860dab7_1180c9fe",
+        "filename": "binding/mdsal-binding-generator/src/test/java/org/opendaylight/mdsal/binding/generator/impl/Mdsal669Test.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-03-28T11:39:01Z",
+      "side": 1,
+      "message": "assertEquals(Set.of(ONE, TWO), runtimeTypes.allGroupingInstance(BAZ))",
+      "range": {
+        "startLine": 35,
+        "startChar": 8,
+        "endLine": 35,
+        "endChar": 27
+      },
+      "revId": "90f5026422f96565eece8644b21f731f3e1fbfbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "174fc697_0bdc642c",
+        "filename": "binding/mdsal-binding-runtime-api/src/main/java/org/opendaylight/mdsal/binding/runtime/api/BindingRuntimeTypes.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-03-28T11:39:01Z",
+      "side": 1,
+      "message": "Should be a Set\nneeds to be documented",
+      "range": {
+        "startLine": 97,
+        "startChar": 13,
+        "endLine": 97,
+        "endChar": 17
+      },
+      "revId": "90f5026422f96565eece8644b21f731f3e1fbfbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
