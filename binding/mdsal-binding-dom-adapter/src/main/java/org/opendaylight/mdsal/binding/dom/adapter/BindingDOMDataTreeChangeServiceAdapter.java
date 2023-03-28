@@ -7,7 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ClusteredDataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataChangeListener;
+import org.opendaylight.mdsal.binding.api.DataListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
@@ -15,6 +18,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -47,8 +51,30 @@ final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapte
         return new BindingDataTreeChangeListenerRegistration<>(listener, domReg);
     }
 
-    private DOMDataTreeIdentifier toDomTreeIdentifier(final DataTreeIdentifier<?> treeId) {
+    @Override
+    public <T extends DataObject> Registration registerDataListener(final DataTreeIdentifier<T> treeId,
+            final DataListener<T> listener) {
+        return getDelegate().registerDataTreeChangeListener(toDomTreeInstance(treeId),
+            new BindingDOMDataListenerAdapter<>(adapterContext(), listener));
+    }
+
+    @Override
+    public <T extends DataObject> Registration registerDataChangeListener(final DataTreeIdentifier<T> treeId,
+            final DataChangeListener<T> listener) {
+        return getDelegate().registerDataTreeChangeListener(toDomTreeInstance(treeId)),
+            new BindingDOMDataCahngeListenerAdapter<>(adapterContext(), listener));
+    }
+
+    private @NonNull DOMDataTreeIdentifier toDomTreeIdentifier(final DataTreeIdentifier<?> treeId) {
         return new DOMDataTreeIdentifier(treeId.getDatastoreType(),
             currentSerializer().toYangInstanceIdentifier(treeId.getRootIdentifier()));
+    }
+
+    private @NonNull DOMDataTreeIdentifier toDomTreeInstance(final DataTreeIdentifier<?> treeId) {
+        final var instanceIdentifier = treeId.getRootIdentifier();
+        if (instanceIdentifier.isWildcarded()) {
+            throw new IllegalArgumentException("Cannot register listener for wildcard " + instanceIdentifier);
+        }
+        return toDomTreeIdentifier(treeId);
     }
 }
