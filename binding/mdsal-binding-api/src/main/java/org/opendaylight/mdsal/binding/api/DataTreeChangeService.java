@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.api;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -55,4 +56,23 @@ public interface DataTreeChangeService extends BindingService {
      */
     <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
             registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener);
+
+    default <T extends DataObject> @NonNull Registration registerDataListener(
+            final @NonNull DataTreeIdentifier<T> treeId, final @NonNull DataListener<T> listener) {
+        return registerDataTreeChangeListener(checkNotWildcard(treeId), new DataListenerAdapter<>(listener));
+    }
+
+    default <T extends DataObject> @NonNull Registration registerDataChangeListener(
+            final @NonNull DataTreeIdentifier<T> treeId, final @NonNull DataChangeListener<T> listener) {
+        return registerDataTreeChangeListener(checkNotWildcard(treeId), new DataChangeListenerAdapter<>(listener));
+    }
+
+    private static <T extends DataObject> @NonNull DataTreeIdentifier<T> checkNotWildcard(
+            final DataTreeIdentifier<T> treeId) {
+        final var instanceIdentifier = treeId.getRootIdentifier();
+        if (instanceIdentifier.isWildcarded()) {
+            throw new IllegalArgumentException("Cannot register listener for wildcard " + instanceIdentifier);
+        }
+        return treeId;
+    }
 }
