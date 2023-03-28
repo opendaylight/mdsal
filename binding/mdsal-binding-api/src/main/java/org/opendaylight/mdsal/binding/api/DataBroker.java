@@ -8,6 +8,9 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Provides access to a conceptual data tree store and also provides the ability to
@@ -68,4 +71,16 @@ public interface DataBroker extends BindingService, TransactionFactory, DataTree
      * @return A new transaction chain.
      */
     @NonNull TransactionChain createMergingTransactionChain(@NonNull TransactionChainListener listener);
+
+
+    default <T extends DataObject, L extends DataObjectListenerAdapter> @NonNull ListenerRegistration<L>
+        registerListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener) {
+
+        InstanceIdentifier<T> instanceIdentifier = treeId.getRootIdentifier();
+        if (instanceIdentifier.isWildcarded()) {
+            throw new IllegalArgumentException(
+                "Cannot register listener for wildcard InstanceIdentifier: " + instanceIdentifier);
+        }
+        return registerDataTreeChangeListener(treeId, listener);
+    }
 }
