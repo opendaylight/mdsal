@@ -12,7 +12,6 @@ import static org.junit.Assert.fail;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -35,18 +34,18 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBrokerTest {
     protected static final class TestListener<T extends DataObject> implements DataTreeChangeListener<T> {
-        private final SettableFuture<Collection<DataTreeModification<T>>> future = SettableFuture.create();
+        private final SettableFuture<List<DataTreeModification<T>>> future = SettableFuture.create();
         private final List<DataTreeModification<T>> accumulatedChanges = new ArrayList<>();
         private final Function<DataTreeModification<T>, Boolean>[] matchers;
         private final int expChangeCount;
 
         private TestListener(final Function<DataTreeModification<T>, Boolean>[] matchers) {
-            this.expChangeCount = matchers.length;
+            expChangeCount = matchers.length;
             this.matchers = matchers;
         }
 
         @Override
-        public void onDataTreeChanged(final Collection<DataTreeModification<T>> changes) {
+        public void onDataTreeChanged(final List<DataTreeModification<T>> changes) {
             synchronized (accumulatedChanges) {
                 accumulatedChanges.addAll(changes);
                 if (expChangeCount == accumulatedChanges.size()) {
@@ -55,9 +54,14 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
             }
         }
 
-        public Collection<DataTreeModification<T>> changes() {
+        @Override
+        public void onInitialData() {
+            // No-op
+        }
+
+        public List<DataTreeModification<T>> changes() {
             try {
-                final Collection<DataTreeModification<T>> changes = future.get(5, TimeUnit.SECONDS);
+                final List<DataTreeModification<T>> changes = future.get(5, TimeUnit.SECONDS);
                 Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
                 return changes;
             } catch (InterruptedException | TimeoutException | ExecutionException e) {
@@ -68,7 +72,7 @@ public class AbstractDataTreeChangeListenerTest extends AbstractConcurrentDataBr
         }
 
         public void verify() {
-            Collection<DataTreeModification<T>> changes = new ArrayList<>(changes());
+            List<DataTreeModification<T>> changes = new ArrayList<>(changes());
             Iterator<DataTreeModification<T>> iter = changes.iterator();
             while (iter.hasNext()) {
                 DataTreeModification<T> dataTreeModification = iter.next();

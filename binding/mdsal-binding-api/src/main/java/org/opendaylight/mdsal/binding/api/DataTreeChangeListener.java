@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.api;
 
 import java.util.Collection;
 import java.util.EventListener;
+import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -41,9 +42,9 @@ public interface DataTreeChangeListener<T extends DataObject> extends EventListe
      * a {@link DataObjectModification}, while the state observed before and
      * after- data items compare as equal.
      *
-     * @param changes Collection of change events, may not be null or empty.
+     * @param changes List of change events, may not be {@code null} or empty.
      */
-    void onDataTreeChanged(@NonNull Collection<DataTreeModification<T>> changes);
+    void onDataTreeChanged(@NonNull List<DataTreeModification<T>> changes);
 
     /**
      * Invoked only once during registration of the listener if there was no data in the conceptual data tree
@@ -54,8 +55,5 @@ public interface DataTreeChangeListener<T extends DataObject> extends EventListe
      * Default implementation does nothing and is appropriate for users who do not care about ascertaining
      * initial state.
      */
-    // FIXME: 8.0.0: this method should be non-default
-    default void onInitialData() {
-        //no-op
-    }
+    void onInitialData();
 }
