@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 /**
  * Commit cohort participating in commit of data modification, which can validate data tree
@@ -31,7 +31,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  *
  * <h2>Implementation requirements</h2>
  * <h3>Correctness assumptions</h3> Implementation SHOULD use only the {@link DOMDataTreeCandidate} instances and
- * provided {@link SchemaContext} for validation purposes.
+ * provided {@link EffectiveModelContext} for validation purposes.
  * Use of any other external mutable state is discouraged, implementation MUST NOT use any
  * transaction related APIs on same data broker / data store instance during invocation of
  * callbacks, except ones provided as argument. Note that this MAY BE enforced by some
@@ -40,7 +40,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  * and such calls may fail.
  * <h3>Correct model usage</h3> If implementation is performing YANG-model driven validation
  * implementation SHOULD use provided schema context.
- * Any other instance of {@link SchemaContext} obtained by other means, may not be valid for the
+ * Any other instance of {@link EffectiveModelContext} obtained by other means, may not be valid for the
  * associated DOMDataTreeCandidates and it may lead to incorrect validation or processing of provided
  * data.
  * <h3>DataTreeCandidate assumptions</h3> Implementation SHOULD NOT make any assumptions on a
@@ -94,7 +94,7 @@ public interface DOMDataTreeCommitCohort {
      *         validation failure reason.
      */
     @NonNull FluentFuture<PostCanCommitStep> canCommit(@NonNull Object txId,
-            @NonNull SchemaContext ctx, @NonNull Collection<DOMDataTreeCandidate> candidates);
+            @NonNull EffectiveModelContext ctx, @NonNull Collection<DOMDataTreeCandidate> candidates);
 
     /**
      * An ExceptionMapper that translates an Exception to a DataValidationFailedException.
