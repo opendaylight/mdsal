@@ -38,9 +38,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * independent to binding aware format.
  */
 @VisibleForTesting
-public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull DOMDataBroker> implements DataBroker,
-        DataTreeChangeService {
-
+public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull DOMDataBroker> implements DataBroker {
     static final Factory<DataBroker> BUILDER_FACTORY = Builder::new;
     private final DataTreeChangeService treeChangeService;
 
