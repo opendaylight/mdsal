@@ -15,7 +15,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collection;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,13 +95,25 @@ public class BindingDOMDataTreeChangeServiceAdapterTest {
 
     private static class TestClusteredDataTreeChangeListener implements ClusteredDataTreeChangeListener<Top> {
         @Override
-        public void onDataTreeChanged(final Collection<DataTreeModification<Top>> changes) {
+        public void onDataTreeChanged(final List<DataTreeModification<Top>> changes) {
+            // No-op
+        }
+
+        @Override
+        public void onInitialData() {
+            // No-op
         }
     }
 
     private static class TestDataTreeChangeListener implements DataTreeChangeListener<Top> {
         @Override
-        public void onDataTreeChanged(final Collection<DataTreeModification<Top>> changes) {
+        public void onDataTreeChanged(final List<DataTreeModification<Top>> changes) {
+            // No-op
+        }
+
+        @Override
+        public void onInitialData() {
+            // No-op
         }
     }
 }

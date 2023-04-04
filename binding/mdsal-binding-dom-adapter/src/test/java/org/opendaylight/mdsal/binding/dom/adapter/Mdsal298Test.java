@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -48,6 +48,7 @@ import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.wit
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.with.choice.foo.addressable._case.Addressable;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal298.rev180129.with.choice.foo.addressable._case.AddressableBuilder;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
@@ -106,9 +107,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             .build());
         domTx.commit().get();
 
-        final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
+        final var captor = captor(Container.class);
         verify(listener).onDataTreeChanged(captor.capture());
-        Collection<DataTreeModification<Container>> capture = captor.getValue();
+        List<DataTreeModification<Container>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
         final DataTreeModification<Container> change = capture.iterator().next();
@@ -161,9 +162,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             .build());
         domTx.commit().get();
 
-        final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
+        final var captor = captor(Container.class);
         verify(listener).onDataTreeChanged(captor.capture());
-        Collection<DataTreeModification<Container>> capture = captor.getValue();
+        List<DataTreeModification<Container>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
         final DataTreeModification<Container> change = capture.iterator().next();
@@ -187,15 +188,15 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
     public void testChoiceDataTreeModificationAddressable() throws InterruptedException, ExecutionException {
         final DataTreeChangeListener<WithChoice> listener = assertWrittenWithChoice();
 
-        doNothing().when(listener).onDataTreeChanged(anyCollection());
+        doNothing().when(listener).onDataTreeChanged(anyList());
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, ADDRESSABLE_CASE, new AddressableBuilder().build());
         writeTx.commit().get();
 
-        final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
+        final var captor = captor(WithChoice.class);
         verify(listener).onDataTreeChanged(captor.capture());
-        Collection<DataTreeModification<WithChoice>> capture = captor.getValue();
+        List<DataTreeModification<WithChoice>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
         final DataTreeModification<WithChoice> choiceChange = capture.iterator().next();
@@ -219,16 +220,16 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DataTreeChangeListener<AddressableCont> listener = assertWrittenContainer(AddressableCont.QNAME,
             AddressableCont.class, new AddressableContBuilder().build());
 
-        doNothing().when(listener).onDataTreeChanged(anyCollection());
+        doNothing().when(listener).onDataTreeChanged(anyList());
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, ADDRESSABLE_CONTAINER.child(AddressableChild.class),
             new AddressableChildBuilder().build());
         writeTx.commit().get();
 
-        final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
+        final var captor = captor(AddressableCont.class);
         verify(listener).onDataTreeChanged(captor.capture());
-        Collection<DataTreeModification<AddressableCont>> capture = captor.getValue();
+        List<DataTreeModification<AddressableCont>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
         final DataTreeModification<AddressableCont> contChange = capture.iterator().next();
@@ -252,7 +253,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DataTreeChangeListener<UnaddressableCont> listener = assertWrittenContainer(UnaddressableCont.QNAME,
             UnaddressableCont.class, new UnaddressableContBuilder().build());
 
-        doNothing().when(listener).onDataTreeChanged(anyCollection());
+        doNothing().when(listener).onDataTreeChanged(anyList());
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.create(UNADDRESSABLE_CONTAINER_NID)
@@ -260,9 +261,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             ImmutableNodes.leafNode(BAZ_QNAME, "baz"));
         domTx.commit().get();
 
-        final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
+        final var captor = captor(UnaddressableCont.class);
         verify(listener).onDataTreeChanged(captor.capture());
-        Collection<DataTreeModification<UnaddressableCont>> capture = captor.getValue();
+        List<DataTreeModification<UnaddressableCont>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
         final DataTreeModification<UnaddressableCont> contChange = capture.iterator().next();
@@ -279,7 +280,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
     public void testChoiceDataTreeModificationUnaddressable() throws InterruptedException, ExecutionException {
         final DataTreeChangeListener<WithChoice> listener = assertWrittenWithChoice();
 
-        doNothing().when(listener).onDataTreeChanged(anyCollection());
+        doNothing().when(listener).onDataTreeChanged(anyList());
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.create(CHOICE_CONTAINER_NID).node(Foo.QNAME),
@@ -292,9 +293,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             .build());
         domTx.commit().get();
 
-        final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
+        final var captor = captor(WithChoice.class);
         verify(listener).onDataTreeChanged(captor.capture());
-        Collection<DataTreeModification<WithChoice>> capture = captor.getValue();
+        List<DataTreeModification<WithChoice>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
         final DataTreeModification<WithChoice> choiceChange = capture.iterator().next();
@@ -313,7 +314,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             final Class<T> bindingClass, final T expected)
             throws InterruptedException, ExecutionException {
         final DataTreeChangeListener<T> listener = mock(DataTreeChangeListener.class);
-        doNothing().when(listener).onDataTreeChanged(anyCollection());
+        doNothing().when(listener).onDataTreeChanged(anyList());
 
         final DataTreeIdentifier<T> dti = DataTreeIdentifier.create(CONFIGURATION,
             InstanceIdentifier.create(bindingClass));
@@ -324,9 +325,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             ImmutableNodes.containerNode(qname));
         domTx.commit().get();
 
-        final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
+        final var captor = captor(bindingClass);
         verify(listener).onDataTreeChanged(captor.capture());
-        Collection<DataTreeModification<T>> capture = captor.getValue();
+        List<DataTreeModification<T>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
         final DataTreeModification<T> change = capture.iterator().next();
@@ -342,14 +343,14 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(List.of(), changedContainer.getModifiedChildren());
 
         reset(listener);
-        doNothing().when(listener).onDataTreeChanged(anyCollection());
+        doNothing().when(listener).onDataTreeChanged(anyList());
         return listener;
     }
 
     private DataTreeChangeListener<WithChoice> assertWrittenWithChoice() throws InterruptedException,
             ExecutionException {
         final DataTreeChangeListener<WithChoice> listener = mock(DataTreeChangeListener.class);
-        doNothing().when(listener).onDataTreeChanged(anyCollection());
+        doNothing().when(listener).onDataTreeChanged(anyList());
         getDataBroker().registerDataTreeChangeListener(CHOICE_CONTAINER_TID, listener);
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
@@ -360,9 +361,9 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             .build());
         domTx.commit().get();
 
-        final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
+        final var captor = captor(WithChoice.class);
         verify(listener).onDataTreeChanged(captor.capture());
-        Collection<DataTreeModification<WithChoice>> capture = captor.getValue();
+        List<DataTreeModification<WithChoice>> capture = captor.getValue();
         assertEquals(1, capture.size());
 
         final DataTreeModification<WithChoice> change = capture.iterator().next();
@@ -378,8 +379,13 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(List.of(), changedContainer.getModifiedChildren());
 
         reset(listener);
-        doNothing().when(listener).onDataTreeChanged(anyCollection());
+        doNothing().when(listener).onDataTreeChanged(anyList());
 
         return listener;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends DataObject> ArgumentCaptor<List<DataTreeModification<T>>> captor(final Class<T> clazz) {
+        return ArgumentCaptor.forClass(List.class);
     }
 }

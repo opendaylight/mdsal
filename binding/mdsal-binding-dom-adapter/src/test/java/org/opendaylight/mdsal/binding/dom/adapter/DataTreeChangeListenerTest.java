@@ -21,7 +21,7 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.t
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.SettableFuture;
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -54,25 +54,28 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     private static final InstanceIdentifier<TopLevelList> BAR_PATH = path(TOP_BAR_KEY);
     private static final PathArgument BAR_ARGUMENT = Iterables.getLast(BAR_PATH.getPathArguments());
     private static final TopLevelList BAR_DATA = topLevelList(TOP_BAR_KEY);
-    private static final DataTreeIdentifier<Top> TOP_IDENTIFIER
-            = DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, TOP_PATH);
+    private static final DataTreeIdentifier<Top> TOP_IDENTIFIER =
+        DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, TOP_PATH);
 
     private static final Top TOP_INITIAL_DATA = top(FOO_DATA);
 
     private BindingDOMDataBrokerAdapter dataBrokerImpl;
 
     private static final class EventCapturingListener<T extends DataObject> implements DataTreeChangeListener<T> {
-
-        private SettableFuture<Collection<DataTreeModification<T>>> futureChanges = SettableFuture.create();
+        private SettableFuture<List<DataTreeModification<T>>> futureChanges = SettableFuture.create();
 
         @Override
-        public void onDataTreeChanged(final Collection<DataTreeModification<T>> changes) {
-            this.futureChanges.set(changes);
-
+        public void onDataTreeChanged(final List<DataTreeModification<T>> changes) {
+            futureChanges.set(changes);
         }
 
-        Collection<DataTreeModification<T>> nextEvent() throws Exception {
-            final Collection<DataTreeModification<T>> result = futureChanges.get(200,TimeUnit.MILLISECONDS);
+        @Override
+        public void onInitialData() {
+            // No-op
+        }
+
+        List<DataTreeModification<T>> nextEvent() throws Exception {
+            final List<DataTreeModification<T>> result = futureChanges.get(200,TimeUnit.MILLISECONDS);
             futureChanges = SettableFuture.create();
             return result;
         }
@@ -158,9 +161,9 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
 
     private void createAndVerifyTop(final EventCapturingListener<Top> listener) throws Exception {
         putTx(TOP_PATH,TOP_INITIAL_DATA).commit().get();
-        final Collection<DataTreeModification<Top>> events = listener.nextEvent();
+        final List<DataTreeModification<Top>> events = listener.nextEvent();
 
-        assertFalse("Non empty collection should be received.",events.isEmpty());
+        assertFalse("Non empty collection should be received.", events.isEmpty());
         final DataTreeModification<Top> initialWrite = Iterables.getOnlyElement(events);
         final DataObjectModification<? extends DataObject> initialNode = initialWrite.getRootNode();
         verifyModification(initialNode,TOP_PATH.getPathArguments().iterator().next(),ModificationType.WRITE);

@@ -12,7 +12,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -49,11 +49,11 @@ public class Bug4513Test extends AbstractDataBrokerTest {
 
         final ListItem item = writeListItem();
 
-        ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
+        ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
 
         verify(listener, timeout(100)).onDataTreeChanged(captor.capture());
 
-        Collection<DataTreeModification<ListItem>> mods = captor.getValue();
+        List<DataTreeModification<ListItem>> mods = captor.getValue();
         assertEquals("ListItem", item, mods.iterator().next().getRootNode().getDataAfter());
     }
 
