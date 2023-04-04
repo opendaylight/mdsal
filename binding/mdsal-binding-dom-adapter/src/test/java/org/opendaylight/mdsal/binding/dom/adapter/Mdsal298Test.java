@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -187,7 +187,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
     public void testChoiceDataTreeModificationAddressable() throws InterruptedException, ExecutionException {
         final DataTreeChangeListener<WithChoice> listener = assertWrittenWithChoice();
 
-        doNothing().when(listener).onDataTreeChanged(any(Collection.class));
+        doNothing().when(listener).onDataTreeChanged(anyCollection());
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, ADDRESSABLE_CASE, new AddressableBuilder().build());
@@ -219,7 +219,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DataTreeChangeListener<AddressableCont> listener = assertWrittenContainer(AddressableCont.QNAME,
             AddressableCont.class, new AddressableContBuilder().build());
 
-        doNothing().when(listener).onDataTreeChanged(any(Collection.class));
+        doNothing().when(listener).onDataTreeChanged(anyCollection());
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, ADDRESSABLE_CONTAINER.child(AddressableChild.class),
@@ -252,7 +252,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DataTreeChangeListener<UnaddressableCont> listener = assertWrittenContainer(UnaddressableCont.QNAME,
             UnaddressableCont.class, new UnaddressableContBuilder().build());
 
-        doNothing().when(listener).onDataTreeChanged(any(Collection.class));
+        doNothing().when(listener).onDataTreeChanged(anyCollection());
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.create(UNADDRESSABLE_CONTAINER_NID)
@@ -279,7 +279,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
     public void testChoiceDataTreeModificationUnaddressable() throws InterruptedException, ExecutionException {
         final DataTreeChangeListener<WithChoice> listener = assertWrittenWithChoice();
 
-        doNothing().when(listener).onDataTreeChanged(any(Collection.class));
+        doNothing().when(listener).onDataTreeChanged(anyCollection());
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.create(CHOICE_CONTAINER_NID).node(Foo.QNAME),
@@ -313,7 +313,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             final Class<T> bindingClass, final T expected)
             throws InterruptedException, ExecutionException {
         final DataTreeChangeListener<T> listener = mock(DataTreeChangeListener.class);
-        doNothing().when(listener).onDataTreeChanged(any(Collection.class));
+        doNothing().when(listener).onDataTreeChanged(anyCollection());
 
         final DataTreeIdentifier<T> dti = DataTreeIdentifier.create(CONFIGURATION,
             InstanceIdentifier.create(bindingClass));
@@ -342,14 +342,14 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(List.of(), changedContainer.getModifiedChildren());
 
         reset(listener);
-        doNothing().when(listener).onDataTreeChanged(any(Collection.class));
+        doNothing().when(listener).onDataTreeChanged(anyCollection());
         return listener;
     }
 
     private DataTreeChangeListener<WithChoice> assertWrittenWithChoice() throws InterruptedException,
             ExecutionException {
         final DataTreeChangeListener<WithChoice> listener = mock(DataTreeChangeListener.class);
-        doNothing().when(listener).onDataTreeChanged(any(Collection.class));
+        doNothing().when(listener).onDataTreeChanged(anyCollection());
         getDataBroker().registerDataTreeChangeListener(CHOICE_CONTAINER_TID, listener);
 
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
@@ -378,7 +378,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(List.of(), changedContainer.getModifiedChildren());
 
         reset(listener);
-        doNothing().when(listener).onDataTreeChanged(any(Collection.class));
+        doNothing().when(listener).onDataTreeChanged(anyCollection());
 
         return listener;
     }
