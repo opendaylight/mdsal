@@ -11,6 +11,8 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,8 +22,13 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
+import org.opendaylight.yangtools.yang.binding.DataRoot;
+import org.opendaylight.yangtools.yang.binding.YangFeature;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.model.repo.api.FeatureSet;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParser;
@@ -31,6 +38,7 @@ import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
 
 @Beta
 public final class ModuleInfoSnapshotBuilder {
+    private final Map<Class<? extends DataRoot>, Set<? extends YangFeature<?, ?>>> registeredFeatures = new HashMap<>();
     private final Set<YangModuleInfo> moduleInfos = new HashSet<>();
     private final YangParserFactory parserFactory;
 
@@ -78,6 +86,15 @@ public final class ModuleInfoSnapshotBuilder {
         return this;
     }
 
+    public <R extends @NonNull DataRoot> @NonNull ModuleInfoSnapshotBuilder addSupportedFeatures(final Class<R> module,
+            final Set<? extends YangFeature<?, R>> supportedFeatures) {
+        final var prev = registeredFeatures.putIfAbsent(requireNonNull(module), ImmutableSet.copyOf(supportedFeatures));
+        if (prev != null) {
+            throw new IllegalArgumentException("Module " + module + "is already bound with features " + prev);
+        }
+        return this;
+    }
+
     /**
      * Build {@link ModuleInfoSnapshot} from all {@code moduleInfos} in this builder.
      *
@@ -86,6 +103,7 @@ public final class ModuleInfoSnapshotBuilder {
      */
     public @NonNull ModuleInfoSnapshot build() throws YangParserException {
         final YangParser parser = parserFactory.createParser();
+
         final Map<SourceIdentifier, YangModuleInfo> mappedInfos = new HashMap<>();
         final Map<String, ClassLoader> classLoaders = new HashMap<>();
         for (YangModuleInfo info : moduleInfos) {
@@ -101,6 +119,17 @@ public final class ModuleInfoSnapshotBuilder {
             } catch (YangSyntaxErrorException | IOException e) {
                 throw new YangParserException("Failed to add source for " + info, e);
             }
+        }
+
+        if (!registeredFeatures.isEmpty()) {
+            final var featuresByModule =
+                ImmutableMap.<QNameModule, ImmutableSet<String>>builderWithExpectedSize(registeredFeatures.size());
+            for (var entry : registeredFeatures.entrySet()) {
+                featuresByModule.put(BindingReflections.getQNameModule(entry.getKey()),
+                    entry.getValue().stream().map(YangFeature::qname).map(QName::getLocalName).sorted()
+                        .collect(ImmutableSet.toImmutableSet()));
+            }
+            parser.setSupportedFeatures(new FeatureSet(featuresByModule.build()));
         }
 
         return new DefaultModuleInfoSnapshot(parser.buildEffectiveModel(), mappedInfos, classLoaders);
