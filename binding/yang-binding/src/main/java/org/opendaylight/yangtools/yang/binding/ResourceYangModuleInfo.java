@@ -14,6 +14,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
@@ -50,4 +51,18 @@ public abstract class ResourceYangModuleInfo implements YangModuleInfo {
     }
 
     protected abstract String resourceName();
+
+    @Override
+    public Class boundModule() {
+        try {
+            return ClassLoader.getPlatformClassLoader().loadClass(getName().getLocalName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Set<? extends YangFeature> supportedFeatures() {
+        return Set.of();
+    }
 }
