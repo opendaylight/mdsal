@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.yang.common.QName;
  * is expressed across jars via an implementation requirement to reference YangModuleInfos.
  */
 @NonNullByDefault
-public interface YangModuleInfo extends Immutable {
+public interface YangModuleInfo extends Immutable, YangFeatureProvider {
     /**
      * Returns YANG module name, as a composite {@link QName}. Module's namespace and revision maps to
      * {@link QName#getModule()} and module name maps to {@link QName#getLocalName()}.
