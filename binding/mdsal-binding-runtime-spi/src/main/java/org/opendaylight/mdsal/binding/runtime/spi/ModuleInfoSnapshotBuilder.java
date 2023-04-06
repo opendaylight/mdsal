@@ -16,12 +16,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
+import org.opendaylight.yangtools.yang.binding.DataRoot;
+import org.opendaylight.yangtools.yang.binding.YangFeature;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParser;
@@ -32,6 +36,7 @@ import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
 @Beta
 public final class ModuleInfoSnapshotBuilder {
     private final Set<YangModuleInfo> moduleInfos = new HashSet<>();
+    private final Map<Class<?>, Set<? extends YangFeature<?,?>>> registeredFeatures = new HashMap<>();
     private final YangParserFactory parserFactory;
 
     public ModuleInfoSnapshotBuilder(final YangParserFactory parserFactory) {
@@ -78,6 +83,15 @@ public final class ModuleInfoSnapshotBuilder {
         return this;
     }
 
+    public <R extends DataRoot> @NonNull ModuleInfoSnapshotBuilder addSupportedFeatures(Class<R> module,
+        Set<? extends YangFeature<?, R>> supportedFeatures) {
+        if (registeredFeatures.containsKey(module)) {
+            throw new IllegalArgumentException("Features for module " + module + " already added.");
+        }
+        registeredFeatures.put(module, supportedFeatures);
+        return this;
+    }
+
     /**
      * Build {@link ModuleInfoSnapshot} from all {@code moduleInfos} in this builder.
      *
@@ -86,6 +100,7 @@ public final class ModuleInfoSnapshotBuilder {
      */
     public @NonNull ModuleInfoSnapshot build() throws YangParserException {
         final YangParser parser = parserFactory.createParser();
+
         final Map<SourceIdentifier, YangModuleInfo> mappedInfos = new HashMap<>();
         final Map<String, ClassLoader> classLoaders = new HashMap<>();
         for (YangModuleInfo info : moduleInfos) {
@@ -102,6 +117,10 @@ public final class ModuleInfoSnapshotBuilder {
                 throw new YangParserException("Failed to add source for " + info, e);
             }
         }
+
+        final Set<QName> features = registeredFeatures.values().stream().flatMap(Set::stream).map(YangFeature::qname)
+                .collect(Collectors.toSet());
+        parser.setSupportedFeatures(features);
 
         return new DefaultModuleInfoSnapshot(parser.buildEffectiveModel(), mappedInfos, classLoaders);
     }
