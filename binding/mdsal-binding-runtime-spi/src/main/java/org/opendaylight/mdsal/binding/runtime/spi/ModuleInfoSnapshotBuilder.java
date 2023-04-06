@@ -16,12 +16,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.BindingObject;
+import org.opendaylight.yangtools.yang.binding.YangFeature;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParser;
@@ -86,9 +89,14 @@ public final class ModuleInfoSnapshotBuilder {
      */
     public @NonNull ModuleInfoSnapshot build() throws YangParserException {
         final YangParser parser = parserFactory.createParser();
+
+
         final Map<SourceIdentifier, YangModuleInfo> mappedInfos = new HashMap<>();
         final Map<String, ClassLoader> classLoaders = new HashMap<>();
+        final Set<Set<QName>> allFeatures = new HashSet<>();
         for (YangModuleInfo info : moduleInfos) {
+            final Set<? extends YangFeature> features = info.supportedFeatures();
+            allFeatures.add(features.stream().map(feature -> feature.qname()).collect(Collectors.toSet()));
             final YangTextSchemaSource source = ModuleInfoSnapshotResolver.toYangTextSource(info);
             mappedInfos.put(source.getIdentifier(), info);
 
@@ -102,6 +110,7 @@ public final class ModuleInfoSnapshotBuilder {
                 throw new YangParserException("Failed to add source for " + info, e);
             }
         }
+        parser.setSupportedFeatures(allFeatures.stream().flatMap(Set::stream).collect(Collectors.toSet()));
 
         return new DefaultModuleInfoSnapshot(parser.buildEffectiveModel(), mappedInfos, classLoaders);
     }

@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.lock.qual.Holding;
 import org.eclipse.jdt.annotation.NonNull;
@@ -33,6 +34,9 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
+import org.opendaylight.yangtools.yang.common.AbstractQName;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.stmt.SubmoduleEffectiveStatement;
@@ -208,6 +212,11 @@ public final class ModuleInfoSnapshotResolver implements Mutable {
 
             regInfo.reg.close();
         }
+    }
+
+    public Registration registerSupportedFeatures(QNameModule module, Set<QName> supportedFeatures) {
+        return ctxResolver.registerSupportedFeatures(module, supportedFeatures
+                .stream().map(AbstractQName::getLocalName).collect(Collectors.toSet()));
     }
 
     static @NonNull YangTextSchemaSource toYangTextSource(final YangModuleInfo moduleInfo) {
