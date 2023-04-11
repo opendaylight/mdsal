@@ -78,7 +78,7 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
             return reg;
         }
 
-        final NormalizedNode data = preExistingData.get();
+        final NormalizedNode data = preExistingData.orElseThrow();
         if (treeId.isEmpty()) {
             checkState(data instanceof DataContainerNode, "Unexpected root node %s", data);
             if (((DataContainerNode) data).isEmpty()) {

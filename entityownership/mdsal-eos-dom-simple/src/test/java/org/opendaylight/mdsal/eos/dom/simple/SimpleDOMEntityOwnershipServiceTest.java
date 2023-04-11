@@ -62,7 +62,7 @@ public class SimpleDOMEntityOwnershipServiceTest {
         final Optional<EntityOwnershipState> state = service.getOwnershipState(FOO_FOO_ENTITY);
         assertNotNull(state);
         assertTrue(state.isPresent());
-        assertEquals(EntityOwnershipState.IS_OWNER, state.get());
+        assertEquals(EntityOwnershipState.IS_OWNER, state.orElseThrow());
 
         reg.close();
         assertFalse(service.isCandidateRegistered(FOO_FOO_ENTITY));
