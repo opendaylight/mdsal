@@ -8,6 +8,8 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.USES_ONE_KEY;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.USES_TWO_KEY;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.complexUsesAugment;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.leafOnlyUsesAugment;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.path;
@@ -16,31 +18,45 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.t
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 
 import com.google.common.collect.ImmutableSet;
+import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataTreeChangeListenerTest;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugmentBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeLeafOnlyUsesAugment;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ListViaUsesKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ContainerWithUses;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ContainerWithUsesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ListViaUses;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.complex.from.grouping.ListViaUsesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
 public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest {
     private static final InstanceIdentifier<Top> TOP = InstanceIdentifier.create(Top.class);
     private static final InstanceIdentifier<TopLevelList> TOP_FOO = TOP.child(TopLevelList.class, TOP_FOO_KEY);
-    private static final InstanceIdentifier<TreeLeafOnlyUsesAugment> SIMPLE_AUGMENT =
-            TOP.child(TopLevelList.class, TOP_FOO_KEY).augmentation(TreeLeafOnlyUsesAugment.class);
-    private static final InstanceIdentifier<TreeComplexUsesAugment> COMPLEX_AUGMENT =
-            TOP.child(TopLevelList.class, TOP_FOO_KEY).augmentation(TreeComplexUsesAugment.class);
-    private static final ListViaUsesKey LIST_VIA_USES_KEY =
-            new ListViaUsesKey("list key");
-    private static final ListViaUsesKey LIST_VIA_USES_KEY_MOD =
-            new ListViaUsesKey("list key modified");
+    private static final TopLevelList LIST_ELM_WITH_AUGM_LEAF =
+            topLevelList(TOP_FOO_KEY, leafOnlyUsesAugment("leaf"));
+
+    private static final InstanceIdentifier<ListViaUses> AUGMENTATION_LIST_WILDCARD =
+            TOP.child(TopLevelList.class).augmentationChild(ListViaUses.class);
+    private static final InstanceIdentifier<ListViaUses> USES_ONE_PATH = path(TOP_FOO_KEY, USES_ONE_KEY);
+    private static final InstanceIdentifier<ListViaUses> USES_TWO_PATH = path(TOP_FOO_KEY, USES_TWO_KEY);
+    private static final ListViaUses USES_ONE_VALUE = new ListViaUsesBuilder().withKey(USES_ONE_KEY).build();
+    private static final ListViaUses USES_TWO_VALUE = new ListViaUsesBuilder().withKey(USES_TWO_KEY).build();
+
+    private static final InstanceIdentifier<ContainerWithUses> AUGMENTATION_CONT_WILDCARD =
+            TOP.child(TopLevelList.class).augmentationChild(ContainerWithUses.class);
+    private static final InstanceIdentifier<ContainerWithUses> USES_CONT_PATH =
+            TOP_FOO.augmentationChild(ContainerWithUses.class);
+    private static final ContainerWithUses USES_CONT_VALUE =
+            new ContainerWithUsesBuilder().setLeafFromGrouping("leaf-value").build();
+    private static final ContainerWithUses USES_CONT_VALUE_UPDATED =
+            new ContainerWithUsesBuilder().setLeafFromGrouping("leaf-value-updated").build();
 
     @Override
     protected Set<YangModuleInfo> getModuleInfos() throws Exception {
@@ -51,96 +67,123 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
 
     @Test
     public void leafOnlyAugmentationCreatedTest() {
-        TreeLeafOnlyUsesAugment leafOnlyUsesAugment = leafOnlyUsesAugment("test leaf");
-        final TestListener<TreeLeafOnlyUsesAugment> listener = createListener(CONFIGURATION, SIMPLE_AUGMENT,
-                added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment));
+        final TestListener<TopLevelList> listener =
+                createListener(CONFIGURATION, TOP_FOO, added(TOP_FOO, LIST_ELM_WITH_AUGM_LEAF));
 
         WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top());
-        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
-        writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugment);
+        writeTx.put(CONFIGURATION, TOP_FOO, LIST_ELM_WITH_AUGM_LEAF);
         assertCommit(writeTx.commit());
-
         listener.verify();
     }
 
     @Test
     public void leafOnlyAugmentationUpdatedTest() {
-        WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top());
-        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
-        TreeLeafOnlyUsesAugment leafOnlyUsesAugmentBefore = leafOnlyUsesAugment("test leaf");
-        writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugmentBefore);
+        writeTx.put(CONFIGURATION, TOP_FOO, LIST_ELM_WITH_AUGM_LEAF);
         assertCommit(writeTx.commit());
 
-        TreeLeafOnlyUsesAugment leafOnlyUsesAugmentAfter = leafOnlyUsesAugment("test leaf changed");
-        final TestListener<TreeLeafOnlyUsesAugment> listener = createListener(CONFIGURATION, SIMPLE_AUGMENT,
-                added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugmentBefore),
-                replaced(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugmentBefore,
-                    leafOnlyUsesAugmentAfter));
+        final var listElmWithAugmLeafUpdated = topLevelList(TOP_FOO_KEY, leafOnlyUsesAugment("leaf-updated"));
+        final var listener = createListener(CONFIGURATION, TOP_FOO,
+                added(TOP_FOO, LIST_ELM_WITH_AUGM_LEAF),
+                replaced(TOP_FOO, LIST_ELM_WITH_AUGM_LEAF, listElmWithAugmLeafUpdated));
 
         writeTx = getDataBroker().newWriteOnlyTransaction();
-        writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugmentAfter);
+        writeTx.put(CONFIGURATION, TOP_FOO, listElmWithAugmLeafUpdated);
         assertCommit(writeTx.commit());
-
         listener.verify();
     }
 
     @Test
     public void leafOnlyAugmentationDeletedTest() {
-        WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top());
-        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
-        TreeLeafOnlyUsesAugment leafOnlyUsesAugment = leafOnlyUsesAugment("test leaf");
-        writeTx.put(CONFIGURATION, SIMPLE_AUGMENT, leafOnlyUsesAugment);
+        writeTx.put(CONFIGURATION, TOP_FOO, LIST_ELM_WITH_AUGM_LEAF);
         assertCommit(writeTx.commit());
 
-        final TestListener<TreeLeafOnlyUsesAugment> listener = createListener(CONFIGURATION, SIMPLE_AUGMENT,
-                added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment),
-                deleted(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugment));
+        final var listElmWithoutAugmentation = topLevelList(TOP_FOO_KEY);
+        final var listener = createListener(CONFIGURATION, TOP_FOO,
+                added(TOP_FOO, LIST_ELM_WITH_AUGM_LEAF),
+                replaced(TOP_FOO, LIST_ELM_WITH_AUGM_LEAF, listElmWithoutAugmentation));
 
         writeTx = getDataBroker().newWriteOnlyTransaction();
-        writeTx.delete(CONFIGURATION, SIMPLE_AUGMENT);
+        writeTx.put(CONFIGURATION, TOP_FOO, listElmWithoutAugmentation);
         assertCommit(writeTx.commit());
-
         listener.verify();
     }
 
     @Test
     public void complexAugmentationCreatedTest() {
-        TreeComplexUsesAugment complexUsesAugment = complexUsesAugment(LIST_VIA_USES_KEY);
-        final TestListener<TreeComplexUsesAugment>  listener = createListener(CONFIGURATION, COMPLEX_AUGMENT,
-                added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugment));
+        final var contListener = createListener(CONFIGURATION, AUGMENTATION_CONT_WILDCARD,
+                added(USES_CONT_PATH, USES_CONT_VALUE));
+        final var listListener = createListener(CONFIGURATION, AUGMENTATION_LIST_WILDCARD,
+                added(USES_ONE_PATH, USES_ONE_VALUE));
 
-        WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        final var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top());
-        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
-        writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugment);
+        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(TOP_FOO_KEY, complexUsesAugment(USES_ONE_KEY)));
+        writeTx.put(CONFIGURATION, USES_CONT_PATH, USES_CONT_VALUE);
         assertCommit(writeTx.commit());
 
-        listener.verify();
+        contListener.verify();
+        listListener.verify();
     }
 
     @Test
     public void complexAugmentationUpdatedTest() {
-        WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
+        var writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top());
-        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(new TopLevelListKey(TOP_FOO_KEY)));
-        TreeComplexUsesAugment complexUsesAugmentBefore = complexUsesAugment(LIST_VIA_USES_KEY);
-        writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugmentBefore);
+        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(TOP_FOO_KEY, complexUsesAugment(USES_ONE_KEY)));
+        writeTx.put(CONFIGURATION, USES_CONT_PATH, USES_CONT_VALUE);
         assertCommit(writeTx.commit());
 
-        TreeComplexUsesAugment complexUsesAugmentAfter = complexUsesAugment(LIST_VIA_USES_KEY_MOD);
-
-        final TestListener<TreeComplexUsesAugment> listener = createListener(CONFIGURATION, COMPLEX_AUGMENT,
-                added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore),
-                replaced(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore,
-                        complexUsesAugmentAfter));
+        final var contListener = createListener(CONFIGURATION, AUGMENTATION_CONT_WILDCARD,
+                added(USES_CONT_PATH, USES_CONT_VALUE),
+                replaced(USES_CONT_PATH, USES_CONT_VALUE, USES_CONT_VALUE_UPDATED));
+        final var listListener = createListener(CONFIGURATION, AUGMENTATION_LIST_WILDCARD,
+                added(USES_ONE_PATH, USES_ONE_VALUE),
+                deleted(USES_ONE_PATH, USES_ONE_VALUE),
+                added(USES_TWO_PATH, USES_TWO_VALUE));
+        final var augmUpdated = new TreeComplexUsesAugmentBuilder()
+                .setContainerWithUses(USES_CONT_VALUE_UPDATED)
+                .setListViaUses(Map.of(USES_TWO_KEY, USES_TWO_VALUE))
+                .build();
 
         writeTx = getDataBroker().newWriteOnlyTransaction();
-        writeTx.put(CONFIGURATION, COMPLEX_AUGMENT, complexUsesAugmentAfter);
+        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(TOP_FOO_KEY, augmUpdated));
         assertCommit(writeTx.commit());
 
-        listener.verify();
+        contListener.verify();
+        listListener.verify();
+    }
+
+    @Test
+    public void complexAugmentationDeleteTest() {
+        final var augmentation = new TreeComplexUsesAugmentBuilder()
+                .setContainerWithUses(USES_CONT_VALUE)
+                .setListViaUses(Map.of(USES_ONE_KEY, USES_ONE_VALUE))
+                .build();
+
+        var writeTx = getDataBroker().newWriteOnlyTransaction();
+        writeTx.put(CONFIGURATION, TOP, top());
+        writeTx.put(CONFIGURATION, TOP_FOO, topLevelList(TOP_FOO_KEY, augmentation));
+        writeTx.put(CONFIGURATION, USES_CONT_PATH, USES_CONT_VALUE);
+        assertCommit(writeTx.commit());
+
+        final var contListener = createListener(CONFIGURATION, AUGMENTATION_CONT_WILDCARD,
+                added(USES_CONT_PATH, USES_CONT_VALUE),
+                deleted(USES_CONT_PATH, USES_CONT_VALUE));
+        final var listListener = createListener(CONFIGURATION, AUGMENTATION_LIST_WILDCARD,
+                added(USES_ONE_PATH, USES_ONE_VALUE),
+                deleted(USES_ONE_PATH, USES_ONE_VALUE));
+
+        writeTx = getDataBroker().newWriteOnlyTransaction();
+        writeTx.delete(CONFIGURATION, USES_CONT_PATH);
+        writeTx.delete(CONFIGURATION, USES_ONE_PATH);
+        assertCommit(writeTx.commit());
+
+        contListener.verify();
+        listListener.verify();
     }
 }

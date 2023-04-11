@@ -25,6 +25,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.top.level.list.NestedList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.top.level.list.NestedListKey;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -48,13 +49,13 @@ public final class ListsBindingUtils {
         return path(top).child(NestedList.class, nested);
     }
 
-    public static InstanceIdentifier<ListViaUses> path(final TopLevelListKey top,final ListViaUsesKey uses) {
-        return path(top).augmentation(TreeComplexUsesAugment.class).child(ListViaUses.class, uses);
+    public static InstanceIdentifier<ListViaUses> path(final TopLevelListKey top, final ListViaUsesKey uses) {
+        return path(top).augmentationChild(ListViaUses.class, uses);
     }
 
-    public static <T extends DataObject & Augmentation<TopLevelList>> InstanceIdentifier<T> path(
-            final TopLevelListKey key, final Class<T> augmentation) {
-        return path(key).augmentation(augmentation);
+    public static <T extends DataObject & Augmentation<TopLevelList>, C extends ChildOf<? super T>>
+            InstanceIdentifier<C> path(final TopLevelListKey key, final Class<C> augmentation) {
+        return path(key).augmentationChild(augmentation);
     }
 
     public static Top top() {
@@ -69,7 +70,7 @@ public final class ListsBindingUtils {
         return new TopLevelListBuilder().withKey(key).build();
     }
 
-    public static TopLevelList topLevelList(final TopLevelListKey key, final TreeComplexUsesAugment augment) {
+    public static TopLevelList topLevelList(final TopLevelListKey key, final Augmentation<TopLevelList> augment) {
         return new TopLevelListBuilder().withKey(key).addAugmentation(augment).build();
     }
 

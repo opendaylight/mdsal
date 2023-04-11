@@ -54,7 +54,7 @@ import org.opendaylight.yangtools.yang.binding.Identifier;
  *       Case node is finished be emitting an {@link #endNode()} event.
  *   </li>
  *   <li>{@code augment} - Represents augmentation, augmentation node is started by invoking
- *       {@link #startAugmentationNode(Class)} and finished by invoking {@link #endNode()}.
+ *       {@link #startAugmentation(Class)} and finished by invoking {@link #endNode()}.
  *   </li>
  * </ul>
  *
@@ -180,7 +180,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <li>{@link #startLeafSet(String, int)}</li>
      * <li>{@link #startMapNode(Class, int)}</li>
      * <li>{@link #startUnkeyedList(Class, int)}</li>
-     * <li>{@link #startAugmentationNode(Class)}</li>
+     * <li>{@link #startAugmentation(Class)}</li>
      * </ul>
      *
      * @param container
@@ -240,7 +240,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <li>{@link #startLeafSet(String, int)}</li>
      * <li>{@link #startMapNode(Class, int)}</li>
      * <li>{@link #startUnkeyedList(Class, int)}</li>
-     * <li>{@link #startAugmentationNode(Class)}</li>
+     * <li>{@link #startAugmentation(Class)}</li>
      * </ul>
      *
      * @param childSizeHint
@@ -321,7 +321,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <li>{@link #startLeafSet(String, int)}</li>
      * <li>{@link #startMapNode(Class, int)}</li>
      * <li>{@link #startUnkeyedList(Class, int)}</li>
-     * <li>{@link #startAugmentationNode(Class)}</li>
+     * <li>{@link #startAugmentation(Class)}</li>
      * </ul>
      *
      * @param keyValues
@@ -372,7 +372,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <li>{@link #startLeafSet(String, int)}</li>
      * <li>{@link #startMapNode(Class, int)}</li>
      * <li>{@link #startUnkeyedList(Class, int)}</li>
-     * <li>{@link #startAugmentationNode(Class)}</li>
+     * <li>{@link #startAugmentation(Class)}</li>
      * </ul>
      *
      * @param caze Case class
@@ -381,7 +381,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
     void startCase(Class<? extends DataObject> caze, int childSizeHint) throws IOException;
 
     /**
-     * Emits start of augmentation node.
+     * Emits start of augmentation wrapper.
      *
      * <p>
      * End of augmentation event is emitted by invoking {@link #endNode()}.
@@ -407,7 +407,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      *             If augmentation is invalid in current context.
      * @throws IOException if an underlying IO error occurs
      */
-    void startAugmentationNode(Class<? extends Augmentation<?>> augmentationType) throws IOException;
+    void startAugmentation(Class<? extends Augmentation<?>> augmentationType) throws IOException;
 
     /**
      * Emits anyxml node event.

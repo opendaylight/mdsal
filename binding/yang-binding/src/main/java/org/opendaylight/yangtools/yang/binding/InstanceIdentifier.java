@@ -404,16 +404,36 @@ public class InstanceIdentifier<T extends DataObject>
 
     /**
      * Create an InstanceIdentifier for a child augmentation. This method is a more efficient equivalent to
-     * {@code builder().augmentation(container).build()}.
+     * {@code builder().augmentation(augmChild).build()}.
      *
-     * @param container Container to append
-     * @param <N> Container type
+     * @param augmChild child to append
+     * @param <A> Augmentation binding type
+     * @param <C> Augmentation child type
      * @return An InstanceIdentifier.
      * @throws NullPointerException if {@code container} is null
      */
-    public final <N extends DataObject & Augmentation<? super T>> @NonNull InstanceIdentifier<N> augmentation(
-            final Class<@NonNull N> container) {
-        return childIdentifier(Item.of(container));
+    public final <A extends DataObject & Augmentation<? super T>, C extends ChildOf<? super A>>
+        @NonNull InstanceIdentifier<C> augmentationChild(final Class<@NonNull C> augmChild) {
+        return childIdentifier(Item.of(augmChild));
+    }
+
+    /**
+     * Create an InstanceIdentifier for a child augmentation. This method is a more efficient equivalent to
+     * {@code builder().augmentation(listItem, key).build()}.
+     *
+     * @param listItem List to append
+     * @param listKey List key
+     * @param <A> Augmentation binding type
+     * @param <C> Augmentation List type
+     * @param <K> Key type
+     * @return An InstanceIdentifier.
+     * @throws NullPointerException if any argument is null
+     */
+    @SuppressWarnings("unchecked")
+    public final <A extends DataObject & Augmentation<? super T>, K extends Identifier<C>,
+         C extends Identifiable<K> & ChildOf<? super A>> @NonNull KeyedInstanceIdentifier<C, K> augmentationChild(
+                 final Class<@NonNull C> listItem, final K listKey) {
+        return (KeyedInstanceIdentifier<C, K>) childIdentifier(IdentifiableItem.of(listItem, listKey));
     }
 
     @Serial
@@ -903,15 +923,36 @@ public class InstanceIdentifier<T extends DataObject>
          * Build an identifier which refers to a specific augmentation of the current InstanceIdentifier referenced by
          * the builder.
          *
-         * @param container augmentation class
-         * @param <N> augmentation type
+         * @param augmChild child class of augmentation
+         * @param <A> augmentation binding type
+         * @param <C> augmentation child type
          * @return this builder
          * @throws NullPointerException if {@code container} is null
          */
-        public final <N extends DataObject & Augmentation<? super T>> Builder<N> augmentation(
-                final Class<N> container) {
-            return append(Item.of(container), false);
+        public final <A extends DataObject & Augmentation<? super T>, C extends ChildOf<? super A>>
+            Builder<C> augmentationChild(Class<C> augmChild) {
+            return append(Item.of(augmChild), false);
         }
+
+        /**
+         * Append the specified listItem as an augmentation child of the current InstanceIdentifier referenced
+         * by the builder. This method should be used when you want to build an instance identifier by appending
+         * a specific augmentation list element to the identifier.
+         *
+         * @param listItem List to append
+         * @param listKey List key
+         * @param <A> augmentation binding type
+         * @param <C> augmentation child list type
+         * @param <K> Key type
+         * @return this builder
+         * @throws NullPointerException if any argument is null
+         */
+        public final <A extends DataObject & Augmentation<? super T>, C extends Identifiable<K> & ChildOf<? super A>,
+                K extends Identifier<C>> KeyedBuilder<C, K> augmentationChild(
+                    final Class<@NonNull C> listItem, final K listKey) {
+            return append(IdentifiableItem.of(listItem, listKey));
+        }
+
 
         /**
          * Append the specified container as a child of the current InstanceIdentifier referenced by the builder. This
