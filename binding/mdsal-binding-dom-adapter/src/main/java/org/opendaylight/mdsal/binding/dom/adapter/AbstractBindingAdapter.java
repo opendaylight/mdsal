@@ -9,13 +9,12 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static java.util.Objects.requireNonNull;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Delegator;
 
-@NonNullByDefault
 abstract class AbstractBindingAdapter<T> implements Delegator<T> {
-    private final AdapterContext adapterContext;
-    private final T delegate;
+    private final @NonNull AdapterContext adapterContext;
+    private final @NonNull T delegate;
 
     AbstractBindingAdapter(final AdapterContext adapterContext, final T delegate) {
         this.adapterContext = requireNonNull(adapterContext);
@@ -27,11 +26,11 @@ abstract class AbstractBindingAdapter<T> implements Delegator<T> {
         return delegate;
     }
 
-    protected final AdapterContext adapterContext() {
+    protected final @NonNull AdapterContext adapterContext() {
         return adapterContext;
     }
 
-    protected final CurrentAdapterSerializer currentSerializer() {
+    protected final @NonNull CurrentAdapterSerializer currentSerializer() {
         return adapterContext.currentSerializer();
     }
 }
