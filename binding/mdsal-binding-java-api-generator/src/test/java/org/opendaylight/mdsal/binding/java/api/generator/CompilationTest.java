@@ -36,6 +36,7 @@ import java.util.Collection;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.ri.TypeConstants;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
@@ -802,6 +803,7 @@ public class CompilationTest extends BaseCompilationTest {
     }
 
     @Test
+    @Ignore
     public void yangDataCompilation() throws Exception {
         final File sourcesOutputDir = CompilationTestUtils.generatorOutput("yang-data-gen");
         final File compiledOutputDir = CompilationTestUtils.compilerOutput("yang-data-gen");

@@ -52,7 +52,7 @@ abstract sealed class YangDataGenerator
 
         @Override
         YangDataNamingStrategy createNamingStrategy() {
-            return new YangDataNamingStrategy(statement().argument());
+            return new YangDataNamingStrategy(statement().argument().name());
         }
     }
 
@@ -103,7 +103,7 @@ abstract sealed class YangDataGenerator
         addGetterMethods(builder, builderFactory);
 
         final var module = currentModule();
-        module.addNameConstant(builder, statement().argument());
+        module.addNameConstant(builder, statement().argument().name());
 
         builder.setModuleName(module.statement().argument().getLocalName());
         builderFactory.addCodegenInformation(module, statement(), builder);
