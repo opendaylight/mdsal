@@ -99,9 +99,9 @@ public final class ActionSpec<A extends Action<? extends InstanceIdentifier<P>, 
             return castThis();
         }
 
-        public <N extends DataObject & Augmentation<? super P>> @NonNull Builder<N> withPathAugmentation(
-                final Class<N> container) {
-            pathBuilder.augmentation(container);
+        public <C extends DataObject & Augmentation<? super P>, N extends ChildOf<? super C>>
+                @NonNull Builder<N> withPathAugmentation(final Class<N> augmChild) {
+            pathBuilder.augmentationChild(augmChild);
             return castThis();
         }
 
