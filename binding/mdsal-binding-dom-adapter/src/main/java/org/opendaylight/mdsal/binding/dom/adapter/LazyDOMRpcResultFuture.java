@@ -23,9 +23,11 @@ import org.opendaylight.mdsal.dom.api.DefaultDOMRpcException;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
+import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
-final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implements BindingRpcFutureAware {
+final class LazyDOMRpcResultFuture<O extends RpcOutput> extends AbstractFuture<DOMRpcResult>
+        implements BindingRpcFutureAware<O> {
     private static final ExceptionMapper<DOMRpcException> DOM_RPC_EX_MAPPER = new ExceptionMapper<>("rpc",
             DOMRpcException.class) {
         @Override
@@ -35,23 +37,24 @@ final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implemen
         }
     };
 
-    private final ListenableFuture<RpcResult<?>> bindingFuture;
+    private final @NonNull ListenableFuture<RpcResult<O>> bindingFuture;
     private final BindingNormalizedNodeSerializer codec;
+
     private volatile DOMRpcResult result;
 
-    private LazyDOMRpcResultFuture(final ListenableFuture<RpcResult<?>> delegate,
+    private LazyDOMRpcResultFuture(final ListenableFuture<RpcResult<O>> delegate,
             final BindingNormalizedNodeSerializer codec) {
         bindingFuture = requireNonNull(delegate, "delegate");
         this.codec = requireNonNull(codec, "codec");
     }
 
-    static @NonNull LazyDOMRpcResultFuture create(final BindingNormalizedNodeSerializer codec,
-            final ListenableFuture<RpcResult<?>> bindingResult) {
-        return new LazyDOMRpcResultFuture(bindingResult, codec);
+    static <O extends RpcOutput> @NonNull LazyDOMRpcResultFuture<O> create(final BindingNormalizedNodeSerializer codec,
+            final ListenableFuture<RpcResult<O>> bindingResult) {
+        return new LazyDOMRpcResultFuture<>(bindingResult, codec);
     }
 
     @Override
-    public ListenableFuture<RpcResult<?>> getBindingFuture() {
+    public ListenableFuture<RpcResult<O>> getBindingFuture() {
         return bindingFuture;
     }
 
