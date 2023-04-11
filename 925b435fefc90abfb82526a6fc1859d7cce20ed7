@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "829794fd_54ecc52c",
+        "filename": "binding/mdsal-binding-runtime-spi/src/main/java/org/opendaylight/mdsal/binding/runtime/spi/ModuleInfoSnapshotBuilder.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-11T21:00:38Z",
+      "side": 1,
+      "message": "this is wrong: feature information should be added explictly through:\n\n  public \u003cR extends DataRoot\u003e @NonNull ModuleInfoSnapshotBuilder addSupportedFeatures(R module, Set\u003c? extends YangFeature\u003c?, R\u003e\u003e supportedFeatures);\n\ni.e. precisely matching what YangFeatureProvider exposes. That method should reject duplicate calls with the same module.",
+      "range": {
+        "startLine": 98,
+        "startChar": 56,
+        "endLine": 98,
+        "endChar": 81
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5850cca1_408c2943",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/ResourceYangModuleInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-11T21:00:38Z",
+      "side": 1,
+      "message": "Class\u003c?\u003e\n\nplease fix your IDE to point out raw types and *always* fix them",
+      "range": {
+        "startLine": 56,
+        "startChar": 11,
+        "endLine": 56,
+        "endChar": 16
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62643d81_205b6731",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/ResourceYangModuleInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-11T21:00:38Z",
+      "side": 1,
+      "message": "err... this will just not work",
+      "range": {
+        "startLine": 58,
+        "startChar": 18,
+        "endLine": 58,
+        "endChar": 55
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3415299a_b6379b69",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/ResourceYangModuleInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-11T21:00:38Z",
+      "side": 1,
+      "message": "nope",
+      "range": {
+        "startLine": 66,
+        "startChar": 9,
+        "endLine": 66,
+        "endChar": 24
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09a5dd06_df4e619b",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/YangModuleInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-11T21:00:38Z",
+      "side": 1,
+      "message": "nope, these two are completely distinct",
+      "range": {
+        "startLine": 33,
+        "startChar": 51,
+        "endLine": 33,
+        "endChar": 70
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
