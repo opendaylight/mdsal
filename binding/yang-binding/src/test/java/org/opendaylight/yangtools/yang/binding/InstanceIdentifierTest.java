@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.yang.binding.test.mock.FooChild;
 import org.opendaylight.yangtools.yang.binding.test.mock.FooRoot;
 import org.opendaylight.yangtools.yang.binding.test.mock.InstantiatedFoo;
 import org.opendaylight.yangtools.yang.binding.test.mock.Node;
-import org.opendaylight.yangtools.yang.binding.test.mock.NodeAugmentation;
+import org.opendaylight.yangtools.yang.binding.test.mock.NodeAugmentationChild;
 import org.opendaylight.yangtools.yang.binding.test.mock.NodeChild;
 import org.opendaylight.yangtools.yang.binding.test.mock.NodeChildKey;
 import org.opendaylight.yangtools.yang.binding.test.mock.NodeKey;
@@ -151,13 +151,13 @@ public class InstanceIdentifierTest {
         assertNotNull(InstanceIdentifier.unsafeOf(ImmutableList.copyOf(instanceIdentifier1.getPathArguments())));
         assertNotNull(InstanceIdentifier.create(Nodes.class).child(Node.class));
         assertNotNull(InstanceIdentifier.create(Nodes.class).child(Node.class, new NodeKey(5)));
-        assertNotNull(instanceIdentifier5.augmentation(NodeAugmentation.class));
+        assertNotNull(instanceIdentifier5.augmentationChild(NodeAugmentationChild.class));
         assertNotNull(instanceIdentifier1.hashCode());
         assertNotNull(instanceIdentifier1.toString());
 
         final InstanceIdentifier.Builder instanceIdentifierBuilder = instanceIdentifier1.builder();
         assertEquals(instanceIdentifier1.hashCode(), instanceIdentifierBuilder.hashCode());
-        assertNotNull(instanceIdentifierBuilder.augmentation(InstantiatedFoo.class));
+        assertNotNull(instanceIdentifierBuilder.augmentationChild(InstantiatedFoo.class));
         assertNotNull(instanceIdentifierBuilder.build());
     }
 

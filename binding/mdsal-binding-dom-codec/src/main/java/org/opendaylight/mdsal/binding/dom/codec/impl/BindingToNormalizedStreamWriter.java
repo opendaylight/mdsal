@@ -26,7 +26,6 @@ import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.OpaqueObject;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
@@ -103,7 +102,7 @@ final class BindingToNormalizedStreamWriter implements AnydataBindingStreamWrite
         NodeCodecContext left = schema.pop();
         // NormalizedNode writer does not have entry into case, but into choice
         // so for leaving case, we do not emit endNode.
-        if (!(left instanceof CaseNodeCodecContext)) {
+        if (!(left instanceof CaseNodeCodecContext || left instanceof AugmentationNodeContext)) {
             delegate.endNode();
         }
     }
@@ -157,9 +156,8 @@ final class BindingToNormalizedStreamWriter implements AnydataBindingStreamWrite
     }
 
     @Override
-    public void startAugmentationNode(final Class<? extends Augmentation<?>> augmentationType)
-            throws IOException {
-        delegate.startAugmentationNode(enter(augmentationType, AugmentationIdentifier.class));
+    public void startAugmentation(final Class<? extends Augmentation<?>> augmentationType) throws IOException {
+        enter(augmentationType, NodeIdentifier.class);
     }
 
     @Override
