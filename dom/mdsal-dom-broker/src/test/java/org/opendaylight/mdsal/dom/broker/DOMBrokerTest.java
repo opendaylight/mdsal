@@ -204,7 +204,7 @@ public class DOMBrokerTest extends AbstractDatastoreTest {
         writeTx.commit().get();
         assertEquals(Boolean.TRUE, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
         assertEquals(Boolean.TRUE, domBroker.newReadOnlyTransaction().read(OPERATIONAL, TestModel.TEST_PATH).get()
-                 .get().toString().contains(testContainer.toString()));
+                 .orElseThrow().toString().contains(testContainer.toString()));
 
         readRx.read(OPERATIONAL, TestModel.TEST_PATH).get(); // init backing tx before close
         readRx.close();

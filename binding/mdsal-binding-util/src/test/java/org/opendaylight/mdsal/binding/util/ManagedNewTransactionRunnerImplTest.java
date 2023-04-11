@@ -124,8 +124,8 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
         TopLevelList data = newTestDataObject();
         managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
             tx -> tx.put(TEST_PATH, data)).get();
-        assertEquals(data, managedNewTransactionRunner.applyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
-            tx -> tx.read(TEST_PATH)).get().get());
+        assertEquals(Optional.of(data), managedNewTransactionRunner.applyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
+            tx -> tx.read(TEST_PATH)).get());
     }
 
     TopLevelList newTestDataObject() {
@@ -248,6 +248,6 @@ public class ManagedNewTransactionRunnerImplTest extends AbstractConcurrentDataB
 
     <T extends DataObject> T syncRead(final LogicalDatastoreType datastoreType, final InstanceIdentifier<T> path)
             throws ExecutionException, InterruptedException {
-        return syncReadOptional(datastoreType, path).get();
+        return syncReadOptional(datastoreType, path).orElseThrow();
     }
 }

@@ -73,7 +73,7 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
         managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
             tx -> {
                 tx.put(TEST_PATH, data);
-                assertEquals(data, tx.read(TEST_PATH).get().get());
+                assertEquals(Optional.of(data), tx.read(TEST_PATH).get());
             }).get();
         assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
@@ -86,7 +86,7 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
             OPERATIONAL,
             tx -> {
                 tx.put(TEST_PATH, data);
-                return tx.read(TEST_PATH).get().get();
+                return tx.read(TEST_PATH).get().orElseThrow();
             }).get());
         assertEquals(data, syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
