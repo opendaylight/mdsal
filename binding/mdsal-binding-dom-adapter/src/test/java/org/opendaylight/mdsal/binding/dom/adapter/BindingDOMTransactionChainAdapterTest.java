@@ -125,7 +125,7 @@ public class BindingDOMTransactionChainAdapterTest {
         };
 
         BindingDOMDataBrokerAdapter bindingDOMDataBrokerAdapter =
-                (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).get();
+                (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).orElseThrow();
         bindingDOMTransactionChainAdapter =
             (BindingDOMTransactionChainAdapter) type.apply(bindingDOMDataBrokerAdapter, transactionChainListener);
         assertNotNull(bindingDOMTransactionChainAdapter.getDelegate());
