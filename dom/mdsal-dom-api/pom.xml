@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>dom-parent</artifactId>
-        <version>10.0.7-SNAPSHOT</version>
+        <version>10.0.7</version>
         <relativePath>../dom-parent</relativePath>
     </parent>
 
