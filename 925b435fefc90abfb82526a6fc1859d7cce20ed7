@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7ff9cc9_baaafa26",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-11T21:09:14Z",
+      "side": 1,
+      "message": "Also make this two patches: a patch for Builder, with proper unit tests.\nGiven an EffectiveModelContext, you can find the set of effectively supported features by enumerating its ModuleEffectiveStatements (which correspond to modules) and for each enumerate immediate FeatureEffectiveStatement substatements",
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "829794fd_54ecc52c",
