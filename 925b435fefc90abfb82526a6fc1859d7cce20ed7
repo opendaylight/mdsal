@@ -72,6 +72,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "74d2df0c_a013fc66",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/ResourceYangModuleInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-11T21:06:00Z",
+      "side": 1,
+      "message": "never ever throw \u0027new RuntimeException\u0027 -- use ISE, IAE and other subclasses. Also provide proper message.",
+      "range": {
+        "startLine": 60,
+        "startChar": 22,
+        "endLine": 60,
+        "endChar": 38
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3415299a_b6379b69",
         "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/ResourceYangModuleInfo.java",
         "patchSetId": 3
