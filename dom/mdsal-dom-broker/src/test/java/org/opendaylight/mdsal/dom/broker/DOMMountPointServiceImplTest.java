@@ -15,6 +15,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
@@ -58,9 +59,8 @@ public class DOMMountPointServiceImplTest {
         assertTrue(mountPointService.getMountPoint(PATH).isPresent());
 
         // Verify mount point schema context and service
-        final DOMMountPoint mountPoint = mountPointService.getMountPoint(PATH).get();
-        assertTrue(mountPoint.getService(DOMRpcService.class).isPresent());
-        assertEquals(rpcService, mountPoint.getService(DOMRpcService.class).get());
+        final DOMMountPoint mountPoint = mountPointService.getMountPoint(PATH).orElseThrow();
+        assertEquals(Optional.of(rpcService), mountPoint.getService(DOMRpcService.class));
     }
 
     @Test

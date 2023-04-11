@@ -75,7 +75,7 @@ public enum BindingStructuralType {
             dataBased = domChildNode.getDataBefore();
         }
         if (dataBased.isPresent()) {
-            return from(dataBased.get());
+            return from(dataBased.orElseThrow());
         }
         return from(domChildNode.getIdentifier());
     }

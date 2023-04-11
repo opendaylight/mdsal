@@ -329,7 +329,7 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
             Optional<Class<? extends DataContainer>> entity = getYangModeledReturnType(method,
                 BindingMapping.GETTER_PREFIX);
             if (entity.isPresent()) {
-                ret.add((Class<? extends DataObject>) entity.get());
+                ret.add((Class<? extends DataObject>) entity.orElseThrow());
             }
         }
         return ret;
