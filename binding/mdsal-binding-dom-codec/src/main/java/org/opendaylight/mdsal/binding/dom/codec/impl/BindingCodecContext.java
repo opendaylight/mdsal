@@ -350,8 +350,8 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
             final EffectiveStatement<?, ?> schema) {
         final Map<String, DataSchemaNode> getterToLeafSchema = new HashMap<>();
         for (var stmt : schema.effectiveSubstatements()) {
-            if (stmt instanceof TypedDataSchemaNode) {
-                putLeaf(getterToLeafSchema, (TypedDataSchemaNode) stmt);
+            if (stmt instanceof LeafSchemaNode || stmt instanceof LeafListSchemaNode) {
+                putLeaf(getterToLeafSchema, (DataSchemaNode) stmt);
             } else if (stmt instanceof AnydataSchemaNode) {
                 putLeaf(getterToLeafSchema, (AnydataSchemaNode) stmt);
             } else if (stmt instanceof AnyxmlSchemaNode) {
