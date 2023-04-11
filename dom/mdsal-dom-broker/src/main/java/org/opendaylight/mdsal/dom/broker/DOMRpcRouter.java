@@ -592,7 +592,7 @@ public final class DOMRpcRouter extends AbstractRegistration
 
             // Routing key is present, attempt to deliver as a routed RPC
             if (maybeKey.isPresent()) {
-                final NormalizedNode key = maybeKey.get();
+                final NormalizedNode key = maybeKey.orElseThrow();
                 final Object value = key.body();
                 if (value instanceof YangInstanceIdentifier iid) {
                     // Find a DOMRpcImplementation for a specific iid

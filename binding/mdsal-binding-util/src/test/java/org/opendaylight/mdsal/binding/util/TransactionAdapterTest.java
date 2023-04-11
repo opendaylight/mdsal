@@ -132,6 +132,6 @@ public class TransactionAdapterTest extends AbstractConcurrentDataBrokerTest {
 
     private <T extends DataObject> T syncRead(final LogicalDatastoreType datastoreType,
             final InstanceIdentifier<T> path) throws ExecutionException, InterruptedException {
-        return syncReadOptional(datastoreType, path).get();
+        return syncReadOptional(datastoreType, path).orElseThrow();
     }
 }

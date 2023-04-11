@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
@@ -82,15 +83,12 @@ public class InMemoryDataStoreTest {
         /**
          * Reads /test from writeTx Read should return container.
          */
-        ListenableFuture<Optional<NormalizedNode>> writeTxContainer = writeTx.read(TestModel.TEST_PATH);
-        assertEquals("read: isPresent", true, writeTxContainer.get().isPresent());
-        assertEquals("read: data", testNode, writeTxContainer.get().get());
+        assertEquals(Optional.of(testNode), Futures.getDone(writeTx.read(TestModel.TEST_PATH)));
 
         /**
          * Reads /test from readTx Read should return Absent.
          */
-        ListenableFuture<Optional<NormalizedNode>> readTxContainer = readTx.read(TestModel.TEST_PATH);
-        assertEquals("read: isPresent", false, readTxContainer.get().isPresent());
+        assertEquals(Optional.empty(), Futures.getDone(readTx.read(TestModel.TEST_PATH)));
     }
 
     @Test
@@ -108,17 +106,14 @@ public class InMemoryDataStoreTest {
         /**
          * Reads /test from writeTx Read should return container.
          */
-        ListenableFuture<Optional<NormalizedNode>> writeTxContainer = writeTx.read(TestModel.TEST_PATH);
-        assertEquals("read: isPresent", true, writeTxContainer.get().isPresent());
-        assertEquals("read: data", testNode, writeTxContainer.get().get());
+        assertEquals(Optional.of(testNode), Futures.getDone(writeTx.read(TestModel.TEST_PATH)));
 
         DOMStoreThreePhaseCommitCohort cohort = writeTx.ready();
 
         assertThreePhaseCommit(cohort);
 
-        Optional<NormalizedNode> afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
-        assertEquals("After commit read: isPresent", true, afterCommitRead.isPresent());
-        assertEquals("After commit read: data", testNode, afterCommitRead.get());
+        assertEquals(Optional.of(testNode),
+            Futures.getDone(domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH)));
     }
 
     @Test
@@ -133,8 +128,7 @@ public class InMemoryDataStoreTest {
 
         assertThreePhaseCommit(writeTx.ready());
 
-        Optional<NormalizedNode> afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
-        assertEquals("After commit read: isPresent", true, afterCommitRead.isPresent());
+        assertTrue(Futures.getDone(domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH)).isPresent());
 
         // Delete /test and verify
 
@@ -144,8 +138,7 @@ public class InMemoryDataStoreTest {
 
         assertThreePhaseCommit(writeTx.ready());
 
-        afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
-        assertEquals("After commit read: isPresent", false, afterCommitRead.isPresent());
+        assertEquals(Optional.empty(), Futures.getDone(domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH)));
     }
 
     @Test
@@ -164,10 +157,8 @@ public class InMemoryDataStoreTest {
 
         assertThreePhaseCommit(writeTx.ready());
 
-        Optional<NormalizedNode> afterCommitRead =
-                domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
-        assertEquals("After commit read: isPresent", true, afterCommitRead.isPresent());
-        assertEquals("After commit read: data", containerNode, afterCommitRead.get());
+        assertEquals(Optional.of(containerNode),
+            Futures.getDone(domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH)));
 
         // Merge a new list entry node
 
@@ -186,9 +177,8 @@ public class InMemoryDataStoreTest {
 
         assertThreePhaseCommit(writeTx.ready());
 
-        afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
-        assertEquals("After commit read: isPresent", true, afterCommitRead.isPresent());
-        assertEquals("After commit read: data", containerNode, afterCommitRead.get());
+        assertEquals(Optional.of(containerNode),
+            Futures.getDone(domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH)));
     }
 
 
@@ -206,9 +196,7 @@ public class InMemoryDataStoreTest {
 
         writeTx.merge(TestModel.TEST_PATH, containerNode);
 
-        ListenableFuture<Boolean> exists = writeTx.exists(TestModel.TEST_PATH);
-
-        assertEquals(Boolean.TRUE, exists.get());
+        assertEquals(Boolean.TRUE, Futures.getDone(writeTx.exists(TestModel.TEST_PATH)));
 
         DOMStoreThreePhaseCommitCohort ready = writeTx.ready();
 
@@ -219,10 +207,7 @@ public class InMemoryDataStoreTest {
         DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
-        exists =
-            readTx.exists(TestModel.TEST_PATH);
-
-        assertEquals(Boolean.TRUE, exists.get());
+        assertEquals(Boolean.TRUE, Futures.getDone(readTx.exists(TestModel.TEST_PATH)));
     }
 
     @Test

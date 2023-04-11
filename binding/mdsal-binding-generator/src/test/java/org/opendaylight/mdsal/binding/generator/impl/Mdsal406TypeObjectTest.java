@@ -42,12 +42,13 @@ public class Mdsal406TypeObjectTest {
         assertNotNull(generateTypes);
 
         final GeneratedType typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
-            .equals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.MyBinary")).findFirst().get();
+            .equals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.MyBinary")).findFirst()
+            .orElseThrow();
 
         assertNotNull(typedefType.getImplements());
         Type objectType = typedefType.getImplements().stream()
                 .filter(type -> type.getFullyQualifiedName()
-                .equals("org.opendaylight.yangtools.yang.binding.ScalarTypeObject")).findAny().get();
+                .equals("org.opendaylight.yangtools.yang.binding.ScalarTypeObject")).findAny().orElseThrow();
         assertEquals(BindingTypes.scalarTypeObject(Types.BYTE_ARRAY), objectType);
     }
 
@@ -57,12 +58,13 @@ public class Mdsal406TypeObjectTest {
         assertNotNull(generateTypes);
 
         final GeneratedType typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
-                .equals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.MyBits")).findFirst().get();
+                .equals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.MyBits")).findFirst()
+                .orElseThrow();
 
         assertNotNull(typedefType.getImplements());
         Type objectType = typedefType.getImplements().stream()
                 .filter(type -> type.getFullyQualifiedName()
-                        .equals("org.opendaylight.yangtools.yang.binding.TypeObject")).findAny().get();
+                        .equals("org.opendaylight.yangtools.yang.binding.TypeObject")).findAny().orElseThrow();
         assertEquals(TYPE_OBJECT, objectType);
     }
 
@@ -72,12 +74,13 @@ public class Mdsal406TypeObjectTest {
         assertNotNull(generateTypes);
 
         final GeneratedType typedefType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
-                .equals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.MyUnion")).findFirst().get();
+                .equals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.MyUnion")).findFirst()
+                .orElseThrow();
 
         assertNotNull(typedefType.getImplements());
         Type objectType = typedefType.getImplements().stream()
                 .filter(type -> type.getFullyQualifiedName()
-                        .equals("org.opendaylight.yangtools.yang.binding.TypeObject")).findAny().get();
+                        .equals("org.opendaylight.yangtools.yang.binding.TypeObject")).findAny().orElseThrow();
         assertEquals(TYPE_OBJECT, objectType);
     }
 }

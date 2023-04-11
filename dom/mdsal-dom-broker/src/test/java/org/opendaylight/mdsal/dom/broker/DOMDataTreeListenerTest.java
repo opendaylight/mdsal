@@ -265,7 +265,7 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         candidateRoot = candidate.getRootNode();
         checkChange(TEST_CONTAINER, TEST_CONTAINER_2, ModificationType.SUBTREE_MODIFIED, candidateRoot);
         final DataTreeCandidateNode modifiedChild = candidateRoot.getModifiedChild(
-                new YangInstanceIdentifier.NodeIdentifier(TestModel.OUTER_LIST_QNAME)).get();
+                new YangInstanceIdentifier.NodeIdentifier(TestModel.OUTER_LIST_QNAME)).orElseThrow();
         checkChange(OUTER_LIST, OUTER_LIST_2, ModificationType.WRITE, modifiedChild);
         listenerReg.close();
     }
@@ -369,11 +369,11 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
         assertNotNull(candidate);
         candidateRoot = candidate.getRootNode();
         checkChange(OUTER_LIST, listAfter, ModificationType.SUBTREE_MODIFIED, candidateRoot);
-        final DataTreeCandidateNode entry1Canditate = candidateRoot.getModifiedChild(outerListEntryId1).get();
+        final DataTreeCandidateNode entry1Canditate = candidateRoot.getModifiedChild(outerListEntryId1).orElseThrow();
         checkChange(outerListEntry1, null, ModificationType.DELETE, entry1Canditate);
-        final DataTreeCandidateNode entry2Canditate = candidateRoot.getModifiedChild(outerListEntryId2).get();
+        final DataTreeCandidateNode entry2Canditate = candidateRoot.getModifiedChild(outerListEntryId2).orElseThrow();
         checkChange(null, outerListEntry2, ModificationType.WRITE, entry2Canditate);
-        final DataTreeCandidateNode entry3Canditate = candidateRoot.getModifiedChild(outerListEntryId3).get();
+        final DataTreeCandidateNode entry3Canditate = candidateRoot.getModifiedChild(outerListEntryId3).orElseThrow();
         checkChange(null, outerListEntry3, ModificationType.WRITE, entry3Canditate);
         listenerReg.close();
     }
@@ -382,14 +382,14 @@ public class DOMDataTreeListenerTest extends AbstractDatastoreTest {
                                     final ModificationType expectedMod, final DataTreeCandidateNode candidateNode) {
         if (expectedBefore != null) {
             assertTrue(candidateNode.getDataBefore().isPresent());
-            assertEquals(expectedBefore, candidateNode.getDataBefore().get());
+            assertEquals(expectedBefore, candidateNode.getDataBefore().orElseThrow());
         } else {
             assertFalse(candidateNode.getDataBefore().isPresent());
         }
 
         if (expectedAfter != null) {
             assertTrue(candidateNode.getDataAfter().isPresent());
-            assertEquals(expectedAfter, candidateNode.getDataAfter().get());
+            assertEquals(expectedAfter, candidateNode.getDataAfter().orElseThrow());
         } else {
             assertFalse(candidateNode.getDataAfter().isPresent());
         }
