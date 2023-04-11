@@ -53,7 +53,7 @@ abstract sealed class YangDataGenerator
 
         @Override
         YangDataNamingStrategy createNamingStrategy() {
-            return new YangDataNamingStrategy(statement().argument());
+            return new YangDataNamingStrategy(statement().argument().name());
         }
     }
 
@@ -65,7 +65,7 @@ abstract sealed class YangDataGenerator
         // yang-data's argument is not guaranteed to comply with YANG 'identifier', but it usually does. If it does, we
         // use the usual mechanics, but if it does not, we have to deal with any old string, similar to what we do for
         // bit names. Here we decide which path to take.
-        final String templateName = statement.argument();
+        final String templateName = statement.argument().name();
         final var identifier = UnresolvedQName.tryLocalName(templateName);
         return identifier != null ? new WithIdentifier(statement, parent, identifier)
             : new WithString(statement, parent);
@@ -73,8 +73,7 @@ abstract sealed class YangDataGenerator
 
     @Override
     final void pushToInference(final SchemaInferenceStack dataTree) {
-        final QNameModule moduleQName = currentModule().getQName().getModule();
-        dataTree.enterYangData(moduleQName, statement().argument());
+        dataTree.enterYangData(statement().argument());
     }
 
     @Override
@@ -105,7 +104,7 @@ abstract sealed class YangDataGenerator
         addGetterMethods(builder, builderFactory);
 
         final var module = currentModule();
-        module.addNameConstant(builder, statement().argument());
+        module.addNameConstant(builder, statement().argument().name());
 
         builder.setModuleName(module.statement().argument().getLocalName());
         builderFactory.addCodegenInformation(module, statement(), builder);
