@@ -8,15 +8,15 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 /**
  * Migration trait for exposing the Binding listenable future.
- *
- * @author Robert Varga
  */
 // FIXME: is this interface still useful? can we integrate it into our two implementations?
-interface BindingRpcFutureAware {
+interface BindingRpcFutureAware<O extends RpcOutput> {
 
-    ListenableFuture<RpcResult<?>> getBindingFuture();
+    @NonNull ListenableFuture<RpcResult<O>> getBindingFuture();
 }

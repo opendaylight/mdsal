@@ -14,6 +14,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.ExecutionException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.yangtools.yang.binding.Action;
@@ -22,8 +23,8 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
 final class BindingOperationFluentFuture<O extends RpcOutput> extends AbstractFuture<DOMActionResult>
-        implements BindingRpcFutureAware {
-    private final ListenableFuture<RpcResult<O>> userFuture;
+        implements BindingRpcFutureAware<O> {
+    private final @NonNull ListenableFuture<RpcResult<O>> userFuture;
     private final Class<? extends Action<?, ?, O>> action;
     private final NodeIdentifier identifier;
 
@@ -39,10 +40,9 @@ final class BindingOperationFluentFuture<O extends RpcOutput> extends AbstractFu
         userFuture.addListener(this::userFutureCompleted, MoreExecutors.directExecutor());
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public ListenableFuture<RpcResult<?>> getBindingFuture() {
-        return (ListenableFuture) userFuture;
+    public ListenableFuture<RpcResult<O>> getBindingFuture() {
+        return userFuture;
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
