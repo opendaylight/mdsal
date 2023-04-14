@@ -41,6 +41,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e0765f7_ee65f075",
+        "filename": "binding/mdsal-binding-runtime-spi/src/main/java/org/opendaylight/mdsal/binding/runtime/spi/ModuleInfoSnapshotBuilder.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-04-14T09:47:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "829794fd_54ecc52c",
+      "range": {
+        "startLine": 98,
+        "startChar": 56,
+        "endLine": 98,
+        "endChar": 81
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5850cca1_408c2943",
@@ -54,6 +78,30 @@
       "writtenOn": "2023-04-11T21:00:38Z",
       "side": 1,
       "message": "Class\u003c?\u003e\n\nplease fix your IDE to point out raw types and *always* fix them",
+      "range": {
+        "startLine": 56,
+        "startChar": 11,
+        "endLine": 56,
+        "endChar": 16
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c874cc22_7cc9d7bc",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/ResourceYangModuleInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-04-14T09:47:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5850cca1_408c2943",
       "range": {
         "startLine": 56,
         "startChar": 11,
@@ -87,6 +135,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "427994e0_02d8d030",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/ResourceYangModuleInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-04-14T09:47:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "62643d81_205b6731",
+      "range": {
+        "startLine": 58,
+        "startChar": 18,
+        "endLine": 58,
+        "endChar": 55
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "74d2df0c_a013fc66",
@@ -100,6 +172,30 @@
       "writtenOn": "2023-04-11T21:06:00Z",
       "side": 1,
       "message": "never ever throw \u0027new RuntimeException\u0027 -- use ISE, IAE and other subclasses. Also provide proper message.",
+      "range": {
+        "startLine": 60,
+        "startChar": 22,
+        "endLine": 60,
+        "endChar": 38
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4cd27f73_999b610c",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/ResourceYangModuleInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-04-14T09:47:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "74d2df0c_a013fc66",
       "range": {
         "startLine": 60,
         "startChar": 22,
@@ -133,6 +229,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d89b45c_07ea5280",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/ResourceYangModuleInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-04-14T09:47:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3415299a_b6379b69",
+      "range": {
+        "startLine": 66,
+        "startChar": 9,
+        "endLine": 66,
+        "endChar": 24
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "09a5dd06_df4e619b",
@@ -146,6 +266,30 @@
       "writtenOn": "2023-04-11T21:00:38Z",
       "side": 1,
       "message": "nope, these two are completely distinct",
+      "range": {
+        "startLine": 33,
+        "startChar": 51,
+        "endLine": 33,
+        "endChar": 70
+      },
+      "revId": "925b435fefc90abfb82526a6fc1859d7cce20ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6342d59a_ae6daa01",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/YangModuleInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-04-14T09:47:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "09a5dd06_df4e619b",
       "range": {
         "startLine": 33,
         "startChar": 51,
