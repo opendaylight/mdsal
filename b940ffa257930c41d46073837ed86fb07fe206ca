@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3cfcd691_c35f107c",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2a62f42e_fbf7cbae",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "788d2907_584361b2",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-04-17T08:09:03Z",
       "side": 1,
       "message": "This is just unneeded formatting change.",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "254b066f_c3fcf772",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "788d2907_584361b2",
       "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -52,6 +88,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "980c21ec_388e6cf0",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a24963f1_159442f2",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d46479d9_ad6c79d2",
@@ -65,6 +119,24 @@
       "writtenOn": "2023-04-17T08:09:03Z",
       "side": 1,
       "message": "This is just unneeded formatting change.",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "10d85af9_5174fcc6",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d46479d9_ad6c79d2",
       "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -86,6 +158,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dba4ae40_1210fb6f",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1e1ebd5_cd0b14bd",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "505f95d7_3f359ed8",
@@ -99,6 +189,24 @@
       "writtenOn": "2023-04-17T08:09:03Z",
       "side": 1,
       "message": "This is just unneeded formatting change.",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e91fdd62_613d68c9",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "505f95d7_3f359ed8",
       "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -120,6 +228,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d999842_bd09505b",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "13d2aa81_d8567d59",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "edbab8e1_f2c236c4",
@@ -133,6 +259,24 @@
       "writtenOn": "2023-04-17T08:09:03Z",
       "side": 1,
       "message": "This is just unneeded formatting change.",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "840fb5f5_2d685034",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "edbab8e1_f2c236c4",
       "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -154,6 +298,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6b8638d_69421e80",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/mdsal/binding/dom/codec/impl/LeafReferenceTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d2c927f3_7ca7a60d",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2a8967d2_72c9a5ad",
@@ -167,6 +329,24 @@
       "writtenOn": "2023-04-17T08:09:03Z",
       "side": 1,
       "message": "This is just unneeded formatting change.",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2715b447_bf4396ed",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/mdsal/binding/dom/codec/impl/LeafReferenceTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2a8967d2_72c9a5ad",
       "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -188,6 +368,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1bb6d163_1313c110",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/mdsal/binding/dom/codec/impl/NormalizedNodeSerializeDeserializeTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "959e1c2b_261e33b9",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fb3df08f_da00b9f0",
@@ -201,6 +399,24 @@
       "writtenOn": "2023-04-17T08:09:03Z",
       "side": 1,
       "message": "This is just unneeded formatting change.",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a039bada_072c47ba",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/mdsal/binding/dom/codec/impl/NormalizedNodeSerializeDeserializeTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb3df08f_da00b9f0",
       "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -222,6 +438,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "54f5e9a8_4cae12a5",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/mdsal/binding/dom/codec/impl/NormalizedNodeSerializeDeserializeTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1d51e2df_f1fef6fd",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "90527a4d_63237991",
@@ -239,6 +473,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d10559b_5a40f3cb",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/mdsal/binding/dom/codec/impl/NormalizedNodeSerializeDeserializeTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "90527a4d_63237991",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6b6f8df1_9b4e60ab",
@@ -252,6 +504,24 @@
       "writtenOn": "2023-04-17T08:09:03Z",
       "side": 1,
       "message": "This is just unneeded formatting change.",
+      "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b09869cb_a5d25ba4",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/mdsal/binding/dom/codec/impl/NormalizedNodeSerializeDeserializeTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 433,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-04-17T09:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b6f8df1_9b4e60ab",
       "revId": "b940ffa257930c41d46073837ed86fb07fe206ca",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
