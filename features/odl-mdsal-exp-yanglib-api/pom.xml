@@ -11,12 +11,12 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>11.0.8-SNAPSHOT</version>
+        <version>11.0.9-SNAPSHOT</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <artifactId>odl-mdsal-exp-yanglib-api</artifactId>
-    <version>0.16.8-SNAPSHOT</version>
+    <version>0.16.9-SNAPSHOT</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: YANG (Module) Library API</name>
     <description>MD-SAL YANG (Module) Library APIs</description>
