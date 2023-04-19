@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3cbc87c1_bedc32a3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-19T19:23:12Z",
+      "side": 1,
+      "message": "This change needs to be completely implementation-contained. No changes to mdsal-binding-api nor to yang-binding.",
+      "revId": "ebbf7ac3e114a499c165cb518d09c7309d71e84c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
