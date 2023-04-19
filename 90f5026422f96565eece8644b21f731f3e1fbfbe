@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "978b65c5_d906c308",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-04-19T12:12:50Z",
+      "side": 1,
+      "message": "should I change it to SetMultimap\u003cJavaTypeName, RuntimeType\u003e?",
+      "parentUuid": "f4fca0bc_b6290c50",
+      "range": {
+        "startLine": 62,
+        "startChar": 32,
+        "endLine": 62,
+        "endChar": 40
+      },
+      "revId": "90f5026422f96565eece8644b21f731f3e1fbfbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "de083ca0_253dbfdc",
         "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
         "patchSetId": 2
@@ -94,6 +118,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ac37aca_4a485fd3",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/BindingRuntimeTypesFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-04-19T12:12:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e94a35bf_5716b3ae",
+      "range": {
+        "startLine": 141,
+        "startChar": 36,
+        "endLine": 141,
+        "endChar": 45
+      },
+      "revId": "90f5026422f96565eece8644b21f731f3e1fbfbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eb67fe28_8a2b4e9b",
@@ -107,6 +155,30 @@
       "writtenOn": "2023-03-28T11:39:01Z",
       "side": 1,
       "message": "assertions should always be imported statically",
+      "range": {
+        "startLine": 31,
+        "startChar": 15,
+        "endLine": 31,
+        "endChar": 27
+      },
+      "revId": "90f5026422f96565eece8644b21f731f3e1fbfbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e3656648_4106302b",
+        "filename": "binding/mdsal-binding-generator/src/test/java/org/opendaylight/mdsal/binding/generator/impl/Mdsal669Test.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-04-19T12:12:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eb67fe28_8a2b4e9b",
       "range": {
         "startLine": 31,
         "startChar": 15,
@@ -140,6 +212,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "85c19454_b917ea8f",
+        "filename": "binding/mdsal-binding-generator/src/test/java/org/opendaylight/mdsal/binding/generator/impl/Mdsal669Test.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-04-19T12:12:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8860dab7_1180c9fe",
+      "range": {
+        "startLine": 35,
+        "startChar": 8,
+        "endLine": 35,
+        "endChar": 27
+      },
+      "revId": "90f5026422f96565eece8644b21f731f3e1fbfbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "174fc697_0bdc642c",
@@ -153,6 +249,30 @@
       "writtenOn": "2023-03-28T11:39:01Z",
       "side": 1,
       "message": "Should be a Set\nneeds to be documented",
+      "range": {
+        "startLine": 97,
+        "startChar": 13,
+        "endLine": 97,
+        "endChar": 17
+      },
+      "revId": "90f5026422f96565eece8644b21f731f3e1fbfbe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "32a4782e_9a0108ee",
+        "filename": "binding/mdsal-binding-runtime-api/src/main/java/org/opendaylight/mdsal/binding/runtime/api/BindingRuntimeTypes.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-04-19T12:12:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "174fc697_0bdc642c",
       "range": {
         "startLine": 97,
         "startChar": 13,
