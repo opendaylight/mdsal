@@ -32,6 +32,8 @@ import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.binding.DataRoot;
+import org.opendaylight.yangtools.yang.binding.YangFeatureProvider;
 import org.opendaylight.yangtools.yang.binding.contract.Naming;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -90,6 +92,9 @@ public final class ModuleInfoSnapshotResolver implements Mutable {
 
     @GuardedBy("this")
     private final ListMultimap<SourceIdentifier, RegisteredModuleInfo> sourceToInfoReg =
+            MultimapBuilder.hashKeys().arrayListValues().build();
+    @GuardedBy("this")
+    private final ListMultimap<Class<? extends DataRoot>, YangFeatureProvider<?>> moduleToFeatReg =
             MultimapBuilder.hashKeys().arrayListValues().build();
     @GuardedBy("this")
     private @Nullable ModuleInfoSnapshot currentSnapshot;
