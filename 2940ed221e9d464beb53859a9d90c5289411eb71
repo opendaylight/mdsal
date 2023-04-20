@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1637d118_c570a03e",
+        "filename": "binding/mdsal-binding-runtime-spi/src/main/java/org/opendaylight/mdsal/binding/runtime/spi/ModuleInfoSnapshotBuilder.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-04-20T07:30:34Z",
+      "side": 1,
+      "message": "module and supportedFeatures can be final",
+      "revId": "2940ed221e9d464beb53859a9d90c5289411eb71",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2935d08_8c86b82b",
+        "filename": "binding/mdsal-binding-runtime-spi/src/main/java/org/opendaylight/mdsal/binding/runtime/spi/ModuleInfoSnapshotResolver.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-04-20T07:30:34Z",
+      "side": 1,
+      "message": "module and supportedFeatures can be final",
+      "revId": "2940ed221e9d464beb53859a9d90c5289411eb71",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
