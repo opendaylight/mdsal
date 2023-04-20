@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ebb904c9_c4263425",
+        "filename": "binding/mdsal-binding-runtime-spi/src/main/java/org/opendaylight/mdsal/binding/runtime/spi/ModuleInfoSnapshotResolver.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-20T11:37:30Z",
+      "side": 1,
+      "message": "this should:\n- be co-located with the other public method\n- live in a separate patch\n- be really registerFeatureProvider(YangFeatureProvider)",
+      "range": {
+        "startLine": 217,
+        "startChar": 24,
+        "endLine": 217,
+        "endChar": 49
+      },
+      "revId": "5860827b6904572a526ded781fafbc75bc690f88",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
