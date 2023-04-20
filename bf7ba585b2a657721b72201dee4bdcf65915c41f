@@ -16,6 +16,52 @@
       "message": "done",
       "revId": "bf7ba585b2a657721b72201dee4bdcf65915c41f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eac6289a_55bea92f",
+        "filename": "binding/mdsal-binding-runtime-spi/src/main/java/org/opendaylight/mdsal/binding/runtime/spi/ModuleInfoSnapshotBuilder.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-20T11:02:37Z",
+      "side": 1,
+      "message": "containsKey() + put() \u003d\u003d Map.putIfAbsent()",
+      "range": {
+        "startLine": 88,
+        "startChar": 31,
+        "endLine": 88,
+        "endChar": 42
+      },
+      "revId": "bf7ba585b2a657721b72201dee4bdcf65915c41f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e67d66c1_057be4fc",
+        "filename": "binding/mdsal-binding-runtime-spi/src/main/java/org/opendaylight/mdsal/binding/runtime/spi/ModuleInfoSnapshotBuilder.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-20T11:02:37Z",
+      "side": 1,
+      "message": "errr ... why are we falling back to this and not using FeatureSet we introduced specifically upstream?",
+      "range": {
+        "startLine": 121,
+        "startChar": 8,
+        "endLine": 123,
+        "endChar": 46
+      },
+      "revId": "bf7ba585b2a657721b72201dee4bdcf65915c41f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
