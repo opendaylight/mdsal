@@ -13,6 +13,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import java.io.IOException;
@@ -28,11 +29,15 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
 import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
+import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.Mutable;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.binding.DataRoot;
+import org.opendaylight.yangtools.yang.binding.YangFeature;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.stmt.SubmoduleEffectiveStatement;
@@ -92,10 +97,20 @@ public final class ModuleInfoSnapshotResolver implements Mutable {
     private final ListMultimap<SourceIdentifier, RegisteredModuleInfo> sourceToInfoReg =
             MultimapBuilder.hashKeys().arrayListValues().build();
     @GuardedBy("this")
+    private final ListMultimap<Class<? extends DataRoot>, ImmutableSet<YangFeature<?, ?>>> moduleToFeatures =
+            MultimapBuilder.hashKeys().arrayListValues().build();
+    @GuardedBy("this")
     private @Nullable ModuleInfoSnapshot currentSnapshot;
 
     public ModuleInfoSnapshotResolver(final String name, final YangParserFactory parserFactory) {
         ctxResolver = YangTextSchemaContextResolver.create(name, parserFactory);
+    }
+
+    public synchronized <R extends @NonNull DataRoot> Registration registerModuleFeatures(final Class<R> module,
+            final Set<? extends YangFeature<?, R>> supportedFeatures) {
+        final var features = supportedFeatures.stream().map(YangFeature::qname).map(QName::getLocalName).sorted()
+            .collect(ImmutableSet.toImmutableSet());
+        return ctxResolver.registerSupportedFeatures(BindingReflections.getQNameModule(module), features);
     }
 
     public synchronized List<ObjectRegistration<YangModuleInfo>> registerModuleInfos(
