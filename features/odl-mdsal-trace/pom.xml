@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>feature-parent</artifactId>
-        <version>11.0.9-SNAPSHOT</version>
+        <version>11.0.9</version>
         <relativePath>../feature-parent</relativePath>
     </parent>
 
     <artifactId>odl-mdsal-trace</artifactId>
-    <version>11.0.9-SNAPSHOT</version>
+    <version>11.0.9</version>
     <packaging>feature</packaging>
     <name>OpenDaylight :: MD-SAL :: TracingBroker</name>
     <description>MD-SAL Trace tooling</description>
