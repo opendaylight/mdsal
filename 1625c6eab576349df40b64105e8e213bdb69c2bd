@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "32d93b2a_3481e75a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 17
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-04-20T12:29:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f6008277_8d62bb17",
+      "revId": "1625c6eab576349df40b64105e8e213bdb69c2bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "880d1fca_15510e64",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 17
@@ -52,6 +70,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d681ffbb_b7bea24d",
+        "filename": "binding/mdsal-binding-dom-codec-api/pom.xml",
+        "patchSetId": 17
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-04-20T12:29:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a538d398_1433568c",
+      "revId": "1625c6eab576349df40b64105e8e213bdb69c2bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f980267f_0685091a",
@@ -65,6 +101,24 @@
       "writtenOn": "2023-04-20T10:14:41Z",
       "side": 1,
       "message": "indent",
+      "revId": "1625c6eab576349df40b64105e8e213bdb69c2bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a57ec561_a7b6651f",
+        "filename": "binding/mdsal-binding-dom-codec/pom.xml",
+        "patchSetId": 17
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-04-20T12:29:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f980267f_0685091a",
       "revId": "1625c6eab576349df40b64105e8e213bdb69c2bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -88,6 +142,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7da29add_865b309f",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/IdentifiableItemCodec.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-04-20T12:29:27Z",
+      "side": 1,
+      "message": "no, together it is 121 characters so I needed to break it",
+      "parentUuid": "de62258f_6bfcebf6",
+      "revId": "1625c6eab576349df40b64105e8e213bdb69c2bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4337c5b8_8b5aa9f8",
         "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/IdentifiableItemCodec.java",
         "patchSetId": 17
@@ -99,6 +171,24 @@
       "writtenOn": "2023-04-20T10:14:41Z",
       "side": 1,
       "message": "seems like unnecessary change",
+      "revId": "1625c6eab576349df40b64105e8e213bdb69c2bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68d838c1_04215e10",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/IdentifiableItemCodec.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-04-20T12:29:27Z",
+      "side": 1,
+      "message": "probably accidental indent",
+      "parentUuid": "4337c5b8_8b5aa9f8",
       "revId": "1625c6eab576349df40b64105e8e213bdb69c2bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
