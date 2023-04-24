@@ -139,6 +139,11 @@ public final class Naming {
     public static final @NonNull String SCALAR_TYPE_OBJECT_GET_VALUE_NAME = "getValue";
 
     /**
+     * Name of {@link ScalarTypeObject} unsafe static factory method.
+     */
+    public static final @NonNull String SCALAR_TYPE_OBJECT_UNSAFE_OF_NAME = "unsafeOf";
+
+    /**
      * Prefix for normal getter methods.
      */
     public static final @NonNull String GETTER_PREFIX = "get";
