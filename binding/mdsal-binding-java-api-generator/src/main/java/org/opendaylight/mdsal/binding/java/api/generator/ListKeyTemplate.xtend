@@ -42,7 +42,7 @@ final class ListKeyTemplate extends ClassTemplate {
                 this.«fieldName» = «CODEHELPERS.importedName».requireKeyProp(«fieldName», "«p.name»")«p.cloneCall»;
             «ENDFOR»
             «FOR p : properties»
-                «generateRestrictions(type, p.fieldName, p.returnType)»
+                «generateRestrictions(type, p.fieldName, p.returnType, false)»
             «ENDFOR»
         }
     '''

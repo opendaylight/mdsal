@@ -306,7 +306,7 @@ class ClassTemplate extends BaseTemplate {
             super(«parentProperties.asArguments»);
         «ENDIF»
         «FOR p : allProperties»
-            «generateRestrictions(type, p.fieldName, p.returnType)»
+            «generateRestrictions(type, p.fieldName, p.returnType, true)»
         «ENDFOR»
 
         «FOR p : properties»
@@ -327,18 +327,13 @@ class ClassTemplate extends BaseTemplate {
             super(«parentProperties.asArguments»);
         «ENDIF»
         «FOR p : allProperties»
-            «generateRestrictions(type, p.fieldName, p.returnType)»
+            «generateRestrictions(type, p.fieldName, p.returnType, false)»
         «ENDFOR»
-        «/*
-         * If we have patterns, we need to apply them to the value field. This is a sad consequence of how this code is
-         * structured.
-         */»
-        «CODEHELPERS.importedName».requireValue(_value);
-        «genPatternEnforcer("_value")»
 
         «FOR p : properties»
             «val fieldName = p.fieldName»
-            this.«fieldName» = «fieldName»«p.cloneCall»;
+            this.«fieldName» = «CODEHELPERS.importedName».requireValue(«fieldName»)«p.cloneCall»;
+            «genPatternEnforcer(fieldName)»
         «ENDFOR»
     }
     '''
@@ -359,7 +354,7 @@ class ClassTemplate extends BaseTemplate {
         «ENDIF»
 
         «val fieldName = property.fieldName»
-        «generateRestrictions(type, fieldName, property.returnType)»
+        «generateRestrictions(type, fieldName, property.returnType, true)»
 
         this.«fieldName» = «property.name»;
         «FOR p : other»
@@ -384,11 +379,11 @@ class ClassTemplate extends BaseTemplate {
         }
     }
 
-    def generateRestrictions(Type type, String paramName, Type returnType) '''
+    def generateRestrictions(Type type, String paramName, Type returnType, boolean guardNull) '''
         «val restrictions = type.restrictions»
         «IF restrictions !== null»
             «IF restrictions.lengthConstraint.present || restrictions.rangeConstraint.present»
-            if («paramName» != null) {
+            «IF guardNull»if («paramName» != null) «ENDIF»{
                 «IF restrictions.lengthConstraint.present»
                     «LengthGenerator.generateLengthCheckerCall(paramName, paramValue(returnType, paramName))»
                 «ENDIF»

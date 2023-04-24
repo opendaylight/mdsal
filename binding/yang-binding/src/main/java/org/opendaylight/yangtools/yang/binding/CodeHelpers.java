@@ -87,10 +87,11 @@ public final class CodeHelpers {
      * A shortcut for {@code Objects.requireNonNull(value, "Supplied value may not be null")}.
      *
      * @param value Value itself
+     * @return The value, guaranteed to be non-null
      * @throws NullPointerException if value is {@code null}
      */
-    public static void requireValue(final @Nullable Object value) {
-        requireNonNull(value, "Supplied value may not be null");
+    public static <T> @NonNull T requireValue(final @Nullable T value) {
+        return requireNonNull(value, "Supplied value may not be null");
     }
 
     /**
