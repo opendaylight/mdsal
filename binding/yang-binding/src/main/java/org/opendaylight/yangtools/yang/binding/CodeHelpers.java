@@ -24,9 +24,13 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.yang.binding.internal.TheUnsafeSecret;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper methods for generated binding code. This class concentrates useful primitives generated code may call
@@ -36,6 +40,15 @@ import org.eclipse.jdt.annotation.Nullable;
  * @author Robert Varga
  */
 public final class CodeHelpers {
+    private static final boolean VERIFY_UNSAFE;
+
+    static {
+        VERIFY_UNSAFE = Boolean.getBoolean("org.opendaylight.yangtools.yang.binding.verify-unsafe");
+        if (VERIFY_UNSAFE) {
+            LoggerFactory.getLogger(CodeHelpers.class).info("Unsafe instantiation is disabled");
+        }
+    }
+
     private CodeHelpers() {
         // Hidden
     }
@@ -88,9 +101,10 @@ public final class CodeHelpers {
      *
      * @param value Value itself
      * @throws NullPointerException if value is {@code null}
+     * @return Non-null value
      */
-    public static void requireValue(final @Nullable Object value) {
-        requireNonNull(value, "Supplied value may not be null");
+    public static <T> @NonNull T requireValue(final @Nullable T value) {
+        return requireNonNull(value, "Supplied value may not be null");
     }
 
     /**
@@ -493,5 +507,11 @@ public final class CodeHelpers {
                     + "\"", e);
             }
         }
+    }
+
+    public static <V, T extends ScalarTypeObject<V>> @NonNull T unsafeScalar(final @NonNull V value,
+            final @NonNull Function<@NonNull V, @NonNull T> safeCtor,
+            final @NonNull BiFunction<@NonNull UnsafeSecret, @NonNull V, @NonNull T> unsafeCtor) {
+        return VERIFY_UNSAFE ? safeCtor.apply(value) : unsafeCtor.apply(TheUnsafeSecret.INSTANCE, value);
     }
 }
