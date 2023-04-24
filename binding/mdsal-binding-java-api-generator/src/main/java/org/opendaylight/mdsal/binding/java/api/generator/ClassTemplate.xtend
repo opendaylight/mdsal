@@ -50,6 +50,7 @@ import org.opendaylight.mdsal.binding.model.api.Restrictions
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.ri.TypeConstants
 import org.opendaylight.mdsal.binding.model.ri.Types
+import org.opendaylight.yangtools.yang.binding.UnsafeSecret
 import org.opendaylight.yangtools.yang.binding.contract.Naming
 import org.opendaylight.yangtools.yang.common.Empty
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition
@@ -79,6 +80,11 @@ class ClassTemplate extends BaseTemplate {
      * {@code com.google.common.collect.ImmutableSet} as a JavaTypeName.
      */
     static val IMMUTABLE_SET = JavaTypeName.create(ImmutableSet)
+
+    /**
+     * {@code com.google.common.collect.ImmutableSet} as a JavaTypeName.
+     */
+    static val UNSAFE_SECRET = JavaTypeName.create(UnsafeSecret)
 
     protected val List<GeneratedProperty> properties
     protected val List<GeneratedProperty> finalProperties
@@ -333,9 +339,20 @@ class ClassTemplate extends BaseTemplate {
          * If we have patterns, we need to apply them to the value field. This is a sad consequence of how this code is
          * structured.
          */»
-        «CODEHELPERS.importedName».requireValue(_value);
         «genPatternEnforcer("_value")»
 
+        «FOR p : properties»
+            «val fieldName = p.fieldName»
+            this.«fieldName» = «CODEHELPERS.importedName».requireValue(«fieldName»)«p.cloneCall»;
+        «ENDFOR»
+    }
+
+    protected «type.name»(final «UNSAFE_SECRET.importedName» secret, «allProperties.asArgumentsDeclaration») {
+        «IF !parentProperties.empty»
+            super(secret, «parentProperties.asArguments»);
+        «ELSE»
+            «JU_OBJECTS.importedName».requireNonNull(secret);
+        «ENDIF»
         «FOR p : properties»
             «val fieldName = p.fieldName»
             this.«fieldName» = «fieldName»«p.cloneCall»;
