@@ -24,4 +24,18 @@
 
     <name>${project.artifactId}</name>
     <description>iana-routing-types@2021-10-19</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.iana.routing.types</Automatic-Module-Name>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
