@@ -22,6 +22,29 @@
       },
       "revId": "281ffe937257ebb25dd085c918e3b3d0f498de90",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "12f8bce8_aba0d551",
+        "filename": "model/ietf/rfc7952/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-26T16:20:34Z",
+      "side": 1,
+      "message": "for standard models I am not sure we want to imply \u0027mdsal\u0027 -- at some point in the future, when we remove the *Listener and *Service interfaces, the models will actually have no MD-SAL connotations and will only depend on yangtools.\n\nThose are already deprecated, so we are nearing that point -- in which case we will probably end up moving them to a new project sitting between yangtools and mdsal -- and the \u0027mdsal\u0027 part will be misleading -- but we will essentially be stuck with it, or have to break downstreams (it a very non-JPMS way!).\n\nLet me mull this over a bit to see how to approach this. One option is to replace \u0027mdsal.model\u0027 with \u0027yang.gen\u0027... but this needs a bit more thought.",
+      "range": {
+        "startLine": 36,
+        "startChar": 64,
+        "endLine": 36,
+        "endChar": 88
+      },
+      "revId": "281ffe937257ebb25dd085c918e3b3d0f498de90",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
