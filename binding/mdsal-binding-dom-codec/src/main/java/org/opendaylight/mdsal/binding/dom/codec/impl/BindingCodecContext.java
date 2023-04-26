@@ -49,6 +49,7 @@ import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingNormalizedNod
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingSchemaMapping;
 import org.opendaylight.mdsal.binding.loader.BindingClassLoader;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
@@ -349,6 +350,10 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     @Override
     public ImmutableMap<Method, ValueNodeCodecContext> getLeafNodes(final Class<?> type,
             final EffectiveStatement<?, ?> schema) {
+        return getLeafNodesUsingReflection(type, getGetterToLeafSchema(schema));
+    }
+
+    private Map<String, DataSchemaNode> getGetterToLeafSchema(final EffectiveStatement<?, ?> schema) {
         final Map<String, DataSchemaNode> getterToLeafSchema = new HashMap<>();
         for (var stmt : schema.effectiveSubstatements()) {
             if (stmt instanceof TypedDataSchemaNode) {
@@ -359,7 +364,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                 putLeaf(getterToLeafSchema, (AnyxmlSchemaNode) stmt);
             }
         }
-        return getLeafNodesUsingReflection(type, getterToLeafSchema);
+        return getterToLeafSchema;
     }
 
     private static void putLeaf(final Map<String, DataSchemaNode> map, final DataSchemaNode leaf) {
@@ -376,10 +381,16 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
                 final ValueNodeCodecContext valueNode;
                 if (schema instanceof LeafSchemaNode leafSchema) {
-                    // FIXME: MDSAL-670: this is not right as we need to find a concrete type, but this may return
-                    //                   Object.class
-                    final Class<?> valueType = method.getReturnType();
-                    final ValueCodec<Object, Object> codec = getCodec(valueType, leafSchema.getType());
+                    Class<?> valueType = method.getReturnType();
+                    final ValueCodec<Object, Object> codec;
+
+                    Type genericInterface = parentClass.getGenericInterfaces()[0];
+                    if (valueType == Object.class && genericInterface instanceof ParameterizedType parameterizedType) {
+                        codec = getWildcardCodec(parameterizedType);
+                        valueType = getWildcardType(parameterizedType);
+                    } else {
+                        codec = getCodec(valueType, leafSchema.getType());
+                    }
                     valueNode = LeafNodeCodecContext.of(leafSchema, codec, method.getName(), valueType,
                         context.getEffectiveModelContext());
                 } else if (schema instanceof LeafListSchemaNode) {
@@ -394,8 +405,16 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                     } else if (genericType instanceof ParameterizedType parameterized) {
                         valueType = (Class<?>) parameterized.getRawType();
                     } else if (genericType instanceof WildcardType) {
-                        // FIXME: MDSAL-670: this is not right as we need to find a concrete type
-                        valueType = Object.class;
+                        final Type genericInterfaces = parentClass.getGenericInterfaces()[0];
+                        if (genericInterfaces instanceof ParameterizedType parameterizedType) {
+                            final ValueCodec<Object, Object> wildcardCodec = getWildcardCodec(parameterizedType);
+                            valueNode = new LeafSetNodeCodecContext((LeafListSchemaNode) schema, wildcardCodec,
+                                method.getName());
+                            leaves.put(method, valueNode);
+                            continue;
+                        } else {
+                            valueType = Object.class;
+                        }
                     } else {
                         throw new IllegalStateException("Unexpected return type " + genericType);
                     }
@@ -434,9 +453,35 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         } else if (BindingReflections.isBindingClass(valueType)) {
             return getCodecForBindingClass(valueType, instantiatedType);
         }
-        // FIXME: MDSAL-670: this is right for most situations, but we must never return NOOP_CODEC for
-        //                   valueType=Object.class
         return SchemaUnawareCodec.NOOP_CODEC;
+    }
+
+    private ValueCodec<Object, Object> getWildcardCodec(ParameterizedType parameterizedType) {
+        try {
+            final Class<?> objectClass = getWildcardType(parameterizedType);
+            final EffectiveStatement<?, ?> typeWithSchema = context.getTypeWithSchema(objectClass).statement();
+            final Map<String, DataSchemaNode> getterToLeafSchema = getGetterToLeafSchema(typeWithSchema);
+
+            final String methodName = getterToLeafSchema.keySet().stream().toList().get(0);
+            final DataSchemaNode dataSchemaNode = getterToLeafSchema.values().stream().toList().get(0);
+            final Class<?> valueType = objectClass.getMethod(methodName).getReturnType();
+
+            return  getCodec(valueType, ((LeafSchemaNode) dataSchemaNode).getType());
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException("Unexpected return type " + parameterizedType + e);
+        }
+    }
+
+    private Class<?> getWildcardType(ParameterizedType parameterizedType) {
+        final JavaTypeName javaTypeName = JavaTypeName.create(
+            (Class<?>) parameterizedType.getActualTypeArguments()[0]);
+        final List<JavaTypeName> javaTypeNames = context.getTypes().allGroupingInstance(javaTypeName)
+            .stream().toList();
+        try {
+            return  context.loadClass(javaTypeNames.get(0));
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Unexpected return type " + parameterizedType + e);
+        }
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
