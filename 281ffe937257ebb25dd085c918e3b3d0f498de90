@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "139c64ad_64f541a2",
+        "filename": "model/ietf/rfc6991/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-04-26T15:18:49Z",
+      "side": 1,
+      "message": "empty artifacts should not have these",
+      "range": {
+        "startLine": 45,
+        "startChar": 47,
+        "endLine": 45,
+        "endChar": 88
+      },
+      "revId": "281ffe937257ebb25dd085c918e3b3d0f498de90",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
