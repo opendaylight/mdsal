@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.mdsal668.norev.FooBuilder;
 import org.opendaylight.yang.gen.v1.mdsal668.norev.bar.Bar;
 import org.opendaylight.yang.gen.v1.mdsal668.norev.bar.BarBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
@@ -33,9 +34,8 @@ public class Mdsal668Test extends AbstractBindingCodecTest {
                 .withChild(Builders.leafSetBuilder()
                     .withNodeIdentifier(new NodeIdentifier(Bar.QNAME))
                     .withChild(Builders.leafSetEntryBuilder()
-                        // FIXME: MDSAL-670: these should get translated to YangInstanceIdentifier.create(FOO)
-                        .withNodeIdentifier(new NodeWithValue<>(Bar.QNAME, FOO_IID))
-                        .withValue(FOO_IID)
+                        .withNodeIdentifier(new NodeWithValue<>(Bar.QNAME, YangInstanceIdentifier.create(FOO)))
+                        .withValue(YangInstanceIdentifier.create(FOO))
                         .build())
                     .build())
                 .build())
