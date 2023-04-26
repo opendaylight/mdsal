@@ -30,8 +30,11 @@ import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,13 +62,16 @@ import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.runtime.api.ActionRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.ChoiceRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ContainerLikeRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ContainerRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.DataRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.GroupingRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.InputRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.ListRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.NotificationRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.OutputRuntimeType;
+import org.opendaylight.mdsal.binding.runtime.api.RuntimeType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
@@ -73,6 +79,7 @@ import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.BaseNotification;
+import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -618,7 +625,11 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     @Override
     public ImmutableMap<Method, ValueNodeCodecContext> getLeafNodes(final Class<?> type,
             final EffectiveStatement<?, ?> schema) {
-        final var getterToLeafSchema = new HashMap<String, DataSchemaNode>();
+        return getLeafNodesUsingReflection(type, getGetterToLeafSchema(schema));
+    }
+
+    private Map<String, DataSchemaNode> getGetterToLeafSchema(final EffectiveStatement<?, ?> schema) {
+        final Map<String, DataSchemaNode> getterToLeafSchema = new HashMap<>();
         for (var stmt : schema.effectiveSubstatements()) {
             if (stmt instanceof TypedDataSchemaNode typedSchema) {
                 putLeaf(getterToLeafSchema, typedSchema);
@@ -628,7 +639,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                 putLeaf(getterToLeafSchema, anyxmlSchema);
             }
         }
-        return getLeafNodesUsingReflection(type, getterToLeafSchema);
+        return getterToLeafSchema;
     }
 
     private static void putLeaf(final Map<String, DataSchemaNode> map, final DataSchemaNode leaf) {
@@ -645,10 +656,16 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
 
                 final ValueNodeCodecContext valueNode;
                 if (schema instanceof LeafSchemaNode leafSchema) {
-                    // FIXME: MDSAL-670: this is not right as we need to find a concrete type, but this may return
-                    //                   Object.class
-                    final Class<?> valueType = method.getReturnType();
-                    final ValueCodec<Object, Object> codec = getCodec(valueType, leafSchema.getType());
+                    Class<?> valueType = method.getReturnType();
+                    final ValueCodec<Object, Object> codec;
+
+                    if (valueType == Object.class) {
+                        final var path = (LeafrefTypeDefinition) leafSchema.getType();
+                        codec = getWildcardCodec(parentClass, path);
+                        //valueType = getWildcardType(parameterizedType);
+                    } else {
+                        codec = getCodec(valueType, leafSchema.getType());
+                    }
                     valueNode = LeafNodeCodecContext.of(leafSchema, codec, method.getName(), valueType,
                         context.modelContext());
                 } else if (schema instanceof LeafListSchemaNode leafListSchema) {
@@ -663,8 +680,12 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
                     } else if (genericType instanceof ParameterizedType parameterized) {
                         valueType = (Class<?>) parameterized.getRawType();
                     } else if (genericType instanceof WildcardType) {
-                        // FIXME: MDSAL-670: this is not right as we need to find a concrete type
-                        valueType = Object.class;
+                        final var path = (LeafrefTypeDefinition) leafListSchema.getType();
+                        final ValueCodec<Object, Object> wildcardCodec = getWildcardCodec(parentClass, path);
+                        valueNode = new LeafSetNodeCodecContext((LeafListSchemaNode) schema, wildcardCodec,
+                                method.getName());
+                        leaves.put(method, valueNode);
+                        continue;
                     } else {
                         throw new IllegalStateException("Unexpected return type " + genericType);
                     }
@@ -689,6 +710,27 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         return ImmutableMap.copyOf(leaves);
     }
 
+    private List<CompositeRuntimeType> resolveGrouping(final Class<?> parentClass, Iterator<String> path) {
+        final var childOf = getParent(parentClass);
+        path.next();
+        final var javaTypeName = JavaTypeName.create((Class<?>) childOf.getActualTypeArguments()[0]);
+        final var paramType = context.getTypes().findSchema(javaTypeName)
+                .orElseThrow(() -> new IllegalStateException(javaTypeName + " not found"));
+        if (!(paramType instanceof GroupingRuntimeType grouping)) {
+            return resolveGrouping((Class<?>) childOf.getActualTypeArguments()[0], path);
+        }
+        return grouping.instantiations();
+    }
+
+    private ParameterizedType getParent(final Class<?> parentClass) {
+        for (var type : parentClass.getGenericInterfaces()) {
+            if (type instanceof ParameterizedType childOf && childOf.getRawType().equals(ChildOf.class)) {
+                return childOf;
+            }
+        }
+        return null;
+    }
+
     // FIXME: this is probably not right w.r.t. nulls
     ValueCodec<Object, Object> getCodec(final Class<?> valueType, final TypeDefinition<?> instantiatedType) {
         if (BaseIdentity.class.isAssignableFrom(valueType)) {
@@ -702,9 +744,54 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         } else if (BindingReflections.isBindingClass(valueType)) {
             return getCodecForBindingClass(valueType, instantiatedType);
         }
-        // FIXME: MDSAL-670: this is right for most situations, but we must never return NOOP_CODEC for
-        //                   valueType=Object.class
         return SchemaUnawareCodec.NOOP_CODEC;
+    }
+
+    private ValueCodec<Object, Object> getWildcardCodec(final Class<?> parameterizedType, LeafrefTypeDefinition obj) {
+        try {
+            final var path = Arrays.stream(obj.getPathStatement().getOriginalString().split("/")).iterator();
+            path.next();
+            final var instances = resolveGrouping(parameterizedType, path);
+            final var possibleTypes = new ArrayList<RuntimeType>(instances);
+
+            var step = path.next();
+            while (path.hasNext()) {
+                for (int i = 0; i < possibleTypes.size(); i++) {
+                    if (step.equals("..")) {
+                        final var pare = getParent(context.loadClass(possibleTypes.get(i).javaType()));
+                        final var javaTypeName = JavaTypeName.create((Class<?>) pare.getActualTypeArguments()[0]);
+                        possibleTypes.set(i, context.getTypes().findSchema(javaTypeName)
+                                .orElseThrow(() -> new IllegalStateException(javaTypeName + " not found")));
+
+                    } else if (instances instanceof CompositeRuntimeType run) {
+                        possibleTypes.set(i, run.schemaTreeChild(QName.create((QName) possibleTypes.get(i)
+                                .statement().argument(), step)));
+                    }
+                }
+                step = path.next();
+            }
+
+            final var codec = new HashSet<ValueCodec<Object, Object>>();
+            for (var instance : possibleTypes) {
+                final var leaf = context.loadClass(instance.javaType());
+                final EffectiveStatement<?, ?> typeWithSchema = context.getTypeWithSchema(leaf).statement();
+                for (var leafref : typeWithSchema.effectiveSubstatements()) {
+                    if (leafref instanceof DataSchemaNode node && node.getQName().getLocalName().equals(step)) {
+                        final String methodName = BindingSchemaMapping.getGetterMethodName(node);
+                        final Class<?> valueType = leaf.getMethod(methodName).getReturnType();
+                        codec.add(getCodec(valueType, ((LeafSchemaNode) node).getType()));
+                    }
+                }
+            }
+            if (codec.size() == 1) {
+                return codec.iterator().next();
+            }
+            return SchemaUnawareCodec.NOOP_CODEC;
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException("Unexpected return type " + parameterizedType + e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
