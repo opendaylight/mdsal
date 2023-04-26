@@ -1,9 +1,5 @@
 /*
-<<<<<<< HEAD
  * Copyright (c) 2023 PANTHEON.tech, s.r.o. and others.  All rights reserved.
-=======
- * Copyright (c) 2021 PANTHEON.tech, s.r.o. and others.  All rights reserved.
->>>>>>> 0ce308abf7 (Retain grouping/uses instantiation vectors)
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
