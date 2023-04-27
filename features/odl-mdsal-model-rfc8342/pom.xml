@@ -31,7 +31,11 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc8342</artifactId>
+            <artifactId>rfc8342-ietf-datastores</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8342-ietf-origin</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -31,7 +31,15 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc8349</artifactId>
+            <artifactId>rfc8349-ietf-routing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8349-ietf-ipv4-unicast-routing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8349-ietf-ipv6-unicast-routing</artifactId>
         </dependency>
     </dependencies>
 </project>

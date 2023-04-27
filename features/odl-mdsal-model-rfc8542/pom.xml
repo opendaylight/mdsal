@@ -31,7 +31,11 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc8542</artifactId>
+            <artifactId>rfc8542-ietf-dc-fabric-topology</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8542-ietf-dc-fabric-types</artifactId>
         </dependency>
     </dependencies>
 </project>

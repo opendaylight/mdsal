@@ -26,7 +26,6 @@
 
     <modules>
         <!-- RFC6991 -->
-        <module>rfc6991</module>
         <module>rfc6991-ietf-inet-types</module>
         <module>rfc6991-ietf-yang-types</module>
         <module>ietf-type-util</module>
@@ -41,11 +40,9 @@
         <module>rfc8072</module>
 
         <!-- RFC8294 Common YANG Data Types for the Routing Area -->
-        <module>rfc8294</module>
         <module>rfc8294-ietf-routing-types</module>
 
         <!-- RFC8342 Network Management Datastore Architecture -->
-        <module>rfc8342</module>
         <module>rfc8342-ietf-datastores</module>
         <module>rfc8342-ietf-origin</module>
 
@@ -56,36 +53,30 @@
         <module>rfc8344</module>
 
         <!-- RFC8345 Network Topologies -->
-        <module>rfc8345</module>
         <module>rfc8345-ietf-network</module>
         <module>rfc8345-ietf-network-state</module>
         <module>rfc8345-ietf-network-topology</module>
         <module>rfc8345-ietf-network-topology-state</module>
 
         <!-- RFC8346 Layer 3 Topologies -->
-        <module>rfc8346</module>
         <module>rfc8346-ietf-l3-unicast-topology</module>
         <module>rfc8346-ietf-l3-unicast-topology-state</module>
 
         <!-- RFC8348 Hardware Management -->
-        <module>rfc8348</module>
         <module>rfc8348-ietf-hardware</module>
         <module>rfc8348-ietf-hardware-state</module>
 
         <!-- RFC8349 Routing Management -->
-        <module>rfc8349</module>
         <module>rfc8349-ietf-routing</module>
         <module>rfc8349-ietf-ipv4-unicast-routing</module>
         <module>rfc8349-ietf-ipv6-unicast-routing</module>
 
         <!-- RFC8519 Network Access Control Lists -->
-        <module>rfc8519</module>
         <module>rfc8519-ietf-access-control-list</module>
         <module>rfc8519-ietf-ethertypes</module>
         <module>rfc8519-ietf-packet-fields</module>
 
         <!-- RFC8520 Manufacturer Usage Description -->
-        <module>rfc8520</module>
         <module>rfc8520-ietf-acldns</module>
         <module>rfc8520-ietf-mud</module>
 
@@ -102,17 +93,14 @@
         <module>rfc8530</module>
 
         <!-- RFC8542 Fabric Topology in Data-Center Networks -->
-        <module>rfc8542</module>
         <module>rfc8542-ietf-dc-fabric-topology</module>
         <module>rfc8542-ietf-dc-fabric-types</module>
 
         <!-- RFC8776 Common YANG Data Types for Traffic Engineering -->
-        <module>rfc8776</module>
         <module>rfc8776-ietf-te-types</module>
         <module>rfc8776-ietf-te-packet-types</module>
 
         <!-- RFC8795 YANG Data Model for Traffic Engineering (TE) Topologies -->
-        <module>rfc8795</module>
         <module>rfc8795-ietf-te-topology</module>
         <module>rfc8795-ietf-te-topology-state</module>
 

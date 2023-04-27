@@ -468,11 +468,6 @@
             <!-- RFC6991 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc6991</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc6991-ietf-inet-types</artifactId>
                 <version>12.0.0-SNAPSHOT</version>
             </dependency>
@@ -524,8 +519,8 @@
 
             <!-- RFC8294 -->
             <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8294</artifactId>
+                <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+                <artifactId>iana-routing-types</artifactId>
                 <version>12.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
@@ -533,18 +528,8 @@
                 <artifactId>rfc8294-ietf-routing-types</artifactId>
                 <version>12.0.0-SNAPSHOT</version>
             </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
-                <artifactId>iana-routing-types</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
 
             <!-- RFC8342 -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8342</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8342-ietf-datastores</artifactId>
@@ -573,11 +558,6 @@
             <!-- RFC8345 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8345</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8345-ietf-network</artifactId>
                 <version>12.0.0-SNAPSHOT</version>
             </dependency>
@@ -600,11 +580,6 @@
             <!-- RFC8346 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8346</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8346-ietf-l3-unicast-topology</artifactId>
                 <version>12.0.0-SNAPSHOT</version>
             </dependency>
@@ -615,11 +590,6 @@
             </dependency>
 
             <!-- RFC8348 -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8348</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8348-ietf-hardware</artifactId>
@@ -639,11 +609,6 @@
             <!-- RFC8349 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8349</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8349-ietf-routing</artifactId>
                 <version>12.0.0-SNAPSHOT</version>
             </dependency>
@@ -661,11 +626,6 @@
             <!-- RFC8519 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8519</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8519-ietf-access-control-list</artifactId>
                 <version>12.0.0-SNAPSHOT</version>
             </dependency>
@@ -681,11 +641,6 @@
             </dependency>
 
             <!-- RFC8520 -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8520</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8520-ietf-acldns</artifactId>
@@ -728,11 +683,6 @@
             <!-- RFC8542 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8542</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8542-ietf-dc-fabric-topology</artifactId>
                 <version>12.0.0-SNAPSHOT</version>
             </dependency>
@@ -745,11 +695,6 @@
             <!-- RFC8776 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8776</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8776-ietf-te-types</artifactId>
                 <version>12.0.0-SNAPSHOT</version>
             </dependency>
@@ -759,12 +704,7 @@
                 <version>12.0.0-SNAPSHOT</version>
             </dependency>
 
-            <!-- RFC8776 -->
-            <dependency>
-                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-                <artifactId>rfc8795</artifactId>
-                <version>12.0.0-SNAPSHOT</version>
-            </dependency>
+            <!-- RFC8795 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8795-ietf-te-topology</artifactId>

@@ -31,7 +31,11 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc8520</artifactId>
+            <artifactId>rfc8520-ietf-acldns</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8520-ietf-mud</artifactId>
         </dependency>
     </dependencies>
 </project>
