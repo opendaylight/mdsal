@@ -30,8 +30,12 @@
             <type>xml</type>
         </dependency>
         <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+            <artifactId>iana-routing-types</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc8294</artifactId>
+            <artifactId>rfc8294-ietf-routing-types</artifactId>
         </dependency>
     </dependencies>
 </project>

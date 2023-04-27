@@ -31,7 +31,11 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc8776</artifactId>
+            <artifactId>rfc8776-ietf-te-types</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8776-ietf-te-packet-types</artifactId>
         </dependency>
     </dependencies>
 </project>

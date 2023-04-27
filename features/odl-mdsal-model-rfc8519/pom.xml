@@ -31,7 +31,15 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc8519</artifactId>
+            <artifactId>rfc8519-ietf-access-control-list</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8519-ietf-ethertypes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8519-ietf-packet-fields</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -37,7 +37,11 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc8795</artifactId>
+            <artifactId>rfc8795-ietf-te-topology</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc8795-ietf-te-topology-state</artifactId>
         </dependency>
     </dependencies>
 </project>
