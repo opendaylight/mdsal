@@ -846,8 +846,8 @@ public class CompilationTest extends BaseCompilationTest {
 
                 // artifacts for non-ascii template naming: yang data artifact, inner container + builder
                 "$ľaľaho$20$papľuhu", "$ľaľaho$20$papľuhuBuilder",
-                "$ľaľaho$20$papľuhu$.LatinNaming", "$ľaľaho$20$papľuhu$.LatinNamingBuilder",
-                "привет", "приветBuilder", "привет$.CyrillicNaming", "привет$.CyrillicNamingBuilder"
+                "$$ľaľaho$20$papľuhu.LatinNaming", "$$ľaľaho$20$papľuhu.LatinNamingBuilder",
+                "привет", "приветBuilder", "$привет.CyrillicNaming", "$привет.CyrillicNamingBuilder"
         );
 
         for (String name : artifactNames) {

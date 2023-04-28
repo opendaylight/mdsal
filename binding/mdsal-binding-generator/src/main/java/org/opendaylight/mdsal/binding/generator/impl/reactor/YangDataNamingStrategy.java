@@ -44,7 +44,7 @@ final class YangDataNamingStrategy extends ClassNamingStrategy {
         // javaIdentifier is always unique and provides an identifier which is suitable for package naming as well,
         //  except we need to further expand the package name so it does not class with the class.
         // Since the strategy escapes '$', appending one cannot clash.
-        return javaIdentifier + '$';
+        return '$' + javaIdentifier;
     }
 
     @Override
