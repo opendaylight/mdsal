@@ -167,11 +167,11 @@ public class Mdsal675Test {
 
         // rc:yang-data .-/#
         assertTrue(genTypeNames.contains(PACKAGE2 + "$$2E$$2D$$2F$$23$"));
-        assertTrue(genTypeNames.contains(PACKAGE2 + "$$2e$$2d$$2f$$23$$.Foo"));
+        assertTrue(genTypeNames.contains(PACKAGE2 + "$$$2e$$2d$$2f$$23$.Foo"));
 
         // rc:yang-data -./#
         assertTrue(genTypeNames.contains(PACKAGE2 + "$$2D$$2E$$2F$$23$"));
-        assertTrue(genTypeNames.contains(PACKAGE2 + "$$2d$$2e$$2f$$23$$.Foo"));
+        assertTrue(genTypeNames.contains(PACKAGE2 + "$$$2d$$2e$$2f$$23$.Foo"));
     }
 
     private static GeneratedType assertGenType(final Map<String, GeneratedType> genTypesMap, final String className) {
