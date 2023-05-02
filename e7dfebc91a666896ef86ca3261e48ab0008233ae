@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e6a3dc0_a5987cbf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-05-02T10:25:07Z",
+      "side": 1,
+      "message": "Mdsal673Test contains\nFIXME: MDSAL-670: these should get translated to YangInstanceIdentifier.create(FOO)\nI think it should be resolved in this patch",
+      "revId": "e7dfebc91a666896ef86ca3261e48ab0008233ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66dda8ee_74702364",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-05-02T10:25:07Z",
+      "side": 1,
+      "message": "can be final",
+      "revId": "e7dfebc91a666896ef86ca3261e48ab0008233ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "18ba8d39_19e4a244",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 459,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-05-02T10:25:07Z",
+      "side": 1,
+      "message": "parameterizedType can be final",
+      "revId": "e7dfebc91a666896ef86ca3261e48ab0008233ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95cd0770_bed65602",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-05-02T10:25:07Z",
+      "side": 1,
+      "message": "parameterizedType can be final",
+      "revId": "e7dfebc91a666896ef86ca3261e48ab0008233ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
