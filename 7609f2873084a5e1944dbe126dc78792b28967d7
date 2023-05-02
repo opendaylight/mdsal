@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c305d522_1ba73108",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/WildcardBuilderImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 9136
+      },
+      "writtenOn": "2023-05-02T10:09:57Z",
+      "side": 1,
+      "message": "Parameter \u0027key\u0027 is never used.",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ddbe3cb_48fd197a",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/InstanceIdentifierTest.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 9136
+      },
+      "writtenOn": "2023-05-02T10:09:57Z",
+      "side": 1,
+      "message": "\u0027equals()\u0027 is called on itself",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4d01d23_b6cf3e7a",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/InstanceIdentifierTest.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 9136
+      },
+      "writtenOn": "2023-05-02T10:09:57Z",
+      "side": 1,
+      "message": "Most of \u0027assertTrue()\u0027 and \u0027assertFalse()\u0027 in this class can be simplified to \u0027assertEquals()\u0027 and \u0027assertNotEquals()\u0027\n\nfor example here also:\nhttps://git.opendaylight.org/gerrit/c/mdsal/+/104772/16/binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/InstanceIdentifierTest.java#233",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d18079c_84c26be5",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/InstanceIdentifierTest.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 9136
+      },
+      "writtenOn": "2023-05-02T10:09:57Z",
+      "side": 1,
+      "message": "Redundant null-check, primitive types such as int are not capable of holding a null value.",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f3bd8c7_009d9b80",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/mock/NodeChildKey.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9136
+      },
+      "writtenOn": "2023-05-02T10:09:57Z",
+      "side": 1,
+      "message": "Cant we make this a record instead of a class?",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a625de8_f7a2afc6",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/mock/NodeKey.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9136
+      },
+      "writtenOn": "2023-05-02T10:09:57Z",
+      "side": 1,
+      "message": "Also, cant this be a record?",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
