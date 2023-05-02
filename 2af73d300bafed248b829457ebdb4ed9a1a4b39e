@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0899e382_b134292c",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/DataTreeChangeService.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-02T16:42:37Z",
+      "side": 1,
+      "message": "DataListener, DataListenerAdapter is just an implementation detail, not exposed outside of the package, so its behaviour should be documented as an @implSpec note.\n\nAlso clean up the copy-paste vibes: \u0027marked as created\u0027 implies DataTreeModification, which is certainly not applicable here.",
+      "range": {
+        "startLine": 61,
+        "startChar": 26,
+        "endLine": 61,
+        "endChar": 45
+      },
+      "revId": "2af73d300bafed248b829457ebdb4ed9a1a4b39e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec55d4fb_9a0bc6f1",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/DataTreeChangeService.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-02T16:42:37Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 100,
+        "startChar": 26,
+        "endLine": 100,
+        "endChar": 51
+      },
+      "revId": "2af73d300bafed248b829457ebdb4ed9a1a4b39e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
