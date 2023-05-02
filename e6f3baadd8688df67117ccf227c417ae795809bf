@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d30e9366_2af69a04",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-02T16:53:20Z",
+      "side": 1,
+      "message": "let\u0027s be clear, it is not the JVM, which is confused here, but rather \u0027javac\u0027.",
+      "range": {
+        "startLine": 9,
+        "startChar": 26,
+        "endLine": 9,
+        "endChar": 29
+      },
+      "revId": "e6f3baadd8688df67117ccf227c417ae795809bf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be39d7e4_44a0cb3c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-02T16:53:20Z",
+      "side": 1,
+      "message": "we really need to qualify what is this \u0027something different\u0027 -- is this part of Ubuntu environment? is it Ubuntu\u0027s JDK?",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 75
+      },
+      "revId": "e6f3baadd8688df67117ccf227c417ae795809bf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c8c1725_cdc98fde",
+        "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/YangDataNamingStrategy.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-02T16:53:20Z",
+      "side": 1,
+      "message": "ah, right, but now this can readily clash with class names, right? For example we have $YangModuleInfo things, so this can blow up, can it not?",
+      "range": {
+        "startLine": 47,
+        "startChar": 15,
+        "endLine": 47,
+        "endChar": 35
+      },
+      "revId": "e6f3baadd8688df67117ccf227c417ae795809bf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e57d4c81_7db7e6e8",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/mdsal/binding/java/api/generator/CompilationTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 850,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-02T16:53:20Z",
+      "side": 1,
+      "message": "this is rather ugly: suddenly the inner class is *not* inside the interface which encapsulates it.\n\n\u0027$\u0027 leading in identifier names implies Naming.mapEnumAssignedName\u0027s second case, but now that is no longer accurate ... so what is the exact relationship?",
+      "range": {
+        "startLine": 850,
+        "startChar": 44,
+        "endLine": 850,
+        "endChar": 51
+      },
+      "revId": "e6f3baadd8688df67117ccf227c417ae795809bf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
