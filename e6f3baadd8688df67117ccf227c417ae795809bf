@@ -49,6 +49,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d119c5c6_3e813f0c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-05-03T09:44:46Z",
+      "side": 1,
+      "message": "From my perspective, this happens because Ubuntu 22.04 uses newer version of Kernel than previous ones. In this newer version they introduced a lot of filesystem changes which may have caused our issue. Doesnt seem like this can be solved with any environmental settings. Two possible solutions here are either not put \u0027$\u0027 in the end of package name or downgrade Ubuntu version for the part of the team that uses 22.04+",
+      "parentUuid": "be39d7e4_44a0cb3c",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 75
+      },
+      "revId": "e6f3baadd8688df67117ccf227c417ae795809bf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7c8c1725_cdc98fde",
         "filename": "binding/mdsal-binding-generator/src/main/java/org/opendaylight/mdsal/binding/generator/impl/reactor/YangDataNamingStrategy.java",
         "patchSetId": 1
