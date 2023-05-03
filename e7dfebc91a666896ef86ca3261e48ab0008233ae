@@ -35,6 +35,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "51dc56cf_40eec82a",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-05-03T10:30:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "66dda8ee_74702364",
+      "revId": "e7dfebc91a666896ef86ca3261e48ab0008233ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "18ba8d39_19e4a244",
@@ -52,6 +70,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0e5d5d5_19f63cfb",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 459,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-05-03T10:30:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "18ba8d39_19e4a244",
+      "revId": "e7dfebc91a666896ef86ca3261e48ab0008233ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "95cd0770_bed65602",
@@ -65,6 +101,24 @@
       "writtenOn": "2023-05-02T10:25:07Z",
       "side": 1,
       "message": "parameterizedType can be final",
+      "revId": "e7dfebc91a666896ef86ca3261e48ab0008233ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f426565b_4546f3f4",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 9155
+      },
+      "writtenOn": "2023-05-03T10:30:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95cd0770_bed65602",
       "revId": "e7dfebc91a666896ef86ca3261e48ab0008233ae",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
