@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "660a2747_054e43dd",
+        "filename": "binding/mdsal-binding-dom-adapter/pom.xml",
+        "patchSetId": 13
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-05-04T10:24:56Z",
+      "side": 1,
+      "message": "wrong indent",
+      "revId": "77ebf38b5ce4d8652425f23b5a3f06ecc67d5a66",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3dabb53e_467bf592",
+        "filename": "binding/mdsal-binding-dom-codec-api/pom.xml",
+        "patchSetId": 13
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-05-04T10:24:56Z",
+      "side": 1,
+      "message": "wrong indent",
+      "revId": "77ebf38b5ce4d8652425f23b5a3f06ecc67d5a66",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84714f0c_530ecf2d",
+        "filename": "binding/mdsal-binding-dom-codec-api/src/main/java/module-info.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-05-04T10:24:56Z",
+      "side": 1,
+      "message": "to keep structure of this module-info I would place this between others requires not at the end",
+      "revId": "77ebf38b5ce4d8652425f23b5a3f06ecc67d5a66",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bac2e93c_04a2d152",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/module-info.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 9074
+      },
+      "writtenOn": "2023-05-04T10:24:56Z",
+      "side": 1,
+      "message": "to keep structure of this module-info I would place this between others requires not at the end",
+      "revId": "77ebf38b5ce4d8652425f23b5a3f06ecc67d5a66",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
