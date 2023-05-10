@@ -15,10 +15,11 @@ import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.SetMultimap;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractSchemaAwareTest;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecFactory;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
@@ -56,7 +57,8 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
 
     @Override
     protected void setupWithRuntimeContext(final BindingRuntimeContext runtimeContext) {
-        serializer = new CurrentAdapterSerializer(new BindingCodecContext(runtimeContext));
+        serializer = new CurrentAdapterSerializer(ServiceLoader.load(BindingDOMCodecFactory.class)
+                .findFirst().orElseThrow().createBindingDOMCodec(runtimeContext));
     }
 
     @Test
