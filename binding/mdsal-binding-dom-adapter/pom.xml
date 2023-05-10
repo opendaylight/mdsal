@@ -103,18 +103,15 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-test-model</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-subclass</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <Automatic-Module-Name>org.opendaylight.mdsal.binding.dom.adapter</Automatic-Module-Name>
-                </configuration>
-            </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
@@ -134,6 +131,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>@{argLine}
+                        --add-opens org.opendaylight.mdsal.binding.dom.codec.impl/org.opendaylight.mdsal.binding.dom.codec.impl=ALL-UNNAMED
+                    </argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>

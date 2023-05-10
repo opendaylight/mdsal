@@ -9,9 +9,10 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ServiceLoader;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.ActionSpec;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecFactory;
 import org.opendaylight.mdsal.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Grpcont;
@@ -28,8 +29,8 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 public class ActionLookupTest {
     @Test
     public void testActionPath() {
-        CurrentAdapterSerializer codec = new CurrentAdapterSerializer(new BindingCodecContext(
-            BindingRuntimeHelpers.createRuntimeContext()));
+        CurrentAdapterSerializer codec = new CurrentAdapterSerializer(ServiceLoader.load(BindingDOMCodecFactory.class)
+                .findFirst().orElseThrow().createBindingDOMCodec(BindingRuntimeHelpers.createRuntimeContext()));
 
         assertEquals(Absolute.of(Cont.QNAME, Foo.QNAME), codec.getActionPath(
             ActionSpec.builder(Cont.class).build(Foo.class)));
