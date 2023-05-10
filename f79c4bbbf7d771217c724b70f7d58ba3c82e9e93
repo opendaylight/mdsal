@@ -1,0 +1,146 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "577c9583_1f461f26",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/DataTreeChangeService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-10T13:36:49Z",
+      "side": 1,
+      "message": "use specific type, not \"var\"",
+      "range": {
+        "startLine": 130,
+        "startChar": 8,
+        "endLine": 130,
+        "endChar": 36
+      },
+      "revId": "f79c4bbbf7d771217c724b70f7d58ba3c82e9e93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7228cea1_3c39ddec",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/DataTreeChangeServiceWildcarded.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-10T13:36:49Z",
+      "side": 1,
+      "message": "rename to DataTreeChangeServiceWildcardedTest, or abreviate it to sth shorter containing suffix \"Test\".",
+      "revId": "f79c4bbbf7d771217c724b70f7d58ba3c82e9e93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4da0c5fb_8ed0b74f",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/DataTreeChangeServiceWildcarded.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-10T13:36:49Z",
+      "side": 1,
+      "message": "either use concrete types everywhere, or var everewhere",
+      "revId": "f79c4bbbf7d771217c724b70f7d58ba3c82e9e93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69cd2833_a0e7dbd5",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMDataChangeListenerAdapter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-10T13:36:49Z",
+      "side": 1,
+      "message": "dont use var in non-test files",
+      "revId": "f79c4bbbf7d771217c724b70f7d58ba3c82e9e93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6caf7691_35328ff8",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMDataListenerAdapter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-10T13:36:49Z",
+      "side": 1,
+      "message": "var",
+      "revId": "f79c4bbbf7d771217c724b70f7d58ba3c82e9e93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71da85e7_02593eec",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMDataListenerAdapter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-10T13:36:49Z",
+      "side": 1,
+      "message": "var",
+      "revId": "f79c4bbbf7d771217c724b70f7d58ba3c82e9e93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae70a1b8_830a1e70",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMDataTreeChangeServiceAdapter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-10T13:36:49Z",
+      "side": 1,
+      "message": "var",
+      "revId": "f79c4bbbf7d771217c724b70f7d58ba3c82e9e93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c303e9a_d52b1c75",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/DataListenerTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-10T13:36:49Z",
+      "side": 1,
+      "message": "dont mix var and specific typing",
+      "revId": "f79c4bbbf7d771217c724b70f7d58ba3c82e9e93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
