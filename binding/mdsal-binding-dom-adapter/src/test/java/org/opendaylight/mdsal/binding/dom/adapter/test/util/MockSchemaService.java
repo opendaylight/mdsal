@@ -14,9 +14,10 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
+import java.util.ServiceLoader;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.CurrentAdapterSerializer;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecFactory;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
@@ -35,7 +36,8 @@ public final class MockSchemaService implements DOMSchemaService, EffectiveModel
             new CacheLoader<BindingRuntimeContext, BindingDOMCodecServices>() {
                 @Override
                 public BindingDOMCodecServices load(final BindingRuntimeContext key) {
-                    return new BindingCodecContext(key);
+                    return ServiceLoader.load(BindingDOMCodecFactory.class)
+                            .findFirst().orElseThrow().createBindingDOMCodec(key);
                 }
             });
 
