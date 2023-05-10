@@ -19,6 +19,7 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.WrongMethodTypeException;
 import org.junit.Test;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.notification.rev150205.OpendaylightTestNotificationListener;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Notification;
@@ -28,7 +29,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 public class NotificationListenerInvokerTest {
     @Test
     public void fromTest() throws Exception {
-        assertNotNull(NotificationListenerInvoker.from(TestInterface.class));
+        assertNotNull(NotificationListenerInvoker.from(OpendaylightTestNotificationListener.class));
     }
 
     @Test
@@ -51,12 +52,6 @@ public class NotificationListenerInvokerTest {
             () -> notificationListenerInvoker.invokeNotification(notificationListener, QName.create("test", "test"),
                 null));
         assertEquals("expected null but found (NotificationListener,DataContainer)void", ex.getMessage());
-    }
-
-    public interface TestInterface extends NotificationListener, Augmentation {
-        QName QNAME = QName.create("test", "test");
-
-        void onTestNotificationInterface(TestNotificationInterface notif);
     }
 
     private interface TestPrivateInterface extends NotificationListener, Augmentation {
