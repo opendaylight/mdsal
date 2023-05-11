@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d79b3d34_b20e5260",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 18
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-11T13:37:00Z",
+      "side": 1,
+      "message": "if you dont agree with some of my replies, please feel free to discuss",
+      "revId": "f5499e1728e91e654231c94f0aaa6b035deda8f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}

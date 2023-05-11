@@ -18,6 +18,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f32adcb_530ff87a",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/WildcardBuilderImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-11T13:37:00Z",
+      "side": 1,
+      "message": "well, it is not, but we need it for proper generics",
+      "parentUuid": "c305d522_1ba73108",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8ddbe3cb_48fd197a",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-05-02T10:09:57Z",
       "side": 1,
       "message": "\u0027equals()\u0027 is called on itself",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ae64425_e396159b",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/InstanceIdentifierTest.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-11T13:37:00Z",
+      "side": 1,
+      "message": "Again, not my code, fixed.",
+      "parentUuid": "8ddbe3cb_48fd197a",
       "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -52,6 +88,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "820da896_61297efc",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/InstanceIdentifierTest.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-11T13:37:00Z",
+      "side": 1,
+      "message": "yeah, most of these test were migrated from the previous location of InstanceIdentifier, so fixed them per your comments. Thanks",
+      "parentUuid": "d4d01d23_b6cf3e7a",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0d18079c_84c26be5",
@@ -65,6 +119,24 @@
       "writtenOn": "2023-05-02T10:09:57Z",
       "side": 1,
       "message": "Redundant null-check, primitive types such as int are not capable of holding a null value.",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "636ca4d8_da42e111",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/InstanceIdentifierTest.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-11T13:37:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0d18079c_84c26be5",
       "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
@@ -86,6 +158,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "124a596f_f0443fe5",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/mock/NodeChildKey.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-11T13:37:00Z",
+      "side": 1,
+      "message": "These are files dug up from a target directory somewhere, so it is what the parser produced, I have not implemented these myself.",
+      "parentUuid": "9f3bd8c7_009d9b80",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8a625de8_f7a2afc6",
@@ -99,6 +189,24 @@
       "writtenOn": "2023-05-02T10:09:57Z",
       "side": 1,
       "message": "Also, cant this be a record?",
+      "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0653368a_3751b396",
+        "filename": "binding/mdsal-binding-api/src/test/java/org/opendaylight/mdsal/binding/api/mock/NodeKey.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-11T13:37:00Z",
+      "side": 1,
+      "message": "same as the previous one.",
+      "parentUuid": "8a625de8_f7a2afc6",
       "revId": "7609f2873084a5e1944dbe126dc78792b28967d7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
