@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3bd87c74_95d5270f",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingChangeListenerHelper.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 9172
+      },
+      "writtenOn": "2023-05-12T12:32:04Z",
+      "side": 1,
+      "message": "I was told not to use var outside of tests.",
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
