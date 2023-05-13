@@ -34,6 +34,184 @@
       "parentUuid": "3bd87c74_95d5270f",
       "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9969057_92f41a41",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/AugmentationNodeContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-13T14:23:36Z",
+      "side": 1,
+      "message": "this should not be public",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 6
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8efb889_22444616",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-13T14:23:36Z",
+      "side": 1,
+      "message": "this is not appropriate -- TypedDataSchemaNode is sealed and covers both cases",
+      "range": {
+        "startLine": 366,
+        "startChar": 21,
+        "endLine": 366,
+        "endChar": 84
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a437bf2_19e30123",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-13T14:23:36Z",
+      "side": 1,
+      "message": "this case needs to be split out from the CodecNode hierarchy -- we must not confuse it",
+      "range": {
+        "startLine": 534,
+        "startChar": 8,
+        "endLine": 534,
+        "endChar": 72
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d25bda58_f1c589e5",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingToNormalizedStreamWriter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-13T14:23:36Z",
+      "side": 1,
+      "message": "needs update of the above comment",
+      "range": {
+        "startLine": 100,
+        "startChar": 54,
+        "endLine": 100,
+        "endChar": 93
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "345267a1_3d81a3ef",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-13T14:23:36Z",
+      "side": 1,
+      "message": "ImmutableSet.builder() plus needs a comment (also below)",
+      "range": {
+        "startLine": 207,
+        "startChar": 13,
+        "endLine": 207,
+        "endChar": 42
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b66047c_498184d8",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-13T14:23:36Z",
+      "side": 1,
+      "message": ".containsKey() and .get() where the collection cannot contain nulls. just use .get()",
+      "range": {
+        "startLine": 298,
+        "startChar": 55,
+        "endLine": 298,
+        "endChar": 88
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "857c061f_ab0306e3",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 525,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-13T14:23:36Z",
+      "side": 1,
+      "message": "superfluous",
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "447aa185_6deb296d",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectStreamerGenerator.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-13T14:23:36Z",
+      "side": 1,
+      "message": "the method is called the same -- why the rename?!",
+      "range": {
+        "startLine": 105,
+        "startChar": 43,
+        "endLine": 105,
+        "endChar": 61
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
