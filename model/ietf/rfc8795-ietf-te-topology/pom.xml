@@ -44,7 +44,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.rfc8795.te.topology</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.te.topology.rfc8795</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>

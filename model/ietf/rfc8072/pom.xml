@@ -38,7 +38,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.rfc8072</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.yang.patch.rfc8072</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>

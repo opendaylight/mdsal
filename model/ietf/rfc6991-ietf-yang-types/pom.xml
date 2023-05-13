@@ -39,7 +39,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.rfc6991.yang.types</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.yang.types.rfc6991</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>

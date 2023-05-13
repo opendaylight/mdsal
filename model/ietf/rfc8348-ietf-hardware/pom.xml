@@ -48,7 +48,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.rfc8348.hardware</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.hardware.rfc8348</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>

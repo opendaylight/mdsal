@@ -32,7 +32,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.rfc8519.ethertypes</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.ethertypes.rfc8519</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>

@@ -33,7 +33,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.rfc8342.datastore</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.datastores.rfc8342</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>

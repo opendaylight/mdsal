@@ -44,7 +44,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.rfc8542.dc.fabric.topology</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.dc.fabric.topology.rfc8542</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>
