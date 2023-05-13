@@ -16,6 +16,23 @@
       "message": "looks good to me",
       "revId": "42a109b4a63562b2a618938ed6e494a3a61994ae",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d0d7699_49cf599c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-13T18:57:38Z",
+      "side": 1,
+      "message": "Also update artifacts/pom.xml",
+      "revId": "42a109b4a63562b2a618938ed6e494a3a61994ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     }
   ]
 }
