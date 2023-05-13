@@ -44,7 +44,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.rfc8819.module.tags.state</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.module.tags.state.rfc8819</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>

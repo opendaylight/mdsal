@@ -44,7 +44,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.rfc8349.ipv4.unicast.routing</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.ipv4.unicast.routing.rfc8349</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>

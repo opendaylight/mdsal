@@ -44,7 +44,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.rfc8519.access.control.list</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.access.control.list.rfc8519</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>
