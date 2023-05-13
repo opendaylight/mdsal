@@ -40,7 +40,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.rfc8345.network</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.opendaylight.yang.gen.ietf.network.rfc8345</Automatic-Module-Name>
                     </instructions>
                 </configuration>
             </plugin>
