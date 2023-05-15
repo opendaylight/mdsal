@@ -9,24 +9,22 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
- * IPv4 address parsing for ietf-inet-types ipv4-address. This is an internal implementation class, not meant to be
- * exposed in any shape or form to the outside world, as the code relies on the fact that the strings presented to it
- * have been previously validated to conform to the regular expressions defined in the YANG model.
+ * IPv4 address parsing for {@code ietf-inet-types} ipv4-address. This is an internal implementation class, not meant to
+ * be used directly in any shape or form to the outside world, as the code relies on the fact that the strings presented
+ * to it have been previously validated to conform to the regular expressions defined in the YANG model.
  */
-@Beta
 public final class Ipv4Utils {
-    static final int INET4_LENGTH = 4;
+    public static final int INET4_LENGTH = 4;
 
     private Ipv4Utils() {
         // Hidden on purpose
     }
 
-    static void fillIpv4Bytes(final byte @NonNull[] bytes, final int byteStart, final String str, final int strStart,
-            final int strLimit) {
+    public static void fillIpv4Bytes(final byte @NonNull[] bytes, final int byteStart, final String str,
+            final int strStart, final int strLimit) {
         int out = byteStart;
         int val = 0;
         for (int i = strStart; i < strLimit; ++i) {
@@ -73,7 +71,7 @@ public final class Ipv4Utils {
         return sb.toString();
     }
 
-    static void appendIpv4String(final StringBuilder sb, final byte @NonNull[] bytes) {
+    public static void appendIpv4String(final StringBuilder sb, final byte @NonNull[] bytes) {
         checkArgument(bytes.length == INET4_LENGTH, "IPv4 address length is 4 bytes");
 
         sb.append(Byte.toUnsignedInt(bytes[0]));
