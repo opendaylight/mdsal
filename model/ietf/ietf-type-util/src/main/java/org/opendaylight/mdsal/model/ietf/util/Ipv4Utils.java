@@ -42,7 +42,7 @@ public final class Ipv4Utils {
         bytes[out] = (byte) val;
     }
 
-    static int addressBits(final String str, final int limit) {
+    public static int addressBits(final String str, final int limit) {
         int prev = 0;
         int current = 0;
         for (int i = 0; i < limit; ++i) {
@@ -57,17 +57,17 @@ public final class Ipv4Utils {
         return prev << 8 | current;
     }
 
-    static byte @NonNull[] addressBytes(final String str, final int limit) {
+    public static byte @NonNull[] addressBytes(final String str, final int limit) {
         final byte[] bytes = new byte[4];
         Ipv4Utils.fillIpv4Bytes(bytes, 0, str, 0, limit);
         return bytes;
     }
 
-    static String addressString(final int bits) {
+    public static String addressString(final int bits) {
         return (bits >>> 24) + "." + (bits >>> 16 & 0xFF) + "." + (bits >>> 8 & 0xFF) + "." + (bits & 0xFF);
     }
 
-    static String addressString(final byte @NonNull[] bytes) {
+    public static String addressString(final byte @NonNull[] bytes) {
         final StringBuilder sb = new StringBuilder(15);
         appendIpv4String(sb, bytes);
         return sb.toString();

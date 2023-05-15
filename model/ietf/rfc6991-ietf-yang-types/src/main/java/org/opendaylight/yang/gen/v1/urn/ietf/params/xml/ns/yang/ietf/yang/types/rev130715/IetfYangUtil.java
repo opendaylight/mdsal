@@ -8,7 +8,6 @@
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.model.ietf.util.AbstractIetfYangUtil;
 
 /**
  * Utility methods for working with types defined in ietf-yang-types.
