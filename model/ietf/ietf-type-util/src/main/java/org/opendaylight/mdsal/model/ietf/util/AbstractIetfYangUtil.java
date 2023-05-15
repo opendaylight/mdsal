@@ -114,7 +114,7 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
 
     public final @NonNull Q dottedQuadFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length == 4, "Dotted-quad should have 4 bytes");
-        return quadFactory.newInstance(AbstractIetfInetUtil.addressStringV4(bytes));
+        return quadFactory.newInstance(Ipv4Utils.addressString(bytes));
     }
 
     public final @NonNull Q dottedQuadFor(final int bits) {

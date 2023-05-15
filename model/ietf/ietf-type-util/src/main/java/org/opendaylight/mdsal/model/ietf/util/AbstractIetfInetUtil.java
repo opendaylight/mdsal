@@ -232,7 +232,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws NullPointerException if bytes is null
      */
     public final @NonNull A4NZ ipv4AddressFor(final byte @NonNull[] bytes) {
-        return address4NoZoneFactory.newInstance(addressStringV4(bytes));
+        return address4NoZoneFactory.newInstance(Ipv4Utils.addressString(bytes));
     }
 
     /**
@@ -593,21 +593,6 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         return bytes;
     }
 
-    private static void appendIpv4String(final StringBuilder sb, final byte @NonNull[] bytes) {
-        checkArgument(bytes.length == Ipv4Utils.INET4_LENGTH, "IPv4 address length is 4 bytes");
-
-        sb.append(Byte.toUnsignedInt(bytes[0]));
-        for (int i = 1; i < Ipv4Utils.INET4_LENGTH; ++i) {
-            sb.append('.').append(Byte.toUnsignedInt(bytes[i]));
-        }
-    }
-
-    static String addressStringV4(final byte @NonNull[] bytes) {
-        final StringBuilder sb = new StringBuilder(15);
-        appendIpv4String(sb, bytes);
-        return sb.toString();
-    }
-
     private static @NonNull String addressStringV4(final InetAddress addr) {
         requireAddress(addr);
         checkArgument(addr instanceof Inet4Address, "Address has to be an Inet4Address");
@@ -636,7 +621,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
 
     private static String prefixStringV4(final byte @NonNull[] bytes) {
         final StringBuilder sb = new StringBuilder(18);
-        appendIpv4String(sb, bytes);
+        Ipv4Utils.appendIpv4String(sb, bytes);
         return sb.append("/32").toString();
     }
 
@@ -644,7 +629,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         checkArgument(mask >= 0 && mask <= 32, "Invalid mask %s", mask);
 
         final StringBuilder sb = new StringBuilder(18);
-        appendIpv4String(sb, bytes);
+        Ipv4Utils.appendIpv4String(sb, bytes);
         return sb.append('/').append(mask).toString();
     }
 

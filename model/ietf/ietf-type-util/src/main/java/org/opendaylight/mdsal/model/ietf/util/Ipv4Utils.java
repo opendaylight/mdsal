@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.model.ietf.util;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -63,5 +65,20 @@ public final class Ipv4Utils {
 
     static String addressString(final int bits) {
         return (bits >>> 24) + "." + (bits >>> 16 & 0xFF) + "." + (bits >>> 8 & 0xFF) + "." + (bits & 0xFF);
+    }
+
+    static String addressString(final byte @NonNull[] bytes) {
+        final StringBuilder sb = new StringBuilder(15);
+        appendIpv4String(sb, bytes);
+        return sb.toString();
+    }
+
+    static void appendIpv4String(final StringBuilder sb, final byte @NonNull[] bytes) {
+        checkArgument(bytes.length == INET4_LENGTH, "IPv4 address length is 4 bytes");
+
+        sb.append(Byte.toUnsignedInt(bytes[0]));
+        for (int i = 1; i < INET4_LENGTH; ++i) {
+            sb.append('.').append(Byte.toUnsignedInt(bytes[i]));
+        }
     }
 }
