@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.model.ietf.util;
 
+import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
@@ -14,9 +15,10 @@ import org.eclipse.jdt.annotation.NonNull;
  * exposed in any shape or form to the outside world, as the code relies on the fact that the strings presented to it
  * have been previously validated to conform to the regular expressions defined in the YANG model.
  */
-final class Ipv4Utils {
+@Beta
+public final class Ipv4Utils {
     private Ipv4Utils() {
-
+        // Hidden on purpose
     }
 
     static void fillIpv4Bytes(final byte @NonNull[] bytes, final int byteStart, final String str, final int strStart,
