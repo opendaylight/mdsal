@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b12f77c7_c780938f",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/module-info.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-15T19:55:09Z",
+      "side": 1,
+      "message": "should not be exported",
+      "range": {
+        "startLine": 13,
+        "startChar": 55,
+        "endLine": 13,
+        "endChar": 61
+      },
+      "revId": "16264f7cb93a5503476277510d34c72f0c84b540",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29ffd0b0_f179a6b7",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/module-info.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-15T19:55:09Z",
+      "side": 1,
+      "message": "should not be exported",
+      "range": {
+        "startLine": 14,
+        "startChar": 55,
+        "endLine": 14,
+        "endChar": 59
+      },
+      "revId": "16264f7cb93a5503476277510d34c72f0c84b540",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "74c1d772_06436afa",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/module-info.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-15T19:55:09Z",
+      "side": 1,
+      "message": "also provides:\nAdapterFactory with BindingAdapterFactory\nAdapterContext with ConstantAdapterContext\nQueryFactory with DefaultQueryFactory",
+      "revId": "16264f7cb93a5503476277510d34c72f0c84b540",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0ecd35a_0652d31a",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/module-info.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-15T19:55:09Z",
+      "side": 1,
+      "message": "should not be exported",
+      "range": {
+        "startLine": 16,
+        "startChar": 55,
+        "endLine": 16,
+        "endChar": 60
+      },
+      "revId": "16264f7cb93a5503476277510d34c72f0c84b540",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
