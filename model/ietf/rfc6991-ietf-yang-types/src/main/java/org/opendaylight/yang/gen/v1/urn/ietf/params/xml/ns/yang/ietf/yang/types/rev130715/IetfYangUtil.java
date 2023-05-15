@@ -9,7 +9,6 @@ package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.google.common.annotations.Beta;
 import java.util.HexFormat;
 import java.util.UUID;
 import org.eclipse.jdt.annotation.NonNull;
@@ -19,10 +18,7 @@ import org.opendaylight.mdsal.model.ietf.util.Ipv4Utils;
 /**
  * Utility methods for working with types defined in {@code ietf-yang-types}.
  */
-@Beta
 public final class IetfYangUtil {
-    public static final IetfYangUtil INSTANCE = new IetfYangUtil();
-
     private static final int MAC_BYTE_LENGTH = 6;
     private static final HexFormat COLON_HEXFORMAT = HexFormat.ofDelimiter(":");
     private static final byte @NonNull[] EMPTY_BYTES = new byte[0];
@@ -49,7 +45,7 @@ public final class IetfYangUtil {
      * @return A MacAddress containing the canonical representation.
      * @throws NullPointerException if macAddress is null
      */
-    public @NonNull MacAddress canonizeMacAddress(final @NonNull MacAddress macAddress) {
+    public static @NonNull MacAddress canonizeMacAddress(final @NonNull MacAddress macAddress) {
         final char[] input = macAddress.getValue().toCharArray();
         return ensureLowerCase(input) ? MAC_FACTORY.newInstance(String.valueOf(input)) : macAddress;
     }
@@ -62,12 +58,12 @@ public final class IetfYangUtil {
      * @throws NullPointerException if bytes is null
      * @throws IllegalArgumentException if length of input is not 6 bytes
      */
-    public @NonNull MacAddress macAddressFor(final byte @NonNull[] bytes) {
+    public static @NonNull MacAddress macAddressFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length == MAC_BYTE_LENGTH, "MAC address should have 6 bytes, not %s", bytes.length);
         return MAC_FACTORY.newInstance(COLON_HEXFORMAT.formatHex(bytes));
     }
 
-    public byte @NonNull[] macAddressBytes(final @NonNull MacAddress macAddress) {
+    public static byte @NonNull[] macAddressBytes(final @NonNull MacAddress macAddress) {
         return stringToBytes(macAddress.getValue(), MAC_BYTE_LENGTH);
     }
 
@@ -78,7 +74,7 @@ public final class IetfYangUtil {
      * @return A PhysAddress containing the canonical representation.
      * @throws NullPointerException if physAddress is null
      */
-    public @NonNull PhysAddress canonizePhysAddress(final @NonNull PhysAddress physAddress) {
+    public static @NonNull PhysAddress canonizePhysAddress(final @NonNull PhysAddress physAddress) {
         final char[] input = physAddress.getValue().toCharArray();
         return ensureLowerCase(input) ? PHYS_FACTORY.newInstance(String.valueOf(input)) : physAddress;
     }
@@ -91,46 +87,46 @@ public final class IetfYangUtil {
      * @throws NullPointerException if bytes is null
      * @throws IllegalArgumentException if length of input is not at least 1 byte
      */
-    public @NonNull PhysAddress physAddressFor(final byte @NonNull[] bytes) {
+    public static @NonNull PhysAddress physAddressFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length > 0, "Physical address should have at least one byte");
         return PHYS_FACTORY.newInstance(COLON_HEXFORMAT.formatHex(bytes));
     }
 
-    public byte @NonNull[] physAddressBytes(final @NonNull PhysAddress physAddress) {
+    public static byte @NonNull[] physAddressBytes(final @NonNull PhysAddress physAddress) {
         final String str = physAddress.getValue();
         return str.isEmpty() ? EMPTY_BYTES : stringToBytes(str, str.length() / 3 + 1);
     }
 
-    public @NonNull HexString hexStringFor(final byte @NonNull[] bytes) {
+    public static @NonNull HexString hexStringFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length > 0, "Hex string should have at least one byte");
         return HEX_FACTORY.newInstance(COLON_HEXFORMAT.formatHex(bytes));
     }
 
-    public byte @NonNull[] hexStringBytes(final @NonNull HexString hexString) {
+    public static byte @NonNull[] hexStringBytes(final @NonNull HexString hexString) {
         final String str = hexString.getValue();
         return stringToBytes(str, str.length() / 3 + 1);
     }
 
-    public @NonNull DottedQuad dottedQuadFor(final byte @NonNull[] bytes) {
+    public static @NonNull DottedQuad dottedQuadFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length == 4, "Dotted-quad should have 4 bytes");
         return QUAD_FACTORY.newInstance(Ipv4Utils.addressString(bytes));
     }
 
-    public @NonNull DottedQuad dottedQuadFor(final int bits) {
+    public static @NonNull DottedQuad dottedQuadFor(final int bits) {
         return QUAD_FACTORY.newInstance(Ipv4Utils.addressString(bits));
     }
 
-    public int dottedQuadBits(final @NonNull DottedQuad dottedQuad) {
+    public static int dottedQuadBits(final @NonNull DottedQuad dottedQuad) {
         final String str = dottedQuad.getValue();
         return Ipv4Utils.addressBits(str, str.length());
     }
 
-    public byte @NonNull[] dottedQuadBytes(final @NonNull DottedQuad dottedQuad) {
+    public static byte @NonNull[] dottedQuadBytes(final @NonNull DottedQuad dottedQuad) {
         final String str = dottedQuad.getValue();
         return Ipv4Utils.addressBytes(str, str.length());
     }
 
-    public @NonNull Uuid uuidFor(final @NonNull UUID uuid) {
+    public static @NonNull Uuid uuidFor(final @NonNull UUID uuid) {
         return UUID_FACTORY.newInstance(uuid.toString());
     }
 
