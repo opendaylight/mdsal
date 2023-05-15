@@ -15,14 +15,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.model.ietf.util.AbstractIetfInetUtil;
 
 /**
  * A set of utility methods to efficiently instantiate various ietf-inet-types DTOs.
  */
 @Beta
-public final class IetfInetUtil extends AbstractIetfInetUtil<Ipv4Address, Ipv4AddressNoZone, Ipv4Prefix, Ipv6Address,
-        Ipv6AddressNoZone, Ipv6Prefix, IpAddress, IpAddressNoZone, IpPrefix> {
+public final class IetfInetUtil extends AbstractIetfInetUtil {
     public static final @NonNull IetfInetUtil INSTANCE = new IetfInetUtil();
 
     private static final Pattern HOST_IPV4_PATTERN = Pattern.compile(
@@ -53,7 +51,7 @@ public final class IetfInetUtil extends AbstractIetfInetUtil<Ipv4Address, Ipv4Ad
     }
 
     private IetfInetUtil() {
-        super(Ipv4AddressNoZone.class, Ipv4Prefix.class, Ipv6AddressNoZone.class, Ipv6Prefix.class);
+        // Hidden on purpose
     }
 
     @Beta
