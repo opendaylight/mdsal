@@ -28,9 +28,6 @@ import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
 @Beta
 @SuppressWarnings("checkstyle:classTypeParameterName")
 public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ extends A6, P6, A, ANZ, P> {
-    private static final int INET4_LENGTH = 4;
-    private static final int INET6_LENGTH = 16;
-
     private final StringValueObjectFactory<A4NZ> address4NoZoneFactory;
     private final StringValueObjectFactory<P4> prefix4Factory;
     private final StringValueObjectFactory<A6NZ> address6NoZoneFactory;
@@ -86,8 +83,8 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      */
     public final @NonNull A ipAddressFor(final byte @NonNull[] bytes) {
         return switch (bytes.length) {
-            case INET4_LENGTH -> ipv4Address(ipv4AddressFor(bytes));
-            case INET6_LENGTH -> ipv6Address(ipv6AddressFor(bytes));
+            case Ipv4Utils.INET4_LENGTH -> ipv4Address(ipv4AddressFor(bytes));
+            case Ipv6Utils.INET6_LENGTH -> ipv6Address(ipv6AddressFor(bytes));
             default -> throwInvalidArray(bytes);
         };
     }
@@ -117,8 +114,8 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      */
     public final @NonNull ANZ ipAddressNoZoneFor(final byte @NonNull[] bytes) {
         return switch (bytes.length) {
-            case INET4_LENGTH -> ipv4AddressNoZone(ipv4AddressFor(bytes));
-            case INET6_LENGTH -> ipv6AddressNoZone(ipv6AddressFor(bytes));
+            case Ipv4Utils.INET4_LENGTH -> ipv4AddressNoZone(ipv4AddressFor(bytes));
+            case Ipv6Utils.INET6_LENGTH -> ipv6AddressNoZone(ipv6AddressFor(bytes));
             default -> throwInvalidArray(bytes);
         };
     }
@@ -156,8 +153,8 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      */
     public final @NonNull P ipPrefixFor(final byte @NonNull[] bytes, final int mask) {
         return switch (bytes.length) {
-            case INET4_LENGTH -> ipv4Prefix(ipv4PrefixFor(bytes, mask));
-            case INET6_LENGTH -> ipv6Prefix(ipv6PrefixFor(bytes, mask));
+            case Ipv4Utils.INET4_LENGTH -> ipv4Prefix(ipv4PrefixFor(bytes, mask));
+            case Ipv6Utils.INET6_LENGTH -> ipv6Prefix(ipv6PrefixFor(bytes, mask));
             default -> throwInvalidArray(bytes);
         };
     }
@@ -412,9 +409,9 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         final String str = ipv4PrefixString(prefix);
         final int slash = str.lastIndexOf('/');
 
-        final byte[] bytes = new byte[INET4_LENGTH + 1];
+        final byte[] bytes = new byte[Ipv4Utils.INET4_LENGTH + 1];
         Ipv4Utils.fillIpv4Bytes(bytes, 0, str, 0, slash);
-        bytes[INET4_LENGTH] = (byte)Integer.parseInt(str.substring(slash + 1), 10);
+        bytes[Ipv4Utils.INET4_LENGTH] = (byte)Integer.parseInt(str.substring(slash + 1), 10);
         return bytes;
     }
 
@@ -471,7 +468,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     }
 
     private static byte @NonNull[] ipv6StringBytes(final @NonNull String str, final int limit) {
-        final byte[] bytes = new byte[INET6_LENGTH];
+        final byte[] bytes = new byte[Ipv6Utils.INET6_LENGTH];
         Ipv6Utils.fillIpv6Bytes(bytes, str, limit);
         return bytes;
     }
@@ -562,7 +559,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         final int size = mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1);
 
         // Until we can instantiate an IPv6 address for a partial array, use a temporary buffer
-        byte[] tmp = new byte[INET6_LENGTH];
+        byte[] tmp = new byte[Ipv6Utils.INET6_LENGTH];
         System.arraycopy(array, startOffset, tmp, 0, size);
         return ipv6PrefixFor(tmp, mask);
     }
@@ -589,18 +586,18 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
 
     public final byte @NonNull[] ipv6PrefixToBytes(final @NonNull P6 prefix) {
         final String str = ipv6PrefixString(prefix);
-        final byte[] bytes = new byte[INET6_LENGTH + 1];
+        final byte[] bytes = new byte[Ipv6Utils.INET6_LENGTH + 1];
         final int slash = str.lastIndexOf('/');
         Ipv6Utils.fillIpv6Bytes(bytes, str, slash);
-        bytes[INET6_LENGTH] = (byte)Integer.parseInt(str.substring(slash + 1), 10);
+        bytes[Ipv6Utils.INET6_LENGTH] = (byte)Integer.parseInt(str.substring(slash + 1), 10);
         return bytes;
     }
 
     private static void appendIpv4String(final StringBuilder sb, final byte @NonNull[] bytes) {
-        checkArgument(bytes.length == INET4_LENGTH, "IPv4 address length is 4 bytes");
+        checkArgument(bytes.length == Ipv4Utils.INET4_LENGTH, "IPv4 address length is 4 bytes");
 
         sb.append(Byte.toUnsignedInt(bytes[0]));
-        for (int i = 1; i < INET4_LENGTH; ++i) {
+        for (int i = 1; i < Ipv4Utils.INET4_LENGTH; ++i) {
             sb.append('.').append(Byte.toUnsignedInt(bytes[i]));
         }
     }
@@ -618,7 +615,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     }
 
     private static String addressStringV6(final byte @NonNull[] bytes) {
-        checkArgument(bytes.length == INET6_LENGTH, "IPv6 address length is 16 bytes");
+        checkArgument(bytes.length == Ipv6Utils.INET6_LENGTH, "IPv6 address length is 16 bytes");
 
         try {
             return addressStringV6(Inet6Address.getByAddress(null, bytes, null));
@@ -652,7 +649,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     }
 
     private P4 v4PrefixForShort(final byte @NonNull[] array, final int startOffset, final int size, final int mask) {
-        if (startOffset == 0 && size == INET4_LENGTH && array.length == INET4_LENGTH) {
+        if (startOffset == 0 && size == Ipv4Utils.INET4_LENGTH && array.length == Ipv4Utils.INET4_LENGTH) {
             // Easy case, fall back to non-short
             return ipv4PrefixFor(array, mask);
         }
@@ -666,7 +663,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         }
 
         // Add zeros
-        for (int i = size; i < INET4_LENGTH; i++) {
+        for (int i = size; i < Ipv4Utils.INET4_LENGTH; i++) {
             sb.append(".0");
         }
 
