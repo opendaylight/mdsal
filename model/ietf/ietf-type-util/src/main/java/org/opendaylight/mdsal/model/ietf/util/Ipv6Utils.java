@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 
+import com.google.common.annotations.Beta;
 import java.util.Arrays;
 import java.util.HexFormat;
 import org.eclipse.jdt.annotation.NonNull;
@@ -44,13 +45,14 @@ import org.eclipse.jdt.annotation.NonNull;
  * As far as why it is similar to Sun's sun.net.util please ask Sun why
  * their code has the same variable names, comments and code flow.
  */
-final class Ipv6Utils {
+@Beta
+public final class Ipv6Utils {
     private static final int INADDR4SZ = 4;
     private static final int INADDR6SZ = 16;
     private static final int INT16SZ = Short.BYTES;
 
     private Ipv6Utils() {
-
+        // Hidden on purpose
     }
 
     /**
