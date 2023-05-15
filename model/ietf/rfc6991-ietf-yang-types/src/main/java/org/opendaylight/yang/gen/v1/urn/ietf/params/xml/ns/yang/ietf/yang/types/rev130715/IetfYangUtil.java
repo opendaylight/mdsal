@@ -27,18 +27,19 @@ public final class IetfYangUtil {
     private static final HexFormat COLON_HEXFORMAT = HexFormat.ofDelimiter(":");
     private static final byte @NonNull[] EMPTY_BYTES = new byte[0];
 
-    private final StringValueObjectFactory<MacAddress> macFactory;
-    private final StringValueObjectFactory<PhysAddress> physFactory;
-    private final StringValueObjectFactory<HexString> hexFactory;
-    private final StringValueObjectFactory<DottedQuad> quadFactory;
-    private final StringValueObjectFactory<Uuid> uuidFactory;
+    private static final StringValueObjectFactory<MacAddress> MAC_FACTORY =
+        StringValueObjectFactory.create(MacAddress.class, "00:00:00:00:00:00");
+    private static final StringValueObjectFactory<PhysAddress> PHYS_FACTORY =
+        StringValueObjectFactory.create(PhysAddress.class, "00:00");
+    private static final StringValueObjectFactory<HexString> HEX_FACTORY =
+        StringValueObjectFactory.create(HexString.class, "00");
+    private static final StringValueObjectFactory<DottedQuad> QUAD_FACTORY =
+        StringValueObjectFactory.create(DottedQuad.class, "0.0.0.0");
+    private static final StringValueObjectFactory<Uuid> UUID_FACTORY =
+        StringValueObjectFactory.create(Uuid.class, "f81d4fae-7dec-11d0-a765-00a0c91e6bf6");
 
     private IetfYangUtil() {
-        macFactory = StringValueObjectFactory.create(MacAddress.class, "00:00:00:00:00:00");
-        physFactory = StringValueObjectFactory.create(PhysAddress.class, "00:00");
-        hexFactory = StringValueObjectFactory.create(HexString.class, "00");
-        quadFactory = StringValueObjectFactory.create(DottedQuad.class, "0.0.0.0");
-        uuidFactory = StringValueObjectFactory.create(Uuid.class, "f81d4fae-7dec-11d0-a765-00a0c91e6bf6");
+        // Hidden on purpose
     }
 
     /**
@@ -50,7 +51,7 @@ public final class IetfYangUtil {
      */
     public @NonNull MacAddress canonizeMacAddress(final @NonNull MacAddress macAddress) {
         final char[] input = macAddress.getValue().toCharArray();
-        return ensureLowerCase(input) ? macFactory.newInstance(String.valueOf(input)) : macAddress;
+        return ensureLowerCase(input) ? MAC_FACTORY.newInstance(String.valueOf(input)) : macAddress;
     }
 
     /**
@@ -63,7 +64,7 @@ public final class IetfYangUtil {
      */
     public @NonNull MacAddress macAddressFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length == MAC_BYTE_LENGTH, "MAC address should have 6 bytes, not %s", bytes.length);
-        return macFactory.newInstance(COLON_HEXFORMAT.formatHex(bytes));
+        return MAC_FACTORY.newInstance(COLON_HEXFORMAT.formatHex(bytes));
     }
 
     public byte @NonNull[] macAddressBytes(final @NonNull MacAddress macAddress) {
@@ -79,7 +80,7 @@ public final class IetfYangUtil {
      */
     public @NonNull PhysAddress canonizePhysAddress(final @NonNull PhysAddress physAddress) {
         final char[] input = physAddress.getValue().toCharArray();
-        return ensureLowerCase(input) ? physFactory.newInstance(String.valueOf(input)) : physAddress;
+        return ensureLowerCase(input) ? PHYS_FACTORY.newInstance(String.valueOf(input)) : physAddress;
     }
 
     /**
@@ -92,7 +93,7 @@ public final class IetfYangUtil {
      */
     public @NonNull PhysAddress physAddressFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length > 0, "Physical address should have at least one byte");
-        return physFactory.newInstance(COLON_HEXFORMAT.formatHex(bytes));
+        return PHYS_FACTORY.newInstance(COLON_HEXFORMAT.formatHex(bytes));
     }
 
     public byte @NonNull[] physAddressBytes(final @NonNull PhysAddress physAddress) {
@@ -102,7 +103,7 @@ public final class IetfYangUtil {
 
     public @NonNull HexString hexStringFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length > 0, "Hex string should have at least one byte");
-        return hexFactory.newInstance(COLON_HEXFORMAT.formatHex(bytes));
+        return HEX_FACTORY.newInstance(COLON_HEXFORMAT.formatHex(bytes));
     }
 
     public byte @NonNull[] hexStringBytes(final @NonNull HexString hexString) {
@@ -112,11 +113,11 @@ public final class IetfYangUtil {
 
     public @NonNull DottedQuad dottedQuadFor(final byte @NonNull[] bytes) {
         checkArgument(bytes.length == 4, "Dotted-quad should have 4 bytes");
-        return quadFactory.newInstance(Ipv4Utils.addressString(bytes));
+        return QUAD_FACTORY.newInstance(Ipv4Utils.addressString(bytes));
     }
 
     public @NonNull DottedQuad dottedQuadFor(final int bits) {
-        return quadFactory.newInstance(Ipv4Utils.addressString(bits));
+        return QUAD_FACTORY.newInstance(Ipv4Utils.addressString(bits));
     }
 
     public int dottedQuadBits(final @NonNull DottedQuad dottedQuad) {
@@ -130,7 +131,7 @@ public final class IetfYangUtil {
     }
 
     public @NonNull Uuid uuidFor(final @NonNull UUID uuid) {
-        return uuidFactory.newInstance(uuid.toString());
+        return UUID_FACTORY.newInstance(uuid.toString());
     }
 
     /**
