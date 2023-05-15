@@ -17,6 +17,8 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 @Beta
 public final class Ipv4Utils {
+    static final int INET4_LENGTH = 4;
+
     private Ipv4Utils() {
         // Hidden on purpose
     }

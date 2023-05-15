@@ -47,9 +47,7 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 @Beta
 public final class Ipv6Utils {
-    private static final int INADDR4SZ = 4;
-    private static final int INADDR6SZ = 16;
-    private static final int INT16SZ = Short.BYTES;
+    static final int INET6_LENGTH = 16;
 
     private Ipv6Utils() {
         // Hidden on purpose
@@ -98,13 +96,13 @@ public final class Ipv6Utils {
             }
 
             // frankenstein - v4 attached to v6, mixed notation
-            if (ch == '.' && j + INADDR4SZ <= INADDR6SZ) {
+            if (ch == '.' && j + Ipv4Utils.INET4_LENGTH <= INET6_LENGTH) {
                 /*
                  * This has passed the regexp so it is fairly safe to parse it
                  * straight away. Use the Ipv4Utils for that.
                  */
                 Ipv4Utils.fillIpv4Bytes(bytes, j, str, curtok, strLimit);
-                j += INADDR4SZ;
+                j += Ipv4Utils.INET4_LENGTH;
                 haveVal = false;
                 break;
             }
@@ -120,16 +118,16 @@ public final class Ipv6Utils {
         }
 
         if (haveVal) {
-            verifySize(j + INT16SZ <= INADDR6SZ, str);
+            verifySize(j + Short.BYTES <= INET6_LENGTH, str);
             bytes[j++] = (byte) (val >> 8 & 0xff);
             bytes[j++] = (byte) (val & 0xff);
         }
 
         if (colonp != -1) {
-            verifySize(j != INADDR6SZ, str);
+            verifySize(j != INET6_LENGTH, str);
             expandZeros(bytes, colonp, j);
         } else {
-            verifySize(j == INADDR6SZ, str);
+            verifySize(j == INET6_LENGTH, str);
         }
     }
 
@@ -139,7 +137,7 @@ public final class Ipv6Utils {
 
     private static void expandZeros(final byte[] bytes, final int where, final int filledBytes) {
         final int tailLength = filledBytes - where;
-        final int tailOffset = INADDR6SZ - tailLength;
+        final int tailOffset = INET6_LENGTH - tailLength;
         System.arraycopy(bytes, where, bytes, tailOffset, tailLength);
         Arrays.fill(bytes, where, tailOffset, (byte)0);
     }
