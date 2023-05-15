@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.model.ietf.util;
+package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -14,6 +14,7 @@ import java.util.HexFormat;
 import java.util.UUID;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
+import org.opendaylight.mdsal.model.ietf.util.Ipv4Utils;
 
 /**
  * Abstract utility class for dealing with MAC addresses as defined in the ietf-yang-types model. This class is
