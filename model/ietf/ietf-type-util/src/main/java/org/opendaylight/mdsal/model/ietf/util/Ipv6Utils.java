@@ -10,17 +10,15 @@ package org.opendaylight.mdsal.model.ietf.util;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 
-import com.google.common.annotations.Beta;
 import java.util.Arrays;
 import java.util.HexFormat;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
- * IPv6 address parsing for ietf-inet-types ipv6-address and ipv6-prefix. This is an internal implementation
- * class, not meant to be exposed in any shape or form to the outside world, as the code relies on the fact that
- * the strings presented to it have been previously validated to conform to the regular expressions defined in
- * the YANG model.
- */
+ * IPv6 address parsing for {@code ietf-inet-types} ipv6-address and ipv6-prefix. This is an internal implementation
+ * class, not meant to be used directly in any shape or form to the outside world, as the code relies on the fact that
+ * the strings presented to it have been previously validated to conform to the regular expressions defined in the YANG
+ *  model.
 /*
  * v6 routines added by Anton Ivanov on 14.6.2015
  * revised by Robert Varga
@@ -45,9 +43,8 @@ import org.eclipse.jdt.annotation.NonNull;
  * As far as why it is similar to Sun's sun.net.util please ask Sun why
  * their code has the same variable names, comments and code flow.
  */
-@Beta
 public final class Ipv6Utils {
-    static final int INET6_LENGTH = 16;
+    public static final int INET6_LENGTH = 16;
 
     private Ipv6Utils() {
         // Hidden on purpose
@@ -62,7 +59,7 @@ public final class Ipv6Utils {
      * @throws NullPointerException if ipv6address is null
      */
     @SuppressWarnings("checkstyle:localVariableName")
-    static void fillIpv6Bytes(final byte @NonNull[] bytes, final String str, final int strLimit) {
+    public static void fillIpv6Bytes(final byte @NonNull[] bytes, final String str, final int strLimit) {
         // Leading :: requires some special handling.
         int i = 0;
         if (str.charAt(i) == ':') {
