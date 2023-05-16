@@ -19,7 +19,6 @@ import java.net.UnknownHostException;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
 import org.opendaylight.mdsal.model.ietf.util.Ipv4Utils;
 import org.opendaylight.mdsal.model.ietf.util.Ipv6Utils;
@@ -39,34 +38,6 @@ public abstract class AbstractIetfInetUtil {
     private final StringValueObjectFactory<Ipv6Prefix> prefix6Factory =
         StringValueObjectFactory.create(Ipv6Prefix.class, "::0/0");
 
-    protected abstract @NonNull IpAddress ipv4Address(@NonNull Ipv4AddressNoZone addr);
-
-    protected abstract @NonNull IpAddressNoZone ipv4AddressNoZone(@NonNull Ipv4AddressNoZone addr);
-
-    protected abstract @NonNull IpAddress ipv6Address(@NonNull Ipv6AddressNoZone addr);
-
-    protected abstract @NonNull IpAddressNoZone ipv6AddressNoZone(@NonNull Ipv6AddressNoZone addr);
-
-    protected abstract @Nullable Ipv4Address maybeIpv4Address(@NonNull IpAddress addr);
-
-    protected abstract @Nullable Ipv4AddressNoZone maybeIpv4AddressNoZone(@NonNull IpAddressNoZone addr);
-
-    protected abstract @Nullable Ipv6Address maybeIpv6Address(@NonNull IpAddress addr);
-
-    protected abstract @Nullable Ipv6AddressNoZone maybeIpv6AddressNoZone(@NonNull IpAddressNoZone addr);
-
-    protected abstract @NonNull IpPrefix ipv4Prefix(@NonNull Ipv4Prefix addr);
-
-    protected abstract @NonNull IpPrefix ipv6Prefix(@NonNull Ipv6Prefix addr);
-
-    protected abstract @NonNull String ipv4AddressString(@NonNull Ipv4Address addr);
-
-    protected abstract @NonNull String ipv6AddressString(@NonNull Ipv6Address addr);
-
-    protected abstract @NonNull String ipv4PrefixString(@NonNull Ipv4Prefix prefix);
-
-    protected abstract @NonNull String ipv6PrefixString(@NonNull Ipv6Prefix prefix);
-
     /**
      * Create an IpAddress by interpreting input bytes as an IPv4 or IPv6 address, based on array length.
      *
@@ -77,8 +48,8 @@ public abstract class AbstractIetfInetUtil {
      */
     public final @NonNull IpAddress ipAddressFor(final byte @NonNull[] bytes) {
         return switch (bytes.length) {
-            case Ipv4Utils.INET4_LENGTH -> ipv4Address(ipv4AddressFor(bytes));
-            case Ipv6Utils.INET6_LENGTH -> ipv6Address(ipv6AddressFor(bytes));
+            case Ipv4Utils.INET4_LENGTH -> new IpAddress(ipv4AddressFor(bytes));
+            case Ipv6Utils.INET6_LENGTH -> new IpAddress(ipv6AddressFor(bytes));
             default -> throwInvalidArray(bytes);
         };
     }
@@ -86,9 +57,9 @@ public abstract class AbstractIetfInetUtil {
     public final @NonNull IpAddress ipAddressFor(final @NonNull InetAddress addr) {
         requireAddress(addr);
         if (addr instanceof Inet4Address) {
-            return ipv4Address(ipv4AddressFor(addr));
+            return new IpAddress(ipv4AddressFor(addr));
         } else if (addr instanceof Inet6Address) {
-            return ipv6Address(ipv6AddressFor(addr));
+            return new IpAddress(ipv6AddressFor(addr));
         } else {
             throw unhandledAddress(addr);
         }
@@ -108,8 +79,8 @@ public abstract class AbstractIetfInetUtil {
      */
     public final @NonNull IpAddressNoZone ipAddressNoZoneFor(final byte @NonNull[] bytes) {
         return switch (bytes.length) {
-            case Ipv4Utils.INET4_LENGTH -> ipv4AddressNoZone(ipv4AddressFor(bytes));
-            case Ipv6Utils.INET6_LENGTH -> ipv6AddressNoZone(ipv6AddressFor(bytes));
+            case Ipv4Utils.INET4_LENGTH -> new IpAddressNoZone(ipv4AddressFor(bytes));
+            case Ipv6Utils.INET6_LENGTH -> new IpAddressNoZone(ipv6AddressFor(bytes));
             default -> throwInvalidArray(bytes);
         };
     }
@@ -117,9 +88,9 @@ public abstract class AbstractIetfInetUtil {
     public final @NonNull IpAddressNoZone ipAddressNoZoneFor(final @NonNull InetAddress addr) {
         requireAddress(addr);
         if (addr instanceof Inet4Address) {
-            return ipv4AddressNoZone(ipv4AddressFor(addr));
+            return new IpAddressNoZone(ipv4AddressFor(addr));
         } else if (addr instanceof Inet6Address) {
-            return ipv6AddressNoZone(ipv6AddressFor(addr));
+            return new IpAddressNoZone(ipv6AddressFor(addr));
         } else {
             throw unhandledAddress(addr);
         }
@@ -147,8 +118,8 @@ public abstract class AbstractIetfInetUtil {
      */
     public final @NonNull IpPrefix ipPrefixFor(final byte @NonNull[] bytes, final int mask) {
         return switch (bytes.length) {
-            case Ipv4Utils.INET4_LENGTH -> ipv4Prefix(ipv4PrefixFor(bytes, mask));
-            case Ipv6Utils.INET6_LENGTH -> ipv6Prefix(ipv6PrefixFor(bytes, mask));
+            case Ipv4Utils.INET4_LENGTH -> new IpPrefix(ipv4PrefixFor(bytes, mask));
+            case Ipv6Utils.INET6_LENGTH -> new IpPrefix(ipv6PrefixFor(bytes, mask));
             default -> throwInvalidArray(bytes);
         };
     }
@@ -156,32 +127,32 @@ public abstract class AbstractIetfInetUtil {
     public final @NonNull IpPrefix ipPrefixFor(final @NonNull InetAddress addr, final int mask) {
         requireAddress(addr);
         if (addr instanceof Inet4Address) {
-            return ipv4Prefix(ipv4PrefixFor(addr, mask));
+            return new IpPrefix(ipv4PrefixFor(addr, mask));
         } else if (addr instanceof Inet6Address) {
-            return ipv6Prefix(ipv6PrefixFor(addr, mask));
+            return new IpPrefix(ipv6PrefixFor(addr, mask));
         } else {
             throw unhandledAddress(addr);
         }
     }
 
     public final @NonNull IpPrefix ipPrefixFor(final @NonNull IpAddress addr) {
-        final var v4 = maybeIpv4Address(addr);
-        return v4 != null ? ipv4Prefix(ipv4PrefixFor(v4)) : ipv6Prefix(ipv6PrefixFor(coerceIpv6Address(addr)));
+        final var v4 = addr.getIpv4Address();
+        return v4 != null ? new IpPrefix(ipv4PrefixFor(v4)) : new IpPrefix(ipv6PrefixFor(coerceIpv6Address(addr)));
     }
 
     public final @NonNull IpPrefix ipPrefixForNoZone(final @NonNull IpAddressNoZone addr) {
-        final var v4 = maybeIpv4AddressNoZone(addr);
-        return v4 != null ? ipv4Prefix(ipv4PrefixFor(inet4AddressForNoZone(v4)))
-            : ipv6Prefix(ipv6PrefixFor(coerceIpv6AddressNoZone(addr)));
+        final var v4 = addr.getIpv4AddressNoZone();
+        return v4 != null ? new IpPrefix(ipv4PrefixFor(inet4AddressForNoZone(v4)))
+            : new IpPrefix(ipv6PrefixFor(coerceIpv6AddressNoZone(addr)));
     }
 
     public final @NonNull InetAddress inetAddressFor(final @NonNull IpAddress addr) {
-        final var v4 = maybeIpv4Address(addr);
+        final var v4 = addr.getIpv4Address();
         return v4 != null ? inet4AddressFor(v4) : inet6AddressFor(coerceIpv6Address(addr));
     }
 
     public final @NonNull InetAddress inetAddressForNoZone(final @NonNull IpAddressNoZone addr) {
-        final var v4 = maybeIpv4AddressNoZone(addr);
+        final var v4 = addr.getIpv4AddressNoZone();
         return v4 != null ? inet4AddressForNoZone(v4) : inet6AddressForNoZone(coerceIpv6AddressNoZone(addr));
     }
 
@@ -261,11 +232,11 @@ public abstract class AbstractIetfInetUtil {
     public final @NonNull Ipv4AddressNoZone ipv4AddressNoZoneFor(final @NonNull Ipv4Address addr) {
         requireAddress(addr);
         return addr instanceof Ipv4AddressNoZone noZone ? noZone
-            :  address4NoZoneFactory.newInstance(stripZone(ipv4AddressString(addr)));
+            :  address4NoZoneFactory.newInstance(stripZone(addr.getValue()));
     }
 
     public final @NonNull Ipv4AddressNoZone ipv4AddressFrom(final @NonNull Ipv4Prefix prefix) {
-        return prefixToAddress(address4NoZoneFactory, ipv4PrefixString(prefix));
+        return prefixToAddress(address4NoZoneFactory, prefix.getValue());
     }
 
     public final byte @NonNull[] ipv4AddressBytes(final @NonNull Ipv4Address addr) {
@@ -273,13 +244,13 @@ public abstract class AbstractIetfInetUtil {
          * This implementation relies heavily on the input string having been validated to comply with
          * the Ipv4Address pattern, which may include a zone index.
          */
-        final String str = ipv4AddressString(addr);
+        final var str = addr.getValue();
         final int percent = str.indexOf('%');
         return Ipv4Utils.addressBytes(str, percent == -1 ? str.length() : percent);
     }
 
     public final int ipv4AddressBits(final @NonNull Ipv4Address addr) {
-        final String str = ipv4AddressString(addr);
+        final var str = addr.getValue();
         final int percent = str.indexOf('%');
         return Ipv4Utils.addressBits(str, percent == -1 ? str.length() : percent);
     }
@@ -289,12 +260,12 @@ public abstract class AbstractIetfInetUtil {
          * This implementation relies heavily on the input string having been validated to comply with
          * the Ipv4AddressNoZone pattern, which must not include a zone index.
          */
-        final String str = ipv4AddressString(addr);
+        final String str = addr.getValue();
         return Ipv4Utils.addressBytes(str, str.length());
     }
 
     public final int ipv4AddressNoZoneBits(final @NonNull Ipv4AddressNoZone addr) {
-        final String str = ipv4AddressString(addr);
+        final var str = addr.getValue();
         return Ipv4Utils.addressBits(str, str.length());
     }
 
@@ -352,19 +323,19 @@ public abstract class AbstractIetfInetUtil {
     }
 
     public final @NonNull Ipv4Prefix ipv4PrefixFor(final @NonNull Ipv4Address addr) {
-        return prefix4Factory.newInstance(stripZone(ipv4AddressString(requireAddress(addr))) + "/32");
+        return prefix4Factory.newInstance(stripZone(addr.getValue()) + "/32");
     }
 
     public final @NonNull Ipv4Prefix ipv4PrefixFor(final @NonNull Ipv4Address addr, final int mask) {
-        return newIpv4Prefix(stripZone(ipv4AddressString(requireAddress(addr))), mask);
+        return newIpv4Prefix(stripZone(addr.getValue()), mask);
     }
 
     public final @NonNull Ipv4Prefix ipv4PrefixForNoZone(final @NonNull Ipv4AddressNoZone addr) {
-        return prefix4Factory.newInstance(ipv4AddressString(requireAddress(addr)) + "/32");
+        return prefix4Factory.newInstance(addr.getValue() + "/32");
     }
 
     public final @NonNull Ipv4Prefix ipv4PrefixForNoZone(final @NonNull Ipv4AddressNoZone addr, final int mask) {
-        return newIpv4Prefix(ipv4AddressString(requireAddress(addr)), mask);
+        return newIpv4Prefix(addr.getValue(), mask);
     }
 
     public final @NonNull Ipv4Prefix ipv4PrefixForShort(final byte @NonNull[] address, final int mask) {
@@ -397,11 +368,11 @@ public abstract class AbstractIetfInetUtil {
     }
 
     public final @NonNull Entry<Ipv4AddressNoZone, Integer> splitIpv4Prefix(final @NonNull Ipv4Prefix prefix) {
-        return splitPrefix(address4NoZoneFactory, ipv4PrefixString(prefix));
+        return splitPrefix(address4NoZoneFactory, prefix.getValue());
     }
 
     public final byte @NonNull[] ipv4PrefixToBytes(final @NonNull Ipv4Prefix prefix) {
-        final String str = ipv4PrefixString(prefix);
+        final var str = prefix.getValue();
         final int slash = str.lastIndexOf('/');
 
         final byte[] bytes = new byte[Ipv4Utils.INET4_LENGTH + 1];
@@ -444,21 +415,21 @@ public abstract class AbstractIetfInetUtil {
     public final @NonNull Ipv6AddressNoZone ipv6AddressNoZoneFor(final @NonNull Ipv6Address addr) {
         requireAddress(addr);
         return addr instanceof Ipv6AddressNoZone noZone ? noZone
-                : address6NoZoneFactory.newInstance(stripZone(ipv6AddressString(addr)));
+                : address6NoZoneFactory.newInstance(stripZone(addr.getValue()));
     }
 
     public final @NonNull Ipv6AddressNoZone ipv6AddressFrom(final @NonNull Ipv6Prefix prefix) {
-        return prefixToAddress(address6NoZoneFactory, ipv6PrefixString(prefix));
+        return prefixToAddress(address6NoZoneFactory, prefix.getValue());
     }
 
     public final byte @NonNull[] ipv6AddressBytes(final @NonNull Ipv6Address addr) {
-        final String str = ipv6AddressString(addr);
+        final var str = addr.getValue();
         final int percent = str.indexOf('%');
         return ipv6StringBytes(str, percent == -1 ? str.length() : percent);
     }
 
     public final byte @NonNull[] ipv6AddressNoZoneBytes(final @NonNull Ipv6Address addr) {
-        final String str = ipv6AddressString(addr);
+        final var str = addr.getValue();
         return ipv6StringBytes(str, str.length());
     }
 
@@ -525,19 +496,19 @@ public abstract class AbstractIetfInetUtil {
     }
 
     public final @NonNull Ipv6Prefix ipv6PrefixFor(final @NonNull Ipv6Address addr) {
-        return prefix6Factory.newInstance(stripZone(ipv6AddressString(requireAddress(addr))) + "/128");
+        return prefix6Factory.newInstance(stripZone(addr.getValue()) + "/128");
     }
 
     public final @NonNull Ipv6Prefix ipv6PrefixFor(final @NonNull Ipv6Address addr, final int mask) {
-        return newIpv6Prefix(stripZone(ipv6AddressString(requireAddress(addr))), mask);
+        return newIpv6Prefix(stripZone(addr.getValue()), mask);
     }
 
     public final @NonNull Ipv6Prefix ipv6PrefixForNoZone(final @NonNull Ipv6AddressNoZone addr) {
-        return prefix6Factory.newInstance(ipv6AddressString(requireAddress(addr)) + "/128");
+        return prefix6Factory.newInstance(addr.getValue() + "/128");
     }
 
     public final @NonNull Ipv6Prefix ipv6PrefixForNoZone(final @NonNull Ipv6AddressNoZone addr, final int mask) {
-        return newIpv6Prefix(ipv6AddressString(requireAddress(addr)), mask);
+        return newIpv6Prefix(addr.getValue(), mask);
     }
 
     public final @NonNull Ipv6Prefix ipv6PrefixForShort(final byte @NonNull[] address, final int mask) {
@@ -566,7 +537,7 @@ public abstract class AbstractIetfInetUtil {
     }
 
     public final @NonNull Entry<Ipv6AddressNoZone, Integer> splitIpv6Prefix(final @NonNull Ipv6Prefix prefix) {
-        return splitPrefix(address6NoZoneFactory, ipv6PrefixString(prefix));
+        return splitPrefix(address6NoZoneFactory, prefix.getValue());
     }
 
     private static <T> @NonNull T prefixToAddress(final StringValueObjectFactory<T> factory, final String str) {
@@ -581,7 +552,7 @@ public abstract class AbstractIetfInetUtil {
     }
 
     public final byte @NonNull[] ipv6PrefixToBytes(final @NonNull Ipv6Prefix prefix) {
-        final String str = ipv6PrefixString(prefix);
+        final var str = prefix.getValue();
         final byte[] bytes = new byte[Ipv6Utils.INET6_LENGTH + 1];
         final int slash = str.lastIndexOf('/');
         Ipv6Utils.fillIpv6Bytes(bytes, str, slash);
@@ -656,14 +627,14 @@ public abstract class AbstractIetfInetUtil {
         return prefix4Factory.newInstance(sb.toString());
     }
 
-    private @NonNull Ipv6Address coerceIpv6Address(final @NonNull IpAddress addr) {
-        final var ret = maybeIpv6Address(addr);
+    private static @NonNull Ipv6Address coerceIpv6Address(final @NonNull IpAddress addr) {
+        final var ret = addr.getIpv6Address();
         checkArgument(ret != null, "Address %s is neither IPv4 nor IPv6", addr);
         return ret;
     }
 
-    private @NonNull Ipv6AddressNoZone coerceIpv6AddressNoZone(final @NonNull IpAddressNoZone addr) {
-        final var ret = maybeIpv6AddressNoZone(addr);
+    private static @NonNull Ipv6AddressNoZone coerceIpv6AddressNoZone(final @NonNull IpAddressNoZone addr) {
+        final var ret = addr.getIpv6AddressNoZone();
         checkArgument(ret != null, "Address %s is neither IPv4 nor IPv6", addr);
         return ret;
     }
