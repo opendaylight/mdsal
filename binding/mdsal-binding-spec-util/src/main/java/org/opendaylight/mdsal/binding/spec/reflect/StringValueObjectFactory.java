@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Throwables;
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
@@ -20,6 +19,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,6 @@ public final class StringValueObjectFactory<T> {
     private static final MethodType CONSTRUCTOR_METHOD_TYPE = MethodType.methodType(Object.class, Object.class);
     private static final MethodType SETTER_METHOD_TYPE = MethodType.methodType(void.class, Object.class, String.class);
     private static final Logger LOG = LoggerFactory.getLogger(StringValueObjectFactory.class);
-    private static final Lookup LOOKUP = MethodHandles.lookup();
 
     private final MethodHandle constructor;
     private final MethodHandle setter;
@@ -54,7 +53,8 @@ public final class StringValueObjectFactory<T> {
         this.setter = requireNonNull(setter);
     }
 
-    public static <T> StringValueObjectFactory<T> create(final Class<T> clazz, final String templateString) {
+    public static <T> @NonNull StringValueObjectFactory<T> create(final Lookup lookup, final Class<T> clazz,
+            final String templateString) {
         final Constructor<T> stringConstructor;
         try {
             stringConstructor = clazz.getConstructor(String.class);
@@ -78,11 +78,17 @@ public final class StringValueObjectFactory<T> {
         }
 
         final Field f = findValueField(clazz);
+        final MethodHandle ctor;
+        try {
+            ctor = lookup.unreflectConstructor(copyConstructor);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Failed to find " + copyConstructor, e);
+        }
+
         final StringValueObjectFactory<T> ret;
         try {
-            ret = new StringValueObjectFactory<>(template,
-                    LOOKUP.unreflectConstructor(copyConstructor).asType(CONSTRUCTOR_METHOD_TYPE),
-                    LOOKUP.unreflectSetter(f).asType(SETTER_METHOD_TYPE));
+            ret = new StringValueObjectFactory<>(template, ctor.asType(CONSTRUCTOR_METHOD_TYPE),
+                lookup.unreflectSetter(f).asType(SETTER_METHOD_TYPE));
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Failed to instantiate method handles", e);
         }
