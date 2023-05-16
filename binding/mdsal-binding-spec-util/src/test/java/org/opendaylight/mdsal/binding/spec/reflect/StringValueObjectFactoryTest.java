@@ -9,52 +9,53 @@ package org.opendaylight.mdsal.binding.spec.reflect;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import org.junit.Test;
 
 public class StringValueObjectFactoryTest {
+    private static final Lookup LOOKUP = MethodHandles.lookup();
 
     @Test
     public void createTest() throws Exception {
-        final StringValueObjectFactory<?> stringValueObjectFactory =
-                StringValueObjectFactory.create(TestClass.class, "testTemplate");
+        final var stringValueObjectFactory = StringValueObjectFactory.create(LOOKUP, TestClass.class, "testTemplate");
         assertNotNull(stringValueObjectFactory);
         assertEquals("testTemplate", stringValueObjectFactory.getTemplate().toString());
     }
 
     @Test
     public void newInstanceTest() throws Exception {
-        final StringValueObjectFactory<?> instance = StringValueObjectFactory.create(TestClass.class, "testTemplate");
-
+        final var instance = StringValueObjectFactory.create(LOOKUP, TestClass.class, "testTemplate");
         assertEquals("instanceTest", instance.newInstance("instanceTest").toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void createTestNoConstructor() throws Exception {
-        StringValueObjectFactory.create(Object.class, "");
+    @Test
+    public void createTestNoConstructor() {
+        assertThrows(IllegalArgumentException.class, () ->  StringValueObjectFactory.create(LOOKUP, Object.class, ""));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void createTestNoField() throws Exception {
-        StringValueObjectFactory.create(String.class, "");
+    @Test
+    public void createTestNoField() {
+        assertThrows(IllegalArgumentException.class, () -> StringValueObjectFactory.create(LOOKUP, String.class, ""));
     }
 
     public static final class TestClass {
-
         @SuppressWarnings("checkstyle:memberName")
         private final String _value;
 
         public TestClass(final TestClass parent) {
-            this._value = parent._value;
+            _value = parent._value;
         }
 
         public TestClass(final String value) {
-            this._value = value;
+            _value = value;
         }
 
         @Override
         public String toString() {
-            return this._value;
+            return _value;
         }
     }
 }
