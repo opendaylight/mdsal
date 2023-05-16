@@ -12,7 +12,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doAnswer;
@@ -33,15 +32,10 @@ public class IetfInetUtilTest {
     public void testIpv4Address() {
         final Ipv4AddressNoZone ipv4Address = new Ipv4AddressNoZone("192.168.1.1");
         final Ipv4Prefix ipv4Prefix = new Ipv4Prefix("192.0.2.1/24");
-        final IpAddress ipAddress = INSTANCE.ipv4Address(ipv4Address);
-        final String ipv4AddressString = INSTANCE.ipv4AddressString(ipv4Address);
-        final Ipv4Address maybeIpv4Address = INSTANCE.maybeIpv4Address(new IpAddress(ipv4Address));
-        final IpPrefix ipPrefix = INSTANCE.ipv4Prefix(ipv4Prefix);
-        final String ipv4PrefixString = INSTANCE.ipv4PrefixString(ipv4Prefix);
+        final IpAddress ipAddress = new IpAddress(ipv4Address);
+        final IpPrefix ipPrefix = new IpPrefix(ipv4Prefix);
 
-        assertEquals(ipv4PrefixString, ipPrefix.getIpv4Prefix().getValue());
-        assertNotNull(maybeIpv4Address);
-        assertEquals(ipv4AddressString, maybeIpv4Address.getValue());
+        assertEquals(ipv4Prefix, ipPrefix.getIpv4Prefix());
         assertEquals(ipAddress, new IpAddress(ipv4Address));
     }
 
@@ -49,15 +43,10 @@ public class IetfInetUtilTest {
     public void testIpv6Address() {
         final Ipv6AddressNoZone ipv6Address = new Ipv6AddressNoZone("ABCD:EF01:2345:6789:ABCD:EF01:2345:6789");
         final Ipv6Prefix ipv6Prefix = new Ipv6Prefix("ff00::/8");
-        final IpAddress ipAddress = INSTANCE.ipv6Address(ipv6Address);
-        final String ipv6AddressString = INSTANCE.ipv6AddressString(ipv6Address);
-        final Ipv6Address maybeIpv6Address = INSTANCE.maybeIpv6Address(new IpAddress(ipv6Address));
-        final IpPrefix ipPrefix = INSTANCE.ipv6Prefix(ipv6Prefix);
-        final String ipv6PrefixString = INSTANCE.ipv6PrefixString(ipv6Prefix);
+        final IpAddress ipAddress = new IpAddress(ipv6Address);
+        final IpPrefix ipPrefix = new IpPrefix(ipv6Prefix);
 
-        assertEquals(ipv6PrefixString, ipPrefix.getIpv6Prefix().getValue());
-        assertNotNull(maybeIpv6Address);
-        assertEquals(ipv6AddressString, maybeIpv6Address.getValue());
+        assertEquals(ipv6Prefix, ipPrefix.getIpv6Prefix());
         assertEquals(ipAddress, new IpAddress(ipv6Address));
     }
 
