@@ -6,11 +6,11 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.model.ietf.util;
+package org.opendaylight.mdsal.model.ietf.type.util;
 
 import static com.google.common.net.InetAddresses.forString;
 import static org.junit.Assert.assertArrayEquals;
-import static org.opendaylight.mdsal.model.ietf.util.Ipv6Utils.fillIpv6Bytes;
+import static org.opendaylight.mdsal.model.ietf.type.util.Ipv6Utils.fillIpv6Bytes;
 
 import org.junit.Test;
 

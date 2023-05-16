@@ -13,7 +13,7 @@ import java.util.HexFormat;
 import java.util.UUID;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
-import org.opendaylight.mdsal.model.ietf.util.Ipv4Utils;
+import org.opendaylight.mdsal.model.ietf.type.util.Ipv4Utils;
 
 /**
  * Utility methods for working with types defined in {@code ietf-yang-types}.

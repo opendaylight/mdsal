@@ -25,8 +25,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
-import org.opendaylight.mdsal.model.ietf.util.Ipv4Utils;
-import org.opendaylight.mdsal.model.ietf.util.Ipv6Utils;
+import org.opendaylight.mdsal.model.ietf.type.util.Ipv4Utils;
+import org.opendaylight.mdsal.model.ietf.type.util.Ipv6Utils;
 
 /**
  * A set of utility methods to efficiently instantiate various {@code ietf-inet-types} DTOs.
