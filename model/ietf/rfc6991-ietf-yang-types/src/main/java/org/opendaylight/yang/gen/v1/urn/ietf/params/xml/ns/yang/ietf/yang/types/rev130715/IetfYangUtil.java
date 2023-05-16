@@ -9,6 +9,7 @@ package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.lang.invoke.MethodHandles;
 import java.util.HexFormat;
 import java.util.UUID;
 import org.eclipse.jdt.annotation.NonNull;
@@ -23,16 +24,20 @@ public final class IetfYangUtil {
     private static final HexFormat COLON_HEXFORMAT = HexFormat.ofDelimiter(":");
     private static final byte @NonNull[] EMPTY_BYTES = new byte[0];
 
-    private static final StringValueObjectFactory<MacAddress> MAC_FACTORY =
-        StringValueObjectFactory.create(MacAddress.class, "00:00:00:00:00:00");
-    private static final StringValueObjectFactory<PhysAddress> PHYS_FACTORY =
-        StringValueObjectFactory.create(PhysAddress.class, "00:00");
-    private static final StringValueObjectFactory<HexString> HEX_FACTORY =
-        StringValueObjectFactory.create(HexString.class, "00");
-    private static final StringValueObjectFactory<DottedQuad> QUAD_FACTORY =
-        StringValueObjectFactory.create(DottedQuad.class, "0.0.0.0");
-    private static final StringValueObjectFactory<Uuid> UUID_FACTORY =
-        StringValueObjectFactory.create(Uuid.class, "f81d4fae-7dec-11d0-a765-00a0c91e6bf6");
+    private static final StringValueObjectFactory<MacAddress> MAC_FACTORY;
+    private static final StringValueObjectFactory<PhysAddress> PHYS_FACTORY;
+    private static final StringValueObjectFactory<HexString> HEX_FACTORY;
+    private static final StringValueObjectFactory<DottedQuad> QUAD_FACTORY;
+    private static final StringValueObjectFactory<Uuid> UUID_FACTORY;
+
+    static {
+        final var lookup = MethodHandles.lookup();
+        MAC_FACTORY = StringValueObjectFactory.create(lookup, MacAddress.class, "00:00:00:00:00:00");
+        PHYS_FACTORY = StringValueObjectFactory.create(lookup, PhysAddress.class, "00:00");
+        HEX_FACTORY = StringValueObjectFactory.create(lookup, HexString.class, "00");
+        QUAD_FACTORY = StringValueObjectFactory.create(lookup, DottedQuad.class, "0.0.0.0");
+        UUID_FACTORY = StringValueObjectFactory.create(lookup, Uuid.class, "f81d4fae-7dec-11d0-a765-00a0c91e6bf6");
+    }
 
     private IetfYangUtil() {
         // Hidden on purpose

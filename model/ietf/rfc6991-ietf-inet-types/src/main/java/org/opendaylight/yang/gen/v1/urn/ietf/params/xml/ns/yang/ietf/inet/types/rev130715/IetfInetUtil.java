@@ -13,6 +13,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.net.InetAddresses;
+import java.lang.invoke.MethodHandles;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -33,13 +34,14 @@ import org.opendaylight.mdsal.model.ietf.type.util.Ipv6Utils;
  */
 public final class IetfInetUtil {
     private static final StringValueObjectFactory<Ipv4AddressNoZone> V4NZ_FACTORY =
-        StringValueObjectFactory.create(Ipv4AddressNoZone.class, "0.0.0.0");
+        StringValueObjectFactory.create(MethodHandles.publicLookup(), Ipv4AddressNoZone.class, "0.0.0.0");
     private static final StringValueObjectFactory<Ipv4Prefix> P4_FACTORY =
-        StringValueObjectFactory.create(Ipv4Prefix.class, "0.0.0.0/0");
+        StringValueObjectFactory.create(MethodHandles.publicLookup(), Ipv4Prefix.class, "0.0.0.0/0");
     private static final StringValueObjectFactory<Ipv6AddressNoZone> V6NZ_FACTORY =
-        StringValueObjectFactory.create(Ipv6AddressNoZone.class, "::0");
+        StringValueObjectFactory.create(MethodHandles.publicLookup(), Ipv6AddressNoZone.class, "::0");
     private static final StringValueObjectFactory<Ipv6Prefix> P6_FACTORY =
-        StringValueObjectFactory.create(Ipv6Prefix.class, "::0/0");
+        StringValueObjectFactory.create(MethodHandles.publicLookup(), Ipv6Prefix.class, "::0/0");
+
     private static final Pattern HOST_IPV4_PATTERN = Pattern.compile(
         "(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])"
             + "(%[\\p{N}\\p{L}]+)?");
