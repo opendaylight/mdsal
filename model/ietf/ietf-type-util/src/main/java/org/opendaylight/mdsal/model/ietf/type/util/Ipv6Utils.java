@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.model.ietf.util;
+package org.opendaylight.mdsal.model.ietf.type.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
@@ -18,30 +18,29 @@ import org.eclipse.jdt.annotation.NonNull;
  * IPv6 address parsing for {@code ietf-inet-types} ipv6-address and ipv6-prefix. This is an internal implementation
  * class, not meant to be used directly in any shape or form to the outside world, as the code relies on the fact that
  * the strings presented to it have been previously validated to conform to the regular expressions defined in the YANG
- *  model.
+ * model.
 /*
  * v6 routines added by Anton Ivanov on 14.6.2015
  * revised by Robert Varga
  *
- * BIG FAT WARNING!!!
- * Read all of the following before you touch any v6 code or decide to
- * optimize it by invoking a "simple" Guava call
+ * <p>
+ * <b>BIG FAT WARNING!!!</b>
+ * Read all of the following before you touch any v6 code or decide to optimize it by invoking a "simple" Guava call
  *
+ * <p>
  * Java IPv6 is fundamentally broken and Google libraries do not fix it.
- * 1. Java will allways implicitly rewrite v4 mapped into v6 as a v4 address
- *      and there is absolutely no way to override this behaviour
- * 2. Guava libraries cannot parse non-canonical IPv6. They will throw an
- *      exception. Even if they did, they re-use the same broken java code
- *      underneath.
+ * <ol>
+ *   <li>Java will allways implicitly rewrite v4 mapped into v6 as a v4 address and there is absolutely no way
+ *       to override this behaviour</li>
+ *   <li>Guava libraries cannot parse non-canonical IPv6. They will throw an exception. Even if they did, they re-use
+ *       the same broken java code underneath.</li>
+ * </ol>
  *
- * This is why we have to parse v6 by ourselves.
- *
- * The following conversion code is based on inet_cidr_pton_ipv6 in NetBSD
- *
- * The original BSD code is licensed under standard BSD license. While we
- * are not obliged to provide an attribution, credit where credit is due.
- * As far as why it is similar to Sun's sun.net.util please ask Sun why
- * their code has the same variable names, comments and code flow.
+ * <p>
+ * This is why we have to parse v6 by ourselves. The following conversion code is based on inet_cidr_pton_ipv6 in
+ * NetBSD. The original BSD code is licensed under standard BSD license. While we are not obliged to provide an
+ * attribution, credit where credit is due. As far as why it is similar to Sun's sun.net.util please ask Sun why their
+ * code has the same variable names, comments and code flow.
  */
 public final class Ipv6Utils {
     public static final int INET6_LENGTH = 16;
