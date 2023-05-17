@@ -8,12 +8,13 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
+import org.opendaylight.yangtools.concepts.ObjectExtension;
 
 /**
- * Marker interface for services which expose additional functionality on top
- * of some base {@link DOMService}.
+ * Marker interface for services which expose additional functionality on top of some base {@link DOMService}.
  */
 @Beta
-public interface DOMServiceExtension<T extends DOMExtensibleService<T, E>, E extends DOMServiceExtension<T, E>> {
+public interface DOMServiceExtension<T extends DOMExtensibleService<T, E>, E extends DOMServiceExtension<T, E>>
+        extends ObjectExtension<T, E> {
 
 }

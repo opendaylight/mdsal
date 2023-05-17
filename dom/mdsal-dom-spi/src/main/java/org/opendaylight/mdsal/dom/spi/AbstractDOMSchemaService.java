@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.dom.spi;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.annotations.Beta;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
@@ -31,8 +31,8 @@ public abstract class AbstractDOMSchemaService implements DOMSchemaService, Effe
     public abstract static class WithYangTextSources extends AbstractDOMSchemaService
             implements DOMYangTextSourceProvider {
         @Override
-        public ClassToInstanceMap<DOMSchemaServiceExtension> getExtensions() {
-            return ImmutableClassToInstanceMap.of(DOMYangTextSourceProvider.class, this);
+        public Collection<? extends DOMSchemaServiceExtension> supportedExtensions() {
+            return List.of(this);
         }
     }
 

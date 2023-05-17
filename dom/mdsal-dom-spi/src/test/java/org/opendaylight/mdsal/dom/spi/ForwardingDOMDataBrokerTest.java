@@ -8,10 +8,10 @@
 package org.opendaylight.mdsal.dom.spi;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -26,19 +26,19 @@ public class ForwardingDOMDataBrokerTest extends ForwardingDOMDataBroker {
     @Test
     public void basicTest() throws Exception {
         doReturn(null).when(domDataBroker).createTransactionChain(any());
-        this.createTransactionChain(null);
+        createTransactionChain(null);
         verify(domDataBroker).createTransactionChain(any());
 
-        doReturn(ImmutableClassToInstanceMap.of()).when(domDataBroker).getExtensions();
-        this.getExtensions();
-        verify(domDataBroker).getExtensions();
+        doCallRealMethod().when(domDataBroker).supportedExtensions();
+        supportedExtensions();
+        verify(domDataBroker).supportedExtensions();
 
         doReturn(null).when(domDataBroker).newReadOnlyTransaction();
-        this.newReadOnlyTransaction();
+        newReadOnlyTransaction();
         verify(domDataBroker).newReadOnlyTransaction();
 
         doReturn(null).when(domDataBroker).newWriteOnlyTransaction();
-        this.newWriteOnlyTransaction();
+        newWriteOnlyTransaction();
         verify(domDataBroker).newWriteOnlyTransaction();
     }
 
