@@ -36,6 +36,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "aaef3d41_9f3d5c31",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingChangeListenerHelper.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-05-17T11:04:34Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "611765b0_cd2d2a9e",
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f9969057_92f41a41",
@@ -49,6 +67,30 @@
       "writtenOn": "2023-05-13T14:23:36Z",
       "side": 1,
       "message": "this should not be public",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 6
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ca92ad6_6cfb6b62",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/AugmentationNodeContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-05-17T11:04:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f9969057_92f41a41",
       "range": {
         "startLine": 16,
         "startChar": 0,
@@ -82,6 +124,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "67cf0dd1_7b95287b",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-05-17T11:04:34Z",
+      "side": 1,
+      "message": "this place is always shown as error in IDEA indicating invalid cast bc\nEffectiveStatement and TypedDataSchemaNode are inconvertable types,\nonly final classes implement both interfaces.\n\nwhile compiler accepts it, it cause no problem to build. \nso the change is reverted. error highlighting remains in IDE.",
+      "parentUuid": "b8efb889_22444616",
+      "range": {
+        "startLine": 366,
+        "startChar": 21,
+        "endLine": 366,
+        "endChar": 84
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1a437bf2_19e30123",
@@ -95,6 +161,30 @@
       "writtenOn": "2023-05-13T14:23:36Z",
       "side": 1,
       "message": "this case needs to be split out from the CodecNode hierarchy -- we must not confuse it",
+      "range": {
+        "startLine": 534,
+        "startChar": 8,
+        "endLine": 534,
+        "endChar": 72
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1c971d4_97951afd",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-05-17T11:04:34Z",
+      "side": 1,
+      "message": "this serves backward compatibility,\nyou cannot suddenly start returning null or throw an exception,\ndue to augmentation may contain multiple children then the \nwrapper is required. added a comment.",
+      "parentUuid": "1a437bf2_19e30123",
       "range": {
         "startLine": 534,
         "startChar": 8,
@@ -128,6 +218,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "476140c3_eb25c41b",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingToNormalizedStreamWriter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-05-17T11:04:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d25bda58_f1c589e5",
+      "range": {
+        "startLine": 100,
+        "startChar": 54,
+        "endLine": 100,
+        "endChar": 93
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "345267a1_3d81a3ef",
@@ -141,6 +255,30 @@
       "writtenOn": "2023-05-13T14:23:36Z",
       "side": 1,
       "message": "ImmutableSet.builder() plus needs a comment (also below)",
+      "range": {
+        "startLine": 207,
+        "startChar": 13,
+        "endLine": 207,
+        "endChar": 42
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e1f083f2_f09cf1d8",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-05-17T11:04:34Z",
+      "side": 1,
+      "message": "updated childPaths only bc PathArgument expected to be unique,\nwhile child classes could be repeated (e.g. complex types or \nmultiple augmentations using same grouping) causing exception \nby ImmutableSet builder",
+      "parentUuid": "345267a1_3d81a3ef",
       "range": {
         "startLine": 207,
         "startChar": 13,
@@ -174,6 +312,30 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7ddc00c_f11e46d1",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-05-17T11:04:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b66047c_498184d8",
+      "range": {
+        "startLine": 298,
+        "startChar": 55,
+        "endLine": 298,
+        "endChar": 88
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "857c061f_ab0306e3",
@@ -191,6 +353,24 @@
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2806c822_84e3f828",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 525,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-05-17T11:04:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "857c061f_ab0306e3",
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "447aa185_6deb296d",
@@ -204,6 +384,30 @@
       "writtenOn": "2023-05-13T14:23:36Z",
       "side": 1,
       "message": "the method is called the same -- why the rename?!",
+      "range": {
+        "startLine": 105,
+        "startChar": 43,
+        "endLine": 105,
+        "endChar": 61
+      },
+      "revId": "16e0fde1bf4193db0e3f20e2ab16499d3fb3a2a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d4b86f0_881ddc6f",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectStreamerGenerator.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 8894
+      },
+      "writtenOn": "2023-05-17T11:04:34Z",
+      "side": 1,
+      "message": "reverted",
+      "parentUuid": "447aa185_6deb296d",
       "range": {
         "startLine": 105,
         "startChar": 43,
