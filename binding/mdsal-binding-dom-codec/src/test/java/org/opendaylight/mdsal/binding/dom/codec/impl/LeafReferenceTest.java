@@ -17,7 +17,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Int32StringUnion;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
+import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -26,12 +28,12 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 public class LeafReferenceTest extends AbstractBindingCodecTest {
 
     private static final TopLevelListKey TOP_FOO_KEY = new TopLevelListKey("foo");
-    private static final InstanceIdentifier<TreeComplexLeaves> BA_TOP_LEVEL_LIST = InstanceIdentifier.builder(Top.class)
-            .child(TopLevelList.class, TOP_FOO_KEY).augmentation(TreeComplexLeaves.class).build();
+    private static final InstanceIdentifier<TopLevelList> BA_TOP_LEVEL_LIST = InstanceIdentifier.builder(Top.class)
+            .child(TopLevelList.class, TOP_FOO_KEY).build();
 
     @Test
     public void testCaseWithLeafReferencesType() {
-        final TreeComplexLeaves binding = new TreeComplexLeavesBuilder()
+        final TreeComplexLeaves augment = new TreeComplexLeavesBuilder()
             .setIdentity(ThirdParty.VALUE)
             .setIdentityRef(ThirdParty.VALUE)
             .setSimpleType(10)
@@ -39,12 +41,17 @@ public class LeafReferenceTest extends AbstractBindingCodecTest {
             .setSchemaUnawareUnion(new Int32StringUnion("foo"))
             .setSchemaUnawareUnionRef(new Int32StringUnion(10))
             .build();
+        final TopLevelList list = new TopLevelListBuilder()
+            .setName("foo")
+            .addAugmentation(augment)
+            .build();
         final Entry<YangInstanceIdentifier, NormalizedNode> dom = codecContext.toNormalizedNode(BA_TOP_LEVEL_LIST,
-            binding);
+            list);
         final Entry<InstanceIdentifier<?>, DataObject> readed = codecContext.fromNormalizedNode(dom.getKey(),
             dom.getValue());
-        final TreeComplexLeaves readedAugment = (TreeComplexLeaves) readed.getValue();
+        final Augmentation<TopLevelList> readAugment = ((TopLevelList) readed.getValue()).augmentations()
+            .get(TreeComplexLeaves.class);
 
-        assertEquals(binding,readedAugment);
+        assertEquals(augment, readAugment);
     }
 }
