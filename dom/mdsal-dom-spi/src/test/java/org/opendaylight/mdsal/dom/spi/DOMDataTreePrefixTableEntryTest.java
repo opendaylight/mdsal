@@ -9,19 +9,17 @@ package org.opendaylight.mdsal.dom.spi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
 public class DOMDataTreePrefixTableEntryTest {
-
     @Test
     public void basicTest() throws Exception {
         final DOMDataTreePrefixTableEntry<Object> domDataTreePrefixTableEntry = new DOMDataTreePrefixTableEntry<>();
-        final PathArgument pathArgument = mock(PathArgument.class);
+        final NodeIdentifier pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
         final Object testObject = new Object();
         final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("", "test"));
 

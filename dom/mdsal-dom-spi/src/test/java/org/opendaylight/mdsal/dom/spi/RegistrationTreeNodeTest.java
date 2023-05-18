@@ -11,21 +11,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 
-import java.util.Collections;
+import java.util.List;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 public class RegistrationTreeNodeTest {
-
     @Test
     public void basicTest() throws Exception {
-        final PathArgument pathArgument = mock(PathArgument.class);
+        final NodeIdentifier pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
         final RegistrationTreeNode<Object> registrationTreeNodeParent = new RegistrationTreeNode<>(null, pathArgument);
         final RegistrationTreeNode<Object> registrationTreeNode =
                 new RegistrationTreeNode<>(registrationTreeNodeParent, pathArgument);
@@ -44,14 +40,13 @@ public class RegistrationTreeNodeTest {
         assertNotNull(registrationTreeNode.getExactChild(pathArgument));
 
         final NodeWithValue<?> nodeWithValue = new NodeWithValue<>(QName.create("", "testNode"), new Object());
-        assertEquals(Collections.emptyList(), registrationTreeNode.getInexactChildren(nodeWithValue));
-        assertEquals(Collections.emptyList(), registrationTreeNode.getInexactChildren(pathArgument));
+        assertEquals(List.of(), registrationTreeNode.getInexactChildren(nodeWithValue));
+        assertEquals(List.of(), registrationTreeNode.getInexactChildren(pathArgument));
 
         final NodeIdentifier nodeWithoutValue = new NodeIdentifier(QName.create("", "testNode"));
         assertNotNull(registrationTreeNode.ensureChild(nodeWithoutValue));
         assertFalse(registrationTreeNode.getInexactChildren(nodeWithValue).isEmpty());
 
-        doReturn("TestPathArgument").when(pathArgument).toString();
         assertNotNull(registrationTreeNode.toString());
         assertTrue(registrationTreeNode.toString().contains(pathArgument.toString()));
     }

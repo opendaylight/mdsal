@@ -9,37 +9,37 @@ package org.opendaylight.mdsal.dom.spi;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 import org.junit.Test;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
 public class AbstractRegistrationTreeTest extends AbstractRegistrationTree<Object> {
-
     @Test
     public void basicTest() throws Exception {
-        final PathArgument pathArgument = mock(PathArgument.class);
+        final NodeIdentifier pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
         final RegistrationTreeNode<Object> registrationTreeNodeParent = new RegistrationTreeNode<>(null, pathArgument);
         final RegistrationTreeNode<Object> registrationTreeNode =
                 new RegistrationTreeNode<>(registrationTreeNodeParent, pathArgument);
 
         final Object registration = new Object();
-        this.takeLock();
-        this.addRegistration(registrationTreeNode, registration);
+        takeLock();
+        addRegistration(registrationTreeNode, registration);
         assertTrue(registrationTreeNode.getRegistrations().contains(registration));
-        this.releaseLock();
+        releaseLock();
 
-        this.removeRegistration(registrationTreeNode, registration);
+        removeRegistration(registrationTreeNode, registration);
         assertFalse(registrationTreeNode.getRegistrations().contains(registration));
 
-        assertNotNull(this.findNodeFor(ImmutableList.of(pathArgument)));
-        assertNotNull(this.takeSnapshot());
+        assertNotNull(findNodeFor(List.of(pathArgument)));
+        assertNotNull(takeSnapshot());
     }
 
-    @Test(expected = IllegalMonitorStateException.class)
+    @Test
     public void unlockTest() throws Exception {
-        this.releaseLock();
+        assertThrows(IllegalMonitorStateException.class, this::releaseLock);
     }
 }

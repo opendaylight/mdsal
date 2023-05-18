@@ -25,14 +25,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controll
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
 public class LazySerializedContainerNodeTest {
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         final DataObject dataObject = mock(DataObject.class);
         final BindingNormalizedNodeSerializer codec = mock(BindingNormalizedNodeSerializer.class);
         final ContainerNode containerNode = mock(ContainerNode.class);
@@ -53,7 +52,7 @@ public class LazySerializedContainerNodeTest {
                         codec);
         assertNotNull(lazySerializedContainerNode);
         assertEquals(leafNode, lazySerializedContainerNode.childByArg(leafNode.getIdentifier()));
-        assertNull(lazySerializedContainerNode.childByArg(mock(PathArgument.class)));
+        assertNull(lazySerializedContainerNode.childByArg(new NodeIdentifier(QName.create("", "mismatch"))));
 
         assertTrue(lazySerializedContainerNode.body().isEmpty());
         assertSame(name, lazySerializedContainerNode.getIdentifier());
