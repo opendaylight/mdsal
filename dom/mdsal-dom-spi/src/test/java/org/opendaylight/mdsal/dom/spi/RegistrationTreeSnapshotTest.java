@@ -15,14 +15,14 @@ import static org.mockito.Mockito.verify;
 
 import java.util.concurrent.locks.Lock;
 import org.junit.Test;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 
 public class RegistrationTreeSnapshotTest {
-
     @Test
     public void basicTest() throws Exception {
         final Lock lock = mock(Lock.class);
-        final PathArgument pathArgument = mock(PathArgument.class);
+        final NodeIdentifier pathArgument = new NodeIdentifier(QName.create("", "pathArgument"));
         final RegistrationTreeNode<?> registrationTreeNode = new RegistrationTreeNode<>(null, pathArgument);
         final RegistrationTreeSnapshot<?> registrationTreeSnapshot =
                 new RegistrationTreeSnapshot<>(lock, registrationTreeNode);
