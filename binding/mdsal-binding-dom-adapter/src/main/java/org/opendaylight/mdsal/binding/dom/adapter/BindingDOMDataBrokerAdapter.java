@@ -93,9 +93,9 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
     }
 
     @Override
-    public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
-            registerDataTreeChangeListener(
-            final DataTreeIdentifier<T> treeId, final L listener) {
+    public <T extends DataObject, L extends DataTreeChangeListener<T>>
+            ListenerRegistration<L> registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId,
+                final L listener) {
         if (treeChangeService == null) {
             throw new UnsupportedOperationException("Underlying data broker does not expose DOMDataTreeChangeService.");
         }
