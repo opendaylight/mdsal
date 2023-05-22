@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d332ba7b_342d4851",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/AbstractForwardedTransaction.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-22T15:03:38Z",
+      "side": 1,
+      "message": "I think we should check this before we extract domPath and split this method into two private methods -- one for non-augmentations, the other for augmentations.\n\nFor augmentations I think we will follow a slightly different codepath",
+      "range": {
+        "startLine": 83,
+        "startChar": 24,
+        "endLine": 83,
+        "endChar": 44
+      },
+      "revId": "f98d1e7c9bd98d60685733c9f2fd17702d0130f7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4be282b4_a70f612c",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/AbstractForwardedTransaction.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-22T15:03:38Z",
+      "side": 1,
+      "message": "just .augmentation()",
+      "range": {
+        "startLine": 84,
+        "startChar": 42,
+        "endLine": 84,
+        "endChar": 61
+      },
+      "revId": "f98d1e7c9bd98d60685733c9f2fd17702d0130f7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef55a2d1_4bde4736",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMWriteTransactionAdapter.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-22T15:03:38Z",
+      "side": 1,
+      "message": "current serializer should always be acquired exactly once -- it is dynamically updated, so two invocations can result in different behaviour.\n\nAlso, that is what we *always* do -- call methods exactly once and store results in local variables.",
+      "range": {
+        "startLine": 88,
+        "startChar": 45,
+        "endLine": 88,
+        "endChar": 81
+      },
+      "revId": "f98d1e7c9bd98d60685733c9f2fd17702d0130f7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3ef6ed0_7dccc7fb",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-22T15:03:38Z",
+      "side": 1,
+      "message": "so this will create and retain an object which will never be used",
+      "range": {
+        "startLine": 213,
+        "startChar": 73,
+        "endLine": 213,
+        "endChar": 79
+      },
+      "revId": "f98d1e7c9bd98d60685733c9f2fd17702d0130f7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "745dbf61_cc34db6a",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-22T15:03:38Z",
+      "side": 1,
+      "message": "... and so will this.",
+      "range": {
+        "startLine": 214,
+        "startChar": 59,
+        "endLine": 214,
+        "endChar": 65
+      },
+      "revId": "f98d1e7c9bd98d60685733c9f2fd17702d0130f7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3bcba4e6_26d35ebc",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-22T15:03:38Z",
+      "side": 1,
+      "message": "and if augmentationPathToBindingClass.isEmpty(), childBindingClasses() ends up being a duplicate of what is available byBindingArgClass.keySet()",
+      "range": {
+        "startLine": 215,
+        "startChar": 50,
+        "endLine": 215,
+        "endChar": 62
+      },
+      "revId": "f98d1e7c9bd98d60685733c9f2fd17702d0130f7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
