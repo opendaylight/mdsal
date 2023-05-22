@@ -19,7 +19,7 @@ import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.dom.adapter.query.LambdaDecoder.LambdaTarget;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.dom.api.query.DOMQuery;
 import org.opendaylight.mdsal.dom.api.query.DOMQueryPredicate;
 import org.opendaylight.yangtools.concepts.Immutable;
@@ -50,7 +50,7 @@ final class QueryBuilderState {
     private YangInstanceIdentifier relativeSelect;
 
     QueryBuilderState(final DefaultQueryFactory factory, final InstanceIdentifier<?> root) {
-        this.codec = factory.codec();
+        codec = factory.codec();
         this.factory = factory;
         this.root = fromBinding(root);
     }
@@ -67,7 +67,7 @@ final class QueryBuilderState {
     @NonNull BoundMethod bindMethod(final @NonNull InstanceIdentifier<?> bindingPath,
             final @NonNull LeafReference<?, ?> ref) {
         // Verify bindingPath, which will give us something to fish in
-        final BindingDataObjectCodecTreeNode<?> targetCodec = codec.getSubtreeCodec(bindingPath);
+        final CommonDataObjectCodecTreeNode<?> targetCodec = codec.getSubtreeCodec(bindingPath);
         checkState(targetCodec != null, "Failed to find codec for %s", bindingPath);
 
         final WithStatus targetSchema = targetCodec.getSchema();

@@ -43,6 +43,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNo
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
+import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
@@ -237,9 +238,9 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         return new BindingToNormalizedStreamWriter(getActionCodec(action).output(), domWriter);
     }
 
-    DataContainerCodecContext<?,?> getCodecContextNode(final InstanceIdentifier<?> binding,
+    DataContainerCodecContext<?, ?> getCodecContextNode(final InstanceIdentifier<?> binding,
             final List<YangInstanceIdentifier.PathArgument> builder) {
-        DataContainerCodecContext<?,?> currentNode = root;
+        DataContainerCodecContext<?, ?> currentNode = root;
         for (final InstanceIdentifier.PathArgument bindingArg : binding.getPathArguments()) {
             currentNode = currentNode.bindingPathArgumentChild(bindingArg, builder);
             checkArgument(currentNode != null, "Supplied Instance Identifier %s is not valid.", binding);
@@ -268,7 +269,19 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
             checkArgument(currentNode instanceof DataContainerCodecContext,
                 "Unexpected child of non-container node %s", currentNode);
             final var previous = (DataContainerCodecContext<?, ?>) currentNode;
-            final var nextNode = previous.yangPathArgumentChild(domArg);
+            var nextNode = previous.yangPathArgumentChild(domArg);
+
+            /**
+             * Compatibility case: if it's determined the node belongs to augmentation
+             * then insert augmentation path argument in between.
+             */
+            if (nextNode instanceof AugmentationNodeContext<?> augmContext) {
+                if (bindingArguments != null) {
+                    bindingArguments.add(augmContext.bindingArg());
+                }
+                currentNode = nextNode;
+                nextNode = augmContext.yangPathArgumentChild(domArg);
+            }
 
             /*
              * List representation in YANG Instance Identifier consists of two
@@ -483,15 +496,15 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     @Override
-    public <E extends DataObject> BindingDataObjectCodecTreeNode<E> streamChild(final Class<E> childClass) {
+    public <E extends DataObject> CommonDataObjectCodecTreeNode<E> streamChild(final Class<E> childClass) {
         return root.streamChild(childClass);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends DataObject> BindingDataObjectCodecTreeNode<T> getSubtreeCodec(final InstanceIdentifier<T> path) {
+    public <T extends DataObject> CommonDataObjectCodecTreeNode<T> getSubtreeCodec(final InstanceIdentifier<T> path) {
         // TODO Do we need defensive check here?
-        return (BindingDataObjectCodecTreeNode<T>) getCodecContextNode(path, null);
+        return (CommonDataObjectCodecTreeNode<T>) getCodecContextNode(path, null);
     }
 
     @Override

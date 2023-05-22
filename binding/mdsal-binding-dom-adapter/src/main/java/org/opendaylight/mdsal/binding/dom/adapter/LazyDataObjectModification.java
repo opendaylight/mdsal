@@ -7,279 +7,47 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static com.google.common.base.Verify.verify;
-import static java.util.Objects.requireNonNull;
-import static org.opendaylight.yangtools.yang.data.tree.api.ModificationType.UNMODIFIED;
-
-import com.google.common.base.MoreObjects;
-import java.util.ArrayList;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
-import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.Identifiable;
-import org.opendaylight.yangtools.yang.binding.Identifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidateNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Lazily translated {@link DataObjectModification} based on {@link DataTreeCandidateNode}.
  *
  * <p>
- * {@link LazyDataObjectModification} represents Data tree change event,
- * but whole tree is not translated or resolved eagerly, but only child nodes
- * which are directly accessed by user of data object modification.
+ * {@link LazyDataObjectModification} represents Data tree change event, but whole tree is not translated or resolved
+ * eagerly, but only child nodes which are directly accessed by user of data object modification.
  *
  * @param <T> Type of Binding Data Object
  */
-final class LazyDataObjectModification<T extends DataObject> implements DataObjectModification<T> {
-    private static final Logger LOG = LoggerFactory.getLogger(LazyDataObjectModification.class);
-
-    private final BindingDataObjectCodecTreeNode<T> codec;
-    private final DataTreeCandidateNode domData;
-    private final PathArgument identifier;
-
-    private volatile List<LazyDataObjectModification<?>> childNodesCache;
-    private volatile ModificationType modificationType;
-
-    private LazyDataObjectModification(final BindingDataObjectCodecTreeNode<T> codec,
-            final DataTreeCandidateNode domData) {
-        this.codec = requireNonNull(codec);
-        this.domData = requireNonNull(domData);
-        identifier = codec.deserializePathArgument(domData.getIdentifier());
-    }
-
-    static <T extends DataObject> LazyDataObjectModification<T> create(final BindingDataObjectCodecTreeNode<T> codec,
-            final DataTreeCandidateNode domData) {
-        return new LazyDataObjectModification<>(codec, domData);
-    }
-
-    private static List<LazyDataObjectModification<?>> from(final BindingDataObjectCodecTreeNode<?> parentCodec,
-            final Collection<DataTreeCandidateNode> domChildNodes) {
-        final var result = new ArrayList<LazyDataObjectModification<?>>(domChildNodes.size());
-        populateList(result, parentCodec, domChildNodes);
-        return result;
-    }
-
-    private static void populateList(final List<LazyDataObjectModification<?>> result,
-            final BindingDataObjectCodecTreeNode<?> parentCodec,
-            final Collection<DataTreeCandidateNode> domChildNodes) {
-        for (var domChildNode : domChildNodes) {
-            if (domChildNode.getModificationType() != UNMODIFIED) {
-                final var type = BindingStructuralType.from(domChildNode);
-                if (type != BindingStructuralType.NOT_ADDRESSABLE) {
-                    /*
-                     * Even if type is UNKNOWN, from perspective of BindingStructuralType we try to load codec for it.
-                     * We will use that type to further specify debug log.
-                     */
-                    try {
-                        final var childCodec = parentCodec.yangPathArgumentChild(domChildNode.getIdentifier());
-                        // FIXME: MDSAL-820: this no longer holds
-                        verify(childCodec instanceof BindingDataObjectCodecTreeNode, "Unhandled codec %s for type %s",
-                            childCodec, type);
-                        populateList(result, type, (BindingDataObjectCodecTreeNode<?>) childCodec, domChildNode);
-                    } catch (final IllegalArgumentException e) {
-                        if (type == BindingStructuralType.UNKNOWN) {
-                            LOG.debug("Unable to deserialize unknown DOM node {}", domChildNode, e);
-                        } else {
-                            LOG.debug("Binding representation for DOM node {} was not found", domChildNode, e);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private static void populateList(final List<LazyDataObjectModification<? extends DataObject>> result,
-            final BindingStructuralType type, final BindingDataObjectCodecTreeNode<?> childCodec,
-            final DataTreeCandidateNode domChildNode) {
-        switch (type) {
-            case INVISIBLE_LIST:
-                // We use parent codec intentionally.
-                populateListWithSingleCodec(result, childCodec, domChildNode.getChildNodes());
-                break;
-            case INVISIBLE_CONTAINER:
-                populateList(result, childCodec, domChildNode.getChildNodes());
-                break;
-            case UNKNOWN:
-            case VISIBLE_CONTAINER:
-                result.add(create(childCodec, domChildNode));
-                break;
-            default:
-        }
-    }
-
-    private static void populateListWithSingleCodec(final List<LazyDataObjectModification<? extends DataObject>> result,
-            final BindingDataObjectCodecTreeNode<?> codec, final Collection<DataTreeCandidateNode> childNodes) {
-        for (var child : childNodes) {
-            if (child.getModificationType() != UNMODIFIED) {
-                result.add(create(codec, child));
-            }
-        }
+final class LazyDataObjectModification<T extends DataObject>
+        extends AbstractDataObjectModification<T, BindingDataObjectCodecTreeNode<T>> {
+    LazyDataObjectModification(final BindingDataObjectCodecTreeNode<T> codec, final DataTreeCandidateNode domData) {
+        super(domData, codec, codec.deserializePathArgument(domData.getIdentifier()));
     }
 
     @Override
-    public T getDataBefore() {
-        return deserialize(domData.getDataBefore());
+    Collection<DataTreeCandidateNode> domChildNodes() {
+        return domData.getChildNodes();
     }
 
     @Override
-    public T getDataAfter() {
-        return deserialize(domData.getDataAfter());
+    T deserialize(final NormalizedNode normalized) {
+        return codec.deserialize(normalized);
     }
 
     @Override
-    public Class<T> getDataType() {
-        return codec.getBindingClass();
+    DataTreeCandidateNode firstModifiedChild(final PathArgument arg) {
+        return domData.getModifiedChild(arg).orElse(null);
     }
 
     @Override
-    public PathArgument getIdentifier() {
-        return identifier;
-    }
-
-    @Override
-    public ModificationType getModificationType() {
-        var localType = modificationType;
-        if (localType != null) {
-            return localType;
-        }
-
-        modificationType = localType = switch (domData.getModificationType()) {
-            case APPEARED, WRITE -> ModificationType.WRITE;
-            case DISAPPEARED, DELETE -> ModificationType.DELETE;
-            case SUBTREE_MODIFIED -> resolveSubtreeModificationType();
-            default ->
-                // TODO: Should we lie about modification type instead of exception?
-                throw new IllegalStateException("Unsupported DOM Modification type " + domData.getModificationType());
-        };
-        return localType;
-    }
-
-    private @NonNull ModificationType resolveSubtreeModificationType() {
-        return switch (codec.getChildAddressabilitySummary()) {
-            case ADDRESSABLE ->
-                // All children are addressable, it is safe to report SUBTREE_MODIFIED
-                ModificationType.SUBTREE_MODIFIED;
-            case UNADDRESSABLE ->
-                // All children are non-addressable, report WRITE
-                ModificationType.WRITE;
-            case MIXED -> {
-                // This case is not completely trivial, as we may have NOT_ADDRESSABLE nodes underneath us. If that
-                // is the case, we need to turn this modification into a WRITE operation, so that the user is able
-                // to observe those nodes being introduced. This is not efficient, but unfortunately unavoidable,
-                // as we cannot accurately represent such changes.
-                for (DataTreeCandidateNode child : domData.getChildNodes()) {
-                    if (BindingStructuralType.recursiveFrom(child) == BindingStructuralType.NOT_ADDRESSABLE) {
-                        // We have a non-addressable child, turn this modification into a write
-                        yield ModificationType.WRITE;
-                    }
-                }
-
-                // No unaddressable children found, proceed in addressed mode
-                yield ModificationType.SUBTREE_MODIFIED;
-            }
-        };
-    }
-
-    @Override
-    public List<LazyDataObjectModification<?>> getModifiedChildren() {
-        var local = childNodesCache;
-        if (local == null) {
-            childNodesCache = local = from(codec, domData.getChildNodes());
-        }
-        return local;
-    }
-
-    @Override
-    public <C extends ChildOf<? super T>> List<DataObjectModification<C>> getModifiedChildren(
-            final Class<C> childType) {
-        return streamModifiedChildren(childType).collect(Collectors.toList());
-    }
-
-    @Override
-    public <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
-            List<DataObjectModification<C>> getModifiedChildren(final Class<H> caseType, final Class<C> childType) {
-        return streamModifiedChildren(childType)
-                .filter(child -> caseType.equals(child.identifier.getCaseType().orElse(null)))
-                .collect(Collectors.toList());
-    }
-
-    @SuppressWarnings("unchecked")
-    private <C extends DataObject> Stream<LazyDataObjectModification<C>> streamModifiedChildren(
-            final Class<C> childType) {
-        return getModifiedChildren().stream()
-                .filter(child -> childType.isAssignableFrom(child.getDataType()))
-                .map(child -> (LazyDataObjectModification<C>) child);
-    }
-
-    @Override
-    public DataObjectModification<?> getModifiedChild(final PathArgument arg) {
-        final var domArgumentList = new ArrayList<YangInstanceIdentifier.PathArgument>();
-        final var childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
-        final var toEnter = domArgumentList.iterator();
-        var current = domData;
-        while (toEnter.hasNext() && current != null) {
-            current = current.getModifiedChild(toEnter.next()).orElse(null);
-        }
-        return current != null && current.getModificationType() != UNMODIFIED ? create(childCodec, current) : null;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <C extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<C>> DataObjectModification<C>
-            getModifiedChildListItem(final Class<C> listItem, final K listKey) {
-        return (DataObjectModification<C>) getModifiedChild(IdentifiableItem.of(listItem, listKey));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <H extends ChoiceIn<? super T> & DataObject, C extends Identifiable<K> & ChildOf<? super H>,
-            K extends Identifier<C>> DataObjectModification<C> getModifiedChildListItem(final Class<H> caseType,
-                    final Class<C> listItem, final K listKey) {
-        return (DataObjectModification<C>) getModifiedChild(IdentifiableItem.of(caseType, listItem, listKey));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(final Class<C> child) {
-        return (DataObjectModification<C>) getModifiedChild(Item.of(child));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> DataObjectModification<C>
-            getModifiedChildContainer(final Class<H> caseType, final Class<C> child) {
-        return (DataObjectModification<C>) getModifiedChild(Item.of(caseType, child));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <C extends Augmentation<T> & DataObject> DataObjectModification<C> getModifiedAugmentation(
-            final Class<C> augmentation) {
-        return (DataObjectModification<C>) getModifiedChild(Item.of(augmentation));
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this).add("identifier", identifier).add("domData", domData).toString();
-    }
-
-    private T deserialize(final Optional<NormalizedNode> dataAfter) {
-        return dataAfter.map(codec::deserialize).orElse(null);
+    ToStringHelper addToStringAttributes(final ToStringHelper helper) {
+        return super.addToStringAttributes(helper).add("domData", domData);
     }
 }

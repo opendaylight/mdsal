@@ -9,12 +9,10 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.annotations.Beta;
 import java.util.Optional;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.AnyxmlNode;
-import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
@@ -81,7 +79,7 @@ public enum BindingStructuralType {
     }
 
     private static BindingStructuralType from(final PathArgument identifier) {
-        if (identifier instanceof NodeIdentifierWithPredicates || identifier instanceof AugmentationIdentifier) {
+        if (identifier instanceof NodeIdentifierWithPredicates) {
             return VISIBLE_CONTAINER;
         }
         if (identifier instanceof NodeWithValue) {
@@ -128,7 +126,7 @@ public enum BindingStructuralType {
     }
 
     private static boolean isVisibleContainer(final NormalizedNode data) {
-        return data instanceof MapEntryNode || data instanceof ContainerNode || data instanceof AugmentationNode;
+        return data instanceof MapEntryNode || data instanceof ContainerNode;
     }
 
     private static boolean isNotAddressable(final NormalizedNode normalizedNode) {
