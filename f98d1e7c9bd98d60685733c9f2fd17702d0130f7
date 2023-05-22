@@ -49,6 +49,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "21abedcf_35dc8b16",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingChangeListenerHelper.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-22T15:21:57Z",
+      "side": 1,
+      "message": "remove this class, promote its nested classes to top-level classes and move wrapListener() to BindingDOMDataBrokerAdapter",
+      "range": {
+        "startLine": 41,
+        "startChar": 12,
+        "endLine": 41,
+        "endChar": 39
+      },
+      "revId": "f98d1e7c9bd98d60685733c9f2fd17702d0130f7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ef55a2d1_4bde4736",
         "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMWriteTransactionAdapter.java",
         "patchSetId": 12
