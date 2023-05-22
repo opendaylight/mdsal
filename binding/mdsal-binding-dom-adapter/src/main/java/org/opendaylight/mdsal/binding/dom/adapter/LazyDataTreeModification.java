@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -37,14 +37,14 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
 
     private LazyDataTreeModification(final DataTreeIdentifier<T> path, final DataObjectModification<T> modification) {
         this.path = requireNonNull(path);
-        this.rootNode = requireNonNull(modification);
+        rootNode = requireNonNull(modification);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     static <T extends DataObject> DataTreeModification<T> create(final CurrentAdapterSerializer serializer,
             final DataTreeCandidate domChange, final LogicalDatastoreType datastoreType) {
         final InstanceIdentifier<?> bindingPath = serializer.coerceInstanceIdentifier(domChange.getRootPath());
-        final BindingDataObjectCodecTreeNode<?> codec = serializer.getSubtreeCodec(bindingPath);
+        final CommonDataObjectCodecTreeNode<?> codec = serializer.getSubtreeCodec(bindingPath);
         final DataTreeIdentifier<?> path = DataTreeIdentifier.create(datastoreType, bindingPath);
         return new LazyDataTreeModification(path, LazyDataObjectModification.create(codec, domChange.getRootNode()));
     }
@@ -54,7 +54,7 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
             final DOMDataTreeCandidate candidate) {
         final DOMDataTreeIdentifier domRootPath = candidate.getRootPath();
         final InstanceIdentifier<?> bindingPath = serializer.coerceInstanceIdentifier(domRootPath.getRootIdentifier());
-        final BindingDataObjectCodecTreeNode<?> codec = serializer.getSubtreeCodec(bindingPath);
+        final CommonDataObjectCodecTreeNode<?> codec = serializer.getSubtreeCodec(bindingPath);
         return new LazyDataTreeModification(DataTreeIdentifier.create(domRootPath.getDatastoreType(), bindingPath),
             LazyDataObjectModification.create(codec, candidate.getRootNode()));
     }

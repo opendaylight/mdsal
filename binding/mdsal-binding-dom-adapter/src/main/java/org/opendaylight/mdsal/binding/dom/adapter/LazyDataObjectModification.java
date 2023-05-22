@@ -14,7 +14,6 @@ import static org.opendaylight.yangtools.yang.data.tree.api.ModificationType.UNM
 import com.google.common.base.MoreObjects;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,9 +64,10 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
         this.identifier = codec.deserializePathArgument(domData.getIdentifier());
     }
 
-    static <T extends DataObject> LazyDataObjectModification<T> create(final BindingDataObjectCodecTreeNode<T> codec,
+    static <T extends DataObject> DataObjectModification<T> create(
+            final BindingDataObjectCodecTreeNode<T> childCodec,
             final DataTreeCandidateNode domData) {
-        return new LazyDataObjectModification<>(codec, domData);
+        return new LazyDataObjectModification<>(childCodec, domData);
     }
 
     private static Collection<LazyDataObjectModification<? extends DataObject>> from(
@@ -235,9 +235,9 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
 
     @Override
     public DataObjectModification<? extends DataObject> getModifiedChild(final PathArgument arg) {
-        final List<YangInstanceIdentifier.PathArgument> domArgumentList = new ArrayList<>();
-        final BindingDataObjectCodecTreeNode<?> childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
-        final Iterator<YangInstanceIdentifier.PathArgument> toEnter = domArgumentList.iterator();
+        final var domArgumentList = new ArrayList<YangInstanceIdentifier.PathArgument>();
+        final var childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
+        final var toEnter = domArgumentList.iterator();
         DataTreeCandidateNode current = domData;
         while (toEnter.hasNext() && current != null) {
             current = current.getModifiedChild(toEnter.next()).orElse(null);

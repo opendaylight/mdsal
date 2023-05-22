@@ -99,6 +99,7 @@ public class BindingDOMDataBrokerAdapter extends AbstractBindingAdapter<@NonNull
         if (treeChangeService == null) {
             throw new UnsupportedOperationException("Underlying data broker does not expose DOMDataTreeChangeService.");
         }
-        return treeChangeService.registerDataTreeChangeListener(treeId, listener);
+        return treeChangeService.registerDataTreeChangeListener(treeId,
+            BindingChangeListenerHelper.wrapListener(treeId, listener, currentSerializer()));
     }
 }
