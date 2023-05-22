@@ -54,7 +54,7 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
         doReturn(bindingCodecTreeNode).when(registry).getSubtreeCodec(any(InstanceIdentifier.class));
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
         doReturn(mock(DataTreeCandidateNode.class)).when(domDataTreeCandidate).getRootNode();
-        assertNotNull(LazyDataTreeModification.create(codec.currentSerializer(), domDataTreeCandidate));
+        assertNotNull(LazyDataTreeModification.from(codec.currentSerializer(), domDataTreeCandidate));
 
         final Object txId = new Object();
 

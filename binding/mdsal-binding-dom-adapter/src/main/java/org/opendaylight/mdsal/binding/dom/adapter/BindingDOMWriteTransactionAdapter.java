@@ -9,15 +9,20 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Map.Entry;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingAugmentationCodecTreeNode;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
@@ -30,18 +35,43 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     @Override
     public final <U extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<U> path,
             final U data) {
-        final Entry<YangInstanceIdentifier, NormalizedNode> normalized = toNormalized("put", path, data);
-        getDelegate().put(store, normalized.getKey(), normalized.getValue());
+        final var serializer = adapterContext().currentSerializer();
+        put(serializer, toNormalized(serializer, "put", path, data), store, path);
+    }
+
+    private void put(final CurrentAdapterSerializer serializer,
+            final Entry<YangInstanceIdentifier, NormalizedNode> normalized, final LogicalDatastoreType store,
+            final @NonNull InstanceIdentifier<?> path) {
+        final var delegate = getDelegate();
+        final var domPath = normalized.getKey();
+        final var domValue = normalized.getValue();
+
+        if (isAugmentation(path)) {
+            // augmentation only case: put child nodes provided with augmentation, remove those having no data
+            final var codec = getAugmentationCodec(serializer, path);
+            final var childMap = Maps.uniqueIndex(((DataContainerNode) domValue).body(),
+                DataContainerChild::getIdentifier);
+            for (var childPath : codec.childPathArguments()) {
+                if (!childMap.containsKey(childPath)) {
+                    delegate.delete(store, domPath.node(childPath));
+                }
+            }
+            for (var childEntry : childMap.entrySet()) {
+                delegate.put(store, domPath.node(childEntry.getKey()), childEntry.getValue());
+            }
+        } else {
+            delegate.put(store, domPath, domValue);
+        }
     }
 
     @Deprecated
     @Override
     public final <U extends DataObject> void mergeParentStructurePut(final LogicalDatastoreType store,
             final InstanceIdentifier<U> path, final U data) {
-        final CurrentAdapterSerializer serializer = adapterContext().currentSerializer();
-        final Entry<YangInstanceIdentifier, NormalizedNode> normalized = toNormalized(serializer, "put", path, data);
+        final var serializer = adapterContext().currentSerializer();
+        final var normalized = toNormalized(serializer, "put", path, data);
         ensureParentsByMerge(serializer, store, normalized.getKey(), path);
-        getDelegate().put(store, normalized.getKey(), normalized.getValue());
+        put(serializer, normalized, store, path);
     }
 
     @Override
@@ -64,7 +94,21 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     @Override
     public final void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         checkArgument(!path.isWildcarded(), "Cannot delete wildcarded path %s", path);
-        getDelegate().delete(store, adapterContext().currentSerializer().toYangInstanceIdentifier(path));
+        final var serializer = adapterContext().currentSerializer();
+        final var domPath = serializer.toYangInstanceIdentifier(path);
+        final var delegate = getDelegate();
+        // TODO: it would be nice if we could get the path and the codec node in one go -- and then we can just
+        //       perform an instanceof check on the codec instead of this isAugmentation() check
+        if (isAugmentation(path)) {
+            // Deletion of an augmentation: issue a delete on all potential children of the augmentation
+            final var codec = getAugmentationCodec(serializer, path);
+            for (var childPath : codec.childPathArguments()) {
+                delegate.delete(store, domPath.node(childPath));
+            }
+        } else {
+            delegate.delete(store, domPath);
+            return;
+        }
     }
 
     @Override
@@ -105,5 +149,14 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
             final U data) {
         checkArgument(!path.isWildcarded(), "Cannot %s data into wildcarded path %s", operation, path);
         return serializer.toNormalizedNode(path, data);
+    }
+
+    private static BindingAugmentationCodecTreeNode<?> getAugmentationCodec(final CurrentAdapterSerializer serializer,
+            final InstanceIdentifier<?> path) {
+        final var codec = serializer.getSubtreeCodec(path);
+        if (codec instanceof BindingAugmentationCodecTreeNode<?> augmentCodec) {
+            return augmentCodec;
+        }
+        throw new IllegalStateException("Unexpected codec " + codec);
     }
 }

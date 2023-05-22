@@ -7,13 +7,18 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.api;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import java.time.Instant;
 import java.util.Map.Entry;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.Action;
+import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BaseNotification;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -24,15 +29,67 @@ import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
- * Serialization service, which provides two-way serialization between Java
- * Binding Data representation and NormalizedNode representation.
+ * Serialization service, which provides two-way serialization between Java Binding Data representation and
+ * NormalizedNode representation.
  */
 public interface BindingNormalizedNodeSerializer {
+    /**
+     * Result of a {@link BindingNormalizedNodeSerializer#toNormalizedNode(InstanceIdentifier, DataObject)}. Since the
+     * Binding {@link Augmentation} does not have an exact equivalent, there are two specializations of this class:
+     * {@link NodeResult} and {@link AugmentationResult}.
+     */
+    abstract sealed class NormalizedResult {
+        private final @NonNull YangInstanceIdentifier path;
+
+        NormalizedResult(final YangInstanceIdentifier path) {
+            this.path = requireNonNull(path);
+        }
+
+        public final @NonNull YangInstanceIdentifier path() {
+            return path;
+        }
+    }
+
+    final class AugmentationResult extends NormalizedResult {
+        private final @NonNull ImmutableSet<PathArgument> possibleChildren;
+        private final @NonNull ImmutableList<DataContainerChild> children;
+
+        public AugmentationResult(final YangInstanceIdentifier path, final ImmutableSet<PathArgument> possibleChildren,
+                final ImmutableList<DataContainerChild> children) {
+            super(path);
+            this.possibleChildren = requireNonNull(possibleChildren);
+            this.children = requireNonNull(children);
+        }
+
+        public @NonNull ImmutableSet<PathArgument> possibleChildren() {
+            return possibleChildren;
+        }
+
+        public @NonNull ImmutableList<DataContainerChild> children() {
+            return children;
+        }
+    }
+
+    final class NodeResult extends NormalizedResult {
+        private final @NonNull NormalizedNode node;
+
+        public NodeResult(final YangInstanceIdentifier path, final NormalizedNode node) {
+            super(path);
+            this.node = requireNonNull(node);
+        }
+
+        public @NonNull NormalizedNode node() {
+            return node;
+        }
+    }
+
     /**
      * Translates supplied Binding Instance Identifier into NormalizedNode instance identifier.
      *
@@ -58,11 +115,10 @@ public interface BindingNormalizedNodeSerializer {
      *
      * @param path Binding Instance Identifier pointing to data
      * @param data Data object representing data
-     * @return NormalizedNode representation
+     * @return {@link NormalizedResult} representation
      * @throws IllegalArgumentException If supplied Instance Identifier is not valid.
      */
-    <T extends DataObject> @NonNull Entry<YangInstanceIdentifier, NormalizedNode> toNormalizedNode(
-            InstanceIdentifier<T> path, T data);
+    <T extends DataObject> @NonNull NormalizedResult toNormalizedNode(InstanceIdentifier<T> path, T data);
 
     /**
      * Translates supplied YANG Instance Identifier and NormalizedNode into Binding data.
