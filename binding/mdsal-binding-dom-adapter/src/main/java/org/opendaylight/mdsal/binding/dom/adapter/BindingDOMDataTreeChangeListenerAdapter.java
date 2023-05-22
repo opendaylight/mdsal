@@ -24,22 +24,32 @@ class BindingDOMDataTreeChangeListenerAdapter<T extends DataObject> implements D
     private final AdapterContext adapterContext;
     private final DataTreeChangeListener<T> listener;
     private final LogicalDatastoreType store;
+    private final Class<T> augment;
+
+    private boolean initialSyncDone;
 
     BindingDOMDataTreeChangeListenerAdapter(final AdapterContext adapterContext,
-            final DataTreeChangeListener<T> listener, final LogicalDatastoreType store) {
+            final DataTreeChangeListener<T> listener, final LogicalDatastoreType store, final Class<T> augment) {
         this.adapterContext = requireNonNull(adapterContext);
         this.listener = requireNonNull(listener);
         this.store = requireNonNull(store);
+        this.augment = augment;
     }
 
     @Override
     public void onDataTreeChanged(final List<DataTreeCandidate> domChanges) {
-        listener.onDataTreeChanged(LazyDataTreeModification.from(adapterContext.currentSerializer(), domChanges,
-            store));
+        final var changes = LazyDataTreeModification.<T>from(adapterContext.currentSerializer(), domChanges, store,
+            augment);
+        if (!changes.isEmpty()) {
+            listener.onDataTreeChanged(changes);
+        } else if (!initialSyncDone) {
+            onInitialData();
+        }
     }
 
     @Override
     public void onInitialData() {
+        initialSyncDone = true;
         listener.onInitialData();
     }
 }

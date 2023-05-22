@@ -11,13 +11,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.VerifyException;
+import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.query.QueryExpression;
 import org.opendaylight.mdsal.binding.api.query.QueryResult;
 import org.opendaylight.mdsal.binding.dom.adapter.query.DefaultQuery;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingAugmentationCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeQueryOperations;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadOperations;
@@ -29,7 +35,7 @@ import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +48,7 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
 
     AbstractForwardedTransaction(final AdapterContext adapterContext, final T delegateTx) {
         this.adapterContext = requireNonNull(adapterContext, "Codec must not be null");
-        this.delegate = requireNonNull(delegateTx, "Delegate must not be null");
+        delegate = requireNonNull(delegateTx, "Delegate must not be null");
     }
 
     @Override
@@ -69,18 +75,43 @@ abstract class AbstractForwardedTransaction<T extends DOMDataTreeTransaction> im
             final InstanceIdentifier<D> path) {
         checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 
-        final CurrentAdapterSerializer codec = adapterContext.currentSerializer();
-        final YangInstanceIdentifier domPath = codec.toYangInstanceIdentifier(path);
-
+        final var codecWithPath = adapterContext.currentSerializer().getSubtreeCodecWithPath(path);
+        final var domPath = codecWithPath.path();
+        final var codec = codecWithPath.codec();
         return readOps.read(store, domPath)
-                .transform(optData -> optData.map(domData -> (D) codec.fromNormalizedNode(domPath, domData).getValue()),
-                    MoreExecutors.directExecutor());
+            .transform(optData -> optData.flatMap(data -> decodeRead(codec, data)), MoreExecutors.directExecutor());
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <D extends DataObject> Optional<D> decodeRead(final CommonDataObjectCodecTreeNode<D> codec,
+            final @NonNull NormalizedNode data) {
+        if (codec instanceof BindingDataObjectCodecTreeNode<?> dataObject) {
+            return Optional.of((D) dataObject.deserialize(data));
+        } else if (codec instanceof BindingAugmentationCodecTreeNode<?> augment) {
+            return Optional.ofNullable((D) augment.filterFrom(data));
+        } else {
+            throw new VerifyException("Unhandled codec " + codec);
+        }
     }
 
     protected final @NonNull FluentFuture<Boolean> doExists(final DOMDataTreeReadOperations readOps,
             final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         checkArgument(!path.isWildcarded(), "Invalid exists of wildcarded path %s", path);
-        return readOps.exists(store, adapterContext.currentSerializer().toYangInstanceIdentifier(path));
+
+        final var codecWithPath = adapterContext.currentSerializer().getSubtreeCodecWithPath(path);
+        final var domPath = codecWithPath.path();
+        if (codecWithPath.codec() instanceof BindingAugmentationCodecTreeNode<?> augment) {
+            // Complicated case: we need to check if any of the children exist, as DOM layer just does not know about
+            //                   this indirection
+            return FluentFuture.from(Futures.transform(
+                Futures.allAsList(augment.childPathArguments().stream()
+                    .map(child -> readOps.exists(store, domPath.node(child)))
+                    .collect(ImmutableList.toImmutableList())),
+                children -> children.contains(Boolean.TRUE),
+                MoreExecutors.directExecutor()));
+        } else {
+            return readOps.exists(store, domPath);
+        }
     }
 
     protected static final <T extends @NonNull DataObject> @NonNull FluentFuture<QueryResult<T>> doExecute(
