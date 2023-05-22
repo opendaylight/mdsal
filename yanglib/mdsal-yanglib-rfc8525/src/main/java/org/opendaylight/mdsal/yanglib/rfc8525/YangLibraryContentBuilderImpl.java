@@ -49,7 +49,8 @@ final class YangLibraryContentBuilderImpl implements YangLibraryContentBuilder {
 
     YangLibraryContentBuilderImpl(final BindingCodecTree codecTree) {
         this.codecTree = Objects.requireNonNull(codecTree);
-        codec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(YangLibrary.class)));
+        codec = (BindingDataObjectCodecTreeNode<YangLibrary>)
+            verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(YangLibrary.class)));
     }
 
     @Override

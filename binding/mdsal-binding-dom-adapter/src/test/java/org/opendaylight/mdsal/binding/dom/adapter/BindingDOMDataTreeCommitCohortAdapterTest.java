@@ -43,18 +43,22 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
         final AdapterContext codec = new ConstantAdapterContext(registry);
 
         final BindingDOMDataTreeCommitCohortAdapter<?> adapter =
-                new BindingDOMDataTreeCommitCohortAdapter<>(codec, cohort);
+                new BindingDOMDataTreeCommitCohortAdapter<>(codec, cohort, null);
         assertNotNull(adapter);
 
         final DOMDataTreeCandidate domDataTreeCandidate = mock(DOMDataTreeCandidate.class);
         final DOMDataTreeIdentifier domDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.empty());
-        doReturn(InstanceIdentifier.create(BooleanContainer.class)).when(registry).fromYangInstanceIdentifier(any());
+        final var bindingPath = InstanceIdentifier.create(BooleanContainer.class);
+        doReturn(bindingPath).when(registry).fromYangInstanceIdentifier(any());
         final BindingDataObjectCodecTreeNode<?> bindingCodecTreeNode = mock(BindingDataObjectCodecTreeNode.class);
         doReturn(bindingCodecTreeNode).when(registry).getSubtreeCodec(any(InstanceIdentifier.class));
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
         doReturn(mock(DataTreeCandidateNode.class)).when(domDataTreeCandidate).getRootNode();
-        assertNotNull(LazyDataTreeModification.create(codec.currentSerializer(), domDataTreeCandidate));
+        doReturn(bindingPath.getPathArguments().iterator().next()).when(bindingCodecTreeNode)
+            .deserializePathArgument(null);
+
+        assertNotNull(LazyDataTreeModification.from(codec.currentSerializer(), domDataTreeCandidate, null));
 
         final Object txId = new Object();
 

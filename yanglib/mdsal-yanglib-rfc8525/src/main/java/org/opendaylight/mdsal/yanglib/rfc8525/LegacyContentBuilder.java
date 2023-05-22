@@ -41,7 +41,8 @@ final class LegacyContentBuilder implements YangLibraryContentBuilderWithLegacy 
 
     LegacyContentBuilder(final YangLibraryContentBuilderImpl delegate, final BindingCodecTree codecTree) {
         this.delegate = requireNonNull(delegate);
-        legacyCodec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
+        legacyCodec = (BindingDataObjectCodecTreeNode<ModulesState>)
+            verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
     }
 
     @Override

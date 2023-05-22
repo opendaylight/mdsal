@@ -31,8 +31,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 public class LegacyYangLibraryFormatTest extends AbstractYangLibraryTest {
     @Test
     public void testLegacyFormat() {
-        final BindingDataObjectCodecTreeNode<ModulesState> legacyCodec =
-                codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class));
+        final var legacyCodec = (BindingDataObjectCodecTreeNode<ModulesState>)
+            codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class));
 
         final Optional<ContainerNode> legacyContent = yangLib.newContentBuilder()
             .defaultContext(runtimeContext.getEffectiveModelContext())

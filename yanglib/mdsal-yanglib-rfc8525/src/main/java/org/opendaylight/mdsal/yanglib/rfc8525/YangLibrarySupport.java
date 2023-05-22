@@ -67,8 +67,10 @@ public final class YangLibrarySupport implements YangLibSupport {
             generator.generateTypeMapping(context), snapshot));
 
         identityCodec = codecTree.getIdentityCodec();
-        codec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(YangLibrary.class)));
-        legacyCodec = verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
+        codec = (BindingDataObjectCodecTreeNode<YangLibrary>)
+            verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(YangLibrary.class)));
+        legacyCodec = (BindingDataObjectCodecTreeNode<ModulesState>)
+            verifyNotNull(codecTree.getSubtreeCodec(InstanceIdentifier.create(ModulesState.class)));
     }
 
     @Override

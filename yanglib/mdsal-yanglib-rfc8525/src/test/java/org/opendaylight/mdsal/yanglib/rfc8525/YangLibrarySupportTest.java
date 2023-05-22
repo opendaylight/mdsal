@@ -29,8 +29,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 public class YangLibrarySupportTest extends AbstractYangLibraryTest {
     @Test
     public void testFormatSchema() {
-        final BindingDataObjectCodecTreeNode<YangLibrary> codec =
-                codecTree.getSubtreeCodec(InstanceIdentifier.create(YangLibrary.class));
+        final var codec = (BindingDataObjectCodecTreeNode<YangLibrary>)
+            codecTree.getSubtreeCodec(InstanceIdentifier.create(YangLibrary.class));
 
         final ContainerNode nonLegacyContent = yangLib.newContentBuilder()
                 .defaultContext(runtimeContext.getEffectiveModelContext()).formatYangLibraryContent();
