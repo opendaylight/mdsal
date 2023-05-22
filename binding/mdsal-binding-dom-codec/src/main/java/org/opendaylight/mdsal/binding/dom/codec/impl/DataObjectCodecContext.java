@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.lang.invoke.MethodHandle;
@@ -18,11 +19,19 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
 import java.util.Optional;
+=======
+import java.util.Map.Entry;
+import java.util.Set;
+>>>>>>> f406e364a3 (Adopt augmentation node and identifier removal at YANGTOOLS)
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -32,18 +41,25 @@ import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.api.CompositeRuntimeType;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+<<<<<<< HEAD
+=======
+import org.opendaylight.yangtools.yang.binding.BindingObject;
+import org.opendaylight.yangtools.yang.binding.DataContainer;
+>>>>>>> f406e364a3 (Adopt augmentation node and identifier removal at YANGTOOLS)
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
-import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DistinctNodeContainer;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+<<<<<<< HEAD
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+=======
+import org.opendaylight.yangtools.yang.data.api.schema.builder.DataContainerNodeBuilder;
+import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+>>>>>>> f406e364a3 (Adopt augmentation node and identifier removal at YANGTOOLS)
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +69,7 @@ import org.slf4j.LoggerFactory;
  */
 @Beta
 public abstract class DataObjectCodecContext<D extends DataObject, T extends CompositeRuntimeType>
-        extends DataContainerCodecContext<D, T> {
+        extends AbstractDataObjectCodecContext<D, T> implements BindingDataObjectCodecTreeNode<D> {
     private static final Logger LOG = LoggerFactory.getLogger(DataObjectCodecContext.class);
 
     private static final VarHandle MISMATCHED_AUGMENTED;
@@ -68,13 +84,15 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
     }
 
     private final ImmutableMap<String, ValueNodeCodecContext> leafChild;
-    private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
+    private final ImmutableMap<PathArgument, NodeContextSupplier> byYang;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStreamClass;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClass;
-    private final ImmutableMap<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> augmentationByYang;
-    private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> augmentationByStream;
+    private final ImmutableMap<PathArgument, Class<?>> augmentationPathToBindingClass;
+    private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> augmentationBindingClassToProto;
     private final @NonNull Class<? extends CodecDataObject<?>> generatedClass;
     private final MethodHandle proxyConstructor;
+    private final ImmutableSet<PathArgument> childPathArgs;
+    private final ImmutableSet<Class<?>> childBindingClasses;
 
     // Note this the content of this field depends only of invariants expressed as this class's fields or
     // BindingRuntimeContext. It is only accessed via MISMATCHED_AUGMENTED above.
@@ -105,6 +123,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
         byStreamClass = analysis.byStreamClass;
         byYang = analysis.byYang;
 
+<<<<<<< HEAD
         // Deal with augmentations, which are not something we analysis provides
         final var augByYang = new HashMap<PathArgument, DataContainerCodecPrototype<?>>();
         final var augByStream = new HashMap<Class<?>, DataContainerCodecPrototype<?>>();
@@ -118,91 +137,156 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
                 final var augBindingClass = augProto.getBindingClass();
                 if (augByStream.putIfAbsent(augBindingClass, augProto) == null) {
                     LOG.trace("Discovered new class mapping {} -> {} in {}", augBindingClass, augProto, this);
+=======
+        final ImmutableMap<Method, ValueNodeCodecContext> tmpLeaves = factory().getLeafNodes(bindingClass,
+            getType().statement());
+        final Map<Class<? extends DataContainer>, Method> clsToMethod = getChildrenClassToMethod(bindingClass);
+
+        final Map<PathArgument, NodeContextSupplier> byYangBuilder = new HashMap<>();
+        final Map<Class<?>, DataContainerCodecPrototype<?>> byStreamClassBuilder = new HashMap<>();
+        final Map<Class<?>, DataContainerCodecPrototype<?>> byBindingArgClassBuilder = new HashMap<>();
+
+        // Adds leaves to mapping
+        final Builder<String, ValueNodeCodecContext> leafChildBuilder =
+                ImmutableMap.builderWithExpectedSize(tmpLeaves.size());
+        for (final ValueNodeCodecContext leaf : tmpLeaves.values()) {
+            leafChildBuilder.put(leaf.getSchema().getQName().getLocalName(), leaf);
+            byYangBuilder.put(leaf.getDomPathArgument(), leaf);
+        }
+        leafChild = leafChildBuilder.build();
+
+        final Map<Class<?>, PropertyInfo> daoProperties = new HashMap<>();
+        for (final Entry<Class<? extends DataContainer>, Method> childDataObj : clsToMethod.entrySet()) {
+            final Method method = childDataObj.getValue();
+            verify(!method.isDefault(), "Unexpected default method %s in %s", method, bindingClass);
+
+            final Class<? extends DataContainer> retClass = childDataObj.getKey();
+            if (OpaqueObject.class.isAssignableFrom(retClass)) {
+                // Filter OpaqueObjects, they are not containers
+                continue;
+            }
+
+            // Record getter method
+            daoProperties.put(retClass, new PropertyInfo.Getter(method));
+
+            final DataContainerCodecPrototype<?> childProto = loadChildPrototype(retClass);
+            byStreamClassBuilder.put(childProto.getBindingClass(), childProto);
+            byYangBuilder.put(childProto.getYangArg(), childProto);
+
+            // FIXME: It really feels like we should be specializing DataContainerCodecPrototype so as to ditch
+            //        createInstance() and then we could do an instanceof check instead.
+            if (childProto.getType() instanceof ChoiceRuntimeType) {
+                final ChoiceNodeCodecContext<?> choice = (ChoiceNodeCodecContext<?>) childProto.get();
+                for (final Class<?> cazeChild : choice.getCaseChildrenClasses()) {
+                    byBindingArgClassBuilder.put(cazeChild, childProto);
                 }
             }
         }
+
+        // Find all non-default nonnullFoo() methods and update the corresponding property info
+        for (var entry : getChildrenClassToNonnullMethod(bindingClass).entrySet()) {
+            final var method = entry.getValue();
+            if (!method.isDefault()) {
+                daoProperties.compute(entry.getKey(), (key, value) -> new PropertyInfo.GetterAndNonnull(
+                    verifyNotNull(value, "No getter for %s", key).getterMethod(), method));
+            }
+        }
+
+        byYang = ImmutableMap.copyOf(byYangBuilder);
+        byStreamClass = ImmutableMap.copyOf(byStreamClassBuilder);
+
+        // Slight footprint optimization: we do not want to copy byStreamClass, as that would force its entrySet view
+        // to be instantiated. Furthermore the two maps can easily end up being equal -- hence we can reuse
+        // byStreamClass for the purposes of both.
+        byBindingArgClassBuilder.putAll(byStreamClassBuilder);
+        byBindingArgClass = byStreamClassBuilder.equals(byBindingArgClassBuilder) ? byStreamClass
+                : ImmutableMap.copyOf(byBindingArgClassBuilder);
+
+        final List<AugmentRuntimeType> possibleAugmentations;
+        if (Augmentable.class.isAssignableFrom(bindingClass)) {
+            // Verify we have the appropriate backing runtimeType
+            final var type = getType();
+            verify(type instanceof AugmentableRuntimeType, "Unexpected type %s backing augmenable %s", type,
+                bindingClass);
+            possibleAugmentations = ((AugmentableRuntimeType) type).augments();
+            generatedClass = CodecDataObjectGenerator.generateAugmentable(prototype.getFactory().getLoader(),
+                bindingClass, tmpLeaves, daoProperties, keyMethod);
+        } else {
+            possibleAugmentations = List.of();
+            generatedClass = CodecDataObjectGenerator.generate(prototype.getFactory().getLoader(), bindingClass,
+                tmpLeaves, daoProperties, keyMethod);
+        }
+
+        // Iterate over all possible augmentations, indexing them as needed
+        final Map<PathArgument, Class<?>> augPathToBinding = new HashMap<>();
+        final Map<Class<?>, DataContainerCodecPrototype<?>> augClassToProto = new HashMap<>();
+        for (final AugmentRuntimeType augment : possibleAugmentations) {
+            final DataContainerCodecPrototype<?> augProto = loadAugmentPrototype(augment);
+            if (augProto != null) {
+                final Class<?> augBindingClass = augProto.getBindingClass();
+                for (var childPath : augProto.getChildArgs()) {
+                    augPathToBinding.putIfAbsent(childPath, augBindingClass);
+>>>>>>> f406e364a3 (Adopt augmentation node and identifier removal at YANGTOOLS)
+                }
+                augClassToProto.putIfAbsent(augBindingClass, augProto);
+            }
+        }
+<<<<<<< HEAD
         augmentationByYang = ImmutableMap.copyOf(augByYang);
         augmentationByStream = ImmutableMap.copyOf(augByStream);
+=======
+        augmentationPathToBindingClass = ImmutableMap.copyOf(augPathToBinding);
+        augmentationBindingClassToProto = ImmutableMap.copyOf(augClassToProto);
+
+        // complete set of child path argument
+        childPathArgs = ImmutableSet.<PathArgument>builder()
+            .addAll(byYang.keySet())
+            .addAll(augmentationPathToBindingClass.keySet()).build();
+
+        // complete set of child binding classes
+        final Set<Class<?>> childClasses = new HashSet(byBindingArgClass.keySet());
+        childClasses.addAll(augmentationPathToBindingClass.values());
+        childBindingClasses = ImmutableSet.copyOf(childClasses);
+
+        final MethodHandle ctor;
+        try {
+            ctor = MethodHandles.publicLookup().findConstructor(generatedClass, CONSTRUCTOR_TYPE);
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            throw new LinkageError("Failed to find contructor for class " + generatedClass, e);
+        }
+
+        proxyConstructor = ctor.asType(DATAOBJECT_TYPE);
+>>>>>>> f406e364a3 (Adopt augmentation node and identifier removal at YANGTOOLS)
     }
 
     @Override
-    public final WithStatus getSchema() {
-        // FIXME: Bad cast, we should be returning an EffectiveStatement perhaps?
-        return (WithStatus) getType().statement();
+    final DataContainerCodecPrototype<?> pathChildPrototype(final Class<? extends DataObject> argType) {
+        // FIXME: super.pathChildPrototype(argType)
+        final var child = byBindingArgClass.get(argType);
+        return child != null ? child : augmentationBindingClassToProto.get(argType);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <C extends DataObject> DataContainerCodecContext<C, ?> streamChild(final Class<C> childClass) {
-        return (DataContainerCodecContext<C, ?>) childNonNull(streamChildPrototype(childClass), childClass,
-            "Child %s is not valid child of %s", getBindingClass(), childClass).get();
-    }
-
-    private DataContainerCodecPrototype<?> streamChildPrototype(final Class<?> childClass) {
-        final DataContainerCodecPrototype<?> childProto = byStreamClass.get(childClass);
-        if (childProto != null) {
-            return childProto;
+    final DataContainerCodecPrototype<?> streamChildPrototype(final Class<?> childClass) {
+        // FIXME: super.childByStreamClass(childClass)
+        final var child = byStreamClass.get(childClass);
+        if (child == null && Augmentation.class.isAssignableFrom(childClass)) {
+            return getAugmentationProtoByClass(childClass);
         }
-        if (Augmentation.class.isAssignableFrom(childClass)) {
-            return augmentationByClass(childClass);
-        }
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <C extends DataObject> Optional<DataContainerCodecContext<C, ?>> possibleStreamChild(
-            final Class<C> childClass) {
-        final DataContainerCodecPrototype<?> childProto = streamChildPrototype(childClass);
-        if (childProto != null) {
-            return Optional.of((DataContainerCodecContext<C, ?>) childProto.get());
-        }
-        return Optional.empty();
+        return child;
     }
 
     @Override
-    public DataContainerCodecContext<?,?> bindingPathArgumentChild(final InstanceIdentifier.PathArgument arg,
-            final List<YangInstanceIdentifier.PathArgument> builder) {
-
-        final Class<? extends DataObject> argType = arg.getType();
-        DataContainerCodecPrototype<?> ctxProto = byBindingArgClass.get(argType);
-        if (ctxProto == null && Augmentation.class.isAssignableFrom(argType)) {
-            ctxProto = augmentationByClass(argType);
-        }
-        final DataContainerCodecContext<?, ?> context = childNonNull(ctxProto, argType,
-            "Class %s is not valid child of %s", argType, getBindingClass()).get();
-        if (context instanceof ChoiceNodeCodecContext<?> choice) {
-            choice.addYangPathArgument(arg, builder);
-
-            final Optional<? extends Class<? extends DataObject>> caseType = arg.getCaseType();
-            final Class<? extends DataObject> type = arg.getType();
-            final DataContainerCodecContext<?, ?> caze;
-            if (caseType.isPresent()) {
-                // Non-ambiguous addressing this should not pose any problems
-                caze = choice.streamChild(caseType.orElseThrow());
-            } else {
-                caze = choice.getCaseByChildClass(type);
+    NodeContextSupplier yangChildSupplier(final PathArgument arg) {
+        // FIXME: super.yangChildPrototype(arg);
+        final var child = byYang.get(arg);
+        if (child == null) {
+            final var augClass = augmentationPathToBindingClass.get(arg);
+            if (augClass != null) {
+                return augmentationBindingClassToProto.get(augClass);
             }
-
-            caze.addYangPathArgument(arg, builder);
-            return caze.bindingPathArgumentChild(arg, builder);
         }
-        context.addYangPathArgument(arg, builder);
-        return context;
-    }
-
-    @Override
-    public NodeCodecContext yangPathArgumentChild(final YangInstanceIdentifier.PathArgument arg) {
-        final NodeContextSupplier childSupplier;
-        if (arg instanceof NodeIdentifierWithPredicates) {
-            childSupplier = byYang.get(new NodeIdentifier(arg.getNodeType()));
-        } else if (arg instanceof AugmentationIdentifier) {
-            childSupplier = augmentationByYang.get(arg);
-        } else {
-            childSupplier = byYang.get(arg);
-        }
-
-        return childNonNull(childSupplier, arg, "Argument %s is not valid child of %s", arg, getSchema()).get();
+        return child;
     }
 
     protected final ValueNodeCodecContext getLeafChild(final String name) {
@@ -213,9 +297,45 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
         return value;
     }
 
+<<<<<<< HEAD
     private @Nullable DataContainerCodecPrototype<?> augmentationByClass(final @NonNull Class<?> childClass) {
         final DataContainerCodecPrototype<?> childProto = augmentationByStream.get(childClass);
         return childProto != null ? childProto : mismatchedAugmentationByClass(childClass);
+=======
+    @Override
+    public Set<PathArgument> getChildPathArguments() {
+        return childPathArgs;
+    }
+
+    @Override
+    public Set<Class<?>> getChildBindingClasses() {
+        return childBindingClasses;
+    }
+
+    private DataContainerCodecPrototype<?> loadChildPrototype(final Class<? extends DataContainer> childClass) {
+        final var type = getType();
+        final var child = childNonNull(type.bindingChild(JavaTypeName.create(childClass)), childClass,
+            "Node %s does not have child named %s", type, childClass);
+
+        return DataContainerCodecPrototype.from(createBindingArg(childClass, child.statement()),
+            (CompositeRuntimeType) child, factory());
+    }
+
+    // FIXME: MDSAL-697: move this method into BindingRuntimeContext
+    //                   This method is only called from loadChildPrototype() and exists only to be overridden by
+    //                   CaseNodeCodecContext. Since we are providing childClass and our schema to BindingRuntimeContext
+    //                   and receiving childSchema from it via findChildSchemaDefinition, we should be able to receive
+    //                   the equivalent of Map.Entry<Item, DataSchemaNode>, along with the override we create here. One
+    //                   more input we may need to provide is our bindingClass().
+    @SuppressWarnings("unchecked")
+    Item<?> createBindingArg(final Class<?> childClass, final EffectiveStatement<?, ?> childSchema) {
+        return Item.of((Class<? extends DataObject>) childClass);
+    }
+
+    private @Nullable DataContainerCodecPrototype<?> getAugmentationProtoByClass(final @NonNull Class<?> augmClass) {
+        final var childProto = augmentationBindingClassToProto.get(augmClass);
+        return childProto != null ? childProto : mismatchedAugmentationByClass(augmClass);
+>>>>>>> f406e364a3 (Adopt augmentation node and identifier removal at YANGTOOLS)
     }
 
     private @Nullable DataContainerCodecPrototype<?> mismatchedAugmentationByClass(final @NonNull Class<?> childClass) {
@@ -228,7 +348,6 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
                 (ImmutableMap<Class<?>, DataContainerCodecPrototype<?>>) MISMATCHED_AUGMENTED.getAcquire(this);
         final DataContainerCodecPrototype<?> mismatched = local.get(childClass);
         return mismatched != null ? mismatched : loadMismatchedAugmentation(local, childClass);
-
     }
 
     private @Nullable DataContainerCodecPrototype<?> loadMismatchedAugmentation(
@@ -239,7 +358,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
         // Do not bother with proposals which are not augmentations of our class, or do not match what the runtime
         // context would load.
         if (getBindingClass().equals(augTarget) && belongsToRuntimeContext(childClass)) {
-            for (final DataContainerCodecPrototype<?> realChild : augmentationByStream.values()) {
+            for (final DataContainerCodecPrototype<?> realChild : augmentationBindingClassToProto.values()) {
                 if (Augmentation.class.isAssignableFrom(realChild.getBindingClass())
                         && isSubstitutionFor(childClass, realChild.getBindingClass())) {
                     return cacheMismatched(oldMismatched, childClass, realChild);
@@ -293,13 +412,16 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
     private @Nullable DataContainerCodecPrototype<?> loadAugmentPrototype(final AugmentRuntimeType augment) {
         // FIXME: in face of deviations this code should be looking at declared view, i.e. all possibilities at augment
         //        declaration site
-        final var possibleChildren = augment.statement()
+        final var childPaths = augment.statement()
             .streamEffectiveSubstatements(SchemaTreeEffectiveStatement.class)
-            .map(stmt -> (QName) stmt.argument())
+            .map(stmt -> new NodeIdentifier((QName) stmt.argument()))
             .collect(ImmutableSet.toImmutableSet());
-        if (possibleChildren.isEmpty()) {
+
+        final var it = childPaths.iterator();
+        if (!it.hasNext()) {
             return null;
         }
+        final var namespace = it.next().getNodeType().getModule();
 
         final var factory = factory();
         final GeneratedType javaType = augment.javaType();
@@ -310,9 +432,7 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
             throw new IllegalStateException(
                 "RuntimeContext references type " + javaType + " but failed to load its class", e);
         }
-
-        return DataContainerCodecPrototype.from(augClass, new AugmentationIdentifier(possibleChildren), augment,
-            factory);
+        return DataContainerCodecPrototype.from(augClass, namespace, childPaths, augment, factory);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
@@ -329,29 +449,28 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
     Map<Class<? extends Augmentation<?>>, Augmentation<?>> getAllAugmentationsFrom(
             final DistinctNodeContainer<PathArgument, NormalizedNode> data) {
 
-        @SuppressWarnings("rawtypes")
-        final Map map = new HashMap<>();
+        /**
+         * Due to augmentation fields are at same level as direct children
+         * the data of each augmentation needs to be aggregated into own container node,
+         * then only deserialized using associated prototype.
+         */
 
+        final Map<Class<?>, DataContainerNodeBuilder> builders = new HashMap<>();
         for (final NormalizedNode childValue : data.body()) {
-            if (childValue instanceof AugmentationNode augDomNode) {
-                final DataContainerCodecPrototype<?> codecProto = augmentationByYang.get(augDomNode.getIdentifier());
-                if (codecProto != null) {
-                    final DataContainerCodecContext<?, ?> codec = codecProto.get();
-                    map.put(codec.getBindingClass(), codec.deserializeObject(augDomNode));
-                }
+            final Class<?> bindingClass = augmentationPathToBindingClass.get(childValue.getIdentifier());
+            if (bindingClass != null) {
+                builders.computeIfAbsent(bindingClass,
+                                key -> Builders.containerBuilder()
+                                        .withNodeIdentifier(new NodeIdentifier(data.getIdentifier().getNodeType())))
+                        .addChild(childValue);
             }
         }
-        for (final DataContainerCodecPrototype<?> value : augmentationByStream.values()) {
-            final var augClass = value.getBindingClass();
-            // Do not perform duplicate deserialization if we have already created the corresponding augmentation
-            // and validate whether the proposed augmentation is valid ion this instantiation context.
-            if (!map.containsKey(augClass)
-                && ((AugmentableRuntimeType) getType()).augments().contains(value.getType())) {
-                final NormalizedNode augData = data.childByArg(value.getYangArg());
-                if (augData != null) {
-                    // ... make sure we do not replace an e
-                    map.putIfAbsent(augClass, value.get().deserializeObject(augData));
-                }
+        @SuppressWarnings("rawtypes") final Map map = new HashMap<>();
+        for (final var entry : builders.entrySet()) {
+            final Class<?> bindingClass = entry.getKey();
+            final DataContainerCodecPrototype<?> codecProto = augmentationBindingClassToProto.get(bindingClass);
+            if (codecProto != null) {
+                map.put(bindingClass, codecProto.get().deserializeObject(entry.getValue().build()));
             }
         }
         return map;
@@ -362,15 +481,57 @@ public abstract class DataObjectCodecContext<D extends DataObject, T extends Com
     }
 
     @Override
-    public InstanceIdentifier.PathArgument deserializePathArgument(final YangInstanceIdentifier.PathArgument arg) {
+    public InstanceIdentifier.PathArgument deserializePathArgument(final PathArgument arg) {
         checkArgument(getDomPathArgument().equals(arg));
         return bindingArg();
     }
 
     @Override
-    public YangInstanceIdentifier.PathArgument serializePathArgument(final InstanceIdentifier.PathArgument arg) {
+    public PathArgument serializePathArgument(final InstanceIdentifier.PathArgument arg) {
         checkArgument(bindingArg().equals(arg));
         return getDomPathArgument();
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public NormalizedNode serialize(final D data) {
+        return serializeImpl(data);
+    }
+
+    @Override
+    public final BindingNormalizedNodeCachingCodec<D> createCachingCodec(
+            final ImmutableCollection<Class<? extends BindingObject>> cacheSpecifier) {
+        return createCachingCodec(this, cacheSpecifier);
+    }
+
+    /**
+     * Scans supplied class and returns an iterable of all data children classes.
+     *
+     * @param type YANG Modeled Entity derived from DataContainer
+     * @return Iterable of all data children, which have YANG modeled entity
+     */
+    // FIXME: MDSAL-780: replace use of this method
+    private static Map<Class<? extends DataContainer>, Method> getChildrenClassToMethod(final Class<?> type) {
+        return getChildClassToMethod(type, Naming.GETTER_PREFIX);
+    }
+
+    // FIXME: MDSAL-780: replace use of this method
+    private static Map<Class<? extends DataContainer>, Method> getChildrenClassToNonnullMethod(final Class<?> type) {
+        return getChildClassToMethod(type, Naming.NONNULL_PREFIX);
+    }
+
+    // FIXME: MDSAL-780: replace use of this method
+    private static Map<Class<? extends DataContainer>, Method> getChildClassToMethod(final Class<?> type,
+            final String prefix) {
+        checkArgument(type != null, "Target type must not be null");
+        checkArgument(DataContainer.class.isAssignableFrom(type), "Supplied type %s must be derived from DataContainer",
+            type);
+        final var ret = new HashMap<Class<? extends DataContainer>, Method>();
+        for (Method method : type.getMethods()) {
+            getYangModeledReturnType(method, prefix).ifPresent(entity -> ret.put(entity, method));
+        }
+        return ret;
+    }
+>>>>>>> f406e364a3 (Adopt augmentation node and identifier removal at YANGTOOLS)
 }
