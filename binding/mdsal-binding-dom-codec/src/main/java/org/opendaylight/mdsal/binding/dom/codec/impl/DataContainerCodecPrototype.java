@@ -11,8 +11,10 @@ import static com.google.common.base.Verify.verify;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode.ChildAddressabilitySummary;
+import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode.ChildAddressabilitySummary;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
@@ -31,7 +33,6 @@ import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.model.api.AnydataSchemaNode;
@@ -68,6 +69,7 @@ final class DataContainerCodecPrototype<T extends RuntimeTypeContainer> implemen
     private final CodecContextFactory factory;
     private final Item<?> bindingArg;
     private final PathArgument yangArg;
+    private final Collection<PathArgument> yangArgs; // multiple paths represent augmentation wrapper
     private final ChildAddressabilitySummary childAddressabilitySummary;
 
     // Accessed via INSTANCE
@@ -75,25 +77,29 @@ final class DataContainerCodecPrototype<T extends RuntimeTypeContainer> implemen
     private volatile DataContainerCodecContext<?, T> instance;
 
     @SuppressWarnings("unchecked")
+    private DataContainerCodecPrototype(final Class<?> cls, final Collection<PathArgument> args, final T type,
+            final CodecContextFactory factory) {
+        this(Item.of((Class<? extends DataObject>) cls), args.iterator().next(), args, type, factory);
+    }
+
     private DataContainerCodecPrototype(final Class<?> cls, final PathArgument arg, final T type,
             final CodecContextFactory factory) {
-        this(Item.of((Class<? extends DataObject>) cls), arg, type, factory);
+        this(Item.of((Class<? extends DataObject>) cls), arg, List.of(), type, factory);
     }
 
     private DataContainerCodecPrototype(final Item<?> bindingArg, final PathArgument arg, final T type,
             final CodecContextFactory factory) {
+        this(bindingArg, arg, List.of(), type, factory);
+    }
+
+    private DataContainerCodecPrototype(final Item<?> bindingArg, final PathArgument arg,
+             Collection<PathArgument> args, final T type, final CodecContextFactory factory) {
         this.bindingArg = bindingArg;
         this.yangArg = arg;
+        this.yangArgs = args;
         this.type = type;
         this.factory = factory;
-
-        if (arg instanceof AugmentationIdentifier augId) {
-            final var childNames = augId.getPossibleChildNames();
-            verify(!childNames.isEmpty(), "Unexpected empty identifier for %s", type);
-            this.namespace = childNames.iterator().next().getModule();
-        } else {
-            this.namespace = arg.getNodeType().getModule();
-        }
+        this.namespace = arg.getNodeType().getModule();
 
         this.childAddressabilitySummary = type instanceof RuntimeType
             ? computeChildAddressabilitySummary(((RuntimeType) type).statement())
@@ -189,9 +195,9 @@ final class DataContainerCodecPrototype<T extends RuntimeTypeContainer> implemen
         return new DataContainerCodecPrototype<>(bindingArg, createIdentifier(type), type, factory);
     }
 
-    static DataContainerCodecPrototype<AugmentRuntimeType> from(final Class<?> augClass,
-            final AugmentationIdentifier arg, final AugmentRuntimeType schema, final CodecContextFactory factory) {
-        return new DataContainerCodecPrototype<>(augClass, arg, schema, factory);
+    static DataContainerCodecPrototype<AugmentRuntimeType> from(final Class<?> bindingClass,
+            final Collection<PathArgument> args, final AugmentRuntimeType schema, final CodecContextFactory factory) {
+        return new DataContainerCodecPrototype<>(bindingClass, args, schema, factory);
     }
 
     static DataContainerCodecPrototype<NotificationRuntimeType> from(final Class<?> augClass,
@@ -232,6 +238,10 @@ final class DataContainerCodecPrototype<T extends RuntimeTypeContainer> implemen
 
     PathArgument getYangArg() {
         return yangArg;
+    }
+
+    Collection<PathArgument> getYangArgs() {
+        return yangArgs;
     }
 
     @Override
