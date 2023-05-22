@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb02bec4_b7d44ec5",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-22T19:29:00Z",
+      "side": 1,
+      "message": "containsKey() followed by a get() -- a text book code smell",
+      "range": {
+        "startLine": 348,
+        "startChar": 47,
+        "endLine": 348,
+        "endChar": 58
+      },
+      "revId": "4ef671b1c2e1b74665e78772d1863eac27d1a1d1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
