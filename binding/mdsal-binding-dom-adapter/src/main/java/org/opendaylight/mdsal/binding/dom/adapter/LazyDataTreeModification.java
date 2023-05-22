@@ -13,15 +13,16 @@ import com.google.common.base.MoreObjects;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.tree.api.DataTreeCandidate;
 
 /**
@@ -37,35 +38,53 @@ final class LazyDataTreeModification<T extends DataObject> implements DataTreeMo
 
     private LazyDataTreeModification(final DataTreeIdentifier<T> path, final DataObjectModification<T> modification) {
         this.path = requireNonNull(path);
-        this.rootNode = requireNonNull(modification);
+        rootNode = requireNonNull(modification);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static <T extends DataObject> DataTreeModification<T> create(final CurrentAdapterSerializer serializer,
-            final DataTreeCandidate domChange, final LogicalDatastoreType datastoreType) {
-        final InstanceIdentifier<?> bindingPath = serializer.coerceInstanceIdentifier(domChange.getRootPath());
-        final BindingDataObjectCodecTreeNode<?> codec = serializer.getSubtreeCodec(bindingPath);
-        final DataTreeIdentifier<?> path = DataTreeIdentifier.create(datastoreType, bindingPath);
-        return new LazyDataTreeModification(path, LazyDataObjectModification.create(codec, domChange.getRootNode()));
+    static <T extends DataObject> @Nullable DataTreeModification<T> from(final CurrentAdapterSerializer serializer,
+            final DataTreeCandidate domChange, final LogicalDatastoreType datastoreType, final Class<T> augment) {
+        final var bindingPath = createBindingPath(serializer, domChange.getRootPath(), augment);
+        final var codec = serializer.getSubtreeCodec(bindingPath);
+        final var modification = LazyDataObjectModification.from(codec, domChange.getRootNode());
+        return modification == null ? null
+            : new LazyDataTreeModification(DataTreeIdentifier.create(datastoreType, bindingPath), modification);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static <T extends DataObject> DataTreeModification<T> create(final CurrentAdapterSerializer serializer,
-            final DOMDataTreeCandidate candidate) {
-        final DOMDataTreeIdentifier domRootPath = candidate.getRootPath();
-        final InstanceIdentifier<?> bindingPath = serializer.coerceInstanceIdentifier(domRootPath.getRootIdentifier());
-        final BindingDataObjectCodecTreeNode<?> codec = serializer.getSubtreeCodec(bindingPath);
-        return new LazyDataTreeModification(DataTreeIdentifier.create(domRootPath.getDatastoreType(), bindingPath),
-            LazyDataObjectModification.create(codec, candidate.getRootNode()));
+    static <T extends DataObject> @Nullable DataTreeModification<T> from(final CurrentAdapterSerializer serializer,
+            final DOMDataTreeCandidate candidate, final Class<T> augment) {
+        final var domRootPath = candidate.getRootPath();
+        final var bindingPath = createBindingPath(serializer, domRootPath.getRootIdentifier(), augment);
+        final var codec = serializer.getSubtreeCodec(bindingPath);
+        final var modification = LazyDataObjectModification.from(codec, candidate.getRootNode());
+        return modification == null ? null
+            : new LazyDataTreeModification(DataTreeIdentifier.create(domRootPath.getDatastoreType(), bindingPath),
+                modification);
     }
 
     static <T extends DataObject> @NonNull List<DataTreeModification<T>> from(final CurrentAdapterSerializer codec,
-            final List<DataTreeCandidate> domChanges, final LogicalDatastoreType datastoreType) {
-        final List<DataTreeModification<T>> result = new ArrayList<>(domChanges.size());
-        for (final DataTreeCandidate domChange : domChanges) {
-            result.add(LazyDataTreeModification.create(codec, domChange, datastoreType));
+            final List<DataTreeCandidate> domChanges, final LogicalDatastoreType datastoreType,
+            final Class<T> augment) {
+        final var result = new ArrayList<DataTreeModification<T>>(domChanges.size());
+        for (var domChange : domChanges) {
+            final var bindingChange = from(codec, domChange, datastoreType, augment);
+            if (bindingChange != null) {
+                result.add(bindingChange);
+            }
         }
         return result;
+    }
+
+    // We are given a DOM path, which does not reflect augmentations, as those are not representable in NormalizedNode
+    // world. This method takes care of reconstructing the InstanceIdentifier, appending the missing Augmentation. This
+    // important to get the correct codec into the mix -- otherwise we would be operating on the parent container's
+    // codec and mis-report what is actually going on.
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static @NonNull InstanceIdentifier<?> createBindingPath(final CurrentAdapterSerializer serializer,
+            final YangInstanceIdentifier domPath, final Class<?> augment) {
+        final var bindingPath = serializer.coerceInstanceIdentifier(domPath);
+        return augment == null ? bindingPath : bindingPath.augmentation((Class) augment.asSubclass(Augmentation.class));
     }
 
     @Override
