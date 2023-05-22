@@ -21,8 +21,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingAugmentationCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
@@ -51,27 +53,28 @@ import org.slf4j.LoggerFactory;
 final class LazyDataObjectModification<T extends DataObject> implements DataObjectModification<T> {
     private static final Logger LOG = LoggerFactory.getLogger(LazyDataObjectModification.class);
 
-    private final BindingDataObjectCodecTreeNode<T> codec;
+    private final CommonDataObjectCodecTreeNode<T> codec;
     private final DataTreeCandidateNode domData;
     private final PathArgument identifier;
 
     private volatile Collection<LazyDataObjectModification<? extends DataObject>> childNodesCache;
     private volatile ModificationType modificationType;
 
-    private LazyDataObjectModification(final BindingDataObjectCodecTreeNode<T> codec,
+    private LazyDataObjectModification(final CommonDataObjectCodecTreeNode<T> codec,
             final DataTreeCandidateNode domData) {
         this.codec = requireNonNull(codec);
         this.domData = requireNonNull(domData);
-        this.identifier = codec.deserializePathArgument(domData.getIdentifier());
+        identifier = codec.deserializePathArgument(domData.getIdentifier());
     }
 
-    static <T extends DataObject> LazyDataObjectModification<T> create(final BindingDataObjectCodecTreeNode<T> codec,
+    static <T extends DataObject> LazyDataObjectModification<T> create(
+            final CommonDataObjectCodecTreeNode<T> childCodec,
             final DataTreeCandidateNode domData) {
-        return new LazyDataObjectModification<>(codec, domData);
+        return new LazyDataObjectModification<>(childCodec, domData);
     }
 
     private static Collection<LazyDataObjectModification<? extends DataObject>> from(
-            final BindingDataObjectCodecTreeNode<?> parentCodec,
+            final CommonDataObjectCodecTreeNode<?> parentCodec,
             final Collection<DataTreeCandidateNode> domChildNodes) {
         final List<LazyDataObjectModification<? extends DataObject>> result = new ArrayList<>(domChildNodes.size());
         populateList(result, parentCodec, domChildNodes);
@@ -79,7 +82,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     }
 
     private static void populateList(final List<LazyDataObjectModification<? extends DataObject>> result,
-            final BindingDataObjectCodecTreeNode<?> parentCodec,
+            final CommonDataObjectCodecTreeNode<?> parentCodec,
             final Collection<DataTreeCandidateNode> domChildNodes) {
         for (final DataTreeCandidateNode domChildNode : domChildNodes) {
             if (domChildNode.getModificationType() != UNMODIFIED) {
@@ -236,7 +239,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     @Override
     public DataObjectModification<? extends DataObject> getModifiedChild(final PathArgument arg) {
         final List<YangInstanceIdentifier.PathArgument> domArgumentList = new ArrayList<>();
-        final BindingDataObjectCodecTreeNode<?> childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
+        final CommonDataObjectCodecTreeNode<?> childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
         final Iterator<YangInstanceIdentifier.PathArgument> toEnter = domArgumentList.iterator();
         DataTreeCandidateNode current = domData;
         while (toEnter.hasNext() && current != null) {
@@ -286,6 +289,10 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     }
 
     private T deserialize(final Optional<NormalizedNode> dataAfter) {
-        return dataAfter.map(codec::deserialize).orElse(null);
+        if (codec instanceof BindingAugmentationCodecTreeNode) {
+
+        } else if (codec instanceof BindingDataObjectCodecTreeNode) {
+            return dataAfter.map(codec::deserialize).orElse(null);
+        }
     }
 }

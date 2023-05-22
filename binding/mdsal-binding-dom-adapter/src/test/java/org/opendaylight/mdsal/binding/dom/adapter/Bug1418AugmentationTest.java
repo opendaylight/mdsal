@@ -76,7 +76,7 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
         TreeLeafOnlyUsesAugment leafOnlyUsesAugmentAfter = leafOnlyUsesAugment("test leaf changed");
         final TestListener<TreeLeafOnlyUsesAugment> listener = createListener(CONFIGURATION, SIMPLE_AUGMENT,
                 added(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugmentBefore),
-                replaced(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugmentBefore,
+                subtreeModified(path(TOP_FOO_KEY, TreeLeafOnlyUsesAugment.class), leafOnlyUsesAugmentBefore,
                     leafOnlyUsesAugmentAfter));
 
         writeTx = getDataBroker().newWriteOnlyTransaction();
@@ -134,7 +134,7 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
 
         final TestListener<TreeComplexUsesAugment> listener = createListener(CONFIGURATION, COMPLEX_AUGMENT,
                 added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore),
-                replaced(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore,
+                subtreeModified(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore,
                         complexUsesAugmentAfter));
 
         writeTx = getDataBroker().newWriteOnlyTransaction();
