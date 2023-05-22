@@ -134,7 +134,9 @@ public class Bug1418AugmentationTest extends AbstractDataTreeChangeListenerTest 
 
         final TestListener<TreeComplexUsesAugment> listener = createListener(CONFIGURATION, COMPLEX_AUGMENT,
                 added(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore),
-                replaced(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore,
+                // While we are overwriting the augment, at the transaction ends up replacing one child with another,
+                // so the Augmentation ends up not being overwritten, but modified
+                subtreeModified(path(TOP_FOO_KEY, TreeComplexUsesAugment.class), complexUsesAugmentBefore,
                         complexUsesAugmentAfter));
 
         writeTx = getDataBroker().newWriteOnlyTransaction();
