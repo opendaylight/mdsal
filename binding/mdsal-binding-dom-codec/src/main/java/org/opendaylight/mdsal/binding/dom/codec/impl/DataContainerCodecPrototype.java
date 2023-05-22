@@ -7,13 +7,17 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.collect.ImmutableSet;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode.ChildAddressabilitySummary;
+import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode.ChildAddressabilitySummary;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.runtime.api.AugmentRuntimeType;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
@@ -32,7 +36,6 @@ import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.model.api.AnydataSchemaNode;
@@ -68,8 +71,12 @@ final class DataContainerCodecPrototype<T extends RuntimeTypeContainer> implemen
     private final @NonNull QNameModule namespace;
     private final @NonNull CodecContextFactory factory;
     private final @NonNull Item<?> bindingArg;
-    private final @NonNull PathArgument yangArg;
     private final @NonNull ChildAddressabilitySummary childAddressabilitySummary;
+
+    // multiple paths represent augmentation wrapper
+    // FIXME: this means it is either this or 'yangArg'
+    private final @Nullable PathArgument yangArg;
+    private final @Nullable ImmutableSet<NodeIdentifier> childArgs;
 
     // Accessed via INSTANCE
     @SuppressWarnings("unused")
@@ -81,20 +88,29 @@ final class DataContainerCodecPrototype<T extends RuntimeTypeContainer> implemen
         this(Item.of((Class<? extends DataObject>) cls), yangArg, type, factory);
     }
 
+    @SuppressWarnings("unchecked")
+    private DataContainerCodecPrototype(final Class<?> cls, final QNameModule namespace,
+            final ImmutableSet<NodeIdentifier> childArgs, final T type, final CodecContextFactory factory) {
+        this(Item.of((Class<? extends DataObject>) cls), namespace, type, factory, null, requireNonNull(childArgs));
+    }
+
     private DataContainerCodecPrototype(final Item<?> bindingArg, final PathArgument yangArg, final T type,
             final CodecContextFactory factory) {
+        this(bindingArg, yangArg.getNodeType().getModule(), type, factory, requireNonNull(yangArg), null);
+    }
+
+    private DataContainerCodecPrototype(final Item<?> bindingArg, final QNameModule namespace, final T type,
+            final CodecContextFactory factory, final PathArgument yangArg,
+            final ImmutableSet<NodeIdentifier> childArgs) {
         this.bindingArg = requireNonNull(bindingArg);
-        this.yangArg = requireNonNull(yangArg);
+        this.namespace = requireNonNull(namespace);
         this.type = requireNonNull(type);
         this.factory = requireNonNull(factory);
 
-        if (yangArg instanceof AugmentationIdentifier augId) {
-            final var childNames = augId.getPossibleChildNames();
-            verify(!childNames.isEmpty(), "Unexpected empty identifier for %s", type);
-            namespace = childNames.iterator().next().getModule();
-        } else {
-            namespace = yangArg.getNodeType().getModule();
-        }
+        this.yangArg = yangArg;
+        this.childArgs = childArgs;
+        checkArgument(childArgs == null != (yangArg == null), "Conflicting identification %s vs %s", yangArg,
+            childArgs);
 
         childAddressabilitySummary = type instanceof RuntimeType
             ? computeChildAddressabilitySummary(((RuntimeType) type).statement())
@@ -191,9 +207,10 @@ final class DataContainerCodecPrototype<T extends RuntimeTypeContainer> implemen
         return new DataContainerCodecPrototype<>(bindingArg, createIdentifier(type), type, factory);
     }
 
-    static DataContainerCodecPrototype<AugmentRuntimeType> from(final Class<?> augClass,
-            final AugmentationIdentifier arg, final AugmentRuntimeType schema, final CodecContextFactory factory) {
-        return new DataContainerCodecPrototype<>(augClass, arg, schema, factory);
+    static DataContainerCodecPrototype<AugmentRuntimeType> from(final Class<?> bindingClass,
+            final QNameModule namespace, final ImmutableSet<NodeIdentifier> childArgs, final AugmentRuntimeType schema,
+            final CodecContextFactory factory) {
+        return new DataContainerCodecPrototype<>(bindingClass, namespace, childArgs, schema, factory);
     }
 
     static DataContainerCodecPrototype<NotificationRuntimeType> from(final Class<?> augClass,
@@ -233,13 +250,25 @@ final class DataContainerCodecPrototype<T extends RuntimeTypeContainer> implemen
     }
 
     @NonNull PathArgument getYangArg() {
-        return yangArg;
+        return verifyNotNull(yangArg);
+    }
+
+    // Guaranteed to be non-empty
+    @NonNull ImmutableSet<NodeIdentifier> getChildArgs() {
+        return verifyNotNull(childArgs);
     }
 
     @Override
     public DataContainerCodecContext<?, T> get() {
-        final DataContainerCodecContext<?, T> existing = (DataContainerCodecContext<?, T>) INSTANCE.getAcquire(this);
+        final var existing = (DataContainerCodecContext<?, T>) INSTANCE.getAcquire(this);
         return existing != null ? existing : loadInstance();
+    }
+
+    @SuppressWarnings("unchecked")
+    <R extends CompositeRuntimeType> DataObjectCodecContext<?, R> getDataObject() {
+        final var context = get();
+        verify(context instanceof DataObjectCodecContext, "Unexpected instance %s", context);
+        return (DataObjectCodecContext<?, R>) context;
     }
 
     private @NonNull DataContainerCodecContext<?, T> loadInstance() {

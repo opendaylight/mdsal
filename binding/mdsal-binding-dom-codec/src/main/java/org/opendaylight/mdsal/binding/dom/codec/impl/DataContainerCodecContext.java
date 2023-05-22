@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.impl;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ImmutableCollection;
@@ -26,9 +25,10 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
+import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.IncorrectNestingException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingClassInLoadingStrategyException;
 import org.opendaylight.mdsal.binding.dom.codec.api.MissingSchemaException;
@@ -47,7 +47,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
@@ -56,7 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 abstract class DataContainerCodecContext<D extends DataObject, T extends RuntimeTypeContainer> extends NodeCodecContext
-        implements BindingDataObjectCodecTreeNode<D>  {
+        implements CommonDataObjectCodecTreeNode<D> {
     private static final Logger LOG = LoggerFactory.getLogger(DataContainerCodecContext.class);
     private static final VarHandle EVENT_STREAM_SERIALIZER;
 
@@ -69,7 +68,7 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
         }
     }
 
-    private final @NonNull DataContainerCodecPrototype<T> prototype;
+    final @NonNull DataContainerCodecPrototype<T> prototype;
 
     // Accessed via a VarHandle
     @SuppressWarnings("unused")
@@ -177,19 +176,17 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
         return getClass().getSimpleName() + " [" + prototype.getBindingClass() + "]";
     }
 
-    @Override
-    public BindingNormalizedNodeCachingCodec<D> createCachingCodec(
-            final ImmutableCollection<Class<? extends BindingObject>> cacheSpecifier) {
-        if (cacheSpecifier.isEmpty()) {
-            return new NonCachingCodec<>(this);
-        }
-        return new CachingNormalizedNodeCodec<>(this, ImmutableSet.copyOf(cacheSpecifier));
+    static final <T extends DataObject, C extends DataContainerCodecContext<T, ?> & BindingNormalizedNodeCodec<T>>
+            @NonNull BindingNormalizedNodeCachingCodec<T> createCachingCodec(final C context,
+                final ImmutableCollection<Class<? extends BindingObject>> cacheSpecifier) {
+        return cacheSpecifier.isEmpty() ? new NonCachingCodec<>(context)
+            : new CachingNormalizedNodeCodec<>(context, ImmutableSet.copyOf(cacheSpecifier));
     }
 
     protected final <V> @NonNull V childNonNull(final @Nullable V nullable,
             final YangInstanceIdentifier.PathArgument child, final String message, final Object... args) {
         if (nullable == null) {
-            throw childNullException(extractName(child), message, args);
+            throw childNullException(child.getNodeType(), message, args);
         }
         return nullable;
     }
@@ -241,15 +238,6 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
         throw IncorrectNestingException.create(message, args);
     }
 
-    private static QName extractName(final YangInstanceIdentifier.PathArgument child) {
-        if (child instanceof AugmentationIdentifier) {
-            final Set<QName> children = ((AugmentationIdentifier) child).getPossibleChildNames();
-            checkArgument(!children.isEmpty(), "Augmentation without childs must not be used in data");
-            return children.iterator().next();
-        }
-        return child.getNodeType();
-    }
-
     final DataObjectSerializer eventStreamSerializer() {
         final DataObjectSerializer existing = (DataObjectSerializer) EVENT_STREAM_SERIALIZER.getAcquire(this);
         return existing != null ? existing : loadEventStreamSerializer();
@@ -262,8 +250,7 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends Runtime
         return witness == null ? loaded : (DataObjectSerializer) witness;
     }
 
-    @Override
-    public NormalizedNode serialize(final D data) {
+    final @NonNull NormalizedNode serializeImpl(final @NonNull D data) {
         final NormalizedNodeResult result = new NormalizedNodeResult();
         // We create DOM stream writer which produces normalized nodes
         final NormalizedNodeStreamWriter domWriter = ImmutableNormalizedNodeStreamWriter.from(result);
