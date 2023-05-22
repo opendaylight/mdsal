@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Map.Entry;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -18,6 +19,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
@@ -30,8 +32,25 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     @Override
     public final <U extends DataObject> void put(final LogicalDatastoreType store, final InstanceIdentifier<U> path,
             final U data) {
-        final Entry<YangInstanceIdentifier, NormalizedNode> normalized = toNormalized("put", path, data);
-        getDelegate().put(store, normalized.getKey(), normalized.getValue());
+        final Entry<YangInstanceIdentifier, NormalizedNode> entry = toNormalized("put", path, data);
+        if (isAugmentation(path)) {
+            // augmentation only case: put child nodes provided with augmentation, remove those having no data
+            final var codec = adapterContext().currentSerializer().getSubtreeCodec(path);
+            final var parentNodeIdentifier = entry.getKey();
+            final var augmNode = (ContainerNode) entry.getValue();
+            final var childMap = augmNode.body().stream().collect(
+                ImmutableMap.toImmutableMap(node -> node.getIdentifier(), node -> node));
+            for (var childPath : codec.getChildPathArguments()) {
+                if (!childMap.containsKey(childPath)) {
+                    getDelegate().delete(store, parentNodeIdentifier.node(childPath));
+                }
+            }
+            for (var childEntry : childMap.entrySet()) {
+                getDelegate().put(store, parentNodeIdentifier.node(childEntry.getKey()), childEntry.getValue());
+            }
+        } else {
+            getDelegate().put(store, entry.getKey(), entry.getValue());
+        }
     }
 
     @Deprecated
@@ -64,7 +83,16 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     @Override
     public final void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         checkArgument(!path.isWildcarded(), "Cannot delete wildcarded path %s", path);
-        getDelegate().delete(store, adapterContext().currentSerializer().toYangInstanceIdentifier(path));
+        if (isAugmentation(path)) {
+            // augmentation only case: remove all children belonging to augmentation
+            final var parentNodeIdentifier = adapterContext().currentSerializer().toYangInstanceIdentifier(path);
+            final var codec = adapterContext().currentSerializer().getSubtreeCodec(path);
+            for (var childPath : codec.getChildPathArguments()) {
+                getDelegate().delete(store, parentNodeIdentifier.node(childPath));
+            }
+        } else {
+            getDelegate().delete(store, adapterContext().currentSerializer().toYangInstanceIdentifier(path));
+        }
     }
 
     @Override
