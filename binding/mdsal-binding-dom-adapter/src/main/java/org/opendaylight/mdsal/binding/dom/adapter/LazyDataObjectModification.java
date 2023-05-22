@@ -14,7 +14,6 @@ import static org.opendaylight.yangtools.yang.data.tree.api.ModificationType.UNM
 import com.google.common.base.MoreObjects;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +22,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
@@ -62,16 +62,17 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
             final DataTreeCandidateNode domData) {
         this.codec = requireNonNull(codec);
         this.domData = requireNonNull(domData);
-        this.identifier = codec.deserializePathArgument(domData.getIdentifier());
+        identifier = codec.deserializePathArgument(domData.getIdentifier());
     }
 
-    static <T extends DataObject> LazyDataObjectModification<T> create(final BindingDataObjectCodecTreeNode<T> codec,
+    static <T extends DataObject> LazyDataObjectModification<T> create(
+            final BindingDataObjectCodecTreeNode<T> childCodec,
             final DataTreeCandidateNode domData) {
-        return new LazyDataObjectModification<>(codec, domData);
+        return new LazyDataObjectModification<>(childCodec, domData);
     }
 
     private static Collection<LazyDataObjectModification<? extends DataObject>> from(
-            final BindingDataObjectCodecTreeNode<?> parentCodec,
+            final CommonDataObjectCodecTreeNode<?> parentCodec,
             final Collection<DataTreeCandidateNode> domChildNodes) {
         final List<LazyDataObjectModification<? extends DataObject>> result = new ArrayList<>(domChildNodes.size());
         populateList(result, parentCodec, domChildNodes);
@@ -79,7 +80,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     }
 
     private static void populateList(final List<LazyDataObjectModification<? extends DataObject>> result,
-            final BindingDataObjectCodecTreeNode<?> parentCodec,
+            final CommonDataObjectCodecTreeNode<?> parentCodec,
             final Collection<DataTreeCandidateNode> domChildNodes) {
         for (final DataTreeCandidateNode domChildNode : domChildNodes) {
             if (domChildNode.getModificationType() != UNMODIFIED) {
@@ -235,9 +236,9 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
 
     @Override
     public DataObjectModification<? extends DataObject> getModifiedChild(final PathArgument arg) {
-        final List<YangInstanceIdentifier.PathArgument> domArgumentList = new ArrayList<>();
-        final BindingDataObjectCodecTreeNode<?> childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
-        final Iterator<YangInstanceIdentifier.PathArgument> toEnter = domArgumentList.iterator();
+        final var domArgumentList = new ArrayList<YangInstanceIdentifier.PathArgument>();
+        final var childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
+        final var toEnter = domArgumentList.iterator();
         DataTreeCandidateNode current = domData;
         while (toEnter.hasNext() && current != null) {
             current = current.getModifiedChild(toEnter.next()).orElse(null);
