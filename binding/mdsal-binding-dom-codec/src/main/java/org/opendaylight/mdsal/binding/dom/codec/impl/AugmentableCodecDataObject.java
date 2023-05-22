@@ -12,13 +12,11 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.collect.ImmutableMap;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
-import java.util.Optional;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.schema.DistinctNodeContainer;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
  * A base class for {@link DataObject}s which are also {@link Augmentable}, backed by {@link DataObjectCodecContext}.
@@ -59,23 +57,24 @@ public abstract class AugmentableCodecDataObject<T extends DataObject & Augmenta
             return (A) aug.get(augmentationType);
         }
 
-        @SuppressWarnings("rawtypes")
-        final Optional<DataContainerCodecContext<?, ?>> optAugCtx = codecContext().possibleStreamChild(
-            (Class) augmentationType);
-        if (optAugCtx.isPresent()) {
-            final DataContainerCodecContext<?, ?> augCtx = optAugCtx.orElseThrow();
+        // FIXME: MDSAL-820: this needs to be reworked with BindingAugmentationCodecTreeNode codec bits
+//        @SuppressWarnings("rawtypes")
+//        final Optional<DataContainerCodecContext<?, ?>> optAugCtx = codecContext().possibleStreamChild(
+//            (Class) augmentationType);
+//        if (optAugCtx.isPresent()) {
+//            final DataContainerCodecContext<?, ?> augCtx = optAugCtx.orElseThrow();
             // Due to binding specification not representing grouping instantiations we can end up having the same
             // augmentation applied to a grouping multiple times. While these augmentations have the same shape, they
             // are still represented by distinct binding classes and therefore we need to make sure the result matches
             // the augmentation the user is requesting -- otherwise a strict receiver would end up with a cryptic
             // ClassCastException.
-            if (augmentationType.isAssignableFrom(augCtx.getBindingClass())) {
-                final NormalizedNode augData = codecData().childByArg(augCtx.getDomPathArgument());
-                if (augData != null) {
-                    return (A) augCtx.deserialize(augData);
-                }
-            }
-        }
+//            if (augmentationType.isAssignableFrom(augCtx.getBindingClass())) {
+//                final NormalizedNode augData = codecData().childByArg(augCtx.getDomPathArgument());
+//                if (augData != null) {
+//                    return (A) augCtx.deserialize(augData);
+//                }
+//            }
+//        }
         return null;
     }
 

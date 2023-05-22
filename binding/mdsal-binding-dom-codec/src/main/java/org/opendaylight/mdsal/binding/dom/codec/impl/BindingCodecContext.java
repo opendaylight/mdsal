@@ -44,6 +44,7 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNo
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingInstanceIdentifierCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeWriterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingStreamEventWriter;
+import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.dom.codec.spi.AbstractBindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
@@ -268,8 +269,20 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         for (final YangInstanceIdentifier.PathArgument domArg : dom.getPathArguments()) {
             checkArgument(currentNode instanceof DataContainerCodecContext,
                 "Unexpected child of non-container node %s", currentNode);
-            final DataContainerCodecContext<?,?> previous = (DataContainerCodecContext<?, ?>) currentNode;
-            final NodeCodecContext nextNode = previous.yangPathArgumentChild(domArg);
+            final DataContainerCodecContext<?, ?> previous = (DataContainerCodecContext<?, ?>) currentNode;
+            NodeCodecContext nextNode = previous.yangPathArgumentChild(domArg);
+
+            /**
+             * Compatibility case: if it's determined the node belongs to augmentation
+             * then insert augmentation path argument in between.
+             */
+            if (nextNode instanceof AugmentationNodeContext<?> augmContext) {
+                if (bindingArguments != null) {
+                    bindingArguments.add(augmContext.bindingArg());
+                }
+                currentNode = nextNode;
+                nextNode = augmContext.yangPathArgumentChild(domArg);
+            }
 
             /*
              * List representation in YANG Instance Identifier consists of two
@@ -485,7 +498,7 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
     }
 
     @Override
-    public <E extends DataObject> BindingDataObjectCodecTreeNode<E> streamChild(final Class<E> childClass) {
+    public <E extends DataObject> CommonDataObjectCodecTreeNode<E> streamChild(final Class<E> childClass) {
         return root.streamChild(childClass);
     }
 
@@ -536,6 +549,33 @@ public final class BindingCodecContext extends AbstractBindingNormalizedNodeSeri
         }
         return Map.entry(writeCtx.getKey(), result.getResult());
     }
+
+//    /**
+//     * Serializes the augmentation data into a standalone normalized node. Due to augmentation requires a parent
+//     * container-like node and may include multiple child nodes, the wrapper node will be created.
+//     *
+//     * @param path instance identifier path
+//     * @param data data object
+//     * @param <T> augmentation binding type
+//     * @return normalized node
+//     */
+//    private <T extends DataObject> @NonNull Entry<YangInstanceIdentifier, NormalizedNode> augmentationToNormalizedNode(
+//            final InstanceIdentifier<T> path, final T data) {
+//        final var result = new NormalizedNodeResult();
+//        final var domWriter = ImmutableNormalizedNodeStreamWriter.from(result);
+//        final var yangInstanceIdentifier = toYangInstanceIdentifier(path);
+//        try {
+//            domWriter.startContainerNode(
+//                new YangInstanceIdentifier.NodeIdentifier(yangInstanceIdentifier.getLastPathArgument().getNodeType()),
+//                BindingStreamEventWriter.UNKNOWN_SIZE);
+//            getSubtreeCodec(path).writeAsNormalizedNode(data, domWriter);
+//            domWriter.endNode();
+//        } catch (final IOException e) {
+//            LOG.error("Unexpected failure while serializing path {} data {}", path, data, e);
+//            throw new IllegalStateException("Failed to create normalized node", e);
+//        }
+//        return Map.entry(yangInstanceIdentifier, result.getResult());
+//    }
 
     @Override
     public Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final YangInstanceIdentifier path,
