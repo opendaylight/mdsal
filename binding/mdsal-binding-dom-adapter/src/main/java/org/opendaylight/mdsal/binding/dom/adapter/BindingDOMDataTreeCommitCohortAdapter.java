@@ -9,9 +9,9 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
-import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohort;
@@ -20,16 +20,20 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 final class BindingDOMDataTreeCommitCohortAdapter<T extends DataObject>
         extends AbstractBindingAdapter<DataTreeCommitCohort<T>> implements DOMDataTreeCommitCohort {
-    BindingDOMDataTreeCommitCohortAdapter(final AdapterContext codec, final DataTreeCommitCohort<T> cohort) {
+    private final Class<T> augment;
+
+    BindingDOMDataTreeCommitCohortAdapter(final AdapterContext codec, final DataTreeCommitCohort<T> cohort,
+            final Class<T> augment) {
         super(codec, cohort);
+        this.augment = augment;
     }
 
     @Override
     public FluentFuture<PostCanCommitStep> canCommit(final Object txId,
             final EffectiveModelContext ctx, final Collection<DOMDataTreeCandidate> candidates) {
-        final Collection<DataTreeModification<T>> modifications = candidates.stream()
-                .map(candidate -> LazyDataTreeModification.<T>create(currentSerializer(), candidate))
-                .collect(Collectors.toList());
-        return getDelegate().canCommit(txId, modifications);
+        return getDelegate().canCommit(txId, candidates.stream()
+            .map(candidate -> LazyDataTreeModification.<T>from(currentSerializer(), candidate, augment))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList()));
     }
 }
