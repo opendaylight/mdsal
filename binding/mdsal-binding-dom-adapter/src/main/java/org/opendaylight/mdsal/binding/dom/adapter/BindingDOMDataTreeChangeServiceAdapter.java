@@ -15,6 +15,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -36,11 +37,14 @@ final class BindingDOMDataTreeChangeServiceAdapter extends AbstractBindingAdapte
             registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId, final L listener) {
         final DOMDataTreeIdentifier domIdentifier = toDomTreeIdentifier(treeId);
         final LogicalDatastoreType storeType = treeId.getDatastoreType();
+        final Class<T> target = treeId.getRootIdentifier().getTargetType();
+        final Class<T> augment = Augmentation.class.isAssignableFrom(target) ? target : null;
+
         final BindingDOMDataTreeChangeListenerAdapter<T> domListener =
                 listener instanceof ClusteredDataTreeChangeListener
                         ? new BindingClusteredDOMDataTreeChangeListenerAdapter<>(
-                                adapterContext(), (ClusteredDataTreeChangeListener<T>) listener, storeType)
-                        : new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), listener, storeType);
+                                adapterContext(), (ClusteredDataTreeChangeListener<T>) listener, storeType, augment)
+                        : new BindingDOMDataTreeChangeListenerAdapter<>(adapterContext(), listener, storeType, augment);
 
         final ListenerRegistration<BindingDOMDataTreeChangeListenerAdapter<T>> domReg =
                 getDelegate().registerDataTreeChangeListener(domIdentifier, domListener);
