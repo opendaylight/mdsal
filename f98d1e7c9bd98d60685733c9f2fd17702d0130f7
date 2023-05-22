@@ -95,6 +95,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9d714f95_79de1eb9",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2023-05-22T15:05:41Z",
+      "side": 1,
+      "message": "HashSet() is a raw type, please your IDE to highlight these for you and pay attention to them. We are writing Java 17, not 1.4.",
+      "range": {
+        "startLine": 213,
+        "startChar": 47,
+        "endLine": 213,
+        "endChar": 54
+      },
+      "revId": "f98d1e7c9bd98d60685733c9f2fd17702d0130f7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "745dbf61_cc34db6a",
         "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/DataObjectCodecContext.java",
         "patchSetId": 12
