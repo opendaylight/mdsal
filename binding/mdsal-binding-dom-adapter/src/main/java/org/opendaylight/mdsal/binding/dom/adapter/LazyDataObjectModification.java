@@ -23,6 +23,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingDataObjectCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.CommonDataObjectCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
@@ -62,7 +63,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
             final DataTreeCandidateNode domData) {
         this.codec = requireNonNull(codec);
         this.domData = requireNonNull(domData);
-        this.identifier = codec.deserializePathArgument(domData.getIdentifier());
+        identifier = codec.deserializePathArgument(domData.getIdentifier());
     }
 
     static <T extends DataObject> LazyDataObjectModification<T> create(final BindingDataObjectCodecTreeNode<T> codec,
@@ -236,7 +237,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     @Override
     public DataObjectModification<? extends DataObject> getModifiedChild(final PathArgument arg) {
         final List<YangInstanceIdentifier.PathArgument> domArgumentList = new ArrayList<>();
-        final BindingDataObjectCodecTreeNode<?> childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
+        final CommonDataObjectCodecTreeNode<?> childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
         final Iterator<YangInstanceIdentifier.PathArgument> toEnter = domArgumentList.iterator();
         DataTreeCandidateNode current = domData;
         while (toEnter.hasNext() && current != null) {
