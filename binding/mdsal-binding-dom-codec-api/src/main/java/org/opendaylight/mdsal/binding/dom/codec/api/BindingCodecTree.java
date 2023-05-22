@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 // TODO: Add more detailed documentation
 public interface BindingCodecTree extends BindingDataObjectCodecTreeParent<Empty> {
 
-    @Nullable <T extends DataObject> BindingDataObjectCodecTreeNode<T> getSubtreeCodec(InstanceIdentifier<T> path);
+    @Nullable <T extends DataObject> CommonDataObjectCodecTreeNode<T> getSubtreeCodec(InstanceIdentifier<T> path);
 
     @Nullable BindingCodecTreeNode getSubtreeCodec(YangInstanceIdentifier path);
 

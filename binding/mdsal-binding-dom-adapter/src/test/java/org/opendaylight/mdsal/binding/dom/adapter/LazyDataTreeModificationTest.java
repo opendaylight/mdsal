@@ -37,6 +37,6 @@ public class LazyDataTreeModificationTest {
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
         doReturn(mock(DataTreeCandidateNode.class)).when(domDataTreeCandidate).getRootNode();
 
-        assertNotNull(LazyDataTreeModification.create(codec.currentSerializer(), domDataTreeCandidate));
+        assertNotNull(LazyDataTreeModification.from(codec.currentSerializer(), domDataTreeCandidate));
     }
 }

@@ -9,9 +9,9 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
-import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohort;
@@ -27,9 +27,9 @@ final class BindingDOMDataTreeCommitCohortAdapter<T extends DataObject>
     @Override
     public FluentFuture<PostCanCommitStep> canCommit(final Object txId,
             final EffectiveModelContext ctx, final Collection<DOMDataTreeCandidate> candidates) {
-        final Collection<DataTreeModification<T>> modifications = candidates.stream()
-                .map(candidate -> LazyDataTreeModification.<T>create(currentSerializer(), candidate))
-                .collect(Collectors.toList());
-        return getDelegate().canCommit(txId, modifications);
+        return getDelegate().canCommit(txId, candidates.stream()
+            .map(candidate -> LazyDataTreeModification.<T>from(currentSerializer(), candidate))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList()));
     }
 }
