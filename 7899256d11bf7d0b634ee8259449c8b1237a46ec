@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "89fecfe2_f21419d5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9136
+      },
+      "writtenOn": "2023-05-24T11:10:11Z",
+      "side": 1,
+      "message": "Test needs small change.",
+      "revId": "7899256d11bf7d0b634ee8259449c8b1237a46ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc820fad_4f7c78e0",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/MatchWritableObjectTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 9136
+      },
+      "writtenOn": "2023-05-24T11:10:11Z",
+      "side": 1,
+      "message": "If match is the expected result, then it should be as the first parameter in the assertion.",
+      "revId": "7899256d11bf7d0b634ee8259449c8b1237a46ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b8f65e7_ec14f053",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/MatchWritableObjectTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 9136
+      },
+      "writtenOn": "2023-05-24T11:10:11Z",
+      "side": 1,
+      "message": "same here",
+      "revId": "7899256d11bf7d0b634ee8259449c8b1237a46ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81"
+    }
+  ]
+}
